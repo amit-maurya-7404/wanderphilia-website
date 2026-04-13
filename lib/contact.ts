@@ -1,0 +1,5 @@
+export const contactEmail = 'experiences@wanderphilia.com'
+export const contactPhone = '+919217664099'
+export const contactPhoneDisplay = '92176 64099'
+export const instagramUrl = 'https://www.instagram.com/wanderphiliaa?igsh=aGIydGM1a2Fuejlz&utm_source=qr'
+export const companyName = 'Wanderphilia'

@@ -1,0 +1,142 @@
+{
+  "gallery": [
+    {
+      "image": "https://randomimageurl.com/assets/images/local/20260103_0519_Random%20Natural%20Landscape_simple_compose_01ke205qahfmftrexg9rs7svjn_compressed_q80.jpeg",
+      "category": "trips",
+      "title": "Demo Image",
+      "caption": "Demo",
+      "createdAt": "2026-04-10T10:41:12.014Z",
+      "_id": "1775817672043-c16500667c1e9"
+    },
+    {
+      "_id": "gallery-1",
+      "image": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop",
+      "title": "Mountain Peak at Sunrise",
+      "category": "mountains",
+      "caption": "Breathtaking view from Everest Base Camp during sunrise",
+      "alt": "Snow-covered mountain peak",
+      "createdAt": "2025-12-15T08:00:00Z"
+    },
+    {
+      "_id": "gallery-2",
+      "image": "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800&h=600&fit=crop",
+      "title": "Alpine Lakes",
+      "category": "mountains",
+      "caption": "Pristine alpine lake in the Swiss Alps",
+      "alt": "Clear mountain lake",
+      "createdAt": "2025-12-14T10:30:00Z"
+    },
+    {
+      "_id": "gallery-3",
+      "image": "https://images.unsplash.com/photo-1520763185298-1b434c919eba?w=800&h=600&fit=crop",
+      "title": "Tropical Beach Resort",
+      "category": "stays",
+      "caption": "Our luxury beachfront accommodation in Bali",
+      "alt": "Beach resort with palm trees",
+      "createdAt": "2025-12-13T14:15:00Z"
+    },
+    {
+      "_id": "gallery-4",
+      "image": "https://images.unsplash.com/photo-1542314503-37143f4f6451?w=800&h=600&fit=crop",
+      "title": "Cozy Mountain Cabin",
+      "category": "stays",
+      "caption": "Charming cabin with a view in the Rockies",
+      "alt": "Mountain cabin surrounded by trees",
+      "createdAt": "2025-12-12T09:45:00Z"
+    },
+    {
+      "_id": "gallery-5",
+      "image": "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800&h=600&fit=crop",
+      "title": "Ancient Temples",
+      "category": "trips",
+      "caption": "Exploring historic temples in Southeast Asia",
+      "alt": "Ancient temple architecture",
+      "createdAt": "2025-12-11T11:20:00Z"
+    },
+    {
+      "_id": "gallery-6",
+      "image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=600&fit=crop",
+      "title": "Desert Safari Adventure",
+      "category": "trips",
+      "caption": "Unforgettable sunset during our desert safari in Dubai",
+      "alt": "Desert dunes at sunset",
+      "createdAt": "2025-12-10T16:00:00Z"
+    }
+  ],
+  "reels": [
+    {
+      "_id": "reel-1",
+      "type": "reel",
+      "url": "https://www.instagram.com/reel/ABC123/",
+      "thumbnail": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=500&fit=crop",
+      "caption": "Epic mountain climbing adventure! The view was worth every step 🏔️",
+      "createdAt": "2025-12-15T08:00:00Z"
+    },
+    {
+      "_id": "reel-2",
+      "type": "post",
+      "url": "https://www.instagram.com/p/DEF456/",
+      "thumbnail": "https://images.unsplash.com/photo-1520763185298-1b434c919eba?w=400&h=500&fit=crop",
+      "caption": "Paradise found! 🏝️ Sunset views in Bali are absolutely magical",
+      "createdAt": "2025-12-14T10:30:00Z"
+    },
+    {
+      "_id": "reel-3",
+      "type": "reel",
+      "url": "https://www.instagram.com/reel/GHI789/",
+      "thumbnail": "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400&h=500&fit=crop",
+      "caption": "Exploring hidden temples in the jungle. Adventure awaits! 🏛️",
+      "createdAt": "2025-12-13T14:15:00Z"
+    },
+    {
+      "_id": "reel-4",
+      "type": "post",
+      "url": "https://www.instagram.com/p/JKL012/",
+      "thumbnail": "https://images.unsplash.com/photo-1542314503-37143f4f6451?w=400&h=500&fit=crop",
+      "caption": "Cozy nights by the fireplace in our mountain cabin ❄️🔥",
+      "createdAt": "2025-12-12T09:45:00Z"
+    }
+  ],
+  "reviews": [
+    {
+      "_id": "review-1",
+      "name": "Sarah Johnson",
+      "platform": "Google",
+      "rating": 5,
+      "comment": "Absolutely incredible experience! The guides were knowledgeable and the accommodations were top-notch. Wanderphilia made my dream trip unforgettable.",
+      "createdAt": "2025-12-15T08:00:00Z"
+    },
+    {
+      "_id": "review-2",
+      "name": "Michael Chen",
+      "platform": "Facebook",
+      "rating": 5,
+      "comment": "Best travel company ever! From planning to execution, everything was perfect. Highly recommend to anyone looking for an authentic travel experience.",
+      "createdAt": "2025-12-14T10:30:00Z"
+    },
+    {
+      "_id": "review-3",
+      "name": "Emma Wilson",
+      "platform": "Justdial",
+      "rating": 4,
+      "comment": "Great trip overall. The itinerary was well-planned and the team was very accommodating. Minor hiccup with flights but they resolved it quickly.",
+      "createdAt": "2025-12-13T14:15:00Z"
+    },
+    {
+      "_id": "review-4",
+      "name": "Raj Patel",
+      "platform": "Google",
+      "rating": 5,
+      "comment": "Wanderphilia exceeded all expectations. The cultural experiences were authentic and meaningful. Will definitely book with them again!",
+      "createdAt": "2025-12-12T09:45:00Z"
+    },
+    {
+      "_id": "review-5",
+      "name": "Lisa Anderson",
+      "platform": "Facebook",
+      "rating": 5,
+      "comment": "Professional, organized, and genuinely passionate about travel. They cared about our experience and it showed every single day.",
+      "createdAt": "2025-12-11T11:20:00Z"
+    }
+  ]
+}
