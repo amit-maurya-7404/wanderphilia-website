@@ -46,7 +46,7 @@ export function TripCard({
           {/* Gradient Overlay */}
           <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           
-          {/* Rating Badge - Positioned on Image */}
+          {/* Rating Badge - Positioned on Image .*/}
           <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm px-3 py-1 rounded-full flex items-center gap-1">
             <span className="text-sm font-bold text-gray-900">{rating}</span>
             <span className="text-primary text-lg">★</span>
