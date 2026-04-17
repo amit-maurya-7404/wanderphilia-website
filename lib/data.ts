@@ -1,3 +1,25 @@
+export interface TripMediaItem {
+  type: 'image' | 'video'
+  src: string
+  alt: string
+  poster?: string
+}
+
+// Helper function to create heroMedia array
+export function createHeroMedia(items: Array<{
+  src: string
+  alt: string
+  type?: 'image' | 'video'
+  poster?: string
+}>): TripMediaItem[] {
+  return items.map(item => ({
+    type: item.type || 'image',
+    src: item.src,
+    alt: item.alt,
+    poster: item.poster
+  }))
+}
+
 export interface Trip {
   id: string
   title: string
@@ -14,13 +36,18 @@ export interface Trip {
   category: string
   tripType: 'India' | 'International'
   highlights: string[]
+  heroMedia?: TripMediaItem[]
   itinerary: {
     day: number
     title: string
     description: string
+    image?: string
   }[]
   included: string[]
   notIncluded: string[]
+  optionalActivities?: string[]
+  importantInformation?: string[]
+  paymentTerms?: string[]
   dates: {
     startDate: string
     endDate: string
@@ -440,6 +467,76 @@ export const trips: Trip[] = [
       { startDate: '2024-10-15', endDate: '2024-10-19', spots: 10 },
     ]
   },
+  {
+    id: '12',
+    title: 'Bhutan Road Trip Package',
+    slug: 'bhutan-road-trip',
+    image: '/images/Bhutan_cat.jpg',
+    destination: 'Bhutan',
+    region: 'Bhutan',
+    category: 'Bhutan',
+    description: 'Bhutan, nestled in the Eastern Himalayas, is a peaceful kingdom known for its stunning landscapes, rich Buddhist culture, and focus on happiness through Gross National Happiness. This 6 Nights / 7 Days journey covers Thimphu, Punakha, and Paro, featuring scenic valleys, monasteries like Tiger\'s Nest, and highlights such as Dochula Pass and Punakha Dzong—offering a perfect blend of culture, nature, and adventure. ✨',
+    duration: 7,
+    price: 33000,
+    rating: 4.9,
+    difficulty: 'Easy',
+    groupSize: 11,
+    tripType: 'International',
+    highlights: [
+      'Tiger\'s Nest Monastery Hike',
+      'Dochula Pass',
+      'Punakha Dzong',
+      'Traditional Bhutanese Hot Stone Bath',
+      'River Rafting in Punakha',
+      'Buddhist monasteries',
+      'Scenic valleys and mountain landscapes',
+      'Gross National Happiness culture'
+    ],
+    itinerary: [
+      { day: 1, title: 'Arrival in Bagdogra', description: 'Arrival in Bagdogra. Transfer to Phuentsholing, the gateway to Bhutan.' },
+      { day: 2, title: 'Travel to Thimphu', description: 'Travel to the capital city of Bhutan, Thimphu. Settle in and prepare for your journey.' },
+      { day: 3, title: 'Excursion to Punakha and Dochula Pass', description: 'Excursion to Punakha. Visit the beautiful Dochula Pass with scenic mountain views and traditional chortens.' },
+      { day: 4, title: 'Thimphu Local Sightseeing', description: 'Overnight stay in Thimphu. Thimphu local sightseeing including key attractions. Transfer from Thimphu to Paro.' },
+      { day: 5, title: 'Paro Local Sightseeing and Tiger\'s Nest Hike', description: 'Overnight stay in Paro. Paro local sightseeing. Embark on a scenic hike to the iconic Tiger\'s Nest monastery.' },
+      { day: 6, title: 'Scenic Road Journey to Pheuntsholing', description: 'Paro to Pheuntsholing. Embark on a scenic road journey enjoying the stunning Bhutanese landscapes.' },
+      { day: 7, title: 'Departure', description: 'Departure. Pheuntsholing to Bagdogra Airport for your onward journey.' },
+    ],
+    included: [
+      '6 Nights accommodation on double sharing basis',
+      'Daily breakfast (except Day 1) & dinner (except Day 7)',
+      'River rafting experience in Punakha',
+      'Traditional Bhutanese Hot Stone Bath in Paro',
+      'Comfortable 11 Seater Tata Winger for 6 days',
+      'Professional English speaking Bhutanese guide',
+      'Sustainable Development Fee (SDF) included',
+      'All tolls, parking and driver night charges'
+    ],
+    notIncluded: [
+      'GST (5%) applicable extra',
+      'Food or beverages not in package (alcoholic drinks, mineral water, highway meals)',
+      'Personal expenses (tips, camera/video charges, laundry, phone bills)',
+      'Costs due to natural calamities (landslides, roadblocks)',
+      'Costs from changes in tourism policy between Bhutan and India',
+      'Costs from flight timing changes or delays',
+      'Entry tickets to monuments or attractions',
+      'Return transfer from Siliguri Hotel to Airport',
+      'Self-arranged conveyance based on flight timings'
+    ],
+    importantInformation: [
+      'Phuntsholing stay: Lakhi Hotel or Similar',
+      'Thimphu stay: Hotel White Tara or Similar',
+      'Paro stay: Rema Resort or Similar',
+      'Siliguri stay: Hotel Cinderella or Similar'
+    ],
+    dates: [
+      { startDate: '2025-04-25', endDate: '2025-05-01', spots: 12 },
+      { startDate: '2025-05-02', endDate: '2025-05-08', spots: 14 },
+      { startDate: '2025-05-16', endDate: '2025-05-22', spots: 12 },
+      { startDate: '2025-05-30', endDate: '2025-06-05', spots: 15 },
+      { startDate: '2025-06-06', endDate: '2025-06-12', spots: 13 },
+      { startDate: '2025-06-20', endDate: '2025-06-26', spots: 14 },
+    ]
+  },
 ];
 
 export const destinations: Destination[] = [
@@ -470,6 +567,13 @@ export const destinations: Destination[] = [
     image: '/images/peru-dest.jpg',
     description: 'Ancient Incan heritage, rainforests, and mountain wonders.',
     tripCount: 3,
+  },
+  {
+    title: 'Bhutan',
+    slug: 'bhutan',
+    image: '/images/Bhutan_cat.jpeg',
+    description: 'A peaceful kingdom known for its stunning landscapes, rich Buddhist culture, and focus on happiness.',
+    tripCount: 1,
   },
 ];
 

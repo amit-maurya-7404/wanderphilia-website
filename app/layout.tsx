@@ -1,8 +1,10 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
-import { MobileBottomNav } from '@/components/mobile-bottom-nav'
 import './globals.css'
+import ScrollActionButtons from '@/components/ScrollActionButtons'
+import ScrollToTopButton from '@/components/ScrollToTopButton'
+import { MobileBottomNavConditional } from '@/components/mobile-bottom-nav-conditional'
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -37,10 +39,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} font-sans antialiased`}>
-        <div className="min-h-screen pb-28 md:pb-0">
+        <div className="min-h-screen pb-14 md:pb-0">
           {children}
         </div>
-        <MobileBottomNav />
+        <ScrollActionButtons />
+        <ScrollToTopButton />
+        <MobileBottomNavConditional />
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>

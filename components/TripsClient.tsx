@@ -28,8 +28,29 @@ export default function TripsPage() {
 
   // Extract unique categories from trips
   const categories = useMemo(() => {
+    const categoryImageMap: Record<string, string> = {
+      Bhutan: '/images/Bhutan_cat.jpg',
+      Nepal: '/images/nepal-dest.jpg',
+      Indonesia: '/images/indonesia-dest.jpg',
+      Switzerland: '/images/switzerland-dest.jpg',
+      Peru: '/images/peru-dest.jpg',
+      Japan: '/images/japan.jpg',
+      'Leh Ladakh': '/images/leh-ladakh.jpg',
+      Spiti: '/images/spiti-valley.jpg',
+      Kashmir: '/images/kashmir.jpg',
+      Meghalaya: '/images/meghalaya.jpg',
+      Himachal: '/images/himachal.jpg'
+    }
+
     const cats = Array.from(new Set(trips.map(t => t.category))).sort()
-    return ['All', ...cats]
+    return [
+      { id: 'all', name: 'All', image: '/images/dummy1.jpg' },
+      ...cats.map((cat) => ({
+        id: cat.toLowerCase().replace(/\s+/g, '-'),
+        name: cat,
+        image: categoryImageMap[cat] || `/images/${cat.toLowerCase().replace(/\s+/g, '-')}.jpg`
+      }))
+    ]
   }, [])
 
   // Read category from URL params on mount
@@ -48,7 +69,8 @@ export default function TripsPage() {
         'switzerland': 'Switzerland',
         'peru': 'Peru',
         'iceland': 'Iceland',
-        'japan': 'Japan'
+        'japan': 'Japan',
+        'bhutan': 'Bhutan'
       }
       
       const mappedCategory = categoryMapping[categoryParam] || 'All'
@@ -159,13 +181,13 @@ export default function TripsPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           {/* Category Selection */}
           <div className="mb-12">
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-8">Select Category</h2>
+            <h2 className="text-2xl md:text-3xl text-center  font-bold text-primary mb-8">Select Category</h2>
             
             <div className="relative flex items-center gap-4">
               {/* Left Scroll Button */}
               <button
                 onClick={() => handleCategoryScroll('left')}
-                className="absolute -left-4 md:left-0 z-10 bg-white border border-gray-200 rounded-lg p-2 hover:bg-gray-50 transition-colors shadow-lg"
+                className="absolute -left-4 bottom-12 md:left-0 z-10 bg-white border border-gray-200 rounded-lg p-2 hover:bg-gray-50 transition-colors shadow-lg"
                 aria-label="Scroll categories left"
               >
                 <ChevronLeft size={20} className="text-gray-700" />
@@ -179,26 +201,33 @@ export default function TripsPage() {
               >
                 {categories.map((category) => (
                   <div
-                    key={category}
-                    className="flex flex-col items-center min-w-[80px] cursor-pointer group"
+                    key={category.id}
+                    className="flex flex-col items-center min-w-[70px] cursor-pointer group"
                     onClick={() => {
-                      setSelectedCategory(category)
+                      setSelectedCategory(category.name)
                       setShowAllCards(false)
                     }}
                   >
-                    <div className={`h-16 w-16 rounded-full backdrop-blur-md border-2 shadow-lg group-hover:scale-105 transition-all duration-300 flex items-center justify-center ${
-                      selectedCategory === category
-                        ? 'bg-primary/30 border-primary/60 shadow-primary/20'
-                        : 'bg-primary/20 border-primary/40 hover:border-primary/60'
+                    <div className={`relative h-16 w-16 rounded-full overflow-hidden border-2 shadow-lg group-hover:scale-105 transition-all duration-300 flex items-center justify-center ${
+                      selectedCategory === category.name
+                        ? 'border-primary/60 shadow-primary/20'
+                        : 'border-primary/40 hover:border-primary/60'
                     }`}>
-                      <span className="text-white font-semibold text-sm">
-                        {category === 'All' ? '🌍' : category[0]}
-                      </span>
+                      <img
+                        src={category.image}
+                        alt={category.name}
+                        className="w-full h-full object-cover"
+                      />
+                      {category.name === 'All' && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/25">
+                          <span className="text-white font-semibold text-sm">🌍</span>
+                        </div>
+                      )}
                     </div>
                     <p className={`text-xs mt-2 font-medium transition-colors ${
-                      selectedCategory === category ? 'text-primary' : 'text-gray-700'
+                      selectedCategory === category.name ? 'text-primary' : 'text-gray-700'
                     }`}>
-                      {category}
+                      {category.name}
                     </p>
                   </div>
                 ))}
@@ -207,7 +236,7 @@ export default function TripsPage() {
               {/* Right Scroll Button */}
               <button
                 onClick={() => handleCategoryScroll('right')}
-                className="absolute -right-4 md:right-0 z-10 bg-white border border-gray-200 rounded-lg p-2 hover:bg-gray-50 transition-colors shadow-lg"
+                className="absolute -right-4 bottom-12 md:right-0 z-10 bg-white border border-gray-200 rounded-lg p-2 hover:bg-gray-50 transition-colors shadow-lg"
                 aria-label="Scroll categories right"
               >
                 <ChevronRight size={20} className="text-gray-700" />

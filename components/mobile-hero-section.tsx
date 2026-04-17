@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { MapPin, Star } from 'lucide-react'
+import { MapPin, Star, Search } from 'lucide-react'
 import { trips } from '@/lib/data'
 
 export function MobileHeroSection() {
@@ -13,23 +13,37 @@ export function MobileHeroSection() {
         { _id: '2', title: 'Group Discount 25%', image: '/images/dummy4.jpg', isActive: true },
         { _id: '3', title: 'Early Bird Booking', image: '/images/dummy3.jpg', isActive: true }
     ])
-    
+
     // Extract categories from trips data (excluding 'All')
     const categories = useMemo(() => {
+        const categoryImageMap: Record<string, string> = {
+            Bhutan: '/images/Bhutan_cat.jpg',
+            Nepal: '/images/nepal-dest.jpg',
+            Indonesia: '/images/indonesia-dest.jpg',
+            Switzerland: '/images/switzerland-dest.jpg',
+            Peru: '/images/peru-dest.jpg',
+            Japan: '/images/japan.jpg',
+            'Leh Ladakh': '/images/leh-ladakh.jpg',
+            Spiti: '/images/spiti-valley.jpg',
+            Kashmir: '/images/kashmir.jpg',
+            Meghalaya: '/images/meghalaya.jpg',
+            Himachal: '/images/himachal.jpg'
+        }
+
         const cats = Array.from(new Set(trips.map(t => t.category))).sort()
         return cats.map(cat => ({
             _id: cat.toLowerCase().replace(/\s+/g, '-'), // Convert to URL-friendly ID
             name: cat,
-            image: `/images/${cat.toLowerCase().replace(/\s+/g, '-')}.jpg` // Generate image path
+            image: categoryImageMap[cat] || `/images/${cat.toLowerCase().replace(/\s+/g, '-')}.jpg`
         }))
     }, [])
-    
+
     const [selectedCategory, setSelectedCategory] = useState(categories[0]?._id || 'all')
     const router = useRouter()
 
     const filteredCategories = useMemo(() => {
         if (!destination.trim()) return []
-        return categories.filter(cat => 
+        return categories.filter(cat =>
             cat.name.toLowerCase().includes(destination.toLowerCase())
         )
     }, [destination, categories])
@@ -68,27 +82,38 @@ export function MobileHeroSection() {
         <div className="relative z-10 md:hidden min-h-screen ">
             {/* Background Pattern */}
             {/* <div className="absolute inset-0 bg-[url('/images/pattern-bg.png')] opacity-5"></div> */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#ff5f2e]/90 via-[#ff9966]/80 to-[#fff1e6]/70"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-white from-[50%] to-primary to-[100%]"></div>
+            {/* [#ff5f2e]/90 */}
+            <div className="relative z-10 px-4 pt-20 pb-0 space-y-6">
 
-            <div className="relative z-10 px-4 pt-20 pb-6 space-y-6">
+                <div className="relative">
+                    {/* Search Bar */}
+                    <div className="bg-white/20 backdrop-blur-xl border border-white/30 rounded-full pl-4 py-0 shadow-[0_8px_32px_rgba(0,0,0,0.25)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.35)] hover:scale-[1.02] hover:bg-white/30 transition-all duration-300">
 
-                {/* Search Bar */}
-                <div className="bg-white/20 backdrop-blur-xl border border-white/30 rounded-3xl px-4 py-4 shadow-[0_8px_32px_rgba(0,0,0,0.25)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.35)] hover:scale-[1.02] hover:bg-white/30 transition-all duration-300">
-                    <div className="flex items-center gap-3">
-                        <MapPin className="text-primary" size={20} />
-                        <input
-                            type="text"
-                            placeholder="Explore Best Itineraries For Bhutan"
-                            value={destination}
-                            onChange={(e) => setDestination(e.target.value)}
-                            className="w-full outline-none bg-transparent text-white placeholder:text-gray-300 text-base"
-                        />
-                        <span className="text-primary">🔍</span>
+                        <div className="flex items-center gap-3">
+                            <MapPin className="text-primary" size={30} />
+
+                            <input
+                                type="text"
+                                placeholder="Explore Best Itineraries"
+                                value={destination}
+                                onChange={(e) => setDestination(e.target.value)}
+                                className="w-full outline-none bg-transparent text-white placeholder:text-gray-300 text-base"
+                            />
+
+                            <button
+                                type="button"
+                                className="inline-flex h-14 w-20 items-center justify-center rounded-r-full bg-white/30 text-primary transition hover:bg-white/20"
+                            >
+                                <Search size={23} />
+                            </button>
+                        </div>
                     </div>
 
-                    {/* Suggestions */}
+                    {/* Suggestions Dropdown */}
                     {destination && (
-                        <div className="mt-3 bg-slate-800/90 backdrop-blur-md border border-slate-700 rounded-2xl shadow-lg max-h-48 overflow-y-auto">
+                        <div className="absolute left-0 top-full mt-2 w-full bg-slate-800/90 backdrop-blur-md border border-slate-700 rounded-2xl shadow-lg max-h-48 overflow-y-auto z-50">
+
                             {filteredCategories.length > 0 ? (
                                 filteredCategories.map(cat => (
                                     <div
@@ -105,6 +130,7 @@ export function MobileHeroSection() {
                             ) : (
                                 <p className="p-3 text-sm text-gray-300">No results found</p>
                             )}
+
                         </div>
                     )}
                 </div>
@@ -123,7 +149,7 @@ export function MobileHeroSection() {
       </div> */}
 
                 {/* Offer Carousel */}
-                <div className="overflow-x-auto flex gap-4 no-scrollbar">
+                <div className="overflow-x-auto flex gap-4 [scrollbar-width:none]">
                     {banners.length > 0 ? banners.map((banner) => (
                         <div key={banner._id} className="min-w-[85%] h-auto rounded-3xl bg-gradient-to-br from-primary/20 to-primary/10 backdrop-blur-md border border-white flex items-center justify-center shadow-lg hover:border-primary/50 transition-all">
                             <div className="text-center">
@@ -143,7 +169,7 @@ export function MobileHeroSection() {
                 </div>
 
                 {/* Categories */}
-                <div className="overflow-x-auto flex gap-4 no-scrollbar">
+                <div className="overflow-x-auto flex gap-4 [scrollbar-width:none] ">
                     {categories.length > 0 ? categories.map((cat) => (
                         <div
                             key={cat._id || cat.name}
@@ -151,8 +177,8 @@ export function MobileHeroSection() {
                             onClick={() => router.push(`/trips?category=${cat._id}`)}
                         >
                             <div className={`h-16 w-16 rounded-full backdrop-blur-md border shadow-lg group-hover:scale-105 transition-all flex items-center justify-center ${selectedCategory === cat._id
-                                    ? 'bg-primary/30 border-white'
-                                    : 'bg-primary/30 border-white'
+                                ? 'bg-primary/30 border-white'
+                                : 'bg-primary/30 border-white'
                                 }`}>
                                 {cat.image ? (
                                     <img src={cat.image} alt={cat.name} className="w-full h-full object-cover rounded-full" />
@@ -160,7 +186,7 @@ export function MobileHeroSection() {
                                     <span className="text-white font-semibold text-sm">{cat.name[0]}</span>
                                 )}
                             </div>
-                            <p className="text-xs text-white mt-2 font-medium">{cat.name}</p>
+                            <p className="text-xs text-black mt-2 font-medium">{cat.name}</p>
                         </div>
                     )) : (
                         ['Leh Ladakh', 'Spiti', 'Kashmir', 'Himachal'].map((cat, i) => (
@@ -179,7 +205,7 @@ export function MobileHeroSection() {
 
                 {/* Featured Manual Cards */}
                 <div className="space-y-4">
-                    <div className="overflow-x-auto flex gap-4 no-scrollbar py-2">
+                    <div className="overflow-x-auto flex gap-4 [scrollbar-width:none] pb-8">
                         {featuredCards.map((pkg) => (
                             <div
                                 key={pkg.id}
@@ -188,10 +214,10 @@ export function MobileHeroSection() {
                             >
                                 {/* Image Container */}
                                 <div className="relative h-48 overflow-hidden bg-gray-300">
-                                    <img 
-                                        src={pkg.image} 
-                                        alt={pkg.title} 
-                                        className="w-full h-full object-cover group-hover:scale-125 transition-transform duration-700" 
+                                    <img
+                                        src={pkg.image}
+                                        alt={pkg.title}
+                                        className="w-full h-full object-cover group-hover:scale-125 transition-transform duration-700"
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                                 </div>
