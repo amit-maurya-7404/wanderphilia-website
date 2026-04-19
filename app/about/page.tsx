@@ -8,6 +8,7 @@ import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Mail, MapPin, Phone } from 'lucide-react'
+import { contactEmail, contactPhoneDisplayInternational } from '@/lib/contact'
 
 export default function AboutPage() {
   const [formValues, setFormValues] = useState({ name: '', email: '', phone: '', message: '' })
