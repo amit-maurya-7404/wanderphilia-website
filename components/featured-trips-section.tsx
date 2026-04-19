@@ -7,7 +7,7 @@ export function FeaturedTripsSection() {
   const featuredTrips = trips.slice(0, 3)
 
   return (
-    <section id="featured" className="py-2 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white to-gray-50">
+    <section id="featured" className="mt-[10vw] md:mt-[5vw] px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white to-gray-50">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="mb-16 text-center items-center justify-center ">

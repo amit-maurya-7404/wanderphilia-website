@@ -3,6 +3,7 @@ import { Footer } from '@/components/footer'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { MapPin, Phone, Mail, Clock } from 'lucide-react'
+import { contactEmail, contactPhoneDisplayInternational } from '@/lib/contact'
 
 export default function ContactPage() {
   return (
@@ -36,12 +37,12 @@ export default function ContactPage() {
                   {
                     icon: Phone,
                     title: 'Phone',
-                    details: '+91 9217664099',
+                    details: contactPhoneDisplayInternational,
                   },
                   {
                     icon: Mail,
                     title: 'Email',
-                    details: 'experiences@wanderphilia.com',
+                    details: contactEmail,
                   },
                   {
                     icon: Clock,

@@ -9,10 +9,12 @@ import { TripCard } from '@/components/trip-card'
 import { trips } from '@/lib/data'
 import { Button } from '@/components/ui/button'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { getCategoriesByType } from '@/lib/trip-categories'
 
 export default function TripsPage() {
   const searchParams = useSearchParams()
   const [selectedCategory, setSelectedCategory] = useState<string>('All')
+  const [selectedType, setSelectedType] = useState<string>('All')
   const [showAllCards, setShowAllCards] = useState(false)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [scrollPosition, setScrollPosition] = useState(0)
@@ -53,9 +55,22 @@ export default function TripsPage() {
     ]
   }, [])
 
-  // Read category from URL params on mount
+  // Get categories by trip type for display - show all categories
+  const displayCategories = useMemo(() => {
+    return categories
+  }, [categories])
+
+  // Read category and type from URL params on mount
   useEffect(() => {
     const categoryParam = searchParams.get('category')
+    const typeParam = searchParams.get('type')
+    const regionParam = searchParams.get('region')
+    const destinationParam = searchParams.get('destination')
+
+    if (typeParam) {
+      setSelectedType(typeParam)
+    }
+
     if (categoryParam) {
       // Map mobile hero section IDs to proper category names
       const categoryMapping: { [key: string]: string } = {
@@ -72,9 +87,27 @@ export default function TripsPage() {
         'japan': 'Japan',
         'bhutan': 'Bhutan'
       }
-      
-      const mappedCategory = categoryMapping[categoryParam] || 'All'
+
+      const mappedCategory = categoryMapping[categoryParam] || categoryParam
       setSelectedCategory(mappedCategory)
+    } else if (regionParam || destinationParam) {
+      // Handle legacy region/destination params
+      const param = regionParam || destinationParam
+      const categoryMapping: { [key: string]: string } = {
+        'Leh Ladakh': 'Leh Ladakh',
+        'Spiti': 'Spiti',
+        'Himachal': 'Himachal',
+        'Kashmir': 'Kashmir',
+        'Meghalaya': 'Meghalaya',
+        'Nepal': 'Nepal',
+        'Indonesia': 'Indonesia',
+        'Switzerland': 'Switzerland',
+        'Peru': 'Peru',
+        'Iceland': 'Iceland',
+        'Japan': 'Japan',
+        'Bhutan': 'Bhutan'
+      }
+      setSelectedCategory(categoryMapping[param] || param)
     }
   }, [searchParams])
 
@@ -86,13 +119,22 @@ export default function TripsPage() {
     return () => clearInterval(interval)
   }, [tripImages.length])
 
-  // Filter trips by category
+  // Filter trips by category and type
   const filteredTrips = useMemo(() => {
-    if (selectedCategory === 'All') {
-      return trips
+    let filtered = trips
+
+    // Filter by type (India/International)
+    if (selectedType !== 'All') {
+      filtered = filtered.filter(trip => trip.tripType === selectedType)
     }
-    return trips.filter(trip => trip.category === selectedCategory)
-  }, [selectedCategory])
+
+    // Filter by category
+    if (selectedCategory !== 'All') {
+      filtered = filtered.filter(trip => trip.category === selectedCategory)
+    }
+
+    return filtered
+  }, [selectedCategory, selectedType])
 
   // Display logic: show 2 cards initially, all if showAllCards is true
   const displayedTrips = useMemo(() => {
@@ -199,7 +241,7 @@ export default function TripsPage() {
                 className="flex gap-6 overflow-x-auto pb-4 pl-6 md:pl-0 pr-6 md:pr-0 scroll-smooth"
                 style={{ scrollBehavior: 'smooth' }}
               >
-                {categories.map((category) => (
+                {displayCategories.map((category) => (
                   <div
                     key={category.id}
                     className="flex flex-col items-center min-w-[70px] cursor-pointer group"

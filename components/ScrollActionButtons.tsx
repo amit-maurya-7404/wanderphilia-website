@@ -1,13 +1,14 @@
 "use client";
-import { MdEmail, MdWhatsapp } from "react-icons/md";
+import { MdWhatsapp } from "react-icons/md";
 import { useState } from "react";
 import { IoCall } from "react-icons/io5";
+import { contactPhone } from '@/lib/contact'
 
 const buttons = [
     {
         icon: <IoCall size={24} />,
         text: "Call Now",
-        href: "tel:+919217664099",
+        href: `tel:${contactPhone}`,
         bg: "bg-gradient-to-t from-secondary to-primary",
     },
     // {
@@ -28,7 +29,7 @@ const buttons = [
     {
         icon: <MdWhatsapp size={24} />,
         text: "Chat Now",
-        href: "https://wa.me/+919217664099",
+        href: `https://wa.me/${contactPhone}`,
         bg: "bg-gradient-to-t from-secondary to-primary",
     },
 ];

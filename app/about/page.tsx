@@ -310,11 +310,11 @@ export default function AboutPage() {
                         </div>
                         <div className="flex items-center gap-3">
                           <Mail size={16} className="text-primary" />
-                          <span>experiences@wanderphilia.com</span>
+                          <span>{contactEmail}</span>
                         </div>
                         <div className="flex items-center gap-3">
                           <Phone size={16} className="text-primary" />
-                          <span>+91 9217664099</span>
+                          <span>{contactPhoneDisplayInternational}</span>
                         </div>
                       </div>
                     </div>

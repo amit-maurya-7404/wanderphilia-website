@@ -331,19 +331,70 @@ export default async function TripDetailPage({ params }: TripDetailPageProps) {
 
               {/* Booking Section */}
               <section>
-                <Card className="p-8 bg-gray-50 border-primary border-2">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-6">
-                    Ready to Book?
-                  </h3>
-                  <p className="text-gray-700 mb-6">
-                    Contact our travel experts to secure your spot on this amazing adventure.
-                  </p>
-                  <Button className="w-full bg-primary hover:bg-primary/90 text-white py-6 text-lg h-auto">
-                    Book Now
-                  </Button>
-                  <p className="text-xs text-gray-500 text-center mt-4">
-                    We&apos;ll get back to you within 24 hours
-                  </p>
+                <Card className="p-6 md:p-8 bg-white border border-slate-200 shadow-lg">
+                  <div className="space-y-6">
+                    <div className="inline-flex items-center rounded-full bg-orange-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-orange-900">
+                      Summer Holiday Sale!
+                    </div>
+
+                    <div className="grid gap-6 lg:grid-cols-[1.6fr_1fr] items-start">
+                      <div className="space-y-4">
+                        <p className="text-sm uppercase tracking-[0.24em] text-slate-500">
+                          {trip.duration} days &amp; {Math.max(trip.duration - 1, 1)} nights
+                        </p>
+                        <h3 className="text-2xl md:text-3xl font-bold text-slate-900 leading-tight">
+                          {trip.title}
+                        </h3>
+                        <div className="flex flex-wrap gap-2 text-sm text-slate-600">
+                          {trip.highlights.slice(0, 3).map((item, index) => (
+                            <span key={index} className="inline-flex items-center gap-2">
+                              {index > 0 && <span className="text-slate-400">•</span>}
+                              {item}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="rounded-3xl border border-slate-200 bg-slate-50 p-5 shadow-sm">
+                        <div className="flex items-center justify-between gap-4">
+                          <div className="text-sm text-slate-500">Rating</div>
+                          <div className="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1 text-sm font-semibold text-slate-900 shadow-sm">
+                            <Star size={16} className="text-primary" />
+                            {trip.rating.toFixed(1)}
+                          </div>
+                        </div>
+                        <div className="mt-6 space-y-2">
+                          <p className="text-sm text-slate-500 line-through">
+                            INR {Math.round(trip.price * 1.3).toLocaleString('en-IN')}
+                          </p>
+                          <p className="text-3xl font-bold text-primary">
+                            INR {trip.price.toLocaleString('en-IN')}
+                          </p>
+                          <p className="text-sm font-semibold text-emerald-600">
+                            SAVE INR {Math.round(trip.price * 0.3).toLocaleString('en-IN')}
+                          </p>
+                          <p className="text-xs text-slate-500">/Adult</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <a
+                        href={`tel:${contactPhone}`}
+                        className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-300 bg-white px-5 py-4 text-center text-sm font-semibold text-slate-900 transition hover:bg-slate-100"
+                      >
+                        <Phone size={18} />
+                        Call Now
+                      </a>
+                      <a
+                        href={`mailto:${contactEmail}`}
+                        className="inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-5 py-4 text-center text-sm font-semibold text-white transition hover:bg-primary/90"
+                      >
+                        <MessageCircle size={18} />
+                        Request Callback
+                      </a>
+                    </div>
+                  </div>
                 </Card>
               </section>
 

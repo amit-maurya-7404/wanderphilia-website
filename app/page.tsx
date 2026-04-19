@@ -21,7 +21,7 @@ export default function Home() {
       <Navbar />
       <main className="grow">
         <HeroSection />
-        <TripTypesSection />
+        {/* <TripTypesSection /> */}
         <FeaturedTripsSection />
         <UpcomingGroupToursSection />
         <HoneymoonPackagesSection />
