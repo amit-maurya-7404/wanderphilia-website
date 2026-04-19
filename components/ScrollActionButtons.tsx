@@ -2,7 +2,7 @@
 import { MdWhatsapp } from "react-icons/md";
 import { useState } from "react";
 import { IoCall } from "react-icons/io5";
-import { contactPhone } from '@/lib/contact'
+import { contactPhone, whatsAppUrl } from '@/lib/contact'
 
 const buttons = [
     {
@@ -29,7 +29,7 @@ const buttons = [
     {
         icon: <MdWhatsapp size={24} />,
         text: "Chat Now",
-        href: `https://wa.me/${contactPhone}`,
+        href: whatsAppUrl,
         bg: "bg-gradient-to-t from-secondary to-primary",
     },
 ];

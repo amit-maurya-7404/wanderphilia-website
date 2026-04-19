@@ -1,5 +1,6 @@
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
+import { contactPhoneDisplayInternational } from '@/lib/contact'
 
 export default function PrivacyPolicyPage() {
   return (
@@ -301,7 +302,7 @@ export default function PrivacyPolicyPage() {
                   <p className="mt-3">
                     <strong>Grievance Officer:</strong> Bhavin Thakker<br />
                     <strong>Email:</strong> experiences@wanderphilia.com<br />
-                    <strong>Phone:</strong> +91-9987602328
+                    <strong>Phone:</strong> {contactPhoneDisplayInternational}
                   </p>
                 </div>
               </div>

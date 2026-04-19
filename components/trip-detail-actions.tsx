@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Heart, Share2 } from 'lucide-react'
+import { contactPhoneDisplayInternational } from '@/lib/contact'
 
 interface TripDetailActionsProps {
     title: string
@@ -81,7 +82,7 @@ export function TripDetailActions({ title }: TripDetailActionsProps) {
                     </div>
                     <div className="text-center sm:text-right">
                         <p className="text-sm text-gray-600">Need help?</p>
-                        <p className="text-sm font-semibold text-primary">Call us: +91 98765 43210</p>
+                        <p className="text-sm font-semibold text-primary">Call us: {contactPhoneDisplayInternational}</p>
                     </div>
                 </div>
             </div>
