@@ -16,6 +16,7 @@ export function FeaturedTripsSection() {
             <span className="text-primary font-semibold text-sm tracking-widest uppercase">
               Curated Experiences
             </span>
+            <div className="w-12 h-1 bg-primary rounded-full" />
           </div>
           <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-4 leading-tight">
             Featured Adventures

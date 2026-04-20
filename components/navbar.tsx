@@ -5,8 +5,11 @@ import { useState, useEffect } from 'react'
 import { Menu, X, ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { getCategoriesByType } from '@/lib/trip-categories'
+import { usePathname } from 'next/navigation'
 
 export function Navbar() {
+  const pathname = usePathname()
+  const isAboutPage = pathname === '/about'
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileOpen, setIsMobileOpen] = useState(false)
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
@@ -42,12 +45,12 @@ export function Navbar() {
           </Link>
 
           <div className="hidden md:flex items-center gap-10">
-            <Link href="/" className={`text-sm font-semibold transition-colors cursor-pointer ${isScrolled ? 'text-gray-700 hover:text-primary' : 'text-white/80 hover:text-white'}`}>
+            <Link href="/" className={`text-sm font-semibold transition-colors cursor-pointer ${isScrolled || isAboutPage ? 'text-gray-700 hover:text-primary' : 'text-white/80 hover:text-primary'}`}>
               Home
             </Link>
 
             <div className="relative group">
-              <button className={`text-sm font-semibold transition-colors flex items-center gap-1 ${isScrolled ? 'text-gray-700 hover:text-primary' : 'text-white/80 hover:text-white'}`}>
+              <button className={`text-sm font-semibold transition-colors flex items-center gap-1 ${isScrolled || isAboutPage ? 'text-gray-700 hover:text-primary' : 'text-white/80 hover:text-primary'}`}>
                 India Trips
                 <ChevronDown size={16} className="group-hover:rotate-180 transition-transform" />
               </button>
@@ -69,7 +72,7 @@ export function Navbar() {
             </div>
 
             <div className="relative group">
-              <button className={`text-sm font-semibold transition-colors flex items-center gap-1 ${isScrolled ? 'text-gray-700 hover:text-primary' : 'text-white/80 hover:text-white'}`}>
+              <button className={`text-sm font-semibold transition-colors flex items-center gap-1 ${isScrolled || isAboutPage ? 'text-gray-700 hover:text-primary' : 'text-white/80 hover:text-primary'}`}>
                 International
                 <ChevronDown size={16} className="group-hover:rotate-180 transition-transform" />
               </button>
@@ -90,29 +93,34 @@ export function Navbar() {
               </div>
             </div>
 
-            <Link href="/upcoming-tours" className={`text-sm font-semibold transition-colors ${isScrolled ? 'text-gray-700 hover:text-primary' : 'text-white/80 hover:text-white'}`}>
+            <Link href="/upcoming-tours" className={`text-sm font-semibold transition-colors ${isScrolled || isAboutPage ? 'text-gray-700 hover:text-primary' : 'text-white/80 hover:text-primary'}`}>
               Upcoming Tours
             </Link>
-            <Link href="/honeymoon" className={`text-sm font-semibold transition-colors ${isScrolled ? 'text-gray-700 hover:text-primary' : 'text-white/80 hover:text-white'}`}>
+            <Link href="/honeymoon" className={`text-sm font-semibold transition-colors ${isScrolled || isAboutPage ? 'text-gray-700 hover:text-primary' : 'text-white/80 hover:text-primary'}`}>
               Honeymoon
             </Link>
-            <Link href="/blog" className={`text-sm font-semibold transition-colors ${isScrolled ? 'text-gray-700 hover:text-primary' : 'text-white/80 hover:text-white'}`}>
+            <Link href="/blog" className={`text-sm font-semibold transition-colors ${isScrolled || isAboutPage ? 'text-gray-700 hover:text-primary' : 'text-white/80 hover:text-primary'}`}>
               Blog
             </Link>
-            <Link href="/about" className={`text-sm font-semibold transition-colors ${isScrolled ? 'text-gray-700 hover:text-primary' : 'text-white/80 hover:text-white'}`}>
+            <Link href="/about" className={`text-sm font-semibold transition-colors ${isScrolled || isAboutPage ? 'text-gray-700 hover:text-primary' : 'text-white/80 hover:text-primary'}`}>
               About Us
             </Link>
           </div>
 
           <div className="hidden md:flex items-center gap-4">
-            <Button asChild className={`px-6 py-2 rounded-lg font-semibold transition-all ${isScrolled ? 'bg-primary hover:bg-primary/90 text-white' : 'bg-white text-primary hover:bg-white/90'}`}>
+            <Button asChild className={`px-6 py-2 rounded-lg font-semibold transition-all ${isScrolled || isAboutPage ? 'bg-primary hover:bg-primary/90 text-white' : 'bg-white text-white hover:bg-white/90'}`}>
               <Link href="/trips">Explore Now</Link>
             </Button>
           </div>
 
           <div className="md:hidden relative z-[1000]">
             <button
-              className={`p-3 h-12 w-12 flex items-center justify-center rounded-lg transition-all duration-300 border-2 focus:outline-none focus:ring-2 ${isScrolled ? 'bg-primary border-primary text-white focus:ring-primary/50' : 'bg-white/95 border-white text-gray-800 focus:ring-white/70'}`}
+              className={`p-3 h-12 w-12 flex items-center justify-center rounded-lg transition-all duration-300 border-2 focus:outline-none focus:ring-2 ${isAboutPage
+                  ? 'bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-200/50'
+                  : isScrolled
+                    ? 'bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-200/50'
+                    : 'bg-transparent backdrop-blur-sm'
+                }`}
               onTouchStart={(e) => {
                 e.preventDefault()
                 e.stopPropagation()
@@ -158,65 +166,66 @@ export function Navbar() {
                     <Link
                       key={category.id}
                       href={`/trips?type=India&category=${category.id}`}
-                      className="block px-6 py-3 text-sm text-gray-600 hover:text-primary hover:bg-gray-100 transition-colors"
-                      onClick={() => setIsMobileOpen(false)}
-                    >
-                      {category.name}
-                    </Link>
-                  ))}
-                  <div className="border-t border-gray-200 my-1" />
-                  <Link href="/trips?type=India" className="block px-6 py-3 text-sm font-semibold text-primary hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
-                    View All India Trips
+                    className="block px-6 py-3 text-sm text-gray-600 hover:text-primary hover:bg-gray-100 transition-colors"
+                    onClick={() => setIsMobileOpen(false)}
+                  >
+                    {category.name}
                   </Link>
-                </div>
-              )}
+                ))}
+              <div className="border-t border-gray-200 my-1" />
+              <Link href="/trips?type=India" className="block px-6 py-3 text-sm font-semibold text-primary hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
+                View All India Trips
+              </Link>
             </div>
-            <div className="border-t border-gray-100">
-              <button className="w-full text-left px-4 py-4 text-base font-medium text-gray-700 hover:bg-gray-100 transition-colors flex items-center justify-between" onClick={() => setOpenDropdown(openDropdown === 'international' ? null : 'international')}>
-                International
-                <ChevronDown size={18} className={`transition-transform duration-300 ${openDropdown === 'international' ? 'rotate-180' : ''}`} />
-              </button>
-              {openDropdown === 'international' && (
-                <div className="bg-gray-50 py-2 border-t border-gray-100">
-                  {getCategoriesByType('International').map((category) => (
-                    <Link
-                      key={category.id}
-                      href={`/trips?type=International&category=${category.id}`}
-                      className="block px-6 py-3 text-sm text-gray-600 hover:text-primary hover:bg-gray-100 transition-colors"
-                      onClick={() => setIsMobileOpen(false)}
-                    >
-                      {category.name}
-                    </Link>
-                  ))}
-                  <div className="border-t border-gray-200 my-1" />
-                  <Link href="/trips?type=International" className="block px-6 py-3 text-sm font-semibold text-primary hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
-                    View All International
-                  </Link>
-                </div>
-              )}
-            </div>
-            <Link href="/upcoming-tours" className="px-4 py-4 text-base font-medium text-gray-700 hover:bg-gray-100 transition-colors border-t border-gray-100" onClick={() => setIsMobileOpen(false)}>
-              Upcoming Tours
-            </Link>
-            <Link href="/honeymoon" className="px-4 py-4 text-base font-medium text-gray-700 hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
-              Honeymoon
-            </Link>
-            <Link href="/blog" className="px-4 py-4 text-base font-medium text-gray-700 hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
-              Blog
-            </Link>
-            <Link href="/about" className="px-4 py-4 text-base font-medium text-gray-700 hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
-              About Us
-            </Link>
-            <div className="border-t border-gray-100 px-4 py-4">
-              <Button asChild className="w-full bg-primary hover:bg-primary/90 text-white py-3">
-                <Link href="/trips" onClick={() => setIsMobileOpen(false)}>
-                  Explore Now
-                </Link>
-              </Button>
-            </div>
-          </div>
+          )}
         </div>
-      )}
-    </nav>
+        <div className="border-t border-gray-100">
+          <button className="w-full text-left px-4 py-4 text-base font-medium text-gray-700 hover:bg-gray-100 transition-colors flex items-center justify-between" onClick={() => setOpenDropdown(openDropdown === 'international' ? null : 'international')}>
+            International
+            <ChevronDown size={18} className={`transition-transform duration-300 ${openDropdown === 'international' ? 'rotate-180' : ''}`} />
+          </button>
+          {openDropdown === 'international' && (
+            <div className="bg-gray-50 py-2 border-t border-gray-100">
+              {getCategoriesByType('International').map((category) => (
+                <Link
+                  key={category.id}
+                  href={`/trips?type=International&category=${category.id}`}
+                  className="block px-6 py-3 text-sm text-gray-600 hover:text-primary hover:bg-gray-100 transition-colors"
+                  onClick={() => setIsMobileOpen(false)}
+                >
+                  {category.name}
+                </Link>
+              ))}
+              <div className="border-t border-gray-200 my-1" />
+              <Link href="/trips?type=International" className="block px-6 py-3 text-sm font-semibold text-primary hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
+                View All International
+              </Link>
+            </div>
+          )}
+        </div>
+        <Link href="/upcoming-tours" className="px-4 py-4 text-base font-medium text-gray-700 hover:bg-gray-100 transition-colors border-t border-gray-100" onClick={() => setIsMobileOpen(false)}>
+          Upcoming Tours
+        </Link>
+        <Link href="/honeymoon" className="px-4 py-4 text-base font-medium text-gray-700 hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
+          Honeymoon
+        </Link>
+        <Link href="/blog" className="px-4 py-4 text-base font-medium text-gray-700 hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
+          Blog
+        </Link>
+        <Link href="/about" className="px-4 py-4 text-base font-medium text-gray-700 hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
+          About Us
+        </Link>
+        <div className="border-t border-gray-100 px-4 py-4">
+          <Button asChild className="w-full bg-primary hover:bg-primary/90 text-white py-3">
+            <Link href="/trips" onClick={() => setIsMobileOpen(false)}>
+              Explore Now
+            </Link>
+          </Button>
+        </div>
+      </div>
+    </div>
+  )
+}
+    </nav >
   )
 }

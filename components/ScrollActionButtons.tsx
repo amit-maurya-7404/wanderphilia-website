@@ -27,7 +27,7 @@ const buttons = [
     //     disabled: true,
     // },
     {
-        icon: <MdWhatsapp size={24} />,
+        icon: <MdWhatsapp size={30} />,
         text: "Chat Now",
         href: whatsAppUrl,
         bg: "bg-gradient-to-t from-secondary to-primary",
@@ -63,7 +63,7 @@ export default function ScrollActionButtons() {
                     >
                         {/* Icon button */}
                         <div
-                            className="w-11 h-11 sm:w-13 sm:h-13 flex justify-center items-center rounded-full bg-gray-200 text-black transition-transform p-4"
+                            className="w-11 h-11 sm:w-13 sm:h-13 flex justify-center items-center rounded-full bg-white text-black transition-transform p-4"
                             style={{
                                 boxShadow: "4px 0 6px -1px rgba(0,0,0,0.3)",
                             }}

@@ -40,7 +40,7 @@ export function HeroSection() {
             priority={index === 0}
           />
         ))}
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-950/90 via-slate-900/70 to-slate-950/95 pointer-events-none" />
+        <div className="absolute inset-0 bg-linear-to-br from-slate-950/90 via-slate-900/70 to-slate-950/95 pointer-events-none" />
       </div>
 
       {/* Mobile Hero */}
@@ -75,7 +75,7 @@ export function HeroSection() {
                   className="pl-12 py-3 leading-6 bg-transparent border-0 text-white placeholder:text-gray-300 placeholder:leading-6 focus:ring-0 focus:outline-none"
                 />
               </div>
-              <Button asChild className="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-xl h-auto font-semibold flex items-center gap-2">
+              <Button asChild className="bg-linear-to-br from-[#FF8713] via-[#FF6E0B] to-[#FF5D09] hover:from-[#FFA033] hover:via-[#FF7E1A] hover:to-[#FF6A1A] transition-all duration-300 text-white px-8 py-3 rounded-xl h-auto font-semibold flex items-center gap-2">
                 <Link href={`/trips${destination ? `?destination=${destination}` : ''}`}>
                   Explore
                   <ArrowRight size={18} />
@@ -84,10 +84,10 @@ export function HeroSection() {
             </div>
           </div>
           <div className="flex flex-col sm:flex-row gap-4 max-w-md justify-center">
-            <Button asChild className="bg-primary hover:bg-primary/90 text-white px-7 py-4 text-base rounded-xl h-auto font-semibold">
+              <Button asChild className="bg-linear-to-br from-[#FF8713] via-[#FF6E0B] to-[#FF5D09] hover:from-[#FFA033] hover:via-[#FF7E1A] hover:to-[#FF6A1A] transition-all duration-300 text-white px-7 py-4 text-base rounded-xl h-auto font-semibold">
               <Link href="/trips">Discover All Trips</Link>
             </Button>
-            <Button asChild variant="outline" className="border-1 md:border-2 border-white text-white bg-white/10 hover:bg-primary px-7 py-4 text-base rounded-xl h-auto font-semibold">
+            <Button asChild variant="outline" className="border md:border-2 border-white text-white bg-white/10 hover:bg-primary px-7 py-4 text-base rounded-xl h-auto font-semibold">
               <Link href="#featured">Learn Our Story</Link>
             </Button>
           </div>
