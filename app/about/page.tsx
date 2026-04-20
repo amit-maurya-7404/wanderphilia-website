@@ -565,7 +565,7 @@ export default function AboutPage() {
               </div>
             </div> */}
 
-            {/* What Sets Us Apart */}
+            {/* What Sets Us Apart. */}
             <div className="mb-20">
               <div className="text-center mb-16">
                 <h3 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
