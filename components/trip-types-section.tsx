@@ -1,25 +1,23 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Button } from '@/components/ui/button'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { trips } from '@/lib/data'
 
 interface TripTypeCardProps {
   title: string
   image: string
   region?: string
   price: number
-  slug: string
 }
 
-function RegionCard({ title, image, price, region, slug }: TripTypeCardProps) {
+function RegionCard({ title, image, price, region }: TripTypeCardProps) {
+  const categoryId = (region || title).toLowerCase().replace(/\s+/g, '-')
+
   return (
-    <Link href={`/trips?region=${region || title}`}>
-      <div className="group relative overflow-hidden rounded-3xl h-72 cursor-pointer shadow-xl hover:shadow-2xl transition-all duration-500 flex-shrink-0 w-80 hover:-translate-y-2">
-        {/* Background Image */}
+    <Link href={`/category/${categoryId}`}>
+      <div className="group relative overflow-hidden rounded-3xl h-[40vh]  cursor-pointer shadow-xl hover:shadow-2xl transition-all duration-500 w-full hover:-translate-y-2">
         <Image
           src={image}
           alt={title}
@@ -27,16 +25,14 @@ function RegionCard({ title, image, price, region, slug }: TripTypeCardProps) {
           className="object-cover group-hover:scale-110 transition-transform duration-700"
         />
 
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/0 opacity-70 group-hover:opacity-85 transition-opacity" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-70 group-hover:opacity-85 transition-opacity" />
 
-        {/* Content */}
         <div className="absolute inset-0 flex flex-col justify-end p-6 text-white">
-          <h3 className="text-3xl font-bold mb-2 group-hover:text-primary transition-colors">
+          <h3 className="text-2xl font-bold mb-2 group-hover:text-primary transition-colors">
             {title}
           </h3>
-          <p className="text-sm text-gray-200 mb-4">
-            Starting Price ₹ {price.toLocaleString('en-IN')}/
+          <p className="text-sm text-gray-200">
+            Starting ₹ {price.toLocaleString('en-IN')}
           </p>
         </div>
       </div>
@@ -45,22 +41,30 @@ function RegionCard({ title, image, price, region, slug }: TripTypeCardProps) {
 }
 
 export function TripTypesSection() {
-  const indiaTrips = trips.filter(trip => trip.tripType === 'India')
-  const internationalTrips = trips.filter(trip => trip.tripType === 'International')
 
-  const scrollContainerRef = useRef<HTMLDivElement>(null)
+  const [isMobile, setIsMobile] = useState(false)
+  const [cardsPerView, setCardsPerView] = useState(4)
 
-  const scroll = (direction: 'left' | 'right') => {
-    if (scrollContainerRef.current) {
-      const scrollAmount = 400
-      scrollContainerRef.current.scrollBy({
-        left: direction === 'left' ? -scrollAmount : scrollAmount,
-        behavior: 'smooth',
-      })
+  const [indiaIndex, setIndiaIndex] = useState(0)
+  const [intlIndex, setIntlIndex] = useState(0)
+
+  useEffect(() => {
+    const update = () => {
+      const mobile = window.innerWidth < 768
+      setIsMobile(mobile)
+      setCardsPerView(mobile ? 1 : 4)
     }
-  }
 
-  // Group India trips by region
+    update()
+    window.addEventListener('resize', update)
+    return () => window.removeEventListener('resize', update)
+  }, [])
+
+  useEffect(() => {
+    setIndiaIndex(0)
+    setIntlIndex(0)
+  }, [cardsPerView])
+
   const indiaRegions = [
     { title: 'Leh Ladakh', region: 'Leh Ladakh', image: '/images/leh-ladakh.jpg', price: 15800 },
     { title: 'Spiti', region: 'Spiti', image: '/images/spiti-valley.jpg', price: 24499 },
@@ -77,124 +81,117 @@ export function TripTypesSection() {
     { title: 'Iceland', region: 'Iceland', image: '/images/iceland.jpg', price: 114900 },
   ]
 
+  const maxIndia = Math.max(0, indiaRegions.length - cardsPerView)
+  const maxIntl = Math.max(0, internationalRegions.length - cardsPerView)
+
   return (
-    <section className="py-24 px-4 sm:px-6 lg:px-8 bg-white">
-      <div className="max-w-7xl mx-auto">
-        {/* India Trips Section */}
-        <div className="mb-20 text-center">
-          <div className="flex items-center justify-center mb-12">
-            <div>
-              <div className="flex items-center justify-center gap-3 mb-4">
-                <div className="w-12 h-1 bg-primary rounded-full" />
-                <span className="text-primary text-center font-semibold text-sm tracking-widest uppercase">
-                  Explore India
-                </span>
-                <div className="w-12 h-1 bg-primary rounded-full" />
-              </div>
-              <h2 className="text-5xl md:text-6xl font-bold text-gray-900 leading-tight">
-                India Trips
-              </h2>
-              <p className="text-xl text-gray-600 mt-4 max-w-2xl">
-                A Journey Through Time, Colour And Culture
-              </p>
-            </div>
+    <section className="py-24  bg-white">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
-          </div>
+        {/* ================= INDIA ================= */}
+        <div id="india-trips" className="mb-20 text-center scroll-mt-20">
 
-          {/* Carousel */}
+          <h2 className="text-5xl font-bold mb-10">India Trips</h2>
+
           <div className="relative">
-            <div
-              ref={scrollContainerRef}
-              className="flex gap-6 overflow-x-auto pb-4 scroll-smooth"
-              style={{ scrollBehavior: 'smooth' }}
-            >
-              {indiaRegions.map((region) => (
-                <RegionCard key={region.region} {...region} slug="" />
-              ))}
-            </div>
 
-            {/* Navigation Buttons */}
-            <button
-              onClick={() => scroll('left')}
-              className="absolute -left-6 top-1/2 -translate-y-1/2 bg-primary hover:bg-primary/90 text-white p-3 rounded-full shadow-lg transition-all hover:shadow-xl z-10 hidden lg:flex items-center justify-center"
-            >
-              <ChevronLeft size={24} />
-            </button>
-            <button
-              onClick={() => scroll('right')}
-              className="absolute -right-6 top-1/2 -translate-y-1/2 bg-primary hover:bg-primary/90 text-white p-3 rounded-full shadow-lg transition-all hover:shadow-xl z-10 hidden lg:flex items-center justify-center"
-            >
-              <ChevronRight size={24} />
-            </button>
-          </div>
-          <div className="flex justify-center">
-            <Button asChild className="hidden  md:flex w-[14vw]  mt-8 bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-xl font-semibold h-auto">
-              <Link href="/trips?type=International">Explore All</Link>
-            </Button>
-          </div>
+            {isMobile ? (
+              <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+                {indiaRegions.map((item) => (
+                  <div key={item.region} className="min-w-[75%] flex-shrink-0">
+                    <RegionCard {...item} />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <>
+                <button
+                  onClick={() => setIndiaIndex((p) => Math.max(p - 1, 0))}
+                  disabled={indiaIndex === 0}
+                  className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
+                >
+                  <ChevronLeft size={20} />
+                </button>
 
-          <Button asChild className="md:hidden w-full bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-xl font-semibold h-auto mt-6">
-            <Link href="/trips?type=India">Explore All India Trips</Link>
-          </Button>
+                <button
+                  onClick={() => setIndiaIndex((p) => Math.min(p + 1, maxIndia))}
+                  disabled={indiaIndex === maxIndia}
+                  className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
+                >
+                  <ChevronRight size={20} />
+                </button>
+
+                <div className="overflow-hidden">
+                  <div
+                    className="flex transition-transform duration-500 ease-in-out"
+                    style={{
+                      transform: `translateX(-${indiaIndex * (100 / cardsPerView)}%)`,
+                    }}
+                  >
+                    {indiaRegions.map((item) => (
+                      <div key={item.region} className="flex-shrink-0 basis-1/4 p-2">
+                        <RegionCard {...item} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
         </div>
 
-        {/* International Trips Section */}
-        <div>
-          <div className="flex items-center justify-center mb-12">
-            <div>
-              <div className="flex items-center justify-center gap-3 mb-4">
-                <div className="w-12 h-1 bg-primary rounded-full" />
-                <span className="text-primary text-center font-semibold text-sm tracking-widest uppercase">
-                  Beyond Borders
-                </span>
-                <div className="w-12 h-1 bg-primary rounded-full" />
-              </div>
-              <h2 className="text-5xl md:text-6xl font-bold text-gray-900 leading-tight">
-                International Trips
-              </h2>
-              <p className="text-xl text-gray-600 mt-4 max-w-2xl">
-                Discover the World&apos;s Most Extraordinary Destinations
-              </p>
-            </div>
+        {/* ================= INTERNATIONAL ================= */}
+        <div id="international-trips" className="text-center scroll-mt-20">
 
-          </div>
+          <h2 className="text-5xl font-bold mb-10">International Trips</h2>
 
-          {/* Carousel */}
           <div className="relative">
-            <div
-              className="flex gap-6 overflow-x-auto pb-4 scroll-smooth"
-              style={{ scrollBehavior: 'smooth' }}
-            >
-              {internationalRegions.map((region) => (
-                <RegionCard key={region.region} {...region} slug="" />
-              ))}
-            </div>
 
-            {/* Navigation Buttons */}
-            <button
-              onClick={() => scroll('left')}
-              className="absolute -left-6 top-1/2 -translate-y-1/2 bg-primary hover:bg-primary/90 text-white p-3 rounded-full shadow-lg transition-all hover:shadow-xl z-10 hidden lg:flex items-center justify-center"
-            >
-              <ChevronLeft size={24} />
-            </button>
-            <button
-              onClick={() => scroll('right')}
-              className="absolute -right-6 top-1/2 -translate-y-1/2 bg-primary hover:bg-primary/90 text-white p-3 rounded-full shadow-lg transition-all hover:shadow-xl z-10 hidden lg:flex items-center justify-center"
-            >
-              <ChevronRight size={24} />
-            </button>
-          </div>
-          <div className="flex justify-center">
-            <Button asChild className="hidden  md:flex w-[14vw]  mt-8 bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-xl font-semibold h-auto">
-              <Link href="/trips?type=International">Explore All</Link>
-            </Button>
-          </div>
+            {isMobile ? (
+              <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+                {internationalRegions.map((item) => (
+                  <div key={item.region} className="min-w-[75%] flex-shrink-0">
+                    <RegionCard {...item} />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <>
+                <button
+                  onClick={() => setIntlIndex((p) => Math.max(p - 1, 0))}
+                  disabled={intlIndex === 0}
+                  className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
+                >
+                  <ChevronLeft size={20} />
+                </button>
 
-          <Button asChild className="md:hidden w-full bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-xl font-semibold h-auto mt-6">
-            <Link href="/">Explore All International Trips</Link>
-            {/* trips?type=International */}
-          </Button>
+                <button
+                  onClick={() => setIntlIndex((p) => Math.min(p + 1, maxIntl))}
+                  disabled={intlIndex === maxIntl}
+                  className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
+                >
+                  <ChevronRight size={20} />
+                </button>
+
+                <div className="overflow-hidden">
+                  <div
+                    className="flex transition-transform duration-500 ease-in-out"
+                    style={{
+                      transform: `translateX(-${intlIndex * (100 / cardsPerView)}%)`,
+                    }}
+                  >
+                    {internationalRegions.map((item) => (
+                      <div key={item.region} className="flex-shrink-0 basis-1/4 p-2">
+                        <RegionCard {...item} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
         </div>
+
       </div>
     </section>
   )

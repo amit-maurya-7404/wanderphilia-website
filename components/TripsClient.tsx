@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo, useEffect } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
@@ -13,11 +13,15 @@ import { getCategoriesByType } from '@/lib/trip-categories'
 
 export default function TripsPage() {
   const searchParams = useSearchParams()
+  const router = useRouter()
   const [selectedCategory, setSelectedCategory] = useState<string>('All')
   const [selectedType, setSelectedType] = useState<string>('All')
   const [showAllCards, setShowAllCards] = useState(false)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [scrollPosition, setScrollPosition] = useState(0)
+  const [carouselIndex, setCarouselIndex] = useState(0)
+  const [isMobile, setIsMobile] = useState(false)
+  const [cardsPerView, setCardsPerView] = useState(4)
 
   const tripImages = [
     '/images/everest.jpg',
@@ -90,9 +94,8 @@ export default function TripsPage() {
 
       const mappedCategory = categoryMapping[categoryParam] || categoryParam
       setSelectedCategory(mappedCategory)
-    } else if (regionParam || destinationParam) {
-      // Handle legacy region/destination params
-      const param = regionParam || destinationParam
+    } else if (regionParam) {
+      // Handle legacy region params
       const categoryMapping: { [key: string]: string } = {
         'Leh Ladakh': 'Leh Ladakh',
         'Spiti': 'Spiti',
@@ -107,7 +110,24 @@ export default function TripsPage() {
         'Japan': 'Japan',
         'Bhutan': 'Bhutan'
       }
-      setSelectedCategory(categoryMapping[param] || param)
+      setSelectedCategory(categoryMapping[regionParam] || regionParam)
+    } else if (destinationParam) {
+      // Handle legacy destination params
+      const categoryMapping: { [key: string]: string } = {
+        'Leh Ladakh': 'Leh Ladakh',
+        'Spiti': 'Spiti',
+        'Himachal': 'Himachal',
+        'Kashmir': 'Kashmir',
+        'Meghalaya': 'Meghalaya',
+        'Nepal': 'Nepal',
+        'Indonesia': 'Indonesia',
+        'Switzerland': 'Switzerland',
+        'Peru': 'Peru',
+        'Iceland': 'Iceland',
+        'Japan': 'Japan',
+        'Bhutan': 'Bhutan'
+      }
+      setSelectedCategory(categoryMapping[destinationParam] || destinationParam)
     }
   }, [searchParams])
 
@@ -118,6 +138,23 @@ export default function TripsPage() {
     }, 4000)
     return () => clearInterval(interval)
   }, [tripImages.length])
+
+  // Setup carousel cards per view
+  useEffect(() => {
+    const update = () => {
+      const mobile = window.innerWidth < 768
+      setIsMobile(mobile)
+      setCardsPerView(mobile ? 2 : 4)
+    }
+    update()
+    window.addEventListener('resize', update)
+    return () => window.removeEventListener('resize', update)
+  }, [])
+
+  // reset index when layout changes
+  useEffect(() => {
+    setCarouselIndex(0)
+  }, [cardsPerView])
 
   // Filter trips by category and type
   const filteredTrips = useMemo(() => {
@@ -246,8 +283,12 @@ export default function TripsPage() {
                     key={category.id}
                     className="flex flex-col items-center min-w-[70px] cursor-pointer group"
                     onClick={() => {
-                      setSelectedCategory(category.name)
-                      setShowAllCards(false)
+                      if (category.name === 'All') {
+                        setSelectedCategory(category.name)
+                        setShowAllCards(false)
+                      } else {
+                        router.push(`/category/${category.id}`)
+                      }
                     }}
                   >
                     <div className={`relative h-16 w-16 rounded-full overflow-hidden border-2 shadow-lg group-hover:scale-105 transition-all duration-300 flex items-center justify-center ${
@@ -286,20 +327,80 @@ export default function TripsPage() {
             </div>
           </div>
 
-          {/* Trips Grid */}
+          {/* Trips Carousel */}
           {filteredTrips.length > 0 ? (
             <div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
-                {displayedTrips.map((trip) => (
-                  <TripCard key={trip.id} {...trip} />
-                ))}
-              </div>
+              {/* ✅ MOBILE SCROLLER */}
+              {isMobile ? (
+                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide mb-8">
+                  {displayedTrips.map((trip) => (
+                    <div
+                      key={trip.id}
+                      className="min-w-[75%] flex-shrink-0"
+                    >
+                      <TripCard {...trip} />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <>
+                  {/* DESKTOP CAROUSEL */}
+                  <div className="relative mb-8">
+
+                    {/* LEFT */}
+                    <button
+                      onClick={() => {
+                        setCarouselIndex((prev) => Math.max(prev - 1, 0))
+                      }}
+                      disabled={carouselIndex === 0}
+                      className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
+                    >
+                      <ChevronLeft size={20} />
+                    </button>
+
+                    {/* RIGHT */}
+                    <button
+                      onClick={() => {
+                        const maxIndex = Math.max(0, displayedTrips.length - cardsPerView)
+                        setCarouselIndex((prev) => Math.min(prev + 1, maxIndex))
+                      }}
+                      disabled={carouselIndex === Math.max(0, displayedTrips.length - cardsPerView)}
+                      className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
+                    >
+                      <ChevronRight size={20} />
+                    </button>
+
+                    {/* TRACK */}
+                    <div className="overflow-hidden">
+                      <div
+                        className="flex transition-transform duration-500 ease-in-out"
+                        style={{
+                          transform: `translateX(-${carouselIndex * (100 / cardsPerView)}%)`,
+                        }}
+                      >
+                        {displayedTrips.map((trip) => (
+                          <div
+                            key={trip.id}
+                            className="flex-shrink-0 basis-1/4 p-2"
+                          >
+                            <TripCard {...trip} />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                  </div>
+                </>
+              )}
 
               {/* View All Button */}
-              {filteredTrips.length > 2 && !showAllCards && (
+              {filteredTrips.length > 12 && !showAllCards && (
                 <div className="flex justify-center">
                   <Button
-                    onClick={() => setShowAllCards(true)}
+                    onClick={() => {
+                      setShowAllCards(true)
+                      setCarouselIndex(0)
+                    }}
                     className="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105"
                   >
                     View All ({filteredTrips.length} trips)
@@ -308,10 +409,13 @@ export default function TripsPage() {
               )}
 
               {/* Show Less Button */}
-              {showAllCards && filteredTrips.length > 2 && (
+              {showAllCards && filteredTrips.length > 12 && (
                 <div className="flex justify-center">
                   <Button
-                    onClick={() => setShowAllCards(false)}
+                    onClick={() => {
+                      setShowAllCards(false)
+                      setCarouselIndex(0)
+                    }}
                     variant="outline"
                     className="border-2 border-primary text-primary hover:bg-primary/10 px-8 py-3 rounded-lg font-semibold transition-all duration-300"
                   >

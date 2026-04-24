@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, DialogOverlay, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { contactEmail, contactPhoneDisplayInternational } from '@/lib/contact'
@@ -17,6 +17,7 @@ interface RequestCallbackDialogProps {
 export function RequestCallbackDialog({ open, onOpenChange, title, price }: RequestCallbackDialogProps) {
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
+  const [email, setEmail] = useState('')
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -24,8 +25,8 @@ export function RequestCallbackDialog({ open, onOpenChange, title, price }: Requ
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
-    if (!name.trim() || !phone.trim()) {
-      setError('Please enter your name and phone number.')
+    if (!name.trim() || !phone.trim() || !email.trim()) {
+      setError('Please enter your name, phone number, and email.')
       return
     }
 
@@ -41,6 +42,7 @@ export function RequestCallbackDialog({ open, onOpenChange, title, price }: Requ
         body: JSON.stringify({
           name,
           phone,
+          email,
           title,
           price,
         }),
@@ -53,6 +55,7 @@ export function RequestCallbackDialog({ open, onOpenChange, title, price }: Requ
       setSuccess(true)
       setName('')
       setPhone('')
+      setEmail('')
 
       // Close dialog after 2 seconds
       setTimeout(() => {
@@ -71,17 +74,11 @@ export function RequestCallbackDialog({ open, onOpenChange, title, price }: Requ
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent showCloseButton={false} className="max-w-xl rounded-4xl p-0 overflow-hidden">
-          <DialogTitle className="sr-only">Callback Request Success</DialogTitle>
-          {/* <div className="bg-gradient-to-r from-orange-500 to-amber-400 px-6 py-4 text-white flex items-center justify-between gap-4">
-            {/* <div>
-              <p className="text-sm uppercase tracking-[0.3em] font-semibold">Summer Holiday Sale is LIVE</p>
-              <p className="mt-1 text-xs text-white/90">Ends in 1d : 3h : 10m</p>
-            </div> 
-            <DialogClose className="text-white opacity-80 hover:opacity-100">
-              <span className="sr-only">Close</span>
-              ✕
-            </DialogClose>
-          </div> */}
+          <DialogTitle className="sr-only">Request Callback</DialogTitle>
+
+          <DialogDescription className="sr-only">
+            Fill this form to request a callback from our team.
+          </DialogDescription>
 
           <div className="bg-white px-6 py-12 sm:px-8 sm:py-10 text-center">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-100 mb-4">
@@ -91,7 +88,7 @@ export function RequestCallbackDialog({ open, onOpenChange, title, price }: Requ
             </div>
             <h3 className="text-2xl font-bold text-slate-900 mb-2">Thank You!</h3>
             <p className="text-slate-600 mb-4">Your callback request has been sent successfully.</p>
-            <p className="text-sm text-slate-500">Our team will contact you soon at {phone}</p>
+            <p className="text-sm text-slate-500">Our team will contact you soon at {phone} or {email}</p>
           </div>
         </DialogContent>
       </Dialog>
@@ -100,74 +97,94 @@ export function RequestCallbackDialog({ open, onOpenChange, title, price }: Requ
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent showCloseButton={false} className="max-w-xl rounded-4xl p-0 overflow-hidden">
+      <DialogOverlay onClick={(e) => e.preventDefault()} />
+      <DialogContent
+        onClick={(e) => e.stopPropagation()}
+        onPointerDownOutside={(e) => e.preventDefault()}
+        onEscapeKeyDown={(e) => e.preventDefault()}
+        className="max-w-xl rounded-4xl p-0 mt-[5vh] overflow-hidden"
+      >
         <DialogTitle className="sr-only">Request Callback</DialogTitle>
-        {/* <div className="bg-gradient-to-r from-orange-500 to-amber-400 px-6 py-4 text-white flex items-center justify-between gap-4">
-          {/* <div>
-            <p className="text-sm uppercase tracking-[0.3em] font-semibold">Summer Holiday Sale is LIVE</p>
-            <p className="mt-1 text-xs text-white/90">Ends in 1d : 3h : 10m</p>
-          </div> 
-          <DialogClose className="text-white opacity-80 hover:opacity-100">
-            <span className="sr-only">Close</span>
-            ✕
-          </DialogClose>
-        </div> */}
         
-
-        <div className="bg-white px-6 py-6 sm:px-8 sm:py-8">
-          <div className="flex flex-col gap-4 mb-6 rounded-3xl border border-slate-200 bg-slate-50 p-4">
-            <div className="space-y-2">
-              <h2 className="text-lg font-semibold text-slate-900">{title}</h2>
-              <div className="flex items-center gap-2 text-sm text-slate-500">
-                <span className="font-semibold text-slate-900">INR {price.toLocaleString('en-IN')}</span>
-                <span className="px-2 py-1 rounded-full bg-emerald-100 text-emerald-700 text-[11px] font-semibold">
-                  Save INR {Math.round(price * 0.3).toLocaleString('en-IN')}
-                </span>
-              </div>
-            </div>
+        <div className="bg-white px-6 py-6 sm:px-8 sm:py-6 relative">
+          {/* Close Button */}
+          <div className="absolute top-4 right-4">
+            <DialogClose className="inline-flex items-center justify-center w-12 h-12 rounded-full hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition">
+              {/* <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg> */}
+              <span className="sr-only">Close</span>
+            </DialogClose>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label htmlFor="callback-name" className="text-sm font-semibold text-slate-700">
-                Full Name
-              </label>
-              <Input
-                id="callback-name"
-                name="name"
-                value={name}
-                onChange={(event) => setName(event.target.value)}
-                placeholder="Enter your name"
-                required
+          <div className='relative p-0 mb-0 text-center'>
+            <div className='text-2xl font-bold text-slate-900 mb-2'>Don't Just Dream, Travel 🔥</div>
+            <p className="text-slate-600 mb-4">Allow us to call you back!</p>
+          </div>
+
+          <div className="mt-[2vh]">
+            <form onSubmit={handleSubmit} className=" space-y-4">
+              <div>
+                <label htmlFor="callback-name" className="text-sm font-semibold text-slate-700">
+                  Full Name
+                </label>
+                <Input
+                  id="callback-name"
+                  name="name"
+                  value={name}
+                  onChange={(event) => setName(event.target.value)}
+                  placeholder="Enter your name"
+                  required
+                  disabled={loading}
+                  className="mt-2"
+                />
+              </div>
+              <div>
+                <label htmlFor="callback-phone" className="text-sm font-semibold text-slate-700">
+                  Phone Number
+                </label>
+                <Input
+                  id="callback-phone"
+                  name="phone"
+                  type="tel"
+                  value={phone}
+                  onChange={(event) => setPhone(event.target.value)}
+                  placeholder="9217664099"
+                  required
+                  disabled={loading}
+                  className="mt-2"
+                />
+              </div>
+              <div>
+                <label htmlFor="callback-email" className="text-sm font-semibold text-slate-700">
+                  Email
+                </label>
+                <Input
+                  id="callback-email"
+                  name="email"
+                  type="email"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  placeholder="Enter your email"
+                  required
+                  disabled={loading}
+                  className="mt-2"
+                />
+              </div>
+              {error && <p className="text-sm text-red-600">{error}</p>}
+              <Button
+                type="submit"
                 disabled={loading}
-                className="mt-2"
-              />
-            </div>
-            <div>
-              <label htmlFor="callback-phone" className="text-sm font-semibold text-slate-700">
-                Phone Number
-              </label>
-              <Input
-                id="callback-phone"
-                name="phone"
-                type="tel"
-                value={phone}
-                onChange={(event) => setPhone(event.target.value)}
-                placeholder="9217664099"
-                required
-                disabled={loading}
-                className="mt-2"
-              />
-            </div>
-            {error && <p className="text-sm text-red-600">{error}</p>}
-            <Button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-primary px-5 py-4 text-base font-semibold text-white disabled:opacity-50"
-            >
-              {loading ? 'Sending...' : 'Connect with an Expert'}
-            </Button>
-          </form>
+                className="w-full bg-primary px-5 py-4 text-base font-semibold text-white disabled:opacity-50"
+              >
+                {loading ? 'Sending...' : 'Connect with an Expert'}
+              </Button>
+            </form>
+          </div>
+
+
+
+
 
           {/* <div className="mt-6 rounded-3xl bg-slate-950/5 border border-slate-200 p-4 text-sm text-slate-600">
             <div className="flex items-center gap-2 mb-2">

@@ -1,3 +1,7 @@
+'use client'
+
+import { useState, useMemo } from 'react'
+import { useParams } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
@@ -9,43 +13,33 @@ import { Card } from '@/components/ui/card'
 import { TripHeroCarousel } from '@/components/trip-hero-carousel'
 import { TripDetailActions } from '@/components/trip-detail-actions'
 import { UpcomingDepartures } from '@/components/upcoming-departures'
+import { RequestCallbackDialog } from '@/components/request-callback-dialog'
 import { trips } from '@/lib/data'
 import { MapPin, Calendar, Users, CheckCircle, XCircle, Star, Phone, MessageCircle } from 'lucide-react'
 import { contactEmail, contactPhone, contactPhoneDisplay, instagramUrl } from '@/lib/contact'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 
 
-interface TripDetailPageProps {
-  params: Promise<{
-    slug: string
-  }>
-}
-
-export async function generateStaticParams() {
-  return trips.map(trip => ({
-    slug: trip.slug,
-  }))
-}
-
-export async function generateMetadata({ params }: TripDetailPageProps) {
-  const { slug } = await params
-  const trip = trips.find(t => t.slug === slug)
+export default function PackageDetailPage() {
+  const params = useParams()
+  const packageSlug = params?.packageSlug as string
+  const trip = useMemo(() => trips.find(t => t.slug === packageSlug), [packageSlug])
+  const [callbackOpen, setCallbackOpen] = useState(false)
 
   if (!trip) {
-    return {
-      title: 'Trip Not Found',
-    }
+    return (
+      <div className="min-h-screen flex flex-col bg-white">
+        <Navbar />
+        <main className="flex-grow flex items-center justify-center">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-gray-900">Package Not Found</h1>
+            <p className="text-gray-600 mt-2">Sorry, the package you're looking for doesn't exist.</p>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    )
   }
-
-  return {
-    title: `${trip.title} - Wanderphilia`,
-    description: trip.description,
-  }
-}
-
-export default async function TripDetailPage({ params }: TripDetailPageProps) {
-  const { slug } = await params
-  const trip = trips.find(t => t.slug === slug)
 
   if (!trip) {
     notFound()
@@ -379,20 +373,20 @@ export default async function TripDetailPage({ params }: TripDetailPageProps) {
                     </div>
 
                     <div className="grid gap-3 sm:grid-cols-2">
-                      <a
-                        href={`tel:${contactPhone}`}
+                      <button
+                        onClick={() => setCallbackOpen(true)}
                         className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-300 bg-white px-5 py-4 text-center text-sm font-semibold text-slate-900 transition hover:bg-slate-100"
                       >
                         <Phone size={18} />
                         Call Now
-                      </a>
-                      <a
-                        href={`mailto:${contactEmail}`}
+                      </button>
+                      <button
+                        onClick={() => setCallbackOpen(true)}
                         className="inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-5 py-4 text-center text-sm font-semibold text-white transition hover:bg-primary/90"
                       >
                         <MessageCircle size={18} />
                         Request Callback
-                      </a>
+                      </button>
                     </div>
                   </div>
                 </Card>
@@ -438,13 +432,16 @@ export default async function TripDetailPage({ params }: TripDetailPageProps) {
               <p className="text-lg font-semibold text-slate-900">INR {trip.price.toLocaleString('en-IN')}</p>
             </div>
             <div className="flex items-center gap-2">
-              <button className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-100 text-slate-700 shadow-sm">
+              <button 
+                onClick={() => setCallbackOpen(true)}
+                className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-100 text-slate-700 shadow-sm hover:bg-slate-200 transition"
+              >
                 <MessageCircle size={18} />
               </button>
-              {/* <button className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-100 text-slate-700 shadow-sm">
-                <Phone size={18} />
-              </button> */}
-              <Button className="h-11 rounded-2xl bg-primary px-5 text-sm font-semibold text-white shadow-sm hover:bg-primary/90">
+              <Button 
+                onClick={() => setCallbackOpen(true)}
+                className="h-11 rounded-2xl bg-primary px-5 text-sm font-semibold text-white shadow-sm hover:bg-primary/90"
+              >
                 Book Now
               </Button>
             </div>
@@ -453,6 +450,13 @@ export default async function TripDetailPage({ params }: TripDetailPageProps) {
       </div>
       <div className="h-24 md:hidden" />
       <Footer />
+      
+      <RequestCallbackDialog 
+        open={callbackOpen} 
+        onOpenChange={setCallbackOpen}
+        title={trip.title}
+        price={trip.price}
+      />
     </div>
   )
 }

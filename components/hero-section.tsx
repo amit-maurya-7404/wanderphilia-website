@@ -1,16 +1,51 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { MapPin, ArrowRight } from 'lucide-react'
+import { MapPin, ArrowRight, Search } from 'lucide-react'
 import { MobileHeroSection } from './mobile-hero-section'
+import { trips } from '@/lib/data'
 
 export function HeroSection() {
   const [destination, setDestination] = useState('')
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const router = useRouter()
+
+  // Extract categories from trips data
+  const categories = useMemo(() => {
+    const categoryImageMap: Record<string, string> = {
+      Bhutan: '/images/Bhutan_cat.jpg',
+      Nepal: '/images/nepal-dest.jpg',
+      Indonesia: '/images/indonesia-dest.jpg',
+      Switzerland: '/images/switzerland-dest.jpg',
+      Peru: '/images/peru-dest.jpg',
+      Japan: '/images/japan.jpg',
+      'Leh Ladakh': '/images/leh-ladakh.jpg',
+      Spiti: '/images/spiti-valley.jpg',
+      Kashmir: '/images/kashmir.jpg',
+      Meghalaya: '/images/meghalaya.jpg',
+      Himachal: '/images/himachal.jpg'
+    }
+
+    const cats = Array.from(new Set(trips.map(t => t.category))).sort()
+    return cats.map(cat => ({
+      _id: cat.toLowerCase().replace(/\s+/g, '-'),
+      name: cat,
+      image: categoryImageMap[cat] || `/images/${cat.toLowerCase().replace(/\s+/g, '-')}.jpg`
+    }))
+  }, [])
+
+  // Filter categories based on destination input
+  const filteredCategories = useMemo(() => {
+    if (!destination.trim()) return []
+    return categories.filter(cat =>
+      cat.name.toLowerCase().includes(destination.toLowerCase())
+    )
+  }, [destination, categories])
 
   const heroImages = [
     '/images/dummy1.jpg',
@@ -63,10 +98,10 @@ export function HeroSection() {
           <p className="text-sm md:text-lg text-gray-200 mb-6 max-w-3xl leading-relaxed">
             Discover curated adventures that redefine travel. From snow-capped peaks to pristine beaches, we craft unforgettable journeys for the modern explorer.
           </p>
-          <div className="mb-8 max-w-2xl w-full">
+          <div className="mb-8 max-w-2xl w-full relative">
             <div className="flex flex-col sm:flex-row gap-3 bg-white/10 backdrop-blur-md p-2 rounded-2xl border border-white/20 hover:border-white/40 transition-all">
               <div className="flex-1 relative">
-                <MapPin className="absolute left-4 top-1/4  text-primary" size={20} />
+                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-primary" size={20} />
                 <Input
                   type="text"
                   placeholder="Where do you want to explore?"
@@ -75,13 +110,40 @@ export function HeroSection() {
                   className="pl-12 py-3 leading-6 bg-transparent border-0 text-white placeholder:text-gray-300 placeholder:leading-6 focus:ring-0 focus:outline-none"
                 />
               </div>
-              <Button asChild className="bg-linear-to-br from-[#FF8713] via-[#FF6E0B] to-[#FF5D09] hover:from-[#FFA033] hover:via-[#FF7E1A] hover:to-[#FF6A1A] transition-all duration-300 text-white px-8 py-3 rounded-xl h-auto font-semibold flex items-center gap-2">
-                <Link href={`/trips${destination ? `?destination=${destination}` : ''}`}>
-                  Explore
-                  <ArrowRight size={18} />
-                </Link>
-              </Button>
+              <button
+                type="button"
+                onClick={() => {
+                  if (filteredCategories.length > 0) {
+                    const selectedCat = filteredCategories[0]
+                    setDestination('')
+                    router.push(`/category/${selectedCat._id}`)
+                  } else if (destination.trim()) {
+                    router.push(`/trips?destination=${destination}`)
+                  }
+                }}
+                className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-linear-to-br from-[#FF8713] via-[#FF6E0B] to-[#FF5D09] hover:from-[#FFA033] hover:via-[#FF7E1A] hover:to-[#FF6A1A] transition-all duration-300 text-white font-semibold flex-shrink-0"
+              >
+                <Search size={20} />
+              </button>
             </div>
+
+            {/* Suggestions Dropdown */}
+            {destination && filteredCategories.length > 0 && (
+              <div className="absolute left-0 right-0 top-full mt-2 bg-slate-800/90 backdrop-blur-md border border-slate-700 rounded-2xl shadow-lg max-h-48 overflow-y-auto z-50">
+                {filteredCategories.map(cat => (
+                  <div
+                    key={cat._id}
+                    onClick={() => {
+                      setDestination('')
+                      router.push(`/category/${cat._id}`)
+                    }}
+                    className="p-3 hover:bg-slate-700 cursor-pointer text-white border-b border-slate-600 last:border-b-0"
+                  >
+                    {cat.name}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
           <div className="flex flex-col sm:flex-row gap-4 max-w-md justify-center">
               <Button asChild className="bg-linear-to-br from-[#FF8713] via-[#FF6E0B] to-[#FF5D09] hover:from-[#FFA033] hover:via-[#FF7E1A] hover:to-[#FF6A1A] transition-all duration-300 text-white px-7 py-4 text-base rounded-xl h-auto font-semibold">

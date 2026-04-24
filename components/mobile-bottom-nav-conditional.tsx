@@ -5,7 +5,8 @@ import { MobileBottomNav } from '@/components/mobile-bottom-nav'
 
 export function MobileBottomNavConditional() {
   const pathname = usePathname()
-  const hideMobileNav = pathname?.startsWith('/trips/') ?? false
+  // Hide on trips detail pages and package detail pages
+  const hideMobileNav = (pathname?.startsWith('/trips/') ?? false) || (pathname?.match(/^\/category\/[^/]+\/[^/]+/) ?? false)
 
   return <>{!hideMobileNav && <MobileBottomNav />}</>
 }

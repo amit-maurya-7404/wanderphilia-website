@@ -1,17 +1,49 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { trips } from '@/lib/data'
-import { HoneymoonPackageCard } from '@/components/honeymoon-package-card'
+import { TripCard } from '@/components/trip-card'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 export function HoneymoonPackagesSection() {
+  const [index, setIndex] = useState(0)
+  const [isMobile, setIsMobile] = useState(false)
+  const [cardsPerView, setCardsPerView] = useState(4)
+
+  useEffect(() => {
+    const update = () => {
+      const mobile = window.innerWidth < 768
+      setIsMobile(mobile)
+      setCardsPerView(mobile ? 2 : 4)
+    }
+    update()
+    window.addEventListener('resize', update)
+    return () => window.removeEventListener('resize', update)
+  }, [])
+
+  // reset index when layout changes
+  useEffect(() => {
+    setIndex(0)
+  }, [cardsPerView])
+
   // Filter trips suitable for honeymoon (easy and moderate difficulty)
   const honeymoonPackages = trips
     .filter((trip) => trip.difficulty !== 'Hard' && trip.groupSize <= 20)
-    .slice(0, 3)
+    .slice(0, 8)
+
+  const maxIndex = Math.max(0, honeymoonPackages.length - cardsPerView)
+
+  const nextSlide = () => {
+    setIndex((prev) => Math.min(prev + 1, maxIndex))
+  }
+
+  const prevSlide = () => {
+    setIndex((prev) => Math.max(prev - 1, 0))
+  }
 
   return (
     <section className="py-16 md:pt-10 bg-linear-to-b from-white via-pink-50/30 to-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">
           <span className="inline-block px-4 py-2 rounded-full bg-pink-100 text-pink-700 font-semibold text-sm mb-4">
@@ -25,27 +57,66 @@ export function HoneymoonPackagesSection() {
           </p>
         </div>
 
-        {/* Packages Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {honeymoonPackages.map((trip) => (
-            <HoneymoonPackageCard
-              key={trip.id}
-              id={trip.id}
-              title={trip.title}
-              destination={trip.destination}
-              image={trip.image}
-              price={trip.price}
-              duration={trip.duration}
-              rating={trip.rating}
-              groupSize={trip.groupSize}
-              slug={trip.slug}
-              highlights={trip.highlights}
-            />
-          ))}
+        {/* SLIDER */}
+        <div className="relative mb-12">
+
+          {/* ✅ MOBILE SCROLLER */}
+          {isMobile ? (
+            <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+              {honeymoonPackages.map((trip) => (
+                <div
+                  key={trip.id}
+                  className="min-w-[75%] flex-shrink-0"
+                >
+                  <TripCard {...trip} />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <>
+              {/* LEFT ARROW */}
+              <button
+                onClick={prevSlide}
+                disabled={index === 0}
+                className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
+              >
+                <ChevronLeft size={20} />
+              </button>
+
+              {/* RIGHT ARROW */}
+              <button
+                onClick={nextSlide}
+                disabled={index === maxIndex}
+                className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
+              >
+                <ChevronRight size={20} />
+              </button>
+
+              {/* TRACK */}
+              <div className="overflow-hidden">
+                <div
+                  className="flex transition-transform duration-500 ease-in-out"
+                  style={{
+                    transform: `translateX(-${index * (100 / cardsPerView)}%)`,
+                  }}
+                >
+                  {honeymoonPackages.map((trip) => (
+                    <div
+                      key={trip.id}
+                      className="flex-shrink-0 basis-1/4 p-2"
+                    >
+                      <TripCard {...trip} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
+
         </div>
 
         {/* Features */}
-        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+        {/* <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
             { icon: '🛏️', title: 'Luxury Stays', desc: 'Premium resorts and romantic hotels' },
             { icon: '🍽️', title: 'Gourmet Dining', desc: 'Fine dining and local cuisine experiences' },
@@ -57,7 +128,7 @@ export function HoneymoonPackagesSection() {
               <p className="text-gray-600">{feature.desc}</p>
             </div>
           ))}
-        </div>
+        </div> */}
 
         {/* CTA */}
         <div className="mt-12 text-center">

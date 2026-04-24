@@ -58,7 +58,7 @@ export function Navbar() {
                 {getCategoriesByType('India').map((category) => (
                   <Link
                     key={category.id}
-                    href={`/trips?type=India&category=${category.id}`}
+                    href={`/category/${category.id}`}
                     className="block px-4 py-3 text-gray-700 hover:bg-primary/10 hover:text-primary font-medium text-sm rounded-lg mx-2 transition-colors"
                   >
                     {category.name}
@@ -80,7 +80,7 @@ export function Navbar() {
                 {getCategoriesByType('International').map((category) => (
                   <Link
                     key={category.id}
-                    href={`/trips?type=International&category=${category.id}`}
+                    href={`/category/${category.id}`}
                     className="block px-4 py-3 text-gray-700 hover:bg-primary/10 hover:text-primary font-medium text-sm rounded-lg mx-2 transition-colors"
                   >
                     {category.name}
@@ -165,7 +165,7 @@ export function Navbar() {
                   {getCategoriesByType('India').map((category) => (
                     <Link
                       key={category.id}
-                      href={`/trips?type=India&category=${category.id}`}
+                      href={`/category/${category.id}`}
                     className="block px-6 py-3 text-sm text-gray-600 hover:text-primary hover:bg-gray-100 transition-colors"
                     onClick={() => setIsMobileOpen(false)}
                   >
@@ -189,7 +189,7 @@ export function Navbar() {
               {getCategoriesByType('International').map((category) => (
                 <Link
                   key={category.id}
-                  href={`/trips?type=International&category=${category.id}`}
+                  href={`/category/${category.id}`}
                   className="block px-6 py-3 text-sm text-gray-600 hover:text-primary hover:bg-gray-100 transition-colors"
                   onClick={() => setIsMobileOpen(false)}
                 >

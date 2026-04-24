@@ -29,7 +29,7 @@ export function CTASection() {
 
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row justify-center gap-4 max-w-2xl mx-auto">
-          <Button asChild className="bg-white text-primary hover:bg-white/95 px-10 py-4 text-lg h-auto rounded-xl font-bold flex items-center justify-center gap-2">
+          <Button asChild className="bg-white text-white hover:bg-white/95 px-10 py-4 text-lg h-auto rounded-xl font-bold flex items-center justify-center gap-2">
             <Link href="/trips">
               Discover Adventures
               <ArrowRight size={20} />

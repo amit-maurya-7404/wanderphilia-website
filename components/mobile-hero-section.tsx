@@ -120,7 +120,7 @@ export function MobileHeroSection() {
                                         key={cat._id}
                                         onClick={() => {
                                             setDestination('')
-                                            router.push(`/trips?category=${cat._id}`)
+                                            router.push(`/category/${cat._id}`)
                                         }}
                                         className="p-3 hover:bg-slate-700 cursor-pointer text-white border-b border-slate-600 last:border-b-0"
                                     >
@@ -174,7 +174,7 @@ export function MobileHeroSection() {
                         <div
                             key={cat._id || cat.name}
                             className="flex flex-col items-center min-w-[80px] cursor-pointer group"
-                            onClick={() => router.push(`/trips?category=${cat._id}`)}
+                            onClick={() => router.push(`/category/${cat._id}`)}
                         >
                             <div className={`h-16 w-16 rounded-full backdrop-blur-md border shadow-lg group-hover:scale-105 transition-all flex items-center justify-center ${selectedCategory === cat._id
                                 ? 'bg-primary/30 border-white'
@@ -209,7 +209,11 @@ export function MobileHeroSection() {
                         {featuredCards.map((pkg) => (
                             <div
                                 key={pkg.id}
-                                onClick={() => router.push(`/trips/${pkg.slug}`)}
+                                onClick={() => {
+                                    // Convert destination to category ID (lowercase with hyphens)
+                                    const categoryId = pkg.destination.toLowerCase().replace(/\s+/g, '-')
+                                    router.push(`/category/${categoryId}/${pkg.slug}`)
+                                }}
                                 className="group min-w-[260px] cursor-pointer overflow-hidden rounded-3xl border border-white/20 bg-white/95 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 flex flex-col"
                             >
                                 {/* Image Container */}
