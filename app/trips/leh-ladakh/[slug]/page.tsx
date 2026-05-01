@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo, useEffect, useRef } from 'react'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { notFound } from 'next/navigation'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
@@ -54,6 +54,12 @@ export default function PackageDetailPage() {
   const [isClient, setIsClient] = useState(false)
   const tabContainerRef = useRef<HTMLDivElement>(null)
   const activeTabRef = useRef(activeTab)
+  const router = useRouter()
+
+  const handleBookNow = () => {
+    if (!slug) return
+    router.push(`/booking/package?slug=${encodeURIComponent(slug)}`)
+  }
 
   useEffect(() => {
     activeTabRef.current = activeTab
@@ -361,7 +367,7 @@ export default function PackageDetailPage() {
                     >
                       <button
                         onClick={() => toggleDay(day.day)}
-                        className="w-full flex items-start justify-between p-[3vw] sm:p-[0vw] bg-white hover:bg-slate-50 transition-colors"
+                        className="w-full flex items-start justify-between p-[3vw] sm:p-0 bg-white hover:bg-slate-50 transition-colors"
                       >
                         <div className="flex items-start gap-3 text-left grow">
                           <div className="shrink-0">
@@ -612,7 +618,7 @@ export default function PackageDetailPage() {
                     <Button
                       size="lg"
                       className="w-full justify-center"
-                      onClick={() => setCallbackOpen(true)}
+                      onClick={handleBookNow}
                     >
                       <Phone size={18} /> Book Now
                     </Button>
@@ -683,7 +689,7 @@ export default function PackageDetailPage() {
             </p>
             <p className="text-lg font-bold">₹{(selections.length > 0 ? total : lowestPrice).toLocaleString('en-IN')}</p>
           </div>
-          <Button onClick={() => setCallbackOpen(true)} className="shrink-0">
+          <Button onClick={handleBookNow} className="shrink-0">
             Book Now
           </Button>
         </div>

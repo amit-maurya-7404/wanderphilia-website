@@ -670,12 +670,12 @@ export const trips: Trip[] = [
       'Siliguri stay: Hotel Cinderella or Similar'
     ],
     dates: [
-      { startDate: '2025-04-25', endDate: '2025-05-01', spots: 12 },
-      { startDate: '2025-05-02', endDate: '2025-05-08', spots: 14 },
-      { startDate: '2025-05-16', endDate: '2025-05-22', spots: 12 },
-      { startDate: '2025-05-30', endDate: '2025-06-05', spots: 15 },
-      { startDate: '2025-06-06', endDate: '2025-06-12', spots: 13 },
-      { startDate: '2025-06-20', endDate: '2025-06-26', spots: 14 },
+      { startDate: '2026-04-25', endDate: '2026-05-01', spots: 12 },
+      { startDate: '2026-05-02', endDate: '2026-05-08', spots: 14 },
+      { startDate: '2026-05-16', endDate: '2026-05-22', spots: 12 },
+      { startDate: '2026-05-30', endDate: '2026-06-05', spots: 15 },
+      { startDate: '2026-06-06', endDate: '2026-06-12', spots: 13 },
+      { startDate: '2026-06-20', endDate: '2026-06-26', spots: 14 },
     ]
   },
   {
@@ -956,17 +956,17 @@ export const trips: Trip[] = [
       }
     ],
     dates: [
-      { startDate: '2025-05-16', endDate: '2025-05-21', spots: 10 },
-      { startDate: '2025-05-23', endDate: '2025-05-28', spots: 10 },
-      { startDate: '2025-06-06', endDate: '2025-06-11', spots: 10 },
-      { startDate: '2025-06-20', endDate: '2025-06-25', spots: 10 },
-      { startDate: '2025-07-04', endDate: '2025-07-09', spots: 10 },
-      { startDate: '2025-07-18', endDate: '2025-07-23', spots: 10 },
-      { startDate: '2025-08-01', endDate: '2025-08-06', spots: 10 },
-      { startDate: '2025-08-15', endDate: '2025-08-20', spots: 10 },
-      { startDate: '2025-08-29', endDate: '2025-09-03', spots: 10 },
-      { startDate: '2025-09-12', endDate: '2025-09-17', spots: 10 },
-      { startDate: '2025-09-26', endDate: '2025-10-01', spots: 10 }
+      { startDate: '2026-05-16', endDate: '2026-05-21', spots: 10 },
+      { startDate: '2026-05-23', endDate: '2026-05-28', spots: 10 },
+      { startDate: '2026-06-06', endDate: '2026-06-11', spots: 10 },
+      { startDate: '2026-06-20', endDate: '2026-06-25', spots: 10 },
+      { startDate: '2026-07-04', endDate: '2026-07-09', spots: 10 },
+      { startDate: '2026-07-18', endDate: '2026-07-23', spots: 10 },
+      { startDate: '2026-08-01', endDate: '2026-08-06', spots: 10 },
+      { startDate: '2026-08-15', endDate: '2026-08-20', spots: 10 },
+      { startDate: '2026-08-29', endDate: '2026-09-03', spots: 10 },
+      { startDate: '2026-09-12', endDate: '2026-09-17', spots: 10 },
+      { startDate: '2026-09-26', endDate: '2026-10-01', spots: 10 }
     ]
   },
   {
@@ -1236,17 +1236,17 @@ export const trips: Trip[] = [
       }
     ],
     dates: [
-      { startDate: '2025-05-16', endDate: '2025-05-22', spots: 10 },
-      { startDate: '2025-05-23', endDate: '2025-05-29', spots: 10 },
-      { startDate: '2025-06-06', endDate: '2025-06-12', spots: 10 },
-      { startDate: '2025-06-20', endDate: '2025-06-26', spots: 10 },
-      { startDate: '2025-07-04', endDate: '2025-07-10', spots: 10 },
-      { startDate: '2025-07-18', endDate: '2025-07-24', spots: 10 },
-      { startDate: '2025-08-01', endDate: '2025-08-07', spots: 10 },
-      { startDate: '2025-08-15', endDate: '2025-08-21', spots: 10 },
-      { startDate: '2025-08-29', endDate: '2025-09-04', spots: 10 },
-      { startDate: '2025-09-12', endDate: '2025-09-18', spots: 10 },
-      { startDate: '2025-09-26', endDate: '2025-10-02', spots: 10 }
+      { startDate: '2026-05-16', endDate: '2026-05-22', spots: 10 },
+      { startDate: '2026-05-23', endDate: '2026-05-29', spots: 10 },
+      { startDate: '2026-06-06', endDate: '2026-06-12', spots: 10 },
+      { startDate: '2026-06-20', endDate: '2026-06-26', spots: 10 },
+      { startDate: '2026-07-04', endDate: '2026-07-10', spots: 10 },
+      { startDate: '2026-07-18', endDate: '2026-07-24', spots: 10 },
+      { startDate: '2026-08-01', endDate: '2026-08-07', spots: 10 },
+      { startDate: '2026-08-15', endDate: '2026-08-21', spots: 10 },
+      { startDate: '2026-08-29', endDate: '2026-09-04', spots: 10 },
+      { startDate: '2026-09-12', endDate: '2026-09-18', spots: 10 },
+      { startDate: '2026-09-26', endDate: '2026-10-02', spots: 10 }
     ]
   },
   {
@@ -1420,17 +1420,17 @@ export const trips: Trip[] = [
     ],
 
     dates: [
-      { startDate: '2025-05-16', endDate: '2025-05-22', spots: 10 },
-      { startDate: '2025-05-23', endDate: '2025-05-29', spots: 10 },
-      { startDate: '2025-06-06', endDate: '2025-06-12', spots: 10 },
-      { startDate: '2025-06-20', endDate: '2025-06-26', spots: 10 },
-      { startDate: '2025-07-04', endDate: '2025-07-10', spots: 10 },
-      { startDate: '2025-07-18', endDate: '2025-07-24', spots: 10 },
-      { startDate: '2025-08-01', endDate: '2025-08-07', spots: 10 },
-      { startDate: '2025-08-15', endDate: '2025-08-21', spots: 10 },
-      { startDate: '2025-08-29', endDate: '2025-09-04', spots: 10 },
-      { startDate: '2025-09-12', endDate: '2025-09-18', spots: 10 },
-      { startDate: '2025-09-26', endDate: '2025-10-02', spots: 10 }
+      { startDate: '2026-05-16', endDate: '2026-05-22', spots: 10 },
+      { startDate: '2026-05-23', endDate: '2026-05-29', spots: 10 },
+      { startDate: '2026-06-06', endDate: '2026-06-12', spots: 10 },
+      { startDate: '2026-06-20', endDate: '2026-06-26', spots: 10 },
+      { startDate: '2026-07-04', endDate: '2026-07-10', spots: 10 },
+      { startDate: '2026-07-18', endDate: '2026-07-24', spots: 10 },
+      { startDate: '2026-08-01', endDate: '2026-08-07', spots: 10 },
+      { startDate: '2026-08-15', endDate: '2026-08-21', spots: 10 },
+      { startDate: '2026-08-29', endDate: '2026-09-04', spots: 10 },
+      { startDate: '2026-09-12', endDate: '2026-09-18', spots: 10 },
+      { startDate: '2026-09-26', endDate: '2026-10-02', spots: 10 }
     ],
     paymentTerms: [
       'Short-Haul Packages: At booking: 25% booking advance is non-refundable, Within 45 days: Minimum 50% deduction, Within 30 days: Minimum 75% deduction, 20 days or less: 100% forfeited'
@@ -1733,17 +1733,17 @@ This tour gives you the real feel of Ladakh’s nature and open roads, without e
       'Hanle : Aurora Cabins / Similar'
     ],
     dates: [
-      { startDate: '2025-05-16', endDate: '2025-05-23', spots: 10 },
-      { startDate: '2025-05-23', endDate: '2025-05-30', spots: 10 },
-      { startDate: '2025-06-06', endDate: '2025-06-13', spots: 10 },
-      { startDate: '2025-06-20', endDate: '2025-06-27', spots: 10 },
-      { startDate: '2025-07-04', endDate: '2025-07-11', spots: 10 },
-      { startDate: '2025-07-18', endDate: '2025-07-25', spots: 10 },
-      { startDate: '2025-08-01', endDate: '2025-08-08', spots: 10 },
-      { startDate: '2025-08-15', endDate: '2025-08-22', spots: 10 },
-      { startDate: '2025-08-29', endDate: '2025-09-05', spots: 10 },
-      { startDate: '2025-09-12', endDate: '2025-09-19', spots: 10 },
-      { startDate: '2025-09-26', endDate: '2025-10-03', spots: 10 }
+      { startDate: '2026-05-16', endDate: '2026-05-23', spots: 10 },
+      { startDate: '2026-05-23', endDate: '2026-05-30', spots: 10 },
+      { startDate: '2026-06-06', endDate: '2026-06-13', spots: 10 },
+      { startDate: '2026-06-20', endDate: '2026-06-27', spots: 10 },
+      { startDate: '2026-07-04', endDate: '2026-07-11', spots: 10 },
+      { startDate: '2026-07-18', endDate: '2026-07-25', spots: 10 },
+      { startDate: '2026-08-01', endDate: '2026-08-08', spots: 10 },
+      { startDate: '2026-08-15', endDate: '2026-08-22', spots: 10 },
+      { startDate: '2026-08-29', endDate: '2026-09-05', spots: 10 },
+      { startDate: '2026-09-12', endDate: '2026-09-19', spots: 10 },
+      { startDate: '2026-09-26', endDate: '2026-10-03', spots: 10 }
     ],
     paymentTerms: [
       'Short-Haul Packages: At booking: 25% booking advance is non-refundable, Within 45 days: Minimum 50% deduction, Within 30 days: Minimum 75% deduction, 20 days or less: 100% forfeited'
@@ -2043,17 +2043,17 @@ As the trip concludes, you’ll fly back home with a heart full of happiness and
       'Tso Moriri : Lake View Stay / Similar'
     ],
     dates: [
-      { startDate: '2025-05-16', endDate: '2025-05-23', spots: 10 },
-      { startDate: '2025-05-23', endDate: '2025-05-30', spots: 10 },
-      { startDate: '2025-06-06', endDate: '2025-06-13', spots: 10 },
-      { startDate: '2025-06-20', endDate: '2025-06-27', spots: 10 },
-      { startDate: '2025-07-04', endDate: '2025-07-11', spots: 10 },
-      { startDate: '2025-07-18', endDate: '2025-07-25', spots: 10 },
-      { startDate: '2025-08-01', endDate: '2025-08-08', spots: 10 },
-      { startDate: '2025-08-15', endDate: '2025-08-22', spots: 10 },
-      { startDate: '2025-08-29', endDate: '2025-09-05', spots: 10 },
-      { startDate: '2025-09-12', endDate: '2025-09-19', spots: 10 },
-      { startDate: '2025-09-26', endDate: '2025-10-03', spots: 10 }
+      { startDate: '2026-05-16', endDate: '2026-05-23', spots: 10 },
+      { startDate: '2026-05-23', endDate: '2026-05-30', spots: 10 },
+      { startDate: '2026-06-06', endDate: '2026-06-13', spots: 10 },
+      { startDate: '2026-06-20', endDate: '2026-06-27', spots: 10 },
+      { startDate: '2026-07-04', endDate: '2026-07-11', spots: 10 },
+      { startDate: '2026-07-18', endDate: '2026-07-25', spots: 10 },
+      { startDate: '2026-08-01', endDate: '2026-08-08', spots: 10 },
+      { startDate: '2026-08-15', endDate: '2026-08-22', spots: 10 },
+      { startDate: '2026-08-29', endDate: '2026-09-05', spots: 10 },
+      { startDate: '2026-09-12', endDate: '2026-09-19', spots: 10 },
+      { startDate: '2026-09-26', endDate: '2026-10-03', spots: 10 }
     ],
     paymentPolicy: [
       'At booking: 25% booking advance is non-refundable.',
@@ -2840,11 +2840,11 @@ This journey is not just about the road—it's about the adventure, the stories,
     ],
 
     dates: [
-      { startDate: '2025-05-16', endDate: '2025-05-27', spots: 10 },
-      { startDate: '2025-06-06', endDate: '2025-06-17', spots: 10 },
-      { startDate: '2025-07-04', endDate: '2025-07-15', spots: 10 },
-      { startDate: '2025-08-01', endDate: '2025-08-12', spots: 10 },
-      { startDate: '2025-09-12', endDate: '2025-09-23', spots: 10 }
+      { startDate: '2026-05-16', endDate: '2026-05-27', spots: 10 },
+      { startDate: '2026-06-06', endDate: '2026-06-17', spots: 10 },
+      { startDate: '2026-07-04', endDate: '2026-07-15', spots: 10 },
+      { startDate: '2026-08-01', endDate: '2026-08-12', spots: 10 },
+      { startDate: '2026-09-12', endDate: '2026-09-23', spots: 10 }
     ],
 
     batchDates: [
@@ -3143,17 +3143,17 @@ Long scenic drives, simple mountain stays, and raw landscapes make this journey 
       'Srinagar : New Mamta / Similar'
     ],
     dates: [
-      { startDate: '2025-05-16', endDate: '2025-05-27', spots: 10 },
-      { startDate: '2025-05-23', endDate: '2025-06-04', spots: 10 },
-      { startDate: '2025-06-06', endDate: '2025-06-18', spots: 10 },
-      { startDate: '2025-06-20', endDate: '2025-07-02', spots: 10 },
-      { startDate: '2025-07-04', endDate: '2025-07-16', spots: 10 },
-      { startDate: '2025-07-18', endDate: '2025-07-30', spots: 10 },
-      { startDate: '2025-08-01', endDate: '2025-08-13', spots: 10 },
-      { startDate: '2025-08-15', endDate: '2025-08-27', spots: 10 },
-      { startDate: '2025-08-29', endDate: '2025-09-10', spots: 10 },
-      { startDate: '2025-09-12', endDate: '2025-09-24', spots: 10 },
-      { startDate: '2025-09-26', endDate: '2025-10-08', spots: 10 }
+      { startDate: '2026-05-16', endDate: '2026-05-27', spots: 10 },
+      { startDate: '2026-05-23', endDate: '2026-06-04', spots: 10 },
+      { startDate: '2026-06-06', endDate: '2026-06-18', spots: 10 },
+      { startDate: '2026-06-20', endDate: '2026-07-02', spots: 10 },
+      { startDate: '2026-07-04', endDate: '2026-07-16', spots: 10 },
+      { startDate: '2026-07-18', endDate: '2026-07-30', spots: 10 },
+      { startDate: '2026-08-01', endDate: '2026-08-13', spots: 10 },
+      { startDate: '2026-08-15', endDate: '2026-08-27', spots: 10 },
+      { startDate: '2026-08-29', endDate: '2026-09-10', spots: 10 },
+      { startDate: '2026-09-12', endDate: '2026-09-24', spots: 10 },
+      { startDate: '2026-09-26', endDate: '2026-10-08', spots: 10 }
     ],
     costingDetails: [
       { label: 'Tempo Traveller (Double Sharing)', value: '₹37,499' },
@@ -3429,17 +3429,17 @@ Long scenic drives, simple mountain stays, and raw landscapes make this journey 
       { label: 'Solo Bike (Triple Sharing)', value: '₹47,499' }
     ],
     dates: [
-      { startDate: '2025-05-16', endDate: '2025-05-27', spots: 10 },
-      { startDate: '2025-05-23', endDate: '2025-06-03', spots: 10 },
-      { startDate: '2025-06-06', endDate: '2025-06-17', spots: 10 },
-      { startDate: '2025-06-20', endDate: '2025-07-01', spots: 10 },
-      { startDate: '2025-07-04', endDate: '2025-07-15', spots: 10 },
-      { startDate: '2025-07-18', endDate: '2025-07-29', spots: 10 },
-      { startDate: '2025-08-01', endDate: '2025-08-12', spots: 10 },
-      { startDate: '2025-08-15', endDate: '2025-08-26', spots: 10 },
-      { startDate: '2025-08-29', endDate: '2025-09-09', spots: 10 },
-      { startDate: '2025-09-12', endDate: '2025-09-23', spots: 10 },
-      { startDate: '2025-09-26', endDate: '2025-10-07', spots: 10 }
+      { startDate: '2026-05-16', endDate: '2026-05-27', spots: 10 },
+      { startDate: '2026-05-23', endDate: '2026-06-03', spots: 10 },
+      { startDate: '2026-06-06', endDate: '2026-06-17', spots: 10 },
+      { startDate: '2026-06-20', endDate: '2026-07-01', spots: 10 },
+      { startDate: '2026-07-04', endDate: '2026-07-15', spots: 10 },
+      { startDate: '2026-07-18', endDate: '2026-07-29', spots: 10 },
+      { startDate: '2026-08-01', endDate: '2026-08-12', spots: 10 },
+      { startDate: '2026-08-15', endDate: '2026-08-26', spots: 10 },
+      { startDate: '2026-08-29', endDate: '2026-09-09', spots: 10 },
+      { startDate: '2026-09-12', endDate: '2026-09-23', spots: 10 },
+      { startDate: '2026-09-26', endDate: '2026-10-07', spots: 10 }
     ],
     batchDates: [
       { month: 'May', ranges: ['16th May - 27th May', '23rd May - 3rd June ( Eid Holiday )'] },

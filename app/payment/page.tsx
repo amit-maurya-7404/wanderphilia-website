@@ -8,7 +8,7 @@ export default function PaymentPage() {
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <Navbar />
-      <main className="flex-grow">
+      <main className="grow">
         {/* Hero Section */}
         <section className="bg-gray-50 border-b border-gray-200 py-12 px-4 pt-20">
           <div className="max-w-4xl mx-auto">
@@ -64,7 +64,7 @@ export default function PaymentPage() {
                 </div>
 
                 <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-start gap-3">
-                  <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                  <CheckCircle className="w-5 h-5 text-green-600 shrink-0 mt-0.5" />
                   <div>
                     <p className="font-semibold text-green-900">Safe & Secure</p>
                     <p className="text-sm text-green-700">Your payment is protected</p>

@@ -105,16 +105,16 @@ export function MobileHeroSection() {
     }, [destination, categories])
 
     return (
-        <div className="relative z-10  md:hidden min-h-screen pt-20">
+        <div className="relative z-10    md:hidden min-h-screen pt-20">
             {/* Background Pattern */}
             {/* <div className="absolute inset-0 bg-[url('/images/pattern-bg.png')] opacity-5"></div> */}
-            <div className="absolute inset-0 bg-linear-to-t from-white from-50% to-primary to-100%"></div>
+            <div className="absolute  inset-0 bg-linear-to-t from-white from-50% to-primary to-100%"></div>
             {/* [#ff5f2e]/90 */}
             <div className="relative z-10 px-4  pb-0 space-y-4">
 
                 <div className="relative ">
                     {/* Search Bar */}
-                    <div className="bg-white/90 backdrop-blur-xl border border-white/30 rounded-full mt-0 pl-4 py-0 shadow-[0_8px_32px_rgba(0,0,0,0.25)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.35)] hover:scale-[1.02] hover:bg-white/30 transition-all duration-300">
+                    <div className="bg-white/90 backdrop-blur-xl border border-white/30 rounded-full mt-4 pl-4 py-0 shadow-[0_8px_32px_rgba(0,0,0,0.25)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.35)] hover:scale-[1.02] hover:bg-white/30 transition-all duration-300">
 
                         <div className="flex items-center gap-3">
                             <MapPin className="text-primary" size={30} />
@@ -191,7 +191,7 @@ export function MobileHeroSection() {
                         }}
                     >
                         {banners.map((banner) => (
-                            <div key={banner._id} className="w-full flex-shrink-0">
+                            <div key={banner._id} className="w-full shrink-0">
                                 <img
                                     src={banner.image}
                                     alt={banner.title}
@@ -261,7 +261,7 @@ export function MobileHeroSection() {
                                 {featuredCards.map((trip) => (
                                     <div
                                         key={trip.id}
-                                        className="min-w-[75%] flex-shrink-0"
+                                        className="min-w-[75%] shrink-0"
                                     >
                                         <TripCard {...trip} />
                                     </div>
@@ -298,7 +298,7 @@ export function MobileHeroSection() {
                                         {featuredCards.map((trip) => (
                                             <div
                                                 key={trip.id}
-                                                className="flex-shrink-0 basis-1/4 p-2"
+                                                className="shrink-0 basis-1/4 p-2"
                                             >
                                                 <TripCard {...trip} />
                                             </div>

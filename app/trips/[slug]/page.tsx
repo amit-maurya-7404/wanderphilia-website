@@ -61,10 +61,10 @@ export default async function TripDetailPage({ params }: TripDetailPageProps) {
   const heroMedia = trip.heroMedia || [{ type: 'image' as const, src: trip.image, alt: trip.title }]
 
   const datesByMonth = trip.dates.reduce((groups, date) => {
-    const month = new Date(date.startDate).toLocaleDateString('en-US', {
-      month: 'long',
-      year: 'numeric',
+    const monthShort = new Date(date.startDate).toLocaleDateString('en-US', {
+      month: 'short',
     })
+    const month = `${monthShort} 2025`
 
     if (!groups[month]) {
       groups[month] = []
