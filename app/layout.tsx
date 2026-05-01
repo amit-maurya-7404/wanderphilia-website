@@ -11,7 +11,6 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: 'Wanderphilia - Explore the Unseen',
   description: 'Discover extraordinary travel experiences with Wanderphilia. Premium adventure trips curated for wanderlust seekers.',
-  generator: 'v0.app',
   icons: {
     icon: '/images/LOGO.png',
     apple: '/images/LOGO.png',

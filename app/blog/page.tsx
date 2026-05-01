@@ -9,7 +9,7 @@ export default function BlogPage() {
     <div className="min-h-screen flex flex-col bg-white">
       <Navbar />
       <main className="grow">
-        <section className="relative overflow-hidden bg-slate-950 text-white">
+        <section className="relative overflow-hidden bg-slate-950 text-white pt-20">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(96,165,250,0.24),_transparent_30%),radial-gradient(circle_at_bottom_left,_rgba(168,85,247,0.16),_transparent_30%)]" />
           <div className="relative mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
             <div className="max-w-3xl">

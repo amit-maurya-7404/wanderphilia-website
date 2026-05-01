@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { trips } from '@/lib/data'
+import { getPageSectionMapping } from '@/lib/section-mappings'
 import { TripCard } from '@/components/trip-card'
 
 export function UpcomingGroupToursSection() {
@@ -28,11 +29,17 @@ export function UpcomingGroupToursSection() {
     setIndex(0)
   }, [cardsPerView])
 
-  const upcomingTrips = trips
+  const upcomingTourIds = getPageSectionMapping('upcomingTours')
+  const upcomingTrips = upcomingTourIds
+    .map((id) => trips.find((trip) => trip.id === id))
+    .filter((trip): trip is typeof trips[number] => Boolean(trip))
+
+  const fallbackUpcomingTrips = trips
     .filter((trip) => trip.dates.some((date) => date.spots > 0))
     .slice(0, 6)
 
-  const maxIndex = Math.max(0, upcomingTrips.length - cardsPerView)
+  const displayUpcomingTrips = upcomingTrips.length > 0 ? upcomingTrips : fallbackUpcomingTrips
+  const maxIndex = Math.max(0, displayUpcomingTrips.length - cardsPerView)
 
   const nextSlide = () => {
     setIndex((prev) => Math.min(prev + 1, maxIndex))
@@ -65,7 +72,7 @@ export function UpcomingGroupToursSection() {
           {/* ✅ MOBILE SCROLLER */}
           {isMobile ? (
             <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
-              {upcomingTrips.map((trip) => (
+              {displayUpcomingTrips.map((trip) => (
                 <div
                   key={trip.id}
                   className="min-w-[75%] flex-shrink-0"
@@ -102,7 +109,7 @@ export function UpcomingGroupToursSection() {
                     transform: `translateX(-${index * (100 / cardsPerView)}%)`,
                   }}
                 >
-                  {upcomingTrips.map((trip) => (
+                  {displayUpcomingTrips.map((trip) => (
                     <div
                       key={trip.id}
                       className="flex-shrink-0 basis-1/4 p-2"

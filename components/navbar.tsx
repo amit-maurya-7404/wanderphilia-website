@@ -33,7 +33,7 @@ export function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 w-full z-[9999] transition-all duration-500 ease-in-out ${isScrolled
+       className={`fixed top-0 left-0 w-full z-[9999] transition-all duration-500 ease-in-out ${isScrolled
         ? 'bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-200/50'
         : 'bg-transparent backdrop-blur-sm '
         }`}
@@ -58,14 +58,14 @@ export function Navbar() {
                 {getCategoriesByType('India').map((category) => (
                   <Link
                     key={category.id}
-                    href={`/category/${category.id}`}
+                    href={`/trips/${category.id}`}
                     className="block px-4 py-3 text-gray-700 hover:bg-primary/10 hover:text-primary font-medium text-sm rounded-lg mx-2 transition-colors"
                   >
                     {category.name}
                   </Link>
                 ))}
                 <div className="border-t border-gray-200 my-2" />
-                <Link href="/trips?type=India" className="block px-4 py-3 text-primary font-bold text-sm rounded-lg mx-2 hover:bg-primary/5 transition-colors">
+                <Link href="/upcoming-tours" className="block px-4 py-3 text-primary font-bold text-sm rounded-lg mx-2 hover:bg-primary/5 transition-colors">
                   View All India Trips
                 </Link>
               </div>
@@ -80,14 +80,14 @@ export function Navbar() {
                 {getCategoriesByType('International').map((category) => (
                   <Link
                     key={category.id}
-                    href={`/category/${category.id}`}
+                    href={`/trips/${category.id}`}
                     className="block px-4 py-3 text-gray-700 hover:bg-primary/10 hover:text-primary font-medium text-sm rounded-lg mx-2 transition-colors"
                   >
                     {category.name}
                   </Link>
                 ))}
                 <div className="border-t border-gray-200 my-2" />
-                <Link href="/trips?type=International" className="block px-4 py-3 text-primary font-bold text-sm rounded-lg mx-2 hover:bg-primary/5 transition-colors">
+                <Link href="/upcoming-tours" className="block px-4 py-3 text-primary font-bold text-sm rounded-lg mx-2 hover:bg-primary/5 transition-colors">
                   View All International
                 </Link>
               </div>
@@ -108,19 +108,14 @@ export function Navbar() {
           </div>
 
           <div className="hidden md:flex items-center gap-4">
-            <Button asChild className={`px-6 py-2 rounded-lg font-semibold transition-all ${isScrolled || isAboutPage ? 'bg-primary hover:bg-primary/90 text-white' : 'bg-white text-white hover:bg-white/90'}`}>
-              <Link href="/trips">Explore Now</Link>
+            <Button asChild className="px-6 py-2 rounded-lg font-semibold transition-all bg-primary hover:bg-primary/90 text-white">
+              <Link href="/upcoming-tours">Explore Now</Link>
             </Button>
           </div>
 
           <div className="md:hidden relative z-[1000]">
             <button
-              className={`p-3 h-12 w-12 flex items-center justify-center rounded-lg transition-all duration-300 border-2 focus:outline-none focus:ring-2 ${isAboutPage
-                  ? 'bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-200/50'
-                  : isScrolled
-                    ? 'bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-200/50'
-                    : 'bg-transparent backdrop-blur-sm'
-                }`}
+              className="p-3 h-12 w-12 flex items-center justify-center rounded-lg transition-all duration-300 border-2 focus:outline-none focus:ring-2 bg-white shadow-lg border-gray-200"
               onTouchStart={(e) => {
                 e.preventDefault()
                 e.stopPropagation()
@@ -165,7 +160,7 @@ export function Navbar() {
                   {getCategoriesByType('India').map((category) => (
                     <Link
                       key={category.id}
-                      href={`/category/${category.id}`}
+                      href={`/trips/${category.id}`}
                     className="block px-6 py-3 text-sm text-gray-600 hover:text-primary hover:bg-gray-100 transition-colors"
                     onClick={() => setIsMobileOpen(false)}
                   >
@@ -173,7 +168,7 @@ export function Navbar() {
                   </Link>
                 ))}
               <div className="border-t border-gray-200 my-1" />
-              <Link href="/trips?type=India" className="block px-6 py-3 text-sm font-semibold text-primary hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
+              <Link href="/upcoming-tours" className="block px-6 py-3 text-sm font-semibold text-primary hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
                 View All India Trips
               </Link>
             </div>
@@ -189,7 +184,7 @@ export function Navbar() {
               {getCategoriesByType('International').map((category) => (
                 <Link
                   key={category.id}
-                  href={`/category/${category.id}`}
+                  href={`/trips/${category.id}`}
                   className="block px-6 py-3 text-sm text-gray-600 hover:text-primary hover:bg-gray-100 transition-colors"
                   onClick={() => setIsMobileOpen(false)}
                 >
@@ -197,7 +192,7 @@ export function Navbar() {
                 </Link>
               ))}
               <div className="border-t border-gray-200 my-1" />
-              <Link href="/trips?type=International" className="block px-6 py-3 text-sm font-semibold text-primary hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
+              <Link href="/upcoming-tours" className="block px-6 py-3 text-sm font-semibold text-primary hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
                 View All International
               </Link>
             </div>

@@ -9,7 +9,7 @@ import { TripCard } from '@/components/trip-card'
 import { trips } from '@/lib/data'
 import { Button } from '@/components/ui/button'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { getCategoriesByType } from '@/lib/trip-categories'
+import { getAllCategories } from '@/lib/trip-categories'
 
 export default function TripsPage() {
   const searchParams = useSearchParams()
@@ -32,32 +32,10 @@ export default function TripsPage() {
     '/images/kashmir.jpg',
   ]
 
-  // Extract unique categories from trips
-  const categories = useMemo(() => {
-    const categoryImageMap: Record<string, string> = {
-      Bhutan: '/images/Bhutan_cat.jpg',
-      Nepal: '/images/nepal-dest.jpg',
-      Indonesia: '/images/indonesia-dest.jpg',
-      Switzerland: '/images/switzerland-dest.jpg',
-      Peru: '/images/peru-dest.jpg',
-      Japan: '/images/japan.jpg',
-      'Leh Ladakh': '/images/leh-ladakh.jpg',
-      Spiti: '/images/spiti-valley.jpg',
-      Kashmir: '/images/kashmir.jpg',
-      Meghalaya: '/images/meghalaya.jpg',
-      Himachal: '/images/himachal.jpg'
-    }
-
-    const cats = Array.from(new Set(trips.map(t => t.category))).sort()
-    return [
-      { id: 'all', name: 'All', image: '/images/dummy1.jpg' },
-      ...cats.map((cat) => ({
-        id: cat.toLowerCase().replace(/\s+/g, '-'),
-        name: cat,
-        image: categoryImageMap[cat] || `/images/${cat.toLowerCase().replace(/\s+/g, '-')}.jpg`
-      }))
-    ]
-  }, [])
+  const categories = useMemo(() => [
+    { id: 'all', name: 'All', image: '/images/dummy1.jpg' },
+    ...getAllCategories()
+  ], [])
 
   // Get categories by trip type for display - show all categories
   const displayCategories = useMemo(() => {
@@ -287,7 +265,7 @@ export default function TripsPage() {
                         setSelectedCategory(category.name)
                         setShowAllCards(false)
                       } else {
-                        router.push(`/category/${category.id}`)
+                        router.push(`/trips/${category.id}`)
                       }
                     }}
                   >

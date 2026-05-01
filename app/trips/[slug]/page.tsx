@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
 import { TripHeroCarousel } from '@/components/trip-hero-carousel'
+import { ExpandableText } from '@/components/expandable-text'
 import { TripDetailActions } from '@/components/trip-detail-actions'
 import { UpcomingDepartures } from '@/components/upcoming-departures'
 import { trips } from '@/lib/data'
@@ -73,8 +74,20 @@ export default async function TripDetailPage({ params }: TripDetailPageProps) {
     return groups
   }, {} as Record<string, typeof trip.dates>)
 
+  const lowestPrice = trip.costingDetails?.length
+    ? trip.costingDetails
+        .map((item) => {
+          const match = item.value.match(/[\d,]+/)
+          return match ? parseInt(match[0].replace(/,/g, ''), 10) : NaN
+        })
+        .filter((value) => !Number.isNaN(value) && value > 0)
+        .reduce((min, value) => Math.min(min, value), Infinity)
+    : trip.price
+
+  const displayPrice = Number.isFinite(lowestPrice) ? lowestPrice : trip.price
+
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="min-h-screen flex flex-col bg-white overflow-x-hidden">
       <Navbar />
       <main className="flex-grow">
         {/* Hero Carousel */}
@@ -99,7 +112,7 @@ export default async function TripDetailPage({ params }: TripDetailPageProps) {
                 </div>
                 <div className="text-left lg:text-right">
                   <p className="text-3xl lg:text-4xl font-bold text-primary mb-1">
-                    ₹{trip.price.toLocaleString('en-IN')}
+                    ₹{displayPrice.toLocaleString('en-IN')}
                   </p>
                   <p className="text-sm text-gray-600">per person</p>
                 </div>
@@ -176,9 +189,7 @@ export default async function TripDetailPage({ params }: TripDetailPageProps) {
                 <h2 className="text-[6vw] md:text-[2.4vw] font-bold text-gray-900 mb-4">
                   Overview
                 </h2>
-                <p className="text-[4vw] md:text-[1.5vw] text-gray-700 leading-relaxed">
-                  {trip.description}
-                </p>
+                <ExpandableText text={trip.description} />
               </section>
 
               {/* Highlights */}
@@ -202,34 +213,48 @@ export default async function TripDetailPage({ params }: TripDetailPageProps) {
                   Detailed Itinerary
                 </h2>
                 <div className="space-y-4">
-                  {trip.itinerary.map((day) => (
-                    <Card key={day.day} className="overflow-hidden border-l-4 border-primary">
-                      <div className="grid gap-4 lg:grid-cols-[280px_1fr] p-4">
-                        <div className="h-46 overflow-hidden rounded-3xl bg-slate-100">
-                          <Image
-                            src={day.image ?? trip.image}
-                            alt={day.title}
-                            width={560}
-                            height={360}
-                            className="h-full w-full object-cover"
-                          />
-                        </div>
-                        <div className="flex flex-col justify-between">
-                          <div>
-                            <Badge className="bg-primary text-white text-lg py-2 px-3 mb-4 inline-flex items-center">
-                              Day {day.day}
-                            </Badge>
-                            <h3 className="text-[5vw] md:text-[1.8vw] font-semibold text-gray-900 mb-2">
-                              {day.title}
-                            </h3>
-                            <p className="text-[4vw] md:text-[1.4vw] text-gray-700 leading-relaxed">
-                              {day.description}
-                            </p>
+                  {Array.isArray(trip.itinerary) && trip.itinerary.length > 0 ? (
+                    trip.itinerary.map((day) => (
+                      <Card key={day.day} className="overflow-hidden border-l-4 border-primary">
+                        <div className="grid gap-4 lg:grid-cols-[280px_1fr] p-4">
+                          <div className="h-46 overflow-hidden rounded-3xl bg-slate-100">
+                            <Image
+                              src={day.image ?? trip.image}
+                              alt={day.title}
+                              width={560}
+                              height={360}
+                              className="h-full w-full object-cover"
+                            />
+                          </div>
+                          <div className="flex flex-col justify-between">
+                            <div>
+                              <Badge className="bg-primary text-white text-lg py-2 px-3 mb-4 inline-flex items-center">
+                                Day {day.day}
+                              </Badge>
+                              <h3 className="text-[5vw] md:text-[1.8vw] font-semibold text-gray-900 mb-2">
+                                {day.title}
+                              </h3>
+                              {Array.isArray(day.description) ? (
+                                <ul className="list-disc list-inside space-y-2 text-[4vw] md:text-[1.4vw] text-gray-700 leading-relaxed">
+                                  {day.description.map((point, idx) => (
+                                    <li key={idx}>{point}</li>
+                                  ))}
+                                </ul>
+                              ) : (
+                                <p className="text-[4vw] md:text-[1.4vw] text-gray-700 leading-relaxed">
+                                  {day.description}
+                                </p>
+                              )}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </Card>
-                  ))}
+                      </Card>
+                    ))
+                  ) : (
+                    <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-6 text-slate-600">
+                      Itinerary details will be available shortly.
+                    </div>
+                  )}
                 </div>
               </section>
 
@@ -365,34 +390,23 @@ export default async function TripDetailPage({ params }: TripDetailPageProps) {
                         </div>
                         <div className="mt-6 space-y-2">
                           <p className="text-sm text-slate-500 line-through">
-                            INR {Math.round(trip.price * 1.3).toLocaleString('en-IN')}
+                            INR {Math.round(displayPrice * 1.3).toLocaleString('en-IN')}
                           </p>
                           <p className="text-3xl font-bold text-primary">
-                            INR {trip.price.toLocaleString('en-IN')}
+                            INR {displayPrice.toLocaleString('en-IN')}
                           </p>
                           <p className="text-sm font-semibold text-emerald-600">
-                            SAVE INR {Math.round(trip.price * 0.3).toLocaleString('en-IN')}
+                            SAVE INR {Math.round(displayPrice * 0.3).toLocaleString('en-IN')}
                           </p>
                           <p className="text-xs text-slate-500">/Adult</p>
                         </div>
                       </div>
                     </div>
 
-                    <div className="grid gap-3 sm:grid-cols-2">
-                      <a
-                        href={`tel:${contactPhone}`}
-                        className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-300 bg-white px-5 py-4 text-center text-sm font-semibold text-slate-900 transition hover:bg-slate-100"
-                      >
-                        <Phone size={18} />
-                        Call Now
-                      </a>
-                      <a
-                        href={`mailto:${contactEmail}`}
-                        className="inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-5 py-4 text-center text-sm font-semibold text-white transition hover:bg-primary/90"
-                      >
-                        <MessageCircle size={18} />
-                        Request Callback
-                      </a>
+                    <div className="rounded-3xl border border-slate-200 bg-slate-50 p-5 shadow-sm">
+                      <p className="text-sm text-slate-600">
+                        This is the static starting price for the trip. No booking actions are shown here.
+                      </p>
                     </div>
                   </div>
                 </Card>
@@ -432,21 +446,11 @@ export default async function TripDetailPage({ params }: TripDetailPageProps) {
 
       <div className="fixed inset-x-0 bottom-0 z-50 md:hidden">
         <div className="mx-0 mb-0 rounded-3xl border border-slate-200 bg-white p-4 shadow-xl shadow-slate-950/10">
-          <div className="flex flex-row  sm:flex-row items-center justify-between">
+          <div className="flex items-center justify-between">
             <div>
               <p className="text-xs uppercase tracking-[0.2em] text-slate-500">From</p>
-              <p className="text-lg font-semibold text-slate-900">INR {trip.price.toLocaleString('en-IN')}</p>
-            </div>
-            <div className="flex items-center gap-2">
-              <button className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-100 text-slate-700 shadow-sm">
-                <MessageCircle size={18} />
-              </button>
-              {/* <button className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-100 text-slate-700 shadow-sm">
-                <Phone size={18} />
-              </button> */}
-              <Button className="h-11 rounded-2xl bg-primary px-5 text-sm font-semibold text-white shadow-sm hover:bg-primary/90">
-                Book Now
-              </Button>
+              <p className="text-lg font-semibold text-slate-900">INR {displayPrice.toLocaleString('en-IN')}</p>
+              <p className="text-xs text-slate-500">Per person</p>
             </div>
           </div>
         </div>

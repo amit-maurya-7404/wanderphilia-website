@@ -6,16 +6,15 @@ import type { TripMediaItem } from '@/lib/data'
 
 interface TripHeroCarouselProps {
   media: TripMediaItem[]
+  className?: string
 }
 
-export function TripHeroCarousel({ media }: TripHeroCarouselProps) {
+export function TripHeroCarousel({ media, className }: TripHeroCarouselProps) {
   const [activeIndex, setActiveIndex] = React.useState(0)
   const hasMultiple = media.length > 1
 
   React.useEffect(() => {
-    if (!hasMultiple) {
-      return
-    }
+    if (!hasMultiple) return
 
     const timer = window.setInterval(() => {
       setActiveIndex((current) => (current + 1) % media.length)
@@ -24,23 +23,18 @@ export function TripHeroCarousel({ media }: TripHeroCarouselProps) {
     return () => window.clearInterval(timer)
   }, [hasMultiple, media.length])
 
-  const activeItem = media[activeIndex]
-
   return (
-    <div className="relative h-[40vh] md:h-[70vh]  overflow-hidden bg-transparent">
+    <div className={`absolute inset-0 w-full h-full overflow-hidden ${className || ''}`}>
+
       {media.map((item, index) => (
         <div
           key={`${item.src}-${index}`}
-          className={
-            index === activeIndex
-              ? 'absolute inset-0 backdrop-opacity-100 transition-opacity duration-700'
-              : 'absolute inset-0 opacity-0 transition-opacity duration-700'
-          }
-          aria-hidden={index !== activeIndex}
+          className={`absolute inset-0 transition-opacity duration-700 ${index === activeIndex ? 'opacity-100' : 'opacity-0'
+            }`}
         >
           {item.type === 'video' ? (
             <video
-              className="h-full w-full object-cover"
+              className="w-full h-full object-cover"
               src={item.src}
               poster={item.poster}
               autoPlay
@@ -60,19 +54,17 @@ export function TripHeroCarousel({ media }: TripHeroCarouselProps) {
         </div>
       ))}
 
-      <div className="absolute inset-0  pointer-events-none" />
-      <div className="absolute inset-x-0 bottom-5 flex items-center justify-center gap-2">
+      {/* DOTS */}
+      <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2 z-10">
         {media.map((_, index) => (
           <button
             key={index}
-            type="button"
             onClick={() => setActiveIndex(index)}
             className={
               index === activeIndex
-                ? 'h-2.5 w-8 rounded-full bg-white shadow'
+                ? 'h-2.5 w-8 rounded-full bg-white'
                 : 'h-2.5 w-2.5 rounded-full bg-white/50'
             }
-            aria-label={`Show slide ${index + 1}`}
           />
         ))}
       </div>

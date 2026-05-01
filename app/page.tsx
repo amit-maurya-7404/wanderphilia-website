@@ -14,13 +14,22 @@ import { InstagramSection } from '@/components/instagram-section'
 import { ReviewsSection } from '@/components/reviews-section'
 import { PhotoGallerySection } from '@/components/photo-gallery-section'
 import { VideoTestimonialsSection } from '@/components/video-testimonials-section'
+import { MobileHeroSection } from '@/components/mobile-hero-section'
 
 export default function Home() {
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <Navbar />
       <main className="grow">
-        <HeroSection />
+        {/* Desktop Hero */}
+        <div className="hidden md:block">
+          <HeroSection />
+        </div>
+
+        {/* Mobile Hero */}
+        <div className="block md:hidden">
+          <MobileHeroSection />
+        </div>
         <section id="upcoming-tours">
           <UpcomingGroupToursSection />
         </section>
@@ -34,11 +43,11 @@ export default function Home() {
         {/* <DestinationsSection /> */}
         <BlogsPreviewSection />
         <PhotoGallerySection />
-        <InstagramSection />
+        {/* <InstagramSection /> */}
         <ReviewsSection />
-        <VideoTestimonialsSection />
+        {/* <VideoTestimonialsSection /> */}
         {/* <FeaturesSection /> */}
-        <TestimonialsSection />
+        {/* <TestimonialsSection /> */}
         <CTASection />
       </main>
       <Footer />

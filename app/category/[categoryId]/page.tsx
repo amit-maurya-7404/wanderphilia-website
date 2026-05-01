@@ -8,6 +8,7 @@ import { TripCard } from '@/components/trip-card'
 import { ReviewCard } from '@/components/review-card'
 import { GalleryGrid } from '@/components/gallery-grid'
 import { trips } from '@/lib/data'
+import { getSectionMapping } from '@/lib/section-mappings'
 import { useParams } from 'next/navigation'
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react'
 
@@ -75,27 +76,28 @@ export default function CategoryPage() {
 
   const categoryName = categoryMapping[categoryId] || categoryId
 
-  // Get all trips for this category
+  // Central mapping system for trip sections
+  const sectionMap = getSectionMapping(categoryId)
+
+  // Helper function to get trips by section
+  const getTripsBySection = (section: keyof typeof sectionMap) => {
+    const tripIds = sectionMap[section]
+    return trips.filter(trip => tripIds.includes(trip.id))
+  }
+
+  // Get all trips for this category (available packages)
   const categoryTrips = useMemo(() => {
-    return trips.filter(trip =>
-      trip.category === categoryName ||
-      trip.category.toLowerCase() === categoryId
-    )
-  }, [categoryId, categoryName])
+    return getTripsBySection('available')
+  }, [])
 
   // Get first trip for category description/type
   const firstTrip = categoryTrips[0]
   const isCategoryInternational = firstTrip?.tripType === 'International'
 
-  // Get related packages (same trip type, different categories)
+  // Get related packages (other India destinations)
   const relatedPackages = useMemo(() => {
-    const filtered = trips.filter(trip =>
-      trip.category !== categoryName &&
-      trip.tripType === (firstTrip?.tripType || 'India')
-    )
-    // Return first 6 packages without shuffling to avoid hydration mismatch
-    return filtered.slice(0, 6)
-  }, [categoryName, firstTrip?.tripType])
+    return getTripsBySection('related')
+  }, [])
 
   // Create carousel images - use trip images from category or fallback to dummy images
   const carouselImages = useMemo(() => {
@@ -178,137 +180,13 @@ export default function CategoryPage() {
 
   // Family Packages Data
   const familyPackages = useMemo(() => {
-    const tripTypeValue: 'India' | 'International' = isCategoryInternational ? 'International' : 'India'
-    return [
-      {
-        id: `family-1-${categoryId}`,
-        title: `Family ${categoryName} Adventure`,
-        image: '/images/dummy1.jpg',
-        destination: categoryName,
-        duration: 5,
-        price: 45000,
-        rating: 4.8,
-        slug: `family-adventure-${categoryId}`,
-        category: categoryName,
-        tripType: tripTypeValue,
-        description: `Experience ${categoryName} with your family on this specially designed package`,
-        difficulty: 'Easy' as const,
-        groupSize: 10,
-        highlights: ['Family-friendly activities', 'Comfortable accommodation', 'Kid-safe attractions'],
-        itinerary: [],
-        included: ['Hotel', 'Meals', 'Guides'],
-        notIncluded: ['Flights'],
-        dates: [{ startDate: '2024-05-01', endDate: '2024-05-05', spots: 10 }]
-      },
-      {
-        id: `family-2-${categoryId}`,
-        title: `Family ${categoryName} Getaway`,
-        image: '/images/dummy2.jpg',
-        destination: categoryName,
-        duration: 7,
-        price: 65000,
-        rating: 4.9,
-        slug: `family-getaway-${categoryId}`,
-        category: categoryName,
-        tripType: tripTypeValue,
-        description: `Extended family vacation package for ${categoryName}`,
-        difficulty: 'Easy' as const,
-        groupSize: 12,
-        highlights: ['Extended stay', 'Multiple attractions', 'Family activities'],
-        itinerary: [],
-        included: ['Hotel', 'Meals', 'Guides', 'Activities'],
-        notIncluded: ['Flights'],
-        dates: [{ startDate: '2024-06-01', endDate: '2024-06-07', spots: 12 }]
-      },
-      {
-        id: `family-3-${categoryId}`,
-        title: `Family ${categoryName} Explorer`,
-        image: '/images/dummy3.jpg',
-        destination: categoryName,
-        duration: 10,
-        price: 89000,
-        rating: 4.7,
-        slug: `family-explorer-${categoryId}`,
-        category: categoryName,
-        tripType: tripTypeValue,
-        description: `Complete family exploration of ${categoryName}`,
-        difficulty: 'Moderate' as const,
-        groupSize: 15,
-        highlights: ['Complete tour', 'All attractions', 'Expert guides'],
-        itinerary: [],
-        included: ['Hotel', 'Meals', 'Guides', 'Activities', 'Transportation'],
-        notIncluded: ['Flights'],
-        dates: [{ startDate: '2024-07-01', endDate: '2024-07-10', spots: 15 }]
-      },
-      {
-        id: `family-4-${categoryId}`,
-        title: `Family ${categoryName} Experience`,
-        image: '/images/dummy4.jpg',
-        destination: categoryName,
-        duration: 6,
-        price: 55000,
-        rating: 4.85,
-        slug: `family-experience-${categoryId}`,
-        category: categoryName,
-        tripType: tripTypeValue,
-        description: `Immersive family experience in ${categoryName}`,
-        difficulty: 'Easy' as const,
-        groupSize: 10,
-        highlights: ['Cultural experiences', 'Local food', 'Family entertainment'],
-        itinerary: [],
-        included: ['Hotel', 'Meals', 'Guides'],
-        notIncluded: ['Flights'],
-        dates: [{ startDate: '2024-08-01', endDate: '2024-08-06', spots: 10 }]
-      }
-    ]
-  }, [categoryId, categoryName, isCategoryInternational])
+    return getTripsBySection('family')
+  }, [])
 
   // Customized Packages Data
   const customizedPackages = useMemo(() => {
-    const tripTypeValue: 'India' | 'International' = isCategoryInternational ? 'International' : 'India'
-    return [
-      {
-        id: `custom-1-${categoryId}`,
-        title: `Build Your ${categoryName} Trip`,
-        image: '/images/dummy3.jpg',
-        destination: categoryName,
-        duration: 0,
-        price: 0,
-        rating: 5,
-        slug: `custom-build-${categoryId}`,
-        category: categoryName,
-        tripType: tripTypeValue,
-        description: `Create your custom itinerary for ${categoryName}`,
-        difficulty: 'Easy' as const,
-        groupSize: 0,
-        highlights: ['Custom duration', 'Choose activities', 'Flexible dates'],
-        itinerary: [],
-        included: [],
-        notIncluded: [],
-        dates: []
-      },
-      {
-        id: `custom-2-${categoryId}`,
-        title: `Talk to ${categoryName} Expert`,
-        image: '/images/dummy4.jpg',
-        destination: categoryName,
-        duration: 0,
-        price: 0,
-        rating: 5,
-        slug: `custom-expert-${categoryId}`,
-        category: categoryName,
-        tripType: tripTypeValue,
-        description: `Get expert guidance for your ${categoryName} trip`,
-        difficulty: 'Easy' as const,
-        groupSize: 0,
-        highlights: ['Expert consultation', 'Personalized plan', 'Best value'],
-        itinerary: [],
-        included: [],
-        notIncluded: [],
-        dates: []
-      }
-    ]
-  }, [categoryId, categoryName, isCategoryInternational])
+    return getTripsBySection('custom')
+  }, [])
 
   // Compute review statistics
   const reviewStats = useMemo(() => {
@@ -327,7 +205,7 @@ export default function CategoryPage() {
 
       <main className="flex-grow">
         {/* Hero Section with Carousel */}
-        <section className="relative overflow-hidden bg-slate-950 min-h-[500px] flex items-center justify-center">
+        <section className="relative overflow-hidden bg-slate-950 min-h-[500px] flex items-center justify-center pt-20">
           {/* Background Carousel */}
           <div className="absolute inset-0 z-0">
             {carouselImages.map((image, index) => (

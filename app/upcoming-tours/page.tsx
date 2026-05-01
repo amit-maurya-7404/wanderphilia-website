@@ -1,39 +1,83 @@
-import Link from 'next/link'
+'use client'
+
+import { useState } from 'react'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
 import { UpcomingGroupToursSection } from '@/components/upcoming-group-tours-section'
+import { Button } from '@/components/ui/button'
+import { MessageCircle, Phone } from 'lucide-react'
+import { TripHeroCarousel } from '@/components/trip-hero-carousel'
+import { RequestCallbackDialog } from '@/components/request-callback-dialog'
+import type { TripMediaItem } from '@/lib/data'
+
+const heroMedia: TripMediaItem[] = [
+  { type: 'image', src: '/images/dummy1.jpg', alt: 'Scenic upcoming tour landscape' },
+  { type: 'image', src: '/images/dummy2.jpg', alt: 'Group travelers exploring outdoors' }
+]
+
+
 
 export default function UpcomingToursPage() {
+  const [callbackOpen, setCallbackOpen] = useState(false)
+  const categoryName = 'Upcoming Tours'
+
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <Navbar />
       <main className="grow">
-        <section className="relative overflow-hidden bg-slate-950 text-white">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(56,189,248,0.28),_transparent_30%),radial-gradient(circle_at_bottom_left,_rgba(168,85,247,0.18),_transparent_30%)]" />
-          <div className="relative mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
-            <div className="max-w-3xl">
-              <p className="inline-flex rounded-full bg-primary/10 px-4 py-1 text-sm font-semibold uppercase tracking-[0.24em] text-primary">
-                Upcoming Tours
-              </p>
-              <h1 className="mt-6 text-4xl font-bold tracking-tight sm:text-5xl">
-                Join our next curated small-group adventures.
-              </h1>
-              <p className="mt-6 max-w-2xl text-lg text-slate-200 leading-8">
-                Discover handcrafted itineraries for travelers who want immersive experiences, expert guides, and seamless planning.
-              </p>
-              <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-                <Link href="/trips?type=Group" className="inline-flex items-center justify-center rounded-full bg-primary px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-primary/20 transition hover:bg-primary/90">
-                  Browse Tours
-                </Link>
-                <Link href="/contact" className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-7 py-3 text-sm font-semibold text-white transition hover:bg-white/20">
-                  Plan a group trip
-                </Link>
+        <div className="relative h-[50vh] sm:h-[50vh] md:h-[70vh] min-h-[50vh] overflow-hidden ">
+          <TripHeroCarousel media={heroMedia} />
+
+          <div className="absolute inset-0 bg-linear-to-r from-slate-950/90 via-slate-950/40 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 flex items-end">
+            <div className="w-full max-w-6xl mx-auto px-4 sm:px-5 md:px-6 pb-6 sm:pb-8 lg:pb-10 ">
+              <div className=" text-white">
+                <div className="max-w-2xl ">
+                  <div className="mb-4 inline-flex items-center rounded-full bg-amber-400/15 px-3 py-1 text-sm font-semibold text-amber-200 ring-1 ring-amber-300/20">
+                    {categoryName}
+                  </div>
+
+                  <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold tracking-normal leading-tight">
+                    Discover the next journeys crafted for curious travelers.
+                  </h1>
+
+                  {/* <p className="mt-4 text-sm sm:text-base md:text-lg max-w-2xl text-slate-100 leading-7">
+                    Modern group tours with vibrant itineraries, local experts, and seamless support for every step.
+                  </p> */}
+
+                  <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
+                    <Button
+                      size="lg"
+                      className="min-w-45 bg-amber-400 text-white hover:bg-amber-300"
+                      onClick={() => setCallbackOpen(true)}
+                    >
+                      <Phone size={18} className="mr-2" /> Request a Callback
+                    </Button>
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="min-w-45 border-white/60 text-slate-800 hover:text-white hover:border-white hover:bg-white/10 bg-white"
+                      onClick={() => {
+                        const message = `Hi! I'm planning for a trip. Can you help me with details?`
+
+                        const encodedMessage = encodeURIComponent(message)
+
+                        window.open(
+                          `https://wa.me/919217664099?text=${encodedMessage}`,
+                          '_blank'
+                        )
+                      }}
+                    >
+                      <MessageCircle size={18} className="mr-2" /> Chat With Us
+                    </Button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </section>
+        </div>
 
-        <section className="bg-slate-50 py-16 md:py-24">
+        {/* <section className="bg-slate-50 py-16 md:py-24">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="grid gap-12 lg:grid-cols-[1.3fr_0.9fr] lg:items-start">
               <div className="rounded-[2rem] border border-slate-200/80 bg-white p-10 shadow-sm">
@@ -76,15 +120,21 @@ export default function UpcomingToursPage() {
               </div>
             </div>
           </div>
-        </section>
+        </section> */}
 
-        <section className="py-16 md:py-24">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section className="py-3 md:py-0">
+          <div className="max-w-full mx-auto ">
             <UpcomingGroupToursSection />
           </div>
         </section>
       </main>
       <Footer />
+      <RequestCallbackDialog
+        open={callbackOpen}
+        onOpenChange={setCallbackOpen}
+        title={categoryName}
+        price={0}
+      />
     </div>
   )
 }

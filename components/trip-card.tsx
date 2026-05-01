@@ -3,11 +3,7 @@
 import { useRef, useState } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { Phone, MessageCircle, Star } from 'lucide-react'
 import type { Trip } from '@/lib/data'
-import { contactPhone } from '@/lib/contact'
-import { RequestCallbackDialog } from '@/components/request-callback-dialog'
-import { DialogDescription } from '@/components/ui/dialog'
 
 type TripCardProps = Trip
 
@@ -21,13 +17,23 @@ export function TripCard({
   slug,
   category,
   itinerary,
+  costingDetails,
 }: TripCardProps) {
   const router = useRouter()
   const [callbackOpen, setCallbackOpen] = useState(false)
   const ignoreClickRef = useRef(false)
 
-  const originalPrice = Math.round(price * 1.3)
-  const savings = originalPrice - price
+  const lowestPrice = costingDetails?.length
+    ? costingDetails
+        .map((item) => {
+          const match = item.value.match(/[\d,]+/)
+          return match ? parseInt(match[0].replace(/,/g, ''), 10) : NaN
+        })
+        .filter((value) => !Number.isNaN(value) && value > 0)
+        .reduce((min, value) => Math.min(min, value), Infinity)
+    : price
+
+  const displayPrice = Number.isFinite(lowestPrice) ? lowestPrice : price
   const routeSummary = itinerary?.length
     ? itinerary.slice(0, 4).map((day) => `${day.day}D ${day.title}`).join(' • ') + (itinerary.length > 4 ? ` • +${itinerary.length - 4}` : '')
     : destination
@@ -39,7 +45,7 @@ export function TripCard({
     <div
       onClick={() => {
         if (callbackOpen || ignoreClickRef.current) return
-        router.push(`/category/${categoryId}/${slug}`)
+        router.push(`/trips/${categoryId}/${slug}`)
       }}
       className="group relative overflow-hidden rounded-lg shadow-xl h-[50vh] md:h-[60vh] cursor-pointer"
     >
@@ -56,7 +62,7 @@ export function TripCard({
 
       {/* TOP PRICE BADGE */}
       <div className="absolute top-4 left-4 bg-yellow-400 text-black text-xs font-bold px-3 py-1 rounded-full">
-        ₹{price.toLocaleString('en-IN')} onwards
+        ₹{displayPrice.toLocaleString('en-IN')} onwards
       </div>
 
       {/* BOTTOM CONTENT */}

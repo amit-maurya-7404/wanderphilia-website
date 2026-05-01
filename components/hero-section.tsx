@@ -8,36 +8,14 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { MapPin, ArrowRight, Search } from 'lucide-react'
 import { MobileHeroSection } from './mobile-hero-section'
-import { trips } from '@/lib/data'
+import { getAllCategories } from '@/lib/trip-categories'
 
 export function HeroSection() {
   const [destination, setDestination] = useState('')
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const router = useRouter()
 
-  // Extract categories from trips data
-  const categories = useMemo(() => {
-    const categoryImageMap: Record<string, string> = {
-      Bhutan: '/images/Bhutan_cat.jpg',
-      Nepal: '/images/nepal-dest.jpg',
-      Indonesia: '/images/indonesia-dest.jpg',
-      Switzerland: '/images/switzerland-dest.jpg',
-      Peru: '/images/peru-dest.jpg',
-      Japan: '/images/japan.jpg',
-      'Leh Ladakh': '/images/leh-ladakh.jpg',
-      Spiti: '/images/spiti-valley.jpg',
-      Kashmir: '/images/kashmir.jpg',
-      Meghalaya: '/images/meghalaya.jpg',
-      Himachal: '/images/himachal.jpg'
-    }
-
-    const cats = Array.from(new Set(trips.map(t => t.category))).sort()
-    return cats.map(cat => ({
-      _id: cat.toLowerCase().replace(/\s+/g, '-'),
-      name: cat,
-      image: categoryImageMap[cat] || `/images/${cat.toLowerCase().replace(/\s+/g, '-')}.jpg`
-    }))
-  }, [])
+  const categories = useMemo(() => getAllCategories(), [])
 
   // Filter categories based on destination input
   const filteredCategories = useMemo(() => {
@@ -62,7 +40,7 @@ export function HeroSection() {
   }, [heroImages.length])
 
   return (
-    <section className="relative overflow-hidden bg-slate-950">
+    <section className=" relative overflow-hidden bg-slate-950 pt-26 md:pt-10">
       {/* Background Image Carousel with Overlay (desktop only) */}
       <div className="absolute inset-0 z-0 pointer-events-none hidden md:block">
         {heroImages.map((image, index) => (
@@ -116,7 +94,7 @@ export function HeroSection() {
                   if (filteredCategories.length > 0) {
                     const selectedCat = filteredCategories[0]
                     setDestination('')
-                    router.push(`/category/${selectedCat._id}`)
+                    router.push(`/trips/${selectedCat.id}`)
                   } else if (destination.trim()) {
                     router.push(`/trips?destination=${destination}`)
                   }
@@ -132,10 +110,10 @@ export function HeroSection() {
               <div className="absolute left-0 right-0 top-full mt-2 bg-slate-800/90 backdrop-blur-md border border-slate-700 rounded-2xl shadow-lg max-h-48 overflow-y-auto z-50">
                 {filteredCategories.map(cat => (
                   <div
-                    key={cat._id}
+                    key={cat.id}
                     onClick={() => {
                       setDestination('')
-                      router.push(`/category/${cat._id}`)
+                      router.push(`/trips/${cat.id}`)
                     }}
                     className="p-3 hover:bg-slate-700 cursor-pointer text-white border-b border-slate-600 last:border-b-0"
                   >

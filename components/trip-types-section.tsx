@@ -16,7 +16,7 @@ function RegionCard({ title, image, price, region }: TripTypeCardProps) {
   const categoryId = (region || title).toLowerCase().replace(/\s+/g, '-')
 
   return (
-    <Link href={`/category/${categoryId}`}>
+    <Link href={`/trips/${categoryId}`}>
       <div className="group relative overflow-hidden rounded-3xl h-[40vh]  cursor-pointer shadow-xl hover:shadow-2xl transition-all duration-500 w-full hover:-translate-y-2">
         <Image
           src={image}

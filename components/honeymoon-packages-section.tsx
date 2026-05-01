@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { trips } from '@/lib/data'
+import { getPageSectionMapping } from '@/lib/section-mappings'
 import { TripCard } from '@/components/trip-card'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
@@ -26,12 +27,17 @@ export function HoneymoonPackagesSection() {
     setIndex(0)
   }, [cardsPerView])
 
-  // Filter trips suitable for honeymoon (easy and moderate difficulty)
-  const honeymoonPackages = trips
+  const honeymoonPackageIds = getPageSectionMapping('honeymoonPackages')
+  const honeymoonPackages = honeymoonPackageIds
+    .map((id) => trips.find((trip) => trip.id === id))
+    .filter((trip): trip is typeof trips[number] => Boolean(trip))
+
+  const fallbackHoneymoonPackages = trips
     .filter((trip) => trip.difficulty !== 'Hard' && trip.groupSize <= 20)
     .slice(0, 8)
 
-  const maxIndex = Math.max(0, honeymoonPackages.length - cardsPerView)
+  const displayHoneymoonPackages = honeymoonPackages.length > 0 ? honeymoonPackages : fallbackHoneymoonPackages
+  const maxIndex = Math.max(0, displayHoneymoonPackages.length - cardsPerView)
 
   const nextSlide = () => {
     setIndex((prev) => Math.min(prev + 1, maxIndex))
@@ -63,7 +69,7 @@ export function HoneymoonPackagesSection() {
           {/* ✅ MOBILE SCROLLER */}
           {isMobile ? (
             <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
-              {honeymoonPackages.map((trip) => (
+              {displayHoneymoonPackages.map((trip) => (
                 <div
                   key={trip.id}
                   className="min-w-[75%] flex-shrink-0"
@@ -100,7 +106,7 @@ export function HoneymoonPackagesSection() {
                     transform: `translateX(-${index * (100 / cardsPerView)}%)`,
                   }}
                 >
-                  {honeymoonPackages.map((trip) => (
+                  {displayHoneymoonPackages.map((trip) => (
                     <div
                       key={trip.id}
                       className="flex-shrink-0 basis-1/4 p-2"

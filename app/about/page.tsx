@@ -83,56 +83,11 @@ export default function AboutPage() {
 
                     {/* Inner wrapper */}
                     <div className="lg:direction-ltr">
-                      <ul className="list-disc pl-5 space-y-3 marker:text-orange-500">
-                        <li>There was a time when success had safe answers — Doctor, Engineer, Teacher.</li>
+                      <div className="space-y-4">
+                        <p>There was a time when success had safe answers — Doctor, Engineer, Teacher. Travel was just a break… not a path. But every time we travelled, we felt something more — freedom, excitement, stories that stayed with us. Planning those journeys? Complicated. Confusing. Impersonal. Somewhere, travel lost its joy. And that's where Wanderphilia began.</p>
 
-                        <li>Travel was just a break… not a path.</li>
-
-                        <li>
-                          But every time we travelled, we felt something more —
-                          freedom, excitement, stories that stayed with us.
-                        </li>
-
-                        <li>
-                          Planning those journeys? Complicated. Confusing. Impersonal.
-                        </li>
-
-                        <li>Somewhere, travel lost its joy.</li>
-
-                        <li>And that’s where Wanderphilia began.</li>
-
-                        <li>
-                          Not just as a company—but as a better way to travel.
-                        </li>
-
-                        <li>
-                          We set out to make travel effortless, personal, and seamless—
-                          powered by strong systems, a passionate team, and smart technology.
-                        </li>
-
-                        <li className="font-semibold text-gray-900">
-                          Because travel should feel simple. It should feel exciting. It should feel like you.
-                        </li>
-
-                        <li>
-                          Today, Wanderphilia is built for those who want the thrill of exploring—
-                          without the stress of planning.
-                        </li>
-
-                        <li>No chaos. No confusion. Just beautifully crafted journeys that flow.</li>
-
-                        <li>
-                          We don’t just plan trips. We create experiences you’ll carry long after you return.
-                        </li>
-
-                        <li>
-                          Because in the end, it’s not about where you go—
-                        </li>
-
-                        <li className="text-xl font-semibold text-gray-900">
-                          it’s about how it makes you feel.
-                        </li>
-                      </ul>
+                        <p>Not just as a company—but as a better way to travel. We set out to make travel effortless, personal, and seamless— powered by strong systems, a passionate team, and smart technology. Because travel should feel simple. It should feel exciting. It should feel like you. Today, Wanderphilia is built for those who want the thrill of exploring— without the stress of planning. No chaos. No confusion. Just beautifully crafted journeys that flow. We don't just plan trips. We create experiences you'll carry long after you return. Because in the end, it's not about where you go— it's about how it makes you feel.</p>
+                      </div>
                     </div>
 
 
@@ -171,47 +126,13 @@ export default function AboutPage() {
                     {/* Inner wrapper */}
                     <div className="lg:direction-ltr">
 
-                      <ul className="list-disc pl-5 space-y-4 marker:text-orange-500">
+                      <div className="space-y-4">
 
-                        <li>
-                          At Wanderphilia, our mission is simple—<br />
-                          to make travel feel effortless, seamless, and truly unforgettable.
-                        </li>
+                        <p>At Wanderphilia, our mission is simple— to make travel feel effortless, seamless, and truly unforgettable. We believe travel doesn't fail in inspiration— it fails in execution. That's why we don't just plan trips. We take complete ownership of your journey— from designing thoughtful itineraries to managing every on-ground detail.</p>
 
-                        <li>
-                          We believe travel doesn’t fail in inspiration—<br />
-                          it fails in execution.
-                        </li>
+                        <p>Powered by smart systems, a passionate team, and strong on-ground networks, we ensure every trip flows exactly the way it should— smooth, stress-free, and beautifully executed. Because for us, personalization is not enough. Reliability is everything. Every journey we create is built around you, handled by experts, and supported at every step. Our goal is clear: When you travel with Wanderphilia— you don't worry about the trip. You live it.</p>
 
-                        <li>
-                          That’s why we don’t just plan trips.<br />
-                          We take complete ownership of your journey—<br />
-                          from designing thoughtful itineraries to managing every on-ground detail.
-                        </li>
-
-                        <li>
-                          Powered by smart systems, a passionate team, and strong on-ground networks,<br />
-                          we ensure every trip flows exactly the way it should—<br />
-                          smooth, stress-free, and beautifully executed.
-                        </li>
-
-                        <li className="font-semibold text-gray-900">
-                          Because for us, personalization is not enough.<br />
-                          Reliability is everything.
-                        </li>
-
-                        <li>
-                          Every journey we create is built around you,<br />
-                          handled by experts, and supported at every step.
-                        </li>
-
-                        <li className="font-semibold text-gray-900">
-                          Our goal is clear:<br />
-                          When you travel with Wanderphilia—<br />
-                          you don’t worry about the trip. You live it.
-                        </li>
-
-                      </ul>
+                      </div>
 
                     </div>
                   </div>
@@ -517,15 +438,15 @@ export default function AboutPage() {
                         </li>
 
                         <li>
-                          We believe travel doesn’t fail in inspiration—<br />
+                          We believe travel doesn't fail in inspiration—<br />
                           it fails in execution.
-                        </li>
+                        </p>
 
-                        <li>
-                          That’s why we don’t just plan trips.<br />
+                        <p>
+                          That's why we don't just plan trips.<br />
                           We take complete ownership of your journey—<br />
                           from designing thoughtful itineraries to managing every on-ground detail.
-                        </li>
+                        </p>
 
                         <li>
                           Powered by smart systems, a passionate team, and strong on-ground networks,<br />
@@ -533,15 +454,15 @@ export default function AboutPage() {
                           smooth, stress-free, and beautifully executed.
                         </li>
 
-                        <li className="font-semibold text-gray-900">
+                        <p className="font-semibold text-gray-900">
                           Because for us, personalization is not enough.<br />
                           Reliability is everything.
-                        </li>
+                        </p>
 
-                        <li>
+                        <p>
                           Every journey we create is built around you,<br />
                           handled by experts, and supported at every step.
-                        </li>
+                        </p>
 
                         <li className="font-semibold text-gray-900">
                           Our goal is clear:<br />
