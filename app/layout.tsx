@@ -9,8 +9,8 @@ import { MobileBottomNavConditional } from '@/components/mobile-bottom-nav-condi
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'Wanderphilia - Explore the Unseen',
-  description: 'Discover extraordinary travel experiences with Wanderphilia. Premium adventure trips curated for wanderlust seekers.',
+  title: 'Wanderphilia - India\'s Most trusted & Safest Travel Community',
+  description: 'India’s growing travel community for epic group trips & offbeat experiences across India & international destinations. From customised family holidays to romantic honeymoons, trusted by 20,000+ travellers to create unforgettable journeys and stories you carry for life.',
   icons: {
     icon: '/images/LOGO.png',
     apple: '/images/LOGO.png',
