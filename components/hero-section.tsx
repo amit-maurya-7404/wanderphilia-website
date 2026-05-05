@@ -6,9 +6,10 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { MapPin, ArrowRight, Search } from 'lucide-react'
+import { MapPin, ArrowRight, Search, Star, Users, Headphones, Award } from 'lucide-react'
 import { MobileHeroSection } from './mobile-hero-section'
 import { getAllCategories } from '@/lib/trip-categories'
+import { gtag } from '@/lib/gtag'
 
 export function HeroSection() {
   const [destination, setDestination] = useState('')
@@ -76,6 +77,9 @@ export function HeroSection() {
           <p className="text-sm md:text-lg text-gray-200 mb-6 max-w-3xl leading-relaxed">
             Discover curated adventures that redefine travel. From snow-capped peaks to pristine beaches, we craft unforgettable journeys for the modern explorer.
           </p>
+
+
+
           <div className="mb-8 max-w-2xl w-full relative">
             <div className="flex flex-col sm:flex-row gap-3 bg-white/10 backdrop-blur-md p-2 rounded-2xl border border-white/20 hover:border-white/40 transition-all">
               <div className="flex-1 relative">
@@ -98,6 +102,12 @@ export function HeroSection() {
                   } else if (destination.trim()) {
                     router.push(`/trips?destination=${destination}`)
                   }
+                  // Track search action
+                  gtag.event({
+                    action: 'click',
+                    category: 'CTA',
+                    label: 'Hero Search Button',
+                  });
                 }}
                 className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-linear-to-br from-[#FF8713] via-[#FF6E0B] to-[#FF5D09] hover:from-[#FFA033] hover:via-[#FF7E1A] hover:to-[#FF6A1A] transition-all duration-300 text-white font-semibold shrink-0"
               >
@@ -114,6 +124,11 @@ export function HeroSection() {
                     onClick={() => {
                       setDestination('')
                       router.push(`/trips/${cat.id}`)
+                      gtag.event({
+                        action: 'click',
+                        category: 'Navigation',
+                        label: `Search Suggestion: ${cat.name}`,
+                      });
                     }}
                     className="p-3 hover:bg-slate-700 cursor-pointer text-white border-b border-slate-600 last:border-b-0"
                   >
@@ -123,14 +138,68 @@ export function HeroSection() {
               </div>
             )}
           </div>
-          <div className="flex flex-col sm:flex-row gap-4 max-w-md justify-center">
+          {/* Stats Section */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8 max-w-4xl">
+            <div className="flex flex-rows items-center text-center gap-3">
+              <Image
+                src="/images/Google_logo.png"
+                alt="Google logo"
+                width={40}
+                height={40}
+                className="object-contain"
+              />
+              <div className="flex flex-col items-center text-center">
+                <div className="flex items-center gap-1 mb-0">
+
+                  <span className="text-yellow-400 font-bold">5</span>
+                  <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />
+                  <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />
+                  <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />
+                  <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />
+                  <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />
+                </div>
+                <p className="text-white font-semibold text-sm">Google Reviews</p>
+              </div>
+
+            </div>
+
+            <div className="flex flex-col items-center text-center">
+              <div className="flex items-center gap-1 mb-2">
+                <Users className="w-5 h-5 text-primary" />
+                <span className="text-primary font-bold">20,000+</span>
+              </div>
+              <p className="text-white font-semibold text-sm">Happy Wanderers</p>
+            </div>
+
+            <div className="flex flex-col items-center text-center">
+              <div className="flex items-center gap-1 mb-2">
+                <Headphones className="w-5 h-5 text-green-600" />
+                <span className="text-green-600 font-bold">24x7</span>
+              </div>
+              <p className="text-white font-semibold text-sm">Ground Support</p>
+            </div>
+
+            <div className="flex flex-col items-center text-center">
+              <div className="flex items-center gap-1 mb-2">
+                <Award className="w-5 h-5 text-blue-600" />
+                <span className="text-blue-600 font-bold">8 Years</span>
+              </div>
+              <p className="text-white font-semibold text-sm">Experience</p>
+            </div>
+          </div>
+          {/* <div className="flex flex-col sm:flex-row gap-4 max-w-md justify-center">
               <Button asChild className="bg-linear-to-br from-[#FF8713] via-[#FF6E0B] to-[#FF5D09] hover:from-[#FFA033] hover:via-[#FF7E1A] hover:to-[#FF6A1A] transition-all duration-300 text-white px-7 py-4 text-base rounded-xl h-auto font-semibold">
-              <Link href="/trips">Discover All Trips</Link>
+              <Link href="/trips" onClick={() => gtag.event({ action: 'click', category: 'CTA', label: 'Discover All Trips' })}>
+                Discover All Trips
+              </Link>
             </Button>
             <Button asChild variant="outline" className="border md:border-2 border-white text-white bg-white/10 hover:bg-primary px-7 py-4 text-base rounded-xl h-auto font-semibold">
-              <Link href="#featured">Learn Our Story</Link>
+              <Link href="#featured" onClick={() => gtag.event({ action: 'click', category: 'Navigation', label: 'Learn Our Story' })}>
+                Learn Our Story
+              </Link>
             </Button>
-          </div>
+          </div> */}
+
         </div>
       </div>
 

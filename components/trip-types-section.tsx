@@ -17,7 +17,7 @@ function RegionCard({ title, image, price, region }: TripTypeCardProps) {
 
   return (
     <Link href={`/trips/${categoryId}`}>
-      <div className="group relative overflow-hidden rounded-3xl h-[40vh]  cursor-pointer shadow-xl hover:shadow-2xl transition-all duration-500 w-full hover:-translate-y-2">
+      <div className="group relative overflow-hidden rounded-xl h-[50vh] md:h-[60vh] cursor-pointer shadow-xl hover:shadow-2xl transition-all duration-500 w-full hover:-translate-y-2">
         <Image
           src={image}
           alt={title}
@@ -85,13 +85,13 @@ export function TripTypesSection() {
   const maxIntl = Math.max(0, internationalRegions.length - cardsPerView)
 
   return (
-    <section className="py-24  bg-white">
+    <section className="py-20  bg-white">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* ================= INDIA ================= */}
         <div id="india-trips" className="mb-20 text-center scroll-mt-20">
 
-          <h2 className="text-5xl font-bold mb-10">India Trips</h2>
+          <h2 className="text-4xl md:text-5xl font-bold mb-10">India Trips</h2>
 
           <div className="relative">
 
@@ -143,7 +143,7 @@ export function TripTypesSection() {
         {/* ================= INTERNATIONAL ================= */}
         <div id="international-trips" className="text-center scroll-mt-20">
 
-          <h2 className="text-5xl font-bold mb-10">International Trips</h2>
+          <h2 className="text-4xl md:text-5xl font-bold mb-10">International Trips</h2>
 
           <div className="relative">
 

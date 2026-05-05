@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { MapPin, Phone, Mail, Clock } from 'lucide-react'
 import { contactEmail, contactPhoneDisplayInternational } from '@/lib/contact'
+import { gtag } from '@/lib/gtag'
 
 export default function ContactPage() {
   return (
@@ -79,7 +80,16 @@ export default function ContactPage() {
             <div>
               <h2 className="text-3xl font-bold text-gray-900 mb-8">Send us a Message</h2>
 
-              <form className="space-y-6">
+              <form className="space-y-6" onSubmit={(e) => {
+                e.preventDefault();
+                gtag.event({
+                  action: 'submit',
+                  category: 'Form',
+                  label: 'Contact Form',
+                });
+                // Handle form submission here
+                alert('Form submitted! (Add your form handling logic)');
+              }}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">

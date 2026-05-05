@@ -1,3 +1,8 @@
+'use client'
+
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { useAuth } from '@/hooks/use-auth'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
 import { Input } from '@/components/ui/input'
@@ -5,6 +10,27 @@ import { Button } from '@/components/ui/button'
 import { CreditCard, Lock, CheckCircle } from 'lucide-react'
 
 export default function PaymentPage() {
+  const router = useRouter()
+  const { isAuthenticated, isLoading } = useAuth()
+
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      router.push('/login')
+    }
+  }, [isAuthenticated, isLoading, router])
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <p className="text-gray-700">Checking login status...</p>
+      </div>
+    )
+  }
+
+  if (!isAuthenticated) {
+    return null
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <Navbar />

@@ -1,6 +1,7 @@
 import Link from 'next/link'
-import { Instagram, Mail, Phone } from 'lucide-react'
-import { contactEmail, contactPhone, contactPhoneDisplay, instagramUrl, companyName } from '@/lib/contact'
+import { Instagram, LocateIcon, Mail, Map, MapIcon, MapPlus, Phone } from 'lucide-react'
+import { contactEmail, contactPhone, contactPhoneDisplay, instagramUrl, companyName, adressUrl } from '@/lib/contact'
+import { FaLocationPin } from 'react-icons/fa6'
 
 export function Footer() {
   return (
@@ -11,7 +12,7 @@ export function Footer() {
           {/* Brand */}
           <div>
             <Link href="/">
-              <img src="/images/LOGO.png" alt={companyName} className="w-28 h-28 rounded-full cursor-pointer hover:opacity-80 transition-opacity mx-auto md:mx-0" />
+              <img src="/images/made_LOGO.png" alt={companyName} className="w-50 h-22 rounded-full cursor-pointer hover:opacity-80 transition-opacity mx-auto md:mx-0" />
             </Link>
             <p className="text-gray-400 text-sm leading-relaxed">
               Curating extraordinary journeys for explorers who demand more. Every adventure is a story waiting to unfold.
@@ -112,6 +113,12 @@ export function Footer() {
                   Follow us on Instagram
                 </a>
               </li>
+              <li className="flex flex-col items-center gap-3 md:flex-row md:items-start">
+                <MapIcon size={18} className="text-primary shrink-0" />
+                <a href={adressUrl} target="_blank" rel="noreferrer" className="text-gray-400 hover:text-primary transition-colors text-sm">
+                  2nd floor, Laxmi Vihar Building, 262/64, F-3, Walkeshwar, Mumbai, Maharashtra 400006
+                </a>
+              </li>
             </ul>
           </div>
         </div>
@@ -138,6 +145,7 @@ export function Footer() {
             </div>
           </div>
         </div>
+        {/* <img src="/images/city-footer.png" alt="" className='' /> */}
       </div>
     </footer>
   )

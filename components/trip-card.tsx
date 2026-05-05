@@ -4,6 +4,7 @@ import { useRef, useState } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import type { Trip } from '@/lib/data'
+import { gtag } from '@/lib/gtag'
 
 type TripCardProps = Trip
 
@@ -45,6 +46,11 @@ export function TripCard({
     <div
       onClick={() => {
         if (callbackOpen || ignoreClickRef.current) return
+        gtag.event({
+          action: 'click',
+          category: 'Navigation',
+          label: `Trip Card: ${title}`,
+        });
         router.push(`/trips/${categoryId}/${slug}`)
       }}
       className="group relative overflow-hidden rounded-lg shadow-xl h-[50vh] md:h-[60vh] cursor-pointer"
@@ -58,7 +64,7 @@ export function TripCard({
       />
 
       {/* DARK GRADIENT OVERLAY */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+      <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/40 to-transparent" />
 
       {/* TOP PRICE BADGE */}
       <div className="absolute top-4 left-4 bg-yellow-400 text-black text-xs font-bold px-3 py-1 rounded-full">

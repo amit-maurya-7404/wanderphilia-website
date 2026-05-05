@@ -6,7 +6,13 @@ import { Trip } from '@/lib/data'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
 import { Button } from '@/components/ui/button'
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog'
+import OTPLogin from '@/components/otp-login'
+import { AuthUtils } from '@/lib/auth-utils'
 import { ChevronDown, CreditCard } from 'lucide-react'
+import { gtag } from '@/lib/gtag'
+import {RequestCallbackDialog} from '@/components/request-callback-dialog'
+import { set } from 'date-fns'
 
 interface BookingPackageClientProps {
   trip: Trip
@@ -15,6 +21,8 @@ interface BookingPackageClientProps {
 
 export default function BookingPackageClient({ trip, slug }: BookingPackageClientProps) {
   const router = useRouter()
+  const [showLoginDialog, setShowLoginDialog] = useState(false)
+  const [callbackOpen, setCallbackOpen] = useState(false)
 
   const [selectedDateIndex, setSelectedDateIndex] = useState(0)
   const [selectedMonth, setSelectedMonth] = useState('All')
@@ -58,13 +66,30 @@ export default function BookingPackageClient({ trip, slug }: BookingPackageClien
   const total = subtotal + gst
 
   const handleProceedToPayment = () => {
+    gtag.event({
+      action: 'click',
+      category: 'Booking',
+      label: `Proceed to Payment: ${trip.title}`,
+    });
+
+    const auth = AuthUtils.getAuth()
+    if (auth?.token) {
+      router.push(`/payment?slug=${encodeURIComponent(slug)}`)
+      return
+    }
+
+    setShowLoginDialog(true)
+  }
+
+  const handleLoginSuccess = () => {
+    setShowLoginDialog(false)
     router.push(`/payment?slug=${encodeURIComponent(slug)}`)
   }
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <Navbar forceWhiteDesktop />
-      
+
 
       <main className="grow pt-20">
 
@@ -223,7 +248,7 @@ export default function BookingPackageClient({ trip, slug }: BookingPackageClien
               <Button
                 size="lg"
                 className="w-full justify-center gap-2"
-                onClick={handleProceedToPayment}
+                onClick={() => setCallbackOpen(true)}
                 disabled={subtotal === 0}
               >
                 Proceed to Payment
@@ -243,14 +268,34 @@ export default function BookingPackageClient({ trip, slug }: BookingPackageClien
           </p>
         </div>
         <Button
-          onClick={handleProceedToPayment}
+          onClick={() => setCallbackOpen(true)}
           disabled={subtotal === 0}
         >
           Pay Now
         </Button>
       </div>
+      <RequestCallbackDialog
+        open={callbackOpen}
+        onOpenChange={setCallbackOpen}
+        title={trip.title}
+        price={total}
+      />
 
       <Footer />
+
+      <Dialog open={showLoginDialog} onOpenChange={setShowLoginDialog}>
+        <DialogContent className="max-w-3xl p-0 overflow-hidden">
+          <div className="bg-white rounded-3xl shadow-xl p-6">
+            <DialogTitle className="text-xl font-semibold text-slate-900">
+              Login Required to Proceed
+            </DialogTitle>
+            <DialogDescription className="text-sm text-slate-500 mb-6">
+              Please login with OTP before continuing to payment.
+            </DialogDescription>
+            <OTPLogin embedded onSuccess={handleLoginSuccess} />
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

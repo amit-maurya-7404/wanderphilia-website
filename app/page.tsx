@@ -44,7 +44,7 @@ export default function Home() {
         <BlogsPreviewSection />
         <PhotoGallerySection />
         {/* <InstagramSection /> */}
-        <ReviewsSection />
+        {/* <ReviewsSection /> */}
         {/* <VideoTestimonialsSection /> */}
         {/* <FeaturesSection /> */}
         {/* <TestimonialsSection /> */}

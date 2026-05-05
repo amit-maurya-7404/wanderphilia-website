@@ -36,7 +36,7 @@ export function AboutHeroSection() {
     ]
 
     return (
-        <section className="w-full bg-white md:pt-10 mt-[10vw] md:mt-[10vw]">
+        <section className="w-full bg-white md:pt-0 mt-[10vw] md:mt-[0vw]">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 md:py-0">
                 {/* Main Content Grid */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-start mb-12 md:mb-0">

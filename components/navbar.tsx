@@ -66,9 +66,9 @@ export function Navbar({ forceWhiteDesktop }: NavbarProps) {
           </Link>
 
           <div className="hidden md:flex items-center gap-8">
-            <Link href="/" className={`text-sm font-semibold transition-colors cursor-pointer ${isScrolled || isAboutPage || forceWhiteDesktop ? 'text-gray-700 hover:text-primary' : 'text-white/80 hover:text-primary'}`}>
+            {/* <Link href="/" className={`text-sm font-semibold transition-colors cursor-pointer ${isScrolled || isAboutPage || forceWhiteDesktop ? 'text-gray-700 hover:text-primary' : 'text-white/80 hover:text-primary'}`}>
               Home
-            </Link>
+            </Link> */}
 
             <div className="relative group">
               <button className={`text-sm font-semibold transition-colors flex items-center gap-1 ${isScrolled || isAboutPage || forceWhiteDesktop ? 'text-gray-700 hover:text-primary' : 'text-white/80 hover:text-primary'}`}>
@@ -94,7 +94,7 @@ export function Navbar({ forceWhiteDesktop }: NavbarProps) {
 
             <div className="relative group">
               <button className={`text-sm font-semibold transition-colors flex text-center gap-1 ${isScrolled || isAboutPage || forceWhiteDesktop ? 'text-gray-700 hover:text-primary' : 'text-white/80 hover:text-primary'}`}>
-                International
+                International Trips
                 <ChevronDown size={16} className="group-hover:rotate-180 transition-transform" />
               </button>
               <div className="absolute left-0 mt-0 w-56 bg-white rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 py-2 z-50 border border-gray-100">
@@ -115,10 +115,10 @@ export function Navbar({ forceWhiteDesktop }: NavbarProps) {
             </div>
 
             <Link href="/upcoming-tours" className={`text-sm font-semibold transition-colors ${isScrolled || isAboutPage || forceWhiteDesktop ? 'text-gray-700 hover:text-primary' : 'text-white/80 hover:text-primary'}`}>
-              Upcoming Tours
+              Upcoming Group Trips
             </Link>
             <Link href="/honeymoon" className={`text-sm font-semibold transition-colors ${isScrolled || isAboutPage || forceWhiteDesktop ? 'text-gray-700 hover:text-primary' : 'text-white/80 hover:text-primary'}`}>
-              Honeymoon
+              Honeymoon Getaway
             </Link>
             <Link href="/blog" className={`text-sm font-semibold transition-colors ${isScrolled || isAboutPage || forceWhiteDesktop ? 'text-gray-700 hover:text-primary' : 'text-white/80 hover:text-primary'}`}>
               Blog
@@ -130,7 +130,9 @@ export function Navbar({ forceWhiteDesktop }: NavbarProps) {
 
           <div className="hidden md:flex items-center gap-4">
             <Button asChild className="px-6 py-2 rounded-lg font-semibold transition-all bg-primary hover:bg-primary/90 text-white">
-              <Link href="/upcoming-tours">Explore Now</Link>
+              <a href="tel:+919217664099">
+                Contact Us
+              </a>
             </Button>
           </div>
 
@@ -232,10 +234,10 @@ export function Navbar({ forceWhiteDesktop }: NavbarProps) {
               About Us
             </Link>
             <div className="border-t border-gray-100 px-4 py-4">
-              <Button asChild className="w-full bg-primary hover:bg-primary/90 text-white py-3">
-                <Link href="/trips" onClick={() => setIsMobileOpen(false)}>
-                  Explore Now
-                </Link>
+              <Button asChild className="w-full rounded-lg font-semibold transition-all bg-primary hover:bg-primary/90 text-white">
+                <a href="tel:+919217664099">
+                  Contact Us
+                </a>
               </Button>
             </div>
           </div>

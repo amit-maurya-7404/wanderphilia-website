@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { MessageCircle, Phone } from 'lucide-react'
 import { TripHeroCarousel } from '@/components/trip-hero-carousel'
 import { RequestCallbackDialog } from '@/components/request-callback-dialog'
+import { gtag } from '@/lib/gtag'
 import type { TripMediaItem } from '@/lib/data'
 
 const heroMedia: TripMediaItem[] = [
@@ -58,6 +59,8 @@ export default function UpcomingToursPage() {
                       variant="outline"
                       className="min-w-45 border-white/60 text-slate-800 hover:text-white hover:border-white hover:bg-white/10 bg-white"
                       onClick={() => {
+                        gtag.outboundLink('https://wa.me/919217664099');
+
                         const message = `Hi! I'm planning for a trip. Can you help me with details?`
 
                         const encodedMessage = encodeURIComponent(message)
