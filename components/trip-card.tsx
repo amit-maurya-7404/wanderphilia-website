@@ -2,7 +2,6 @@
 
 import { useRef, useState } from 'react'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
 import type { Trip } from '@/lib/data'
 import { gtag } from '@/lib/gtag'
 
@@ -20,7 +19,6 @@ export function TripCard({
   itinerary,
   costingDetails,
 }: TripCardProps) {
-  const router = useRouter()
   const [callbackOpen, setCallbackOpen] = useState(false)
   const ignoreClickRef = useRef(false)
 
@@ -51,7 +49,7 @@ export function TripCard({
           category: 'Navigation',
           label: `Trip Card: ${title}`,
         });
-        router.push(`/trips/${categoryId}/${slug}`)
+        window.open(`/trips/${categoryId}/${slug}`, '_blank')
       }}
       className="group relative overflow-hidden rounded-lg shadow-xl h-[50vh] md:h-[60vh] cursor-pointer"
     >

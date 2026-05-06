@@ -1,33 +1,51 @@
 'use client'
 
 import { useState, useMemo, useEffect, useRef } from 'react'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { notFound } from 'next/navigation'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
+
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { TripHeroCarousel } from '@/components/trip-hero-carousel'
 import { RequestCallbackDialog } from '@/components/request-callback-dialog'
 import { trips } from '@/lib/data'
 import { MapPin, Calendar, Users, Star, Phone, MessageCircle, ChevronDown, Download } from 'lucide-react'
 import { contactEmail, contactPhone, contactPhoneDisplay, instagramUrl } from '@/lib/contact'
 
+
 export default function PackageDetailPage() {
+  type SelectionItem = {
+    name: string
+    price: number
+  }
+
+  const [selections, setSelections] = useState<SelectionItem[]>([])
+  const [showFullDesc, setShowFullDesc] = useState(false)
+
+  const total = selections.reduce((sum, item) => sum + item.price, 0)
   const params = useParams()
   const slug = params?.slug as string
   const trip = useMemo(() => trips.find(t => t.slug === slug), [slug])
 
+  // Calculate lowest price from costing table
   const lowestPrice = useMemo(() => {
-    if (!trip?.costingDetails || trip.costingDetails.length === 0) return trip?.price || 32999;
+    if (!trip?.costingDetails || trip.costingDetails.length === 0) {
+      return trip?.price || 0
+    }
+    
     const prices = trip.costingDetails
       .map(item => {
-        const match = item.value.match(/[\d,]+/);
-        return match ? parseInt(match[0].replace(/,/g, ''), 10) : 0;
+        // Extract numeric value from price strings like "₹35,000"
+        const match = item.value.match(/[\d,]+/)
+        return match ? parseInt(match[0].replace(/,/g, ''), 10) : 0
       })
-      .filter(price => price > 0);
-    return prices.length > 0 ? Math.min(...prices) : trip?.price || 32999;
+      .filter(price => price > 0)
+    
+    return prices.length > 0 ? Math.min(...prices) : trip.price || 0
   }, [trip])
 
   const [callbackOpen, setCallbackOpen] = useState(false)
@@ -36,6 +54,12 @@ export default function PackageDetailPage() {
   const [isClient, setIsClient] = useState(false)
   const tabContainerRef = useRef<HTMLDivElement>(null)
   const activeTabRef = useRef(activeTab)
+  const router = useRouter()
+
+  const handleBookNow = () => {
+    if (!slug) return
+    router.push(`/booking/package?slug=${encodeURIComponent(slug)}`)
+  }
 
   useEffect(() => {
     activeTabRef.current = activeTab
@@ -54,7 +78,7 @@ export default function PackageDetailPage() {
       const tabRect = activeTab.getBoundingClientRect()
 
       const isTabVisible = tabRect.left >= containerRect.left &&
-                          tabRect.right <= containerRect.right
+        tabRect.right <= containerRect.right
 
       if (!isTabVisible) {
         const scrollLeft = tabRect.left - containerRect.left - (containerRect.width / 2) + (tabRect.width / 2)
@@ -81,6 +105,8 @@ export default function PackageDetailPage() {
     )
   }
 
+
+
   const scrollToSection = (id: string) => {
     if (typeof window === 'undefined') return
     const el = document.getElementById(id)
@@ -104,7 +130,20 @@ export default function PackageDetailPage() {
     setIsClient(true)
     if (typeof window === 'undefined') return
 
-    const sections = ['overview', 'itinerary', 'inclusions', 'exclusions', 'info']
+    const sections = [
+      'overview',
+      'itinerary',
+      'inclusions',
+      'exclusions',
+      'costing',
+      'note',
+      'stays',
+      'batches',
+      'payment',
+      'cancellation',
+      'things-to-carry',
+      'travel-essentials',
+    ]
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -143,7 +182,7 @@ export default function PackageDetailPage() {
 
       <main className="grow">
         {/* HERO */}
-        <div className="relative h-[40vh] sm:h-[45vh] md:h-[70vh] min-h-80 max-h-170 overflow-hidden">
+        <div className="relative h-[50vh] sm:h-[45vh] md:h-[70vh]  overflow-hidden pt-20">
           <TripHeroCarousel media={heroMedia} />
 
           <div className="absolute inset-0 bg-linear-to-r from-slate-950/90 via-slate-950/40 to-transparent" />
@@ -153,7 +192,9 @@ export default function PackageDetailPage() {
                 <div className="max-w-2xl">
                   <div className="mb-4 inline-flex items-center rounded-full bg-amber-400/15 px-3 py-1 text-sm font-semibold text-amber-200 ring-1 ring-amber-300/20">
                     Starting Price
-                                        <span className="ml-2 text-white">₹{lowestPrice.toLocaleString('en-IN')} / person</span>
+<span className="ml-2 text-white">₹{lowestPrice.toLocaleString('en-IN')} / person</span>
+                  </div>
+
                   <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight leading-tight">
                     {trip.title}
                   </h1>
@@ -197,17 +238,23 @@ export default function PackageDetailPage() {
                   { id: 'itinerary', label: 'Itinerary' },
                   { id: 'inclusions', label: 'Inclusions' },
                   { id: 'exclusions', label: 'Exclusions' },
-                  { id: 'info', label: 'Information' },
+                  { id: 'costing', label: 'Costing' },
+                  { id: 'note', label: 'Note' },
+                  { id: 'stays', label: 'Stays' },
+                  { id: 'batches', label: 'Batches' },
+                  { id: 'payment', label: 'Payment Policy' },
+                  { id: 'cancellation', label: 'Cancellation' },
+                  { id: 'things-to-carry', label: 'Things To Carry' },
+                  { id: 'travel-essentials', label: 'Travel Essentials' },
                 ].map(tab => (
                   <button
                     key={tab.id}
                     data-tab-id={tab.id}
                     onClick={() => scrollToSection(tab.id)}
-                    className={`px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
-                      activeTab === tab.id
-                        ? 'border-primary text-primary'
-                        : 'border-transparent text-slate-600 hover:text-slate-900'
-                    }`}
+                    className={`px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${activeTab === tab.id
+                      ? 'border-primary text-primary'
+                      : 'border-transparent text-slate-600 hover:text-slate-900'
+                      }`}
                   >
                     {tab.label}
                   </button>
@@ -235,7 +282,9 @@ export default function PackageDetailPage() {
                   <span className="text-slate-300">•</span>
                   <div className="flex items-center gap-1">
                     <Calendar size={16} className="shrink-0" />
-                    <span className="text-sm sm:text-base">{trip.duration}N - {Math.ceil(trip.duration / 7)}D</span>
+                    <span className="text-sm sm:text-base">
+                      {trip.nights ? `${trip.nights}N / ${trip.duration}D` : `${trip.duration}D`}
+                    </span>
                   </div>
                 </div>
 
@@ -255,10 +304,46 @@ export default function PackageDetailPage() {
               {/* OVERVIEW */}
               <section id="overview">
                 <h2 className="text-2xl font-bold mb-4">Overview & Highlights</h2>
-                <Card className="p-6 space-y-4 bg-linear-to-br from-slate-50 to-white">
-                  <p className="text-slate-700 leading-relaxed">
-                    {trip.description}
-                  </p>
+                <Card className="p-3 md:p-6 space-y-4 bg-linear-to-br from-slate-50 to-white">
+                  <div className="space-y-4">
+                    <div>
+                      <p
+                        style={
+                          showFullDesc
+                            ? {}
+                            : {
+                              display: '-webkit-box',
+                              WebkitLineClamp: 4,
+                              WebkitBoxOrient: 'vertical',
+                              overflow: 'hidden',
+                            }
+                        }
+                        className="text-slate-700 leading-relaxed transition-all duration-300"
+                      >
+                        {trip.description}
+                      </p>
+
+                      <button
+                        onClick={() => setShowFullDesc(!showFullDesc)}
+                        className="mt-2 text-primary font-medium text-sm hover:underline"
+                      >
+                        {showFullDesc ? 'Show Less' : 'Show More'}
+                      </button>
+                    </div>
+
+                    {trip.overviewPoints?.length ? (
+                      <div className="rounded-3xl bg-slate-100 p-3 md:p-5">
+                        <ul className="space-y-2 text-slate-700">
+                          {trip.overviewPoints.map((point, idx) => (
+                            <li key={idx} className="flex gap-3">
+                              <span className="text-slate-400">•</span>
+                              <span>{point}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ) : null}
+                  </div>
 
                   <div className="grid sm:grid-cols-2 gap-3 pt-4">
                     {trip.highlights.map((item, i) => (
@@ -282,7 +367,7 @@ export default function PackageDetailPage() {
                     >
                       <button
                         onClick={() => toggleDay(day.day)}
-                        className="w-full flex items-start justify-between p-[3vw] sm:p-[4vw] bg-white hover:bg-slate-50 transition-colors"
+                        className="w-full flex items-start justify-between p-[3vw] sm:p-0 bg-white hover:bg-slate-50 transition-colors"
                       >
                         <div className="flex items-start gap-3 text-left grow">
                           <div className="shrink-0">
@@ -303,9 +388,8 @@ export default function PackageDetailPage() {
                         </div>
                         <ChevronDown
                           size={20}
-                          className={`shrink-0 ml-2 transition-transform ${
-                            expandedDays.includes(day.day) ? 'rotate-180' : ''
-                          }`}
+                          className={`shrink-0 ml-2 transition-transform ${expandedDays.includes(day.day) ? 'rotate-180' : ''
+                            }`}
                         />
                       </button>
 
@@ -333,42 +417,65 @@ export default function PackageDetailPage() {
                 </div>
               </section>
 
-              {/* INCLUSIONS */}
-              <section id="inclusions">
-                <h2 className="text-2xl font-bold mb-4">What's Included</h2>
-                <Card className="p-[4vw]">
-                  <div className="space-y-3">
-                    {trip.included.map((item, idx) => (
-                      <div key={idx} className="flex gap-3">
-                        <span className="text-lg shrink-0">✅</span>
-                        <span className="text-sm sm:text-base text-slate-700">{item}</span>
-                      </div>
-                    ))}
+
+
+              <section id="batches">
+                <h2 className="text-2xl font-bold mb-4">Batch Dates</h2>
+                <Card className="p-6 space-y-4">
+                  {trip.batchDates?.map((batch, idx) => (
+                    <div key={idx} className="rounded-3xl bg-slate-50 p-4 border border-slate-200">
+                      <p className="text-base font-semibold text-slate-900">{batch.month}</p>
+                      <ul className="mt-3 space-y-2 text-slate-700">
+                        {batch.ranges.map((range, rangeIdx) => (
+                          <li key={rangeIdx} className="flex gap-3">
+                            <span className="text-slate-400">•</span>
+                            <span>{range}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </Card>
+              </section>
+
+              <section id="costing">
+                <h2 className="text-2xl font-bold mb-4">Costing Table</h2>
+                <Card className="p-6">
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full text-left divide-y divide-slate-200">
+                      <thead className="bg-slate-100">
+                        <tr>
+                          <th className="px-4 py-3 text-sm font-semibold text-slate-700">Option</th>
+                          <th className="px-4 py-3 text-sm font-semibold text-slate-700">Price</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-200">
+                        {trip.costingDetails?.map((item, idx) => (
+                          <tr key={idx} className="bg-white hover:bg-slate-50">
+                            <td className="px-4 py-4 text-slate-700 font-medium">{item.label}</td>
+                            <td className="px-4 py-4 text-slate-700">{item.value}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
                 </Card>
               </section>
 
-              {/* EXCLUSIONS */}
-              <section id="exclusions">
-                <h2 className="text-2xl font-bold mb-4">What's Not Included</h2>
-                <Card className="p-[4vw]">
-                  <div className="space-y-3">
-                    {trip.notIncluded.map((item, idx) => (
-                      <div key={idx} className="flex gap-3">
-                        <span className="text-lg shrink-0">❌</span>
-                        <span className="text-sm sm:text-base text-slate-700">{item}</span>
-                      </div>
-                    ))}
-                  </div>
+              <section id="note">
+                <h2 className="text-2xl font-bold mb-4">Note</h2>
+                <Card className="p-6">
+                  <p className="text-sm sm:text-base text-slate-700 leading-relaxed">
+                    {trip.note}
+                  </p>
                 </Card>
               </section>
 
-              {/* OTHER INFO */}
-              <section id="info">
-                <h2 className="text-2xl font-bold mb-4">Important Information</h2>
+              <section id="stays">
+                <h2 className="text-2xl font-bold mb-4">Stays</h2>
                 <Card className="p-6">
                   <div className="space-y-3">
-                    {trip.importantInformation?.map((item, idx) => (
+                    {trip.stays?.map((item, idx) => (
                       <div key={idx} className="flex gap-3">
                         <span className="text-lg shrink-0">•</span>
                         <span className="text-sm sm:text-base text-slate-700">{item}</span>
@@ -377,6 +484,110 @@ export default function PackageDetailPage() {
                   </div>
                 </Card>
               </section>
+
+              <Accordion type="single" collapsible defaultValue="inclusions" className="space-y-4">
+                <section id="inclusions">
+                  <AccordionItem value="inclusions">
+                    <AccordionTrigger>What's Included</AccordionTrigger>
+                    <AccordionContent>
+                      <div className="space-y-3">
+                        {trip.included.map((item, idx) => (
+                          <div key={idx} className="flex gap-3">
+                            <span className="text-lg shrink-0">✅</span>
+                            <span className="text-sm sm:text-base text-slate-700">{item}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                </section>
+
+                <section id="exclusions">
+                  <AccordionItem value="exclusions">
+                    <AccordionTrigger>What's Not Included</AccordionTrigger>
+                    <AccordionContent>
+                      <div className="space-y-3">
+                        {trip.notIncluded.map((item, idx) => (
+                          <div key={idx} className="flex gap-3">
+                            <span className="text-lg shrink-0">❌</span>
+                            <span className="text-sm sm:text-base text-slate-700">{item}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                </section>
+
+                <section id="payment">
+                  <AccordionItem value="payment">
+                    <AccordionTrigger>Payment Policy</AccordionTrigger>
+                    <AccordionContent>
+                      <div className="space-y-3">
+                        {trip.paymentPolicy?.map((item, idx) => (
+                          <div key={idx} className="flex gap-3">
+                            <span className="text-lg shrink-0">•</span>
+                            <span className="text-sm sm:text-base text-slate-700">{item}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                </section>
+
+                <section id="cancellation">
+                  <AccordionItem value="cancellation">
+                    <AccordionTrigger>Cancellation Policy</AccordionTrigger>
+                    <AccordionContent>
+                      <div className="space-y-3">
+                        {trip.cancellationPolicy?.map((item, idx) => (
+                          <div key={idx} className="flex gap-3">
+                            <span className="text-lg shrink-0">•</span>
+                            <span className="text-sm sm:text-base text-slate-700">{item}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                </section>
+
+                <section id="things-to-carry">
+                  <AccordionItem value="things-to-carry">
+                    <AccordionTrigger>Things To Carry</AccordionTrigger>
+                    <AccordionContent>
+                      <div className="space-y-3">
+                        {trip.thingsToCarry?.map((item, idx) => (
+                          <div key={idx} className="flex gap-3">
+                            <span className="text-lg shrink-0">•</span>
+                            <span className="text-sm sm:text-base text-slate-700">{item}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                </section>
+
+                <section id="travel-essentials">
+                  <AccordionItem value="travel-essentials">
+                    <AccordionTrigger>Travel Essentials</AccordionTrigger>
+                    <AccordionContent>
+                      <div className="space-y-6">
+                        {trip.travelEssentials?.map((group, idx) => (
+                          <div key={idx}>
+                            <h3 className="font-semibold text-base text-slate-900 mb-2">{group.title}</h3>
+                            <div className="grid sm:grid-cols-2 gap-2">
+                              {group.items.map((item, itemIdx) => (
+                                <div key={itemIdx} className="rounded-2xl bg-slate-100 px-3 py-2 text-sm text-slate-700">
+                                  {item}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                </section>
+              </Accordion>
 
               {/* MOBILE CTA */}
               <div className="lg:hidden space-y-3">
@@ -393,19 +604,21 @@ export default function PackageDetailPage() {
                 <Card className="p-6 shadow-lg border-slate-200 space-y-4">
                   <div>
                     <p className="text-xs uppercase tracking-widest text-slate-500 font-semibold">
-                      Starting Price
+                      {selections.length > 0 ? 'Current Selection' : 'Starting Price'}
                     </p>
                     <p className="text-3xl font-bold text-primary mt-1">
-                      ₹{lowestPrice.toLocaleString('en-IN')}
+                      ₹{(selections.length > 0 ? total : lowestPrice).toLocaleString('en-IN')}
                     </p>
-                    <p className="text-sm text-slate-500 mt-2">per person</p>
+                    <p className="text-sm text-slate-500 mt-2">
+                      {selections.length > 0 ? `${selections.length} item${selections.length > 1 ? 's' : ''} selected` : 'per person'}
+                    </p>
                   </div>
 
                   <div className="grid gap-3">
                     <Button
                       size="lg"
                       className="w-full justify-center"
-                      onClick={() => setCallbackOpen(true)}
+                      onClick={handleBookNow}
                     >
                       <Phone size={18} /> Book Now
                     </Button>
@@ -471,10 +684,12 @@ export default function PackageDetailPage() {
       <div className="fixed bottom-0 left-0 right-0 bg-white lg:hidden border-t shadow-2xl">
         <div className="max-w-6xl mx-auto px-[4vw] py-[3vh] flex items-center justify-between gap-3">
           <div>
-            <p className="text-xs text-slate-500">Starting at</p>
-            <p className="text-lg font-bold">₹{lowestPrice.toLocaleString('en-IN')}</p>
+            <p className="text-xs text-slate-500">
+              {selections.length > 0 ? 'Total selected' : 'Starting at'}
+            </p>
+            <p className="text-lg font-bold">₹{(selections.length > 0 ? total : lowestPrice).toLocaleString('en-IN')}</p>
           </div>
-          <Button onClick={() => setCallbackOpen(true)} className="shrink-0">
+          <Button onClick={handleBookNow} className="shrink-0">
             Book Now
           </Button>
         </div>

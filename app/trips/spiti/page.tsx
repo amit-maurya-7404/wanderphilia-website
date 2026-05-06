@@ -203,31 +203,31 @@ export default function IcelandPage() {
             <div className="w-full max-w-6xl mx-auto px-4 sm:px-5 md:px-6 pb-6 sm:pb-8 lg:pb-10">
               <div className="  text-white ">
                 <div className="max-w-2xl">
-                  <div className="mb-4 inline-flex items-center rounded-full bg-amber-400/15 px-3 py-1 text-sm font-semibold text-amber-200 ring-1 ring-amber-300/20">
+                  <div className="mb-6 md:mb-8 inline-flex items-center rounded-full bg-amber-400/15 px-3 py-1 text-sm font-semibold text-amber-200 ring-1 ring-amber-300/20">
                     Starting Price
                     <span className="ml-2 text-white">₹{(lowestPrice || 0).toLocaleString('en-IN')} / person</span>
                   </div>
 
-                  <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight leading-tight">
-                    {categoryName}
+                  <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold tracking-tight leading-tight">
+                    50+ Spiti Tour Packages 2026
                   </h1>
 
-                  <p className="mt-4 text-sm sm:text-base md:text-lg max-w-2xl text-slate-100 leading-7">
-                    {`Explore the beauty of ${categoryName}`}
+                  <p className="mt-2 md:mt-6 text-sm sm:text-base md:text-lg max-w-2xl text-slate-100 leading-0">
+                    All inclusive curated Spiti Valley Tour Packages 2026 covering Sangla Valley , Chitkul , Kalpa , Nako , Tabo , Kaza , Hikkim , Komic , Langza , Key Monastery , Chandratal Lake
                   </p>
 
-                  <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
+                  <div className="mt-5 flex flex-row gap-2 sm:flex-row sm:items-center">
                     <Button
                       size="lg"
-                      className="min-w-45 bg-amber-400 text-white hover:bg-amber-300"
+                      className="min-w-30 bg-amber-400 text-white hover:bg-amber-300"
                       onClick={() => setCallbackOpen(true)}
                     >
-                      <Phone size={18} className="mr-2" /> Request a Callback
+                      <Phone size={18} className="mr-0" /> Request a Callback
                     </Button>
                     <Button
                       size="lg"
                       variant="outline"
-                      className="min-w-45 border-white/60 text-slate-800 hover:text-white hover:border-white hover:bg-white/10 bg-white"
+                      className="min-w-30 border-white/60 text-slate-800 hover:text-white hover:border-white hover:bg-white/10 bg-white"
                       onClick={() => {
                         const message = `Hi! I'm planning for the ${categoryName} trip. Can you help me with details?`
 
@@ -239,7 +239,7 @@ export default function IcelandPage() {
                         )
                       }}
                     >
-                      <MessageCircle size={18} className="mr-2" /> Chat With Us
+                      <MessageCircle size={18} className="mr-0" /> Chat With Us
                     </Button>
                   </div>
                 </div>
@@ -337,7 +337,7 @@ export default function IcelandPage() {
         <section className="py-16 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
           <div className="mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
-              Family Packages
+              Summer Spiti Valley
             </h2>
             <div className="w-20 h-1 bg-primary rounded-full" />
           </div>
@@ -411,7 +411,7 @@ export default function IcelandPage() {
         </section>
 
         {/* Customized Packages Section */}
-        <section className="py-16 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
+        {/* <section className="py-16 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
           <div className="mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
               Customized Packages
@@ -421,7 +421,7 @@ export default function IcelandPage() {
 
           {customizedPackages.length > 0 ? (
             <div>
-              {/* ✅ MOBILE SCROLLER */}
+              {/* ✅ MOBILE SCROLLER 
               {isMobile ? (
                 <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
                   {customizedPackages.map((trip) => (
@@ -435,10 +435,10 @@ export default function IcelandPage() {
                 </div>
               ) : (
                 <>
-                  {/* DESKTOP CAROUSEL */}
+                  {/* DESKTOP CAROUSEL 
                   <div className="relative">
 
-                    {/* LEFT */}
+                    {/* LEFT 
                     <button
                       onClick={() => {
                         setCustomizedCarouselIndex((prev) => Math.max(prev - 1, 0))
@@ -449,7 +449,7 @@ export default function IcelandPage() {
                       <ChevronLeft size={20} />
                     </button>
 
-                    {/* RIGHT */}
+                    {/* RIGHT 
                     <button
                       onClick={() => {
                         const maxIndex = Math.max(0, customizedPackages.length - cardsPerView)
@@ -461,7 +461,7 @@ export default function IcelandPage() {
                       <ChevronRight size={20} />
                     </button>
 
-                    {/* TRACK */}
+                    {/* TRACK 
                     <div className="overflow-hidden">
                       <div
                         className="flex transition-transform duration-500 ease-in-out"
@@ -485,7 +485,7 @@ export default function IcelandPage() {
               )}
             </div>
           ) : null}
-        </section>
+        </section> */}
 
         {/* Related Packages Section */}
         {relatedPackages.length > 0 && (

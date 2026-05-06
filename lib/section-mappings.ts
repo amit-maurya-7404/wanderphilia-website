@@ -69,10 +69,10 @@ export const sectionMappings: Record<string, Record<string, string[]>> = {
     related: ['90', '91']
   },
   'spiti': {
-    available: ['13', '93'],
-    family: ['94', '95'],
-    custom: ['96', '97'],
-    related: ['98', '99']
+    available: ['22','23','24','25','26'],
+    family: ['22','23','24','25','26' ],
+    custom: [],
+    related: []
   },
   // Default fallback
   default: {

@@ -42,7 +42,7 @@ export function MobileNavbar() {
           </Link>
 
           {/* Mobile Menu Button */}
-          <div className="relative z-[100000]">
+          <div className="relative z-100000">
             <button
               className={`p-2 h-10 w-10 flex items-center justify-center cursor-pointer transition-all duration-300 rounded-lg touch-manipulation border-2 focus:outline-none focus:ring-2 ${
                 isScrolled

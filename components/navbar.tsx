@@ -80,13 +80,14 @@ export function Navbar({ forceWhiteDesktop }: NavbarProps) {
                   <Link
                     key={category.id}
                     href={`/trips/${category.id}`}
+                    target="_blank"
                     className="block px-4 py-3 text-gray-700 hover:bg-primary/10 hover:text-primary font-medium text-sm rounded-lg mx-2 transition-colors"
                   >
                     {category.name}
                   </Link>
                 ))}
                 <div className="border-t border-gray-200 my-2" />
-                <Link href="/upcoming-tours" className="block px-4 py-3 text-primary font-bold text-sm rounded-lg mx-2 hover:bg-primary/5 transition-colors">
+                <Link href="/india-trips" target="_blank" className="block px-4 py-3 text-primary font-bold text-sm rounded-lg mx-2 hover:bg-primary/5 transition-colors">
                   View All India Trips
                 </Link>
               </div>
@@ -102,28 +103,29 @@ export function Navbar({ forceWhiteDesktop }: NavbarProps) {
                   <Link
                     key={category.id}
                     href={`/trips/${category.id}`}
+                    target="_blank"
                     className="block px-4 py-3 text-gray-700 hover:bg-primary/10 hover:text-primary font-medium text-sm rounded-lg mx-2 transition-colors"
                   >
                     {category.name}
                   </Link>
                 ))}
                 <div className="border-t border-gray-200 my-2" />
-                <Link href="/upcoming-tours" className="block px-4 py-3 text-primary font-bold text-sm rounded-lg mx-2 hover:bg-primary/5 transition-colors">
+                <Link href="/international-trips" target="_blank" className="block px-4 py-3 text-primary font-bold text-sm rounded-lg mx-2 hover:bg-primary/5 transition-colors">
                   View All International
                 </Link>
               </div>
             </div>
 
-            <Link href="/upcoming-tours" className={`text-sm font-semibold transition-colors ${isScrolled || isAboutPage || forceWhiteDesktop ? 'text-gray-700 hover:text-primary' : 'text-white/80 hover:text-primary'}`}>
+            <Link href="/upcoming-tours" target="_blank" className={`text-sm font-semibold transition-colors ${isScrolled || isAboutPage || forceWhiteDesktop ? 'text-gray-700 hover:text-primary' : 'text-white/80 hover:text-primary'}`}>
               Upcoming Group Trips
             </Link>
-            <Link href="/honeymoon" className={`text-sm font-semibold transition-colors ${isScrolled || isAboutPage || forceWhiteDesktop ? 'text-gray-700 hover:text-primary' : 'text-white/80 hover:text-primary'}`}>
+            <Link href="/honeymoon" target="_blank" className={`text-sm font-semibold transition-colors ${isScrolled || isAboutPage || forceWhiteDesktop ? 'text-gray-700 hover:text-primary' : 'text-white/80 hover:text-primary'}`}>
               Honeymoon Getaway
             </Link>
-            <Link href="/blog" className={`text-sm font-semibold transition-colors ${isScrolled || isAboutPage || forceWhiteDesktop ? 'text-gray-700 hover:text-primary' : 'text-white/80 hover:text-primary'}`}>
+            <Link href="/blog" target="_blank" className={`text-sm font-semibold transition-colors ${isScrolled || isAboutPage || forceWhiteDesktop ? 'text-gray-700 hover:text-primary' : 'text-white/80 hover:text-primary'}`}>
               Blog
             </Link>
-            <Link href="/about" className={`text-sm font-semibold transition-colors ${isScrolled || isAboutPage || forceWhiteDesktop ? 'text-gray-700 hover:text-primary' : 'text-white/80 hover:text-primary'}`}>
+            <Link href="/about" target="_blank"  className={`text-sm font-semibold transition-colors ${isScrolled || isAboutPage || forceWhiteDesktop ? 'text-gray-700 hover:text-primary' : 'text-white/80 hover:text-primary'}`}>
               About Us
             </Link>
           </div>
@@ -184,6 +186,7 @@ export function Navbar({ forceWhiteDesktop }: NavbarProps) {
                     <Link
                       key={category.id}
                       href={`/trips/${category.id}`}
+                      target="_blank"
                       className="block px-6 py-3 text-sm text-gray-600 hover:text-primary hover:bg-gray-100 transition-colors"
                       onClick={() => setIsMobileOpen(false)}
                     >
@@ -191,7 +194,7 @@ export function Navbar({ forceWhiteDesktop }: NavbarProps) {
                     </Link>
                   ))}
                   <div className="border-t border-gray-200 my-1" />
-                  <Link href="/upcoming-tours" className="block px-6 py-3 text-sm font-semibold text-primary hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
+                  <Link href="/india-trips" target="_blank" className="block px-6 py-3 text-sm font-semibold text-primary hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
                     View All India Trips
                   </Link>
                 </div>
@@ -208,6 +211,7 @@ export function Navbar({ forceWhiteDesktop }: NavbarProps) {
                     <Link
                       key={category.id}
                       href={`/trips/${category.id}`}
+                      target="_blank"
                       className="block px-6 py-3 text-sm text-gray-600 hover:text-primary hover:bg-gray-100 transition-colors"
                       onClick={() => setIsMobileOpen(false)}
                     >
@@ -215,22 +219,22 @@ export function Navbar({ forceWhiteDesktop }: NavbarProps) {
                     </Link>
                   ))}
                   <div className="border-t border-gray-200 my-1" />
-                  <Link href="/upcoming-tours" className="block px-6 py-3 text-sm font-semibold text-primary hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
+                  <Link href="/international-trips" target="_blank" className="block px-6 py-3 text-sm font-semibold text-primary hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
                     View All International
                   </Link>
                 </div>
               )}
             </div>
-            <Link href="/upcoming-tours" className="px-4 py-4 text-base font-medium text-gray-700 hover:bg-gray-100 transition-colors border-t border-gray-100" onClick={() => setIsMobileOpen(false)}>
+            <Link href="/upcoming-tours" target="_blank" className="px-4 py-4 text-base font-medium text-gray-700 hover:bg-gray-100 transition-colors border-t border-gray-100" onClick={() => setIsMobileOpen(false)}>
               Upcoming Tours
             </Link>
-            <Link href="/honeymoon" className="px-4 py-4 text-base font-medium text-gray-700 hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
+            <Link href="/honeymoon" target="_blank"  className="px-4 py-4 text-base font-medium text-gray-700 hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
               Honeymoon
             </Link>
-            <Link href="/blog" className="px-4 py-4 text-base font-medium text-gray-700 hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
+            <Link href="/blog" target="_blank" className="px-4 py-4 text-base font-medium text-gray-700 hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
               Blog
             </Link>
-            <Link href="/about" className="px-4 py-4 text-base font-medium text-gray-700 hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
+            <Link href="/about" target="_blank"  className="px-4 py-4 text-base font-medium text-gray-700 hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
               About Us
             </Link>
             <div className="border-t border-gray-100 px-4 py-4">

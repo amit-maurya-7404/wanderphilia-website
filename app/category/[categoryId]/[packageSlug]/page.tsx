@@ -149,7 +149,7 @@ export default function PackageDetailPage() {
 
       <main className="grow">
         {/* HERO */}
-        <div className="h-[40vh] sm:h-[45vh] md:h-[70vh] min-h-[280px] max-h-[500px]">
+        <div className="h-[40vh] sm:h-[45vh] md:h-[70vh] min-h-70 max-h-125">
           <TripHeroCarousel media={heroMedia} />
         </div>
 
@@ -422,7 +422,7 @@ export default function PackageDetailPage() {
       </div>
 
       {/* ADD BOTTOM PADDING FOR MOBILE */}
-      <div className="h-[12vh] lg:h-0 min-h-[80px] lg:min-h-0" />
+      <div className="h-[12vh] lg:h-0 min-h-20 lg:min-h-0" />
 
       <Footer />
     </div>

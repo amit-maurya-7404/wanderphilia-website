@@ -18,7 +18,7 @@ export function DestinationCard({
   slug,
 }: DestinationCardProps) {
   return (
-    <Link href={`/trips?destination=${slug}`}>
+    <Link href={`/trips?destination=${slug}`} target="_blank" rel="noopener noreferrer">
       <div className="group relative overflow-hidden rounded-3xl h-96 cursor-pointer shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
         {/* Background Image */}
         <Image

@@ -199,9 +199,9 @@ export default function IcelandPage() {
     <div className="min-h-screen flex flex-col bg-white">
       <Navbar />
 
-      <main className="flex-grow">
+      <main className="grow">
         {/* Hero Section with Carousel */}
-        <div className="relative h-[50vh] sm:h-[50vh] md:h-[70vh]  overflow-hidden pt-20">
+        <div className="relative h-[50vh] sm:h-[50vh] md:h-[70vh] min-h-75 pt-20">
           <TripHeroCarousel media={firstTrip?.heroMedia || [{ type: 'image' as const, src: firstTrip?.image || '/images/dummy1.jpg', alt: categoryName }]} />
 
           <div className="absolute inset-0 bg-linear-to-r from-slate-950/90 via-slate-950/40 to-transparent" />
@@ -214,26 +214,26 @@ export default function IcelandPage() {
                     <span className="ml-2 text-white">₹{(lowestPrice || 0).toLocaleString('en-IN')} / person</span>
                   </div>
 
-                  <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight leading-tight">
-                    {categoryName}
+                  <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold tracking-tight leading-tight">
+                    30+ Leh Ladakh Group Tour Packages 2026
                   </h1>
 
-                  <p className="mt-4 text-sm sm:text-base md:text-lg max-w-2xl text-slate-100 leading-7">
-                    {`Explore the beauty of ${categoryName}`}
+                  <p className="mt-3 md:mt-0 text-sm sm:text-base md:text-lg max-w-2xl text-white leading-relaxed">
+                    All inclusive Leh Ladakh Tour Packages covering Nubra Valley , Khardung La , Pangong Lake , Turtuk , Hanle , Umingla Pass , Tso Moriri.
                   </p>
 
-                  <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
+                  <div className="mt-5 md:mt-5 flex flex-row gap-2 sm:flex-row sm:items-center">
                     <Button
                       size="lg"
-                      className="min-w-45 bg-amber-400 text-white hover:bg-amber-300"
+                      className="min-w-30 bg-amber-400 text-white hover:bg-amber-300"
                       onClick={() => setCallbackOpen(true)}
                     >
-                      <Phone size={18} className="mr-2" /> Request a Callback
+                      <Phone size={18} className="mr-0" /> Request a Callback
                     </Button>
                     <Button
                       size="lg"
                       variant="outline"
-                      className="min-w-45 border-white/60 text-slate-800 hover:text-white hover:border-white hover:bg-white/10 bg-white"
+                      className="min-w-32 border-white/60 text-slate-800 hover:text-white hover:border-white hover:bg-white/10 bg-white"
                       onClick={() => {
                         const message = `Hi! I'm planning for the ${categoryName} trip. Can you help me with details?`
                     
@@ -245,7 +245,7 @@ export default function IcelandPage() {
                         )
                       }}
                     >
-                      <MessageCircle size={18} className="mr-2" /> Chat With Us
+                      <MessageCircle size={18} className="mr-0" /> Chat With Us
                     </Button>
                   </div>
                 </div>
@@ -271,7 +271,7 @@ export default function IcelandPage() {
                   {categoryTrips.map((trip) => (
                     <div
                       key={trip.id}
-                      className="min-w-[75%] flex-shrink-0"
+                      className="min-w-[75%] shrink-0"
                     >
                       <TripCard {...trip} />
                     </div>
@@ -316,7 +316,7 @@ export default function IcelandPage() {
                         {categoryTrips.map((trip) => (
                           <div
                             key={trip.id}
-                            className="flex-shrink-0 basis-1/4 p-2"
+                            className="shrink-0 basis-1/4 p-2"
                           >
                             <TripCard {...trip} />
                           </div>
@@ -356,7 +356,7 @@ export default function IcelandPage() {
                   {familyPackages.map((trip) => (
                     <div
                       key={trip.id}
-                      className="min-w-[75%] flex-shrink-0"
+                      className="min-w-[75%] shrink-0"
                     >
                       <TripCard {...trip} />
                     </div>
@@ -401,7 +401,7 @@ export default function IcelandPage() {
                         {familyPackages.map((trip) => (
                           <div
                             key={trip.id}
-                            className="flex-shrink-0 basis-1/4 p-2"
+                            className="shrink-0 basis-1/4 p-2"
                           >
                             <TripCard {...trip} />
                           </div>
@@ -433,7 +433,7 @@ export default function IcelandPage() {
                   {customizedPackages.map((trip) => (
                     <div
                       key={trip.id}
-                      className="min-w-[75%] flex-shrink-0"
+                      className="min-w-[75%] shrink-0"
                     >
                       <TripCard {...trip} />
                     </div>
@@ -478,7 +478,7 @@ export default function IcelandPage() {
                         {customizedPackages.map((trip) => (
                           <div
                             key={trip.id}
-                            className="flex-shrink-0 basis-1/4 p-2"
+                            className="shrink-0 basis-1/4 p-2"
                           >
                             <TripCard {...trip} />
                           </div>
@@ -513,7 +513,7 @@ export default function IcelandPage() {
                     {relatedPackages.map((trip) => (
                       <div
                         key={trip.id}
-                        className="min-w-[75%] flex-shrink-0"
+                        className="min-w-[75%] shrink-0"
                       >
                         <TripCard {...trip} />
                       </div>
@@ -558,7 +558,7 @@ export default function IcelandPage() {
                           {relatedPackages.map((trip) => (
                             <div
                               key={trip.id}
-                              className="flex-shrink-0 basis-1/4 p-2"
+                              className="shrink-0 basis-1/4 p-2"
                             >
                               <TripCard {...trip} />
                             </div>
@@ -592,7 +592,7 @@ export default function IcelandPage() {
                     {related2Packages.map((trip) => (
                       <div
                         key={trip.id}
-                        className="min-w-[75%] flex-shrink-0"
+                        className="min-w-[75%] shrink-0"
                       >
                         <TripCard {...trip} />
                       </div>
@@ -637,7 +637,7 @@ export default function IcelandPage() {
                           {related2Packages.map((trip) => (
                             <div
                               key={trip.id}
-                              className="flex-shrink-0 basis-1/4 p-2"
+                              className="shrink-0 basis-1/4 p-2"
                             >
                               <TripCard {...trip} />
                             </div>

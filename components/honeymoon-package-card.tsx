@@ -116,7 +116,7 @@ export function HoneymoonPackageCard({
               ₹{(price / 100000).toFixed(1)}L
             </p>
           </div>
-          <Link href={`/trips/${slug}`}>
+          <Link href={`/trips/${slug}`} target="_blank" rel="noopener noreferrer">
             <Button className="bg-linear-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold">
               Explore
             </Button>

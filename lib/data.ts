@@ -1540,7 +1540,7 @@ export const trips: Trip[] = [
     id: '16',
     title: '8 Days Leh - Leh Bike Group Trip with Hanle , Umingla & Tso Moriri ( Excursion )',
     slug: 'leh-leh-bike-group-trip-hanle-umlingla-tso-moriri',
-    image: '/images/LL4.PNG',
+    image: '/images/LL4.png',
     destination: 'Leh Ladakh',
     category: 'Leh Ladakh',
     description: `
@@ -1852,7 +1852,7 @@ This tour gives you the real feel of Ladakh’s nature and open roads, without e
     id: '17',
     title: '8 Days Leh - Leh Bike Group Trip with Turtuk & Tso Moriri',
     slug: 'leh-leh-bike-group-trip-turtuk-tso-moriri',
-    image: '/images/LL5.PNG',
+    image: '/images/LL5.png',
     destination: 'Leh Ladakh',
     category: 'Leh Ladakh',
     description: `The Leh bike tour package is an incredible journey that takes you through the breathtaking landscapes of Ladakh.
@@ -2369,6 +2369,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
       { startDate: '2026-09-12', endDate: '2026-09-20', spots: 10 },
       { startDate: '2026-09-26', endDate: '2026-10-04', spots: 10 }
     ],
+    note: 'NOTE: INR 5,000/- needs to be submitted as security for the bike before the start of the trip. Any damage to the bike, except engine damage, has to be borne directly by the client.',
     paymentPolicy: [
       'At booking: 25% booking advance is non-refundable.',
       'Within 45 days: Minimum 50% deduction.',
@@ -2853,7 +2854,9 @@ This journey is not just about the road—it's about the adventure, the stories,
       { month: 'July', ranges: ['4 July - 15 July', '18 July - 29 July'] },
       { month: 'Aug', ranges: ['1 Aug - 12 Aug', '15 Aug - 26 Aug', '29 Aug - 9 Sept'] },
       { month: 'Sept', ranges: ['12 Sept - 23 Sept', '26 Sept - 7 Oct'] }
-    ]
+    ],
+    note: 'NOTE: INR 5,000/- needs to be submitted as security for the bike before the start of the trip. Any damage to the bike, except engine damage, has to be borne directly by the client.',
+
   },
   {
     id: '20',
@@ -3171,7 +3174,89 @@ Long scenic drives, simple mountain stays, and raw landscapes make this journey 
       { month: 'July', ranges: ['4th July - 16th July', '18th July - 30th July'] },
       { month: 'Aug', ranges: ['1st Aug - 13th Aug', '15th Aug - 27th Aug', '29th Aug - 10th Sept'] },
       { month: 'Sept', ranges: ['12th Sept - 24th Sept ( Ganesh Chaturthi Holiday )', '26th Sept - 8th Oct'] }
-    ]
+    ],
+    note: 'NOTE: INR 5,000/- needs to be submitted as security for the bike before the start of the trip. Any damage to the bike, except engine damage, has to be borne directly by the client.',
+    paymentPolicy: [
+      'At booking: 25% booking advance is non-refundable.',
+      'Within 45 days: Minimum 50% deduction.',
+      'Within 30 days: Minimum 75% deduction.',
+      '20 days or less: 100% forfeited.'
+    ],
+    cancellationPolicy: [
+      'At booking: 25% booking advance is non-refundable.',
+      'Within 45 days: Minimum 50% deduction.',
+      'Within 30 days: Minimum 75% deduction.',
+      '20 days or less: 100% forfeited.'
+    ],
+    thingsToCarry: [
+      'Authentic government ID card.',
+      'Comfortable warm clothing including woolen socks, cap, fleece jacket, warmers, down jacket, and toiletries.',
+      'Sunscreen & lip balm with good UV protection sunglasses.',
+      'Personal medicines (if any) and altitude sickness medicines.',
+      'Power banks (no electricity at Pangong Tso).',
+      'Post-paid phone numbers only; most areas are no network zones.'
+    ],
+    travelEssentials: [
+      {
+        title: 'Travel Essentials',
+        items: [
+          'Rucksack or day pack',
+          '3-litre water bladder or water bottle',
+          'Sun cap and woolen cap',
+          'UV protected sunglasses'
+        ]
+      },
+      {
+        title: 'Gears',
+        items: [
+          'Helmet',
+          'Riding gloves',
+          'Riding jacket',
+          'Knee pads'
+        ]
+      },
+      {
+        title: 'Clothes',
+        items: [
+          '1 cotton long sleeve',
+          '2 short sleeve T-shirts',
+          '1 fleece jacket',
+          '1 heavy jacket or down jacket',
+          '4 sets of undergarments',
+          '2 pairs of socks',
+          'Small towel',
+          'Rain jacket or poncho'
+        ]
+      },
+      {
+        title: 'Footwear',
+        items: [
+          'Above-the-ankle waterproof breathable hiking boots',
+          'Flip flops or sandals'
+        ]
+      },
+      {
+        title: 'Medication',
+        items: [
+          'One strip of Diamox',
+          'Glucose powder',
+          'Medicines for headache, diarrhoea, motion and altitude sickness',
+          'Dettol, bandages, cotton'
+        ]
+      },
+      {
+        title: 'Personal Accessories',
+        items: [
+          'Toothpaste and toothbrush',
+          'Paper soap or sanitizer',
+          'Sunscreen SPF40+',
+          'Lip balm',
+          'Cold cream',
+          'Body spray',
+          'LED torch light'
+        ]
+      }
+    ],
   },
   {
     id: '21',
@@ -3447,6 +3532,1019 @@ Long scenic drives, simple mountain stays, and raw landscapes make this journey 
       { month: 'July', ranges: ['4th July - 15th July', '18th July - 29th July'] },
       { month: 'Aug', ranges: ['1st Aug - 12th Aug', '15th Aug - 26th Aug', '29th Aug - 9th Sept'] },
       { month: 'Sept', ranges: ['12th Sept - 23rd Sept ( Ganesh Chaturthi Holiday )', '26th Sept - 7th Oct'] }
+    ],
+    note: 'NOTE: INR 5,000/- needs to be submitted as security for the bike before the start of the trip. Any damage to the bike, except engine damage, has to be borne directly by the client.',
+    paymentPolicy: [
+      'At booking: 25% booking advance is non-refundable.',
+      'Within 45 days: Minimum 50% deduction.',
+      'Within 30 days: Minimum 75% deduction.',
+      '20 days or less: 100% forfeited.'
+    ],
+    cancellationPolicy: [
+      'At booking: 25% booking advance is non-refundable.',
+      'Within 45 days: Minimum 50% deduction.',
+      'Within 30 days: Minimum 75% deduction.',
+      '20 days or less: 100% forfeited.'
+    ],
+    thingsToCarry: [
+      'Authentic government ID card.',
+      'Comfortable warm clothing including woolen socks, cap, fleece jacket, warmers, down jacket, and toiletries.',
+      'Sunscreen & lip balm with good UV protection sunglasses.',
+      'Personal medicines (if any) and altitude sickness medicines.',
+      'Power banks (no electricity at Pangong Tso).',
+      'Post-paid phone numbers only; most areas are no network zones.'
+    ],
+    travelEssentials: [
+      {
+        title: 'Travel Essentials',
+        items: [
+          'Rucksack or day pack',
+          '3-litre water bladder or water bottle',
+          'Sun cap and woolen cap',
+          'UV protected sunglasses'
+        ]
+      },
+      {
+        title: 'Gears',
+        items: [
+          'Helmet',
+          'Riding gloves',
+          'Riding jacket',
+          'Knee pads'
+        ]
+      },
+      {
+        title: 'Clothes',
+        items: [
+          '1 cotton long sleeve',
+          '2 short sleeve T-shirts',
+          '1 fleece jacket',
+          '1 heavy jacket or down jacket',
+          '4 sets of undergarments',
+          '2 pairs of socks',
+          'Small towel',
+          'Rain jacket or poncho'
+        ]
+      },
+      {
+        title: 'Footwear',
+        items: [
+          'Above-the-ankle waterproof breathable hiking boots',
+          'Flip flops or sandals'
+        ]
+      },
+      {
+        title: 'Medication',
+        items: [
+          'One strip of Diamox',
+          'Glucose powder',
+          'Medicines for headache, diarrhoea, motion and altitude sickness',
+          'Dettol, bandages, cotton'
+        ]
+      },
+      {
+        title: 'Personal Accessories',
+        items: [
+          'Toothpaste and toothbrush',
+          'Paper soap or sanitizer',
+          'Sunscreen SPF40+',
+          'Lip balm',
+          'Cold cream',
+          'Body spray',
+          'LED torch light'
+        ]
+      }
+    ],
+  },
+  {
+    id: '22',
+    title: '7 Days Perfect Winter Spiti Valley Group Trip Super Saver Budget.',
+    slug: '7-days-perfect-winter-spiti-valley-group-trip-super-saver-budget',
+    image: '/images/spiti-valley.jpg',
+    destination: 'Spiti Valley',
+    category: 'Spiti',
+    description: `
+
+
+
+Spiti Valley, literally meaning the land between the magnificent India & majestical Tibet. This place is the epitome of magic. From beautiful landscape to a rich culture heritage- there is nothing you cannot find here! Seperated from Lahaul Valley by the soaring Kunzum La at 4551m, Spiti valley is a must visit destination in the months of October, November & December.
+
+Moonscapes to Marvel Scattered villages, Spiti valley will surely make you forget about any other panorama you’ve ever seen.
+
+The whitewashed mud-brick homes along with the perched Key Monastery looks exceptionally out of the world!
+
+Rediscovering vintage Spiti is the place to revive love for the long lost things. This could be sending a postcard from the highest post office in the World, or go fossil hunting in the villages of Hikkim and Langza respectively. Langza welcomes you with a life size golden statue of Buddha. The sedimentary rocks of this village hide remains of plants & marine life which are millions of years old. Go see for yourself if you’re lucky enough to spot one!
+
+Contrary to all shades of grey and white, a turquoise ribbon of the Spiti River will meet you as your near-constant companion, running along a broad valley before turning south at Sumdo into the precipitous gorges of the Hangrang Valley. Adding a cherry on top of the cake- we witness the beautiful landscape of Kinnaur, explore the quaint villages of Chitkul & Kalpa before continuing the journey to Spiti.
+
+The approaches to Spiti remain among the most rugged and scenically spectacular roads in India, and that is why we want you to book our Spiti Valley Packages for 2025 and take that epic road trip with us, that too in the winters! With a group of like minded travellers, exploring a place like Spiti becomes even more fun. It’s never a journey instead a voyage that we take at Wanderphilia!
+
+`,
+
+    duration: 7,
+    nights: 6,
+    price: 0,
+    rating: 0,
+    difficulty: 'Moderate',
+    groupSize: 0,
+    tripType: 'India',
+    overviewPoints: [
+      'Route: Delhi → Shimla  → Sangla → Chitkul  → Kalpa → Nako  → Tabo  → Dhankar Monastery  → Kaza  → Kalpa → Delhi',
+      'Duration: 6 Nights / 7 Days',
+      'Trip Start: Delhi',
+      'Trip End: Delhi',
+      'Difficulty Level: Easy to Moderate',
+      'Best Time to Visit: Oct to May',
+      'Major Highlights: Chitkul , Nako , Hikkim , Komic , Langza , Key Monastery , Chicham Bridge'
+    ],
+
+
+
+    highlights: [
+      'Chitkul',
+      'Nako',
+      'Hikkim',
+      'Komic',
+      'Langza',
+      'Key Monastery',
+      'Chicham Bridge'
+    ],
+
+    itinerary: [
+      {
+        day: 0,
+        title: 'Departure from Delhi To Shimla at Evening. Overnight journey by Volvo.',
+        description: [
+          'Leave from Delhi by evening and reach Shimla the next morning.'
+        ]
+      },
+      {
+        day: 1,
+        title: 'Reach Shimla- Drive To The Last Indian Village - Chitkul / Sangla [Distance: Approx 220km, Duration: 9-10 Hours]',
+        description: [
+          'Breakfast and freshen up.',
+          'Drive through Kufri, Narkanda along the Indo-Tibetan highway on the way to Sangla',
+          'Enter the Kinnaur valley by crossing Kinnaur Gate ( The rock tunnel is famously called as the Gateway of Kinnaur, situated around 170 kms from Shimla on the Shimla - Kaza road, also known as the Hindustan - Tibet road. )',
+          'Reach Chitkul / Sangla by evening.',
+          'Dinner and Overnight sleep.'
+        ]
+      },
+      {
+        day: 2,
+        title: 'Transfer From Chitkul / Sangla To Kalpa. Overnight Stay At Kalpa. [ Distance: Approx 70km, Duration: 3-4 Hours ]',
+        description: [
+          'Wake up early morning and after check out visit Chitkul ( depending upon weather & other scenarios related to safety)',
+          'Make a visit to the famous Cliff Point of Kalpa at Roghi village( ( depending upon weather & other scenarios related to safety)',
+          'Then Explore Kinnaur district biggest market - Peo Market, reach Kalpa by evening and relax.',
+          'Check-in to the hotel in Kalpa. Dinner & sleep overnight.'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Transfer from Kalpa to Tabo via Nako [Distance: 168km, Duration: 7-8 Hours]. Overnight stay at Tabo',
+        description: [
+          'Wake up early morning & after breakfast start your journey to Spiti Valley.',
+          'Cross the Ka loops to reach Nako & have your lunch in Nako.',
+          'Enter Spiti valley through Sumdo Border.',
+          'Reach Tabo by evening & Visit the Oldest Monastery in Spiti Valley i.e. Tabo Monastery.',
+          'Check-in to the homestay.: Dinner & sleep overnight.'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Visit Dhankar Monastery , Key Monastery , Chicham Bridge. Overnight Stay At Kaza. [Distance: Approx 125km, Duration: 6-7 Hours]',
+        description: [
+          'After Breakfast , first head towards Dhankar village and cover Dhankar Monastery which offers a spectacular view of confluence of Spiti and Pin river.',
+          'Visit the most scenic monastery of Spiti Valley - The Key Monastery',
+          'Further drive to the highest suspension bridge in Asia - The Chicham Bridge',
+          'Come back to Kaza by evening.',
+          'Dinner and sleep overnight.'
+        ]
+      },
+      {
+        day: 5,
+        title: 'Visit Hikkim, Komik & Langza - Overnight Stay At Kaza. [Distance: Approx 80km, Duration: 6-7 Hours]',
+        description: [
+          'Wake up early morning and after having the breakfast, head for Spiti Valley divine sightseeing.',
+          'Visit the iconic villages of Spiti - Hikkim (location of the World\'s Highest Post Office) & Langza (the site for the holy Buddha Statue)',
+          'Visit Komik (the highest village in the world connected through a motorable road)',
+          'Come back to Kaza by evening. Dinner and sleep overnight.'
+        ]
+      },
+      {
+        day: 6,
+        title: 'Departure To Kalpa. Overnight Stay At Kalpa. [Distance: 215 km, Duration: 7-8 Hours]',
+        description: [
+          'Wake up early morning and after breakfast check-out of the hotel.',
+          'Depart for the Kalpa. Reach Kalpa by Night',
+          'Check-in to the hotel and relax.',
+          'Dinner & overnight in a hotel at Kalpa.'
+        ]
+      },
+      {
+        day: 7,
+        title: 'Depart to Shimla. [Distance: 210km, Duration: 8-9 Hours] Overnight Volvo transfer to Delhi.',
+        description: [
+          'Wake up early morning and after breakfast depart for Shimla.',
+          'Reach Shimla by evening.',
+          'Depart for Delhi.'
+        ]
+      },
+      {
+        day: 8,
+        title: 'Reach Delhi by morning.',
+        description: [
+          'Reach Delhi morning around 09:00 AM'
+        ]
+      }
+    ],
+
+    included: [
+      'Volvo transfer from Delhi to Shimla & back.',
+      '6 nights – 1 Night at Sangla ,2 Nights at Kalpa, 1 Night at Tabo, 2 Nights in Homestays at Kaza.',
+      'Breakfast & Dinner ( Breakfast except for Day 1 & Dinner Day 7 )',
+      'All inner line permits for the trip.',
+      'Driver Night Charges, Toll Tax, Parking Charges, etc.',
+      'Team Captain throughout the trip.',
+      'An Oxygen Cylinder 24X7 in the car in case of emergency',
+      '1 bonfire is included.'
+    ],
+
+    notIncluded: [
+      'GST (5%) is applicable extra.',
+      'Any kind of food or beverage that is not included in the package like alcoholic drinks, mineral water, meals/refreshments/lunches on the highway.',
+      'Any personal expenses like a tip to the drivers, entry to monuments/monasteries, camera/video camera charges etc.',
+      'Any cost arising due to natural calamities like landslides, roadblocks etc. (to be borne directly by the customer on the spot)',
+      'Anything not mentioned in the inclusions.'
+    ],
+
+    stays: [
+      'Sangla : Hotel Kamru / Similar',
+      'Kalpa : Wanderers Homestay / Similar',
+      'Tabo : Aema Inn / Similar.',
+      'Kaza : Dragon Mud House / Similar'
+    ],
+
+    dates: [
+      { startDate: '2026-05-16', endDate: '2026-05-22', spots: 0 },
+      { startDate: '2026-05-23', endDate: '2026-05-29', spots: 0 },
+      { startDate: '2026-06-06', endDate: '2026-06-12', spots: 0 }
+    ],
+
+    batchDates: [
+      { month: 'May', ranges: ['16nd May - 22th May', '23rd May - 29th May ( Eid Holiday )'] },
+      { month: 'June', ranges: ['6th June - 12th June'] }
+    ]
+  },
+  {
+    id: '23',
+    title: '8 Days Exclusive Summer Spiti Valley with Chandratal Group Road Trip.',
+    slug: '8-days-exclusive-summer-spiti-valley-with-chandratal-group-road-trip',
+    image: '/images/spiti-valley.jpg',
+    destination: 'Spiti Valley',
+    category: 'Spiti',
+    description: `
+
+
+
+Spiti Valley is a high altitude desert whose beauty unveils after a tough and tricky ride through the most challenging roads of Himalayas. If you feel the need for adrenaline, you got your share of dose right throughout your trip to Spiti.
+
+As you leave behind the chaos of cities, Spiti Valley will happily embrace you into a zone of peace and love. Soak in the holy vibes at Key Monastery, which is an important place of pilgrimage for the Buddhist population residing in Spiti. Explore the long lost stories in the fossils of Langza Village and witness the grandeur of the golden statue of Buddha. Ride upto the highest post office in the world at Hikkim and send a postcard to your loved ones and also to yourself! In short, just forget about the metropolis life for a few days and spend some time in a natural retreat at this high altitude desert! 
+
+`,
+    duration: 8,
+    nights: 7,
+    price: 0,
+    rating: 0,
+    difficulty: 'Moderate',
+    groupSize: 0,
+    tripType: 'India',
+    overviewPoints: [
+      'Route: Delhi → Shimla  → Sangla → Chitkul  → Kalpa → Nako  → Tabo  → Dhankar Monastery  → Kaza  →Channdratal → Manali → Delhi. ',
+      'Duration: 7 Nights / 8 Days.',
+      'Trip Start: Delhi',
+      'Trip End: Delhi',
+      'Difficulty Level: Easy to Moderate ',
+      'Best Time to Visit: June to Oct',
+      'Major Highlights: Chitkul , Nako , Hikkim , Komic , Langza , Key Monastery , Chicham Bridge'
+    ],
+    highlights: [
+      'Chitkul',
+      'Nako',
+      'Hikkim',
+      'Komic',
+      'Langza',
+      'Key Monastery',
+      'Chicham Bridge'
+    ],
+
+    itinerary: [
+      {
+        day: 0,
+        title: 'Departure from Delhi to Shimla by evening. Overnight journey by Volvo.',
+        description: [
+          'Leave from Delhi by night and reach Shimla next morning.'
+        ]
+      },
+      {
+        day: 1,
+        title: 'Reach Shimla- Transfer To Chitkul. Overnight Stay At Chitkul / Sangla [Distance: Approx 220km, Duration: 9-10 Hours]',
+        description: [
+          'Pitstop for Breakfast at Narkanda.',
+          'Begin the journey to Chitkul, the last Indian village towards China border.',
+          'Experience the journey through magnificent landscapes of Kinnaur valley along the banks of Satluj River.',
+          'Reach Chitkul / Sangla by evening, check-in to the hotel, dinner and sleep overnight.'
+        ]
+      },
+      {
+        day: 2,
+        title: 'Explore Chitkul - Transfer to Kalpa. Overnight stay at Kalpa. [Distance: Approx 80km, Duration: 6-7 Hours]',
+        description: [
+          'Wake up early morning to experience one of the most beautiful sunrises.',
+          'Explore the local village of Chitkul. Depart for Kalpa by Noon.',
+          'Reach Kalpa by evening, check-in to the hotel, dinner and sleep overnight.'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Transfer from Kalpa to Tabo via Nako [Distance: 168km, Duration: 7-8 Hours]. Overnight stay at Tabo',
+        description: [
+          'Wake up early morning & after breakfast start your journey to Spiti Valley.',
+          'Cross the Ka loops to reach Nako & have your lunch in Nako.',
+          'Enter Spiti valley through Sumdo Border.',
+          'Reach Tabo by evening & Visit the Oldest Monastery in Spiti Valley i.e. Tabo Monastery.',
+          'Check-in to the homestay.: Dinner & sleep overnight.'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Visit Dhankar Monastery , Key Monastery , Chicham Bridge. Overnight Stay At Kaza. [Distance: Approx 125km, Duration: 6-7 Hours]',
+        description: [
+          'After Breakfast , first head towards Dhankar village and cover Dhankar Monastery which offers a spectacular view of confluence of Spiti and Pin river.',
+          'Visit the most scenic monastery of Spiti Valley - The Key Monastery',
+          'Further drive to the highest suspension bridge in Asia - The Chicham Bridge',
+          'Come back to Kaza by evening.',
+          'Dinner and sleep overnight.'
+        ]
+      },
+      {
+        day: 5,
+        title: 'Visit Hikkim, Komik & Langza - Overnight Stay At Kaza. [Distance: Approx 80km, Duration: 6-7 Hours]',
+        description: [
+          'Wake up early morning and after having the breakfast, head for Spiti Valley divine sightseeing.',
+          'Visit the iconic villages of Spiti - Hikkim (location of the World\'s Highest Post Office) & Langza (the site for the holy Buddha Statue)',
+          'Visit Komik (the highest village in the world connected through a motorable road)',
+          'Come back to Kaza by evening. Dinner and sleep overnight.'
+        ]
+      },
+      {
+        day: 6,
+        title: 'Depart for Chandra Taal - Overnight stay at Chandra Taal. [Distance: Approx 95 km, Duration: 5-6 Hours]',
+        description: [
+          'Wake up early morning and after having breakfast check-out of the campsite.',
+          'Depart for Chandra Taal lake.',
+          'On the way , take a pit stop for snacks at Losar, the last village of Spiti Valley.',
+          'Reach Chandra Taal by evening & check-in to the camps.',
+          'Dinner and stay in tents under the gaze of a million stars and the Milky Way Galaxy.'
+        ]
+      },
+      {
+        day: 7,
+        title: 'Depart for Manali - Old Manali café crawl - Overnight stay at Manali. [Distance: Approx 95 km, Duration: 5-6 Hours]',
+        description: [
+          'Wake up early morning & after breakfast depart for Manali.',
+          'Reach Manali by evening',
+          'Check-in to the hotel.',
+          'Old Manali café crawl.',
+          'Dinner and Sleep Overnight.'
+        ]
+      },
+      {
+        day: 8,
+        title: 'Self-Explore Manali - Departure To Delhi.',
+        description: [
+          'Wake up early morning & enjoy the beautiful sunrise.',
+          'Manali self-exploration. Places to visit- Hadimba Devi Temple, Old Manali street, Mall Road.',
+          'Depart for Delhi by evening.'
+        ]
+      },
+      {
+        day: 9,
+        title: 'Reach Delhi by morning. [ Distance: 510 km, Duration: 10 - 11 Hours ]',
+        description: [
+          'Reach Delhi by morning with amazing trip memories.'
+        ]
+      }
+    ],
+
+    included: [
+      'Volvo transfer from Delhi to Shimla & back.',
+      '7 nights – 1 Night at Sangla ,1 Nights at Kalpa, 1 Night at Tabo, 2 Nights in Homestays at Kaza , 1 Night Chandratal Lake , 1 Night Manali on triple/quad sharing basis.',
+      'Breakfast & Dinner ( Breakfast except for Day 1 & Dinner Day 8 )',
+      'All inner line permits for the trip.',
+      'Driver Night Charges, Toll Tax, Parking Charges, etc.',
+      'Team Captain throughout the trip.',
+      'An Oxygen Cylinder 24X7 in the car in case of emergency',
+      '1 bonfire is included.'
+    ],
+
+    notIncluded: [
+      'GST (5%) is applicable extra.',
+      'Any kind of food or beverage that is not included in the package like alcoholic drinks, mineral water, meals/refreshments/lunches on the highway.',
+      'Any personal expenses like a tip to the drivers, entry to monuments/monasteries, camera/video camera charges etc.',
+      'Any cost arising due to natural calamities like landslides, roadblocks etc. (to be borne directly by the customer on the spot)',
+      'Anything not mentioned in the inclusions.'
+    ],
+
+    stays: [
+      'Sangla : Hotel Kamru / Similar',
+      'Kalpa : Wanderers Homestay / Similar',
+      'Tabo : Aema Inn / Similar.',
+      'Kaza : Dragon Mud House / Similar',
+      'Chandratal : Saryu’s Camps / Similar',
+      'Manali : Hotel Conifer / Similar.'
+    ],
+
+    dates: [
+      { startDate: '2026-06-06', endDate: '2026-06-15', spots: 0 },
+      { startDate: '2026-06-20', endDate: '2026-06-29', spots: 0 },
+      { startDate: '2026-07-04', endDate: '2026-07-13', spots: 0 },
+      { startDate: '2026-07-18', endDate: '2026-07-27', spots: 0 },
+      { startDate: '2026-08-01', endDate: '2026-08-10', spots: 0 },
+      { startDate: '2026-08-15', endDate: '2026-08-24', spots: 0 },
+      { startDate: '2026-08-29', endDate: '2026-09-07', spots: 0 },
+      { startDate: '2026-09-12', endDate: '2026-09-21', spots: 0 },
+      { startDate: '2026-09-26', endDate: '2026-10-05', spots: 0 }
+    ],
+
+    batchDates: [
+      { month: 'June', ranges: ['6th June - 15th June', '20th June - 29th June'] },
+      { month: 'July', ranges: ['4th July - 13th July', '18th July - 27th July'] },
+      { month: 'Aug', ranges: ['1st Aug - 10th Aug', '15th Aug - 24th  Aug', '29th Aug - 7th Sept'] },
+      { month: 'Sept', ranges: ['12th Sept - 21st Sept ( Ganesh Chaturthi Holiday )', '26th Sept - 5th Oct'] }
+    ]
+  },
+  {
+    id: '24',
+    title: '7 Days Summer Spiti Valley with Chandratal Group Road Trip Super Saver Budget',
+    slug: '7-days-summer-spiti-valley-with-chandratal-group-road-trip-super-saver-budget',
+    image: '/images/spiti-valley.jpg',
+    destination: 'Spiti Valley',
+    category: 'Spiti',
+    tripType: 'India',
+    duration: 7,
+    price: 0,
+    rating: 4.7,
+    difficulty: 'Moderate',
+    groupSize: 12,
+    dates: [
+      { startDate: '2026-06-06', endDate: '2026-06-15', spots: 0 },
+      { startDate: '2026-06-20', endDate: '2026-06-29', spots: 0 },
+      { startDate: '2026-07-04', endDate: '2026-07-13', spots: 0 },
+      { startDate: '2026-07-18', endDate: '2026-07-27', spots: 0 },
+      { startDate: '2026-08-01', endDate: '2026-08-10', spots: 0 },
+      { startDate: '2026-08-15', endDate: '2026-08-24', spots: 0 },
+      { startDate: '2026-08-29', endDate: '2026-09-07', spots: 0 },
+      { startDate: '2026-09-12', endDate: '2026-09-21', spots: 0 },
+      { startDate: '2026-09-26', endDate: '2026-10-05', spots: 0 }
+    ],
+
+    overviewPoints: [
+      "Route: Delhi → Shimla  → Sangla → Chitkul  → Kalpa → Nako  → Tabo  → Dhankar Monastery  → Kaza  →Channdratal → Manali → Delhi.",
+      "Duration: 6 Nights / 7 Days.",
+      "Trip Start: Delhi",
+      "Trip End: Delhi",
+      "Difficulty Level: Easy to Moderate .",
+      "Best Time to Visit: June to September."
+    ],
+
+    highlights: [
+      "Chitkul",
+      "Nako",
+      "Hikkim",
+      "Komic",
+      "Langza",
+      "Key Monastery",
+      "Chicham Bridge"
+    ],
+
+    description: `Spiti Valley is a high altitude desert whose beauty unveils after a tough and tricky ride through the most challenging roads of Himalayas. If you feel the need for adrenaline, you got your share of dose right throughout your trip to Spiti.
+
+As you leave behind the chaos of cities, Spiti Valley will happily embrace you into a zone of peace and love. Soak in the holy vibes at Key Monastery, which is an important place of pilgrimage for the Buddhist population residing in Spiti. Explore the long lost stories in the fossils of Langza Village and witness the grandeur of the golden statue of Buddha. Ride upto the highest post office in the world at Hikkim and send a postcard to your loved ones and also to yourself! In short, just forget about the metropolis life for a few days and spend some time in a natural retreat at this high altitude desert!`,
+
+    itinerary: [
+      {
+        day: 0,
+        title: "Departure from Delhi to Shimla by evening. Overnight journey by Volvo.",
+        description: [
+          "Leave from Delhi by night and reach Shimla next morning."
+        ]
+      },
+      {
+        day: 1,
+        title: "Reach Shimla- Transfer To Chitkul. Overnight Stay At Chitkul / Sangla [Distance: Approx 220km, Duration: 9-10 Hours]",
+        description: [
+          "Pitstop for Breakfast at Narkanda.",
+          "Begin the journey to Chitkul, the last Indian village towards China border.",
+          "Experience the journey through magnificent landscapes of Kinnaur valley along the banks of Satluj River.",
+          "Reach Chitkul / Sangla by evening, check-in to the hotel, dinner and sleep overnight."
+        ]
+      },
+      {
+        day: 2,
+        title: "Explore Chitkul - Transfer to Kalpa. Overnight stay at Kalpa. [Distance: Approx 80km, Duration: 6-7 Hours]",
+        description: [
+          "Wake up early morning to experience one of the most beautiful sunrises.",
+          "Explore the local village of Chitkul. Depart for Kalpa by Noon.",
+          "Reach Kalpa by evening, check-in to the hotel, dinner and sleep overnight."
+        ]
+      },
+      {
+        day: 3,
+        title: "Transfer from Kalpa to Tabo via Nako [Distance: 168km, Duration: 7-8 Hours]. Overnight stay at Tabo",
+        description: [
+          "Wake up early morning & after breakfast start your journey to Spiti Valley.",
+          "Cross the Ka loops to reach Nako & have your lunch in Nako.",
+          "Enter Spiti valley through Sumdo Border.",
+          "Reach Tabo by evening & Visit the Oldest Monastery in Spiti Valley i.e. Tabo Monastery.",
+          "Check-in to the homestay.: Dinner & sleep overnight."
+        ]
+      },
+      {
+        day: 4,
+        title: "Visit Dhankar Monastery , Key Monastery , Chicham Bridge. Overnight Stay At Kaza. [Distance: Approx 125km, Duration: 6-7 Hours]",
+        description: [
+          "After Breakfast , first head towards Dhankar village and cover Dhankar Monastery which offers a spectacular view of confluence of Spiti and Pin river.",
+          "Visit the most scenic monastery of Spiti Valley - The Key Monastery",
+          "Further drive to the highest suspension bridge in Asia - The Chicham Bridge",
+          "Come back to Kaza by evening.",
+          "Dinner and sleep overnight."
+        ]
+      },
+      {
+        day: 5,
+        title: "Visit Hikkim, Komik & Langza - Overnight Stay At Kaza. [Distance: Approx 80km, Duration: 6-7 Hours]",
+        description: [
+          "Wake up early morning and after having the breakfast, head for Spiti Valley divine sightseeing.",
+          "Visit the iconic villages of Spiti - Hikkim (location of the World's Highest Post Office) & Langza (the site for the holy Buddha Statue)",
+          "Visit Komik (the highest village in the world connected through a motorable road)",
+          "Come back to Kaza by evening. Dinner and sleep overnight."
+        ]
+      },
+      {
+        day: 6,
+        title: "Depart for Chandra Taal - Overnight stay at Chandra Taal. [Distance: Approx 95 km, Duration: 5-6 Hours]",
+        description: [
+          "Wake up early morning and after having breakfast check-out of the campsite.",
+          "Depart for Chandra Taal lake.",
+          "On the way , take a pit stop for snacks at Losar, the last village of Spiti Valley.",
+          "Reach Chandra Taal by evening & check-in to the camps.",
+          "Dinner and stay in tents under the gaze of a million stars and the Milky Way Galaxy."
+        ]
+      },
+      {
+        day: 7,
+        title: "Depart for Delhi via Manali. [Distance: Approx 95 km, Duration: 5-6 Hours]",
+        description: [
+          "Wake up early morning & enjoy the beautiful sunrise.",
+          "Manali self-exploration. Places to visit- Hadimba Devi Temple, Old Manali street, Mall Road. ( If Time Permits )",
+          "Depart for Delhi by evening."
+        ]
+      },
+      {
+        day: 8,
+        title: "Reach Delhi by morning. [ Distance: 510 km, Duration: 10 - 11 Hours ]",
+        description: [
+          "Reach Delhi by morning with amazing trip memories."
+        ]
+      }
+    ],
+
+    included: [
+      "Volvo transfer from Delhi to Shimla & back.",
+      "6 nights – 1 Night at Sangla ,1 Nights at Kalpa, 1 Night at Tabo, 2 Nights in Homestays at Kaza , 1 Night Chandratal Lake triple/quad sharing basis.",
+      "Breakfast & Dinner ( Breakfast except for Day 1 & Dinner Day 7 )",
+      "All inner line permits for the trip.",
+      "Driver Night Charges, Toll Tax, Parking Charges, etc.",
+      "Team Captain throughout the trip.",
+      "An Oxygen Cylinder 24X7 in the car in case of emergency",
+      "1 bonfire is included."
+    ],
+
+    notIncluded: [
+      "GST (5%) is applicable extra.",
+      "Any kind of food or beverage that is not included in the package like alcoholic drinks, mineral water, meals/refreshments/lunches on the highway.",
+      "Any personal expenses like a tip to the drivers, entry to monuments/monasteries, camera/video camera charges etc.",
+      "Any cost arising due to natural calamities like landslides, roadblocks etc. (to be borne directly by the customer on the spot)",
+      "Anything not mentioned in the inclusions."
+    ],
+
+    stays: [
+      "Sangla : Hotel Kamru / Similar",
+      "Kalpa : Wanderers Homestay / Similar",
+      "Tabo : Aema Inn / Similar.",
+      "Kaza : Dragon Mud House / Similar",
+      "Chandratal : Saryu’s Camps / Similar"
+    ],
+
+    batchDates: [
+      {
+        month: "June",
+        ranges: [
+          "6th June - 14th June",
+          "20th June - 28th June"
+        ]
+      },
+      {
+        month: "July",
+        ranges: [
+          "4th July - 12th July",
+          "18th July - 26th July"
+        ]
+      },
+      {
+        month: "Aug",
+        ranges: [
+          "1st Aug - 9th Aug",
+          "15th Aug - 23rd Aug",
+          "29th Aug - 6th Sept"
+        ]
+      },
+      {
+        month: "Sept",
+        ranges: [
+          "12th Sept - 20th Sept ( Ganesh Chaturthi Holiday )",
+          "26th Sept - 4th Oct"
+        ]
+      }
+    ]
+  },
+  {
+    id: '25',
+    title: '5 Days Summer Spiti Valley Short Circuit with Chandratal Group Road Trip Super Saver Budget',
+    slug: '5-days-summer-spiti-valley-short-circuit-with-chandratal-group-road-trip-super-saver-budget',
+    image: '/images/spiti-valley.jpg',
+    destination: 'Spiti Valley',
+    category: 'Spiti',
+    tripType: 'India',
+    duration: 6,
+    price: 0,
+    rating: 4.6,
+    difficulty: 'Moderate',
+    groupSize: 12,
+    overviewPoints: [
+      'Route: Delhi - Manali - Kaza -Key Monastery - Hikkim - Komik - Langza - Chandratal Lake - Manali - Delhi ',
+      'Duration: 4 Nights / 5 Days.',
+      'Trip Start: Delhi',
+      'Trip End: Delhi',
+      'Difficulty Level: Easy to Moderate .',
+      'Best Time to Visit: June to October.',
+      'Major Highlights: Hikkim , Komic , Langza , Key Monastery , Chicham Bridge , Chandratal Lake.'
+    ],
+    highlights: [
+      'Hikkim',
+      'Komic',
+      'Langza',
+      'Key Monastery',
+      'Chicham Bridge',
+      'Chandratal Lake'
+    ],
+    description: `Spiti- The middle-land between the lush green valleys and the cold mountain deserts of Himalayas. A Spiti Valley Trip is a traveler’s delight, thanks to the thrilling roadways and rustic landscapes. While most parts of India undergo unbearably high temperatures, the beauty of Spiti shines like a diamond under sun during peak summer months. The best time to visit Spiti is from June-September when the glacial lakes will welcome you in all their glory. It is now that you hit those roads with our Spiti Valley RoadTrip Package!
+
+The treacherous curves that lead to the valley of Spiti from Manali will give you a dose of adventure and beauty all at once. This is your chance to experience the thrill of traveling through the famous Rohtang Pass. Don’t forget to notice your surroundings because a beautiful change is taking place in your surroundings. It is here you’ll notice landscapes change from shades of green to brown.
+
+When you finally enter Spiti Valley you’ll realize that it is much more than just a picturesque place of Himalayas. There’s an abundance of rich Buddhist-Tibetan culture that resides in the serrated villages of Spiti. The Key Monastery is one fine example of architecture that makes you adore the concept of simplicity in Buddhism.
+
+Other than the skies, there stands another blue marvel on your Trip to Spiti-The Chandratal Lake! Take your time to absorb peace at this splendid glacial lake and click some postcard-perfect shots here. Speaking of postcards, why not send a letter to your loved ones from the World’s highest post office! Pretty special right!
+
+So now that you know what to expect on this voyage to the high altitude desert, pack your bags and book yourself a slot in our Spiti Roadtrip Package for 2026!`,
+    itinerary: [
+      {
+        day: 0,
+        title: 'Departure from Delhi to Manali',
+        description: [
+          'Leave from Delhi by evening & reach Manali next morning.'
+        ]
+      },
+      {
+        day: 1,
+        title: 'Reach Manali - Manali Self exploration - Overnight stay at Manali.',
+        description: [
+          'Reach Manali by morning and check-in to the Hotel.',
+          'After having breakfast and some leisure, feel free to explore the local area of Manali according to the place that interests you.',
+          'You can visit the Mall road, Hidimba Temple, Old Manali for some good cafes to chill or Vashisht temple for the Hot water Spring.',
+          'Come back to the hotel by evening.',
+          'Briefing about the next day and sleep overnight.'
+        ]
+      },
+      {
+        day: 2,
+        title: 'Start your journey from Manali to Kaza via Atal Tunnel and Kunzum La. Overnight stay at Kaza. [ Distance: 185 km, Duration: 6 - 7 Hours ]',
+        description: [
+          'Early morning, we start our journey to the valley of the Gods – Lahaul & Spiti!',
+          'Crossover to Lahaul by crossing the Engineering Marvel - Atal Tunnel, and watch the terrain shift from lush green valleys to brown arid deserts.',
+          'At 14,931 ft we cross another high altitude pass & the gateway to the Spiti Valley – Kunzum La.',
+          'On the way, visit the highest suspension bridge in Asia - The Chicham Bridge.We continue our drive through the stunning landscape to reach Kaza by evening, and overnight stay in hotel.'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Visit Key Monastery, Hikkim, Komic and Langza. Overnight stay at Kaza. [Distance: Approx 80km, Duration: 6-7 Hours]',
+        description: [
+          'Being remotely located atop a hill overlooking endless plains, the Key Monastery is a world famous center for learning and is an obvious choice for those seeking peace and calm.',
+          'Visit some of the highest inhabited regions of the world.',
+          'The highest village in Asia – Komic, situated at a height of 4513 m, has a population of 84 people and is cut off from rest of the world for most parts of the year.',
+          'Later, we drive to Hikkim, where we have a chance to send postcards from the world’s highest post office!',
+          'At Langza, walk back to the prehistoric era when Spiti was submerged by the Tethys Sea, as you explore a land very rich with fossils of Marine animals and plants which were here millions of years ago.',
+          'Overnight at Kaza.'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Start your journey from Kaza to Chandra Taal Lake via Losar & Kunzum La. Overnight stay at Chandra Taal [Distance: Approx 95 km, Duration: 5-6 Hours]',
+        description: [
+          'We start tracing our steps back towards Manali.',
+          'However, make one last stop to witness another Spitian wonder – Chandra Taal Lake.',
+          'The mystical and beautiful Chandra Taal Lake or the Moon Lake is located at a height of 14,000 feet.',
+          'The Chandra Bhaga mountain range forms a striking backdrop for the lake, which changes appearance according to the pictures painted in the sky.',
+          'Later check in to the Campsite at Chandra Taal Lake, and overnight stay at the tents under the gaze of a million stars and the Milky Way Galaxy.'
+        ]
+      },
+      {
+        day: 5,
+        title: 'tart your journey back to Manali - Departure to Delhi. [ Distance: 510 km, Duration: 10 - 11 Hours]',
+        description: [
+          'Today, we commence our way back on the Manali – Kaza Road.',
+          'We pass through some more stunning landscapes and reach Manali by afternoon.',
+          'After some rest, we board the Volvo to Delhi and reach by next morning with lots of amazing memories to remember for a lifetime!'
+        ]
+      },
+      {
+        day: 6,
+        title: 'Reach Delhi by morning.',
+        description: [
+          'Reach Delhi the next morning.'
+        ]
+      }
+    ],
+    included: [
+      'Volvo transfer from Delhi to Shimla & back.',
+      '4 nights – 1 Night Manali , 2 Nights in Homestays at Kaza , 1 Night Chandratal Lake triple/quad sharing basis.',
+      'Breakfast & Dinner ( Breakfast except for Day 1 & Dinner Day 5 )',
+      'All inner line permits for the trip.',
+      'Driver Night Charges, Toll Tax, Parking Charges, etc.',
+      'Team Captain throughout the trip.',
+      'An Oxygen Cylinder 24X7 in the car in case of emergency',
+      '1 bonfire is included.'
+    ],
+    notIncluded: [
+      'GST (5%) is applicable extra.',
+      'Any kind of food or beverage that is not included in the package like alcoholic drinks, mineral water, meals/refreshments/lunches on the highway.',
+      'Any personal expenses like a tip to the drivers, entry to monuments/monasteries, camera/video camera charges etc.',
+      'Any cost arising due to natural calamities like landslides, roadblocks etc. (to be borne directly by the customer on the spot)',
+      'Anything not mentioned in the inclusions.'
+    ],
+    stays: [
+      'Manali : Hotel Conifer / Similar ',
+      'Kaza : Dragon Mud House / Similar',
+      'Chandratal : Saryu’s Camps / Similar'
+    ],
+    dates: [
+      { startDate: '2026-06-06', endDate: '2026-06-12', spots: 0 },
+      { startDate: '2026-06-20', endDate: '2026-06-26', spots: 0 },
+      { startDate: '2026-07-04', endDate: '2026-07-10', spots: 0 },
+      { startDate: '2026-07-18', endDate: '2026-07-24', spots: 0 },
+      { startDate: '2026-08-01', endDate: '2026-08-07', spots: 0 },
+      { startDate: '2026-08-15', endDate: '2026-08-21', spots: 0 },
+      { startDate: '2026-08-29', endDate: '2026-09-04', spots: 0 },
+      { startDate: '2026-09-12', endDate: '2026-09-18', spots: 0 },
+      { startDate: '2026-09-26', endDate: '2026-10-02', spots: 0 }
+    ],
+    batchDates: [
+      {
+        month: 'June',
+        ranges: ['6th June - 12 th June', '20th June - 26th June']
+      },
+      {
+        month: 'July',
+        ranges: ['4th July - 10th July', '18th July - 24th July']
+      },
+      {
+        month: 'Aug',
+        ranges: ['1st Aug - 7th Aug', '15th Aug - 21th Aug', '29th Aug - 4th Sept']
+      },
+      {
+        month: 'Sept',
+        ranges: ['12th Sept - 18th Sept ( Ganesh Chaturthi Holiday )', '26th Sept - 2th Oct']
+      }
+    ]
+  },
+  {
+    id: '26',
+    title: '9 Days Summer Spiti Valley Bike Road Trip with Chandratal Lake Group Trip',
+    slug: '9-days-summer-spiti-valley-bike-road-trip-with-chandratal-lake-group-trip',
+    image: '/images/spiti-valley.jpg',
+    destination: 'Spiti Valley',
+    category: 'Spiti',
+    tripType: 'India',
+    duration: 8,
+    price: 0,
+    rating: 4.6,
+    difficulty: 'Moderate',
+    groupSize: 12,
+    overviewPoints: [
+      'Route: Delhi - Tirthan Valley - Chitkul - Kalpa - Kaza - Key Monastery - Hikkim - Langza - Chandratal Lake - Manali - Delhi.',
+      'Duration: 7 Nights / 8 Days.',
+      'Trip Start: Delhi',
+      'Trip End: Delhi',
+      'Difficulty Level: Easy to Moderate .',
+      'Best Time to Visit: June to Oct.',
+      'Major Highlights: Jibhi , Chitkul , Nako , Hikkim , Komic , Langza , Key Monastery , Chicham Bridge , Chandratal Lake.'
+    ],
+    highlights: [
+      'Jibhi',
+      'Chitkul',
+      'Nako',
+      'Hikkim',
+      'Komic',
+      'Langza',
+      'Key Monastery',
+      'Chicham Bridge',
+      'Chandratal Lake'
+    ],
+    description: `Challenging Terrains, high passes, exhilarating views and one hell of a machine is what all bikers dream of. If you too are one of those who have a passion to ride on seemingly endless roads, then perhaps a bike trip to Spiti Valley is all that you need.
+
+Spiti Valley is a high altitude desert whose beauty unveils after a tough and tricky ride through the most challenging roads of Himalayas. If you feel the need for adrenaline, you got your share of dose right throughout your trip to Spiti.
+
+A bike expedition to Spiti can give you the feel of riding through the passes of Leh Ladakh, as this place is popularly called the mini version of it! As you begin your journey to Spiti from Manali, you travel through the popular Rohtang Pass located in the Pir Panjal Range of Himalayas. This ride will feed your appetite for thrill and vast soul-satiating panoramas.
+
+As you leave behind the chaos of cities, Spiti Valley will happily embrace you into a zone of peace and love. Soak in the holy vibes at Key Monastery, which is an important place of pilgrimage for the Buddhist population residing in Spiti. Explore the long lost stories in the fossils of Langza Village and witness the grandeur of the golden statue of Buddha. Ride upto the highest post office in the world at Hikkim and send a postcard to your loved ones and also to yourself! In short, just forget about the metropolis life for a few days and spend some time in a natural retreat at this high altitude desert!
+
+Our Bikes are already vrooming and we are all set to take you to this less explored paradise through our Spiti Valley Tour Packages for 2026! Time to get #Spitified!`,
+    itinerary: [
+      {
+        day: 0,
+        title: 'Departure from Delhi to Tirthan Valley. Overnight Journey In Volvo [ Distance: Approx 470 km, Duration: 11-12 Hours ]',
+        description: [
+          'Leave from Delhi by evening and reach Aut next morning.'
+        ]
+      },
+      {
+        day: 1,
+        title: 'Reach Aut - Transfer to Gushaini/Jibhi - Overnight stay at Gushaini/Jibhi.',
+        description: [
+          'Depart for Gushaini/Jibhi (Backpackers)/ Bikers will head to Manali to collect their bikes & test ride from Manali to Gushaini/Jibhi.',
+          'Check-in to the resort/Hotel.',
+          'Breakfast and freshen up ( Bikers will be doing it in Manali).',
+          'Trek to Choie/Jibhi waterfall (For Backpackers).',
+          'Dinner and Overnight Sleep.'
+        ]
+      },
+      {
+        day: 2,
+        title: 'Departure to Chitkul via Kinnaur Valley. Overnight stay at Chitkul. [ Distance: Approx 230 km, Duration: 10 -11 Hours ]',
+        description: [
+          'Early morning, begin the journey to Chitkul, the last Indian village towards China border.',
+          'Experience the journey through magnificent landscapes of Kinnaur valley along the banks of Satluj River.',
+          'Reach Chitkul by evening, check-in the camps, dinner and sleep overnight.'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Explore Chitkul - Transfer to Nako Via Kalpa. Overnight stay at Nako. [Distance: Approx 80km, Duration: 6-7 Hours]',
+        description: [
+          'Wake up early morning to experience one of the most beautiful sunrises.',
+          'Explore the local village of Chitkul. Depart for Kalpa by Noon.',
+          'Enroute stop at Khwab Sangam.',
+          'Reach Nako by evening, check-in to the hotel, dinner and sleep overnight.'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Transfer from Nako to Kaza via Tabo - Ka loops. Overnight stay at Kaza. [Distance: 220 km, Duration: 8- 9 Hours]',
+        description: [
+          'Wake-up early morning & after breakfast start your journey to Spiti Valley.',
+          'Enter Spiti valley through Sumdo Border. Visit Nako Tabo villages en route Kaza.',
+          'Cross the Ka loops en route Kaza.',
+          'Reach Kaza by evening.',
+          'Check-in to the Hotel/Homestay.',
+          'Dinner & sleep overnight.'
+        ]
+      },
+      {
+        day: 5,
+        title: 'Visit Key Monastery - Hikkim - Komic - Langza. Overnight stay at Kaza. [Distance: Approx 80km, Duration: 6-7 Hours]',
+        description: [
+          'Being remotely located atop a hill overlooking endless plains, the Key Monastery is a world famous center for learning and is an obvious choice for those seeking peace and calm.',
+          'Further, drive to the highest suspension bridge in Asia - The Chicham Bridge.',
+          'Visit some of the highest inhabited regions of the world.',
+          'The highest village in Asia – Komic, situated at a height of 4513 m, has a population of 84 people and is cut off from rest of the world for most parts of the year.',
+          'Later, we drive to Hikkim, where we have a chance to send postcards from the world\'s highest post office!',
+          'At Langza, walk back to the prehistoric era when Spiti was submerged by the Tethys Sea, as you explore a land very rich with fossils of Marine animals and plants which were here millions of years ago.',
+          'Overnight at Kaza.'
+        ]
+      },
+      {
+        day: 6,
+        title: 'Depart for Chandra Taal - Overnight stay at Chandra Taal. [Distance: Approx 95 km, Duration: 5 - 6 Hours]',
+        description: [
+          'Wake up early morning and after having breakfast check-out of the Hotel.',
+          'Depart for Chandra Taal lake.',
+          'On the way , take a pit stop for snacks at Losar, the last village of Spiti Valley.',
+          'Reach Chandra Taal by evening & check-in to the camps.',
+          'Dinner and stay in tents under the gaze of a million stars and the Milky Way Galaxy.'
+        ]
+      },
+      {
+        day: 7,
+        title: 'Depart for Manali - Old Manali café crawl - Overnight stay at Manali. [ Distance: 111 km, Duration: 6 - 7 Hours]',
+        description: [
+          'Wake up early morning & after breakfast depart for Manali.',
+          'Reach Manali by evening',
+          'Check-in to the hotel.',
+          'Old Manali café crawl.',
+          'Dinner and Sleep Overnight.'
+        ]
+      },
+      {
+        day: 8,
+        title: 'Self-explore Manali - Departure to Delhi. [ Distance: 510 km, Duration: 10 - 11 Hours]',
+        description: [
+          'Wake up early morning & enjoy the beautiful sunrise.',
+          'Manali self-exploration',
+          'Places to visit- Hadimba Devi Temple, Old Manali street, Mall Road.',
+          'Depart for Delhi by evening.',
+          'Reach Delhi the next morning.'
+        ]
+      },
+      {
+        day: 9,
+        title: 'Reach Delhi by morning',
+        description: [
+          'Reach Delhi by morning with amazing trip memories.'
+        ]
+      }
+    ],
+    included: [
+      'Volvo transfer from Delhi to Shimla & back.',
+      '7 nights – 1 NIght Jibhi , 1 Night at Sangla ,1 Nights at Nako , 2 Nights in Homestays at Kaza , 1 Night Chandratal Lake , 1 Night Manali on triple/quad sharing basis.',
+      'Bike Rent for 7 days (for biking option)',
+      'Fuel Expenses for the bike from Manali to Manali',
+      'Mechanical Backup',
+      'Entire travel from Aut to Manali by tempo traveler/cab (For Tempo Traveler Option)',
+      'Breakfast & Dinner ( Breakfast except for Day 1 & Dinner Day 8 )',
+      'All inner line permits for the trip.',
+      'Driver Night Charges, Toll Tax, Parking Charges, etc.',
+      'Team Captain throughout the trip.',
+      'Riding Gears – Helmet (Standard Size 58 - 60 cms), Riding Gloves ( only for riders), Riding Jackets, Knee Pads (Though it is recommended you carry your own helmet for comfort)',
+      'An Oxygen Cylinder 24X7 in the car in case of emergency',
+      '1 bonfire is included.'
+    ],
+    notIncluded: [
+      'GST (5%) is applicable extra.',
+      'Any kind of food or beverage that is not included in the package like alcoholic drinks, mineral water, meals/refreshments/lunches on the highway.',
+      'Any personal expenses like a tip to the drivers, entry to monuments/monasteries, camera/video camera charges etc.',
+      'Any cost arising due to natural calamities like landslides, roadblocks etc. (to be borne directly by the customer on the spot)',
+      'Any damage to the bike except engine damage must be borne by the client.',
+      'Anything not mentioned in the inclusions.'
+    ],
+    stays: [
+      'Jibhi : Red Apple Hotel / Similar',
+      'Sangla : Hotel Kamru / Similar',
+      'Kalpa : Wanderers Homestay / Similar',
+      'Tabo : Aema Inn / Similar.',
+      'Kaza : Dragon Mud House / Similar',
+      'Chandratal : Saryu\'s Camps / Similar',
+      'Manali : Hotel Conifer / Similar.'
+    ],
+    dates: [
+      { startDate: '2026-06-06', endDate: '2026-06-15', spots: 0 },
+      { startDate: '2026-06-20', endDate: '2026-06-29', spots: 0 },
+      { startDate: '2026-07-04', endDate: '2026-07-13', spots: 0 },
+      { startDate: '2026-07-18', endDate: '2026-07-27', spots: 0 },
+      { startDate: '2026-08-01', endDate: '2026-08-10', spots: 0 },
+      { startDate: '2026-08-15', endDate: '2026-08-24', spots: 0 },
+      { startDate: '2026-08-29', endDate: '2026-09-07', spots: 0 },
+      { startDate: '2026-09-12', endDate: '2026-09-21', spots: 0 },
+      { startDate: '2026-09-26', endDate: '2026-10-05', spots: 0 }
+    ],
+    batchDates: [
+      {
+        month: 'June',
+        ranges: ['6th June - 15th June', '20th June - 29th June']
+      },
+      {
+        month: 'July',
+        ranges: ['4th July - 13th July', '18th July - 27th July']
+      },
+      {
+        month: 'Aug',
+        ranges: ['1st Aug - 10th Aug', '15th Aug - 24th Aug', '29th Aug - 7th Sept']
+      },
+      {
+        month: 'Sept',
+        ranges: ['12th Sept - 21st Sept ( Ganesh Chaturthi Holiday )', '26th Sept - 5th Oct']
+      }
     ]
   }
 ];

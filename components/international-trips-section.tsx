@@ -40,13 +40,10 @@ function RegionCard({ title, image, price, region }: TripTypeCardProps) {
   )
 }
 
-export function TripTypesSection() {
-
+export function InternationalTripsSection() {
   const [isMobile, setIsMobile] = useState(false)
   const [cardsPerView, setCardsPerView] = useState(4)
-
-  const [indiaIndex, setIndiaIndex] = useState(0)
-  const [intlIndex, setIntlIndex] = useState(0)
+  const [index, setIndex] = useState(0)
 
   useEffect(() => {
     const update = () => {
@@ -61,17 +58,8 @@ export function TripTypesSection() {
   }, [])
 
   useEffect(() => {
-    setIndiaIndex(0)
-    setIntlIndex(0)
+    setIndex(0)
   }, [cardsPerView])
-
-  const indiaRegions = [
-    { title: 'Leh Ladakh', region: 'Leh Ladakh', image: '/images/leh-ladakh.jpg', price: 15800 },
-    { title: 'Spiti', region: 'Spiti', image: '/images/spiti-valley.jpg', price: 24499 },
-    { title: 'Kashmir', region: 'Kashmir', image: '/images/kashmir.jpg', price: 24499 },
-    { title: 'Meghalaya', region: 'Meghalaya', image: '/images/meghalaya.jpg', price: 21499 },
-    { title: 'Himachal', region: 'Himachal', image: '/images/himachal.jpg', price: 6999 },
-  ]
 
   const internationalRegions = [
     { title: 'Nepal', region: 'Nepal', image: '/images/everest.jpg', price: 99900 },
@@ -83,72 +71,15 @@ export function TripTypesSection() {
     { title: 'Japan', region: 'Japan', image: '/images/japan.jpg', price: 139900 },
   ]
 
-  const maxIndia = Math.max(0, indiaRegions.length - cardsPerView)
-  const maxIntl = Math.max(0, internationalRegions.length - cardsPerView)
+  const maxIndex = Math.max(0, internationalRegions.length - cardsPerView)
 
   return (
-    <section className="py-20  bg-white">
+    <section className="py-20 bg-white">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-
-        {/* ================= INDIA ================= */}
-        <div id="india-trips" className="mb-20 text-center scroll-mt-20">
-
-          <h2 className="text-4xl md:text-5xl font-bold mb-10">India Trips</h2>
-
-          <div className="relative">
-
-            {isMobile ? (
-              <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
-                {indiaRegions.map((item) => (
-                  <div key={item.region} className="min-w-[75%] shrink-0">
-                    <RegionCard {...item} />
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <>
-                <button
-                  onClick={() => setIndiaIndex((p) => Math.max(p - 1, 0))}
-                  disabled={indiaIndex === 0}
-                  className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
-                >
-                  <ChevronLeft size={20} />
-                </button>
-
-                <button
-                  onClick={() => setIndiaIndex((p) => Math.min(p + 1, maxIndia))}
-                  disabled={indiaIndex === maxIndia}
-                  className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
-                >
-                  <ChevronRight size={20} />
-                </button>
-
-                <div className="overflow-hidden">
-                  <div
-                    className="flex transition-transform duration-500 ease-in-out"
-                    style={{
-                      transform: `translateX(-${indiaIndex * (100 / cardsPerView)}%)`,
-                    }}
-                  >
-                    {indiaRegions.map((item) => (
-                      <div key={item.region} className="shrink-0 basis-1/4 p-2">
-                        <RegionCard {...item} />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-
-        {/* ================= INTERNATIONAL ================= */}
         <div id="international-trips" className="text-center scroll-mt-20">
-
           <h2 className="text-4xl md:text-5xl font-bold mb-10">International Trips</h2>
 
           <div className="relative">
-
             {isMobile ? (
               <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
                 {internationalRegions.map((item) => (
@@ -160,16 +91,16 @@ export function TripTypesSection() {
             ) : (
               <>
                 <button
-                  onClick={() => setIntlIndex((p) => Math.max(p - 1, 0))}
-                  disabled={intlIndex === 0}
+                  onClick={() => setIndex((p) => Math.max(p - 1, 0))}
+                  disabled={index === 0}
                   className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
                 >
                   <ChevronLeft size={20} />
                 </button>
 
                 <button
-                  onClick={() => setIntlIndex((p) => Math.min(p + 1, maxIntl))}
-                  disabled={intlIndex === maxIntl}
+                  onClick={() => setIndex((p) => Math.min(p + 1, maxIndex))}
+                  disabled={index === maxIndex}
                   className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
                 >
                   <ChevronRight size={20} />
@@ -179,7 +110,7 @@ export function TripTypesSection() {
                   <div
                     className="flex transition-transform duration-500 ease-in-out"
                     style={{
-                      transform: `translateX(-${intlIndex * (100 / cardsPerView)}%)`,
+                      transform: `translateX(-${index * (100 / cardsPerView)}%)`,
                     }}
                   >
                     {internationalRegions.map((item) => (
@@ -193,7 +124,6 @@ export function TripTypesSection() {
             )}
           </div>
         </div>
-
       </div>
     </section>
   )

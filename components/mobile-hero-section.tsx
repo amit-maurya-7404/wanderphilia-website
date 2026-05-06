@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
-import { MapPin, Search, ChevronLeft, ChevronRight } from 'lucide-react'
+import { MapPin, Search, ChevronLeft, ChevronRight, Star } from 'lucide-react'
 import { getAllCategories } from '@/lib/trip-categories'
 import { trips } from '@/lib/data'
 import { getPageSectionMapping } from '@/lib/section-mappings'
@@ -91,8 +91,8 @@ export function MobileHeroSection() {
                     {/* CARD 1 */}
                     <div className="flex items-center gap-2 bg-white rounded-xl px-3 py-2 shadow flex-1">
                         <img src="/images/Google_logo.png" alt="" className="h-10 w-10 object-contain" />
-                        <p className="font-semibold text-sm whitespace-nowrap">
-                            5 Star Rating
+                        <p className="font-semibold flex flex-row gap-1 items-center text-sm whitespace-nowrap">
+                            5  <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" /> Rating
                         </p>
                     </div>
 
@@ -107,7 +107,7 @@ export function MobileHeroSection() {
                 </div>
 
                 {/* 🎯 CAROUSEL (FIXED HEIGHT) */}
-                <div className="relative overflow-hidden rounded-2xl h-[140px]">
+                <div className="relative overflow-hidden rounded-2xl h-35">
                     <div
                         className="flex h-full transition-transform duration-500"
                         style={{
@@ -136,7 +136,7 @@ export function MobileHeroSection() {
                             <div className="h-16 w-16 rounded-full bg-primary/30 flex items-center justify-center">
                                 <img src={cat.image} className="rounded-full w-full h-full object-cover" />
                             </div>
-                            <p className="text-xs mt-2">{cat.name}</p>
+                            <p className="text-xs  mt-2">{cat.name}</p>
                         </div>
                     ))}
                 </div>

@@ -66,7 +66,7 @@ export function BlogCard({
           <div>
             <p className="text-xs text-gray-500 font-medium">By {author}</p>
           </div>
-          <Link href={`/blog/${slug}`}>
+          <Link href={`/blog/${slug}`} target="_blank" rel="noopener noreferrer">
             <Button
               variant="ghost"
               size="sm"
