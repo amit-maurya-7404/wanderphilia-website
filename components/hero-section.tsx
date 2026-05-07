@@ -129,7 +129,7 @@ export function HeroSection() {
         </div>
       </div>
 
-      <div className="absolute bottom-0 md:bottom-10 left-1/2 -translate-x-1/2 w-full px-0 z-20">
+      <div className="absolute bottom-0 md:bottom-0 left-1/2 -translate-x-1/2 w-full px-0 z-20">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-0 bg-white/0 backdrop-blur-md pt-6 pb-6  max-w-full mx-auto shadow-xl">
 
           <div className="flex items-center justify-center gap-3">
