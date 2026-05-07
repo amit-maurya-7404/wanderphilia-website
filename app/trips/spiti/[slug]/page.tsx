@@ -465,9 +465,17 @@ export default function PackageDetailPage() {
               <section id="note">
                 <h2 className="text-2xl font-bold mb-4">Note</h2>
                 <Card className="p-6">
-                  <p className="text-sm sm:text-base text-slate-700 leading-relaxed">
-                    {trip.note}
-                  </p>
+                  {Array.isArray(trip.note) ? (
+                    <ul className="list-disc list-inside space-y-3 text-sm sm:text-base text-slate-700 leading-relaxed">
+                      {trip.note.map((item, idx) => (
+                        <li key={idx}>{item}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-sm sm:text-base text-slate-700 leading-relaxed">
+                      {trip.note}
+                    </p>
+                  )}
                 </Card>
               </section>
 

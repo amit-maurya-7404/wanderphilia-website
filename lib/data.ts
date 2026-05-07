@@ -51,7 +51,7 @@ export interface Trip {
   nights?: number
   overviewPoints?: string[]
   stays?: string[]
-  note?: string
+  note?: string | string[]
   paymentPolicy?: string[]
   cancellationPolicy?: string[]
   thingsToCarry?: string[]
@@ -973,7 +973,7 @@ export const trips: Trip[] = [
     id: '14',
     title: '7 Days Leh - Leh Group Trip with Turtuk',
     slug: '7-days-leh-leh-group-trip-with-turtuk',
-    image: '/images/LL1.png',
+    image: '/images/LL1.PNG',
     destination: 'Leh Ladakh',
     region: 'Leh Ladakh',
     category: 'Leh Ladakh',
@@ -1540,7 +1540,7 @@ export const trips: Trip[] = [
     id: '16',
     title: '8 Days Leh - Leh Bike Group Trip with Hanle , Umingla & Tso Moriri ( Excursion )',
     slug: 'leh-leh-bike-group-trip-hanle-umlingla-tso-moriri',
-    image: '/images/LL4.png',
+    image: '/images/LL4.PNG',
     destination: 'Leh Ladakh',
     category: 'Leh Ladakh',
     description: `
@@ -1852,7 +1852,7 @@ This tour gives you the real feel of Ladakh’s nature and open roads, without e
     id: '17',
     title: '8 Days Leh - Leh Bike Group Trip with Turtuk & Tso Moriri',
     slug: 'leh-leh-bike-group-trip-turtuk-tso-moriri',
-    image: '/images/LL5.png',
+    image: '/images/LL5.PNG',
     destination: 'Leh Ladakh',
     category: 'Leh Ladakh',
     description: `The Leh bike tour package is an incredible journey that takes you through the breathtaking landscapes of Ladakh.
@@ -2862,7 +2862,7 @@ This journey is not just about the road—it's about the adventure, the stories,
     id: '20',
     title: '12 Days Delhi - Leh - Srinagar Group Trip with Turtuk, Hanle, Umling La & Tso Moriri.',
     slug: 'delhi-leh-srinagar-group-trip-turtuk-hanle-umling-la-tso-moriri',
-    image: '/images/LL10.png',
+    image: '/images/LL10.PNG',
     destination: 'Leh Ladakh',
     category: 'Leh Ladakh',
     description: `This value-edition trip in the Himalayas is where you don’t just see Ladakh, you experience its highest roads and most untouched lakes. On this 11-day journey you will travel from Srinagar to Leh, deep into Hanle, all the way to Umling La - one of the highest motorable roads in the world, and to the stunning blue waters of Tso Moriri, before ending in Manali.
@@ -3262,7 +3262,7 @@ Long scenic drives, simple mountain stays, and raw landscapes make this journey 
     id: '21',
     title: '12 Days Srinagar - Leh - Delhi Group Trip with Hanle, Umling La & Tso Moriri.',
     slug: 'srinagar-leh-delhi-group-trip-hanle-umling-la-tso-moriri',
-    image: '/images/LL11.png',
+    image: '/images/LL11.PNG',
     destination: 'Leh Ladakh',
     category: 'Leh Ladakh',
     description: `
@@ -3659,6 +3659,15 @@ The approaches to Spiti remain among the most rugged and scenically spectacular 
     ],
 
 
+    note: [
+      'Travellers residing outside Delhi are suggested to book trains/flights reaching Delhi not later than 4 PM on the trip start date. Similarly, on trip end date, book returning flight/trains leaving post 12 PM.',
+
+      'Numerous factors such as weather, road conditions, the physical ability of participants etc. may cause itinerary change. We reserve the rights to change any schedule in the interest of safety, comfort and general wellbeing.',
+
+      "The age limit of our group departures is 16 to 42 years due to the power packed itineraries that we provide to our travellers. We can customise trips for travellers beyond the mentioned age bracket.",
+
+      "Dear traveller's In the event of extreme winter conditions, where snow may prevent the use of tempo travellers, we will opt for 4x4 vehicles to ensure safety and accessibility. Please note that any additional costs incurred for the 4x4 vehicle will be borne by the clients. Winter Spiti is known for snowfall, which may lead to route closures. Please be prepared for such adventures, as we will take the best possible alternatives in those situations to ensure a smooth journey."
+    ],
 
     highlights: [
       'Chitkul',
@@ -3794,7 +3803,12 @@ The approaches to Spiti remain among the most rugged and scenically spectacular 
     batchDates: [
       { month: 'May', ranges: ['16nd May - 22th May', '23rd May - 29th May ( Eid Holiday )'] },
       { month: 'June', ranges: ['6th June - 12th June'] }
-    ]
+    ],
+
+    costingDetails: [
+      { label: 'Tempo Traveller (Double Sharing)', value: '₹21,499' },
+      { label: 'Tempo Traveller (Triple Sharing)', value: '₹19,499' },
+    ],
   },
   {
     id: '23',
@@ -3836,6 +3850,9 @@ As you leave behind the chaos of cities, Spiti Valley will happily embrace you i
       'Langza',
       'Key Monastery',
       'Chicham Bridge'
+    ], costingDetails: [
+      { label: 'Tempo Traveller (Double Sharing)', value: '₹23,499' },
+      { label: 'Tempo Traveller (Triple Sharing)', value: '₹21,499' },
     ],
 
     itinerary: [
@@ -4028,6 +4045,11 @@ As you leave behind the chaos of cities, Spiti Valley will happily embrace you i
       "Chicham Bridge"
     ],
 
+    costingDetails: [
+      { label: 'Tempo Traveller (Double Sharing)', value: '₹21,499' },
+      { label: 'Tempo Traveller (Triple Sharing)', value: '₹19,499' },
+    ],
+
     description: `Spiti Valley is a high altitude desert whose beauty unveils after a tough and tricky ride through the most challenging roads of Himalayas. If you feel the need for adrenaline, you got your share of dose right throughout your trip to Spiti.
 
 As you leave behind the chaos of cities, Spiti Valley will happily embrace you into a zone of peace and love. Soak in the holy vibes at Key Monastery, which is an important place of pilgrimage for the Buddhist population residing in Spiti. Explore the long lost stories in the fossils of Langza Village and witness the grandeur of the golden statue of Buddha. Ride upto the highest post office in the world at Hikkim and send a postcard to your loved ones and also to yourself! In short, just forget about the metropolis life for a few days and spend some time in a natural retreat at this high altitude desert!`,
@@ -4209,6 +4231,12 @@ As you leave behind the chaos of cities, Spiti Valley will happily embrace you i
       'Chicham Bridge',
       'Chandratal Lake'
     ],
+
+    costingDetails: [
+      { label: 'Tempo Traveller (Double Sharing)', value: '₹17,499' },
+      { label: 'Tempo Traveller (Triple Sharing)', value: '₹15,499' },
+    ],
+
     description: `Spiti- The middle-land between the lush green valleys and the cold mountain deserts of Himalayas. A Spiti Valley Trip is a traveler’s delight, thanks to the thrilling roadways and rustic landscapes. While most parts of India undergo unbearably high temperatures, the beauty of Spiti shines like a diamond under sun during peak summer months. The best time to visit Spiti is from June-September when the glacial lakes will welcome you in all their glory. It is now that you hit those roads with our Spiti Valley RoadTrip Package!
 
 The treacherous curves that lead to the valley of Spiti from Manali will give you a dose of adventure and beauty all at once. This is your chance to experience the thrill of traveling through the famous Rohtang Pass. Don’t forget to notice your surroundings because a beautiful change is taking place in your surroundings. It is here you’ll notice landscapes change from shades of green to brown.
@@ -4372,6 +4400,19 @@ So now that you know what to expect on this voyage to the high altitude desert, 
       'Chicham Bridge',
       'Chandratal Lake'
     ],
+
+    costingDetails: [
+      { label: 'Tempo Traveller (Double Sharing)', value: '₹23,499' },
+      { label: 'Tempo Traveller (Triple Sharing)', value: '₹21,499' },
+
+      { label: 'Dual Bike (Double Sharing)', value: '₹29,499' },
+      { label: 'Dual Bike (Triple Sharing)', value: '₹27,499' },
+
+      { label: 'Solo Bike (Double Sharing)', value: '₹39,499' },
+      { label: 'Solo Bike (Triple Sharing)', value: '₹37,499' },
+    ],
+
+
     description: `Challenging Terrains, high passes, exhilarating views and one hell of a machine is what all bikers dream of. If you too are one of those who have a passion to ride on seemingly endless roads, then perhaps a bike trip to Spiti Valley is all that you need.
 
 Spiti Valley is a high altitude desert whose beauty unveils after a tough and tricky ride through the most challenging roads of Himalayas. If you feel the need for adrenaline, you got your share of dose right throughout your trip to Spiti.

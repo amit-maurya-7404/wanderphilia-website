@@ -100,7 +100,7 @@ export function MobileHeroSection() {
                     <div className="flex items-center gap-2 bg-white rounded-xl px-3 py-2 shadow flex-1">
                         <img src="/images/victory-logo.png" alt="" className="h-10 w-10 object-contain" />
                         <p className="font-semibold text-sm whitespace-nowrap">
-                            9+ Years <br /> Experience
+                            8+ Years <br /> Experience
                         </p>
                     </div>
 

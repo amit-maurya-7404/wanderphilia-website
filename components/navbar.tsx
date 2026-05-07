@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
-import { Menu, X, ChevronDown } from 'lucide-react'
+import { Menu, X, ChevronDown, Phone } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { getCategoriesByType } from '@/lib/trip-categories'
 import { usePathname } from 'next/navigation'
@@ -14,10 +14,16 @@ interface NavbarProps {
 export function Navbar({ forceWhiteDesktop }: NavbarProps) {
   const pathname = usePathname()
   const isAboutPage = pathname === '/about'
-  const [isScrolled, setIsScrolled] = useState(false)
-  const [isDesktop, setIsDesktop] = useState(false)
+  const [isDesktop, setIsDesktop] = useState(
+    typeof window !== 'undefined' ? window.innerWidth >= 768 : true
+  )
+
+  const [isScrolled, setIsScrolled] = useState(
+    typeof window !== 'undefined' ? window.scrollY > 5 : false
+  )
   const [isMobileOpen, setIsMobileOpen] = useState(false)
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
+
 
   useEffect(() => {
     const updateDesktop = () => {
@@ -47,19 +53,23 @@ export function Navbar({ forceWhiteDesktop }: NavbarProps) {
   }, [isMobileOpen])
 
   const navBackground = isDesktop
-    ? forceWhiteDesktop
-      ? 'white'
-      : isScrolled
-        ? 'rgba(255,255,255,0.95)'
-        : 'transparent'
+    ? isScrolled
+      ? 'rgba(255,255,255,0.95)'   // scroll → white
+      : 'rgba(255,255,255,0.15)'   // top → glass
     : 'white'
 
   return (
     <nav
-      className={`fixed top-0 left-0 w-full z-9999 transition-all duration-500 ease-in-out ${isScrolled ? 'backdrop-blur-md shadow-lg border-b border-gray-200/50' : 'backdrop-blur-sm'}`}
-      style={{ backgroundColor: navBackground }}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      className={`fixed top-0 left-0 w-full z-9999 transition-all duration-500 ease-in-out
+    ${
+      isScrolled
+        ? 'backdrop-blur-md shadow-lg border-b border-gray-200/50'
+        : 'backdrop-blur-md backdrop-saturate-150'
+    }
+  `}
+  style={{ backgroundColor: navBackground }}
+>
+      <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           <Link href="/" className="shrink-0 flex items-center gap-2 group">
             <img src="/images/Made_LOGO.png" alt="Wanderphilia Logo" className="w-50 h-22" />
@@ -71,7 +81,7 @@ export function Navbar({ forceWhiteDesktop }: NavbarProps) {
             </Link> */}
 
             <div className="relative group">
-              <button className={`text-sm font-semibold transition-colors flex items-center gap-1 ${isScrolled || isAboutPage || forceWhiteDesktop ? 'text-gray-700 hover:text-primary' : 'text-white/80 hover:text-primary'}`}>
+              <button className={`text-sm font-semibold transition-colors flex items-center gap-1 ${isScrolled || isAboutPage || forceWhiteDesktop ? 'text-gray-700  hover:text-primary' : 'text-white  hover:text-primary'}`}>
                 India Trips
                 <ChevronDown size={16} className="group-hover:rotate-180 transition-transform" />
               </button>
@@ -94,7 +104,7 @@ export function Navbar({ forceWhiteDesktop }: NavbarProps) {
             </div>
 
             <div className="relative group">
-              <button className={`text-sm font-semibold transition-colors flex text-center gap-1 ${isScrolled || isAboutPage || forceWhiteDesktop ? 'text-gray-700 hover:text-primary' : 'text-white/80 hover:text-primary'}`}>
+              <button className={`text-sm font-semibold transition-colors flex text-center gap-1 ${isScrolled || isAboutPage || forceWhiteDesktop ? 'text-gray-700  hover:text-primary' : 'text-white hover:text-primary'}`}>
                 International Trips
                 <ChevronDown size={16} className="group-hover:rotate-180 transition-transform" />
               </button>
@@ -116,16 +126,46 @@ export function Navbar({ forceWhiteDesktop }: NavbarProps) {
               </div>
             </div>
 
-            <Link href="/upcoming-tours" target="_blank" className={`text-sm font-semibold transition-colors ${isScrolled || isAboutPage || forceWhiteDesktop ? 'text-gray-700 hover:text-primary' : 'text-white/80 hover:text-primary'}`}>
-              Upcoming Group Trips
-            </Link>
-            <Link href="/honeymoon" target="_blank" className={`text-sm font-semibold transition-colors ${isScrolled || isAboutPage || forceWhiteDesktop ? 'text-gray-700 hover:text-primary' : 'text-white/80 hover:text-primary'}`}>
+            <div className="relative group">
+              <button className={`text-sm font-semibold transition-colors flex items-center gap-1 ${isScrolled || isAboutPage || forceWhiteDesktop ? 'text-gray-700  hover:text-primary' : 'text-white  hover:text-primary'}`}>
+                Upcoming Group Trips
+                <ChevronDown size={16} className="group-hover:rotate-180 transition-transform" />
+              </button>
+              <div className="absolute left-0 mt-0 w-56 bg-white rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 py-2 z-50 border border-gray-100">
+                <Link
+                  href="/trips/ladakh"
+                  target="_blank"
+                  className="block px-4 py-3 text-gray-700 hover:bg-primary/10 hover:text-primary font-medium text-sm rounded-lg mx-2 transition-colors"
+                >
+                  Ladakh
+                </Link>
+                <Link
+                  href="/trips/spiti"
+                  target="_blank"
+                  className="block px-4 py-3 text-gray-700 hover:bg-primary/10 hover:text-primary font-medium text-sm rounded-lg mx-2 transition-colors"
+                >
+                  Spiti
+                </Link>
+                <Link
+                  href="/trips/bhutan"
+                  target="_blank"
+                  className="block px-4 py-3 text-gray-700 hover:bg-primary/10 hover:text-primary font-medium text-sm rounded-lg mx-2 transition-colors"
+                >
+                  Bhutan
+                </Link>
+                <div className="border-t border-gray-200 my-2" />
+                <Link href="/upcoming-tours" target="_blank" className="block px-4 py-3 text-primary font-bold text-sm rounded-lg mx-2 hover:bg-primary/5 transition-colors">
+                  View All Upcoming Trips
+                </Link>
+              </div>
+            </div>
+            <Link href="/honeymoon" target="_blank" className={`text-sm font-semibold transition-colors ${isScrolled || isAboutPage || forceWhiteDesktop ? 'text-gray-700   hover:text-primary' : 'text-white  hover:text-primary'}`}>
               Honeymoon Getaway
             </Link>
-            <Link href="/blog" target="_blank" className={`text-sm font-semibold transition-colors ${isScrolled || isAboutPage || forceWhiteDesktop ? 'text-gray-700 hover:text-primary' : 'text-white/80 hover:text-primary'}`}>
+            <Link href="/blog" target="_blank" className={`text-sm font-semibold transition-colors ${isScrolled || isAboutPage || forceWhiteDesktop ? 'text-gray-700   hover:text-primary' : 'text-white  hover:text-primary'}`}>
               Blog
             </Link>
-            <Link href="/about" target="_blank"  className={`text-sm font-semibold transition-colors ${isScrolled || isAboutPage || forceWhiteDesktop ? 'text-gray-700 hover:text-primary' : 'text-white/80 hover:text-primary'}`}>
+            <Link href="/about" target="_blank" className={`text-sm font-semibold transition-colors ${isScrolled || isAboutPage || forceWhiteDesktop ? 'text-gray-700  hover:text-primary' : 'text-white  hover:text-primary'}`}>
               About Us
             </Link>
           </div>
@@ -138,9 +178,16 @@ export function Navbar({ forceWhiteDesktop }: NavbarProps) {
             </Button>
           </div>
 
-          <div className="md:hidden relative z-1000">
+          <div className="md:hidden relative z-1000 flex items-center gap-3">
+            <a
+              href="tel:+919217664099"
+              className="p-3 h-12 w-12 flex items-center justify-center rounded-full transition-all duration-300 border-2 bg-white shadow-lg border-gray-200 text-slate-700 hover:bg-slate-100"
+              aria-label="Call us"
+            >
+              <Phone size={20} />
+            </a>
             <button
-              className="p-3 h-12 w-12 flex items-center justify-center rounded-lg transition-all duration-300 border-2 focus:outline-none focus:ring-2 bg-white shadow-lg border-gray-200"
+              className="p-3 h-12 w-12 flex items-center justify-center rounded-full transition-all duration-300 border-2 focus:outline-none focus:ring-2 bg-white shadow-lg border-gray-200"
               onTouchStart={(e) => {
                 e.preventDefault()
                 e.stopPropagation()
@@ -225,16 +272,68 @@ export function Navbar({ forceWhiteDesktop }: NavbarProps) {
                 </div>
               )}
             </div>
-            <Link href="/upcoming-tours" target="_blank" className="px-4 py-4 text-base font-medium text-gray-700 hover:bg-gray-100 transition-colors border-t border-gray-100" onClick={() => setIsMobileOpen(false)}>
-              Upcoming Tours
-            </Link>
-            <Link href="/honeymoon" target="_blank"  className="px-4 py-4 text-base font-medium text-gray-700 hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
+            <div className="border-t border-gray-100">
+              <button className="w-full text-left px-4 py-4 text-base font-medium text-gray-700 hover:bg-gray-100 transition-colors flex items-center justify-between" onClick={() => setOpenDropdown(openDropdown === 'upcoming' ? null : 'upcoming')}>
+                Upcoming Group Trips
+                <ChevronDown size={18} className={`transition-transform duration-300 ${openDropdown === 'upcoming' ? 'rotate-180' : ''}`} />
+              </button>
+              {openDropdown === 'upcoming' && (
+                <div className="bg-gray-50 py-2 border-t border-gray-100">
+                  <Link
+                    href="/trips/ladakh"
+                    target="_blank"
+                    className="block px-6 py-3 text-sm text-gray-600 hover:text-primary hover:bg-gray-100 transition-colors"
+                    onClick={() => {
+                      setIsMobileOpen(false)
+                      setOpenDropdown(null)
+                    }}
+                  >
+                    Ladakh
+                  </Link>
+                  <Link
+                    href="/trips/spiti"
+                    target="_blank"
+                    className="block px-6 py-3 text-sm text-gray-600 hover:text-primary hover:bg-gray-100 transition-colors"
+                    onClick={() => {
+                      setIsMobileOpen(false)
+                      setOpenDropdown(null)
+                    }}
+                  >
+                    Spiti
+                  </Link>
+                  <Link
+                    href="/trips/bhutan"
+                    target="_blank"
+                    className="block px-6 py-3 text-sm text-gray-600 hover:text-primary hover:bg-gray-100 transition-colors"
+                    onClick={() => {
+                      setIsMobileOpen(false)
+                      setOpenDropdown(null)
+                    }}
+                  >
+                    Bhutan
+                  </Link>
+                  <div className="border-t border-gray-200 my-1" />
+                  <Link
+                    href="/upcoming-tours"
+                    target="_blank"
+                    className="block px-6 py-3 text-sm font-semibold text-primary hover:bg-gray-100 transition-colors"
+                    onClick={() => {
+                      setIsMobileOpen(false)
+                      setOpenDropdown(null)
+                    }}
+                  >
+                    View All Upcoming Trips
+                  </Link>
+                </div>
+              )}
+            </div>
+            <Link href="/honeymoon" target="_blank" className="px-4 py-4 text-base font-medium text-gray-700 hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
               Honeymoon
             </Link>
             <Link href="/blog" target="_blank" className="px-4 py-4 text-base font-medium text-gray-700 hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
               Blog
             </Link>
-            <Link href="/about" target="_blank"  className="px-4 py-4 text-base font-medium text-gray-700 hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
+            <Link href="/about" target="_blank" className="px-4 py-4 text-base font-medium text-gray-700 hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
               About Us
             </Link>
             <div className="border-t border-gray-100 px-4 py-4">

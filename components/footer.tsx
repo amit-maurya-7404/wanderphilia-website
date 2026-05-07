@@ -12,7 +12,7 @@ export function Footer() {
           {/* Brand */}
           <div>
             <Link href="/">
-              <img src="/images/made_LOGO.png" alt={companyName} className="w-50 h-22 rounded-full cursor-pointer hover:opacity-80 transition-opacity mx-auto md:mx-0" />
+              <img src="/images/Made_LOGO.png" alt={companyName} className="w-60 h-28 rounded-full cursor-pointer hover:opacity-80 transition-opacity mx-auto md:mx-0" />
             </Link>
             <p className="text-gray-400 text-sm leading-relaxed">
               Curating extraordinary journeys for explorers who demand more. Every adventure is a story waiting to unfold.

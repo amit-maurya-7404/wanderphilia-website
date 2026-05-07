@@ -8,6 +8,7 @@ import ScrollToTopButton from '@/components/ScrollToTopButton'
 import { MobileBottomNavConditional } from '@/components/mobile-bottom-nav-conditional'
 import { Analytics as GAAnalytics } from '@/components/analytics'
 import { ScrollTracker } from '@/components/scroll-tracker'
+// import { PromoAdCard } from '@/components/promo-ad'
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -66,6 +67,7 @@ export default function RootLayout({
 
         {/* Scroll Depth Tracking */}
         <ScrollTracker />
+        {/* <PromoAdCard /> */}
 
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>

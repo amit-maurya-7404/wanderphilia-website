@@ -212,7 +212,7 @@ export default function IcelandPage() {
                     50+ Spiti Tour Packages 2026
                   </h1>
 
-                  <p className="mt-2 md:mt-6 text-sm sm:text-base md:text-lg max-w-2xl text-slate-100 leading-0">
+                  <p className="mt-2 md:mt-6 text-sm sm:text-base md:text-lg max-w-2xl text-slate-100 leading-relaxed">
                     All inclusive curated Spiti Valley Tour Packages 2026 covering Sangla Valley , Chitkul , Kalpa , Nako , Tabo , Kaza , Hikkim , Komic , Langza , Key Monastery , Chandratal Lake
                   </p>
 
@@ -252,7 +252,7 @@ export default function IcelandPage() {
         <section className="py-16 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
           <div className="mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
-              Available Packages
+              Upcoming Group Trips 2026 - Wanderphilia Exclusives
             </h2>
             <div className="w-20 h-1 bg-primary rounded-full" />
           </div>
