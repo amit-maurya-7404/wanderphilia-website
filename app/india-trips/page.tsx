@@ -1,5 +1,6 @@
 'use client'
 
+
 import { useState } from 'react'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
@@ -12,6 +13,8 @@ import { gtag } from '@/lib/gtag'
 import type { TripMediaItem } from '@/lib/data'
 import { TripTypesSection } from '@/components/trip-types-section'
 import { IndiaTripsSection } from '@/components/india-trips-section'
+
+
 
 const heroMedia: TripMediaItem[] = [
   { type: 'image', src: '/images/dummy1.jpg', alt: 'Scenic upcoming tour landscape' },

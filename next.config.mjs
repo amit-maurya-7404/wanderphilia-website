@@ -4,7 +4,7 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    unoptimized: true,
+    formats: ['image/avif', 'image/webp'],
   },
   allowedDevOrigins: ['192.168.1.109', '*'],
 }

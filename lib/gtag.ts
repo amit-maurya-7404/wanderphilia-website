@@ -9,7 +9,7 @@ declare global {
   }
 }
 
-const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || 'G-GFPXJ77HPK';
+const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
 
 // Initialization is handled in the Analytics component to ensure client-side only
 // This file only provides the utility functions

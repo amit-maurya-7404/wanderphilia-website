@@ -1,0 +1,8 @@
+C:\Users\Hi\Downloads\wanderphilia2\app\about\page.tsx
+C:\Users\Hi\Downloads\wanderphilia2\app\admin\page.tsx
+C:\Users\Hi\Downloads\wanderphilia2\app\contact\page.tsx
+C:\Users\Hi\Downloads\wanderphilia2\app\honeymoon\page.tsx
+C:\Users\Hi\Downloads\wanderphilia2\app\international-trips\page.tsx
+C:\Users\Hi\Downloads\wanderphilia2\app\payment\page.tsx
+C:\Users\Hi\Downloads\wanderphilia2\app\trips\page.tsx
+C:\Users\Hi\Downloads\wanderphilia2\app\upcoming-tours\page.tsx

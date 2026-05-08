@@ -11,8 +11,10 @@
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
   --primary: #FF6E0B;
+  --primary-rgb: 655, 110, 11;
   --primary-foreground: #ffffff;
   --secondary: #FF8713;
+  --secondary-rgb: 255, 135, 19;
   --secondary-foreground: #ffffff;
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
@@ -47,8 +49,10 @@
   --popover: oklch(0.145 0 0);
   --popover-foreground: oklch(0.985 0 0);
   --primary: #FF6E0B;
+  --primary-rgb: 255, 110, 11;
   --primary-foreground: #ffffff;
   --secondary: #FF8713;
+  --secondary-rgb: 255, 135, 19;
   --secondary-foreground: #ffffff;
   --muted: oklch(0.269 0 0);
   --muted-foreground: oklch(0.708 0 0);
@@ -119,8 +123,28 @@
   * {
     @apply border-border outline-ring/50;
   }
+
+  html {
+    background:
+      linear-gradient(
+        to top,
+        #ffffff 0%,
+        #fff7f1 35%,
+        #ffe7d3 70%,
+        #FF6E0B 100%
+      );
+
+    background-attachment: fixed;
+    min-height: 100%;
+  }
+
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
+    background: transparent;
+  }
+
+  .min-h-screen.bg-white {
+    background: transparent !important;
   }
 }
 

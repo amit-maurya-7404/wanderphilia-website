@@ -50,7 +50,7 @@ export function UpcomingGroupToursSection() {
   }
 
   return (
-    <section className="pt-20 md:pt-20 bg-linear-to-b from-white to-gray-50">
+    <section className="pt-20 md:pt-20 ">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Header */}
