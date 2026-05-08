@@ -134,7 +134,7 @@ export function Navbar({ forceWhiteDesktop }: NavbarProps) {
               </button>
               <div className="absolute left-0 mt-0 w-56 bg-white rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 py-2 z-50 border border-gray-100">
                 <Link
-                  href="/trips/ladakh"
+                  href="/trips/leh-ladakh"
                   
                   className="block px-4 py-3 text-gray-700 hover:bg-primary/10 hover:text-primary font-medium text-sm rounded-lg mx-2 transition-colors"
                 >
@@ -281,7 +281,7 @@ export function Navbar({ forceWhiteDesktop }: NavbarProps) {
               {openDropdown === 'upcoming' && (
                 <div className="bg-gray-50 py-2 border-t border-gray-100">
                   <Link
-                    href="/trips/ladakh"
+                    href="/trips/leh-ladakh"
                     
                     className="block px-6 py-3 text-sm text-gray-600 hover:text-primary hover:bg-gray-100 transition-colors"
                     onClick={() => {
