@@ -26,7 +26,7 @@ export default function Home() {
           <HeroSection />
         </div>
 
-        {/* Mobile Hero */}
+        {/* Mobile Hero.  */}
         <div className="block md:hidden">
           <MobileHeroSection />
         </div>
@@ -40,7 +40,7 @@ export default function Home() {
           <HoneymoonPackagesSection />
         </section>
 
-        {/* <DestinationsSection /> */}
+        {/* <DestinationsSection   ./> */}
         <BlogsPreviewSection />
         <PhotoGallerySection />
         {/* <InstagramSection /> */}
