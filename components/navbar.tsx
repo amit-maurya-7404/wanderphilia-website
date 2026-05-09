@@ -15,10 +15,7 @@ export function Navbar({ forceWhiteDesktop }: NavbarProps) {
   const pathname = usePathname()
   const isAboutPage = pathname === '/about'
   const [isDesktop, setIsDesktop] = useState<boolean | undefined>(undefined)
-
-  const [isScrolled, setIsScrolled] = useState(
-    typeof window !== 'undefined' ? window.scrollY > 5 : false
-  )
+  const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileOpen, setIsMobileOpen] = useState(false)
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
 

@@ -1,14 +1,6 @@
 {
   "gallery": [
     {
-      "image": "https://randomimageurl.com/assets/images/local/20260103_0519_Random%20Natural%20Landscape_simple_compose_01ke205qahfmftrexg9rs7svjn_compressed_q80.jpeg",
-      "category": "trips",
-      "title": "Demo Image",
-      "caption": "Demo",
-      "createdAt": "2026-04-10T10:41:12.014Z",
-      "_id": "1775817672043-c16500667c1e9"
-    },
-    {
       "_id": "gallery-1",
       "image": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop",
       "title": "Mountain Peak at Sunrise",

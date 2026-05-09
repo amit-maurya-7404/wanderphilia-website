@@ -3,6 +3,11 @@ import { getDb } from '@/lib/mongodb'
 import { readLocalCollection, saveLocalDocument } from '@/lib/localDb'
 
 export async function GET() {
+  if (!process.env.MONGODB_URI?.trim()) {
+    const localGallery = await readLocalCollection('gallery')
+    return NextResponse.json(localGallery)
+  }
+
   try {
     const db = await getDb()
     const gallery = await db
@@ -44,6 +49,17 @@ export async function POST(request: Request) {
 
     if (!category || typeof category !== 'string') {
       return NextResponse.json({ error: 'Category is required' }, { status: 400 })
+    }
+
+    if (!process.env.MONGODB_URI?.trim()) {
+      const saved = await saveLocalDocument('gallery', {
+        image,
+        category,
+        title: title ?? '',
+        caption: caption ?? '',
+        createdAt: new Date().toISOString(),
+      })
+      return NextResponse.json({ success: true, id: saved._id })
     }
 
     try {

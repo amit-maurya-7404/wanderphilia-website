@@ -126,13 +126,7 @@
 
   html {
     background:
-      linear-gradient(
-        to top,
-        #ffffff 0%,
-        #fff7f1 35%,
-        #ffe7d3 70%,
-        #FF6E0B 100%
-      );
+      white;
 
     background-attachment: fixed;
     min-height: 100%;
