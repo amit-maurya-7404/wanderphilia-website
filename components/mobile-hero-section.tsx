@@ -11,9 +11,14 @@ import { TripCard } from '@/components/trip-card'
 export function MobileHeroSection() {
     const [destination, setDestination] = useState('')
     const [banners] = useState<any[]>([
-        { _id: '1', title: 'Special Winter Offer', image: '/images/LL2.jpg' },
-        { _id: '2', title: 'Group Discount 25%', image: '/images/dummy4.jpg' },
-        { _id: '3', title: 'Early Bird Booking', image: '/images/dummy3.jpg' }
+        { _id: '1', title: 'Special Winter Offer', image: '/images/mobile-hero1.jpg' },
+        { _id: '2', title: 'Group Discount 25%', image: '/images/mobile-hero2.jpg' },
+        { _id: '3', title: 'Early Bird Booking', image: '/images/mobile-hero3.jpg' },
+        { _id: '4', title: 'Early Bird Booking', image: '/images/mobile-hero4.jpeg' },
+        { _id: '5', title: 'Early Bird Booking', image: '/images/mobile-hero5.jpeg' },
+        { _id: '6', title: 'Early Bird Booking', image: '/images/mobile-hero6.jpeg' }
+
+
     ])
 
     const categories = useMemo(() => getAllCategories(), [])

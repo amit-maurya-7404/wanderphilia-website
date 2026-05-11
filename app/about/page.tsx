@@ -77,7 +77,7 @@ export default function AboutPage() {
               <div className="grid gap-8 lg:grid-cols-[1.1fr_1fr] items-stretch">
                 <div className="relative min-h-[360px] lg:min-h-[400px]">
                   <img
-                    src="/images/our-story.png"
+                    src="/images/our-story.jpg"
                     alt="Wanderphilia founder"
                     className="h-full md:h-[80vh] w-full object-cover"
                   />
@@ -118,7 +118,7 @@ export default function AboutPage() {
                 {/* Image */}
                 <div className=" relative min-h-[360px] lg:min-h-[400px] lg:order-2">
                   <img
-                    src="/images/our_mission.png"
+                    src="/images/our_mission.jpg"
                     alt="Wanderphilia founder"
                     className="h-full md:h-[80vh] w-full object-cover"
                   />
@@ -204,7 +204,7 @@ export default function AboutPage() {
               <div className="text-center">
                 <div className="relative w-48 h-48 mx-auto mb-6 rounded-full overflow-hidden shadow-lg">
                   <img
-                    src="/images/bhavin.jpg"
+                    src="/images/Bhavin.jpg"
                     alt="Bhavin Thaker"
                     className="w-full h-full object-cover"
                   />
@@ -218,7 +218,7 @@ export default function AboutPage() {
               <div className="text-center">
                 <div className="relative w-48 h-48 mx-auto mb-6 rounded-full overflow-hidden shadow-lg">
                   <img
-                    src="/images/nikita.jpg"
+                    src="/images/Nikita.jpg"
                     alt="Nikita Verma"
                     className="w-full h-full object-cover"
                   />
@@ -246,7 +246,7 @@ export default function AboutPage() {
               <div className="text-center">
                 <div className="relative w-48 h-48 mx-auto mb-6 rounded-full overflow-hidden shadow-lg">
                   <img
-                    src="/images/mrunal.jpg"
+                    src="/images/Mrunal.jpg"
                     alt="Mrunal"
                     className="w-full h-full object-cover"
                   />
@@ -274,7 +274,7 @@ export default function AboutPage() {
               <div className="text-center">
                 <div className="relative w-48 h-48 mx-auto mb-6 rounded-full overflow-hidden shadow-lg">
                   <img
-                    src="/images/jainam.jpg"
+                    src="/images/Jainam.jpg"
                     alt="Jainam Shah"
                     className="w-full h-full object-cover"
                   />
