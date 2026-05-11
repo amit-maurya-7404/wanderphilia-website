@@ -692,6 +692,12 @@ export default function SwitzerlandPage() {
       </main>
 
       <Footer />
+      <RequestCallbackDialog
+        open={callbackOpen}
+        onOpenChange={setCallbackOpen}
+        title={categoryName}
+        price={lowestPrice || 0}
+      />
     </div>
   )
 }

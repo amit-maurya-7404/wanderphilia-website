@@ -31,7 +31,7 @@ interface GalleryImage {
   createdAt: string
 }
 
-export default function IcelandPage() {
+export default function SpitiPage() {
   const categoryId = 'spiti'
   const categoryName = 'Spiti'
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
@@ -693,6 +693,12 @@ export default function IcelandPage() {
       </main>
 
       <Footer />
+      <RequestCallbackDialog
+        open={callbackOpen}
+        onOpenChange={setCallbackOpen}
+        title={categoryName}
+        price={lowestPrice || 0}
+      />
     </div>
   )
 }
