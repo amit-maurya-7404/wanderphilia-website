@@ -2,57 +2,339 @@
   "gallery": [
     {
       "_id": "gallery-1",
-      "image": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop",
-      "title": "Mountain Peak at Sunrise",
+      "image": "/images/gallery1.jpeg",
       "category": "mountains",
-      "caption": "Breathtaking view from Everest Base Camp during sunrise",
       "alt": "Snow-covered mountain peak",
-      "createdAt": "2025-12-15T08:00:00Z"
-    },
-    {
-      "_id": "gallery-2",
-      "image": "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800&h=600&fit=crop",
-      "title": "Alpine Lakes",
-      "category": "mountains",
-      "caption": "Pristine alpine lake in the Swiss Alps",
-      "alt": "Clear mountain lake",
-      "createdAt": "2025-12-14T10:30:00Z"
-    },
-    {
-      "_id": "gallery-3",
-      "image": "https://images.unsplash.com/photo-1520763185298-1b434c919eba?w=800&h=600&fit=crop",
-      "title": "Tropical Beach Resort",
-      "category": "stays",
-      "caption": "Our luxury beachfront accommodation in Bali",
-      "alt": "Beach resort with palm trees",
-      "createdAt": "2025-12-13T14:15:00Z"
+      "createdAt": "2024-05-11T10:00:00Z"
     },
     {
       "_id": "gallery-4",
-      "image": "https://images.unsplash.com/photo-1542314503-37143f4f6451?w=800&h=600&fit=crop",
-      "title": "Cozy Mountain Cabin",
-      "category": "stays",
-      "caption": "Charming cabin with a view in the Rockies",
-      "alt": "Mountain cabin surrounded by trees",
-      "createdAt": "2025-12-12T09:45:00Z"
+      "image": "/images/gallery4.jpg",
+      "category": "mountains",
+      "alt": "Clear mountain lake",
+      "createdAt": "2024-05-11T10:01:00Z"
     },
     {
       "_id": "gallery-5",
-      "image": "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800&h=600&fit=crop",
-      "title": "Ancient Temples",
-      "category": "trips",
-      "caption": "Exploring historic temples in Southeast Asia",
-      "alt": "Ancient temple architecture",
-      "createdAt": "2025-12-11T11:20:00Z"
+      "image": "/images/gallery5.JPG",
+      "category": "stays",
+      "alt": "Beach resort with palm trees",
+      "createdAt": "2024-05-11T10:02:00Z"
     },
     {
       "_id": "gallery-6",
-      "image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=600&fit=crop",
-      "title": "Desert Safari Adventure",
+      "image": "/images/gallery6.JPG",
+      "category": "stays",
+      "alt": "Mountain cabin surrounded by trees",
+      "createdAt": "2024-05-11T10:03:00Z"
+    },
+    {
+      "_id": "gallery-7",
+      "image": "/images/gallery7.jpg",
       "category": "trips",
-      "caption": "Unforgettable sunset during our desert safari in Dubai",
+      "alt": "Ancient temple architecture",
+      "createdAt": "2024-05-11T10:04:00Z"
+    },
+    {
+      "_id": "gallery-8",
+      "image": "/images/gallery8.jpg",
+      "category": "trips",
       "alt": "Desert dunes at sunset",
-      "createdAt": "2025-12-10T16:00:00Z"
+      "createdAt": "2024-05-11T10:05:00Z"
+    },
+    {
+      "_id": "gallery-9",
+      "image": "/images/gallery9.jpg",
+      "category": "stays",
+      "alt": "Riverside camp",
+      "createdAt": "2024-05-11T10:06:00Z"
+    },
+    {
+      "_id": "gallery-10",
+      "image": "/images/gallery10.jpg",
+      "category": "mountains",
+      "alt": "High mountain pass",
+      "createdAt": "2024-05-11T10:07:00Z"
+    },
+    {
+      "_id": "gallery-11",
+      "image": "/images/gallery11.jpg",
+      "category": "trips",
+      "alt": "Forest trail",
+      "createdAt": "2024-05-11T10:08:00Z"
+    },
+    {
+      "_id": "gallery-12",
+      "image": "/images/gallery12.jpg",
+      "category": "mountains",
+      "alt": "Valley view",
+      "createdAt": "2024-05-11T10:09:00Z"
+    },
+    {
+      "_id": "gallery-13",
+      "image": "/images/gallery13.jpg",
+      "category": "stays",
+      "alt": "Boutique hotel room",
+      "createdAt": "2024-05-11T10:10:00Z"
+    },
+    {
+      "_id": "gallery-14",
+      "image": "/images/gallery14.jpeg",
+      "category": "trips",
+      "alt": "Hiking trail",
+      "createdAt": "2024-05-11T10:11:00Z"
+    },
+    {
+      "_id": "gallery-15",
+      "image": "/images/gallery15.JPG",
+      "category": "mountains",
+      "alt": "Snowy mountain summit",
+      "createdAt": "2024-05-11T10:12:00Z"
+    },
+    {
+      "_id": "gallery-16",
+      "image": "/images/gallery16.JPG",
+      "category": "stays",
+      "alt": "Luxury villa",
+      "createdAt": "2024-05-11T10:13:00Z"
+    },
+    {
+      "_id": "gallery-17",
+      "image": "/images/gallery17.jpg",
+      "category": "trips",
+      "alt": "Cultural festival",
+      "createdAt": "2024-05-11T10:14:00Z"
+    },
+    {
+      "_id": "gallery-18",
+      "image": "/images/gallery18.jpg",
+      "category": "mountains",
+      "alt": "Glacier landscape",
+      "createdAt": "2024-05-11T10:15:00Z"
+    },
+    {
+      "_id": "gallery-19",
+      "image": "/images/gallery19.jpg",
+      "category": "stays",
+      "alt": "Eco lodge in nature",
+      "createdAt": "2024-05-11T10:16:00Z"
+    },
+    {
+      "_id": "gallery-20",
+      "image": "/images/gallery20.jpg",
+      "category": "trips",
+      "alt": "River rafting action",
+      "createdAt": "2024-05-11T10:17:00Z"
+    },
+    {
+      "_id": "gallery-21",
+      "image": "/images/gallery21.jpg",
+      "category": "mountains",
+      "alt": "Sunset landscape",
+      "createdAt": "2024-05-11T10:18:00Z"
+    },
+    {
+      "_id": "gallery-22",
+      "image": "/images/gallery22.jpg",
+      "category": "stays",
+      "alt": "Heritage hotel exterior",
+      "createdAt": "2024-05-11T10:19:00Z"
+    },
+    {
+      "_id": "gallery-23",
+      "image": "/images/gallery23.jpg",
+      "category": "trips",
+      "alt": "Market scene",
+      "createdAt": "2024-05-11T10:20:00Z"
+    },
+    {
+      "_id": "gallery-24",
+      "image": "/images/gallery24.jpg",
+      "category": "mountains",
+      "alt": "Misty mountain peaks",
+      "createdAt": "2024-05-11T10:21:00Z"
+    },
+    {
+      "_id": "gallery-25",
+      "image": "/images/gallery25.jpg",
+      "category": "stays",
+      "alt": "Modern apartment interior",
+      "createdAt": "2024-05-11T10:22:00Z"
+    },
+    {
+      "_id": "gallery-26",
+      "image": "/images/gallery26.JPG",
+      "category": "trips",
+      "alt": "Island boat trip",
+      "createdAt": "2024-05-11T10:23:00Z"
+    },
+    {
+      "_id": "gallery-spiti-1",
+      "image": "/images/spiti1.JPG",
+      "category": "spiti",
+      "alt": "Spiti Valley Landscape",
+      "createdAt": "2024-05-11T12:00:00Z"
+    },
+    {
+      "_id": "gallery-spiti-2",
+      "image": "/images/spiti2.JPG",
+      "category": "spiti",
+      "alt": "Ancient Monastery in Spiti",
+      "createdAt": "2024-05-11T12:01:00Z"
+    },
+    {
+      "_id": "gallery-spiti-3",
+      "image": "/images/spiti3.jpg",
+      "category": "spiti",
+      "alt": "Snowy peaks of Spiti",
+      "createdAt": "2024-05-11T12:02:00Z"
+    },
+    {
+      "_id": "gallery-spiti-5",
+      "image": "/images/spiti5.JPG",
+      "category": "spiti",
+      "alt": "River crossing in Spiti",
+      "createdAt": "2024-05-11T12:03:00Z"
+    },
+    {
+      "_id": "gallery-spiti-7",
+      "image": "/images/spiti7.jpg",
+      "category": "spiti",
+      "alt": "Village life in Spiti",
+      "createdAt": "2024-05-11T12:04:00Z"
+    },
+    {
+      "_id": "gallery-spiti-8",
+      "image": "/images/spiti8.jpg",
+      "category": "spiti",
+      "alt": "Local trails in Spiti",
+      "createdAt": "2024-05-11T12:05:00Z"
+    },
+    {
+      "_id": "gallery-spiti-9",
+      "image": "/images/spiti9.JPG",
+      "category": "spiti",
+      "alt": "Panoramic Spiti View",
+      "createdAt": "2024-05-11T12:06:00Z"
+    },
+    {
+      "_id": "gallery-spiti-12",
+      "image": "/images/spiti12.JPG",
+      "category": "spiti",
+      "alt": "Mountain pass in Spiti",
+      "createdAt": "2024-05-11T12:07:00Z"
+    },
+    {
+      "_id": "gallery-ll-1",
+      "image": "/images/LL1.PNG",
+      "category": "leh-ladakh",
+      "alt": "Leh Ladakh Mountains",
+      "createdAt": "2024-05-11T12:10:00Z"
+    },
+    {
+      "_id": "gallery-ll-2",
+      "image": "/images/LL2.jpg",
+      "category": "leh-ladakh",
+      "alt": "Pangong Lake View",
+      "createdAt": "2024-05-11T12:11:00Z"
+    },
+    {
+      "_id": "gallery-ll-3",
+      "image": "/images/LL3.jpg",
+      "category": "leh-ladakh",
+      "alt": "Nubra Valley Ride",
+      "createdAt": "2024-05-11T12:12:00Z"
+    },
+    {
+      "_id": "gallery-ll-4",
+      "image": "/images/LL4.PNG",
+      "category": "leh-ladakh",
+      "alt": "Magnetic Hill Ladakh",
+      "createdAt": "2024-05-11T12:13:00Z"
+    },
+    {
+      "_id": "gallery-ll-5",
+      "image": "/images/LL5.PNG",
+      "category": "leh-ladakh",
+      "alt": "Leh Market Vibes",
+      "createdAt": "2024-05-11T12:14:00Z"
+    },
+    {
+      "_id": "gallery-ll-11",
+      "image": "/images/LL11.PNG",
+      "category": "leh-ladakh",
+      "alt": "High altitude pass in Ladakh",
+      "createdAt": "2024-05-11T12:15:00Z"
+    },
+    {
+      "_id": "gallery-bhutan-1",
+      "image": "/images/Bhutan_cat.jpg",
+      "category": "bhutan",
+      "alt": "Bhutan Temple",
+      "createdAt": "2024-05-11T12:20:00Z"
+    },
+    {
+      "_id": "gallery-himachal-1",
+      "image": "/images/himachal.jpg",
+      "category": "himachal",
+      "alt": "Himachal Hills",
+      "createdAt": "2024-05-11T12:21:00Z"
+    },
+    {
+      "_id": "gallery-kashmir-1",
+      "image": "/images/kashmir.jpg",
+      "category": "kashmir",
+      "alt": "Kashmir Dal Lake",
+      "createdAt": "2024-05-11T12:22:00Z"
+    },
+    {
+      "_id": "gallery-meghalaya-1",
+      "image": "/images/meghalaya.jpg",
+      "category": "meghalaya",
+      "alt": "Meghalaya Waterfalls",
+      "createdAt": "2024-05-11T12:23:00Z"
+    },
+    {
+      "_id": "gallery-nepal-1",
+      "image": "/images/nepal-dest.jpg",
+      "category": "nepal",
+      "alt": "Nepal Mountains",
+      "createdAt": "2024-05-11T12:24:00Z"
+    },
+    {
+      "_id": "gallery-indonesia-1",
+      "image": "/images/indonesia-dest.jpg",
+      "category": "indonesia",
+      "alt": "Indonesia Beaches",
+      "createdAt": "2024-05-11T12:25:00Z"
+    },
+    {
+      "_id": "gallery-switzerland-1",
+      "image": "/images/switzerland-dest.jpg",
+      "category": "switzerland",
+      "alt": "Switzerland Alps",
+      "createdAt": "2024-05-11T12:26:00Z"
+    },
+    {
+      "_id": "gallery-peru-1",
+      "image": "/images/peru-dest.jpg",
+      "category": "peru",
+      "alt": "Peru Machu Picchu",
+      "createdAt": "2024-05-11T12:27:00Z"
+    },
+    {
+      "_id": "gallery-iceland-1",
+      "image": "/images/iceland.jpg",
+      "category": "iceland",
+      "alt": "Iceland Northern Lights",
+      "createdAt": "2024-05-11T12:28:00Z"
+    },
+    {
+      "_id": "gallery-japan-1",
+      "image": "/images/japan.jpg",
+      "category": "japan",
+      "alt": "Japan Cherry Blossoms",
+      "createdAt": "2024-05-11T12:29:00Z"
     }
   ],
   "reels": [

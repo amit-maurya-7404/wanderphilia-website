@@ -105,7 +105,7 @@ export function RequestCallbackDialog({ open, onOpenChange, title, price }: Requ
         className="max-w-xl rounded-4xl p-0 mt-[5vh] overflow-hidden"
       >
         <DialogTitle className="sr-only">Request Callback</DialogTitle>
-        
+
         <div className="bg-white px-6 py-6 sm:px-8 sm:py-6 relative">
           {/* Close Button */}
           <div className="absolute top-4 right-4">

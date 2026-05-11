@@ -47,6 +47,7 @@ export function TripHeroCarousel({ media, className }: TripHeroCarouselProps) {
               src={item.src}
               alt={item.alt}
               fill
+              sizes="100vw"
               className="object-cover"
               priority={index === 0}
             />

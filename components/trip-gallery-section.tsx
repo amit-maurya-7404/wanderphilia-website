@@ -6,14 +6,17 @@ import { GalleryCarousel } from '@/components/gallery-carousel'
 interface GalleryImage {
   _id: string
   image: string
-  title?: string
-  category: 'mountains' | 'stays' | 'trips'
+  category: string
   alt?: string
-  caption?: string
   createdAt: string
 }
 
-export function PhotoGallerySection() {
+interface TripGallerySectionProps {
+  categoryId: string
+  categoryName: string
+}
+
+export function TripGallerySection({ categoryId, categoryName }: TripGallerySectionProps) {
   const [images, setImages] = useState<GalleryImage[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -26,7 +29,12 @@ export function PhotoGallerySection() {
           throw new Error('Unable to load gallery')
         }
         const data = await response.json()
-        setImages(data)
+        // Filter images for this category
+        const filtered = data.filter((img: any) => img.category === categoryId)
+        // If no images found for this category, maybe show some generic ones or nothing?
+        // For now, let's show filtered if any, else nothing or fallback to all?
+        // User said "category ke hisab se add krna hai", so we should show only those.
+        setImages(filtered)
       } catch (error) {
         setError((error as Error).message)
       } finally {
@@ -35,7 +43,7 @@ export function PhotoGallerySection() {
     }
 
     fetchImages()
-  }, [])
+  }, [categoryId])
 
   if (loading) {
     return (
@@ -45,7 +53,7 @@ export function PhotoGallerySection() {
             📸 Visual Stories
           </span>
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-12">
-            Photo Gallery
+            {categoryName} Gallery
           </h2>
           <div className="py-12">
             <p className="text-gray-500 animate-pulse">Loading gallery images...</p>
@@ -55,17 +63,7 @@ export function PhotoGallerySection() {
     )
   }
 
-  if (error) {
-    return (
-      <section className="py-16 md:py-24 bg-linear-to-b from-white to-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-12 text-red-600">
-          {error}
-        </div>
-      </section>
-    )
-  }
-
-  if (images.length === 0) {
+  if (error || images.length === 0) {
     return null
   }
 
@@ -77,10 +75,10 @@ export function PhotoGallerySection() {
             📸 Visual Stories
           </span>
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            Photo Gallery
+            {categoryName} Gallery
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Explore breathtaking moments captured by our travelers.
+            Explore breathtaking moments from {categoryName} captured by our travelers.
           </p>
         </div>
 

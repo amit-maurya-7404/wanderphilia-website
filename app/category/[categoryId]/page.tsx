@@ -6,7 +6,7 @@ import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
 import { TripCard } from '@/components/trip-card'
 import { ReviewCard } from '@/components/review-card'
-import { GalleryGrid } from '@/components/gallery-grid'
+import { GalleryCarousel } from '@/components/gallery-carousel'
 import { trips } from '@/lib/data'
 import { getSectionMapping } from '@/lib/section-mappings'
 import { useParams } from 'next/navigation'
@@ -24,10 +24,8 @@ interface ReviewItem {
 interface GalleryImage {
   _id: string
   image: string
-  title?: string
-  category: 'mountains' | 'stays' | 'trips'
+  category: string
   alt?: string
-  caption?: string
   createdAt: string
 }
 
@@ -168,15 +166,17 @@ export default function CategoryPage() {
           throw new Error('Unable to load gallery')
         }
         const data = await response.json()
-        setGalleryImages(data)
+        // Filter images for this category
+        const filtered = data.filter((img: any) => img.category === categoryId)
+        setGalleryImages(filtered.length > 0 ? filtered : data)
       } catch (error) {
         setGalleryError((error as Error).message)
       } finally {
         setGalleryLoading(false)
       }
     }
-    fetchGallery()
-  }, [])
+    if (categoryId) fetchGallery()
+  }, [categoryId])
 
   // Family Packages Data
   const familyPackages = useMemo(() => {
@@ -214,6 +214,7 @@ export default function CategoryPage() {
                 src={image}
                 alt={`${categoryName} carousel`}
                 fill
+                sizes="100vw"
                 className={`object-cover transition-opacity duration-1000 ${index === currentImageIndex ? 'opacity-100' : 'opacity-0'
                   }`}
                 priority={index === 0}
@@ -695,7 +696,7 @@ export default function CategoryPage() {
                 <p className="text-gray-500">No gallery images available yet. Check back soon!</p>
               </div>
             ) : (
-              <GalleryGrid images={galleryImages} showFilter={true} />
+              <GalleryCarousel images={galleryImages} />
             )}
           </div>
         </section>

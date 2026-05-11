@@ -7,9 +7,7 @@ import { X, ChevronLeft, ChevronRight } from 'lucide-react'
 interface GalleryGridImage {
   _id: string
   image: string
-  title?: string
-  caption?: string
-  category: 'mountains' | 'stays' | 'trips'
+  category: string
   alt?: string
   createdAt: string
 }
@@ -97,11 +95,12 @@ export function GalleryGrid({ images, showFilter = true }: GalleryGridProps) {
               />
             </div>
 
-            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-colors duration-300 flex items-center justify-center">
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-300 flex items-center justify-center">
               <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <div className="text-center">
-                  <p className="text-white font-semibold text-lg mb-2">View</p>
-                  <p className="text-white/80 text-sm">{image.title ?? image.caption ?? 'Gallery item'}</p>
+                  <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-md">
+                    <div className="w-2 h-2 rounded-full bg-white" />
+                  </div>
                 </div>
               </div>
             </div>
@@ -148,16 +147,10 @@ export function GalleryGrid({ images, showFilter = true }: GalleryGridProps) {
               </>
             )}
 
-            <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/80 to-transparent p-6 rounded-b-xl">
-              <h3 className="text-white text-2xl font-bold mb-2">{selectedImage.title ?? selectedImage.caption ?? 'Gallery item'}</h3>
-              <div className="flex items-center justify-between text-white/80">
-                <span className="text-sm capitalize font-semibold bg-primary/80 px-3 py-1 rounded-full">
-                  {selectedImage.category}
-                </span>
-                <span className="text-sm">
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2">
+                <span className="text-white/80 text-sm px-4 py-2 rounded-full bg-black/40 backdrop-blur-md border border-white/10">
                   {currentIndex + 1} / {filteredImages.length}
                 </span>
-              </div>
             </div>
           </div>
         </div>

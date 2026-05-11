@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import { getDb } from '@/lib/mongodb'
 import { readLocalCollection, saveLocalDocument } from '@/lib/localDb'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET() {
   if (!process.env.MONGODB_URI?.trim()) {
     const localGallery = await readLocalCollection('gallery')
@@ -15,6 +17,12 @@ export async function GET() {
       .find()
       .sort({ createdAt: -1 })
       .toArray()
+
+    if (gallery.length === 0) {
+      console.log('[GET /api/gallery] MongoDB collection is empty, falling back to local store')
+      const localGallery = await readLocalCollection('gallery')
+      return NextResponse.json(localGallery)
+    }
 
     const serialized = gallery.map((item) => ({
       ...item,

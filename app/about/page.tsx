@@ -11,6 +11,11 @@ import { Textarea } from '@/components/ui/textarea'
 import { Mail, MapPin, Phone } from 'lucide-react'
 import { contactEmail, contactPhoneDisplayInternational } from '@/lib/contact'
 import { FAQ } from '@/components/faq'
+import { Swiper, SwiperSlide } from 'swiper/react'
+import { Autoplay, Navigation, Pagination } from 'swiper/modules'
+import 'swiper/css'
+import 'swiper/css/navigation'
+import 'swiper/css/pagination'
 
 export default function AboutPage() {
   const [formValues, setFormValues] = useState({ name: '', email: '', phone: '', message: '' })
@@ -23,7 +28,7 @@ export default function AboutPage() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    
+
     try {
       const response = await fetch('/api/contact', {
         method: 'POST',
@@ -72,7 +77,7 @@ export default function AboutPage() {
               <div className="grid gap-8 lg:grid-cols-[1.1fr_1fr] items-stretch">
                 <div className="relative min-h-[360px] lg:min-h-[400px]">
                   <img
-                    src="/images/user2.jpg"
+                    src="/images/our-story.png"
                     alt="Wanderphilia founder"
                     className="h-full md:h-[80vh] w-full object-cover"
                   />
@@ -113,7 +118,7 @@ export default function AboutPage() {
                 {/* Image */}
                 <div className=" relative min-h-[360px] lg:min-h-[400px] lg:order-2">
                   <img
-                    src="/images/user2.jpg"
+                    src="/images/our_mission.png"
                     alt="Wanderphilia founder"
                     className="h-full md:h-[80vh] w-full object-cover"
                   />
@@ -199,7 +204,7 @@ export default function AboutPage() {
               <div className="text-center">
                 <div className="relative w-48 h-48 mx-auto mb-6 rounded-full overflow-hidden shadow-lg">
                   <img
-                    src="/images/user2.jpg"
+                    src="/images/bhavin.jpg"
                     alt="Bhavin Thaker"
                     className="w-full h-full object-cover"
                   />
@@ -213,7 +218,7 @@ export default function AboutPage() {
               <div className="text-center">
                 <div className="relative w-48 h-48 mx-auto mb-6 rounded-full overflow-hidden shadow-lg">
                   <img
-                    src="/images/user1.jpg"
+                    src="/images/nikita.jpg"
                     alt="Nikita Verma"
                     className="w-full h-full object-cover"
                   />
@@ -241,7 +246,7 @@ export default function AboutPage() {
               <div className="text-center">
                 <div className="relative w-48 h-48 mx-auto mb-6 rounded-full overflow-hidden shadow-lg">
                   <img
-                    src="/images/user3.jpg"
+                    src="/images/mrunal.jpg"
                     alt="Mrunal"
                     className="w-full h-full object-cover"
                   />
@@ -269,7 +274,7 @@ export default function AboutPage() {
               <div className="text-center">
                 <div className="relative w-48 h-48 mx-auto mb-6 rounded-full overflow-hidden shadow-lg">
                   <img
-                    src="/images/user2.jpg"
+                    src="/images/jainam.jpg"
                     alt="Jainam Shah"
                     className="w-full h-full object-cover"
                   />
@@ -293,37 +298,47 @@ export default function AboutPage() {
             </div>
 
             {/* Photo Gallery Carousel */}
-            <div className="mb-16">
+            <div className="mb-16 px-4 md:px-8">
               <h3 className="text-2xl font-bold text-gray-900 mb-8 text-center">Team Moments</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="relative h-64 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
-                  <img
-                    src="/images/dummy1.jpg"
-                    alt="Team Activity 1"
-                    className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
-                  />
-                </div>
-                <div className="relative h-64 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
-                  <img
-                    src="/images/dummy2.jpg"
-                    alt="Team Activity 2"
-                    className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
-                  />
-                </div>
-                <div className="relative h-64 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
-                  <img
-                    src="/images/dummy3.jpg"
-                    alt="Team Activity 3"
-                    className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
-                  />
-                </div>
-                <div className="relative h-64 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
-                  <img
-                    src="/images/dummy4.jpg"
-                    alt="Team Activity 4"
-                    className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
-                  />
-                </div>
+              <div className="w-full relative">
+                <Swiper
+                  modules={[Autoplay, Navigation, Pagination]}
+                  spaceBetween={24}
+                  slidesPerView={1}
+                  navigation
+                  pagination={{ clickable: true }}
+                  autoplay={{
+                    delay: 3000,
+                    disableOnInteraction: false,
+                  }}
+                  breakpoints={{
+                    640: { slidesPerView: 2 },
+                    1024: { slidesPerView: 3 },
+                    1280: { slidesPerView: 4 },
+                  }}
+                  className="w-full pb-14 [&_.swiper-pagination-bullet-active]:bg-orange-500 [&_.swiper-button-next]:text-orange-500 [&_.swiper-button-prev]:text-orange-500"
+                >
+                  {[
+                    '/images/team1.jpg',
+                    '/images/team2.jpg',
+                    '/images/team3.jpg',
+                    '/images/team4.jpg',
+                    '/images/team5.jpg',
+                    '/images/team6.jpg',
+                    '/images/team7.jpg',
+
+                  ].map((src, index) => (
+                    <SwiperSlide key={index}>
+                      <div className="relative h-64 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
+                        <img
+                          src={src}
+                          alt={`Team Activity ${index + 1}`}
+                          className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
+                        />
+                      </div>
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
               </div>
             </div>
 
@@ -400,7 +415,7 @@ export default function AboutPage() {
           </div>
         </section>
 
-        
+
 
         <section className="bg-white py-20">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

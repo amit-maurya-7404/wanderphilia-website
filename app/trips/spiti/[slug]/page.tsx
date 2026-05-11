@@ -15,6 +15,7 @@ import { RequestCallbackDialog } from '@/components/request-callback-dialog'
 import { trips } from '@/lib/data'
 import { MapPin, Calendar, Users, Star, Phone, MessageCircle, ChevronDown, Download } from 'lucide-react'
 import { contactEmail, contactPhone, contactPhoneDisplay, instagramUrl } from '@/lib/contact'
+import { TripGallerySection } from '@/components/trip-gallery-section'
 
 
 export default function PackageDetailPage() {
@@ -236,12 +237,12 @@ export default function PackageDetailPage() {
                 {[
                   { id: 'overview', label: 'Overview' },
                   { id: 'itinerary', label: 'Itinerary' },
-                  { id: 'inclusions', label: 'Inclusions' },
-                  { id: 'exclusions', label: 'Exclusions' },
+                  { id: 'batches', label: 'Batches' },
                   { id: 'costing', label: 'Costing' },
                   { id: 'note', label: 'Note' },
                   { id: 'stays', label: 'Stays' },
-                  { id: 'batches', label: 'Batches' },
+                  { id: 'inclusions', label: 'Inclusions' },
+                  { id: 'exclusions', label: 'Exclusions' },
                   { id: 'payment', label: 'Payment Policy' },
                   { id: 'cancellation', label: 'Cancellation' },
                   { id: 'things-to-carry', label: 'Things To Carry' },
@@ -705,6 +706,12 @@ export default function PackageDetailPage() {
 
       {/* ADD BOTTOM PADDING FOR MOBILE */}
       <div className="h-[12vh] lg:h-0 min-h-20 lg:min-h-0" />
+
+      {/* GALLERY SECTION */}
+      <TripGallerySection 
+        categoryId={trip.category.toLowerCase()} 
+        categoryName={trip.destination} 
+      />
 
       <Footer />
 

@@ -7,24 +7,24 @@ import { Check } from 'lucide-react'
 export function AboutHeroSection() {
     const galleryImages = [
         {
-            src: '/images/dummy1.jpg',
+            src: '/images/about_hero8.jpg',
             alt: 'Big Ben London',
             className: 'md:col-span-2 md:row-span-3 h-40 md:h-[60vh]',
         },
         {
-            src: '/images/dummy2.jpg',
+            src: '/images/about_hero5.jpg',
             alt: 'Mountain Landscape',
-            className: 'h-40 md:h-auto',
+            className: 'h-40 md:h-[18.5vh]',
         },
         {
-            src: '/images/dummy3.jpg',
+            src: '/images/about_hero4.jpg',
             alt: 'Historic Building',
-            className: 'h-40 md:h-auto',
+            className: 'h-40 md:h-[18.5vh]',
         },
         {
-            src: '/images/dummy4.jpg',
+            src: '/images/about_hero3.jpg',
             alt: 'Scenic View',
-            className: 'h-40 md:h-auto',
+            className: 'h-40 md:h-[18.5vh]',
         },
     ]
 
@@ -36,7 +36,7 @@ export function AboutHeroSection() {
     ]
 
     return (
-        <section className="w-full bg-white md:pt-0 mt-[10vw] md:mt-[0vw]">
+        <section className="w-full bg-white md:pt-0 mt-[10vw] md:mt-[10vw]">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 md:py-0">
                 {/* Main Content Grid */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-start mb-12 md:mb-0">

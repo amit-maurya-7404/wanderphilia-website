@@ -150,23 +150,23 @@ export function HeroSection() {
                 <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
                 <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
               </div>
-              <p className="text-black font-semibold text-lg">Google Reviews</p>
+              <p className="text-white font-semibold text-lg">Google Reviews</p>
             </div>
           </div>
 
           <div className="flex flex-col items-center">
             <span className="text-primary text-2xl font-bold">20,000+</span>
-            <p className="text-black font-semibold text-lg">Happy Wanderers</p>
+            <p className="text-white font-semibold text-lg">Happy Wanderers</p>
           </div>
 
           <div className="flex flex-col items-center">
             <span className="text-green-600 text-2xl font-bold">24x7</span>
-            <p className="text-black font-semibold text-lg">Support</p>
+            <p className="text-white font-semibold text-lg">Support</p>
           </div>
 
           <div className="flex flex-col items-center">
             <span className="text-blue-600 text-2xl font-bold">8 Years</span>
-            <p className="text-black font-semibold text-lg">Experience</p>
+            <p className="text-white font-semibold text-lg">Experience</p>
           </div>
 
         </div>

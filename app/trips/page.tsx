@@ -6,7 +6,7 @@ import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
 import { TripCard } from '@/components/trip-card'
 import { ReviewCard } from '@/components/review-card'
-import { GalleryGrid } from '@/components/gallery-grid'
+import { GalleryCarousel } from '@/components/gallery-carousel'
 import { trips } from '@/lib/data'
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react'
 
@@ -22,10 +22,8 @@ interface ReviewItem {
 interface GalleryImage {
   _id: string
   image: string
-  title?: string
-  category: 'mountains' | 'stays' | 'trips'
+  category: string
   alt?: string
-  caption?: string
   createdAt: string
 }
 
@@ -255,6 +253,7 @@ export default function TripsPage() {
                 src={image}
                 alt="Wanderphilia trips carousel"
                 fill
+                sizes="100vw"
                 className={`object-cover transition-opacity duration-1000 ${index === currentImageIndex ? 'opacity-100' : 'opacity-0'}`}
                 priority={index === 0}
               />
@@ -570,7 +569,7 @@ export default function TripsPage() {
                 <p className="text-gray-500">No gallery images available yet. Check back soon!</p>
               </div>
             ) : (
-              <GalleryGrid images={galleryImages} showFilter={true} />
+              <GalleryCarousel images={galleryImages} />
             )}
           </div>
         </section>

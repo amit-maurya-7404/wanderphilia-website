@@ -109,7 +109,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`${inter.className} font-sans antialiased`}>
+      <body className={`${inter.className} font-sans antialiased overflow-x-hidden`}>
         {/* Google Analytics Script - Loads after interactive elements */}
         {GA_MEASUREMENT_ID ? (
           <>

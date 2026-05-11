@@ -6,7 +6,7 @@ import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
 import { TripCard } from '@/components/trip-card'
 import { ReviewCard } from '@/components/review-card'
-import { GalleryGrid } from '@/components/gallery-grid'
+import { GalleryCarousel } from '@/components/gallery-carousel'
 import { Button } from '@/components/ui/button'
 import { TripHeroCarousel } from '@/components/trip-hero-carousel'
 import { RequestCallbackDialog } from '@/components/request-callback-dialog'
@@ -26,14 +26,12 @@ interface ReviewItem {
 interface GalleryImage {
   _id: string
   image: string
-  title?: string
-  category: 'mountains' | 'stays' | 'trips'
+  category: string
   alt?: string
-  caption?: string
   createdAt: string
 }
 
-export default function IcelandPage() {
+export default function JapanPage() {
   const categoryId = 'japan'
   const categoryName = 'Japan'
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
@@ -157,7 +155,9 @@ export default function IcelandPage() {
           throw new Error('Unable to load gallery')
         }
         const data = await response.json()
-        setGalleryImages(data)
+        // Filter images for this category
+        const filtered = data.filter((img: any) => img.category === categoryId)
+        setGalleryImages(filtered.length > 0 ? filtered : data)
       } catch (error) {
         setGalleryError((error as Error).message)
       } finally {
@@ -165,7 +165,7 @@ export default function IcelandPage() {
       }
     }
     fetchGallery()
-  }, [])
+  }, [categoryId])
 
   // Family Packages Data
   const familyPackages = useMemo(() => {
@@ -215,21 +215,21 @@ export default function IcelandPage() {
                     {`Explore the beauty of ${categoryName}`}
                   </p>
 
-                  <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
+                  <div className="mt-5 flex flex-row gap-2 sm:flex-row sm:items-center">
                     <Button
                       size="lg"
-                      className="min-w-45 bg-amber-400 text-white hover:bg-amber-300"
+                      className="min-w-30 bg-amber-400 text-white hover:bg-amber-300"
                       onClick={() => setCallbackOpen(true)}
                     >
-                      <Phone size={18} className="mr-2" /> Request a Callback
+                      <Phone size={18} className="mr-0" /> Request a Callback
                     </Button>
                     <Button
                       size="lg"
                       variant="outline"
-                      className="min-w-45 border-white/60 text-slate-800 hover:text-white hover:border-white hover:bg-white/10 bg-white"
+                      className="min-w-32 border-white/60 text-slate-800 hover:text-white hover:border-white hover:bg-white/10 bg-white"
                       onClick={() => {
                         const message = `Hi! I'm planning for the ${categoryName} trip. Can you help me with details?`
-
+                    
                         const encodedMessage = encodeURIComponent(message)
 
                         window.open(
@@ -238,7 +238,7 @@ export default function IcelandPage() {
                         )
                       }}
                     >
-                      <MessageCircle size={18} className="mr-2" /> Chat With Us
+                      <MessageCircle size={18} className="mr-0" /> Chat With Us
                     </Button>
                   </div>
                 </div>
@@ -685,7 +685,7 @@ export default function IcelandPage() {
                 <p className="text-gray-500">No gallery images available yet. Check back soon!</p>
               </div>
             ) : (
-              <GalleryGrid images={galleryImages} showFilter={true} />
+              <GalleryCarousel images={galleryImages} />
             )}
           </div>
         </section>
