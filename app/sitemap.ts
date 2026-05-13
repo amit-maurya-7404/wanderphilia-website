@@ -52,7 +52,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }))
 
   const categoryEntries = getAllCategories().map((category) => ({
-    url: `${BASE_URL}/category/${category.id}`,
+    url: `${BASE_URL}/trips/${category.id}`,
     lastModified: new Date(),
   }))
 

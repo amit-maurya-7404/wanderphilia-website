@@ -49,7 +49,7 @@ export function TripCard({
           category: 'Navigation',
           label: `Trip Card: ${title}`,
         });
-        window.open(`/trips/${categoryId}/${slug}`, '_blank')
+        window.open(`/trips/${slug}`, '_blank')
       }}
       className="group relative overflow-hidden rounded-lg shadow-xl h-[50vh] md:h-[60vh] cursor-pointer"
     >

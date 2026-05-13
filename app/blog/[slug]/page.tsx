@@ -4,9 +4,45 @@ import { notFound } from 'next/navigation'
 import { blogs } from '@/lib/data'
 import { ArrowLeft, Clock, Tag } from 'lucide-react'
 
+import { Metadata } from 'next'
+
 interface BlogPageProps {
-  params: {
+  params: Promise<{
     slug: string
+  }>
+}
+
+export async function generateMetadata({ params }: BlogPageProps): Promise<Metadata> {
+  const { slug } = await params
+  const blog = blogs.find((item) => item.slug === slug)
+
+  if (!blog) {
+    return {
+      title: 'Blog Not Found | Wanderphilia',
+    }
+  }
+
+  return {
+    title: `${blog.title} | Wanderphilia Blog`,
+    description: blog.excerpt,
+    alternates: {
+      canonical: `https://wanderphilia.com/blog/${slug}`,
+    },
+    openGraph: {
+      title: blog.title,
+      description: blog.excerpt,
+      url: `https://wanderphilia.com/blog/${slug}`,
+      type: 'article',
+      publishedTime: blog.date,
+      authors: [blog.author],
+      images: [{ url: `https://wanderphilia.com${blog.image}` }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: blog.title,
+      description: blog.excerpt,
+      images: [`https://wanderphilia.com${blog.image}`],
+    }
   }
 }
 
@@ -14,8 +50,10 @@ export async function generateStaticParams() {
   return blogs.map((blog) => ({ slug: blog.slug }))
 }
 
-export default function BlogPostPage({ params }: BlogPageProps) {
-  const blog = blogs.find((item) => item.slug === params.slug)
+export default async function BlogPostPage({ params }: BlogPageProps) {
+  const { slug } = await params
+  const blog = blogs.find((item) => item.slug === slug)
+
 
   if (!blog) {
     notFound()

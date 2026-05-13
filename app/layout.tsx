@@ -1,20 +1,21 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import { GoogleAnalytics } from '@next/third-parties/google'
 import { Analytics } from '@vercel/analytics/next'
-import Script from 'next/script'
 import './globals.css'
 import ScrollActionButtons from '@/components/ScrollActionButtons'
 import ScrollToTopButton from '@/components/ScrollToTopButton'
 import { MobileBottomNavConditional } from '@/components/mobile-bottom-nav-conditional'
-import { Analytics as GAAnalytics } from '@/components/analytics'
 import { ScrollTracker } from '@/components/scroll-tracker'
 // import { PromoAdCard } from '@/components/promo-ad'
 
 const inter = Inter({ subsets: ["latin"] });
-const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://wanderphilia.com'),
+  alternates: {
+    canonical: 'https://wanderphilia.com',
+  },
   title: {
     default: "Wanderphilia - India's Most Trusted Travel Community",
     template: '%s | Wanderphilia',
@@ -79,6 +80,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || 'G-GFPXJ77HPK'} />
       <head>
         <script
           type="application/ld+json"
@@ -110,24 +112,6 @@ export default function RootLayout({
         />
       </head>
       <body className={`${inter.className} font-sans antialiased overflow-x-hidden`}>
-        {/* Google Analytics Script - Loads after interactive elements */}
-        {GA_MEASUREMENT_ID ? (
-          <>
-            <Script
-              src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
-              strategy="afterInteractive"
-            />
-            <Script id="google-analytics" strategy="afterInteractive">
-              {`
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-                gtag('config', '${GA_MEASUREMENT_ID}');
-              `}
-            </Script>
-          </>
-        ) : null}
-
         <div className="min-h-screen pb-14 md:pb-0">
           {children}
         </div>
@@ -137,8 +121,6 @@ export default function RootLayout({
         <ScrollToTopButton />
         <MobileBottomNavConditional />
 
-        {/* Page View Tracking */}
-        <GAAnalytics />
 
         {/* Scroll Depth Tracking */}
         <ScrollTracker />
