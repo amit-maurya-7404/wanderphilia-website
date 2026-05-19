@@ -3,13 +3,13 @@ import { trips } from '@/lib/data'
 import BookingPackageClient from '@/components/booking-package-client'
 
 type BookingPackagePageProps = {
-  params: {
+  params: Promise<{
     slug: string
-  }
+  }>
 }
 
-export default function BookingPackagePage({ params }: BookingPackagePageProps) {
-  const { slug } = params
+export default async function BookingPackagePage({ params }: BookingPackagePageProps) {
+  const { slug } = await params
   const trip = trips.find((item) => item.slug === slug)
 
   if (!trip) {

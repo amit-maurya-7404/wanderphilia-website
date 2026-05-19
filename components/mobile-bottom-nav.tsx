@@ -7,6 +7,10 @@ import { BookOpen } from 'lucide-react'
 export function MobileBottomNav() {
   const pathname = usePathname()
 
+  if (pathname?.startsWith('/payment') || pathname?.startsWith('/booking')) {
+    return null
+  }
+
   return (
     <div className="fixed bottom-0  left-0 right-0 z-50 md:hidden">
       <div className="border border-slate-800/90  bg-white shadow-2xl">

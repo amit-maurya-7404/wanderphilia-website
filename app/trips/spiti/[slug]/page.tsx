@@ -59,7 +59,7 @@ export default function PackageDetailPage() {
 
   const handleBookNow = () => {
     if (!slug) return
-    router.push(`/booking/package?slug=${encodeURIComponent(slug)}`)
+    router.push(`/booking/package/${encodeURIComponent(slug)}`)
   }
 
   useEffect(() => {

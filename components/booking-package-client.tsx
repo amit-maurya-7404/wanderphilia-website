@@ -6,13 +6,13 @@ import { Trip } from '@/lib/data'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import OTPLogin from '@/components/otp-login'
 import { AuthUtils } from '@/lib/auth-utils'
-import { ChevronDown, CreditCard } from 'lucide-react'
+import { ChevronDown, CreditCard, User, Mail, Phone, Lock } from 'lucide-react'
 import { gtag } from '@/lib/gtag'
-import {RequestCallbackDialog} from '@/components/request-callback-dialog'
-import { set } from 'date-fns'
+import { RequestCallbackDialog } from '@/components/request-callback-dialog'
 
 interface BookingPackageClientProps {
   trip: Trip
@@ -30,9 +30,24 @@ export default function BookingPackageClient({ trip, slug }: BookingPackageClien
 
   const parsePriceValue = (value: string) => Number(value.replace(/[^0-9]/g, '')) || 0
 
-  const [costingQuantities, setCostingQuantities] = useState<number[]>(
-    trip.costingDetails?.map((_, idx) => (idx === 0 ? 1 : 0)) ?? []
-  )
+  const costingItems = trip.costingDetails && trip.costingDetails.length > 0
+    ? trip.costingDetails
+    : [{ label: 'Package Price', value: `₹${(trip.price || 0).toLocaleString('en-IN')}` }]
+
+  const [costingQuantities, setCostingQuantities] = useState<number[]>(() => {
+    return costingItems.map((_, idx) => (idx === 0 ? 1 : 0))
+  })
+
+  useEffect(() => {
+    setCostingQuantities(costingItems.map((_, idx) => (idx === 0 ? 1 : 0)))
+  }, [trip])
+
+  // Contact Form states
+  const [fullName, setFullName] = useState('')
+  const [mobileNumber, setMobileNumber] = useState('')
+  const [emailAddress, setEmailAddress] = useState('')
+  const [errors, setErrors] = useState<{ fullName?: string; mobileNumber?: string; emailAddress?: string }>({})
+  const [isProcessing, setIsProcessing] = useState(false)
 
   const dateOptions = trip.dates ?? []
 
@@ -57,47 +72,163 @@ export default function BookingPackageClient({ trip, slug }: BookingPackageClien
       )
 
   const subtotal =
-    trip.costingDetails?.reduce<number>(
+    costingItems.reduce<number>(
       (sum, item, idx) => sum + parsePriceValue(item.value) * (costingQuantities[idx] || 0),
       0
-    ) ?? 0
+    )
 
   const gst = Math.round(subtotal * 0.05)
   const total = subtotal + gst
 
-  const handleProceedToPayment = () => {
+  const validateForm = () => {
+    const newErrors: typeof errors = {}
+    if (!fullName.trim()) {
+      newErrors.fullName = 'Full Name is required'
+    }
+    if (!mobileNumber.trim()) {
+      newErrors.mobileNumber = 'Mobile Number is required'
+    } else if (!/^\d{10}$/.test(mobileNumber.trim())) {
+      newErrors.mobileNumber = 'Please enter a valid 10-digit mobile number'
+    }
+    if (!emailAddress.trim()) {
+      newErrors.emailAddress = 'Email Address is required'
+    } else if (!/\S+@\S+\.\S+/.test(emailAddress.trim())) {
+      newErrors.emailAddress = 'Please enter a valid email address'
+    }
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
+  const handleProceedToPayment = async () => {
     gtag.event({
       action: 'click',
       category: 'Booking',
       label: `Proceed to Payment: ${trip.title}`,
-    });
+    })
 
-    const auth = AuthUtils.getAuth()
-    if (auth?.token) {
-      router.push(`/payment?slug=${encodeURIComponent(slug)}`)
+    if (!validateForm()) {
+      const el = document.getElementById('contact-info-section')
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }
       return
     }
 
-    setShowLoginDialog(true)
+    setIsProcessing(true)
+
+    try {
+      // 1. Create order on the server side
+      const orderRes = await fetch('/api/razorpay/order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: total * 100, // in paise
+          currency: 'INR',
+        }),
+      })
+
+      if (!orderRes.ok) {
+        throw new Error('Failed to initiate secure order transaction.')
+      }
+
+      const order = await orderRes.json()
+
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || 'rzp_test_SoKI9MWSlWJv74',
+        amount: order.amount,
+        currency: order.currency,
+        name: 'Wanderphilia',
+        description: `Booking for ${trip.title}`,
+        image: '/images/logo.png',
+        order_id: order.id,
+        handler: async function (response: any) {
+          try {
+            const selectedDate = dateOptions[selectedDateIndex]
+            const start = selectedDate ? selectedDate.startDate : ''
+            const end = selectedDate ? selectedDate.endDate : ''
+
+            // 2. Verify payment signature on server side
+            const verifyRes = await fetch('/api/razorpay/verify', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_signature: response.razorpay_signature,
+                fullName: fullName,
+                emailAddress: emailAddress,
+                mobileNumber: mobileNumber,
+                tripTitle: trip.title,
+                totalAmount: total,
+                startDate: start,
+                endDate: end,
+              }),
+            })
+
+            const verifyData = await verifyRes.json()
+
+            if (verifyData.success) {
+              // 3. Redirect to success page
+              router.push(
+                `/payment/success?orderId=${order.id}&paymentId=${
+                  response.razorpay_payment_id
+                }&slug=${slug}&total=${total}&name=${encodeURIComponent(
+                  fullName
+                )}&startDate=${encodeURIComponent(start)}&endDate=${encodeURIComponent(
+                  end
+                )}&email=${encodeURIComponent(emailAddress)}&phone=${encodeURIComponent(mobileNumber)}`
+              )
+            } else {
+              alert('Payment verification failed. Please try again.')
+            }
+          } catch (err) {
+            console.error('Signature verification error:', err)
+            alert('A verification error occurred. Please contact support.')
+          }
+        },
+        prefill: {
+          name: fullName,
+          email: emailAddress,
+          contact: mobileNumber,
+        },
+        theme: {
+          color: '#EAB308', // Amber / Brand Primary Yellow
+        },
+      }
+
+      // Check if window.Razorpay exists, if not load it dynamically
+      if (!(window as any).Razorpay) {
+        const script = document.createElement('script')
+        script.src = 'https://checkout.razorpay.com/v1/checkout.js'
+        script.onload = () => {
+          const rzp = new (window as any).Razorpay(options)
+          rzp.open()
+        }
+        document.body.appendChild(script)
+      } else {
+        const rzp = new (window as any).Razorpay(options)
+        rzp.open()
+      }
+    } catch (error: any) {
+      console.error('Payment checkout error:', error)
+      alert(error.message || 'An error occurred during checkout.')
+    } finally {
+      setIsProcessing(false)
+    }
   }
 
   const handleLoginSuccess = () => {
     setShowLoginDialog(false)
-    router.push(`/payment?slug=${encodeURIComponent(slug)}`)
   }
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <Navbar forceWhiteDesktop />
 
-
       <main className="grow pt-20">
-
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-16 grid gap-6 lg:gap-10 lg:grid-cols-[2fr_1fr]">
-
           {/* LEFT SIDE */}
           <div className="space-y-6">
-
             {/* TRIP DETAILS */}
             <div className="rounded-3xl bg-white border border-gray-200 shadow-sm p-5 sm:p-6 lg:p-8">
               <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
@@ -105,15 +236,14 @@ export default function BookingPackageClient({ trip, slug }: BookingPackageClien
               </h2>
 
               <div className="mt-6">
-
                 {/* MONTH FILTER */}
                 <div className="flex flex-wrap gap-2">
                   {monthTabs.map((month) => (
                     <button
                       key={month}
-                      className={`rounded-full px-4 py-2 text-sm ${selectedMonth === month
+                      className={`rounded-full px-4 py-2 text-sm transition-colors ${selectedMonth === month
                         ? 'bg-primary text-white'
-                        : 'bg-slate-100'
+                        : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                         }`}
                       onClick={() => setSelectedMonth(month)}
                     >
@@ -127,10 +257,13 @@ export default function BookingPackageClient({ trip, slug }: BookingPackageClien
                   {filteredDates.map((date, index) => (
                     <button
                       key={index}
-                      className="rounded-xl border p-4 text-left"
+                      className={`rounded-xl border p-4 text-left transition-all ${selectedDateIndex === index
+                        ? 'border-primary ring-2 ring-primary/20 bg-primary/5'
+                        : 'border-slate-200 hover:border-slate-300 bg-white'
+                        }`}
                       onClick={() => setSelectedDateIndex(index)}
                     >
-                      <p className="font-semibold">
+                      <p className="font-semibold text-slate-900">
                         {date.startDate} - {date.endDate}
                       </p>
                     </button>
@@ -140,31 +273,31 @@ export default function BookingPackageClient({ trip, slug }: BookingPackageClien
             </div>
 
             {/* PRICING */}
-            {trip.costingDetails && (
-              <div className="rounded-3xl border bg-white shadow-sm">
+            {costingItems && costingItems.length > 0 && (
+              <div className="rounded-3xl border border-gray-200 bg-white shadow-sm overflow-hidden">
                 <button
                   onClick={() => setPricingOpen(!pricingOpen)}
-                  className="w-full flex justify-between px-5 py-4"
+                  className="w-full flex justify-between items-center px-5 py-4 hover:bg-slate-50 transition-colors"
                 >
-                  <span className="font-semibold">Pricing</span>
-                  <ChevronDown />
+                  <span className="font-semibold text-slate-900">Pricing Options</span>
+                  <ChevronDown className={`transition-transform duration-300 ${pricingOpen ? 'rotate-180' : ''}`} />
                 </button>
 
                 {pricingOpen && (
-                  <div className="p-4 space-y-3 bg-slate-50">
-                    {trip.costingDetails.map((item, idx) => (
+                  <div className="p-4 space-y-3 bg-slate-50 border-t border-gray-100">
+                    {costingItems.map((item, idx) => (
                       <div
                         key={idx}
-                        className="bg-white p-3 rounded-xl border flex justify-between items-center"
+                        className="bg-white p-3 rounded-xl border border-gray-100 flex justify-between items-center shadow-xs"
                       >
                         <div>
-                          <p className="font-semibold">{item.label}</p>
+                          <p className="font-semibold text-slate-900">{item.label}</p>
                           <p className="text-sm text-gray-500">{item.value}</p>
                         </div>
 
                         <div className="flex items-center gap-2">
                           <button
-                            className="h-9 w-9 bg-gray-200 rounded-full"
+                            className="h-9 w-9 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center font-bold text-slate-700 transition-colors"
                             onClick={() => {
                               const copy = [...costingQuantities]
                               copy[idx] = Math.max((copy[idx] || 0) - 1, 0)
@@ -173,12 +306,12 @@ export default function BookingPackageClient({ trip, slug }: BookingPackageClien
                           >
                             -
                           </button>
-                          <span>{costingQuantities[idx]}</span>
+                          <span className="w-6 text-center font-semibold text-slate-900">{costingQuantities[idx] || 0}</span>
                           <button
-                            className="h-9 w-9 bg-gray-200 rounded-full"
+                            className="h-9 w-9 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center font-bold text-slate-700 transition-colors"
                             onClick={() => {
                               const copy = [...costingQuantities]
-                              copy[idx]++
+                              copy[idx] = (copy[idx] || 0) + 1
                               setCostingQuantities(copy)
                             }}
                           >
@@ -192,12 +325,79 @@ export default function BookingPackageClient({ trip, slug }: BookingPackageClien
               </div>
             )}
 
+            {/* CONTACT INFORMATION */}
+            <div id="contact-info-section" className="rounded-3xl bg-white border border-gray-200 shadow-sm p-5 sm:p-6 lg:p-8 space-y-6">
+              <div className="flex items-center gap-3 border-b border-gray-100 pb-4">
+                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-amber-100 text-amber-600">
+                  <User size={18} />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-slate-900">Contact Information</h3>
+                  <p className="text-xs text-gray-500">Provide details for booking confirmation and payment receipt</p>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Full Name <span className="text-red-500">*</span></label>
+                  <Input
+                    placeholder="Enter your full name"
+                    value={fullName}
+                    onChange={(e) => {
+                      setFullName(e.target.value)
+                      if (errors.fullName) setErrors(prev => ({ ...prev, fullName: undefined }))
+                    }}
+                    className={`rounded-xl border-slate-200 h-11 ${errors.fullName ? 'border-red-500 focus-visible:ring-red-500/20' : 'focus-visible:ring-primary/20'}`}
+                  />
+                  {errors.fullName && (
+                    <p className="text-xs text-red-500 mt-1 font-medium">{errors.fullName}</p>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Mobile Number <span className="text-red-500">*</span></label>
+                    <Input
+                      type="tel"
+                      placeholder="Enter 10-digit number"
+                      value={mobileNumber}
+                      maxLength={10}
+                      onChange={(e) => {
+                        const val = e.target.value.replace(/\D/g, '')
+                        setMobileNumber(val)
+                        if (errors.mobileNumber) setErrors(prev => ({ ...prev, mobileNumber: undefined }))
+                      }}
+                      className={`rounded-xl border-slate-200 h-11 ${errors.mobileNumber ? 'border-red-500 focus-visible:ring-red-500/20' : 'focus-visible:ring-primary/20'}`}
+                    />
+                    {errors.mobileNumber && (
+                      <p className="text-xs text-red-500 mt-1 font-medium">{errors.mobileNumber}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Email Address <span className="text-red-500">*</span></label>
+                    <Input
+                      type="email"
+                      placeholder="Enter email address"
+                      value={emailAddress}
+                      onChange={(e) => {
+                        setEmailAddress(e.target.value)
+                        if (errors.emailAddress) setErrors(prev => ({ ...prev, emailAddress: undefined }))
+                      }}
+                      className={`rounded-xl border-slate-200 h-11 ${errors.emailAddress ? 'border-red-500 focus-visible:ring-red-500/20' : 'focus-visible:ring-primary/20'}`}
+                    />
+                    {errors.emailAddress && (
+                      <p className="text-xs text-red-500 mt-1 font-medium">{errors.emailAddress}</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* RIGHT SIDE */}
           <aside className="hidden lg:block space-y-6">
             <div className="sticky top-24 rounded-4xl border border-gray-200 bg-white p-8 shadow-sm">
-
               <div className="mb-6">
                 <p className="text-sm uppercase tracking-[0.3em] text-primary font-semibold">
                   Amount to pay
@@ -213,7 +413,7 @@ export default function BookingPackageClient({ trip, slug }: BookingPackageClien
               <div className="space-y-3 text-sm text-slate-700 mb-6">
                 <div className="flex justify-between">
                   <span>Batch</span>
-                  <span>
+                  <span className="font-medium text-slate-900">
                     {dateOptions[selectedDateIndex]
                       ? `${dateOptions[selectedDateIndex].startDate} - ${dateOptions[selectedDateIndex].endDate}`
                       : 'TBA'}
@@ -222,7 +422,7 @@ export default function BookingPackageClient({ trip, slug }: BookingPackageClien
 
                 <div className="flex justify-between">
                   <span>Riders selected</span>
-                  <span>
+                  <span className="font-medium text-slate-900">
                     {costingQuantities.reduce((sum, qty) => sum + qty, 0)}
                   </span>
                 </div>
@@ -247,20 +447,29 @@ export default function BookingPackageClient({ trip, slug }: BookingPackageClien
 
               <Button
                 size="lg"
-                className="w-full justify-center gap-2"
-                onClick={() => setCallbackOpen(true)}
-                disabled={subtotal === 0}
+                className="w-full justify-center gap-2 bg-primary hover:bg-primary/90 text-white font-bold h-12 rounded-2xl"
+                onClick={handleProceedToPayment}
+                disabled={subtotal === 0 || isProcessing}
               >
-                Proceed to Payment
+                {isProcessing ? (
+                  <>
+                    <span className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2"></span>
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    <Lock size={16} />
+                    Proceed to Payment
+                  </>
+                )}
               </Button>
             </div>
           </aside>
-
         </section>
       </main>
 
       {/* MOBILE STICKY BAR */}
-      <div className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 p-4 flex items-center justify-between lg:hidden z-9999">
+      <div className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 p-4 flex items-center justify-between lg:hidden z-50">
         <div>
           <p className="text-xs text-gray-500">Total</p>
           <p className="text-lg font-bold text-slate-900">
@@ -268,12 +477,14 @@ export default function BookingPackageClient({ trip, slug }: BookingPackageClien
           </p>
         </div>
         <Button
-          onClick={() => setCallbackOpen(true)}
-          disabled={subtotal === 0}
+          onClick={handleProceedToPayment}
+          disabled={subtotal === 0 || isProcessing}
+          className="font-bold px-6 h-11 rounded-xl bg-primary text-white"
         >
-          Pay Now
+          {isProcessing ? 'Processing...' : 'Pay Now'}
         </Button>
       </div>
+
       <RequestCallbackDialog
         open={callbackOpen}
         onOpenChange={setCallbackOpen}
