@@ -59,7 +59,10 @@ export async function POST(req: Request) {
       )
     }
 
-    if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+    const razorpayKeyId = process.env.RAZORPAY_KEY_ID || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID
+    const razorpayKeySecret = process.env.RAZORPAY_KEY_SECRET
+
+    if (!razorpayKeyId || !razorpayKeySecret) {
       console.error('Razorpay keys are missing from environment variables.')
       return NextResponse.json(
         { error: 'Razorpay keys are not configured.' },
@@ -68,8 +71,8 @@ export async function POST(req: Request) {
     }
 
     const razorpay = new Razorpay({
-      key_id: process.env.RAZORPAY_KEY_ID,
-      key_secret: process.env.RAZORPAY_KEY_SECRET,
+      key_id: razorpayKeyId,
+      key_secret: razorpayKeySecret,
     })
 
     const payment = await razorpay.payments.fetch(razorpay_payment_id)
