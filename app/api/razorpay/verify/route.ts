@@ -33,8 +33,8 @@ export async function POST(req: Request) {
       .digest('hex')
 
     if (generatedSignature === razorpay_signature) {
-      // Payment verified! Trigger notifications asynchronously so it doesn't delay the API response
-      triggerNotifications({
+      // Payment verified. Trigger notifications and include status details in the response.
+      const notificationResult = await triggerNotifications({
         paymentId: razorpay_payment_id,
         orderId: razorpay_order_id,
         fullName: fullName || 'Traveler',
@@ -46,9 +46,20 @@ export async function POST(req: Request) {
         endDate: endDate || 'TBA'
       }).catch(err => {
         console.error('Failed to trigger post-payment notifications:', err)
+        return {
+          customerEmailSuccess: false,
+          ownerEmailSuccess: false,
+          customerWhatsAppSuccess: false,
+          ownerWhatsAppSuccess: false,
+          errors: [err.message || String(err)],
+        }
       })
 
-      return NextResponse.json({ success: true, message: 'Payment verified successfully' })
+      return NextResponse.json({
+        success: true,
+        message: 'Payment verified successfully',
+        notificationResult,
+      })
     } else {
       return NextResponse.json({ success: false, message: 'Payment verification failed' }, { status: 400 })
     }
@@ -85,6 +96,11 @@ async function triggerNotifications(params: NotificationParams) {
 
   const adminEmail = 'experiences@wanderphilia.com'
   const formattedAmount = Number(totalAmount).toLocaleString('en-IN')
+  const errors: string[] = []
+  let customerEmailSuccess = false
+  let ownerEmailSuccess = false
+  let customerWhatsAppSuccess = false
+  let ownerWhatsAppSuccess = false
 
   // --- 1. SEND EMAILS ---
   if (emailAddress) {
@@ -148,11 +164,23 @@ async function triggerNotifications(params: NotificationParams) {
 </html>
 `
 
-    await sendEmail({
-      to: emailAddress,
-      subject: `Booking Confirmed: ${tripTitle} - Wanderphilia`,
-      html: customerEmailContent
-    }).catch(err => console.error('Error sending customer confirmation email:', err))
+    let customerResult
+    try {
+      customerResult = await sendEmail({
+        to: emailAddress,
+        subject: `Booking Confirmed: ${tripTitle} - Wanderphilia`,
+        html: customerEmailContent,
+      })
+    } catch (err: any) {
+      console.error('Error sending customer confirmation email:', err)
+      errors.push(`customerEmail: ${err.message || String(err)}`)
+      customerResult = { success: false, error: err }
+    }
+
+    customerEmailSuccess = !!customerResult?.success
+    if (!customerEmailSuccess && customerResult?.error) {
+      errors.push(`customerEmail: ${customerResult.error.message || String(customerResult.error)}`)
+    }
   }
 
   // B. Email to Owner
@@ -211,11 +239,23 @@ async function triggerNotifications(params: NotificationParams) {
 </html>
 `
 
-  await sendEmail({
-    to: adminEmail,
-    subject: `🔔 New Booking Alert: ${fullName} - ${tripTitle}`,
-    html: ownerEmailContent
-  }).catch(err => console.error('Error sending admin confirmation email:', err))
+  let ownerResult
+  try {
+    ownerResult = await sendEmail({
+      to: adminEmail,
+      subject: `🔔 New Booking Alert: ${fullName} - ${tripTitle}`,
+      html: ownerEmailContent,
+    })
+  } catch (err: any) {
+    console.error('Error sending admin confirmation email:', err)
+    errors.push(`ownerEmail: ${err.message || String(err)}`)
+    ownerResult = { success: false, error: err }
+  }
+
+  ownerEmailSuccess = !!ownerResult?.success
+  if (!ownerEmailSuccess && ownerResult?.error) {
+    errors.push(`ownerEmail: ${ownerResult.error.message || String(ownerResult.error)}`)
+  }
 
 
   // --- 2. SEND WHATSAPP MESSAGES ---
@@ -224,17 +264,37 @@ async function triggerNotifications(params: NotificationParams) {
   if (mobileNumber) {
     const customerMsg = `Hey *${fullName}*! 🌟\n\nYour booking for *${tripTitle}* starting on *${startDate}* has been successfully confirmed!\n\n*Booking Summary:*\n• *Dates:* ${startDate} to ${endDate}\n• *Total Paid:* ₹${formattedAmount} (GST Inc.)\n• *Payment ID:* ${paymentId}\n\nOur tour coordinator will reach out to you on this number shortly. Thank you for choosing Wanderphilia! ✈️`
     
+    try {
     await sendWhatsApp({
       to: mobileNumber,
-      message: customerMsg
-    }).catch(err => console.error('Error sending customer WhatsApp:', err))
+      message: customerMsg,
+    })
+    customerWhatsAppSuccess = true
+  } catch (err: any) {
+    console.error('Error sending customer WhatsApp:', err)
+    errors.push(`customerWhatsApp: ${err.message || String(err)}`)
+  }
   }
 
   // B. WhatsApp to Owner
   const ownerMsg = `🔔 *New Booking Confirmed!*\n\n• *Trip:* ${tripTitle}\n• *Dates:* ${startDate} to ${endDate}\n• *Amount:* ₹${formattedAmount}\n• *Customer:* ${fullName}\n• *Phone:* ${mobileNumber || 'N/A'}\n• *Email:* ${emailAddress || 'N/A'}\n• *Payment ID:* ${paymentId}\n\nPlease check the admin dashboard and assign a coordinator.`
 
-  await sendWhatsApp({
-    to: '919217664099', // Owner's WhatsApp Number
-    message: ownerMsg
-  }).catch(err => console.error('Error sending owner WhatsApp:', err))
+  try {
+    await sendWhatsApp({
+      to: '919217664099', // Owner's WhatsApp Number
+      message: ownerMsg,
+    })
+    ownerWhatsAppSuccess = true
+  } catch (err: any) {
+    console.error('Error sending owner WhatsApp:', err)
+    errors.push(`ownerWhatsApp: ${err.message || String(err)}`)
+  }
+
+  return {
+    customerEmailSuccess,
+    ownerEmailSuccess,
+    customerWhatsAppSuccess,
+    ownerWhatsAppSuccess,
+    errors,
+  }
 }
