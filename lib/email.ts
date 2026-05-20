@@ -1,10 +1,17 @@
 import nodemailer from 'nodemailer'
 
+const emailUser = process.env.EMAIL_USER
+const emailPass = process.env.EMAIL_PASS
+
+if (!emailUser || !emailPass) {
+  console.error('Missing EMAIL_USER or EMAIL_PASS environment variables for email sending.')
+}
+
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
+    user: emailUser,
+    pass: emailPass,
   },
 })
 
@@ -17,9 +24,15 @@ export async function sendEmail({
   subject: string
   html: string
 }) {
+  if (!emailUser || !emailPass) {
+    const error = new Error('EMAIL_USER and EMAIL_PASS must be configured in production environment variables.')
+    console.error('Email sending error:', error)
+    return { success: false, error }
+  }
+
   try {
     const mailOptions = {
-      from: process.env.EMAIL_USER,
+      from: emailUser,
       to,
       subject,
       html,
