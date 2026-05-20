@@ -54,11 +54,16 @@ export async function POST(req: Request) {
       key_secret: razorpayKeySecret,
     })
 
+    // Build a short receipt id that is always <= 40 chars.
+    const normalizedSlug = slug.replace(/[^a-zA-Z0-9]/g, '').slice(0, 16)
+    const timestamp = Date.now().toString().slice(-6)
+    const receiptId = `rcpt_${normalizedSlug}_${timestamp}`.slice(0, 40)
+
     // amount should be in paise (e.g. INR 100 = 10000 paise)
     const order = await razorpay.orders.create({
       amount: Math.round(amount * 100),
       currency: currency || 'INR',
-      receipt: `receipt_${slug}_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
+      receipt: receiptId,
       notes: {
         tripSlug: slug,
         startDate: startDate || '',

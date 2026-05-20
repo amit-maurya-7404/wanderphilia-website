@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo, useEffect, useRef } from 'react'
-import { useParams, useRouter } from 'next/navigation'
+import { useRouter, useParams } from 'next/navigation'
 import { notFound } from 'next/navigation'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
@@ -27,10 +27,10 @@ export default function CatchAllTripDetailPage() {
   const [selections, setSelections] = useState<SelectionItem[]>([])
   const [showFullDesc, setShowFullDesc] = useState(false)
 
-  const total = selections.reduce((sum, item) => sum + item.price, 0)
   const params = useParams()
-  const slug = params?.slug as string
-  const trip = useMemo(() => trips.find(t => t.slug === slug), [slug])
+  const slug = params?.slug as string | undefined
+  const total = selections.reduce((sum, item) => sum + item.price, 0)
+  const trip = useMemo(() => slug ? trips.find(t => t.slug === slug) : undefined, [slug])
 
   // Calculate lowest price from costing table
   const lowestPrice = useMemo(() => {
@@ -66,6 +66,7 @@ export default function CatchAllTripDetailPage() {
     activeTabRef.current = activeTab
   }, [activeTab])
 
+  if (!slug) return null
   if (!trip) return notFound()
 
   const scrollActiveTabIntoView = (tabId: string) => {
