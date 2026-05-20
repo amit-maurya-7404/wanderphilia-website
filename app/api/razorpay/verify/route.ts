@@ -1,4 +1,5 @@
 import crypto from 'crypto'
+import Razorpay from 'razorpay'
 import { NextResponse } from 'next/server'
 import { sendEmail } from '@/lib/email'
 import { sendWhatsApp } from '@/lib/whatsapp'
@@ -14,7 +15,6 @@ export async function POST(req: Request) {
       emailAddress,
       mobileNumber,
       tripTitle,
-      totalAmount,
       startDate,
       endDate
     } = body
@@ -27,42 +27,97 @@ export async function POST(req: Request) {
       )
     }
 
+    if (
+      !razorpay_payment_id ||
+      !razorpay_order_id ||
+      !razorpay_signature ||
+      typeof razorpay_payment_id !== 'string' ||
+      typeof razorpay_order_id !== 'string' ||
+      typeof razorpay_signature !== 'string'
+    ) {
+      return NextResponse.json(
+        { error: 'Missing or invalid payment verification fields.' },
+        { status: 400 }
+      )
+    }
+
     const generatedSignature = crypto
       .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
       .update(`${razorpay_order_id}|${razorpay_payment_id}`)
       .digest('hex')
 
-    if (generatedSignature === razorpay_signature) {
-      // Payment verified. Trigger notifications and include status details in the response.
-      const notificationResult = await triggerNotifications({
-        paymentId: razorpay_payment_id,
-        orderId: razorpay_order_id,
-        fullName: fullName || 'Traveler',
-        emailAddress: emailAddress,
-        mobileNumber: mobileNumber,
-        tripTitle: tripTitle || 'Wanderphilia Tour Package',
-        totalAmount: totalAmount || 0,
-        startDate: startDate || 'TBA',
-        endDate: endDate || 'TBA'
-      }).catch(err => {
-        console.error('Failed to trigger post-payment notifications:', err)
-        return {
-          customerEmailSuccess: false,
-          ownerEmailSuccess: false,
-          customerWhatsAppSuccess: false,
-          ownerWhatsAppSuccess: false,
-          errors: [err.message || String(err)],
-        }
-      })
+    const expectedSignatureBuffer = Buffer.from(generatedSignature, 'utf8')
+    const actualSignatureBuffer = Buffer.from(razorpay_signature, 'utf8')
+    const signatureIsValid =
+      actualSignatureBuffer.length === expectedSignatureBuffer.length &&
+      crypto.timingSafeEqual(expectedSignatureBuffer, actualSignatureBuffer)
 
-      return NextResponse.json({
-        success: true,
-        message: 'Payment verified successfully',
-        notificationResult,
-      })
-    } else {
-      return NextResponse.json({ success: false, message: 'Payment verification failed' }, { status: 400 })
+    if (!signatureIsValid) {
+      return NextResponse.json(
+        { success: false, message: 'Payment verification failed.' },
+        { status: 400 }
+      )
     }
+
+    if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+      console.error('Razorpay keys are missing from environment variables.')
+      return NextResponse.json(
+        { error: 'Razorpay keys are not configured.' },
+        { status: 500 }
+      )
+    }
+
+    const razorpay = new Razorpay({
+      key_id: process.env.RAZORPAY_KEY_ID,
+      key_secret: process.env.RAZORPAY_KEY_SECRET,
+    })
+
+    const payment = await razorpay.payments.fetch(razorpay_payment_id)
+    const paidAmount = Number(payment.amount) / 100
+
+    if (payment.order_id !== razorpay_order_id) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Payment order ID mismatch during verification.',
+        },
+        { status: 400 }
+      )
+    }
+
+    if (payment.status !== 'captured') {
+      return NextResponse.json(
+        { success: false, message: 'Payment was not captured yet.' },
+        { status: 400 }
+      )
+    }
+
+    const notificationResult = await triggerNotifications({
+      paymentId: razorpay_payment_id,
+      orderId: razorpay_order_id,
+      fullName: fullName || 'Traveler',
+      emailAddress: emailAddress,
+      mobileNumber: mobileNumber,
+      tripTitle: tripTitle || 'Wanderphilia Tour Package',
+      totalAmount: paidAmount,
+      startDate: startDate || 'TBA',
+      endDate: endDate || 'TBA'
+    }).catch(err => {
+      console.error('Failed to trigger post-payment notifications:', err)
+      return {
+        customerEmailSuccess: false,
+        ownerEmailSuccess: false,
+        customerWhatsAppSuccess: false,
+        ownerWhatsAppSuccess: false,
+        errors: [err.message || String(err)],
+      }
+    })
+
+    return NextResponse.json({
+      success: true,
+      message: 'Payment verified successfully',
+      notificationResult,
+    })
   } catch (error: any) {
     console.error('Error verifying payment:', error)
     return NextResponse.json({ error: error.message || 'Failed to verify payment' }, { status: 500 })

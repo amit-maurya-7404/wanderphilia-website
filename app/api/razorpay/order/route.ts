@@ -1,9 +1,42 @@
 import Razorpay from 'razorpay'
 import { NextResponse } from 'next/server'
+import { trips } from '@/lib/data'
+
+function parsePriceValue(value: string) {
+  return Number(value.replace(/[^0-9]/g, '')) || 0
+}
 
 export async function POST(req: Request) {
   try {
-    const { amount, currency } = await req.json()
+    const { slug, quantities = [], startDate, endDate, currency } = await req.json()
+
+    if (!slug || typeof slug !== 'string') {
+      return NextResponse.json({ error: 'Trip slug is required.' }, { status: 400 })
+    }
+
+    const trip = trips.find((trip) => trip.slug === slug)
+    if (!trip) {
+      return NextResponse.json({ error: 'Trip not found.' }, { status: 404 })
+    }
+
+    const normalizedQuantities = Array.isArray(quantities)
+      ? quantities.map((value: any) => Number(value) || 0)
+      : []
+
+    let subtotal = 0
+    if (trip.costingDetails && trip.costingDetails.length > 0 && normalizedQuantities.length > 0) {
+      subtotal = trip.costingDetails.reduce((sum, item, idx) => {
+        const qty = normalizedQuantities[idx] || 0
+        return sum + parsePriceValue(item.value) * qty
+      }, 0)
+    }
+
+    if (subtotal === 0) {
+      subtotal = trip.price || 0
+    }
+
+    const gst = Math.round(subtotal * 0.05)
+    const amount = subtotal + gst
 
     if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
       console.error('Razorpay keys are missing from environment variables.')
@@ -20,9 +53,14 @@ export async function POST(req: Request) {
 
     // amount should be in paise (e.g. INR 100 = 10000 paise)
     const order = await razorpay.orders.create({
-      amount: Math.round(amount),
+      amount: Math.round(amount * 100),
       currency: currency || 'INR',
-      receipt: `receipt_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
+      receipt: `receipt_${slug}_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
+      notes: {
+        tripSlug: slug,
+        startDate: startDate || '',
+        endDate: endDate || '',
+      },
     })
 
     return NextResponse.json(order)

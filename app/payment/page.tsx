@@ -115,8 +115,10 @@ export default function PaymentPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          amount: total * 100, // in paise
-          currency: 'INR',
+          slug: trip.slug,
+          quantities,
+          startDate,
+          endDate,
         }),
       })
 
@@ -125,9 +127,16 @@ export default function PaymentPage() {
       }
 
       const order = await orderRes.json()
+      const razorpayKey = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID
+
+      if (!razorpayKey) {
+        alert('Payment gateway is not configured. Please contact support.')
+        setIsProcessing(false)
+        return
+      }
 
       const options = {
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || 'rzp_test_SoKI9MWSlWJv74',
+        key: razorpayKey,
         amount: order.amount,
         currency: order.currency,
         name: 'Wanderphilia',
@@ -148,7 +157,6 @@ export default function PaymentPage() {
                 emailAddress: email,
                 mobileNumber: phoneState,
                 tripTitle: trip.title,
-                totalAmount: total,
                 startDate: startDate,
                 endDate: endDate,
               }),
