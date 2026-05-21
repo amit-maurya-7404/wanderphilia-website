@@ -866,7 +866,7 @@ export const trips: Trip[] = [
     ],
     costingDetails: [
       { label: 'Tempo Traveller (Double Sharing)', value: '₹24,499' },
-      { label: 'Tempo Traveller (Triple Sharing)', value: '₹10' },
+      { label: 'Tempo Traveller (Triple Sharing)', value: '₹21,499' },
 
       { label: 'Dual Bike (Double Sharing)', value: '₹26,499' },
       { label: 'Dual Bike (Triple Sharing)', value: '₹23,499' },

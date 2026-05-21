@@ -131,7 +131,7 @@ export function MobileHeroSection() {
                 </div>
 
                 {/* CATEGORIES */}
-                <div className="flex gap-4 overflow-x-auto">
+                <div className="flex gap-4 overflow-x-auto scrollbar-hide">
                     {categories.map(cat => (
                         <div
                             key={cat.id}
@@ -147,7 +147,7 @@ export function MobileHeroSection() {
                 </div>
 
                 {/* TRIPS */}
-                <div className="flex gap-4 overflow-x-auto pb-4">
+                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
                     {featuredCards.map(trip => (
                         <div key={trip.id} className="min-w-[75%]">
                             <TripCard {...trip} />

@@ -49,27 +49,52 @@ export default function BookingPackageClient({ trip, slug }: BookingPackageClien
   const [errors, setErrors] = useState<{ fullName?: string; mobileNumber?: string; emailAddress?: string }>({})
   const [isProcessing, setIsProcessing] = useState(false)
 
-  const dateOptions = trip.dates ?? []
+  type BookingDateOption = {
+    month: string
+    label: string
+    startDate?: string
+    endDate?: string
+  }
+
+  const bookingDateOptions: BookingDateOption[] = trip.batchDates && trip.batchDates.length > 0
+    ? trip.batchDates.flatMap((batch) =>
+        batch.ranges.map((range) => ({
+          month: batch.month,
+          label: range,
+        }))
+      )
+    : trip.dates.map((date) => ({
+        month: new Date(date.startDate).toLocaleString('default', { month: 'short' }),
+        label: `${date.startDate} - ${date.endDate}`,
+        startDate: date.startDate,
+        endDate: date.endDate,
+      }))
 
   const monthTabs = [
     'All',
-    ...Array.from(
-      new Set(
-        dateOptions.map((date) =>
-          new Date(date.startDate).toLocaleString('default', { month: 'short' })
-        )
-      )
-    ),
+    ...Array.from(new Set(bookingDateOptions.map((option) => option.month)))
   ]
 
   const filteredDates =
     selectedMonth === 'All'
-      ? dateOptions
-      : dateOptions.filter(
-        (date) =>
-          new Date(date.startDate).toLocaleString('default', { month: 'short' }) ===
-          selectedMonth
-      )
+      ? bookingDateOptions
+      : bookingDateOptions.filter((option) => option.month === selectedMonth)
+
+  const selectedBookingOption = filteredDates[selectedDateIndex] || filteredDates[0]
+
+  const parseBatchRange = (label: string) => {
+    const [start, end] = label.split(' - ').map((part) => part.trim())
+    return {
+      startDate: start || label,
+      endDate: end || start || label,
+    }
+  }
+
+  const selectedDateValue = selectedBookingOption
+    ? selectedBookingOption.startDate && selectedBookingOption.endDate
+      ? { startDate: selectedBookingOption.startDate, endDate: selectedBookingOption.endDate }
+      : parseBatchRange(selectedBookingOption.label)
+    : { startDate: '', endDate: '' }
 
   const subtotal =
     costingItems.reduce<number>(
@@ -118,9 +143,9 @@ export default function BookingPackageClient({ trip, slug }: BookingPackageClien
 
     try {
       // 1. Create order on the server side
-      const selectedDate = dateOptions[selectedDateIndex]
-      const startDate = selectedDate ? selectedDate.startDate : ''
-      const endDate = selectedDate ? selectedDate.endDate : ''
+      const selectedDate = selectedDateValue
+      const startDate = selectedDate.startDate
+      const endDate = selectedDate.endDate
 
       const orderRes = await fetch('/api/razorpay/order', {
         method: 'POST',
@@ -156,9 +181,9 @@ export default function BookingPackageClient({ trip, slug }: BookingPackageClien
         order_id: order.id,
         handler: async function (response: any) {
           try {
-            const selectedDate = dateOptions[selectedDateIndex]
-            const start = selectedDate ? selectedDate.startDate : ''
-            const end = selectedDate ? selectedDate.endDate : ''
+            const selectedDate = selectedDateValue
+            const start = selectedDate.startDate
+            const end = selectedDate.endDate
 
             // 2. Verify payment signature on server side
             const verifyRes = await fetch('/api/razorpay/verify', {
@@ -257,7 +282,10 @@ export default function BookingPackageClient({ trip, slug }: BookingPackageClien
                         ? 'bg-primary text-white'
                         : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                         }`}
-                      onClick={() => setSelectedMonth(month)}
+                      onClick={() => {
+                        setSelectedMonth(month)
+                        setSelectedDateIndex(0)
+                      }}
                     >
                       {month}
                     </button>
@@ -276,7 +304,7 @@ export default function BookingPackageClient({ trip, slug }: BookingPackageClien
                       onClick={() => setSelectedDateIndex(index)}
                     >
                       <p className="font-semibold text-slate-900">
-                        {date.startDate} - {date.endDate}
+                        {date.label}
                       </p>
                     </button>
                   ))}
@@ -426,9 +454,7 @@ export default function BookingPackageClient({ trip, slug }: BookingPackageClien
                 <div className="flex justify-between">
                   <span>Batch</span>
                   <span className="font-medium text-slate-900">
-                    {dateOptions[selectedDateIndex]
-                      ? `${dateOptions[selectedDateIndex].startDate} - ${dateOptions[selectedDateIndex].endDate}`
-                      : 'TBA'}
+                    {selectedBookingOption ? selectedBookingOption.label : 'TBA'}
                   </span>
                 </div>
 

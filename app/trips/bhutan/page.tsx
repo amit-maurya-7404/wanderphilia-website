@@ -195,28 +195,28 @@ export default function BhutanPage() {
 
       <main className="flex-grow">
         {/* Hero Section with Carousel */}
-        <div className="relative h-[50vh] sm:h-[45vh] md:h-[70vh] min-h-80 max-h-170 overflow-hidden ">
+        <div className="relative h-[50vh] sm:h-[50vh] md:h-[70vh] min-h-75 pt-20">
           <TripHeroCarousel media={firstTrip?.heroMedia || [{ type: 'image' as const, src: firstTrip?.image || '/images/dummy1.jpg', alt: categoryName }]} />
 
           <div className="absolute inset-0 bg-linear-to-r from-slate-950/90 via-slate-950/40 to-transparent" />
           <div className="absolute inset-x-0 bottom-0 flex items-end">
             <div className="w-full max-w-6xl mx-auto px-4 sm:px-5 md:px-6 pb-6 sm:pb-8 lg:pb-10">
-              <div className=" text-white ">
+              <div className="  text-white ">
                 <div className="max-w-2xl">
                   <div className="mb-4 inline-flex items-center rounded-full bg-amber-400/15 px-3 py-1 text-sm font-semibold text-amber-200 ring-1 ring-amber-300/20">
                     Starting Price
                     <span className="ml-2 text-white">₹{(lowestPrice || 0).toLocaleString('en-IN')} / person</span>
                   </div>
 
-                  <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight leading-tight">
-                    {categoryName}
+                  <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold tracking-tight leading-tight">
+                    30+ Leh Bhutan Group Tour Packages 2026
                   </h1>
 
-                  <p className="mt-4 text-sm sm:text-base md:text-lg max-w-2xl text-slate-100 leading-7">
-                    {`Explore the beauty of ${categoryName}`}
+                  <p className="mt-3 md:mt-0 text-sm sm:text-base md:text-lg max-w-2xl text-white leading-relaxed">
+                    All inclusive Bhutan Tour Packages 
                   </p>
 
-                  <div className="mt-5 flex flex-row gap-2 sm:flex-row sm:items-center">
+                  <div className="mt-5 md:mt-5 flex flex-row gap-2 sm:flex-row sm:items-center">
                     <Button
                       size="lg"
                       className="min-w-30 bg-amber-400 text-white hover:bg-amber-300"
@@ -230,7 +230,7 @@ export default function BhutanPage() {
                       className="min-w-32 border-white/60 text-slate-800 hover:text-white hover:border-white hover:bg-white/10 bg-white"
                       onClick={() => {
                         const message = `Hi! I'm planning for the ${categoryName} trip. Can you help me with details?`
-                    
+
                         const encodedMessage = encodeURIComponent(message)
 
                         window.open(
@@ -252,7 +252,7 @@ export default function BhutanPage() {
         <section className="py-16 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
           <div className="mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
-              Available Packages
+              Upcoming Group Trips 2026 - Wanderphilia Exclusives
             </h2>
             <div className="w-20 h-1 bg-primary rounded-full" />
           </div>
