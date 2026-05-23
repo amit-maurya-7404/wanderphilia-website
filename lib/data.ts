@@ -4587,6 +4587,813 @@ Our Bikes are already vrooming and we are all set to take you to this less explo
         ranges: ['12th Sept - 21st Sept ( Ganesh Chaturthi Holiday )', '26th Sept - 5th Oct']
       }
     ]
+  },
+  {
+    id: '27',
+    title: 'Bhutan Road Trip Package',
+    slug: 'bhutan-road-trip-package-27',
+    image: '/images/spiti12.JPG',
+    destination: 'Bhutan',
+    category: 'Bhutan',
+    tripType: 'International',
+    duration: 7,
+    price: 0,
+    rating: 4.6,
+    difficulty: 'Moderate',
+    groupSize: 12,
+    overviewPoints: [
+      'Route: Bagdogra → Phuntsholing → Thimphu → Punakha → Phobjikha Valley → Paro → Phuntsholing/Siliguri → Bagdogra.',
+      'Duration: 6 Nights / 7 Days.',
+      'Trip Start: Bagdogra',
+      'Trip End: Bagdogra',
+      'Difficulty Level: Easy.',
+      'Best Time to Visit: March - May & Sept - Oct.',
+      'Major Highlights: Phobjikha Valley, Tiger Nest Monastery Paro, Hot Stone Bath Paro, Punakha Dzong, River Rafting in Punakha, Buddha Dordrenma Thimphu, Simply Bhutan, Chimi Lakhang Fertility Temple.'
+    ],
+    highlights: [
+      'Phobjikha Valley',
+      'Tiger Nest Monastery Paro',
+      'Hot Stone Bath Paro',
+      'Punakha Dzong',
+      'River Rafting in Punakha',
+      'Buddha Dordrenma Thimphu',
+      'Simply Bhutan',
+      'Chimi Lakhang Fertility Temple'
+    ],
+
+    costingDetails: [
+      { label: 'Double Sharing Basis', value: '₹33,000' },
+      { label: 'Triple Sharing Basis', value: '₹31,000' },
+    ],
+
+
+    description: `Begin in Bagdogra and journey through Bhutan’s most iconic destinations on this 7 Nights / 8 Days road trip. Travel from Phuentsholing to Thimphu, Punakha, Phobjikha Valley, and Paro before returning via Phuentsholing/Siliguri. Highlights include Tiger Nest Monastery, hot stone bath in Paro, Punakha Dzong, river rafting in Punakha, Buddha Dordrenma, Simply Bhutan, and Chimi Lakhang Fertility Temple.`,
+    itinerary: [
+      // {
+      //   day: 0,
+      //   title: 'Arrival in Bagdogra. Transfer to Phuentsholing.',
+      //   description: [
+      //     'Leave from Delhi by evening and reach Aut next morning.'
+      //   ]
+      // },
+      {
+        day: 1,
+        title: 'Arrival in Bagdogra. Transfer to Phuentsholing.',
+        description: [
+          'Upon arrival at Bagdogra Airport, meet our representative who will help you board your transfer to Bhutan. ',
+          'Enjoy your drive to the last Indian border town called Jaigaon, after which you will enter Bhutan.',
+          'Here, you will arrive in Phuentsholing in the evening.',
+          'Reach your hotel in Phuentsholing and check in to your hotel. ',
+          'Overnight stay in Phuentsholing.'
+        ]
+      },
+      {
+        day: 2,
+        title: 'Phuentsholing to Thimphu. Travel to the capital city of Bhutan.',
+        description: [
+          'Post breakfast, complete the permit formalities at Jaigaon and begin your scenic drive towards Thimphu.',
+          'Enjoy one of the most beautiful road journeys through Bhutan with mesmerizing countryside landscapes and mountain views.',
+          'Drive through winding mountain roads surrounded by broadleaf forests, waterfalls, quaint villages, and charming towns.',
+          'En route, stop at the famous Chuzom Bridge to witness the beautiful confluence of the Paro and Thimphu rivers.',
+          'Capture memorable moments near the welcoming portrait of the King and Queen of Bhutan on your way to Thimphu.',
+          'By evening, reach Thimphu, check in to your hotel, and if time permits, explore the local markets and the unique city without traffic lights.'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Excursion to Punakha. Pass the beautiful Dochu La. Overnight stay in Thimphu',
+        description: [
+          'Have your breakfast in the morning and get ready for the day.',
+          'Today, we will take you to Punakha, located 75 kms to the east of Thimphu.',
+          'Our 1st stop on today\'s road journey will be the Dochu La one of the most scenic mountain passes of Bhutan.',
+          'We will spend some time admiring the surrounding views of the Himalayas while sipping a hot cup of tea/coffee in the cafe at the pass.',
+          'We will also visit the 108 Druk Wangyal Chortens that are built on the pass in memory of the Bhutanese soldiers who died in “Operation All Clear” in 2003.',
+          'After lunch, embark on a short hike to Chimi Lhakhang (temple of fertility) - a temple dedicated to Lam Drukpa Kuenley (Divine Mad Man).',
+          'This place is considered the origin of Phalluses as the symbol of fertility and protection.'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Thimphu Local Sightseeing. Transfer from Thimphu to Paro. Overnight stay in Paro.',
+        description: [
+          'Wake up in the morning and have your breakfast in the morning.',
+          'Post breakfast local sightseeing of Thimphu. Simply Bhutan and Buddha Statue.',
+          'Later, get ready to board your transfers to Paro. Arrival in Paro and check-in to the hotel.',
+          'Have your dinner and overnight stay in Paro.'
+        ]
+      },
+      {
+        day: 5,
+        title: 'Paro Local Sightseeing. Hike to Tiger\'s Nest.',
+        description: [
+          'Post breakfast in the morning, get ready to watch the most magical sight of Bhutan.',
+          'Today, we will visit the famous Taktsang Monastery (Tiger Nest Temple), located 11 kms from Paro.',
+          'Drive till the starting point of the hiking trail that will take you to the Taktsang Monastery.',
+          'We will then start the hike through the beautiful pine forest to reach the magnificent Taktsang Monastery.',
+          'You will have to hike for 2-4 hours (depending on your speed), to reach one of the holiest sites in Bhutan which clings impossibly to a sheer cliff face 900 meters above the valley.',
+          'Spend some peaceful time walking around the monastery listening to the prayer chants, sound of the uttering flags or quietly meditating in the caves of the monastery.',
+          'After spending enough time in the monastery, we will start our return journey to Paro.',
+          'Overnight stay at the hotel in Paro.'
+        ]
+      },
+      {
+        day: 6,
+        title: 'Paro to Phuentsholing. Embark on a scenic road journey.',
+        description: [
+          'Have your breakfast in the morning and get ready to start your return journey.',
+          'You will board your transfers and start a beautiful return road journey.',
+          'Enjoy this road journey and Reach Phuentsholing by evening.',
+          'Check-in to the hotel. Overnight stay in Phuentsholing.'
+        ]
+      },
+      {
+        day: 7,
+        title: 'Departure to Bagdogra Airport.',
+        description: [
+          'After breakfast in the morning, check-out and reach Bagdogra airport.',
+          'Take back a treasure of happy memories to cherish for lifetime.'
+        ]
+      },
+
+    ],
+    included: [
+      '6 Nights accommodation on double sharing basis.',
+      'Daily Breakfast & Dinner (Breakfast except Day 1 & Dinner except Day 7).',
+      'River Rafting experience in Punakha.',
+      'Traditional Bhutanese Hot Stone Bath in Paro.',
+      'Comfortable 11 Seater Tata Winger for 6 days.',
+      'Professional English speaking Bhutanese guide.',
+      'Sustainable Development Fee (SDF) included.',
+      'All tolls, parking and driver night charges.'
+    ],
+    notIncluded: [
+      'GST (5%) is applicable extra.',
+      'Any food or beverage not included in the package such as alcoholic drinks, mineral water, highway meals or refreshments.',
+      'Any personal expenses such as tips to drivers, camera/video charges, laundry, telephone bills etc.',
+      'Any cost arising due to natural calamities such as landslides or roadblocks.',
+      'Anything not specifically mentioned in the inclusions.',
+      'Cost arising due to any change in tourism policy between Bhutan and India.',
+      'Cost arising due to change or delay in flight timings.',
+      'Entry tickets to monuments or attractions are not included.',
+      'Return Transfer from Siliguri Hotel to Airport is excluded. Self Conveyance to be arranged as per your flight timings.'
+    ],
+    stays: [
+      'Phuntsholing : Lakhi Hotel / Similar',
+      'Thimphu : Hotel White Tara / Similar',
+      'Paro : Rema Resort / Similar',
+      'Siliguri : Hotel Cinderella / Similar'
+    ],
+    dates: [
+      { startDate: '2026-06-06', endDate: '2026-06-15', spots: 0 },
+      { startDate: '2026-06-20', endDate: '2026-06-29', spots: 0 },
+      { startDate: '2026-07-04', endDate: '2026-07-13', spots: 0 },
+      { startDate: '2026-07-18', endDate: '2026-07-27', spots: 0 },
+      { startDate: '2026-08-01', endDate: '2026-08-10', spots: 0 },
+      { startDate: '2026-08-15', endDate: '2026-08-24', spots: 0 },
+      { startDate: '2026-08-29', endDate: '2026-09-07', spots: 0 },
+      { startDate: '2026-09-12', endDate: '2026-09-21', spots: 0 },
+      { startDate: '2026-09-26', endDate: '2026-10-05', spots: 0 }
+    ],
+
+    batchDates: [
+      {
+        month: 'June',
+        ranges: ['6th June - 12th June', '20th June - 26th June']
+      },
+      {
+        month: 'July',
+        ranges: ['4th July - 10th July', '18th July - 24th July', '25th July - 31st July']
+      },
+      {
+        month: 'Aug',
+        ranges: ['1st Aug - 7th Aug', '8th Aug - 14th Aug', '15th Aug - 21st Aug', '29th Aug - 4th Sept']
+      },
+      {
+        month: 'Sept',
+        ranges: ['5th Sept - 11th Sept', '12th Sept - 18th Sept', '26th Sept - 2nd Oct']
+      },
+      {
+        month: 'Oct',
+        ranges: ['3rd Oct - 9th Oct', '10th Oct - 16th Oct', '24th Oct - 30th Oct', '31st Oct - 6th Nov']
+      }
+    ],
+
+
+    paymentPolicy: [
+      'At booking: 25% (non-refundable)',
+      'Within 45 days: 50% (non-refundable)',
+      'Within 30 days: 75% (non-refundable)',
+      '20 days or less: 100% (forfeited)'
+    ],
+
+    cancellationPolicy: [
+      'At booking: 25% booking advance is non-refundable',
+      'Within 45 days: Minimum 50% deduction',
+      'Within 30 days: Minimum 75% deduction',
+      '20 days or less: 100% forfeited'
+    ],
+
+    note: [
+      'Travellers residing outside Delhi are suggested to book trains/flights reaching Delhi not later than 4 PM on the trip start date. Similarly, on trip end date, book returning flight/trains leaving post 12 PM.',
+      'Numerous factors such as weather, road conditions, the physical ability of participants etc. may cause itinerary change. We reserve the rights to change any schedule in the interest of safety, comfort and general wellbeing.',
+      'The age limit of our group departures is 16 to 42 years due to the power packed itineraries that we provide to our travellers. We can customise trips for travellers beyond the mentioned age bracket.',
+      'Dear traveller\'s In the event of extreme winter conditions, where snow may prevent the use of tempo travellers, we will opt for 4x4 vehicles to ensure safety and accessibility.',
+      'Please note that any additional costs incurred for the 4x4 vehicle will be borne by the clients.',
+      'Winter Spiti is known for snowfall, which may lead to route closures.',
+      'Please be prepared for such adventures, as we will take the best possible alternatives in those situations to ensure a smooth journey.'
+    ],
+  },
+  {
+    id: '28',
+    title: 'Bhutan Road Trip Package',
+    slug: 'bhutan-road-trip-package-28',
+    image: '/images/spiti12.JPG',
+    destination: 'Bhutan',
+    category: 'Bhutan',
+    tripType: 'International',
+    duration: 8,
+    price: 0,
+    rating: 4.6,
+    difficulty: 'Moderate',
+    groupSize: 12,
+    overviewPoints: [
+      'Route: Bagdogra → Phuntsholing → Thimphu → Punakha → Phobjikha Valley → Paro → Phuntsholing/Siliguri → Bagdogra.',
+      'Duration: 7 Nights / 8 Days.',
+      'Trip Start: Bagdogra',
+      'Trip End: Bagdogra',
+      'Difficulty Level: Easy.',
+      'Best Time to Visit: March - May & Sept - Oct.',
+      'Major Highlights: Phobjikha Valley, Tiger Nest Monastery Paro, Hot Stone Bath Paro, Punakha Dzong, River Rafting in Punakha, Buddha Dordrenma Thimphu, Simply Bhutan, Chimi Lakhang Fertility Temple.'
+    ],
+    highlights: [
+      'Phobjikha Valley',
+      'Tiger Nest Monastery Paro',
+      'Hot Stone Bath Paro',
+      'Punakha Dzong',
+      'River Rafting in Punakha',
+      'Buddha Dordrenma Thimphu',
+      'Simply Bhutan',
+      'Chimi Lakhang Fertility Temple'
+    ],
+
+    costingDetails: [
+      { label: 'Double Sharing Basis', value: '₹33,000' },
+      { label: 'Triple Sharing Basis', value: '₹31,000' },
+    ],
+
+
+    description: `Begin in Bagdogra and journey through Bhutan’s most iconic destinations on this 7 Nights / 8 Days road trip. Travel from Phuentsholing to Thimphu, Punakha, Phobjikha Valley, and Paro before returning via Phuentsholing/Siliguri. Highlights include Tiger Nest Monastery, hot stone bath in Paro, Punakha Dzong, river rafting in Punakha, Buddha Dordrenma, Simply Bhutan, and Chimi Lakhang Fertility Temple.`,
+
+    itinerary: [
+      {
+        day: 1,
+        title: 'Arrival in Bagdogra. Transfer to Phuentsholing.',
+        description: [
+          'Upon arrival at Bagdogra Airport, meet our representative who will help you board your transfer to Bhutan.',
+          'Enjoy your drive to the last Indian border town called Jaigaon, after which you will enter Bhutan.',
+          'Here, you will arrive in Phuentsholing in the evening.',
+          'Reach your hotel in Phuentsholing and check in to your hotel.',
+          'Overnight stay in Phuentsholing.'
+        ]
+      },
+      {
+        day: 2,
+        title: 'Phuentsholing to Thimphu. Travel to the capital city of Bhutan.',
+        description: [
+          'Post breakfast , complete the permit formalities at Jaigaon and start your drive to Thimphu.',
+          'Today’s road journey will take you through some of the most beautiful countryside landscapes of Bhutan.',
+          'You will pass through some meandering mountain roads lined with broad leaves forests, waterfalls, quaint villages, and towns to reach Thimphu.',
+          'En route, take a small stopover at the Chuzom Bridge from where you will see a beautiful confluence of the Paro and Thimphu rivers, along with a beautiful portrait of the King and Queen as a welcoming sign to Bhutan.',
+          'By evening, reach Thimphu and check in to your hotel.',
+          'If time permits, you can choose to explore Thimphu - the only city in the world without track lights or explore the local markets.',
+          'Overnight stay in Thimphu.'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Drive to Punakha. Pass the beautiful Dochu La. Overnight stay in Punakha',
+        description: [
+          'Have your breakfast in the morning and get ready for the day.',
+          'Today, we will take you to Punakha, located 75 kms to the east of Thimphu.',
+          'Stop at the iconic Buddha Dordenma Statue for panoramic views of Thimphu Valley and some peaceful moments.',
+          'Our 1st stop on today\'s road journey will be the Dochu La - one of the most scenic mountain passes of Bhutan.',
+          'We will spend some time admiring the surrounding views of the Himalayas while sipping a hot cup of tea/coffee in the cafe at the pass.',
+          'We will also visit the 108 Druk Wangyal Chortens that are built on the pass in memory of the Bhutanese soldiers who died in “Operation All Clear” in 2003.',
+          'In Punakha, visit the majestic Punakha Dzong, beautifully set at the confluence of two rivers, followed by a walk across the famous Suspension Bridge.',
+          'Not to miss out on a fun white water rafting at Manchu Pachu river - it will be an adventure worth remembering.',
+          'After a fun day of exploring by evening reach at the hotel in Punakha and relax at the hotel.'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Day Excursion to Phobjika Valley',
+        description: [
+          'After breakfast, start your scenic drive from Punakha to Phobjikha Valley (Gangtey Valley), one of the most beautiful and peaceful valleys in Bhutan.',
+          'Visit the historic Gangtey Monastery, an important Nyingma school monastery located on a hilltop overlooking the valley.',
+          'Enjoy a short nature trail walk around the valley to soak in the scenic views and experience the calm and charm of this magical place.',
+          'During the right season, get a chance to see the rare and graceful Black-Necked Cranes, for which the valley is famous.',
+          'Drive back to Punakha after the excursion.'
+        ]
+      },
+      {
+        day: 5,
+        title: 'Punakha to Paro.',
+        description: [
+          'After breakfast, check out and get ready to proceed towards Paro.',
+          'Visit Chimi Lhakhang (Fertility Temple), located near Lobesa- which is widely known for blessings related to fertility and happiness. ( A short trail)',
+          'After the visit, continue your scenic journey towards Paro, passing through beautiful valleys and mountain roads.',
+          'Check in to your hotel and take some time to relax after the drive.',
+          'Spend the evening exploring Paro town, visiting local cafes, or simply relaxing and soaking in the peaceful surroundings.'
+        ]
+      },
+      {
+        day: 6,
+        title: 'Trek to the Iconic Taktsang Monastery Aka Tiger Nest Monastery',
+        description: [
+          'Post breakfast in the morning, get ready to watch the most magical sight of Bhutan.',
+          'Today, we will visit the famous Taktsang Monastery (Tiger Nest Temple), located 11 kms from Paro.',
+          'Drive till the starting point of the hiking trail that will take you to the Taktsang Monastery.',
+          'We will then start the hike through the beautiful pine forest to reach the magnificent Taktsang Monastery.',
+          'You will have to hike for 2-4 hours (depending on your speed), to reach one of the holiest sites in Bhutan which clings impossibly to a sheer cliff face 900 meters above the valley.',
+          'Spend some peaceful time walking around the monastery listening to the prayer chants, sound of the uttering flags or quietly meditating in the caves of the monastery.',
+          'After spending enough time in the monastery, we will start our return journey to Paro.',
+          'Overnight stay at the hotel in Paro.'
+        ]
+      },
+      {
+        day: 7,
+        title: 'Paro → Phuentsholing → Siliguri Distance: 300 km | 8–9 hrs',
+        description: [
+          'After breakfast,we start our return journey, driving back through Phuentsholing and entering back to the Indian soil.',
+          'Reach Siliguri by evening after a long but scenic drive.'
+        ]
+      },
+      {
+        day: 8,
+        title: 'Departure to Bagdogra Airport.',
+        description: [
+          'After breakfast in the morning, check-out and reach Bagdogra airport.',
+          'Take back a treasure of happy memories to cherish for lifetime.'
+        ]
+      }
+    ],
+
+    included: [
+      '7 Nights accommodation on double sharing basis.',
+      'Daily Breakfast & Dinner (Breakfast except Day 1 & Dinner except Day 8).',
+      'River Rafting experience in Punakha.',
+      'Traditional Bhutanese Hot Stone Bath in Paro.',
+      'Comfortable 11 Seater Tata Winger for 7 days.',
+      'Professional English speaking Bhutanese guide.',
+      'Sustainable Development Fee (SDF) included.',
+      'All tolls, parking and driver night charges.'
+    ],
+
+    notIncluded: [
+      'GST (5%) is applicable extra.',
+      'Any food or beverage not included in the package such as alcoholic drinks, mineral water, highway meals or refreshments.',
+      'Any personal expenses such as tips to drivers, camera/video charges, laundry, telephone bills etc.',
+      'Any cost arising due to natural calamities such as landslides or roadblocks.',
+      'Anything not specifically mentioned in the inclusions.',
+      'Cost arising due to any change in tourism policy between Bhutan and India.',
+      'Cost arising due to change or delay in flight timings.',
+      'Entry tickets to monuments or attractions are not included.',
+      'Return Transfer from Siliguri Hotel to Airport is excluded. Self Conveyance to be arranged as per your flight timings.'
+    ],
+
+    stays: [
+      'Phuntsholing : Lakhi Hotel / Similar',
+      'Thimphu : Hotel White Tara / Similar',
+      'Punakha : Dragon Nest Resort Punakha / Similar',
+      'Paro : Rema Resort / Similar',
+      'Siliguri : Hotel Cinderella / Similar'
+    ],
+
+    paymentPolicy: [
+      'At booking: 25% (non-refundable)',
+      'Within 45 days: 50% (non-refundable)',
+      'Within 30 days: 75% (non-refundable)',
+      '20 days or less: 100% (forfeited)'
+    ],
+
+    cancellationPolicy: [
+      'At booking: 25% booking advance is non-refundable',
+      'Within 45 days: Minimum 50% deduction',
+      'Within 30 days: Minimum 75% deduction',
+      '20 days or less: 100% forfeited'
+    ],
+
+    dates: [
+      { startDate: '2025-06-10', endDate: '2025-06-16', spots: 12 },
+      { startDate: '2025-07-15', endDate: '2025-07-21', spots: 10 }
+    ],
+
+    note: [
+      'Travellers residing outside Delhi are suggested to book trains/flights reaching Delhi not later than 4 PM on the trip start date. Similarly, on trip end date, book returning flight/trains leaving post 12 PM.',
+      'Numerous factors such as weather, road conditions, the physical ability of participants etc. may cause itinerary change. We reserve the rights to change any schedule in the interest of safety, comfort and general wellbeing.',
+      'The age limit of our group departures is 16 to 42 years due to the power packed itineraries that we provide to our travellers. We can customise trips for travellers beyond the mentioned age bracket.',
+      'Dear traveller\'s In the event of extreme winter conditions, where snow may prevent the use of tempo travellers, we will opt for 4x4 vehicles to ensure safety and accessibility.',
+      'Please note that any additional costs incurred for the 4x4 vehicle will be borne by the clients.',
+      'Winter Spiti is known for snowfall, which may lead to route closures.',
+      'Please be prepared for such adventures, as we will take the best possible alternatives in those situations to ensure a smooth journey.'
+    ]
+  },
+  {
+    id: '29',
+    title: 'Bhutan Road Trip Package',
+    slug: 'bhutan-road-trip-package-29',
+    image: '/images/spiti12.JPG',
+    destination: 'Bhutan',
+    category: 'Bhutan',
+    description: `7 Nights / 8 Days Bhutan Road Trip Package from Bagdogra through Phuentsholing, Thimphu, Punakha, Paro and back. Enjoy cultural highlights, scenic drives, river rafting, traditional Bhutanese hospitality, and comfortable road travel with an expert guide.`,
+    duration: 8,
+    price: 36999,
+    rating: 4.6,
+    difficulty: 'Moderate',
+    groupSize: 12,
+    tripType: 'International',
+    overviewPoints: [
+      'Route: Bagdogra → Phuntsholing → Thimphu → Punakha → Phobjikha Valley → Paro → Phuntsholing/Siliguri → Bagdogra.',
+      'Duration: 7 Nights / 8 Days.',
+      'Trip Start: Bagdogra',
+      'Trip End: Bagdogra',
+      'Difficulty Level: Easy.',
+      'Best Time to Visit: March - May & Sept - Oct.',
+      'Major Highlights: Phobjikha Valley, Tiger Nest Monastery Paro, Hot Stone Bath Paro, Punakha Dzong, River Rafting in Punakha, Buddha Dordrenma Thimphu, Simply Bhutan, Chimi Lakhang Fertility Temple.'
+    ],
+    highlights: [
+      'Phobjikha Valley',
+      'Tiger Nest Monastery Paro',
+      'Hot Stone Bath Paro',
+      'Punakha Dzong',
+      'River Rafting in Punakha',
+      'Buddha Dordrenma Thimphu',
+      'Simply Bhutan',
+      'Chimi Lakhang Fertility Temple'
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Arrival in Bagdogra. Transfer to Phuentsholing.',
+        description: [
+          'Upon arrival at Bagdogra Airport, meet our representative who will help you board your transfer to Bhutan.',
+          'Enjoy your drive to the last Indian border town called Jaigaon, after which you will enter Bhutan.',
+          'Here, you will arrive in Phuentsholing in the evening.',
+          'Reach your hotel in Phuentsholing and check in to your hotel.',
+          'Overnight stay in Phuentsholing.'
+        ]
+      },
+      {
+        day: 2,
+        title: 'Phuentsholing to Thimphu. Travel to the capital city of Bhutan.',
+        description: [
+          'Post breakfast, complete the permit formalities at Jaigaon and start your drive to Thimphu.',
+          'Today’s road journey will take you through some of the most beautiful countryside landscapes of Bhutan.',
+          'You will pass through meandering mountain roads lined with broad-leaved forests, waterfalls, quaint villages, and towns to reach Thimphu.',
+          'En route, take a small stopover at the Chuzom Bridge from where you will see the confluence of the Paro and Thimphu rivers, along with a portrait of the King and Queen as a welcoming sign to Bhutan.',
+          'By evening, reach Thimphu and check in to your hotel.',
+          'If time permits, you can choose to explore Thimphu or local markets.',
+          'Overnight stay in Thimphu.'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Drive to Punakha. Pass the beautiful Dochu La. Overnight stay in Punakha.',
+        description: [
+          'Have your breakfast in the morning and get ready for the day.',
+          'Today, we will take you to Punakha, located 75 kms to the east of Thimphu.',
+          'Stop at the iconic Buddha Dordenma Statue for panoramic views of Thimphu Valley.',
+          'Our first stop on today’s road journey will be the Dochu La, one of the most scenic mountain passes of Bhutan.',
+          'We will spend time admiring the Himalayas while sipping tea or coffee at the pass.',
+          'We will also visit the 108 Druk Wangyal Chortens built in memory of Bhutanese soldiers who died in Operation All Clear in 2003.',
+          'In Punakha, visit the majestic Punakha Dzong and walk across the famous suspension bridge.',
+          'Enjoy a fun white water rafting experience at the Manchu Pachu river.',
+          'After a fun day of exploring, reach your hotel in Punakha and relax.'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Day Excursion to Phobjikha Valley.',
+        description: [
+          'After breakfast, start your scenic drive from Punakha to Phobjikha Valley (Gangtey Valley).',
+          'Visit the historic Gangtey Monastery, an important Nyingma monastery on a hilltop overlooking the valley.',
+          'Enjoy a short nature trail walk around the valley to soak in the scenic views and the calm charm of this magical place.',
+          'During the right season, get a chance to see the rare and graceful Black-Necked Cranes.',
+          'Drive back to Punakha after the excursion.'
+        ]
+      },
+      {
+        day: 5,
+        title: 'Punakha to Paro.',
+        description: [
+          'After breakfast, check out and get ready to proceed towards Paro.',
+          'Visit Chimi Lhakhang (Fertility Temple) near Lobesa, known for blessings related to fertility and happiness.',
+          'After the visit, continue your scenic journey towards Paro through beautiful valleys and mountain roads.',
+          'Check in to your hotel and take time to relax after the drive.',
+          'Spend the evening exploring Paro town or visiting local cafes.'
+        ]
+      },
+      {
+        day: 6,
+        title: 'Trek to the Iconic Taktsang Monastery Aka Tiger Nest Monastery.',
+        description: [
+          'Post breakfast, get ready to experience the most magical sight of Bhutan.',
+          'Today, we visit the famous Taktsang Monastery (Tiger Nest Temple), located 11 kms from Paro.',
+          'Drive to the hiking trail start point that leads to the Taktsang Monastery.',
+          'Begin the hike through pine forest to reach the magnificent monastery.',
+          'You will hike for 2-4 hours depending on your speed, to reach the monastery perched on a cliff face 900 meters above the valley.',
+          'Spend peaceful time around the monastery listening to prayer chants and meditating in the caves.',
+          'After time at the monastery, return to Paro.',
+          'Overnight stay at the hotel in Paro.'
+        ]
+      },
+      {
+        day: 7,
+        title: 'Paro → Phuentsholing → Siliguri Distance: 300 km | 8–9 hrs.',
+        description: [
+          'After breakfast, start your return journey through Phuentsholing and enter back into India.',
+          'Reach Siliguri by evening after a long but scenic drive.'
+        ]
+      },
+      {
+        day: 8,
+        title: 'Departure to Bagdogra Airport.',
+        description: [
+          'After breakfast, check out and reach Bagdogra airport.',
+          'Take back a treasure of happy memories to cherish for a lifetime.'
+        ]
+      }
+    ],
+    included: [
+      '7 Nights accommodation on double sharing basis.',
+      'Daily Breakfast & Dinner (Breakfast except Day 1 & Dinner except Day 8).',
+      'River Rafting experience in Punakha.',
+      'Traditional Bhutanese Hot Stone Bath in Paro.',
+      'Comfortable 11 Seater Tata Winger for 7 days.',
+      'Professional English speaking Bhutanese guide.',
+      'Sustainable Development Fee (SDF) included.',
+      'All tolls, parking and driver night charges.'
+    ],
+    notIncluded: [
+      'GST (5%) is applicable extra.',
+      'Any food or beverage not included in the package such as alcoholic drinks, mineral water, highway meals or refreshments.',
+      'Any personal expenses such as tips to drivers, camera/video charges, laundry, telephone bills etc.',
+      'Any cost arising due to natural calamities such as landslides or roadblocks.',
+      'Anything not specifically mentioned in the inclusions.',
+      'Cost arising due to any change in tourism policy between Bhutan and India.',
+      'Cost arising due to change or delay in flight timings.',
+      'Entry tickets to monuments or attractions are not included.',
+      'Return Transfer from Siliguri Hotel to Airport is excluded. Self Conveyance to be arranged as per your flight timings.'
+    ],
+    stays: [
+      'Phuntsholing : Lakhi Hotel / Similar',
+      'Thimphu : Hotel White Tara / Similar',
+      'Punakha : Dragon Nest Resort Punakha / Similar',
+      'Paro : Rema Resort / Similar',
+      'Siliguri : Hotel Cinderella / Similar'
+    ],
+    costingDetails: [
+      { label: 'Double Sharing Basis', value: 'INR 36,999' },
+      { label: 'Triple Sharing Basis', value: 'INR 34,999' }
+    ],
+    batchDates: [
+      { month: 'June', ranges: ['6th June - 12th June', '20th June - 26th June'] },
+      { month: 'July', ranges: ['4th July - 10th July', '18th July - 24th July', '25th July - 31st July'] },
+      { month: 'Aug', ranges: ['1st Aug - 7th Aug', '8th Aug - 14th Aug', '15th Aug - 21st Aug', '29th Aug - 4th Sept'] },
+      { month: 'Sept', ranges: ['5th Sept - 11th Sept', '12th Sept - 18th Sept', '26th Sept - 2nd Oct'] },
+      { month: 'Oct', ranges: ['3rd Oct - 9th Oct', '10th Oct - 16th Oct', '24th Oct - 30th Oct', '31st Oct - 6th Nov'] }
+    ],
+    paymentPolicy: [
+      'At booking: 25% (non-refundable)',
+      'Within 45 days: 50% (non-refundable)',
+      'Within 30 days: 75% (non-refundable)',
+      '20 days or less: 100% (forfeited)'
+    ],
+    cancellationPolicy: [
+      'At booking: 25% booking advance is non-refundable',
+      'Within 45 days: Minimum 50% deduction',
+      'Within 30 days: Minimum 75% deduction',
+      '20 days or less: 100% forfeited'
+    ],
+    dates: [
+      { startDate: '2026-06-06', endDate: '2026-06-12', spots: 0 },
+      { startDate: '2026-06-20', endDate: '2026-06-26', spots: 0 },
+      { startDate: '2026-07-04', endDate: '2026-07-10', spots: 0 },
+      { startDate: '2026-07-18', endDate: '2026-07-24', spots: 0 },
+      { startDate: '2026-07-25', endDate: '2026-07-31', spots: 0 },
+      { startDate: '2026-08-01', endDate: '2026-08-07', spots: 0 },
+      { startDate: '2026-08-08', endDate: '2026-08-14', spots: 0 },
+      { startDate: '2026-08-15', endDate: '2026-08-21', spots: 0 },
+      { startDate: '2026-08-29', endDate: '2026-09-04', spots: 0 },
+      { startDate: '2026-09-05', endDate: '2026-09-11', spots: 0 },
+      { startDate: '2026-09-12', endDate: '2026-09-18', spots: 0 },
+      { startDate: '2026-09-26', endDate: '2026-10-02', spots: 0 },
+      { startDate: '2026-10-03', endDate: '2026-10-09', spots: 0 },
+      { startDate: '2026-10-10', endDate: '2026-10-16', spots: 0 },
+      { startDate: '2026-10-24', endDate: '2026-10-30', spots: 0 },
+      { startDate: '2026-10-31', endDate: '2026-11-06', spots: 0 }
+    ],
+    note: [
+      'Travellers residing outside Delhi are suggested to book trains/flights reaching Delhi not later than 4 PM on the trip start date. Similarly, on trip end date, book returning flight/trains leaving post 12 PM.',
+      'Numerous factors such as weather, road conditions, the physical ability of participants etc. may cause itinerary change. We reserve the rights to change any schedule in the interest of safety, comfort and general wellbeing.',
+      'The age limit of our group departures is 16 to 42 years due to the power packed itineraries that we provide to our travellers. We can customise trips for travellers beyond the mentioned age bracket.',
+      'Dear traveller\'s In the event of extreme winter conditions, where snow may prevent the use of tempo travellers, we will opt for 4x4 vehicles to ensure safety and accessibility.',
+      'Please note that any additional costs incurred for the 4x4 vehicle will be borne by the clients.',
+      'Winter Spiti is known for snowfall, which may lead to route closures.',
+      'Please be prepared for such adventures, as we will take the best possible alternatives in those situations to ensure a smooth journey.'
+    ]
+  },
+  {
+    id: '30',
+    title: 'Bhutan Road Trip Package',
+    slug: 'bhutan-road-trip-package-30',
+    image: '/images/spiti12.JPG',
+    destination: 'Bhutan',
+    category: 'Bhutan',
+    description: `6 Nights / 7 Days Bhutan road trip from Bagdogra through Phuentsholing, Thimphu, Punakha, Paro, and back. Experience scenic drives, cultural temples, a hike to Tiger's Nest, river rafting, and traditional hot stone bath with expert guidance.`,
+    duration: 7,
+    price: 36999,
+    rating: 4.6,
+    difficulty: 'Moderate',
+    groupSize: 12,
+    tripType: 'International',
+    overviewPoints: [
+      'Route: Bagdogra → Phuntsholing → Thimphu → Punakha → Paro → Phuntsholing/Siliguri → Bagdogra.',
+      'Duration: 6 Nights / 7 Days.',
+      'Trip Start: Bagdogra',
+      'Trip End: Bagdogra',
+      'Difficulty Level: Easy.',
+      'Best Time to Visit: March - May & Sept - Oct.',
+      'Major Highlights: Tiger Nest Monastery Paro, Hot Stone Bath Paro, Punakha Dzong, River Rafting in Punakha, Buddha Dordrenma Thimphu, Simply Bhutan, Chimi Lakhang Fertility Temple.'
+    ],
+    highlights: [
+      'Tiger Nest Monastery Paro',
+      'Hot Stone Bath Paro',
+      'Punakha Dzong',
+      'River Rafting in Punakha',
+      'Buddha Dordrenma Thimphu',
+      'Simply Bhutan',
+      'Chimi Lakhang Fertility Temple'
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Arrival in Bagdogra. Transfer to Phuentsholing.',
+        description: [
+          'Upon arrival at Bagdogra Airport, meet our representative who will help you board your transfer to Bhutan.',
+          'Enjoy your drive to the last Indian border town called Jaigaon, after which you will enter Bhutan.',
+          'Here, you will arrive in Phuentsholing in the evening.',
+          'Reach your hotel in Phuentsholing and check in to your hotel.',
+          'Overnight stay in Phuentsholing.'
+        ]
+      },
+      {
+        day: 2,
+        title: 'Phuentsholing to Thimphu. Travel to the capital city of Bhutan.',
+        description: [
+          'Post breakfast, complete the permit formalities at Jaigaon and start your drive to Thimphu.',
+          'Today’s road journey will take you through some of the most beautiful countryside landscapes of Bhutan.',
+          'You will pass through meandering mountain roads lined with broad-leaved forests, waterfalls, quaint villages, and towns to reach Thimphu.',
+          'En route, take a small stopover at the Chuzom Bridge from where you will see the confluence of the Paro and Thimphu rivers, along with a portrait of the King and Queen as a welcoming sign to Bhutan.',
+          'By evening, reach Thimphu and check in to your hotel.',
+          'If time permits, you can choose to explore Thimphu or local markets.',
+          'Overnight stay in Thimphu.'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Excursion to Punakha. Pass the beautiful Dochu La. Overnight stay in Thimphu.',
+        description: [
+          'Have your breakfast in the morning and get ready for the day.',
+          'Today, we will take you to Punakha, located 75 kms to the east of Thimphu.',
+          'Our first stop on today’s road journey will be the Dochu La, one of the most scenic mountain passes of Bhutan.',
+          'We will spend time admiring the surrounding views of the Himalayas while sipping a hot cup of tea or coffee at the pass.',
+          'We will also visit the 108 Druk Wangyal Chortens built in memory of the Bhutanese soldiers who died in “Operation All Clear” in 2003.',
+          'After lunch, embark on a short hike to Chimi Lhakhang, the temple of fertility dedicated to Lam Drukpa Kuenley.',
+          'This place is considered the origin of phalluses as symbols of fertility and protection.'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Thimphu Local Sightseeing. Transfer from Thimphu to Paro. Overnight stay in Paro.',
+        description: [
+          'Wake up in the morning and have your breakfast.',
+          'Post breakfast, enjoy local sightseeing in Thimphu including Simply Bhutan and the Buddha Statue.',
+          'Later, board your transfers to Paro.',
+          'Arrival in Paro and check-in to the hotel.',
+          'Have dinner and overnight stay in Paro.'
+        ]
+      },
+      {
+        day: 5,
+        title: 'Paro Local Sightseeing. Hike to Tiger’s Nest.',
+        description: [
+          'Post breakfast, get ready to watch the most magical sight of Bhutan.',
+          'Today, we will visit the famous Taktsang Monastery (Tiger Nest Temple), located 11 kms from Paro.',
+          'Drive to the hiking trail start point that will take you to the Taktsang Monastery.',
+          'We will then start the hike through the beautiful pine forest to reach the magnificent Taktsang Monastery.',
+          'You will hike for 2-4 hours depending on your speed to reach the monastery perched on a cliff face 900 meters above the valley.',
+          'Spend peaceful time walking around the monastery listening to prayer chants and meditating in the caves.',
+          'After spending enough time at the monastery, return to Paro.',
+          'Overnight stay at the hotel in Paro.'
+        ]
+      },
+      {
+        day: 6,
+        title: 'Paro to Phuentsholing. Embark on a scenic road journey.',
+        description: [
+          'Have your breakfast in the morning and get ready to start your return journey.',
+          'You will board your transfers and start a beautiful return road journey.',
+          'Enjoy this road journey and reach Phuentsholing by evening.',
+          'Check-in to the hotel. Overnight stay in Phuentsholing.'
+        ]
+      },
+      {
+        day: 7,
+        title: 'Departure to Bagdogra Airport.',
+        description: [
+          'After breakfast in the morning, check-out and reach Bagdogra airport.',
+          'Take back a treasure of happy memories to cherish for a lifetime.'
+        ]
+      }
+    ],
+    included: [
+      '6 Nights accommodation on double sharing basis.',
+      'Daily Breakfast & Dinner (Breakfast except Day 1 & Dinner except Day 7).',
+      'River Rafting experience in Punakha.',
+      'Traditional Bhutanese Hot Stone Bath in Paro.',
+      'Comfortable 11 Seater Tata Winger for 6 days.',
+      'Professional English speaking Bhutanese guide.',
+      'Sustainable Development Fee (SDF) included.',
+      'All tolls, parking and driver night charges.'
+    ],
+    notIncluded: [
+      'GST (5%) is applicable extra.',
+      'Any food or beverage not included in the package such as alcoholic drinks, mineral water, highway meals or refreshments.',
+      'Any personal expenses such as tips to drivers, camera/video charges, laundry, telephone bills etc.',
+      'Any cost arising due to natural calamities such as landslides or roadblocks.',
+      'Anything not specifically mentioned in the inclusions.',
+      'Cost arising due to any change in tourism policy between Bhutan and India.',
+      'Cost arising due to change or delay in flight timings.',
+      'Entry tickets to monuments or attractions are not included.',
+      'Return Transfer from Siliguri Hotel to Airport is excluded. Self Conveyance to be arranged as per your flight timings.'
+    ],
+    stays: [
+      'Phuntsholing : Lakhi Hotel / Similar',
+      'Thimphu : Hotel White Tara / Similar',
+      'Paro : Rema Resort / Similar',
+      'Siliguri : Hotel Cinderella / Similar'
+    ],
+    costingDetails: [
+      { label: 'Double Sharing Basis', value: 'INR 36,999' },
+      { label: 'Triple Sharing Basis', value: 'INR 34,999' }
+    ],
+    batchDates: [
+      { month: 'June', ranges: ['6th June - 12th June', '20th June - 26th June'] },
+      { month: 'July', ranges: ['4th July - 10th July', '18th July - 24th July', '25th July - 31st July'] },
+      { month: 'Aug', ranges: ['1st Aug - 7th Aug', '8th Aug - 14th Aug', '15th Aug - 21st Aug', '29th Aug - 4th Sept'] },
+      { month: 'Sept', ranges: ['5th Sept - 11th Sept', '12th Sept - 18th Sept', '26th Sept - 2nd Oct'] },
+      { month: 'Oct', ranges: ['3rd Oct - 9th Oct', '10th Oct - 16th Oct', '24th Oct - 30th Oct', '31st Oct - 6th Nov'] }
+    ],
+    paymentPolicy: [
+      'At booking: 25% (non-refundable)',
+      'Within 45 days: 50% (non-refundable)',
+      'Within 30 days: 75% (non-refundable)',
+      '20 days or less: 100% (forfeited)'
+    ],
+    cancellationPolicy: [
+      'At booking: 25% booking advance is non-refundable',
+      'Within 45 days: Minimum 50% deduction',
+      'Within 30 days: Minimum 75% deduction',
+      '20 days or less: 100% forfeited'
+    ],
+    dates: [
+      { startDate: '2026-06-06', endDate: '2026-06-12', spots: 0 },
+      { startDate: '2026-06-20', endDate: '2026-06-26', spots: 0 },
+      { startDate: '2026-07-04', endDate: '2026-07-10', spots: 0 },
+      { startDate: '2026-07-18', endDate: '2026-07-24', spots: 0 },
+      { startDate: '2026-07-25', endDate: '2026-07-31', spots: 0 },
+      { startDate: '2026-08-01', endDate: '2026-08-07', spots: 0 },
+      { startDate: '2026-08-08', endDate: '2026-08-14', spots: 0 },
+      { startDate: '2026-08-15', endDate: '2026-08-21', spots: 0 },
+      { startDate: '2026-08-29', endDate: '2026-09-04', spots: 0 },
+      { startDate: '2026-09-05', endDate: '2026-09-11', spots: 0 },
+      { startDate: '2026-09-12', endDate: '2026-09-18', spots: 0 },
+      { startDate: '2026-09-26', endDate: '2026-10-02', spots: 0 },
+      { startDate: '2026-10-03', endDate: '2026-10-09', spots: 0 },
+      { startDate: '2026-10-10', endDate: '2026-10-16', spots: 0 },
+      { startDate: '2026-10-24', endDate: '2026-10-30', spots: 0 },
+      { startDate: '2026-10-31', endDate: '2026-11-06', spots: 0 }
+    ],
+    note: [
+      'Travellers residing outside Delhi are suggested to book trains/flights reaching Delhi not later than 4 PM on the trip start date. Similarly, on trip end date, book returning flight/trains leaving post 12 PM.',
+      'Numerous factors such as weather, road conditions, the physical ability of participants etc. may cause itinerary change. We reserve the rights to change any schedule in the interest of safety, comfort and general wellbeing.',
+      'The age limit of our group departures is 16 to 42 years due to the power packed itineraries that we provide to our travellers. We can customise trips for travellers beyond the mentioned age bracket.',
+      'Dear traveller\'s In the event of extreme winter conditions, where snow may prevent the use of tempo travellers, we will opt for 4x4 vehicles to ensure safety and accessibility.',
+      'Please note that any additional costs incurred for the 4x4 vehicle will be borne by the clients.',
+      'Winter Spiti is known for snowfall, which may lead to route closures.',
+      'Please be prepared for such adventures, as we will take the best possible alternatives in those situations to ensure a smooth journey.'
+    ]
   }
 ];
 
@@ -4624,7 +5431,7 @@ export const destinations: Destination[] = [
     slug: 'bhutan',
     image: '/images/Bhutan_cat.jpeg',
     description: 'A peaceful kingdom known for its stunning landscapes, rich Buddhist culture, and focus on happiness.',
-    tripCount: 1,
+    tripCount: 3,
   },
 ];
 

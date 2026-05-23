@@ -27,9 +27,9 @@ export const sectionMappings: Record<string, Record<string, string[]>> = {
     related: ['34', '35']
   },
   'bhutan': {
-    available: ['12'],
-    family: ['12'],
-    custom: ['12'],
+    available: ['27', '28', '29', '30'],
+    family: ['27', '29'],
+    custom: ['28', '30'],
     related: ['12']
   },
   'himachal': {
