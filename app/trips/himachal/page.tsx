@@ -195,18 +195,18 @@ export default function HimachalPage() {
           <div className="absolute inset-x-0 bottom-0 flex items-end">
             <div className="w-full max-w-6xl mx-auto px-4 sm:px-5 md:px-6 pb-6 sm:pb-8 lg:pb-10">
               <div className="  text-white ">
-                <div className="max-w-2xl">
+                <div className="max-w-6xl">
                   <div className="mb-4 inline-flex items-center rounded-full bg-amber-400/15 px-3 py-1 text-sm font-semibold text-amber-200 ring-1 ring-amber-300/20">
                     Starting Price
                     <span className="ml-2 text-white">₹{(lowestPrice || 0).toLocaleString('en-IN')} / person</span>
                   </div>
 
                   <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight leading-tight">
-                    30+ Himachal Pradesh Tour Packages 2026
+                    20+ Himachal Pradesh Tour Packages 2026
                   </h1>
 
-                  <p className="mt-4 text-sm sm:text-base md:text-lg max-w-2xl text-slate-100 leading-7">
-                    {`Explore the beauty of ${categoryName}`}
+                  <p className="mt-4 text-sm sm:text-base md:text-lg text-slate-100 leading-7">
+                    All inclusive curated Top OffBeat Himachal Pradesh Group & customised Tour Packages 2026 covering Kullu Valley , Manali , Sissu , Kasol , Parvati Valley , Thirthan Valley , Jibhi , Saanj Valley , Bir Billing , Dalhousie  , Khajjair , McloedGanj , Dharamshala , Amritsar.
                   </p>
 
                   <div className="mt-5 flex flex-row gap-2 sm:flex-row sm:items-center">
@@ -245,7 +245,7 @@ export default function HimachalPage() {
         <section className="py-16 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
           <div className="mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
-              Upcoming Trips 2026 - Wanderphilia Exclusives
+              Upcoming Himachal Trips 2026 - Wanderphilia Exclusives
             </h2>
             <div className="w-20 h-1 bg-primary rounded-full" />
           </div>
@@ -330,7 +330,7 @@ export default function HimachalPage() {
         <section className="py-16 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
           <div className="mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
-              Delhi - Delhi Packages
+              Adventurous & Offbeat Himchal Group Trip - Wanderphilia Exclusive
             </h2>
             <div className="w-20 h-1 bg-primary rounded-full" />
           </div>
@@ -407,7 +407,7 @@ export default function HimachalPage() {
         <section className="py-16 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
           <div className="mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
-              Family Tour Packages
+              Family Himachal Trip 2026 - Wanderphilia Exclusive
             </h2>
             <div className="w-20 h-1 bg-primary rounded-full" />
           </div>
