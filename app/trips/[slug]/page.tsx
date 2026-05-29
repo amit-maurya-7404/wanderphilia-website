@@ -18,6 +18,179 @@ import { contactEmail, contactPhone, contactPhoneDisplay, instagramUrl } from '@
 import { TripGallerySection } from '@/components/trip-gallery-section'
 
 
+function getFirstNarrativeParagraph(description: string | string[]): string {
+  if (!Array.isArray(description)) {
+    return description
+  }
+
+  let inHighlights = false
+  for (let i = 0; i < description.length; i++) {
+    const item = description[i].trim()
+    const lowerItem = item.toLowerCase()
+
+    if (lowerItem.startsWith('highlights of the')) {
+      inHighlights = true
+      continue
+    }
+
+    if (inHighlights) {
+      const isNarrative = item.length > 80 ||
+                          lowerItem.startsWith('arrive') ||
+                          lowerItem.startsWith('after') ||
+                          lowerItem.startsWith('today') ||
+                          lowerItem.startsWith('check out') ||
+                          lowerItem.startsWith('for ')
+
+      if (isNarrative) {
+        return item
+      }
+      continue
+    }
+
+    const isExcluded = lowerItem.startsWith('meals') ||
+                       lowerItem.startsWith('overnight') ||
+                       lowerItem === 'dinner' ||
+                       lowerItem === ' dinner' ||
+                       lowerItem.includes('breakfast')
+
+    if (!isExcluded) {
+      return item
+    }
+  }
+
+  return description[0] || ''
+}
+
+
+function renderItineraryDescription(description: string | string[]) {
+  if (!Array.isArray(description)) {
+    return (
+      <p className="text-sm sm:text-base text-slate-700 leading-relaxed whitespace-pre-line">
+        {description}
+      </p>
+    )
+  }
+
+  const highlights: string[] = []
+  const paragraphs: string[] = []
+  let meals = ''
+  let stay = ''
+  let inHighlights = false
+
+  for (let i = 0; i < description.length; i++) {
+    const item = description[i].trim()
+    const lowerItem = item.toLowerCase()
+
+    if (lowerItem.startsWith('highlights of the')) {
+      inHighlights = true
+      continue
+    }
+
+    if (inHighlights) {
+      const isNarrative = item.length > 80 ||
+                          lowerItem.startsWith('arrive') ||
+                          lowerItem.startsWith('after') ||
+                          lowerItem.startsWith('today') ||
+                          lowerItem.startsWith('check out') ||
+                          lowerItem.startsWith('for ')
+
+      if (isNarrative) {
+        inHighlights = false
+        // Fall through to process as narrative or other
+      } else {
+        highlights.push(item)
+        continue
+      }
+    }
+
+    // Check for meals
+    if (lowerItem.startsWith('meals included') || lowerItem === 'dinner' || lowerItem === ' dinner' || lowerItem.includes('breakfast')) {
+      if (lowerItem.startsWith('meals')) {
+        const nextItem = description[i + 1]?.trim() || ''
+        const nextLower = nextItem.toLowerCase()
+        if (nextLower.includes('dinner') || nextLower.includes('breakfast')) {
+          meals = nextItem
+          i++ // skip next
+        } else {
+          meals = item.replace(/meals included|meals/i, '').replace(/^[:\s\-]+/, '') || 'Yes'
+        }
+      } else {
+        meals = item
+      }
+      continue
+    }
+
+    // Check for stays
+    if (lowerItem.startsWith('overnight stay')) {
+      stay = item.replace(/overnight stay in/i, '').replace(/overnight stay/i, '').replace(/^[:\s\-]+/, '')
+      continue
+    }
+
+    // Regular paragraph
+    paragraphs.push(description[i])
+  }
+
+  // If no highlights were parsed, default to normal bullet points for compatibility
+  if (highlights.length === 0) {
+    return (
+      <ul className="list-disc list-inside space-y-2 text-sm sm:text-base text-slate-700 leading-relaxed">
+        {description.map((point, idx) => (
+          <li key={idx}>{point}</li>
+        ))}
+      </ul>
+    )
+  }
+
+  return (
+    <div className="space-y-4 pt-2">
+      {/* Highlights Box */}
+      {highlights.length > 0 && (
+        <div className="p-4 rounded-2xl bg-amber-50/70 border border-amber-200/50 shadow-2xs">
+          <div className="flex items-center gap-2 mb-3 text-amber-900 font-semibold text-sm sm:text-base">
+            <span className="text-lg">✨</span>
+            <span>Highlights of the Day</span>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {highlights.map((highlight, hIdx) => (
+              <span key={hIdx} className="inline-flex items-center rounded-xl bg-white px-3 py-1.5 text-xs sm:text-sm font-medium text-slate-700 border border-slate-200/60 shadow-3xs">
+                📍 {highlight}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Narrative Paragraphs */}
+      {paragraphs.length > 0 && (
+        <div className="space-y-3">
+          {paragraphs.map((p, pIdx) => (
+            <p key={pIdx} className="text-sm sm:text-base text-slate-700 leading-relaxed">
+              {p}
+            </p>
+          ))}
+        </div>
+      )}
+
+      {/* Footer Badges (Meals & Stays) */}
+      {(meals || stay) && (
+        <div className="flex flex-wrap gap-2 pt-2 border-t border-slate-100">
+          {meals && (
+            <span className="inline-flex items-center rounded-lg bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-800 border border-emerald-100">
+              🍽️ Meals: {meals}
+            </span>
+          )}
+          {stay && (
+            <span className="inline-flex items-center rounded-lg bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-800 border border-blue-100">
+              🏨 Stay: {stay}
+            </span>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
+
 export default function CatchAllTripDetailPage() {
   type SelectionItem = {
     name: string
@@ -336,7 +509,7 @@ export default function CatchAllTripDetailPage() {
                     >
                       <button
                         onClick={() => toggleDay(day.day)}
-                        className="w-full flex items-start justify-between p-[3vw] sm:p-0 bg-white hover:bg-slate-50 transition-colors"
+                        className="w-full flex items-start justify-between p-4 sm:p-5 bg-white hover:bg-slate-50 transition-colors"
                       >
                         <div className="flex items-start gap-3 text-left grow">
                           <div className="shrink-0">
@@ -350,7 +523,7 @@ export default function CatchAllTripDetailPage() {
                             </h3>
                             {!expandedDays.includes(day.day) && (
                               <p className="text-xs sm:text-sm text-slate-600 line-clamp-1">
-                                {Array.isArray(day.description) ? day.description[0] : day.description}
+                                {getFirstNarrativeParagraph(day.description)}
                               </p>
                             )}
                           </div>
@@ -364,17 +537,7 @@ export default function CatchAllTripDetailPage() {
 
                       {expandedDays.includes(day.day) && (
                         <div className="px-4 sm:px-5 pb-4 sm:pb-5 bg-slate-50 border-t">
-                          {Array.isArray(day.description) ? (
-                            <ul className="list-disc list-inside space-y-2 text-sm sm:text-base text-slate-700 leading-relaxed">
-                              {day.description.map((point, idx) => (
-                                <li key={idx}>{point}</li>
-                              ))}
-                            </ul>
-                          ) : (
-                            <p className="text-sm sm:text-base text-slate-700 leading-relaxed">
-                              {day.description}
-                            </p>
-                          )}
+                          {renderItineraryDescription(day.description)}
                         </div>
                       )}
                     </div>

@@ -229,7 +229,7 @@ export default function IcelandPage() {
                       variant="outline"
                       className="min-w-32 border-white/60 text-slate-800 hover:text-white hover:border-white hover:bg-white/10 bg-white"
                       onClick={() => {
-                        const message = `Hi! I'm planning for the ${categoryName} trip. Can you help me with details?`
+                        const message = `Hi Wanderphilia, I want to inquire about Iceland from Website`
                     
                         const encodedMessage = encodeURIComponent(message)
 

@@ -74,6 +74,26 @@ export interface Trip {
   }[]
 }
 
+export function getLowestPriceForTrip(trip: Trip): number {
+  if (!trip) return 0;
+  if (!trip.costingDetails || trip.costingDetails.length === 0) {
+    return trip.price || 0;
+  }
+  const prices = trip.costingDetails
+    .map(item => {
+      const match = item.value.match(/[\d,]+/);
+      return match ? parseInt(match[0].replace(/,/g, ''), 10) : 0;
+    })
+    .filter(price => price > 0);
+  return prices.length > 0 ? Math.min(...prices) : trip.price || 0;
+}
+
+export function getLowestPriceForTrips(tripsList: Trip[]): number {
+  if (!tripsList || tripsList.length === 0) return 0;
+  const prices = tripsList.map(getLowestPriceForTrip).filter(p => p > 0);
+  return prices.length > 0 ? Math.min(...prices) : 0;
+}
+
 export interface Destination {
   title: string
   slug: string
@@ -5394,6 +5414,602 @@ Our Bikes are already vrooming and we are all set to take you to this less explo
       'Winter Spiti is known for snowfall, which may lead to route closures.',
       'Please be prepared for such adventures, as we will take the best possible alternatives in those situations to ensure a smooth journey.'
     ]
+  },
+  {
+    id: '31',
+    title: '6 Days Ultimate Adventurous Himachal Group Trip',
+    slug: '6-days-ultimate-adventurous-himachal-group-trip',
+    image: '/images/himachal.jpg',
+    destination: 'Himachal Pradesh',
+    region: 'Himachal',
+    category: 'Himachal',
+    description: `Get away from the bustle of the city and set off on a once-in-a-lifetime Himalayan journey across Himachal Pradesh's stunning scenery. This trip offers the ideal fusion of adventure, nature, culture, and leisure, from the lively streets of Manali and the snow-covered splendor of Sissu to the hippy vibes of Kasol and the unspoiled charm of Jibhi. 
+Experience thrilling river rafting, discover hidden Himalayan towns, go through enchanted forests to the mysterious Serolsar Lake, see the engineering marvel of the Atal Tunnel, and spend your evenings relaxing at picturesque mountain cafés with other tourists.
+This trip promises lifelong experiences, whether you're an action seeker, a nature lover, or just someone looking to unplug and rejuvenate.`,
+    duration: 6,
+    nights: 5,
+    price: 15500,
+    rating: 4.8,
+    difficulty: 'Easy',
+    groupSize: 15,
+    tripType: 'India',
+    highlights: [
+      'Delhi → Manali → Sissu → Kasol → Jibhi → Serolsar Lake → Delhi',
+      'Beautiful Scenic Trek To Jogni Waterfall',
+      'Atal Tunnel & Sissu Valley Exploration',
+      'River Rafting Experience on Beas River',
+      'Discover Tosh, Kalga, and Pulga in Parvati Valley',
+      'Jibhi Waterfall & Mini Thailand Trek',
+      'Trek toward Serolsar Lake from Jalori Pass'
+    ],
+    itinerary: [
+      {
+        day: 0,
+        title: 'Delhi to Manali – Overnight Bus Journey',
+        description: [
+          'Your journey over the Himalayas starts in the evening from Delhi.',
+          'Before boarding the overnight Volvo bus journey to Manali, get to know your trip captain and other travellers. Enjoy the breathtaking overnight journey over the Himachal Pradesh foothills as the city lights dim.',
+          'Leaving Delhi',
+          'Meet and converse with other travelers',
+          'An Comfortable Overnight Volvo Trip.'
+        ]
+      },
+      {
+        day: 1,
+        title: 'Arrival in Manali and Local Exploration ( Greetings from the Valley of Gods )',
+        description: [
+          'Highlights of the day :',
+          'Beautiful Scenic Trek To Jogni Waterfall',
+          'Hidimba Temple & Mall Road Stroll',
+          'Old Manali Cafe Hopping',
+          'Arrive in Manali early and check in your hotel rooms. Prepare to visit the lovely town of Manali after showering and unwinding for a while.',
+          'Morning Visit Jogni Waterfall - Jogini Waterfall — A beautiful hidden waterfall near Manali, reached via a scenic drive to Vashisht Village followed by a peaceful 1.5–2 hour easy trek through pine forests, apple orchards, and mountain trails, making it a perfect nature escape with breathtaking Himalayan views.',
+          'Start by going to the well-known Hadimba Devi Temple, is a 16th-century wooden temple dedicated to Goddess Hadimba from the Mahabharata, famous for its unique pagoda-style architecture, rich history, and scenic setting amidst lush deodar forests in Manali.',
+          'Later, discover Old Manali\'s quaint streets, which are renowned for their lively cafés, regional markets, and mountainous atmosphere.',
+          'Meals Included',
+          ' Dinner',
+          'Overnight Stay in Manali.'
+        ]
+      },
+      {
+        day: 2,
+        title: 'Manali - Atal Tunnel - Sissu - and Solang Valley Tour  ( A Day of Snowy Valleys and Peaks )',
+        description: [
+          'Highlights of the day :',
+          'Sissu - A breathtaking Himalayan village in the beautiful Lahaul Valley.',
+          'Atal Tunnel',
+          'Solang Vallley - Snow Activities.',
+          'After breakfast, embark on an adventurous journey down one of the most amazing mountain routes in India.',
+          'One of the longest highway tunnels in the world, the famous Atal Tunnel is located above 10,000 feet.',
+          'Enter the stunning Lahaul Valley, a frigid desert valley renowned for its snow-capped peaks, ancient Buddhist culture, quaint towns, and unadulterated Himalayan beauty, and experience a dramatic change in scenery as you go through the famous Atal Tunnel.',
+          'Explore the small town of Sissu in the center of the stunning Lahaul Valley, which is renowned for its unspoiled Himalayan scenery, magnificent snow-covered mountains, pristine rivers, and old Buddhist traditions. Sissu, which is well-known for its breathtaking views of glaciers and waterfalls, provides the ideal fusion of peaceful mountains and natural beauty.',
+          'On your journey back to Manali, make a stop in Solang Valley, a stunning Himalayan valley known for its snow-capped peaks, verdant meadows, expansive mountain views, and exhilarating adventure sports that have made it one of Himachal\'s most popular tourist destinations.',
+          'Meals Included',
+          'Breakfast & Dinner',
+          'Overnight stay in Manali'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Manali to Kasol enroute experience River Rafting ( The Parvati Valley and Adventure ).',
+        description: [
+          'Highlights of the day',
+          'River Rafting Experience ( Optional )',
+          'Visit Manikaran Gurudwara',
+          'Kasol Cafe Hopping',
+          'After breakfast, depart from the hotel and go to Kasol, Himachal Pradesh\'s picturesque backpacker\'s paradise, which is well-known for its lively café culture, breathtaking vistas of the Parvati River, pine-covered mountains, and laid-back Himalayan charm.',
+          'Enjoy an exciting rafting experience on the Beas River (optional activity), a scenic Himalayan river known for its crystal-clear waters and beautiful mountain valleys.',
+          'Drive through scenic mountain roads to reach Parvati Valley, a serene Himalayan valley known for its pine forests, charming villages, hot springs, and stunning natural beauty.',
+          'After check-in, spend the evening exploring Kasol, a charming riverside village known for its bohemian vibe, lively cafés, local markets, and scenic Parvati River trails.',
+          'Meals included',
+          'Breakfast and dinner',
+          'Overnight stay in Kasol'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Parvati Valley\'s Undiscovered Treasures ( Discover Tosh, Kalga, and Pulga. )',
+        description: [
+          'Highlights of the day :',
+          'Visit Tosh Village',
+          'Visit Hidden Gem of parvati valley',
+          'Kasol Chalal Short Trek & explore local kasol in the evening',
+          'Today is devoted to exploring Parvati Valley\'s splendor.',
+          'Begin your journey towards Barshaini, a peaceful Himalayan village and gateway to the scenic trails and charming hamlets of Parvati Valley.',
+          'Discover Tosh, a quaint Himalayan community tucked away in the Parvati Valley that is well-known for its distinctive culture, wooden homes, picturesque mountain views, and relaxed atmosphere.',
+          'Visit Pulga and Kalga later. These beautiful hidden treasures of the Parvati Valley are renowned for their apple orchards, thick pine forests, wooden houses, and tranquil Himalayan charm.',
+          'Enjoy the serene Himalayan vibe throughout the day before returning to Kasol, known for its lively cafés and scenic Parvati River views, by evening.',
+          'Meals included',
+          'Breakfast and dinner',
+          'Overnight stay in Kasol'
+        ]
+      },
+      {
+        day: 5,
+        title: 'Kasol - Jibhi via Aut & Banjar Valley ( 75 - 85 Kms 3 - 4 Hrs Drive )',
+        description: [
+          'Highlights of the day :',
+          'Jibhi Local Exploration.',
+          'Jibhi Waterfall',
+          'Mini Thailand',
+          'Check out after breakfast and head to Jibhi, a serene village in the Banjar Valley renowned for its unspoiled Himalayan charm, pine trees, riverside beauty, and wooden homes.',
+          'After arrival, check in to your hotel and relax amidst the peaceful surroundings before visiting Jibhi Waterfall, a hidden waterfall surrounded by lush greenery and serene Himalayan beauty.',
+          'Proceed to Mini Thailand, a picturesque secret location renowned for its distinctive rock formations, glistening streams, wooden bridges, and tropical-like splendor amid the Himalayas.',
+          'Explore the neighborhood\'s markets, cafés, and riverbank vistas in the evening.',
+          'Meals included',
+          'Breakfast and dinner',
+          'Overnight stay in Jibhi'
+        ]
+      },
+      {
+        day: 6,
+        title: 'Trek toward Serolsar Lake followed by Farewell',
+        description: [
+          'Highlights of the Day',
+          'Serolsar Lake Small Beautiful Trail',
+          'Depart from the Mountains',
+          'For one of the trip\'s most breathtaking experiences, get up early.',
+          'Travel to Jalori Pass and start the picturesque journey to the captivating Serolsar Lake. Serolsar Lake is reached via an easy and scenic trek of approximately 5–6 kms (one way) from Jalori Pass, taking around 2–3 hours to reach depending on pace. The trail passes through beautiful oak and pine forests with peaceful Himalayan surroundings, making the journey itself a magical experience.',
+          'This immaculate lake, which is surrounded by thick pine and oak trees, is revered and has breathtaking natural beauty.',
+          'Before hiking back, take a few quiet moments at the lake.',
+          'After lunch, head back to Aut, where you\'ll catch your Volvo bus to Delhi for the night.',
+          'Meals included',
+          'Breakfast',
+          'Overnight Volvo journey to Delhi.'
+        ]
+      },
+      {
+        day: 7,
+        title: 'Arrival in Delhi.',
+        description: [
+          'Arrive in Delhi with endless stories from the mountains, amazing photos, new friendships, and priceless memories.',
+          'The tour concludes with wonderful recollections of the Himalayas.'
+        ]
+      }
+    ],
+    included: [
+      'Volvo Transfers from Delhi to Himachal & Back',
+      'Tempo Traveller / Sumo for Entire Sightseeing',
+      '5 Nights Accommodation on Triple / Quad Sharing Accommodation',
+      'Daily Breakfast & Dinner (Breakfast excluded on Day 1 and Dinner excluded on Day 6)',
+      'All Inner Line Permits',
+      'Driver Allowance & Night Charges',
+      'Toll Tax, Parking Charges & State Taxes',
+      'Experienced Trip Captain Throughout the Journey',
+      'One Bonfire Evening.'
+    ],
+    notIncluded: [
+      'GST (5%) Extra',
+      'Lunches and Additional Meals',
+      'Mineral Water, Soft Drinks & Alcoholic Beverages',
+      'Personal Expenses & Shopping',
+      'Entry Fees to Monuments & Attractions',
+      'Camera & Video Charges',
+      'River Rafting and Other Adventure Activities',
+      'Expenses Due to Natural Calamities, Roadblocks, Landslides or Weather Conditions',
+      'Anything Not Specifically Mentioned Under Inclusions'
+    ],
+    overviewPoints: [
+      'Route: Delhi → Manali → Sissu → Kasol → Jibhi → Serolsar Lake      → Delhi',
+      'Duration: 5 Nights / 6 Days',
+      'Trip Start Point: Delhi',
+      'Trip End Point: Delhi',
+      'Difficulty Level: Easy to Moderate',
+      'Best Time to Visit: May – July & November – March',
+      'Stay Plan: 2N Manali • 2N Kasol • 1N Jibhi',
+      'Cost: 15,500 TS , 16,500/- DS'
+    ],
+    stays: [
+      'Manali: Hotel Conifer/Related',
+      'Kasol: The Royal Orchard Kasol/Related',
+      'Jibhi: Red Apple Hotel/Related'
+    ],
+    costingDetails: [
+      { label: 'Triple Sharing (TS)', value: '₹15,500' },
+      { label: 'Double Sharing (DS)', value: '₹16,500' }
+    ],
+    batchDates: [
+      {
+        month: 'June',
+        ranges: ['6th June - 12th June', '20th June - 26th June']
+      },
+      {
+        month: 'July',
+        ranges: ['4th July - 10th July', '18th July - 24th July']
+      },
+      {
+        month: 'Aug',
+        ranges: ['1st Aug - 7th Aug', '15th Aug - 21st  Aug', '29th Aug - 4th Sept']
+      },
+      {
+        month: 'Sept',
+        ranges: ['12th Sept - 18th Sept ( Ganesh Chaturthi Holiday )', '26th Sept - 5th Oct']
+      }
+    ],
+    dates: [
+      { startDate: '2026-06-06', endDate: '2026-06-12', spots: 10 },
+      { startDate: '2026-06-20', endDate: '2026-06-26', spots: 10 },
+      { startDate: '2026-07-04', endDate: '2026-07-10', spots: 10 },
+      { startDate: '2026-07-18', endDate: '2026-07-24', spots: 10 },
+      { startDate: '2026-08-01', endDate: '2026-08-07', spots: 10 },
+      { startDate: '2026-08-15', endDate: '2026-08-21', spots: 10 },
+      { startDate: '2026-08-29', endDate: '2026-09-04', spots: 10 },
+      { startDate: '2026-09-12', endDate: '2026-09-18', spots: 10 },
+      { startDate: '2026-09-26', endDate: '2026-10-05', spots: 10 }
+    ]
+  },
+  {
+    id: '32',
+    title: '5 Days Offbeat Himachal Group Trip',
+    slug: '5-days-offbeat-himachal-group-trip',
+    image: '/images/himachal.jpg',
+    destination: 'Himachal Pradesh',
+    region: 'Himachal',
+    category: 'Himachal',
+    description: `On this carefully constructed 5-Day Offbeat Group Adventure, escape the everyday and see the unspoiled charm of Himachal Pradesh. This trip offers the perfect balance of nature, adventure, culture, and leisure, from the tranquil forests of Jibhi and the clear waters of Serolsar Lake to the energetic streets of Manali, the stunning scenery of Sissu, and the hippy vibes of Kasol. Travel with like-minded adventurers and take in breathtaking mountain drives, secret waterfalls, lakes tucked away in cedar forests, quaint cafés, local communities, river rafting activities, and breathtaking Himalayan sunsets.`,
+    duration: 5,
+    nights: 4,
+    price: 13500,
+    rating: 4.8,
+    difficulty: 'Easy',
+    groupSize: 15,
+    tripType: 'India',
+    highlights: [
+      'Delhi → Aut  → Jibhi → Serolsar Lake → Manali → Sissu  → Kasol → Delhi.',
+      'Manali , Sissu , Atal Tunnel , Kasol , Chalal Trek , Jibhi , Serolsar Lake.',
+      'Jibhi Local Exploration & Jibhi Waterfall',
+      'Trek to Serolsar Lake & 360 Degree View Point',
+      'Atal Tunnel & Sissu Valley Exploration',
+      'Kasol Cafe Hopping & Chalal Village Trek'
+    ],
+    itinerary: [
+      {
+        day: 0,
+        title: 'Delhi to Aut – Overnight Himalayan Escape Begins(Approx. 500–520 KM | 10–12 Hrs)',
+        description: [
+          'The group assembles in Delhi and boards an overnight Volvo bus towards Himachal Pradesh to begin the Himalayan adventure.',
+          'Relax and enjoy the scenic journey as the bustling city lights slowly give way to peaceful valleys, winding mountain roads, rivers, and charming Himalayan landscapes.',
+          'Overnight Volvo Journey',
+          'Scenic drive through Himachal',
+          'Meet fellow travellers',
+          'Comfortable Overnight Bus Journey.'
+        ]
+      },
+      {
+        day: 1,
+        title: 'Arrival at Aut – Welcome to the Hidden Paradise of Jibhi',
+        description: [
+          'Highlights of the day :',
+          'Jibhi Local Exploration.',
+          'Jibhi Waterfall',
+          'Mini Thailand',
+          'Arrive at Aut, where our team will assist you with your transfer to Jibhi, a peaceful Himalayan village known for its pine forests, riverside beauty, wooden cottages, and tranquil mountain charm.',
+          'En route, enjoy scenic views of lush valleys, winding riverside roads, dense cedar forests, and charming Himalayan villages surrounded by breathtaking landscapes.',
+          'After breakfast and hotel check-in, spend the day exploring the serene beauty and untouched charm of this hidden gem in Himachal Pradesh.',
+          'Visit Jibhi Waterfall, a hidden waterfall surrounded by lush greenery and peaceful natural surroundings, perfect for photography and relaxation.',
+          'Explore Mini Thailand, a scenic spot famous for its unique rock formations, crystal-clear waters, and tropical-like Himalayan beauty.',
+          'Spend the evening discovering cozy riverside cafés in Jibhi, enjoying local cuisine, peaceful mountain vibes, and the calm atmosphere of the valley.',
+          'Meals included',
+          'Breakfast and dinner',
+          'Overnight stay in Jibhi'
+        ]
+      },
+      {
+        day: 2,
+        title: 'Trekking to Serolsar Lake and a 360-degree Himalayan View',
+        description: [
+          'Jibhi → Jalori Pass → Serolsar Lake → Jibhi',
+          'Highlights of the Day',
+          'Serolsar Lake Small Beautiful Trail',
+          '360 Degree small trail View Point',
+          'Wake up to the crisp mountain air and enjoy breakfast before heading towards Jalori Pass, a scenic high-altitude mountain pass famous for its panoramic Himalayan views, lush valleys, and dense pine forests.',
+          'En route, admire breathtaking snow-capped peaks, winding mountain roads, cedar-covered landscapes, and picturesque Himalayan scenery throughout the journey.',
+          'From Jalori Pass, begin a scenic trek through thick pine and oak forests towards Serolsar Lake,Serolsar Lake is reached via an easy and scenic trek of approximately 5–6 kms (one way) from Jalori Pass, taking around 2–3 hours to reach depending on pace. The trail passes through beautiful oak and pine forests with peaceful Himalayan surroundings, making the journey itself a magical experience.',
+          'Enjoy an easy to moderate Himalayan trek surrounded by dense cedar forest trails, fresh mountain air, and stunning landscapes.',
+          'Visit the famous 360° viewpoint near Serolsar Lake offering breathtaking panoramic views of the snow-covered Himalayan ranges and incredible photography opportunities.',
+          'Spend the evening at leisure in Jibhi, exploring charming cafés, local markets, and enjoying a cozy bonfire session (subject to weather conditions).',
+          'Meals included',
+          'Breakfast and dinner',
+          'Overnight stay in Jibhi.'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Jibhi to Manali via Kullu Valley & Naggar ( Distance 95 - 110 kms 4 - 5 Hrs )',
+        description: [
+          'Highlights of the day :',
+          'Beautiful River Rafting Experience ( Optional Activity )',
+          'Hidimba Temple & Mall Road Stroll',
+          'Old Manali Cafe Hopping',
+          'After breakfast, check out and drive towards Manali, a beautiful Himalayan hill station known for its snow-covered peaks, pine forests, vibrant cafés, and lively mountain culture.',
+          'En route, witness scenic river valleys, winding mountain roads, apple orchards, charming villages, and breathtaking Himalayan landscapes throughout the journey.',
+          'Adventure lovers can enjoy an exciting rafting experience on the Beas River (optional activity at extra cost), famous for its thrilling rapids and crystal-clear waters.',
+          'Upon arrival, visit Hadimba Devi Temple, an ancient cedar forest temple admired for its unique wooden pagoda-style architecture and mythological significance.',
+          'Explore the charming streets of Old Manali, known for its lively cafés, live music spots, and relaxed backpacker vibe.',
+          'Spend time at Mall Road, famous for shopping, local handicrafts, vibrant markets, and delicious street food experiences.',
+          'Enjoy café hopping in Manali and savor Himachali as well as international cuisines amidst beautiful mountain surroundings.',
+          ' Meals included',
+          'Breakfast and dinner',
+          'Overnight stay in Manali.'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Atal Tunnel Tour of Sissu then Transfer to Kasol',
+        description: [
+          'Highlights of the day : ',
+          'Sissu - A breathtaking Himalayan village in the beautiful Lahaul Valley.',
+          'Atal Tunnel',
+          'Solang Vallley - Snow Activities ( If Time Permits ).',
+          'Kasol Cafe Hoping & Local Market Exploration.',
+          'After breakfast, embark on one of the most scenic drives of the trip through the breathtaking Himalayan landscapes of Himachal Pradesh.',
+          'En route, witness snow-capped peaks, dramatic valleys, waterfalls, winding mountain roads, riverside views, and stunning changing landscapes throughout the journey.',
+          'Drive through the iconic Atal Tunnel, one of the world’s longest high-altitude road tunnels and a remarkable engineering marvel connecting Manali to the beautiful Lahaul Valley.',
+          'Continue towards Sissu, a peaceful Himalayan village famous for its waterfalls, glacier views, riverside beauty, and magnificent mountain scenery.',
+          'Later, proceed towards Kasol, the vibrant backpacker destination of Parvati Valley known for its lively cafés, riverside charm, and relaxed mountain vibe.',
+          'Spend the evening exploring charming cafés, enjoying riverside walks, and relaxing amidst the peaceful atmosphere of Parvati Valley.',
+          ' Meals included',
+          'Breakfast and dinner',
+          'Overnight stay in Kasol.'
+        ]
+      },
+      {
+        day: 5,
+        title: 'Kasol Local Explorartion & Departure',
+        description: [
+          'Highlights of the day',
+          'Kasol Market',
+          'Visit Manikaran Gurudwara',
+          'Experience Beautiful Trail To Chalal Village.',
+          'Visit Manikaran Sahib, a famous Gurudwara known for its spiritual significance, peaceful atmosphere, and natural hot water springs nestled beside the Parvati River.',
+          'Embark on the easy and scenic Chalal trek, surrounded by dense pine forests, riverside trails, and stunning valley views.',
+          'Explore the vibrant markets of Kasol, known for local shopping, souvenirs, lively cafés, and its laid-back Himalayan vibe.',
+          'Meals Included: Breakfast',
+          'Board your overnight Volvo journey back to Delhi with unforgettable mountain memories.',
+          ' Meals included',
+          'Breakfast',
+          'Overnight bus joruney.'
+        ]
+      }
+    ],
+    included: [
+      'Volvo transfers from Delhi and back',
+      'Tempo Traveller / Sumo for all sightseeing and transfers',
+      '4 Nights accommodationTriple/Quad sharing accommodation',
+      'Daily Breakfast & Dinner (Except Dinner on Departure Day)',
+      'All inner-line permits required for the trip',
+      'Driver allowance, toll taxes and parking charges',
+      'Experienced Trip Captain throughout the journey',
+      'One Bonfire Evening.'
+    ],
+    notIncluded: [
+      'GST (5%) extra',
+      ' Lunches and personal food expenses',
+      'Mineral water, beverages and alcoholic drinks',
+      'River rafting charges and adventure activities not mentioned',
+      'Personal expenses, tips and shopping',
+      'Monument entry tickets, camera fees etc.',
+      'Expenses arising from natural calamities, road closures, weather conditions or unforeseen circumstances',
+      'Anything not specifically mentioned under inclusions'
+    ],
+    overviewPoints: [
+      'Route: Delhi → Aut  → Jibhi → Serolsar Lake → Manali → Sissu  → Kasol → Delhi.',
+      'Duration: 4 Nights / 5 Days.',
+      'Trip Start: Delhi',
+      'Trip End: Delhi',
+      'Difficulty Level: Easy to Moderate.',
+      'Best Time to Visit: Summer May to July & Winters Nov - March.',
+      'Major Highlights: Manali , Sissu , Atal Tunnel , Kasol , Chalal Trek , Jibhi , Serolsar Lake.',
+      'Trip Cost : 13,500/- TS , 14,500 DS'
+    ],
+    thingsToCarry: [
+      'Warm jacket & fleece layer',
+      'Comfortable trekking shoes',
+      'Thermal wear (winter departures)',
+      'Sunglasses & sunscreen',
+      'Personal medicines',
+      'Power bank',
+      'Water bottle',
+      'Backpack/daypack',
+      'Raincoat/Poncho (during monsoon)',
+      'Valid Government ID Proof'
+    ],
+    stays: [
+      'Jibhi: 2 Nights',
+      'Manali: 1 Night',
+      'Kasol: 1 Night'
+    ],
+    costingDetails: [
+      { label: 'Triple Sharing (TS)', value: '₹13,500' },
+      { label: 'Double Sharing (DS)', value: '₹14,500' }
+    ],
+    batchDates: [
+      {
+        month: 'June',
+        ranges: ['6th June - 11th June', '20th June - 25th June']
+      },
+      {
+        month: 'July',
+        ranges: ['4th July - 9th July', '18th July - 23rd July']
+      },
+      {
+        month: 'Aug',
+        ranges: ['1st Aug - 6th Aug', '15th Aug - 20nd  Aug', '29th Aug - 3rd Sept']
+      },
+      {
+        month: 'Sept',
+        ranges: ['12th Sept - 17th Sept ( Ganesh Chaturthi Holiday )', '26th Sept - 4th Oct']
+      }
+    ],
+    dates: [
+      { startDate: '2026-06-06', endDate: '2026-06-11', spots: 10 },
+      { startDate: '2026-06-20', endDate: '2026-06-25', spots: 10 },
+      { startDate: '2026-07-04', endDate: '2026-07-09', spots: 10 },
+      { startDate: '2026-07-18', endDate: '2026-07-23', spots: 10 },
+      { startDate: '2026-08-01', endDate: '2026-08-06', spots: 10 },
+      { startDate: '2026-08-15', endDate: '2026-08-20', spots: 10 },
+      { startDate: '2026-08-29', endDate: '2026-09-03', spots: 10 },
+      { startDate: '2026-09-12', endDate: '2026-09-17', spots: 10 },
+      { startDate: '2026-09-26', endDate: '2026-10-04', spots: 10 }
+    ]
+  },
+  {
+    id: '33',
+    title: 'Mesmerising Himachal Family Getaway | 7 days & 6  nights',
+    slug: 'mesmerising-himachal-family-getaway-7-days-6-nights',
+    image: '/images/himachal.jpg',
+    destination: 'Himachal Pradesh',
+    region: 'Himachal',
+    category: 'Himachal',
+    description: `Snow-capped Dhauladhar peaks, fluttering monastery prayer flags, the cascading Bhagsunag Waterfall, and the serene Golden Temple of Amritsar come together to create an unforgettable Himachal Pradesh getaway. Commence your journey in Amritsar by witnessing the tranquil Golden Temple, which is a representation of peace and spirituality. Later, observe the thrilling and historically significant Beating Retreat Ceremony at the Wagah Border, which will encourage a patriotic spirit. After that, you travel to the scenic hill towns of Dalhousie and Dharamshala. Explore the magnificent meadows of Khajjiar, popularly referred to as the "Mini Switzerland of India," where you may relax in the middle of nature or take part in thrilling adventure sports. Proceed to Dharamshala, the tranquil "Little Lhasa," in which the Dalai Lama resides. See the serene Tibetan monastery, the enchanting Bhagsunag Waterfall, and the holy Chamunda Devi Temple in Kangra to receive blessings. This Dharamshala–Dalhousie retreat promises wonderful experiences amid stunning surroundings, offering the ideal balance of adventure, leisure, and spiritual zen. Embark on this captivating adventure from Amritsar and make lifelong memories.`,
+    duration: 7,
+    nights: 6,
+    price: 0,
+    rating: 4.8,
+    difficulty: 'Easy',
+    groupSize: 10,
+    tripType: 'India',
+    highlights: [
+      'Golden Temple',
+      'Attari Border',
+      'Khajjair',
+      'Dalhousie',
+      'Dharamshala',
+      'Mcleodganj'
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Arrival in Amritsar',
+        description: [
+          "Meet our representative when you arrive in Amritsar, then proceed to your accommodation. Explore the city's colourful charm and rich culture after checking in and taking a quick refreshment break.",
+          "See the electrifying Wagah Border Ceremony, a powerful demonstration of pride and patriotism, after visiting the calming Golden Temple, the spiritual heart of Sikhism.",
+          "Return to the hotel and unwind with a comfortable overnight stay in Amritsar."
+        ]
+      },
+      {
+        day: 2,
+        title: 'Amritsar – Dalhousie (Distance: 200km & Duration: 5 to 6 hours)',
+        description: [
+          'After breakfast, depart the hotel and begin your scenic adventure to Dalhousie, one of the most scenic hill stations in Himachal Pradesh.',
+          'Arrive Dalhousie, a beautiful hill town surrounded by towering mountains and pine forests. Enjoy a quiet evening amid the serene Himalayan landscape after checking into your accommodation.',
+          'Have a delicious meal and a restful night in Dalhousie.'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Dalhousie Local Sightseeing & Khajjiar Excursion',
+        description: [
+          'Following breakfast, take a full-day tour to Dalhousie and the charming Khajjiar, also referred to as the "Mini Switzerland of India."',
+          'Visit attractions including:',
+          'Khajjiar Meadows',
+          'Gandhi Chowk & Mall Road',
+          'Panchpula Waterfalls',
+          'Subhash Baoli',
+          'St. John\'s Church',
+          'Enjoy wide landscapes of tranquil woodlands, lush scenery, and the Dhauladhar mountain ranges. At Khajjiar, families can enjoy extra adventure activities like zorbing, horseback riding, and nature walks.',
+          'Return back to the hotel in the evening, have a relaxing dinner, and spend the night in Dalhousie in comfort.'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Dalhousie – Dharamshala (Distance: 120km & Duration: 4-5 hours)',
+        description: [
+          'Check out after breakfast and head to the tranquil hill town of Dharamshala, which is known for its Tibetan heritage, spiritual charm, and stunning natural beauty. Dharamshala is hidden away within the majestic Dhauladhar hills.',
+          'After arriving, settle into your accommodation and relax in the tranquil mountain setting. After spending the evening relaxing, have a delicious meal at the hotel.',
+          'Overnight stay at Dharmshala'
+        ]
+      },
+      {
+        day: 5,
+        title: 'Dharamshala & McLeod Ganj Sightseeing',
+        description: [
+          'After breakfast, embark on a sightseeing tour of Dharamshala and McLeod Ganj.',
+          'Visit:',
+          'Tsuglagkhang Complex (Dalai Lama Temple)',
+          'Namgyal Monastery',
+          'Bhagsunag Temple & Waterfall',
+          'St. John in the Wilderness Church',
+          'Tibetan Market',
+          'Naddi View Point',
+          'Dal Lake',
+          'Cricket Stadium Dharamshala (subject to accessibility)',
+          'Experience the lively Tibetan culture of Dharamshala, see serene monasteries, peruse regional handicrafts, and take in the breath-taking views of the mountains',
+          'Go back to the hotel for a restful evening, enjoy a delicious meal, and spend the night in Dharamshala.'
+        ]
+      },
+      {
+        day: 6,
+        title: 'Dharamshala – Amritsar (Distance: 200 Km & Duration: 5-6 hours)',
+        description: [
+          'Check out of the hotel after breakfast and head to Amritsar.',
+          'After arriving, check into your hotel and spend the evening relaxing. Discover the lively local markets, indulge in real Punjabi cuisine, or take in the Golden Temple\'s peaceful setting.',
+          'Enjoy a relaxing and restful overnight stay in Amritsar.'
+        ]
+      },
+      {
+        day: 7,
+        title: 'Departure from Amritsar',
+        description: [
+          'Check out and head to the Amritsar Airport/Railway Station after breakfast, taking with you treasured memories of an amazing trip.',
+          'Take home a treasure of priceless moments, amazing experiences, and lovely memories as your Himachal family vacation draws to a close.'
+        ]
+      }
+    ],
+    included: [
+      '6 Night’s accommodation in deluxe category hotels on double sharing basis',
+      'Daily breakfast & dinner',
+      'Breakfast from Day 2 to Day 7',
+      'Dinner from Day 1 to Day 6',
+      'Private transportation from Amritsar to Amritsar',
+      'Experienced chauffeur-cum-driver',
+      'Toll taxes',
+      'Driver allowances and night charges',
+      'Parking charges',
+      'All sightseeing as per itinerary by private vehicle'
+    ],
+    notIncluded: [
+      'GST @ 5% extra',
+      'Airfare / Train tickets',
+      'Lunches and en-route meals',
+      'Mineral water, beverages, alcoholic drinks and snacks',
+      'Monument entry fees',
+      'Camera and video camera charges',
+      'Adventure activities and personal expenses',
+      'Tips and porterage charges',
+      'Expenses arising due to natural calamities, landslides, road blockages, weather conditions or unforeseen circumstances',
+      'Medical and travel insurance',
+      'Anything not specifically mentioned under "Package Inclusions"'
+    ],
+    overviewPoints: [
+      'Route: Amritsar → Dalhousie  → Khajjair → Dalhousie  → Dharamshala → Mcleod Ganj  → Amritsar.',
+      'Duration: 6 Nights / 7 Days.',
+      'Trip Start: Amritsar',
+      'Trip End: Amritsar',
+      'Difficulty Level: Easy.',
+      'Best Time to Visit: Sumer May to July , Winters Nov - March.'
+    ],
+    thingsToCarry: [
+      'Authentic Government ID Card',
+      'Comfortable warm clothing like woollen socks, cap, fleece jackets or warmers, down jacket, toiletries.',
+      '3-litre water bladder or water bottle'
+    ],
+    travelEssentials: [
+      {
+        title: 'Clothes',
+        items: [
+          'A sun cap and a woollen cap',
+          'UV protected sunglasses',
+          'One cotton long sleeve and 2 short sleeve t-shirts'
+        ]
+      }
+    ],
+    stays: [
+      'Amritsar : Sarovar Portico / Similar',
+      'Dalhousie : Hotel Nature Valley Inn / Similar',
+      'Dharamshala : Hotel Indraprastha Resort & Spa / Similar'
+    ],
+    dates: []
   }
 ];
 

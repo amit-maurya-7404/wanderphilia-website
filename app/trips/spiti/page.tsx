@@ -10,7 +10,7 @@ import { GalleryCarousel } from '@/components/gallery-carousel'
 import { Button } from '@/components/ui/button'
 import { TripHeroCarousel } from '@/components/trip-hero-carousel'
 import { RequestCallbackDialog } from '@/components/request-callback-dialog'
-import { trips } from '@/lib/data'
+import { trips, getLowestPriceForTrips } from '@/lib/data'
 import { getSectionMapping } from '@/lib/section-mappings'
 import { ChevronLeft, ChevronRight, Star, Phone, MessageCircle } from 'lucide-react'
 
@@ -71,15 +71,8 @@ export default function SpitiPage() {
   const isCategoryInternational = firstTrip?.tripType === 'International'
 
   const lowestPrice = useMemo(() => {
-    if (!firstTrip?.costingDetails || firstTrip.costingDetails.length === 0) return firstTrip?.price || 0;
-    const prices = firstTrip.costingDetails
-      .map(item => {
-        const match = item.value.match(/[\d,]+/);
-        return match ? parseInt(match[0].replace(/,/g, ''), 10) : 0;
-      })
-      .filter(price => price > 0);
-    return prices.length > 0 ? Math.min(...prices) : firstTrip?.price || 0;
-  }, [firstTrip]);
+    return getLowestPriceForTrips(categoryTrips)
+  }, [categoryTrips]);
 
   // Get related packages (other India destinations)
   const relatedPackages = useMemo(() => {
@@ -229,7 +222,7 @@ export default function SpitiPage() {
                       variant="outline"
                       className="min-w-32 border-white/60 text-slate-800 hover:text-white hover:border-white hover:bg-white/10 bg-white"
                       onClick={() => {
-                        const message = `Hi! I'm planning for the ${categoryName} trip. Can you help me with details?`
+                        const message = `Hi Wanderphilia, I want to inquire about Spiti from Website`
 
                         const encodedMessage = encodeURIComponent(message)
 
@@ -252,7 +245,7 @@ export default function SpitiPage() {
         <section className="py-16 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
           <div className="mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
-              Upcoming Group Trips 2026 - Wanderphilia Exclusives
+              Upcoming Trips 2026 - Wanderphilia Exclusives
             </h2>
             <div className="w-20 h-1 bg-primary rounded-full" />
           </div>

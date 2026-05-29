@@ -10,7 +10,7 @@ import { GalleryCarousel } from '@/components/gallery-carousel'
 import { Button } from '@/components/ui/button'
 import { TripHeroCarousel } from '@/components/trip-hero-carousel'
 import { RequestCallbackDialog } from '@/components/request-callback-dialog'
-import { trips } from '@/lib/data'
+import { trips, getLowestPriceForTrips } from '@/lib/data'
 import { getSectionMapping } from '@/lib/section-mappings'
 import { ChevronLeft, ChevronRight, Star, Phone, MessageCircle } from 'lucide-react'
 
@@ -72,15 +72,8 @@ export default function BhutanPage() {
   const isCategoryInternational = firstTrip?.tripType === 'International'
 
   const lowestPrice = useMemo(() => {
-    if (!firstTrip?.costingDetails || firstTrip.costingDetails.length === 0) return firstTrip?.price || 0;
-    const prices = firstTrip.costingDetails
-      .map(item => {
-        const match = item.value.match(/[\d,]+/);
-        return match ? parseInt(match[0].replace(/,/g, ''), 10) : 0;
-      })
-      .filter(price => price > 0);
-    return prices.length > 0 ? Math.min(...prices) : firstTrip?.price || 0;
-  }, [firstTrip]);
+    return getLowestPriceForTrips(categoryTrips)
+  }, [categoryTrips]);
 
   // Get related packages (other India destinations)
   const relatedPackages = useMemo(() => {
@@ -229,7 +222,7 @@ export default function BhutanPage() {
                       variant="outline"
                       className="min-w-32 border-white/60 text-slate-800 hover:text-white hover:border-white hover:bg-white/10 bg-white"
                       onClick={() => {
-                        const message = `Hi! I'm planning for the ${categoryName} trip. Can you help me with details?`
+                        const message = `Hi Wanderphilia, I want to inquire about Bhutan from Website`
 
                         const encodedMessage = encodeURIComponent(message)
 

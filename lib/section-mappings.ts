@@ -2,8 +2,8 @@
 // This controls which trips appear in which sections on category pages
 export const sectionMappings: Record<string, Record<string, string[]>> = {
   'leh-ladakh': {
-    available: ['13','14','15','16','17','18','19','20','21'], // Available Packages - Leh Ladakh trips
-    family: ['13','14','15','16','17','18'], // Family Packages
+    available: ['13', '14', '15', '16', '17', '18', '19', '20', '21'], // Available Packages - Leh Ladakh trips
+    family: ['13', '14', '15', '16', '17', '18'], // Family Packages
     custom: ['19'], // Customized Packages
     related: ['20'], // Other India Destinations
     related2: ['21'] // Additional Related Packages
@@ -33,9 +33,9 @@ export const sectionMappings: Record<string, Record<string, string[]>> = {
     related: ['12']
   },
   'himachal': {
-    available: ['13', '45'],
-    family: ['46', '47'],
-    custom: ['48', '49'],
+    available: ['31', '32', '33'],
+    family: ['31', '32'],
+    custom: ['33'],
     related: ['50', '51']
   },
   'iceland': {
@@ -69,8 +69,8 @@ export const sectionMappings: Record<string, Record<string, string[]>> = {
     related: ['90', '91']
   },
   'spiti': {
-    available: ['22','23','24','25','26'],
-    family: ['22','23','24','25','26' ],
+    available: ['22', '23', '24', '25', '26'],
+    family: ['22', '23', '24', '25', '26'],
     custom: [],
     related: []
   },
@@ -85,7 +85,7 @@ export const sectionMappings: Record<string, Record<string, string[]>> = {
 
 // Page-specific trip card mappings for standalone pages
 export const pageSectionMappings: Record<string, string[]> = {
-  upcomingTours: ['13','14','15','16','17','18','19','20','21'],
+  upcomingTours: ['13', '14', '15', '16', '17', '18', '19', '20', '21'],
   honeymoonPackages: ['2', '5', '6', '9', '10', '12', '14', '18'],
   featured: ['13', '12', '21']
 }

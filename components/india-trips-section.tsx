@@ -1,6 +1,21 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { trips, getLowestPriceForTrips } from '@/lib/data'
+import { sectionMappings } from '@/lib/section-mappings'
+
+function getCheapestPriceForCategory(categoryId: string, fallbackPrice: number): number {
+  const mapping = sectionMappings[categoryId];
+  if (!mapping || !mapping.available) return fallbackPrice;
+  const activeTrips = trips.filter(t => 
+    mapping.available.includes(t.id) && 
+    (t.category?.toLowerCase() === categoryId || 
+     t.destination?.toLowerCase().includes(categoryId) ||
+     t.region?.toLowerCase() === categoryId)
+  );
+  const price = getLowestPriceForTrips(activeTrips);
+  return price > 0 ? price : fallbackPrice;
+}
 import Link from 'next/link'
 import Image from 'next/image'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
@@ -62,11 +77,11 @@ export function IndiaTripsSection() {
   }, [cardsPerView])
 
   const indiaRegions = [
-    { title: 'Ladakh', region: 'Leh Ladakh', image: '/images/leh-ladakh.jpg', price: 15800 },
-    { title: 'Spiti', region: 'Spiti', image: '/images/spiti-valley.jpg', price: 24499 },
-    { title: 'Kashmir', region: 'Kashmir', image: '/images/kashmir.jpg', price: 24499 },
-    { title: 'Meghalaya', region: 'Meghalaya', image: '/images/meghalaya.jpg', price: 21499 },
-    { title: 'Himachal', region: 'Himachal', image: '/images/himachal.jpg', price: 6999 },
+    { title: 'Ladakh', region: 'Leh Ladakh', image: '/images/leh-ladakh.jpg', price: getCheapestPriceForCategory('leh-ladakh', 15800) },
+    { title: 'Spiti', region: 'Spiti', image: '/images/spiti-valley.jpg', price: getCheapestPriceForCategory('spiti', 24499) },
+    { title: 'Himachal', region: 'Himachal', image: '/images/himachal.jpg', price: getCheapestPriceForCategory('himachal', 6999) },
+    { title: 'Kashmir', region: 'Kashmir', image: '/images/kashmir.jpg', price: getCheapestPriceForCategory('kashmir', 24499) },
+    { title: 'Meghalaya', region: 'Meghalaya', image: '/images/meghalaya.jpg', price: getCheapestPriceForCategory('meghalaya', 21499) },
   ]
 
   const maxIndex = Math.max(0, indiaRegions.length - cardsPerView)

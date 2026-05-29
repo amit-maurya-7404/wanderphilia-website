@@ -1,6 +1,21 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { trips, getLowestPriceForTrips } from '@/lib/data'
+import { sectionMappings } from '@/lib/section-mappings'
+
+function getCheapestPriceForCategory(categoryId: string, fallbackPrice: number): number {
+  const mapping = sectionMappings[categoryId];
+  if (!mapping || !mapping.available) return fallbackPrice;
+  const activeTrips = trips.filter(t => 
+    mapping.available.includes(t.id) && 
+    (t.category?.toLowerCase() === categoryId || 
+     t.destination?.toLowerCase().includes(categoryId) ||
+     t.region?.toLowerCase() === categoryId)
+  );
+  const price = getLowestPriceForTrips(activeTrips);
+  return price > 0 ? price : fallbackPrice;
+}
 import Link from 'next/link'
 import Image from 'next/image'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
@@ -66,21 +81,21 @@ export function TripTypesSection() {
   }, [cardsPerView])
 
   const indiaRegions = [
-    { title: 'Leh Ladakh', region: 'Leh Ladakh', image: '/images/leh-ladakh.jpg', price: 15800 },
-    { title: 'Spiti', region: 'Spiti', image: '/images/spiti-valley.jpg', price: 24499 },
-    { title: 'Kashmir', region: 'Kashmir', image: '/images/kashmir.jpg', price: 24499 },
-    { title: 'Meghalaya', region: 'Meghalaya', image: '/images/meghalaya.jpg', price: 21499 },
-    { title: 'Himachal', region: 'Himachal', image: '/images/himachal.jpg', price: 6999 },
+    { title: 'Leh Ladakh', region: 'Leh Ladakh', image: '/images/leh-ladakh.jpg', price: getCheapestPriceForCategory('leh-ladakh', 15800) },
+    { title: 'Spiti', region: 'Spiti', image: '/images/spiti-valley.jpg', price: getCheapestPriceForCategory('spiti', 24499) },
+    { title: 'Himachal', region: 'Himachal', image: '/images/himachal.jpg', price: getCheapestPriceForCategory('himachal', 6999) },
+    { title: 'Kashmir', region: 'Kashmir', image: '/images/kashmir.jpg', price: getCheapestPriceForCategory('kashmir', 24499) },
+    { title: 'Meghalaya', region: 'Meghalaya', image: '/images/meghalaya.jpg', price: getCheapestPriceForCategory('meghalaya', 21499) },
   ]
 
   const internationalRegions = [
-    { title: 'Nepal', region: 'Nepal', image: '/images/everest.jpg', price: 99900 },
-    { title: 'Indonesia', region: 'Indonesia', image: '/images/bali.jpg', price: 69900 },
-    { title: 'Switzerland', region: 'Switzerland', image: '/images/swiss.jpg', price: 129900 },
-    { title: 'Peru', region: 'Peru', image: '/images/amazon.jpg', price: 94900 },
-    { title: 'Iceland', region: 'Iceland', image: '/images/iceland.jpg', price: 114900 },
-    { title: 'Bhutan', region: 'Bhutan', image: '/images/bhutan_cat.jpg', price: 109900 },
-    { title: 'Japan', region: 'Japan', image: '/images/japan.jpg', price: 139900 },
+    { title: 'Bhutan', region: 'Bhutan', image: '/images/bhutan_cat.jpg', price: getCheapestPriceForCategory('bhutan', 109900) },
+    { title: 'Nepal', region: 'Nepal', image: '/images/everest.jpg', price: getCheapestPriceForCategory('nepal', 99900) },
+    { title: 'Indonesia', region: 'Indonesia', image: '/images/bali.jpg', price: getCheapestPriceForCategory('indonesia', 69900) },
+    { title: 'Switzerland', region: 'Switzerland', image: '/images/swiss.jpg', price: getCheapestPriceForCategory('switzerland', 129900) },
+    { title: 'Peru', region: 'Peru', image: '/images/amazon.jpg', price: getCheapestPriceForCategory('peru', 94900) },
+    { title: 'Iceland', region: 'Iceland', image: '/images/iceland.jpg', price: getCheapestPriceForCategory('iceland', 114900) },
+    { title: 'Japan', region: 'Japan', image: '/images/japan.jpg', price: getCheapestPriceForCategory('japan', 139900) },
   ]
 
   const maxIndia = Math.max(0, indiaRegions.length - cardsPerView)
