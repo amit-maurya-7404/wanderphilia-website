@@ -62,6 +62,7 @@ export async function POST(request: NextRequest) {
       to: 'experiences@wanderphilia.com',
       subject: `New Callback Request: ${title}`,
       html: emailContent,
+      replyTo: email,
     })
 
     // Send confirmation email to customer

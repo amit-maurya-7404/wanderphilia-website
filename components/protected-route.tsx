@@ -21,7 +21,7 @@ interface ProtectedRouteProps {
  *   return (
  *     <ProtectedRoute>
  *       <h1>Booking Page</h1>
- *       {/* Content */}
+ *       // Content
  *     </ProtectedRoute>
  *   );
  * }

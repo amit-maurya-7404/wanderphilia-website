@@ -19,10 +19,12 @@ export async function sendEmail({
   to,
   subject,
   html,
+  replyTo,
 }: {
   to: string
   subject: string
   html: string
+  replyTo?: string
 }) {
   if (!emailUser || !emailPass) {
     const error = new Error('EMAIL_USER and EMAIL_PASS must be configured in production environment variables.')
@@ -32,10 +34,15 @@ export async function sendEmail({
 
   try {
     const mailOptions = {
-      from: emailUser,
+      from: `"Wanderphilia Travel Portal" <${emailUser}>`,
       to,
       subject,
       html,
+      replyTo: replyTo || emailUser,
+      headers: {
+        'Auto-Submitted': 'auto-generated',
+        'X-Auto-Response-Loop': 'true',
+      },
     }
 
     const info = await transporter.sendMail(mailOptions)

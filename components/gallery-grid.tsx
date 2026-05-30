@@ -9,6 +9,7 @@ interface GalleryGridImage {
   image: string
   category: string
   alt?: string
+  title?: string
   createdAt: string
 }
 

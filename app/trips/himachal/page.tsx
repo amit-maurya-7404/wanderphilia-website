@@ -42,6 +42,7 @@ export default function HimachalPage() {
   const [isMobile, setIsMobile] = useState(false)
   const [cardsPerView, setCardsPerView] = useState(4)
   const [callbackOpen, setCallbackOpen] = useState(false)
+  const [isDescExpanded, setIsDescExpanded] = useState(false)
 
   // Reviews state
   const [reviews, setReviews] = useState<ReviewItem[]>([])
@@ -201,13 +202,20 @@ export default function HimachalPage() {
                     <span className="ml-2 text-white">₹{(lowestPrice || 0).toLocaleString('en-IN')} / person</span>
                   </div>
 
-                  <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight leading-tight">
+                  <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold tracking-tight leading-tight">
                     20+ Himachal Pradesh Tour Packages 2026
                   </h1>
 
-                  <p className="mt-4 text-sm sm:text-base md:text-lg text-slate-100 leading-7">
+                  <p className={`mt-3 text-sm sm:text-base md:text-lg text-slate-100 ${!isDescExpanded ? 'line-clamp-3 md:line-clamp-none' : ''}`}>
                     All inclusive curated Top OffBeat Himachal Pradesh Group & customised Tour Packages 2026 covering Kullu Valley , Manali , Sissu , Kasol , Parvati Valley , Thirthan Valley , Jibhi , Saanj Valley , Bir Billing , Dalhousie  , Khajjair , McloedGanj , Dharamshala , Amritsar.
                   </p>
+
+                  <button
+                    onClick={() => setIsDescExpanded(!isDescExpanded)}
+                    className="mt-0 text-xs md:hidden font-semibold text-amber-300 hover:text-amber-400 transition-colors uppercase tracking-wider focus:outline-none"
+                  >
+                    {isDescExpanded ? 'View Less ▲' : 'View More ▼'}
+                  </button>
 
                   <div className="mt-5 flex flex-row gap-2 sm:flex-row sm:items-center">
                     <Button

@@ -16,7 +16,7 @@ function TrackPageView() {
       window.dataLayer = window.dataLayer || [];
       if (!window.gtag) {
         window.gtag = function gtag() {
-          window.dataLayer.push(arguments);
+          window.dataLayer!.push(arguments);
         };
       }
       window.gtag('js', new Date());

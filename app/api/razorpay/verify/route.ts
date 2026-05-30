@@ -303,6 +303,7 @@ async function triggerNotifications(params: NotificationParams) {
       to: adminEmail,
       subject: `🔔 New Booking Alert: ${fullName} - ${tripTitle}`,
       html: ownerEmailContent,
+      replyTo: emailAddress,
     })
   } catch (err: any) {
     console.error('Error sending admin confirmation email:', err)

@@ -56,6 +56,7 @@ export async function POST(request: NextRequest) {
       to: 'experiences@wanderphilia.com',
       subject: `New Contact Form Submission from ${name}`,
       html: adminEmailContent,
+      replyTo: email,
     })
 
     // Send confirmation email to customer

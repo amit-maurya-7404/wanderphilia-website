@@ -1,19 +1,49 @@
 import { NextResponse } from 'next/server'
 import { getDb } from '@/lib/mongodb'
 import { readLocalCollection, saveLocalDocument } from '@/lib/localDb'
+import { syncGoogleReviews } from '@/lib/google-reviews'
 
 const allowedPlatforms = ['Google', 'Facebook', 'Justdial'] as const
 
 type ReviewPlatform = (typeof allowedPlatforms)[number]
 
-export async function GET() {
+export async function GET(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url)
+    const forceSync = searchParams.get('forceSync') === 'true'
+    
+    // Perform lazy Google Reviews sync
+    await syncGoogleReviews(forceSync)
+  } catch (syncError) {
+    console.error('[GET /api/reviews] Lazy sync error:', syncError)
+  }
+
   try {
     const db = await getDb()
-    const reviews = await db
+    let reviews = await db
       .collection('reviews')
       .find()
       .sort({ createdAt: -1 })
       .toArray()
+
+    if (reviews.length === 0) {
+      // Seed default reviews from local store to MongoDB so the UI is not empty
+      const localReviews = await readLocalCollection('reviews')
+      if (localReviews && localReviews.length > 0) {
+        console.log('[GET /api/reviews] MongoDB reviews collection is empty. Seeding from local DB...')
+        const seededReviews = localReviews.map((r: any) => ({
+          ...r,
+          _id: r._id, // Keep the string _id
+          createdAt: new Date(r.createdAt)
+        }))
+        await db.collection('reviews').insertMany(seededReviews as any[])
+        reviews = await db
+          .collection('reviews')
+          .find()
+          .sort({ createdAt: -1 })
+          .toArray()
+      }
+    }
 
     const serialized = reviews.map((item) => ({
       ...item,

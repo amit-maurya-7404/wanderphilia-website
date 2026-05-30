@@ -1,8 +1,8 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { ReviewCard } from '@/components/review-card'
-import { Star } from 'lucide-react'
+import { Star, ChevronLeft, ChevronRight, MessageSquare, ExternalLink } from 'lucide-react'
 
 interface ReviewItem {
   _id: string
@@ -11,53 +11,95 @@ interface ReviewItem {
   rating: number
   comment: string
   createdAt: string
+  profilePhotoUrl?: string
+  relativeTime?: string
+}
+
+interface PlatformStat {
+  rating: number
+  count: number
+}
+
+interface StatsData {
+  platforms: {
+    Google: PlatformStat
+    Facebook: PlatformStat
+    Justdial: PlatformStat
+  }
+  summary: {
+    avgRating: string
+    totalReviews: number
+  }
 }
 
 export function ReviewsSection() {
   const [reviews, setReviews] = useState<ReviewItem[]>([])
+  const [stats, setStats] = useState<StatsData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const sliderRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    async function fetchReviews() {
+    async function loadData() {
       try {
-        const response = await fetch('/api/reviews')
-        if (!response.ok) {
+        const [reviewsRes, statsRes] = await Promise.all([
+          fetch('/api/reviews'),
+          fetch('/api/reviews/stats'),
+        ])
+
+        if (!reviewsRes.ok || !statsRes.ok) {
           throw new Error('Unable to load reviews')
         }
-        const data = await response.json()
-        setReviews(data)
-      } catch (error) {
-        setError((error as Error).message)
+
+        const reviewsData = await reviewsRes.json()
+        const statsData = await statsRes.json()
+
+        setReviews(reviewsData)
+        setStats(statsData)
+      } catch (err) {
+        setError((err as Error).message)
       } finally {
         setLoading(false)
       }
     }
 
-    fetchReviews()
+    loadData()
   }, [])
 
-  const displayReviews = reviews.slice(0, 6)
-  const avgRating = reviews.length > 0 ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1) : '0.0'
-  const totalReviews = reviews.length
+  const scrollSlider = (direction: 'left' | 'right') => {
+    if (sliderRef.current) {
+      const { scrollLeft, clientWidth } = sliderRef.current
+      const cardWidth = 360 // Approx width of card + gap
+      const scrollAmount =
+        direction === 'left'
+          ? scrollLeft - cardWidth * 2
+          : scrollLeft + cardWidth * 2
+
+      sliderRef.current.scrollTo({
+        left: scrollAmount,
+        behavior: 'smooth',
+      })
+    }
+  }
+
+  const avgRating = stats?.summary.avgRating || '4.9'
+  const totalReviews = stats?.summary.totalReviews || 479
 
   if (loading) {
     return (
-      <section className="py-16 md:py-24 bg-white">
+      <section className="py-24 bg-gradient-to-b from-gray-50 via-white to-gray-50 border-t border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <span className="inline-block px-4 py-2 rounded-full bg-yellow-100 text-yellow-700 font-semibold text-sm mb-4">
+            <span className="inline-block px-4 py-1.5 rounded-full bg-yellow-50 border border-yellow-200 text-yellow-700 font-semibold text-xs mb-4 uppercase tracking-wider">
               ⭐ Customer Reviews
             </span>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 tracking-tight">
               What Our Travelers Say
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Trusted by thousands of travelers. Here's what they have to say about their Wanderphilia experiences.
-            </p>
           </div>
-          <div className="text-center py-12">
-            <p className="text-gray-500">Loading reviews...</p>
+          <div className="text-center py-20 flex flex-col items-center justify-center gap-3">
+            <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+            <p className="text-gray-500 font-medium">Fetching real-time reviews...</p>
           </div>
         </div>
       </section>
@@ -66,31 +108,11 @@ export function ReviewsSection() {
 
   if (error) {
     return (
-      <section className="py-16 md:py-24 bg-white">
+      <section className="py-24 bg-gradient-to-b from-gray-50 via-white to-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center py-12 text-red-600">{error}</div>
-        </div>
-      </section>
-    )
-  }
-
-  if (reviews.length === 0) {
-    return (
-      <section className="py-16 md:py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <span className="inline-block px-4 py-2 rounded-full bg-yellow-100 text-yellow-700 font-semibold text-sm mb-4">
-              ⭐ Customer Reviews
-            </span>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              What Our Travelers Say
-            </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Trusted by thousands of travelers. Here's what they have to say about their Wanderphilia experiences.
-            </p>
-          </div>
-          <div className="text-center py-12">
-            <p className="text-gray-500">No reviews available yet. Check back soon!</p>
+          <div className="text-center py-12 text-red-600 bg-red-50 rounded-2xl border border-red-100 p-6">
+            <p className="font-semibold mb-2">Failed to load reviews data</p>
+            <p className="text-sm text-red-500">{error}</p>
           </div>
         </div>
       </section>
@@ -98,68 +120,161 @@ export function ReviewsSection() {
   }
 
   return (
-    <section className="py-16 md:py-24 bg-white">
+    <section className="py-24 bg-gradient-to-b from-gray-50 via-white to-gray-50 border-t border-b border-gray-100 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <span className="inline-block px-4 py-2 rounded-full bg-yellow-100 text-yellow-700 font-semibold text-sm mb-4">
-            ⭐ Customer Reviews
-          </span>
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            What Our Travelers Say
-          </h2>
-
-          <div className="flex items-center justify-center gap-4 mb-8">
-            <div className="flex items-center gap-2">
-              {[...Array(5)].map((_, i) => (
-                <Star
-                  key={i}
-                  size={24}
-                  className="fill-yellow-400 text-yellow-400"
-                />
-              ))}
-            </div>
-            <div className="text-left">
-              <p className="text-3xl font-bold text-gray-900">{avgRating}</p>
-              <p className="text-gray-600 text-sm">{totalReviews} reviews across platforms</p>
-            </div>
+        
+        {/* Section Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+          <div className="text-left max-w-2xl">
+            <span className="inline-block px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary font-bold text-xs mb-4 uppercase tracking-wider">
+              ⭐ Customer Testimonials
+            </span>
+            <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 tracking-tight">
+              Verified Reviews From Travelers
+            </h2>
+            <p className="text-lg text-gray-600 font-medium leading-relaxed">
+              We aggregate raw feedback across platforms. Here is the real experience of our community on their travels.
+            </p>
           </div>
 
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Trusted by thousands of travelers. Here's what they have to say about their Wanderphilia experiences.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {displayReviews.map((review) => (
-            <ReviewCard key={review._id} {...review} />
-          ))}
-        </div>
-
-        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 pt-16 border-t border-gray-200">
-          {[
-            { name: 'Google', rating: '4.9', reviews: 234, color: 'text-blue-600' },
-            { name: 'Facebook', rating: '4.8', reviews: 156, color: 'text-blue-700' },
-            { name: 'Justdial', rating: '4.9', reviews: 89, color: 'text-orange-600' },
-          ].map((platform) => (
-            <div key={platform.name} className="text-center">
-              <p className="text-sm font-semibold text-gray-500 mb-2">{platform.name}</p>
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <span className={`text-3xl font-bold ${platform.color}`}>{platform.rating}</span>
-                <Star size={20} className="fill-yellow-400 text-yellow-400" />
-              </div>
-              <p className="text-gray-600 text-sm">{platform.reviews} reviews</p>
+          {/* Dynamic Average Block */}
+          <div className="flex items-center gap-4 bg-white p-5 rounded-2xl border border-gray-100 shadow-sm self-start md:self-auto shrink-0">
+            <div className="bg-amber-400 text-white rounded-xl w-14 h-14 flex items-center justify-center text-2xl font-black shadow-md shadow-amber-400/20">
+              {avgRating}
             </div>
-          ))}
+            <div>
+              <div className="flex items-center gap-0.5 mb-1">
+                {[...Array(5)].map((_, i) => (
+                  <Star
+                    key={i}
+                    size={16}
+                    className="fill-amber-400 text-amber-400"
+                  />
+                ))}
+              </div>
+              <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider">
+                {totalReviews} Verified Reviews
+              </p>
+            </div>
+          </div>
         </div>
 
-        <div className="mt-12 text-center">
-          <a
-            href="/contact"
-            className="inline-block px-8 py-3 bg-primary text-white font-semibold rounded-full hover:bg-primary/90 transition-colors"
+        {/* Carousel Slider Wrapper */}
+        <div className="relative group/slider">
+          {/* Navigation Buttons */}
+          <button
+            onClick={() => scrollSlider('left')}
+            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 w-12 h-12 rounded-full bg-white/90 backdrop-blur border border-gray-200 shadow-lg text-gray-700 flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-all opacity-0 group-hover/slider:opacity-100 focus:opacity-100 pointer-events-auto hidden md:flex"
+            aria-label="Previous review"
           >
-            Share Your Experience →
+            <ChevronLeft size={20} />
+          </button>
+          
+          <button
+            onClick={() => scrollSlider('right')}
+            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 w-12 h-12 rounded-full bg-white/90 backdrop-blur border border-gray-200 shadow-lg text-gray-700 flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-all opacity-0 group-hover/slider:opacity-100 focus:opacity-100 pointer-events-auto hidden md:flex"
+            aria-label="Next review"
+          >
+            <ChevronRight size={20} />
+          </button>
+
+          {/* Slider Content */}
+          <div
+            ref={sliderRef}
+            className="flex gap-6 overflow-x-auto snap-x snap-mandatory scrollbar-none pb-8 px-1 scroll-smooth"
+            style={{ WebkitOverflowScrolling: 'touch' }}
+          >
+            {reviews.map((review) => (
+              <div
+                key={review._id}
+                className="w-[300px] md:w-[360px] shrink-0 snap-start select-none"
+              >
+                <ReviewCard {...review} />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Platform Stat Summary Cards */}
+        {stats && (
+          <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-6 pt-12 border-t border-gray-200/60">
+            {[
+              {
+                name: 'Google',
+                rating: stats.platforms.Google.rating.toFixed(1),
+                reviews: stats.platforms.Google.count,
+                color: 'text-red-500 bg-red-50/50 hover:bg-red-50',
+                borderColor: 'border-red-100/70',
+                link: 'https://www.google.com/search?q=Wanderphilia+reviews',
+              },
+              {
+                name: 'Facebook',
+                rating: stats.platforms.Facebook.rating.toFixed(1),
+                reviews: stats.platforms.Facebook.count,
+                color: 'text-blue-600 bg-blue-50/50 hover:bg-blue-50',
+                borderColor: 'border-blue-100/70',
+                link: 'https://www.facebook.com/wanderphilia/reviews',
+              },
+              {
+                name: 'Justdial',
+                rating: stats.platforms.Justdial.rating.toFixed(1),
+                reviews: stats.platforms.Justdial.count,
+                color: 'text-orange-500 bg-orange-50/50 hover:bg-orange-50',
+                borderColor: 'border-orange-100/70',
+                link: 'https://www.justdial.com',
+              },
+            ].map((platform) => (
+              <a
+                key={platform.name}
+                href={platform.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`p-5 rounded-2xl border ${platform.borderColor} ${platform.color} transition-all duration-300 flex items-center justify-between group/pcard hover:shadow-md`}
+              >
+                <div className="text-left">
+                  <span className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-1">
+                    {platform.name}
+                  </span>
+                  <span className="text-gray-900 font-extrabold text-xs block">
+                    {platform.reviews} Total Reviews
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1">
+                    <span className="text-2xl font-black text-gray-900 tracking-tight">
+                      {platform.rating}
+                    </span>
+                    <Star size={16} className="fill-amber-400 text-amber-400 shrink-0" />
+                  </div>
+                  <ExternalLink size={14} className="text-gray-300 group-hover/pcard:text-gray-500 transition-colors ml-1" />
+                </div>
+              </a>
+            ))}
+          </div>
+        )}
+
+        {/* Action Buttons */}
+        <div className="mt-14 flex flex-col sm:flex-row items-center justify-center gap-4">
+          <a
+            href="https://www.google.com/search?q=Wanderphilia+reviews"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-primary text-white font-bold rounded-full hover:bg-primary/95 shadow-lg shadow-primary/20 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 text-sm"
+          >
+            <MessageSquare size={16} />
+            Write A Google Review
+          </a>
+          <a
+            href="https://www.google.com/search?q=Wanderphilia+reviews"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-white text-gray-800 font-bold rounded-full border border-gray-200 hover:bg-gray-50 hover:border-gray-300 transition-all text-sm shadow-sm"
+          >
+            See All Reviews
+            <ExternalLink size={14} className="text-gray-500" />
           </a>
         </div>
+
       </div>
     </section>
   )

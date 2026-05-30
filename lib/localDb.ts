@@ -8,6 +8,7 @@ interface LocalDbShape {
   gallery: Array<Record<string, unknown>>
   reels: Array<Record<string, unknown>>
   reviews: Array<Record<string, unknown>>
+  metadata?: Record<string, unknown>
 }
 
 const localDbPath = path.join(process.cwd(), 'data', 'local-db.json')
@@ -16,6 +17,7 @@ const defaultLocalDb: LocalDbShape = {
   gallery: [],
   reels: [],
   reviews: [],
+  metadata: {},
 }
 
 async function ensureLocalDb() {
@@ -39,6 +41,7 @@ async function readLocalDb(): Promise<LocalDbShape> {
       gallery: Array.isArray(parsed.gallery) ? parsed.gallery : [],
       reels: Array.isArray(parsed.reels) ? parsed.reels : [],
       reviews: Array.isArray(parsed.reviews) ? parsed.reviews : [],
+      metadata: parsed.metadata && typeof parsed.metadata === 'object' ? parsed.metadata : {},
     }
   } catch {
     return defaultLocalDb
@@ -66,4 +69,19 @@ export async function saveLocalDocument(collection: LocalCollectionName, documen
   db[collection] = [stored, ...(db[collection] ?? [])]
   await writeLocalDb(db)
   return stored
+}
+
+export async function readLocalMetadata() {
+  const db = await readLocalDb()
+  return db.metadata || {}
+}
+
+export async function writeLocalMetadata(metadata: Record<string, unknown>) {
+  const db = await readLocalDb()
+  db.metadata = {
+    ...(db.metadata || {}),
+    ...metadata,
+  }
+  await writeLocalDb(db)
+  return db.metadata
 }
