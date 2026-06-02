@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, use } from 'react'
 import Image from 'next/image'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
@@ -35,9 +35,19 @@ interface CategoryPageProps {
   }>
 }
 
-export default function CategoryPage() {
-  const params = useParams()
-  const categoryId = params.categoryId as string
+export default function CategoryPage({ params }: CategoryPageProps) {
+  const clientParams = useParams()
+  
+  let resolvedParams: any = null
+  if (params) {
+    if (params instanceof Promise || typeof (params as any).then === 'function') {
+      resolvedParams = use(params)
+    } else {
+      resolvedParams = params
+    }
+  }
+
+  const categoryId = (resolvedParams?.categoryId || clientParams?.categoryId) as string
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [carouselIndex1, setCarouselIndex1] = useState(0)
   const [carouselIndex2, setCarouselIndex2] = useState(0)

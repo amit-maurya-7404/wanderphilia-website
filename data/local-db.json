@@ -274,6 +274,104 @@
       "createdAt": "2024-05-11T12:20:00Z"
     },
     {
+      "_id": "gallery-bhutan-cover-1",
+      "image": "/images/bhutan-cover1.jpg",
+      "category": "bhutan",
+      "alt": "Scenic Bhutan Valley",
+      "createdAt": "2024-05-11T12:20:01Z"
+    },
+    {
+      "_id": "gallery-bhutan-cover-2",
+      "image": "/images/bhutan-cover2.jpg",
+      "category": "bhutan",
+      "alt": "Bhutan Monasteries",
+      "createdAt": "2024-05-11T12:20:02Z"
+    },
+    {
+      "_id": "gallery-bhutan-cover-3",
+      "image": "/images/bhutan-cover3.PNG",
+      "category": "bhutan",
+      "alt": "Beautiful mountains in Bhutan",
+      "createdAt": "2024-05-11T12:20:03Z"
+    },
+    {
+      "_id": "gallery-bhutan-cover-4",
+      "image": "/images/bhutan-cover4.PNG",
+      "category": "bhutan",
+      "alt": "Bhutanese culture and landscape",
+      "createdAt": "2024-05-11T12:20:04Z"
+    },
+    {
+      "_id": "gallery-bhutan-my-1",
+      "image": "/images/bhutan1.jpg",
+      "category": "bhutan",
+      "alt": "Bhutan Highlights 1",
+      "createdAt": "2024-05-11T12:20:11Z"
+    },
+    {
+      "_id": "gallery-bhutan-my-2",
+      "image": "/images/bhutan2.jpg",
+      "category": "bhutan",
+      "alt": "Bhutan Highlights 2",
+      "createdAt": "2024-05-11T12:20:12Z"
+    },
+    {
+      "_id": "gallery-bhutan-my-3",
+      "image": "/images/bhutan3.jpg",
+      "category": "bhutan",
+      "alt": "Bhutan Highlights 3",
+      "createdAt": "2024-05-11T12:20:13Z"
+    },
+    {
+      "_id": "gallery-bhutan-my-5",
+      "image": "/images/bhutan5.PNG",
+      "category": "bhutan",
+      "alt": "Bhutan Highlights 5",
+      "createdAt": "2024-05-11T12:20:15Z"
+    },
+    {
+      "_id": "gallery-bhutan-my-6",
+      "image": "/images/bhutan6.PNG",
+      "category": "bhutan",
+      "alt": "Bhutan Highlights 6",
+      "createdAt": "2024-05-11T12:20:16Z"
+    },
+    {
+      "_id": "gallery-bhutan-my-7",
+      "image": "/images/bhutan7.PNG",
+      "category": "bhutan",
+      "alt": "Bhutan Highlights 7",
+      "createdAt": "2024-05-11T12:20:17Z"
+    },
+    {
+      "_id": "gallery-bhutan-my-8",
+      "image": "/images/bhutan8.PNG",
+      "category": "bhutan",
+      "alt": "Bhutan Highlights 8",
+      "createdAt": "2024-05-11T12:20:18Z"
+    },
+    {
+      "_id": "gallery-bhutan-my-9",
+      "image": "/images/bhutan9.PNG",
+      "category": "bhutan",
+      "alt": "Bhutan Highlights 9",
+      "createdAt": "2024-05-11T12:20:19Z"
+    },
+    {
+      "_id": "gallery-bhutan-my-10",
+      "image": "/images/bhutan10.PNG",
+      "category": "bhutan",
+      "alt": "Bhutan Highlights 10",
+      "createdAt": "2024-05-11T12:20:20Z"
+    },
+    {
+      "_id": "gallery-bhutan-my-11",
+      "image": "/images/bhutan11.PNG",
+      "category": "bhutan",
+      "alt": "Bhutan Highlights 11",
+      "createdAt": "2024-05-11T12:20:21Z"
+    },
+    {
       "_id": "gallery-himachal-1",
       "image": "/images/himachal.jpg",
       "category": "himachal",

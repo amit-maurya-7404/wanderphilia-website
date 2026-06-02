@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo, useEffect, useRef } from 'react'
+import { useState, useMemo, useEffect, useRef, use } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { notFound } from 'next/navigation'
 import { Navbar } from '@/components/navbar'
@@ -191,7 +191,11 @@ function renderItineraryDescription(description: string | string[]) {
 }
 
 
-export default function CatchAllTripDetailPage() {
+interface PageProps {
+  params?: Promise<{ slug: string }> | { slug: string }
+}
+
+export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
   type SelectionItem = {
     name: string
     price: number
@@ -200,8 +204,19 @@ export default function CatchAllTripDetailPage() {
   const [selections, setSelections] = useState<SelectionItem[]>([])
   const [showFullDesc, setShowFullDesc] = useState(false)
 
-  const params = useParams()
-  const slug = params?.slug as string | undefined
+  const clientParams = useParams()
+  
+  // Safely unwrap params if it is a Promise, otherwise use it directly or fallback to useParams()
+  let resolvedParams: any = null
+  if (params) {
+    if (params instanceof Promise || typeof (params as any).then === 'function') {
+      resolvedParams = use(params)
+    } else {
+      resolvedParams = params
+    }
+  }
+
+  const slug = (resolvedParams?.slug || clientParams?.slug) as string | undefined
   const total = selections.reduce((sum, item) => sum + item.price, 0)
   const trip = useMemo(() => slug ? trips.find(t => t.slug === slug) : undefined, [slug])
 

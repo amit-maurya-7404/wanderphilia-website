@@ -206,7 +206,7 @@ export default function BhutanPage() {
                   </h1>
 
                   <p className="mt-3 md:mt-0 text-sm sm:text-base md:text-lg max-w-2xl text-white leading-relaxed">
-                    All Inclusive Bhutan curated Tour Packages covering Thimphu , Punakha , Phobjika Valley & Paro 
+                    All Inclusive Bhutan curated Tour Packages covering Thimphu , Punakha , Phobjika Valley & Paro
                   </p>
 
                   <div className="mt-5 md:mt-5 flex flex-row gap-2 sm:flex-row sm:items-center">
