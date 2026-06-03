@@ -178,7 +178,7 @@ export default function AboutPage() {
 
               {/* Bharat Petroleum */}
               <div className="">
-                <img src="/images/bp_logo.png" alt="Bharat Petroleum" className="h-20 w-auto object-contain" />
+                <img src="/images/BP_logo.png" alt="Bharat Petroleum" className="h-20 w-auto object-contain" />
               </div>
 
               {/* Subko */}

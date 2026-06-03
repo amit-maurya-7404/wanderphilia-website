@@ -18,31 +18,58 @@ export async function GET(request: Request) {
     console.error('[GET /api/reviews] Lazy sync error:', syncError)
   }
 
+  const isConfigured = !!(process.env.GOOGLE_PLACES_API_KEY && process.env.GOOGLE_PLACE_ID)
+
   try {
     const db = await getDb()
+    
+    // Check if we have any successfully synced Google reviews in the database
+    const hasSyncedReviews = await db.collection('reviews').findOne({
+      _id: { $regex: /^google-/ } as any
+    })
+
+    if (isConfigured && hasSyncedReviews) {
+      // If live Google reviews are successfully synced, delete the dummy reviews from MongoDB database
+      await db.collection('reviews').deleteMany({
+        _id: { $in: ['review-1', 'review-2', 'review-3', 'review-4', 'review-5'] } as any
+      })
+    }
+
     let reviews = await db
       .collection('reviews')
       .find()
       .sort({ createdAt: -1 })
       .toArray()
 
-    if (reviews.length === 0) {
-      // Seed default reviews from local store to MongoDB so the UI is not empty
+    // Seed dummy reviews if the database has no reviews or if live sync has not succeeded yet
+    const hasGoogleReviews = reviews.some(r => r._id.toString().startsWith('google-'))
+    if (reviews.length === 0 || (!hasGoogleReviews && reviews.filter(r => !r._id.toString().startsWith('review-')).length === 0)) {
       const localReviews = await readLocalCollection('reviews')
       if (localReviews && localReviews.length > 0) {
-        console.log('[GET /api/reviews] MongoDB reviews collection is empty. Seeding from local DB...')
+        console.log('[GET /api/reviews] Seeding/restoring dummy reviews as fallback until live reviews sync successfully...')
         const seededReviews = localReviews.map((r: any) => ({
           ...r,
           _id: r._id, // Keep the string _id
           createdAt: new Date(r.createdAt)
         }))
-        await db.collection('reviews').insertMany(seededReviews as any[])
+        for (const sr of seededReviews) {
+          await db.collection('reviews').updateOne(
+            { _id: sr._id as any },
+            { $setOnInsert: sr },
+            { upsert: true }
+          )
+        }
         reviews = await db
           .collection('reviews')
           .find()
           .sort({ createdAt: -1 })
           .toArray()
       }
+    }
+
+    // Filter out dummy reviews only if we have synced Google reviews
+    if (isConfigured && hasGoogleReviews) {
+      reviews = reviews.filter((item) => !item._id.toString().startsWith('review-'))
     }
 
     const serialized = reviews.map((item) => ({
@@ -53,7 +80,11 @@ export async function GET(request: Request) {
     return NextResponse.json(serialized)
   } catch (error) {
     console.error('[GET /api/reviews] MongoDB error, falling back to local store:', error)
-    const localReviews = await readLocalCollection('reviews')
+    let localReviews = await readLocalCollection('reviews')
+    const hasLocalSynced = localReviews.some((r: any) => r._id.startsWith('google-'))
+    if (isConfigured && hasLocalSynced) {
+      localReviews = localReviews.filter((item: any) => !item._id.startsWith('review-'))
+    }
     return NextResponse.json(localReviews)
   }
 }

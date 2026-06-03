@@ -210,7 +210,7 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
   let resolvedParams: any = null
   if (params) {
     if (params instanceof Promise || typeof (params as any).then === 'function') {
-      resolvedParams = use(params)
+      resolvedParams = use(params as Promise<any>)
     } else {
       resolvedParams = params
     }

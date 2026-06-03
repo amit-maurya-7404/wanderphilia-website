@@ -124,25 +124,23 @@ export function ReviewsSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
-          <div className="text-left max-w-2xl">
-            <span className="inline-block px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary font-bold text-xs mb-4 uppercase tracking-wider">
-              ⭐ Customer Testimonials
-            </span>
-            <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 tracking-tight">
-              Verified Reviews From Travelers
-            </h2>
-            <p className="text-lg text-gray-600 font-medium leading-relaxed">
-              We aggregate raw feedback across platforms. Here is the real experience of our community on their travels.
-            </p>
-          </div>
+        <div className="text-center mb-12 flex flex-col items-center">
+          <span className="inline-block px-4 py-2 rounded-full bg-primary/10 text-primary font-semibold text-sm mb-4">
+            ⭐ Customer Testimonials
+          </span>
+          <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 tracking-tight">
+            Verified Reviews From Travelers
+          </h2>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8 leading-relaxed">
+            We aggregate raw feedback across platforms. Here is the real experience of our community on their travels.
+          </p>
 
           {/* Dynamic Average Block */}
-          <div className="flex items-center gap-4 bg-white p-5 rounded-2xl border border-gray-100 shadow-sm self-start md:self-auto shrink-0">
+          <div className="flex items-center gap-4 bg-white p-5 rounded-2xl border border-gray-100 shadow-sm shrink-0">
             <div className="bg-amber-400 text-white rounded-xl w-14 h-14 flex items-center justify-center text-2xl font-black shadow-md shadow-amber-400/20">
               {avgRating}
             </div>
-            <div>
+            <div className="text-left">
               <div className="flex items-center gap-0.5 mb-1">
                 {[...Array(5)].map((_, i) => (
                   <Star
@@ -196,62 +194,74 @@ export function ReviewsSection() {
         </div>
 
         {/* Platform Stat Summary Cards */}
-        {stats && (
-          <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-6 pt-12 border-t border-gray-200/60">
-            {[
-              {
-                name: 'Google',
-                rating: stats.platforms.Google.rating.toFixed(1),
-                reviews: stats.platforms.Google.count,
-                color: 'text-red-500 bg-red-50/50 hover:bg-red-50',
-                borderColor: 'border-red-100/70',
-                link: 'https://www.google.com/search?q=Wanderphilia+reviews',
-              },
-              {
-                name: 'Facebook',
-                rating: stats.platforms.Facebook.rating.toFixed(1),
-                reviews: stats.platforms.Facebook.count,
-                color: 'text-blue-600 bg-blue-50/50 hover:bg-blue-50',
-                borderColor: 'border-blue-100/70',
-                link: 'https://www.facebook.com/wanderphilia/reviews',
-              },
-              {
-                name: 'Justdial',
-                rating: stats.platforms.Justdial.rating.toFixed(1),
-                reviews: stats.platforms.Justdial.count,
-                color: 'text-orange-500 bg-orange-50/50 hover:bg-orange-50',
-                borderColor: 'border-orange-100/70',
-                link: 'https://www.justdial.com',
-              },
-            ].map((platform) => (
-              <a
-                key={platform.name}
-                href={platform.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`p-5 rounded-2xl border ${platform.borderColor} ${platform.color} transition-all duration-300 flex items-center justify-between group/pcard hover:shadow-md`}
-              >
-                <div className="text-left">
-                  <span className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-1">
-                    {platform.name}
-                  </span>
-                  <span className="text-gray-900 font-extrabold text-xs block">
-                    {platform.reviews} Total Reviews
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="flex items-center gap-1">
-                    <span className="text-2xl font-black text-gray-900 tracking-tight">
-                      {platform.rating}
+        {stats && (() => {
+          const activePlatforms = [
+            {
+              name: 'Google',
+              rating: stats.platforms.Google.rating.toFixed(1),
+              reviews: stats.platforms.Google.count,
+              color: 'text-red-500 bg-red-50/50 hover:bg-red-50',
+              borderColor: 'border-red-100/70',
+              link: 'https://www.google.com/search?q=Wanderphilia+reviews',
+            },
+            {
+              name: 'Facebook',
+              rating: stats.platforms.Facebook.rating.toFixed(1),
+              reviews: stats.platforms.Facebook.count,
+              color: 'text-blue-600 bg-blue-50/50 hover:bg-blue-50',
+              borderColor: 'border-blue-100/70',
+              link: 'https://www.facebook.com/wanderphilia/reviews',
+            },
+            {
+              name: 'Justdial',
+              rating: stats.platforms.Justdial.rating.toFixed(1),
+              reviews: stats.platforms.Justdial.count,
+              color: 'text-orange-500 bg-orange-50/50 hover:bg-orange-50',
+              borderColor: 'border-orange-100/70',
+              link: 'https://www.justdial.com',
+            },
+          ].filter((p) => p.reviews > 0)
+
+          if (activePlatforms.length === 0) return null
+
+          return (
+            <div className={`mt-8 grid grid-cols-1 ${
+              activePlatforms.length === 1
+                ? 'sm:grid-cols-1 max-w-md mx-auto'
+                : activePlatforms.length === 2
+                ? 'sm:grid-cols-2 max-w-2xl mx-auto'
+                : 'sm:grid-cols-3'
+            } gap-6 pt-12 border-t border-gray-200/60`}>
+              {activePlatforms.map((platform) => (
+                <a
+                  key={platform.name}
+                  href={platform.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`p-5 rounded-2xl border ${platform.borderColor} ${platform.color} transition-all duration-300 flex items-center justify-between group/pcard hover:shadow-md`}
+                >
+                  <div className="text-left">
+                    <span className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-1">
+                      {platform.name}
                     </span>
-                    <Star size={16} className="fill-amber-400 text-amber-400 shrink-0" />
+                    <span className="text-gray-900 font-extrabold text-xs block">
+                      {platform.reviews} Total Reviews
+                    </span>
                   </div>
-                  <ExternalLink size={14} className="text-gray-300 group-hover/pcard:text-gray-500 transition-colors ml-1" />
-                </div>
-              </a>
-            ))}
-          </div>
-        )}
+                  <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1">
+                      <span className="text-2xl font-black text-gray-900 tracking-tight">
+                        {platform.rating}
+                      </span>
+                      <Star size={16} className="fill-amber-400 text-amber-400 shrink-0" />
+                    </div>
+                    <ExternalLink size={14} className="text-gray-300 group-hover/pcard:text-gray-500 transition-colors ml-1" />
+                  </div>
+                </a>
+              ))}
+            </div>
+          )
+        })()}
 
         {/* Action Buttons */}
         <div className="mt-14 flex flex-col sm:flex-row items-center justify-center gap-4">

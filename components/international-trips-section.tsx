@@ -77,7 +77,7 @@ export function InternationalTripsSection() {
   }, [cardsPerView])
 
   const internationalRegions = [
-    { title: 'Bhutan', region: 'Bhutan', image: '/images/bhutan_cat.jpg', price: getCheapestPriceForCategory('bhutan', 109900) },
+    { title: 'Bhutan', region: 'Bhutan', image: '/images/Bhutan_cat.jpg', price: getCheapestPriceForCategory('bhutan', 109900) },
     { title: 'Nepal', region: 'Nepal', image: '/images/everest.jpg', price: getCheapestPriceForCategory('nepal', 99900) },
     { title: 'Indonesia', region: 'Indonesia', image: '/images/bali.jpg', price: getCheapestPriceForCategory('indonesia', 69900) },
     { title: 'Switzerland', region: 'Switzerland', image: '/images/swiss.jpg', price: getCheapestPriceForCategory('switzerland', 129900) },
