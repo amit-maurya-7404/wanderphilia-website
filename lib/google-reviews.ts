@@ -64,7 +64,7 @@ export async function syncGoogleReviews(force = false) {
 
   try {
     const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=reviews,rating,user_ratings_total&key=${apiKey}`
-    const response = await fetch(url)
+    const response = await fetch(url, { cache: 'no-store' })
     if (!response.ok) {
       throw new Error(`Google Places API responded with status: ${response.status}`)
     }

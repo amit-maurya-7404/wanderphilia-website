@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import { getDb } from '@/lib/mongodb'
 import { readLocalMetadata, readLocalCollection } from '@/lib/localDb'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET() {
   let googleRating = 4.9
   let googleReviewsCount = 234

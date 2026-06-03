@@ -3,6 +3,8 @@ import { getDb } from '@/lib/mongodb'
 import { readLocalCollection, saveLocalDocument } from '@/lib/localDb'
 import { syncGoogleReviews } from '@/lib/google-reviews'
 
+export const dynamic = 'force-dynamic'
+
 const allowedPlatforms = ['Google', 'Facebook', 'Justdial'] as const
 
 type ReviewPlatform = (typeof allowedPlatforms)[number]
