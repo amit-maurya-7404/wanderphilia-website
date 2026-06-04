@@ -134,42 +134,47 @@ export async function syncGoogleReviews(force = false) {
 
     // Local DB Fallback (if useMongo is false or failed)
     if (!useMongo) {
-      // 1. Save metadata locally
-      await writeLocalMetadata({
-        googleRating: rating,
-        googleReviewsCount: user_ratings_total,
-        lastSyncedAt: now.toISOString(),
-      })
+      try {
+        // 1. Save metadata locally
+        await writeLocalMetadata({
+          googleRating: rating,
+          googleReviewsCount: user_ratings_total,
+          lastSyncedAt: now.toISOString(),
+        })
 
-      // 2. Insert reviews locally
-      const localReviews = (await readLocalCollection('reviews')) as any[]
-      let updatedCount = 0
+        // 2. Insert reviews locally
+        const localReviews = (await readLocalCollection('reviews')) as any[]
+        let updatedCount = 0
 
-      // Read all local reviews and merge
-      const updatedReviewsList = [...localReviews]
+        // Read all local reviews and merge
+        const updatedReviewsList = [...localReviews]
 
-      for (const review of processedReviews) {
-        const idx = updatedReviewsList.findIndex((lr) => lr._id === review._id)
-        if (idx > -1) {
-          // Update
-          updatedReviewsList[idx] = { ...updatedReviewsList[idx], ...review }
-        } else {
-          // Prepend
-          updatedReviewsList.unshift(review)
-          updatedCount++
+        for (const review of processedReviews) {
+          const idx = updatedReviewsList.findIndex((lr) => lr._id === review._id)
+          if (idx > -1) {
+            // Update
+            updatedReviewsList[idx] = { ...updatedReviewsList[idx], ...review }
+          } else {
+            // Prepend
+            updatedReviewsList.unshift(review)
+            updatedCount++
+          }
         }
+
+        // Write updated list
+        const fs = require('fs')
+        const path = require('path')
+        const localDbPath = path.join(process.cwd(), 'data', 'local-db.json')
+        const fullDb = JSON.parse(fs.readFileSync(localDbPath, 'utf8'))
+        fullDb.reviews = updatedReviewsList
+        fs.writeFileSync(localDbPath, JSON.stringify(fullDb, null, 2), 'utf8')
+
+        console.log(`[syncGoogleReviews] Successfully synced ${processedReviews.length} reviews to local-db.json. Added ${updatedCount} new.`)
+        return { success: true, count: processedReviews.length, added: updatedCount }
+      } catch (localDbError) {
+        console.error('[syncGoogleReviews] Local DB fallback write failed (likely read-only filesystem):', localDbError)
+        return { success: false, reason: 'read_only_filesystem', error: (localDbError as Error).message }
       }
-
-      // Write updated list
-      const fs = require('fs')
-      const path = require('path')
-      const localDbPath = path.join(process.cwd(), 'data', 'local-db.json')
-      const fullDb = JSON.parse(fs.readFileSync(localDbPath, 'utf8'))
-      fullDb.reviews = updatedReviewsList
-      fs.writeFileSync(localDbPath, JSON.stringify(fullDb, null, 2), 'utf8')
-
-      console.log(`[syncGoogleReviews] Successfully synced ${processedReviews.length} reviews to local-db.json. Added ${updatedCount} new.`)
-      return { success: true, count: processedReviews.length, added: updatedCount }
     }
 
     return { success: true }

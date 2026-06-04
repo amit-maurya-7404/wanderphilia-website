@@ -9,6 +9,7 @@ const globalMongo = globalThis as MongoGlobal
 const options: MongoClientOptions = {
   maxPoolSize: 10,
   serverSelectionTimeoutMS: 5000,
+  autoSelectFamily: false,
 }
 
 function getMongoUri() {

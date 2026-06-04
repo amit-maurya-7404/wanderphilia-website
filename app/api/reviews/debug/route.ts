@@ -4,10 +4,17 @@ import { syncGoogleReviews } from '@/lib/google-reviews'
 
 export const dynamic = 'force-dynamic'
 
+function obfuscateUri(uri: string | undefined) {
+  if (!uri) return null
+  // Replace the password part between : and @ with ****
+  return uri.replace(/:([^:@]+)@/, ':****@')
+}
+
 export async function GET() {
   const apiKey = process.env.GOOGLE_PLACES_API_KEY
   const placeId = process.env.GOOGLE_PLACE_ID
   const mongoUri = process.env.MONGODB_URI
+  const mongodbDb = process.env.MONGODB_DB
 
   let mongoStatus = 'unknown'
   let mongoError = null
@@ -37,6 +44,8 @@ export async function GET() {
       placeId: placeId || null,
       hasMongoUri: !!mongoUri,
       mongoUriLength: mongoUri ? mongoUri.length : 0,
+      obfuscatedMongoUri: obfuscateUri(mongoUri),
+      mongodbDb: mongodbDb || null,
     },
     mongodb: {
       status: mongoStatus,
