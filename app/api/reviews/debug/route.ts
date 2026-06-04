@@ -6,8 +6,22 @@ export const dynamic = 'force-dynamic'
 
 function obfuscateUri(uri: string | undefined) {
   if (!uri) return null
-  // Replace the password part between : and @ with ****
   return uri.replace(/:([^:@]+)@/, ':****@')
+}
+
+function getPasswordLength(uri: string | undefined) {
+  if (!uri) return 0
+  const match = uri.match(/:([^:@]+)@/)
+  return match ? match[1].length : 0
+}
+
+function getPasswordHint(uri: string | undefined) {
+  if (!uri) return null
+  const match = uri.match(/:([^:@]+)@/)
+  if (!match) return null
+  const pwd = match[1]
+  if (pwd.length === 0) return null
+  return `${pwd[0]}...${pwd[pwd.length - 1]}`
 }
 
 export async function GET() {
@@ -45,6 +59,8 @@ export async function GET() {
       hasMongoUri: !!mongoUri,
       mongoUriLength: mongoUri ? mongoUri.length : 0,
       obfuscatedMongoUri: obfuscateUri(mongoUri),
+      passwordLength: getPasswordLength(mongoUri),
+      passwordHint: getPasswordHint(mongoUri),
       mongodbDb: mongodbDb || null,
     },
     mongodb: {
