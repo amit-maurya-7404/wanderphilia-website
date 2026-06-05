@@ -471,6 +471,56 @@
   ],
   "reviews": [
     {
+      "_id": "google-aditijain-1780498745",
+      "name": "Aditi Jain",
+      "platform": "Google",
+      "rating": 5,
+      "comment": "We recently completed a family trip to Leh-Ladakh organized by Wanderphilia, and it was an absolutely wonderful experience. The entire itinerary was thoughtfully planned and very well organized, making our journey smooth and stress-free.\n\nThe stays arranged throughout the trip were excellent, comfortable, and perfectly suited to our needs. Every detail, from transportation to accommodations, was managed seamlessly, allowing us to fully enjoy the breathtaking beauty of Ladakh.\n\nA special appreciation for the team's responsiveness and support throughout the trip. Their local expertise and attention to detail made a huge difference. We highly recommend Wanderphilia to anyone planning a Leh-Ladakh adventure and would gladly travel with them again in the future.",
+      "createdAt": "2026-06-03T14:59:05.000Z",
+      "profilePhotoUrl": "https://lh3.googleusercontent.com/a/ACg8ocJfCHbACnMVE21m3TDo8t8DOzSBFs6l8_-RxTjr0Q3OkqvAig=s128-c0x00000000-cc-rp-mo",
+      "relativeTime": "in the last week"
+    },
+    {
+      "_id": "google-anshshah-1773118766",
+      "name": "Ansh Shah",
+      "platform": "Google",
+      "rating": 5,
+      "comment": "Amazing experience1",
+      "createdAt": "2026-03-10T04:59:26.000Z",
+      "profilePhotoUrl": "https://lh3.googleusercontent.com/a-/ALV-UjU502eTib-zALj6n_C_z0a6xzFY0P3iJDDm5SQ2Ii5dbyku7sK3=s128-c0x00000000-cc-rp-mo",
+      "relativeTime": "2 months ago"
+    },
+    {
+      "_id": "google-akhilluthra-1773063825",
+      "name": "akhil luthra",
+      "platform": "Google",
+      "rating": 5,
+      "comment": "Our Sri Lanka family holiday was a customised trip with Wanderphilia, and it was amazingly executed by the Wanderphilia team. Everything was well organised and the entire journey was smooth and memorable for our family.\n\nIt was truly an amazing experience, and we would highly recommend Wanderphilia for customised trips and family holidays.",
+      "createdAt": "2026-03-09T13:43:45.000Z",
+      "profilePhotoUrl": "https://lh3.googleusercontent.com/a/ACg8ocKhMh6zzPoeTRzVabKW5jQyuJ-mENqrIvcC2t3jireP6__10Q=s128-c0x00000000-cc-rp-mo",
+      "relativeTime": "2 months ago"
+    },
+    {
+      "_id": "google-shudhitak-1773057087",
+      "name": "Shudhita K",
+      "platform": "Google",
+      "rating": 5,
+      "comment": "We recently booked our Dubai trip with Wanderphilia and it was an amazing experience. The itinerary was perfectly planned with great hotel stays, smooth transfers and fantastic activities like the desert safari and Burj Khalifa visit. Highly recommend Wanderphilia if you are looking for a customised trip with your family or friends.",
+      "createdAt": "2026-03-09T11:51:27.000Z",
+      "profilePhotoUrl": "https://lh3.googleusercontent.com/a-/ALV-UjUAatLf20RS8jfTL98o5X9mlNKOJjOA96--WGNpT3HTwDT-las=s128-c0x00000000-cc-rp-mo",
+      "relativeTime": "2 months ago"
+    },
+    {
+      "_id": "google-shivanigupta-1773062017",
+      "name": "Shivani Gupta",
+      "platform": "Google",
+      "rating": 5,
+      "comment": "Our Thailand vacation with Wanderphilia was honestly one of the smoothest trips we’ve taken. From the moment we landed everything was taken care of - great hotels, fun island tours and perfectly timed sightseeing. Their on ground service is great. If you’re looking for a travel company that truly understands customised travel, Wanderphilia is fantastic. We had the best time and can’t wait to take another trip with them",
+      "createdAt": "2026-03-09T13:13:37.000Z",
+      "profilePhotoUrl": "https://lh3.googleusercontent.com/a/ACg8ocKI9ZziM4FHWgdU7DjzS5atLj5x5B6MghnF_9pmsdssdwmEuA=s128-c0x00000000-cc-rp-mo",
+      "relativeTime": "2 months ago"
+    },
+    {
       "_id": "review-1",
       "name": "Sarah Johnson",
       "platform": "Google",
@@ -510,5 +560,10 @@
       "comment": "Professional, organized, and genuinely passionate about travel. They cared about our experience and it showed every single day.",
       "createdAt": "2025-12-11T11:20:00Z"
     }
-  ]
+  ],
+  "metadata": {
+    "googleRating": 5,
+    "googleReviewsCount": 191,
+    "lastSyncedAt": "2026-06-05T03:41:21.876Z"
+  }
 }
