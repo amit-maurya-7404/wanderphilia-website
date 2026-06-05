@@ -24,6 +24,14 @@ function getPasswordHint(uri: string | undefined) {
   return `${pwd[0]}...${pwd[pwd.length - 1]}`
 }
 
+function getPasswordCharCodes(uri: string | undefined) {
+  if (!uri) return []
+  const match = uri.match(/:([^:@]+)@/)
+  if (!match) return []
+  const pwd = match[1]
+  return Array.from(pwd).map(c => c.charCodeAt(0))
+}
+
 export async function GET() {
   const apiKey = process.env.GOOGLE_PLACES_API_KEY
   const placeId = process.env.GOOGLE_PLACE_ID
@@ -61,6 +69,7 @@ export async function GET() {
       obfuscatedMongoUri: obfuscateUri(mongoUri),
       passwordLength: getPasswordLength(mongoUri),
       passwordHint: getPasswordHint(mongoUri),
+      passwordCharCodes: getPasswordCharCodes(mongoUri),
       mongodbDb: mongodbDb || null,
     },
     mongodb: {
