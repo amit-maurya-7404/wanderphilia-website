@@ -33,7 +33,7 @@ interface GalleryImage {
 
 export default function KashmirPage() {
   const categoryId = 'kashmir'
-  const categoryName = 'Kashmir'
+  const categoryName = '20+ Kashmir Tour Packages 2026'
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [carouselIndex1, setCarouselIndex1] = useState(0)
   const [carouselIndex2, setCarouselIndex2] = useState(0)
@@ -42,6 +42,8 @@ export default function KashmirPage() {
   const [isMobile, setIsMobile] = useState(false)
   const [cardsPerView, setCardsPerView] = useState(4);
   const [callbackOpen, setCallbackOpen] = useState(false)
+  const [isDescExpanded, setIsDescExpanded] = useState(false)
+
   // Reviews state
   const [reviews, setReviews] = useState<ReviewItem[]>([])
   const [reviewsLoading, setReviewsLoading] = useState(true)
@@ -201,19 +203,26 @@ export default function KashmirPage() {
           <div className="absolute inset-x-0 bottom-0 flex items-end">
             <div className="w-full max-w-6xl mx-auto px-4 sm:px-5 md:px-6 pb-6 sm:pb-8 lg:pb-10">
               <div className="  text-white  ">
-                <div className="max-w-2xl">
+                <div className="max-w-5xl">
                   <div className="mb-4 inline-flex items-center rounded-full bg-amber-400/15 px-3 py-1 text-sm font-semibold text-amber-200 ring-1 ring-amber-300/20">
                     Starting Price
                     <span className="ml-2 text-white">₹{(lowestPrice || 0).toLocaleString('en-IN')} / person</span>
                   </div>
 
-                  <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight leading-tight">
+                  <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold tracking-tight leading-tight">
                     {categoryName}
                   </h1>
 
-                  <p className="mt-4 text-sm sm:text-base md:text-lg max-w-2xl text-slate-100 leading-7">
-                    {`Explore the beauty of ${categoryName}`}
+                  <p className={`mt-3 text-sm sm:text-base md:text-lg text-slate-100 ${!isDescExpanded ? 'line-clamp-3 md:line-clamp-none' : ''}`}>
+                    All inclusive curated Best OffBeat Kashmir Group & customised Tour Packages 2026 covering Gurez Valley , Pahalgam , Doodhpathri , Bangus Valley , Aru Valley , Betaab Valley , Yusmarg , Chatpal , Dal Lake , Gulmarg , Srinagar , Chandanwari.
                   </p>
+
+                  <button
+                    onClick={() => setIsDescExpanded(!isDescExpanded)}
+                    className="mt-0 text-xs md:hidden font-semibold text-amber-300 hover:text-amber-400 transition-colors uppercase tracking-wider focus:outline-none"
+                  >
+                    {isDescExpanded ? 'View Less ▲' : 'View More ▼'}
+                  </button>
 
                   <div className="mt-5 flex flex-row gap-2 sm:flex-row sm:items-center">
                     <Button
@@ -229,7 +238,7 @@ export default function KashmirPage() {
                       className="min-w-32 border-white/60 text-slate-800 hover:text-white hover:border-white hover:bg-white/10 bg-white"
                       onClick={() => {
                         const message = `Hi Wanderphilia, I want to inquire about Kashmir from Website`
-                    
+
                         const encodedMessage = encodeURIComponent(message)
 
                         window.open(

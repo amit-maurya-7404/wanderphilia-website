@@ -9,10 +9,10 @@ export const sectionMappings: Record<string, Record<string, string[]>> = {
     related2: ['21'] // Additional Related Packages
   },
   'kashmir': {
-    available: ['13', '12'],
-    family: ['13', '14'],
-    custom: ['15', '16'],
-    related: ['17', '18', '19']
+    available: ['34'],
+    family: ['34'],
+    custom: ['34'],
+    related: ['31', '22', '13']
   },
   'switzerland': {
     available: ['13', '21'],

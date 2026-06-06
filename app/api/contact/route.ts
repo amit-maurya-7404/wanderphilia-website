@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { sendEmail } from '@/lib/email'
+import { submitToZohoCRM } from '@/lib/zoho'
 
 export async function POST(request: NextRequest) {
   try {
@@ -11,6 +12,19 @@ export async function POST(request: NextRequest) {
         { success: false, message: 'Name, email, and message are required' },
         { status: 400 }
       )
+    }
+
+    // Submit to Zoho CRM
+    try {
+      await submitToZohoCRM({
+        name,
+        email,
+        phone,
+        message,
+        leadSource: 'Website Contact Us'
+      })
+    } catch (zohoError) {
+      console.error('[Contact Form Zoho Submission Error]:', zohoError)
     }
 
     // Send email to admin

@@ -6010,6 +6010,185 @@ This trip promises lifelong experiences, whether you're an action seeker, a natu
       'Dharamshala : Hotel Indraprastha Resort & Spa / Similar'
     ],
     dates: []
+  },
+  {
+    id: '34',
+    title: '6 Days Wonderful Kashmir Group Trip',
+    slug: '6-days-wonderful-kashmir-group-trip',
+    image: '/images/kashmir.jpg',
+    destination: 'Kashmir',
+    region: 'Kashmir',
+    category: 'Kashmir',
+    description: 'All inclusive curated Best OffBeat Kashmir Group & customised Tour Packages 2026 covering Gurez Valley , Pahalgam , Doodhpathri , Bangus Valley , Aru Valley , Betaab Valley , Yusmarg , Chatpal , Dal Lake , Gulmarg , Srinagar , Chandanwari.',
+    duration: 6,
+    nights: 5,
+    price: 21499,
+    rating: 4.9,
+    difficulty: 'Easy',
+    groupSize: 16,
+    tripType: 'India',
+    overviewPoints: [
+      'Route: Srinagar → Gulmarg  → Pahalgam → Sonmarg → Thajiwas Glacier → Srinagar.',
+      'Duration: 5 Nights / 6 Days.',
+      'Trip Start: Srinagar',
+      'Trip End: Srinagar',
+      'Difficulty Level: Easy.',
+      'Best Time to Visit: Summer May to July & Winters Nov - March.',
+      'Major Highlights: Dal Lake , Gulmarg Gondola Ride  , Aru Valley , Betaab Valley , Sonmarg Thajiwas Glacier..',
+      'Trip Cost : 21,499/- TS , 23,499 DS'
+    ],
+    highlights: [
+      'Dal Lake',
+      'Gulmarg Gondola Ride',
+      'Aru Valley',
+      'Betaab Valley',
+      'Sonmarg Thajiwas Glacier'
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Arrival In Srinagar | Dal Lake, Mughal Gardens & Local Exploration.',
+        description: [
+          'Upon arriving at Srinagar Airport, meet our representative who will assist you with your transfer to your Hotel.',
+          'Check into your Hotel and complete the check-in.',
+          'Take some time to rest and settle into the calm surroundings of Dal Lake.',
+          'Later, head out to explore the famous Mughal Gardens including Shalimar Bagh, Nishat Bagh, and Chashme Shahi.',
+          'Walk through beautifully landscaped gardens, fountains, and terraces overlooking the lake.',
+          'In the evening, enjoy a peaceful 1-hour Shikara ride on Dal Lake.',
+          'Glide past floating markets and wooden houses, with views of the Pir Panjal ranges in the backdrop.',
+          'Have your dinner, return to your hotel and unwind for the night.',
+          'Overnight stay in Srinagar.'
+        ]
+      },
+      {
+        day: 2,
+        title: 'Srinagar To Gulmarg via Tanmarg | Gondola Ride & Leisure Day. ( Distance 55 - 60 Kms 2 2.5 Hrs Drive )',
+        description: [
+          'Wake up to a hearty breakfast, check out and get ready for your transfer to Gulmarg.',
+          'Enjoy a scenic 2-hour drive via Tangmarg, with views of pine forests and snow-covered peaks.',
+          'On arrival, experience the famous Gulmarg Gondola ride, one of the highest in Asia.',
+          'Enjoy panoramic views of the Kashmir Valley as you ascend.',
+          'Later, check in to your hotel in Gulmarg and take some time to relax.',
+          'Spend your time exploring the region at your own pace.',
+          'You can visit Khilanmarg by pony (6 km away) or simply walk around the market and cafés.',
+          'Return to your hotel in the evening and have dinner.',
+          'Overnight stay in Gulmarg.'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Gulmarg To Pahalgam | En-Route Visit To Avantipur Ruins ( Distance 140 - 155 Kms 4 Hrs Drive )',
+        description: [
+          'Start your day with breakfast and get ready for your transfer to Pahalgam.',
+          'Enjoy a scenic 4-hour drive through valleys and countryside landscapes.',
+          'En route, we’ll stop at the Avantipur Ruins in Pulwama, known for their ancient temple architecture.',
+          'On arrival in Pahalgam, check in to your hotel and spend the rest of the day at leisure.',
+          'You can try activities like river rafting or angling in the Lidder River, or explore the local market for souvenirs.',
+          'Return to your hotel by evening for dinner.',
+          'Overnight stay in Pahalgam.'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Visit Aru Valley, Betaab Valley & Chandanwari | Transfer To Srinagar ( Distance 90 - 100 Kms Approx 3 Hrs Drive ).',
+        description: [
+          'Wake up to a fresh morning in Pahalgam and enjoy your breakfast.',
+          'Get ready and board your transfer for a day of exploring the nearby valleys.',
+          'Begin with Aru Valley, known for its wide meadows, clear streams, and mountain views.',
+          'Continue to Betaab Valley, surrounded by lush greenery and known for its scenic Bollywood film locations.',
+          'Later, visit Chandanwari, a rocky valley that marks the starting point of the Amarnath Yatra.',
+          'You can also opt for a pony ride here (at your own cost), depending on the weather.',
+          'After the sightseeing, board your transfer back to Srinagar.',
+          'On arrival, check in to your hotel and unwind with dinner.',
+          'Overnight stay in Srinagar.'
+        ]
+      },
+      {
+        day: 5,
+        title: 'Excursion To Sonmarg & Thajiwas Glacier & Houseboat Stay in Srinagar.',
+        description: [
+          'Start your day with a hearty breakfast and get ready for an excursion to Sonmarg.',
+          'Board your transfer for a scenic 3-hour drive through valleys and mountain roads.',
+          'On the way, pass along the Sindh River, with views of flowing water, meadows, and snow-capped peaks.',
+          'The journey itself feels as beautiful as the destination.',
+          'On reaching Sonmarg, take some time to soak in the open landscapes and fresh mountain air.',
+          'You can then opt for a pony ride to Thajiwas Glacier (at your own cost).',
+          'Ride through rugged trails to reach the glacier and witness its snow-covered beauty up close.',
+          'After spending some time here, begin your drive back to Srinagar.',
+          'Reach your hotel by evening, followed by dinner.',
+          'Overnight stay in Srinagar House Boat.'
+        ]
+      },
+      {
+        day: 6,
+        title: 'Departure | Until The Valley Calls Again.',
+        description: [
+          'Wake up to your final morning in Srinagar and enjoy breakfast at the hotel.',
+          'Pack your bags and complete the check-out formalities.',
+          'We’ll drop you off at Srinagar Airport for your onward journey.',
+          'Head home taking back beautiful memories of Kashmir.'
+        ]
+      }
+    ],
+    included: [
+      'Entire travel as per the itinerary in a private vehicle',
+      'Accommodation for 5 Nights on a Double/ Triple Sharing Basis (1 night in Srinagar in Houseboat, 2 nights in Srinagar in a hotel, 1 night in Pahalgam in a hotel, 1 night in Gulmarg in a hotel)',
+      'Breakfast & Dinner ( Breakfast except for Day 1 & Dinner Day 6 )',
+      'Driver Charges, Permits, Tolls, Fuel & Parking charges',
+      'Shikara Ride (1 Hr Shikara Ride)',
+      'Internal transfer to Aru Valley, Betaab Valley and Chandanwari',
+      'Gondola Cable Car Phase 1 tickets. ( Gondola ride tickets are subject to availability)',
+      'Team Captain throughout the trip',
+      'Medical kit',
+      'All inner line permit if anything is applicable',
+      'Mughal Gardens entry tickets',
+      'Entry tickets to Aru Valley, Betaab Valley and Chandanwari',
+      'Airport pick-up'
+    ],
+    notIncluded: [
+      'GST (5%) is applicable extra.',
+      'Any other food or beverage charges that are not included in the package.',
+      'Any other costing involved due to any kind of natural calamity, forced circumstances, which are out of our control.',
+      'Any other expense not mentioned in the inclusion column.',
+      'Any personal expenses like a tip to the drivers, entry to monuments/monasteries, camera/video camera charges, laundry, telephone bills, tips, etc',
+      'Airport drop not included',
+      'Pony Rides are not included',
+      'Any other adventure activities which is not mentioned in the inclusions'
+    ],
+    stays: [
+      'Srinagar : Hotel Central Park / Similar',
+      'Gulmarg : Shaw Inn By Stay Pattern / Similar',
+      'Pahalgham : Hotel The Pahalgam Shore / Similar',
+      'Srinagar Houseboat : Akbar House Boat / Similar.'
+    ],
+    note: [
+      'Numerous factors such as extreme weather conditions, road conditions, the physical ability of participants etc. may lead to changes in itinerary. We reserve the rights to change any schedule in the interest of safety, comfort and general wellbeing of guests.',
+      'The age limit of our group departures is 18 to 42 years due to the power packed itineraries that we provide to our travellers. We can customise trips for travellers beyond the mentioned age bracket.',
+      'Gondola ride tickets are subject to availability. In the event of ticket unavailability, Wanderphilia will not be held liable. We will make every effort to provide you with an alternate option.',
+      'Kindly schedule flights arriving in Srinagar before 11:30 AM as our local sightseeing tour commences at 01:00 PM.',
+      'We can swap the Pahalgam stay with Gulmarg and vice versa based on weather conditions and hotel availability. This way, there will be no change in the sightseeing options, as the number of nights at each destination will remain the same.',
+      'Airport pickup is at a fixed time (depending on the majority of arrival time of the group members).'
+    ],
+    batchDates: [
+      { month: 'June', ranges: ['20th June - 25th June'] },
+      { month: 'July', ranges: ['4th July - 9th July', '18th July - 23rd July'] },
+      { month: 'August', ranges: ['1st Aug - 8th Aug', '15th Aug - 20th  Aug', '29th Aug - 2nd Sept'] },
+      { month: 'September', ranges: ['12th Sept - 17th Sept ( Ganesh Chaturthi Holiday )', '26th Sept - 4th Oct'] }
+    ],
+    costingDetails: [
+      { label: 'TS', value: '₹21,499' },
+      { label: 'DS', value: '₹23,499' }
+    ],
+    dates: [
+      { startDate: '2026-06-20', endDate: '2026-06-25', spots: 10 },
+      { startDate: '2026-07-04', endDate: '2026-07-09', spots: 10 },
+      { startDate: '2026-07-18', endDate: '2026-07-23', spots: 10 },
+      { startDate: '2026-08-01', endDate: '2026-08-08', spots: 10 },
+      { startDate: '2026-08-15', endDate: '2026-08-20', spots: 10 },
+      { startDate: '2026-08-29', endDate: '2026-09-02', spots: 10 },
+      { startDate: '2026-09-12', endDate: '2026-09-17', spots: 10 },
+      { startDate: '2026-09-26', endDate: '2026-10-04', spots: 10 }
+    ]
   }
 ];
 

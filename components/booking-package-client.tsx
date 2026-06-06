@@ -142,6 +142,22 @@ export default function BookingPackageClient({ trip, slug }: BookingPackageClien
     setIsProcessing(true)
 
     try {
+      // 0. Create lead in Zoho CRM
+      try {
+        await fetch('/api/checkout/initiate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            fullName: fullName,
+            mobileNumber: mobileNumber,
+            email: emailAddress,
+            tripSlug: slug
+          })
+        })
+      } catch (zohoError) {
+        console.error('[Zoho CRM Lead Creation Error]:', zohoError)
+      }
+
       // 1. Create order on the server side
       const selectedDate = selectedDateValue
       const startDate = selectedDate.startDate

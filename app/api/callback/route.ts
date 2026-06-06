@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { sendEmail } from '@/lib/email'
+import { submitToZohoCRM } from '@/lib/zoho'
 
 export async function POST(request: NextRequest) {
   try {
@@ -10,6 +11,20 @@ export async function POST(request: NextRequest) {
         { error: 'Name, phone, and email are required' },
         { status: 400 }
       )
+    }
+
+    // Submit to Zoho CRM
+    try {
+      await submitToZohoCRM({
+        name,
+        email,
+        phone,
+        leadSource: 'Website Callback Request',
+        tripTitle: title,
+        tripPrice: price
+      })
+    } catch (zohoError) {
+      console.error('[Callback Request Zoho Submission Error]:', zohoError)
     }
 
     const emailContent = `
