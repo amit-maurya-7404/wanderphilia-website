@@ -5,7 +5,7 @@ import { syncGoogleReviews } from '@/lib/google-reviews'
 
 export const dynamic = 'force-dynamic'
 
-const allowedPlatforms = ['Google', 'Facebook', 'Justdial'] as const
+const allowedPlatforms = ['Google', 'Facebook', 'Justdial', 'Wanderphilia'] as const
 
 type ReviewPlatform = (typeof allowedPlatforms)[number]
 
@@ -21,6 +21,29 @@ export async function GET(request: Request) {
   }
 
   const isConfigured = !!(process.env.GOOGLE_PLACES_API_KEY && process.env.GOOGLE_PLACE_ID)
+
+  // Try to parse categoryId from query parameter
+  const { searchParams } = new URL(request.url)
+  const queryCategoryId = searchParams.get('categoryId')
+
+  // Fallback to parsing from Referer header
+  const referer = request.headers.get('referer')
+  let refererCategoryId: string | null = null
+  if (referer) {
+    try {
+      const url = new URL(referer)
+      const pathParts = url.pathname.split('/').filter(Boolean)
+      if (pathParts[0] === 'trips' && pathParts[1] && pathParts[1] !== 'page') {
+        refererCategoryId = pathParts[1]
+      } else if (pathParts[0] === 'category' && pathParts[1]) {
+        refererCategoryId = pathParts[1]
+      }
+    } catch (e) {
+      console.error('[GET /api/reviews] Error parsing referer:', e)
+    }
+  }
+
+  const targetCategoryId = queryCategoryId || refererCategoryId
 
   try {
     const db = await getDb()
@@ -74,6 +97,25 @@ export async function GET(request: Request) {
       reviews = reviews.filter((item) => !item._id.toString().startsWith('review-'))
     }
 
+    // Filter by destination category if targetCategoryId is present
+    if (targetCategoryId) {
+      reviews = reviews.filter(
+        (r) => !r.categoryId || r.categoryId === targetCategoryId
+      )
+
+      // Sort: destination-specific first, then general Google/FB/Justdial reviews
+      reviews.sort((a, b) => {
+        const aIsSpecific = a.categoryId === targetCategoryId
+        const bIsSpecific = b.categoryId === targetCategoryId
+        if (aIsSpecific && !bIsSpecific) return -1
+        if (!aIsSpecific && bIsSpecific) return 1
+        
+        const aTime = a.createdAt ? new Date(a.createdAt).getTime() : 0
+        const bTime = b.createdAt ? new Date(b.createdAt).getTime() : 0
+        return bTime - aTime
+      })
+    }
+
     const serialized = reviews.map((item) => ({
       ...item,
       _id: item._id.toString(),
@@ -87,6 +129,23 @@ export async function GET(request: Request) {
     if (isConfigured && hasLocalSynced) {
       localReviews = localReviews.filter((item: any) => !item._id.startsWith('review-'))
     }
+
+    if (targetCategoryId) {
+      localReviews = localReviews.filter(
+        (r: any) => !r.categoryId || r.categoryId === targetCategoryId
+      )
+      localReviews.sort((a: any, b: any) => {
+        const aIsSpecific = a.categoryId === targetCategoryId
+        const bIsSpecific = b.categoryId === targetCategoryId
+        if (aIsSpecific && !bIsSpecific) return -1
+        if (!aIsSpecific && bIsSpecific) return 1
+        
+        const aTime = a.createdAt ? new Date(a.createdAt).getTime() : 0
+        const bTime = b.createdAt ? new Date(b.createdAt).getTime() : 0
+        return bTime - aTime
+      })
+    }
+
     return NextResponse.json(localReviews)
   }
 }
@@ -98,11 +157,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
     }
 
-    const { name, rating, platform, comment } = body as {
+    const { name, rating, platform, comment, categoryId, images } = body as {
       name?: string
       rating?: number
       platform?: string
       comment?: string
+      categoryId?: string
+      images?: string[]
     }
 
     if (!name || typeof name !== 'string') {
@@ -113,7 +174,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Rating must be a number between 1 and 5' }, { status: 400 })
     }
 
-    if (!allowedPlatforms.includes(platform as ReviewPlatform)) {
+    const targetPlatform = platform || 'Wanderphilia'
+    if (!allowedPlatforms.includes(targetPlatform as ReviewPlatform)) {
       return NextResponse.json(
         { error: `Platform must be one of: ${allowedPlatforms.join(', ')}` },
         { status: 400 }
@@ -124,24 +186,25 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Comment is required' }, { status: 400 })
     }
 
+    const newReview = {
+      name,
+      rating,
+      platform: targetPlatform,
+      comment,
+      categoryId: categoryId || null,
+      images: Array.isArray(images) ? images : [],
+      createdAt: new Date(),
+    }
+
     try {
       const db = await getDb()
-      const result = await db.collection('reviews').insertOne({
-        name,
-        rating,
-        platform,
-        comment,
-        createdAt: new Date(),
-      })
+      const result = await db.collection('reviews').insertOne(newReview)
 
       return NextResponse.json({ success: true, id: result.insertedId.toString() })
     } catch (mongoError) {
       console.error('[POST /api/reviews] MongoDB error, falling back to local store:', mongoError)
       const saved = await saveLocalDocument('reviews', {
-        name,
-        rating,
-        platform,
-        comment,
+        ...newReview,
         createdAt: new Date().toISOString(),
       })
       return NextResponse.json({ success: true, id: saved._id })

@@ -471,6 +471,26 @@
   ],
   "reviews": [
     {
+      "_id": "google-shwetasawane-1773123329",
+      "name": "Shweta Sawane",
+      "platform": "Google",
+      "rating": 5,
+      "comment": "I went on my first group trip with Wanderphilia. The guides were friendly, the stays were comfortable, and the entire itinerary was well planned. One of the most reliable travel companies from Mumbai. I loved my experience and will definitely travel again with them. 100% safe for women and just had the best time!!!",
+      "createdAt": "2026-03-10T06:15:29.000Z",
+      "profilePhotoUrl": "https://lh3.googleusercontent.com/a/ACg8ocKeJmmdbgqwppYXLhNU0yZjIAVxO0le1kO2PaUM89W4sqATHw=s128-c0x00000000-cc-rp-mo",
+      "relativeTime": "3 months ago"
+    },
+    {
+      "_id": "google-nividachoudhari-1774853201",
+      "name": "nivida choudhari",
+      "platform": "Google",
+      "rating": 4,
+      "comment": "We had amazing experience on our recent Singapore group tour with Wanderphilia. Everything was well organised by the team and the entire journey was smooth and memorable for our family. We would highly recommend Wanderphilia for customised trips and family holidays.",
+      "createdAt": "2026-03-30T06:46:41.000Z",
+      "profilePhotoUrl": "https://lh3.googleusercontent.com/a-/ALV-UjVJKcR_IFWBm7YwaewnKBg1UlrzWPgIGVzVYjwzpQ5Y7JuqUP4z=s128-c0x00000000-cc-rp-mo",
+      "relativeTime": "2 months ago"
+    },
+    {
       "_id": "google-aditijain-1780498745",
       "name": "Aditi Jain",
       "platform": "Google",
@@ -498,7 +518,7 @@
       "comment": "Our Sri Lanka family holiday was a customised trip with Wanderphilia, and it was amazingly executed by the Wanderphilia team. Everything was well organised and the entire journey was smooth and memorable for our family.\n\nIt was truly an amazing experience, and we would highly recommend Wanderphilia for customised trips and family holidays.",
       "createdAt": "2026-03-09T13:43:45.000Z",
       "profilePhotoUrl": "https://lh3.googleusercontent.com/a/ACg8ocKhMh6zzPoeTRzVabKW5jQyuJ-mENqrIvcC2t3jireP6__10Q=s128-c0x00000000-cc-rp-mo",
-      "relativeTime": "2 months ago"
+      "relativeTime": "3 months ago"
     },
     {
       "_id": "google-shudhitak-1773057087",
@@ -508,7 +528,7 @@
       "comment": "We recently booked our Dubai trip with Wanderphilia and it was an amazing experience. The itinerary was perfectly planned with great hotel stays, smooth transfers and fantastic activities like the desert safari and Burj Khalifa visit. Highly recommend Wanderphilia if you are looking for a customised trip with your family or friends.",
       "createdAt": "2026-03-09T11:51:27.000Z",
       "profilePhotoUrl": "https://lh3.googleusercontent.com/a-/ALV-UjUAatLf20RS8jfTL98o5X9mlNKOJjOA96--WGNpT3HTwDT-las=s128-c0x00000000-cc-rp-mo",
-      "relativeTime": "2 months ago"
+      "relativeTime": "3 months ago"
     },
     {
       "_id": "google-shivanigupta-1773062017",
@@ -518,7 +538,7 @@
       "comment": "Our Thailand vacation with Wanderphilia was honestly one of the smoothest trips we’ve taken. From the moment we landed everything was taken care of - great hotels, fun island tours and perfectly timed sightseeing. Their on ground service is great. If you’re looking for a travel company that truly understands customised travel, Wanderphilia is fantastic. We had the best time and can’t wait to take another trip with them",
       "createdAt": "2026-03-09T13:13:37.000Z",
       "profilePhotoUrl": "https://lh3.googleusercontent.com/a/ACg8ocKI9ZziM4FHWgdU7DjzS5atLj5x5B6MghnF_9pmsdssdwmEuA=s128-c0x00000000-cc-rp-mo",
-      "relativeTime": "2 months ago"
+      "relativeTime": "3 months ago"
     },
     {
       "_id": "review-1",
@@ -563,7 +583,7 @@
   ],
   "metadata": {
     "googleRating": 5,
-    "googleReviewsCount": 190,
-    "lastSyncedAt": "2026-06-06T09:28:03.410Z"
+    "googleReviewsCount": 188,
+    "lastSyncedAt": "2026-06-09T10:18:50.112Z"
   }
 }

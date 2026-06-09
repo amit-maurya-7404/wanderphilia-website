@@ -1,15 +1,17 @@
 'use client'
 
-import { Star } from 'lucide-react'
+import { useState } from 'react'
+import { Star, Compass } from 'lucide-react'
 
 interface ReviewCardProps {
   name: string
-  platform: 'Google' | 'Facebook' | 'Justdial'
+  platform: 'Google' | 'Facebook' | 'Justdial' | 'Wanderphilia'
   rating: number
   comment: string
   createdAt: string
   profilePhotoUrl?: string
   relativeTime?: string
+  images?: string[]
 }
 
 export function ReviewCard({
@@ -20,11 +22,15 @@ export function ReviewCard({
   createdAt,
   profilePhotoUrl,
   relativeTime,
+  images,
 }: ReviewCardProps) {
+  const [selectedImage, setSelectedImage] = useState<string | null>(null)
+
   const platformColors = {
     Google: 'bg-red-50 text-red-600 border border-red-100',
     Facebook: 'bg-blue-50 text-blue-600 border border-blue-100',
     Justdial: 'bg-orange-50 text-orange-600 border border-orange-100',
+    Wanderphilia: 'bg-emerald-50 text-emerald-600 border border-emerald-100',
   }
 
   const platformIcons = {
@@ -40,6 +46,9 @@ export function ReviewCard({
     ),
     Justdial: (
       <span className="font-extrabold text-[9px] mr-1 inline-block">JD</span>
+    ),
+    Wanderphilia: (
+      <Compass className="w-3 h-3 mr-1 inline-block text-emerald-600" />
     ),
   }
 
@@ -110,9 +119,32 @@ export function ReviewCard({
       </div>
 
       {/* Review Text */}
-      <p className="text-gray-600 text-sm leading-relaxed mb-5 grow line-clamp-4 group-hover:text-gray-800 transition-colors font-medium">
+      <p className="text-gray-600 text-sm leading-relaxed mb-4 grow line-clamp-4 group-hover:text-gray-800 transition-colors font-medium">
         &ldquo;{comment}&rdquo;
       </p>
+
+      {/* Review Images Grid */}
+      {images && images.length > 0 && (
+        <div className="flex flex-wrap gap-2 mb-4">
+          {images.map((imgUrl, idx) => (
+            <button
+              key={idx}
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation()
+                setSelectedImage(imgUrl)
+              }}
+              className="relative w-12 h-12 rounded-lg overflow-hidden border border-slate-200 shadow-2xs hover:scale-105 transition duration-200 cursor-zoom-in"
+            >
+              <img
+                src={imgUrl}
+                alt={`Review photo ${idx + 1}`}
+                className="w-full h-full object-cover"
+              />
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Footer Info */}
       <div className="flex items-center justify-between pt-3 border-t border-gray-50 text-[11px] text-gray-400 font-medium">
@@ -126,6 +158,31 @@ export function ReviewCard({
             })}
         </span>
       </div>
+
+      {/* Lightbox Modal */}
+      {selectedImage && (
+        <div
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/85 backdrop-blur-xs p-4 cursor-zoom-out animate-in fade-in duration-200"
+          onClick={() => setSelectedImage(null)}
+        >
+          <div className="relative max-w-4xl max-h-[85vh] overflow-hidden rounded-2xl shadow-2xl transition-all duration-300">
+            <img
+              src={selectedImage}
+              alt="Full size review photo"
+              className="max-w-full max-h-[85vh] object-contain rounded-2xl border border-white/10"
+            />
+            <button
+              type="button"
+              className="absolute top-4 right-4 text-white bg-black/40 hover:bg-black/60 rounded-full p-2 transition duration-200 cursor-pointer"
+              onClick={() => setSelectedImage(null)}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
