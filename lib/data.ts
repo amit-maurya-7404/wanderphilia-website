@@ -6035,7 +6035,7 @@ This trip promises lifelong experiences, whether you're an action seeker, a natu
       'Difficulty Level: Easy.',
       'Best Time to Visit: Summer May to July & Winters Nov - March.',
       'Major Highlights: Dal Lake , Gulmarg Gondola Ride  , Aru Valley , Betaab Valley , Sonmarg Thajiwas Glacier..',
-      'Trip Cost : 21,499/- TS , 23,499 DS'
+      'Trip Cost : 21,499/- (Triple Sharing) , 23,499 (Double Sharing)'
     ],
     highlights: [
       'Dal Lake',
@@ -6176,8 +6176,8 @@ This trip promises lifelong experiences, whether you're an action seeker, a natu
       { month: 'September', ranges: ['12th Sept - 17th Sept ( Ganesh Chaturthi Holiday )', '26th Sept - 4th Oct'] }
     ],
     costingDetails: [
-      { label: 'TS', value: '₹21,499' },
-      { label: 'DS', value: '₹23,499' }
+      { label: 'Triple Sharing (TS)', value: '₹21,499' },
+      { label: 'Double Sharing (DS)', value: '₹23,499' }
     ],
     dates: [
       { startDate: '2026-06-20', endDate: '2026-06-25', spots: 10 },
