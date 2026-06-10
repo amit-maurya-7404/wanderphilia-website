@@ -6189,6 +6189,161 @@ This trip promises lifelong experiences, whether you're an action seeker, a natu
       { startDate: '2026-09-12', endDate: '2026-09-17', spots: 10 },
       { startDate: '2026-09-26', endDate: '2026-10-04', spots: 10 }
     ]
+  },
+  {
+    id: '35',
+    title: '7 Days Exclusive Singapore with Universal Studios',
+    slug: '7-days-exclusive-singapore-with-universal-studios',
+    image: '/images/singapore.png',
+    destination: 'Singapore',
+    region: 'Singapore',
+    category: 'Singapore',
+    description: 'Arrive in Singapore and enjoy a comfortable private transfer to your hotel Mi Rochor. Explore Universal Studios, Sentosa Cable Car, SEA Aquarium, Harry Potter: Visions of Magic, Wings of Time Show, Singapore Flyer, Gardens by the Bay Flower Dome & Cloud Forest, Night Safari, and River Wonders.',
+    duration: 7,
+    nights: 6,
+    price: 64999,
+    rating: 4.9,
+    difficulty: 'Easy',
+    groupSize: 15,
+    tripType: 'International',
+    highlights: [
+      'Universal Studios',
+      'Sentosa Cable Car',
+      'Harry Porter Vision Of Magic',
+      'Guided Singapore City Tour',
+      'Singapore Flyer',
+      'Singapore River Wonders',
+      'Singapore Night Safari',
+      'Gardens By The Bay'
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Day 1 | Welcome to the Garden City Singapore',
+        description: [
+          'Arrive in Singapore and enjoy a comfortable private transfer to your hotel Mi Rochor.',
+          'Evening enjoy Gardens by the bay Flower Dome , Cloud Forest , Jurassic World',
+          'A relaxed first evening allowing your little one to settle comfortably.',
+          'Overnight in Singapore.'
+        ]
+      },
+      {
+        day: 2,
+        title: 'Singapore City Tour With Singapore Flyer & Evening at Marina Bay Sands.',
+        description: [
+          'Morning After Relaxing Breakfast Discover the city beyond its attractions.',
+          'City Tour Merlion, ParkCivic, District, Marina Bay, Esplanade, Singapore River.',
+          'Later, soar above the city aboard the iconic Singapore Flyer and admire panoramic views of Singapore\'s stunning skyline.',
+          'Evening End your day at Marina Bay Sands, where the glittering skyline, illuminated waterfront, and endless city views create a truly magical setting. As Singapore sparkles beneath the night sky, take a moment to pause, reflect, and cherish these beautiful memories with your loved ones.',
+          'Overnight In Singapore.'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Universal Studios Singapore – A Day of Thrills & Family Fun',
+        description: [
+          'After breakfast, enjoy a comfortable private transfer to Universal Studios Singapore.',
+          'Highlights Of The Day',
+          'Hollywood Boulevard & character meet-and-greets',
+          'Minion Land',
+          'Sesame Street Spaghetti Space Chase',
+          'Madagascar Zone',
+          'Jurassic Park Rapids Adventure',
+          'WaterWorld stunt show and other live performances.',
+          'After your full day at the park, return comfortably to your hotel by private transfer.',
+          'Overnight In Singapore.'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Sentosa Island – A Day Straight Out of a Storybook.',
+        description: [
+          'After breakfast, enjoy a comfortable private transfer to Sentosa Island.',
+          'Today is all about fun, excitement and unforgettable family memories on Singapore\'s famous island playground.',
+          'Begin with a scenic Cable Car ride offering stunning views of the city skyline and harbour.',
+          'Highlights Of The Day',
+          'Cable Car Experience',
+          'SEA Aquarium',
+          'Harry Potter: Visions of Magic',
+          'Wings of Time Show',
+          'Sentosa Beaches & Waterfront.',
+          'Overnight In Singapore.'
+        ]
+      },
+      {
+        day: 5,
+        title: 'Singapore Mandai Wildlife Pandas, Rainforests & Wildlife Encounters',
+        description: [
+          'After a leisurely breakfast and relaxed morning, head towards one of Singapore\'s most loved wildlife experiences.',
+          'River Wonders',
+          'Highlights: Giant Panda Forest , Red Pandas , Amazon River Quest , Giant River Creatures , Freshwater Aquarium Exhibits , River-themed Wildlife Habitats.',
+          'Later In The Evening Experience Singapore Night Safari & Animal Show',
+          'Night Safari As darkness falls, embark on a unique tram journey through the rainforest and discover the fascinating world of nocturnal wildlife.',
+          'Highlights: Guided Tram Ride , Creatures of the Night Presentation , Leopard Trail , Fishing Cat Trail , Asian Elephants',
+          'A truly magical Singapore experience that delights travellers of all ages.',
+          'Overnight in Singapore.'
+        ]
+      },
+      {
+        day: 6,
+        title: 'Day at Leisure in Singapore Shopping , Little India , China Town',
+        description: [
+          'Today is yours to enjoy Singapore at your own pace. Whether you prefer shopping, sightseeing, relaxation, or discovering hidden corners of the city, Singapore offers something for every traveller.',
+          'You may choose to explore the vibrant streets of Chinatown and Little India, indulge in world-class shopping along Orchard Road, stroll through the beautiful Singapore Botanic Gardens, relax by the Marina Bay waterfront, or discover charming cafés and local neighbourhoods.',
+          'For families, there are plenty of child-friendly attractions, interactive museums, parks, and playgrounds to enjoy, while food lovers can savour Singapore\'s famous culinary delights at local hawker centres and restaurants.',
+          'Take this opportunity to slow down, explore what interests you most, and create your own memorable Singapore experiences.',
+          'Overnight In Singapore.'
+        ]
+      },
+      {
+        day: 7,
+        title: 'Farewell Singapore ❤️',
+        description: [
+          'Enjoy a relaxed morning at leisure.',
+          'Depending on your flight schedule, spend some final moments exploring nearby attractions, shopping, or simply relaxing with your family.',
+          'Later, enjoy a private transfer to Singapore Airport for your onward journey.',
+          'Carry home wonderful memories, magical moments, and countless smiles from your Singapore family adventure.',
+          'We hope to welcome you on another Wanderphilia journey soon.'
+        ]
+      }
+    ],
+    included: [
+      '6 Nights Accommodation in 4 Star Hotel Mi Rochor.',
+      'Private Airport Transfers',
+      'Universal Studios Entry Tickets.',
+      'Sentosa Cable Car , Sea Aquarium & Wings of Time Show 7:40 Show Entry Tickets',
+      'Harry Potter Vision Of Magic Entry Tickets',
+      'Guided City Tour with Singapore flyer',
+      'Marina Bay Sky Deck Entry Tickets',
+      'Gardens By The Bay Cloud Forest , Flower Dome & Jurassic World',
+      'River Wonders & Night Safari Entry Tickets',
+      'All Sightseeing On Private Basis.'
+    ],
+    notIncluded: [
+      'Any expense of a personal nature.',
+      'Any meals not explicitly mentioned in the itinerary.',
+      'GST and TCS as applicable extra.',
+      'Any change in itinerary due to unforeseen conditions',
+      'Security deposit at the hotel',
+      'Round trip flight'
+    ],
+    overviewPoints: [
+      'Route: Singapore City Tour → Marina Bay Sands → Universal Studios → Sentosa Island → Mandai Wildlife → Leisure Day',
+      'Duration: 6 Nights / 7 Days',
+      'Trip Start: Singapore Airport',
+      'Trip End: Singapore Airport',
+      'Difficulty Level: Easy',
+      'Best Time to Visit: Year-round',
+      'Stays: Hotel Mi Rochor / Similar',
+      'Cost: 64,999/-'
+    ],
+    stays: [
+      'Hotel Mi Rochor / Similar'
+    ],
+    costingDetails: [
+      { label: 'Per Person Price', value: '₹64,999' }
+    ],
+    dates: []
   }
 ];
 
@@ -6227,6 +6382,13 @@ export const destinations: Destination[] = [
     image: '/images/Bhutan_cat.jpg',
     description: 'A peaceful kingdom known for its stunning landscapes, rich Buddhist culture, and focus on happiness.',
     tripCount: 3,
+  },
+  {
+    title: 'Singapore',
+    slug: 'singapore',
+    image: '/images/singapore.png',
+    description: 'A futuristic city-state combining lush gardens, thrilling attractions, and diverse culture.',
+    tripCount: 1,
   },
 ];
 

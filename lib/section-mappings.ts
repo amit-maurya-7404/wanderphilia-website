@@ -62,6 +62,12 @@ export const sectionMappings: Record<string, Record<string, string[]>> = {
     custom: ['80', '81'],
     related: ['82', '83']
   },
+  'singapore': {
+    available: ['35'],
+    family: ['35'],
+    custom: ['35'],
+    related: ['13', '27']
+  },
   'peru': {
     available: ['13', '85'],
     family: ['86', '87'],

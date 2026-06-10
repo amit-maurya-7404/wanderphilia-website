@@ -57,7 +57,7 @@ export async function getZohoAccessToken(): Promise<string> {
     const expiresInSeconds = data.expires_in ? Number(data.expires_in) : 3600;
     tokenExpiryTime = now + expiresInSeconds * 1000;
 
-    return cachedAccessToken;
+    return data.access_token;
   } catch (error) {
     console.error('[Zoho Access Token Fetcher Error]:', error);
     throw error;
@@ -116,7 +116,7 @@ export async function submitToZohoCRM(data: {
   formData.append('actionType', 'Leads')
   formData.append('First Name', firstName)
   formData.append('Last Name', lastName)
-  formData.append('Email', email)
+  formData.append('Email', data.email)
   if (data.phone) {
     formData.append('Phone', data.phone)
   }

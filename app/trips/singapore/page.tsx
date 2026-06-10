@@ -1,16 +1,18 @@
 'use client'
 
-import { useState, useEffect, useMemo, use } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import Image from 'next/image'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
 import { TripCard } from '@/components/trip-card'
 import { ReviewCard } from '@/components/review-card'
 import { GalleryCarousel } from '@/components/gallery-carousel'
+import { Button } from '@/components/ui/button'
+import { TripHeroCarousel } from '@/components/trip-hero-carousel'
+import { RequestCallbackDialog } from '@/components/request-callback-dialog'
 import { trips } from '@/lib/data'
 import { getSectionMapping } from '@/lib/section-mappings'
-import { useParams } from 'next/navigation'
-import { ChevronLeft, ChevronRight, Star } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Star, Phone, MessageCircle } from 'lucide-react'
 
 interface ReviewItem {
   _id: string
@@ -29,33 +31,17 @@ interface GalleryImage {
   createdAt: string
 }
 
-interface CategoryPageProps {
-  params: Promise<{
-    categoryId: string
-  }>
-}
-
-export default function CategoryPage({ params }: CategoryPageProps) {
-  const clientParams = useParams()
-  
-  let resolvedParams: any = null
-  if (params) {
-    if (params instanceof Promise || typeof (params as any).then === 'function') {
-      resolvedParams = use(params)
-    } else {
-      resolvedParams = params
-    }
-  }
-
-  const categoryId = (resolvedParams?.categoryId || clientParams?.categoryId) as string
+export default function SingaporePage() {
+  const categoryId = 'singapore'
+  const categoryName = 'Singapore'
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [carouselIndex1, setCarouselIndex1] = useState(0)
   const [carouselIndex2, setCarouselIndex2] = useState(0)
   const [familyCarouselIndex, setFamilyCarouselIndex] = useState(0)
   const [customizedCarouselIndex, setCustomizedCarouselIndex] = useState(0)
   const [isMobile, setIsMobile] = useState(false)
-  const [cardsPerView, setCardsPerView] = useState(4)
-
+  const [cardsPerView, setCardsPerView] = useState(4);
+  const [callbackOpen, setCallbackOpen] = useState(false)
   // Reviews state
   const [reviews, setReviews] = useState<ReviewItem[]>([])
   const [reviewsLoading, setReviewsLoading] = useState(true)
@@ -65,25 +51,6 @@ export default function CategoryPage({ params }: CategoryPageProps) {
   const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([])
   const [galleryLoading, setGalleryLoading] = useState(true)
   const [galleryError, setGalleryError] = useState<string | null>(null)
-
-  // Map category ID to proper category name
-  const categoryMapping: Record<string, string> = {
-    'leh-ladakh': 'Leh Ladakh',
-    'spiti': 'Spiti',
-    'himachal': 'Himachal',
-    'kashmir': 'Kashmir',
-    'meghalaya': 'Meghalaya',
-    'nepal': 'Nepal',
-    'indonesia': 'Indonesia',
-    'switzerland': 'Switzerland',
-    'peru': 'Peru',
-    'iceland': 'Iceland',
-    'japan': 'Japan',
-    'bhutan': 'Bhutan',
-    'singapore': 'Singapore'
-  }
-
-  const categoryName = categoryMapping[categoryId] || categoryId
 
   // Central mapping system for trip sections
   const sectionMap = getSectionMapping(categoryId)
@@ -103,7 +70,18 @@ export default function CategoryPage({ params }: CategoryPageProps) {
   const firstTrip = categoryTrips[0]
   const isCategoryInternational = firstTrip?.tripType === 'International'
 
-  // Get related packages (other India destinations)
+  const lowestPrice = useMemo(() => {
+    if (!firstTrip?.costingDetails || firstTrip.costingDetails.length === 0) return firstTrip?.price || 0;
+    const prices = firstTrip.costingDetails
+      .map(item => {
+        const match = item.value.match(/[\d,]+/);
+        return match ? parseInt(match[0].replace(/,/g, ''), 10) : 0;
+      })
+      .filter(price => price > 0);
+    return prices.length > 0 ? Math.min(...prices) : firstTrip?.price || 0;
+  }, [firstTrip]);
+
+  // Get related packages (other international destinations)
   const relatedPackages = useMemo(() => {
     return getTripsBySection('related')
   }, [])
@@ -186,7 +164,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
         setGalleryLoading(false)
       }
     }
-    if (categoryId) fetchGallery()
+    fetchGallery()
   }, [categoryId])
 
   // Family Packages Data
@@ -216,58 +194,58 @@ export default function CategoryPage({ params }: CategoryPageProps) {
 
       <main className="flex-grow">
         {/* Hero Section with Carousel */}
-        <section className="relative overflow-hidden bg-slate-950 min-h-[500px] flex items-center justify-center pt-20">
-          {/* Background Carousel */}
-          <div className="absolute inset-0 z-0">
-            {carouselImages.map((image, index) => (
-              <Image
-                key={index}
-                src={image}
-                alt={`${categoryName} carousel`}
-                fill
-                sizes="100vw"
-                className={`object-cover transition-opacity duration-1000 ${index === currentImageIndex ? 'opacity-100' : 'opacity-0'
-                  }`}
-                priority={index === 0}
-              />
-            ))}
-            <div className="absolute inset-0 bg-gradient-to-br from-slate-950/90 via-slate-900/70 to-slate-950/95" />
-          </div>
+        <div className="relative h-[50vh] sm:h-[45vh] md:h-[70vh]   overflow-hidden pt-20">
+          <TripHeroCarousel media={firstTrip?.heroMedia || [{ type: 'image' as const, src: firstTrip?.image || '/images/dummy1.jpg', alt: categoryName }]} />
 
-          {/* Content */}
-          <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
-            <div className="mb-4 flex items-center justify-center gap-3">
-              <div className="w-12 h-1 bg-primary rounded-full" />
-              <span className="text-primary font-semibold text-sm tracking-widest uppercase">
-                {isCategoryInternational ? 'International' : 'India'} Destination
-              </span>
-              <div className="w-12 h-1 bg-primary rounded-full" />
+          <div className="absolute inset-0 bg-linear-to-r from-slate-950/90 via-slate-950/40 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 flex items-end">
+            <div className="w-full max-w-6xl mx-auto px-4 sm:px-5 md:px-6 pb-6 sm:pb-8 lg:pb-10">
+              <div className="  text-white ">
+                <div className="max-w-4xl">
+                  <div className="mb-4 inline-flex items-center rounded-full bg-amber-400/15 px-3 py-1 text-sm font-semibold text-amber-200 ring-1 ring-amber-300/20">
+                    Starting Price
+                    <span className="ml-2 text-white">₹{(lowestPrice || 0).toLocaleString('en-IN')} / person</span>
+                  </div>
+
+                  <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold tracking-tight leading-tight">
+                    20+ Singapore Tour Packages 2026
+                  </h1>
+
+                  <p className="mt-4 text-sm sm:text-base md:text-lg max-w-2xl text-slate-100 leading-7">
+                    All inclusive curated Best Singapore Customised Tour Packages 2026 For Family Kids & Couples covering all the major Attractions.
+                  </p>
+
+                  <div className="mt-5 flex flex-row gap-2 sm:flex-row sm:items-center">
+                    <Button
+                      size="lg"
+                      className="min-w-30 bg-amber-400 text-white hover:bg-amber-300"
+                      onClick={() => setCallbackOpen(true)}
+                    >
+                      <Phone size={18} className="mr-0" /> Request a Callback
+                    </Button>
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="min-w-32 border-white/60 text-slate-800 hover:text-white hover:border-white hover:bg-white/10 bg-white"
+                      onClick={() => {
+                        const message = `Hi Wanderphilia, I want to inquire about Singapore from Website`
+
+                        const encodedMessage = encodeURIComponent(message)
+
+                        window.open(
+                          `https://wa.me/919217664099?text=${encodedMessage}`,
+                          '_blank'
+                        )
+                      }}
+                    >
+                      <MessageCircle size={18} className="mr-0" /> Chat With Us
+                    </Button>
+                  </div>
+                </div>
+              </div>
             </div>
-
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
-              {categoryName}
-            </h1>
-
-            {firstTrip && (
-              <p className="text-lg md:text-xl text-gray-200 mb-8 max-w-3xl mx-auto">
-                {firstTrip.description}
-              </p>
-            )}
-
-            <div className="inline-block px-6 py-3 bg-primary/20 rounded-full border border-primary/40">
-              <p className="text-white font-semibold">
-                {categoryTrips.length} {categoryTrips.length === 1 ? 'Package' : 'Packages'} Available
-              </p>
-            </div>
           </div>
-
-          {/* Scroll Indicator */}
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 animate-bounce">
-            <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-            </svg>
-          </div>
-        </section>
+        </div>
 
         {/* Packages Section */}
         <section className="py-16 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
@@ -352,8 +330,6 @@ export default function CategoryPage({ params }: CategoryPageProps) {
           )}
         </section>
 
-
-
         {/* Family Packages Section */}
         <section className="py-16 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
           <div className="mb-12">
@@ -385,6 +361,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                     {/* LEFT */}
                     <button
                       onClick={() => {
+                        setIsMobile(window.innerWidth < 768)
                         setFamilyCarouselIndex((prev) => Math.max(prev - 1, 0))
                       }}
                       disabled={familyCarouselIndex === 0}
@@ -714,6 +691,13 @@ export default function CategoryPage({ params }: CategoryPageProps) {
       </main>
 
       <Footer />
+
+      <RequestCallbackDialog
+        open={callbackOpen}
+        onOpenChange={setCallbackOpen}
+        title={categoryName}
+        price={lowestPrice || 0}
+      />
     </div>
   )
 }
