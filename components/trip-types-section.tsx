@@ -7,11 +7,11 @@ import { sectionMappings } from '@/lib/section-mappings'
 function getCheapestPriceForCategory(categoryId: string, fallbackPrice: number): number {
   const mapping = sectionMappings[categoryId];
   if (!mapping || !mapping.available) return fallbackPrice;
-  const activeTrips = trips.filter(t => 
-    mapping.available.includes(t.id) && 
-    (t.category?.toLowerCase() === categoryId || 
-     t.destination?.toLowerCase().includes(categoryId) ||
-     t.region?.toLowerCase() === categoryId)
+  const activeTrips = trips.filter(t =>
+    mapping.available.includes(t.id) &&
+    (t.category?.toLowerCase() === categoryId ||
+      t.destination?.toLowerCase().includes(categoryId) ||
+      t.region?.toLowerCase() === categoryId)
   );
   const price = getLowestPriceForTrips(activeTrips);
   return price > 0 ? price : fallbackPrice;
@@ -90,6 +90,7 @@ export function TripTypesSection() {
 
   const internationalRegions = [
     { title: 'Bhutan', region: 'Bhutan', image: '/images/Bhutan_cat.jpg', price: getCheapestPriceForCategory('bhutan', 109900) },
+    { title: 'Singapore', region: 'Singapore', image: '/images/singapore.png', price: getCheapestPriceForCategory('singapore', 49900) },
     { title: 'Nepal', region: 'Nepal', image: '/images/everest.jpg', price: getCheapestPriceForCategory('nepal', 99900) },
     { title: 'Indonesia', region: 'Indonesia', image: '/images/bali.jpg', price: getCheapestPriceForCategory('indonesia', 69900) },
     { title: 'Switzerland', region: 'Switzerland', image: '/images/swiss.jpg', price: getCheapestPriceForCategory('switzerland', 129900) },
