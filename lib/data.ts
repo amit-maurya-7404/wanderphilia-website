@@ -6344,6 +6344,876 @@ This trip promises lifelong experiences, whether you're an action seeker, a natu
       { label: 'Per Person Price', value: '₹64,999' }
     ],
     dates: []
+  },
+  {
+    id: '36',
+    title: '7 Days Exclusive Sikkim with Gangtok Pelling Darjeeling',
+    slug: '7-days-exclusive-sikkim-with-gangtok-pelling-darjeeling',
+    image: '/images/sikkim.png',
+    destination: 'Sikkim',
+    region: 'Sikkim',
+    category: 'Sikkim',
+    description: 'Explore Gangtok, Baba Mandir, Tsogmo Lake, Pelling, and Darjeeling in this 7-day exclusive tour of Sikkim.',
+    duration: 7,
+    nights: 6,
+    price: 24999,
+    rating: 4.9,
+    difficulty: 'Easy',
+    groupSize: 15,
+    tripType: 'India',
+    overviewPoints: [
+      'Route: Bagdogra/NJP Railway Station → Gangtok  → Baba Mandir → Tsogmo Lake → Pelling → Darjeeling → Bagdogra.',
+      'Duration: 6 Nights / 7 Days.',
+      'Trip Start: Bagdogra/NJP Railway Station',
+      'Trip End: Bagdogra/NJP Railway Station',
+      'Best Time to Visit: Summer May to July Winter November - February'
+    ],
+    highlights: [
+      'Baba Mandir',
+      'Tsogmo Lake',
+      'Nathula Pass',
+      'Chardham Namchi',
+      'Ravangla Park',
+      'India’s first Skywalk at around 7,000 ft',
+      'Tiger Hill',
+      'Batasia Loop'
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Day 1 Arrival At Bagdogra/NJP | Transfer To Gangtok ( Approximately 125–130 km 4.5 to 5.5 hours Drive )',
+        description: [
+          'Arrive at Bagdogra Airport or NJP Railway Station, and meet our representative who will assist you with your transfer to Gangtok.',
+          'Begin your 4 to 5 hour journey through scenic hill roads, passing tea gardens ( Outside View ) and forested slopes along the way.',
+          'Reach Gangtok by Afternoon and check into your hotel.',
+          'Overnight stay in Gangtok.'
+        ]
+      },
+      {
+        day: 2,
+        title: 'Day 2 Excursion To Tsomgo Lake & Baba Mandir | Nathula Pass (Optional) ( Approx Distance: 120 Km • Est. Travel Time: 8 hrs )',
+        description: [
+          '(Note: Nathula Pass Closed on Monday).',
+          '( Todays Excursion Additional Cost 6000 Per Vehicle).',
+          'After an early breakfast, board your transfers towards Tsomgo Lake, a sacred glacial lake at 12,313 ft.',
+          'Enjoy the scenic mountain drive with winding roads and views of snow-covered landscapes along the way.',
+          'Spend some time by the lake, known for its changing colors and calm surroundings.',
+          'You can also enjoy a short yak ride or simply walk along the shore.',
+          'You can also try some maggie and momos at the various food stalls around the lake.',
+          'Continue further to Baba Mandir, a revered shrine dedicated to Baba Harbhajan Singh, an Indian Army soldier.',
+          'Later, you can also opt to visit Nathula Pass at 14,140 feet, near the Indo-China border (subject to permit and availability).',
+          'After sightseeing, return to Gangtok by evening and relax at your hotel.',
+          'Overnight stay in Gangtok.'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Day 3 Gangtok To Pelling | Enchey Monastery & Monk Blessing ( Approx Distance 130 Kms 6 Hrs )',
+        description: [
+          'After breakfast, check out from your hotel and begin your journey towards Pelling.',
+          'Before leaving Gangtok, visit Enchey Monastery, a peaceful 200-year-old monastery set on a hilltop.',
+          'Visit Namchi Chardham & Ravangla Park Enroute.',
+          'Spend some time here and receive a traditional monk blessing.',
+          'Then, we’ll head towards Pelling, which takes around 4–5 hours through winding hill roads and changing landscapes.',
+          'Reach Pelling by evening and check in to your hotel.',
+          'You can spend the evening at leisure either taking a short walk or enjoy views of the surrounding mountains from your stay.',
+          'Overnight stay in Pelling.'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Day 4 Pelling Sightseeing With Skywalk Experience',
+        description: [
+          'After Breakfast embark on a sightseeing tour of pelling covering - Kanchenjunga falls, Penyang Monastery, Rimbi Waterfall, Khecheopalri Lake, Orange Garden, Rabdentse Ruins & Skywalk.',
+          'We’ll begin with a visit to Khecheopalri Lake, a sacred lake set amidst dense forest, known for its calm waters and local beliefs.',
+          'Continue towards Rimbi Waterfalls for scenic views and stop by the nearby Rimbi Orange Garden (seasonal) where you can walk along Orange Orchards.',
+          'Next, explore Darap Village, known for its traditional wooden houses and quiet village setting.',
+          'Later, visit the Skywalk complex, home to the Chenrezig Statue, one of the tallest in Sikkim.',
+          'You can walk on India’s first Skywalk at around 7,000 ft, where the valley slopes and monastery complex just lie underneath your feet.',
+          'Next, we’ll head to Pemayangtse Monastery, a 17th-century monastery known for its detailed woodwork and spiritual significance.',
+          'From here, we’ll take a short 15 - 20 minute forest walk to reach the Rabdentse Ruins, the remains of the old Sikkim capital.',
+          'Return to your hotel by evening and relax after a full day.',
+          'Overnight stay in Pelling.'
+        ]
+      },
+      {
+        day: 5,
+        title: 'Day 5 Pelling To Darjeeling | Transfer To The Queen of Hills ( Approx Distance 100 Kms 4 Hrs Drive )',
+        description: [
+          'Enjoy your breakfast, check out from your hotel and begin your journey towards Darjeeling.',
+          'The drive takes around 3-4 hours, gradually opening into rolling tea estates like Happy Valley with neatly lined plantations.',
+          'Reach Darjeeling, check in to your hotel and spend the rest of the evening at leisure.',
+          'You can either take a walk along Mall Road ( On Your Own ) or relax at heritage cafés with a cup of fresh Darjeeling tea overlooking the hills.',
+          'Overnight stay in Darjeeling.'
+        ]
+      },
+      {
+        day: 6,
+        title: 'Day 6 Full Day Local Sightseeing In Darjeeling',
+        description: [
+          'Start your day early around 4:00 AM for the drive to Tiger Hill to see a magical sunrise.',
+          'Watch the first light hit Mt. Kanchenjunga, turning the peaks golden, with distant views of Mt. Everest on clear days.',
+          'On the way back, stop at Batasia Loop to take stunning photos, where the spiral railway track curves through landscaped gardens with mountain views.',
+          'Visit the Gorkha War Memorial here, built in honor of soldiers from the region.',
+          'Get back to your hotel for breakfast, and then step out to explore the town.',
+          'We’ll visit the Himalayan Mountaineering Institute ( closed on Thursday ) , Tenzing Rock ( closed on Thursday ) and the nearby zoo, home to species like the red panda and snow leopard.',
+          'Later, visit the Japanese Temple and Peace Pagoda, known for their quiet setting and views over the town.',
+          'Enjoy The Toy Train Ride ( Optional )',
+          'After a full day of sightseeing, get back to your hotel by evening and relax.',
+          'Overnight stay in Darjeeling.'
+        ]
+      },
+      {
+        day: 7,
+        title: 'Day 7 Departure | Farewell To The Queen Of Hills',
+        description: [
+          'Enjoy a tasty breakfast and then prepare to check out of your hotel.',
+          'We’ll drop you off at Bagdogra Airport or NJP Railway Station for your journey back home.',
+          'Board your onward journey, taking back memories of misty mornings, mountain views, and slow-paced days.'
+        ]
+      }
+    ],
+    included: [
+      '6 Nights Accommodation As Mentioned In Hotel Section',
+      'Transportation in Innova ( Or As Per the group size )',
+      'Meal Plan Breakfast & Dinner ( Except for Breakfast Day 1 & Dinner Day 7  ',
+      'Exclusive Non AC vehicle for transfers & sightseeing. Vehicle will not be at disposal it will be available to guest as per itinerary only (point to point basis).',
+      'All Permit Fees & Hotel Taxes (as per itinerary)',
+      'Rates are valid for INDIAN NATIONALS only'
+    ],
+    notIncluded: [
+      'GST (5%) is applicable extra.',
+      'Vehicle and Permit charges for the visit to Nathu-La Pass',
+      'Any kind of food and beverages that is not included in the package like alcohol drinks, mineral water, meals/refreshment/lunches on the highway.',
+      'Any personal expense like tip to the drivers, entry to the monuments. monasteries, camera/video camera charges, laundry, telephone bills, tips etc.',
+      'Any cost arising due to natural calamities like landslides, roadblocks etc. (to be borne by the customer on the spot)',
+      'Anything not mentioned in the inclusion.',
+      'Air fares/Train Tickets'
+    ],
+    stays: [
+      'Gangtok : Udaan Keepsa Hotel / Similar',
+      'Pelling : Udaan Pinecrest / Similar',
+      'Darjeeling : Anutri Hill Resort / Similar'
+    ],
+    note: 'Valid ID proof (Voter ID / Passport / Driving Licence). PAN Card & Aadhar Card is not acceptable. In case of a child below 18 years bring Aadhar or Birth Certificate. 4 Passport sized photographs of each person.',
+    thingsToCarry: [
+      'Authentic Government ID Card (Voter ID, Passport, or Driving License)',
+      'Comfortable warm clothing like woolen socks, cap, fleece jackets or warmers, down jacket, toiletries.',
+      'Sunscreen & lip balm, Good U/V protection sunglasses',
+      'Personal Medicines (if any)'
+    ],
+    costingDetails: [
+      { label: 'Price Starting at', value: '₹24,999/-' },
+      { label: 'Get Quote Option', value: 'Contact Us' }
+    ],
+    dates: []
+  },
+  {
+    id: '37',
+    title: '5 Days Romantic Getaway Gangtok & Darjeeling Couple Special',
+    slug: '5-days-romantic-getaway-gangtok-darjeeling-couple-special',
+    image: '/images/sikkim.png',
+    destination: 'Sikkim',
+    region: 'Sikkim',
+    category: 'Sikkim',
+    description: 'Experience a romantic 5-day getaway in Gangtok and Darjeeling, customized specifically for couples.',
+    duration: 5,
+    nights: 4,
+    price: 21999,
+    rating: 4.9,
+    difficulty: 'Easy',
+    groupSize: 2,
+    tripType: 'India',
+    overviewPoints: [
+      'Route: Bagdogra/NJP Railway Station → Gangtok  → Baba Mandir → Tsogmo Lake → Darjeeling → Bagdogra/NJP Railway Station.',
+      'Duration: 4 Nights / 5 Days.',
+      'Trip Start: Bagdogra/NJP Railway Station',
+      'Trip End: Bagdogra/NJP Railway Station',
+      'Best Time to Visit: Summer May to July Winter November - February'
+    ],
+    highlights: [
+      'Baba Mandir',
+      'Tsogmo Lake',
+      'Nathula Pass',
+      'Tiger Hill',
+      'Batasia Loop'
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Day 1 Arrival At Bagdogra/NJP | Transfer To Gangtok ( Approximately 125–130 km 4.5 to 5.5 hours Drive )',
+        description: [
+          'Arrive at Bagdogra Airport or NJP Railway Station, and meet our representative who will assist you with your transfer to Gangtok.',
+          'Begin your 4 to 5 hour journey through scenic hill roads, passing tea gardens ( Outside View ) and forested slopes along the way.',
+          'Reach Gangtok by Afternoon and check into your hotel.',
+          'Overnight stay in Gangtok.'
+        ]
+      },
+      {
+        day: 2,
+        title: 'Day 2 Excursion To Tsomgo Lake & Baba Mandir | Nathula Pass (Optional) ( Approx Distance: 120 Km • Est. Travel Time: 8 hrs )',
+        description: [
+          '(Note: Nathula Pass Closed on Monday).',
+          '( Todays Excursion Additional Cost 6000 Per Vehicle).',
+          'After an early breakfast, board your transfers towards Tsomgo Lake, a sacred glacial lake at 12,313 ft.',
+          'Enjoy the scenic mountain drive with winding roads and views of snow-covered landscapes along the way.',
+          'Spend some time by the lake, known for its changing colors and calm surroundings.',
+          'You can also enjoy a short yak ride or simply walk along the shore.',
+          'You can also try some maggie and momos at the various food stalls around the lake.',
+          'Continue further to Baba Mandir, a revered shrine dedicated to Baba Harbhajan Singh, an Indian Army soldier.',
+          'Later, you can also opt to visit Nathula Pass at 14,140 feet, near the Indo-China border (subject to permit and availability).',
+          'After sightseeing, return to Gangtok by evening and relax at your hotel.',
+          'Overnight stay in Gangtok.'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Day 3 Gangtok To Darjeeling | Transfer To The Queen of Hills ( Approx Distance 100 Kms 4 Hrs Drive )',
+        description: [
+          'Enjoy your breakfast, check out from your hotel and begin your journey towards Darjeeling.',
+          'The drive takes around 3-4 hours, gradually opening into rolling tea estates like Happy Valley with neatly lined plantations.',
+          'Reach Darjeeling, check in to your hotel and spend the rest of the evening at leisure.',
+          'You can either take a walk along Mall Road ( On Your Own ) or relax at heritage cafés with a cup of fresh Darjeeling tea overlooking the hills.',
+          'Overnight stay in Darjeeling.'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Day 4 Full Day Local Sightseeing In Darjeeling',
+        description: [
+          'Start your day early around 4:00 AM for the drive to Tiger Hill to see a magical sunrise.',
+          'Watch the first light hit Mt. Kanchenjunga, turning the peaks golden, with distant views of Mt. Everest on clear days.',
+          'On the way back, stop at Batasia Loop to take stunning photos, where the spiral railway track curves through landscaped gardens with mountain views.',
+          'Visit the Gorkha War Memorial here, built in honor of soldiers from the region.',
+          'Get back to your hotel for breakfast, and then step out to explore the town.',
+          'We’ll visit the Himalayan Mountaineering Institute ( closed on Thursday ) , Tenzing Rock ( closed on Thursday ) and the nearby zoo, home to species like the red panda and snow leopard.',
+          'Later, visit the Japanese Temple and Peace Pagoda, known for their quiet setting and views over the town.',
+          'Enjoy The Toy Train Ride ( Optional )',
+          'After a full day of sightseeing, get back to your hotel by evening and relax.',
+          'Overnight stay in Darjeeling.'
+        ]
+      },
+      {
+        day: 5,
+        title: 'Day 5 Departure | Farewell To The Queen Of Hills',
+        description: [
+          'Enjoy a tasty breakfast and then prepare to check out of your hotel.',
+          'We’ll drop you off at Bagdogra Airport or NJP Railway Station for your journey back home.',
+          'Board your onward journey, taking back memories of misty mornings, mountain views, and slow-paced days.'
+        ]
+      }
+    ],
+    included: [
+      '4 Nights Accommodation As Mentioned In Hotel Section',
+      'Transportation in Innova ( Or As Per the group size )',
+      'Meal Plan Breakfast & Dinner ( Except for Breakfast Day 1 & Dinner Day 7  ',
+      'Exclusive Non AC vehicle for transfers & sightseeing. Vehicle will not be at disposal it will be available to guest as per itinerary only (point to point basis).',
+      'All Permit Fees & Hotel Taxes (as per itinerary)',
+      'Rates are valid for INDIAN NATIONALS only'
+    ],
+    notIncluded: [
+      'GST (5%) is applicable extra.',
+      'Vehicle and Permit charges for the visit to Nathu-La Pass',
+      'Any kind of food and beverages that is not included in the package like alcohol drinks, mineral water, meals/refreshment/lunches on the highway.',
+      'Any personal expense like tip to the drivers, entry to the monuments. monasteries, camera/video camera charges, laundry, telephone bills, tips etc.',
+      'Any cost arising due to natural calamities like landslides, roadblocks etc. (to be borne by the customer on the spot)',
+      'Anything not mentioned in the inclusion.',
+      'Air fares/Train Tickets'
+    ],
+    stays: [
+      'Gangtok : Udaan Keepsa Hotel / Similar',
+      'Darjeeling : Anutri Hill Resort / Similar'
+    ],
+    note: 'Note:- Valid ID proof (Voter ID / Passport / Driving Licence). PAN Card & Aadhar Card is not acceptable. In case of a child below 18 years bring Aadhar or Birth Certificate. 4 Passport sized photographs of each person.',
+    thingsToCarry: [
+      'Authentic Government ID Card (Voter ID, Passport, or Driving License)',
+      'Comfortable warm clothing like woolen socks, cap, fleece jackets or warmers, down jacket, toiletries.',
+      'Sunscreen & lip balm, Good U/V protection sunglasses',
+      'Personal Medicines (if any)'
+    ],
+    costingDetails: [
+      { label: 'Price Starting at', value: '₹21,999/-' },
+      { label: 'Get Quote Option', value: 'Contact Us' }
+    ],
+    dates: []
+  },
+  {
+    id: '38',
+    title: '7 Days Wonderful Sikkim Darjeeling with Mirik',
+    slug: '7-days-wonderful-sikkim-darjeeling-with-mirik',
+    image: '/images/sikkim.png',
+    destination: 'Sikkim',
+    region: 'Sikkim',
+    category: 'Sikkim',
+    description: 'Discover Sikkim and Darjeeling, including a beautiful day excursion to the peaceful lakeside town of Mirik.',
+    duration: 7,
+    nights: 6,
+    price: 25499,
+    rating: 4.9,
+    difficulty: 'Easy',
+    groupSize: 15,
+    tripType: 'India',
+    overviewPoints: [
+      'Route: Bagdogra/NJP Railway Station → Gangtok  → Baba Mandir → Tsogmo Lake → Pelling → Darjeeling → Bagdogra.',
+      'Duration: 6 Nights / 7 Days.',
+      'Trip Start: Bagdogra/NJP Railway Station',
+      'Trip End: Bagdogra/NJP Railway Station',
+      'Best Time to Visit: Summer May to July Winter November - February'
+    ],
+    highlights: [
+      'Baba Mandir',
+      'Tsogmo Lake',
+      'Nathula Pass',
+      'Chardham Namchi',
+      'Ravangla Park',
+      'India’s first Skywalk at around 7,000 ft',
+      'Tiger Hill',
+      'Batasia Loop',
+      'Mirik'
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Day 1 Arrival At Bagdogra/NJP | Transfer To Gangtok ( Approximately 125–130 km 4.5 to 5.5 hours Drive )',
+        description: [
+          'Arrive at Bagdogra Airport or NJP Railway Station, and meet our representative who will assist you with your transfer to Gangtok.',
+          'Begin your 4 to 5 hour journey through scenic hill roads, passing tea gardens ( Outside View ) and forested slopes along the way.',
+          'Reach Gangtok by Afternoon and check into your hotel.',
+          'Overnight stay in Gangtok.'
+        ]
+      },
+      {
+        day: 2,
+        title: 'Day 2 Excursion To Tsomgo Lake & Baba Mandir | Nathula Pass (Optional) ( Approx Distance: 120 Km • Est. Travel Time: 8 hrs )',
+        description: [
+          '(Note: Nathula Pass Closed on Monday).',
+          '( Todays Excursion Additional Cost 6000 Per Vehicle).',
+          'After an early breakfast, board your transfers towards Tsomgo Lake, a sacred glacial lake at 12,313 ft.',
+          'Enjoy the scenic mountain drive with winding roads and views of snow-covered landscapes along the way.',
+          'Spend some time by the lake, known for its changing colors and calm surroundings.',
+          'You can also enjoy a short yak ride or simply walk along the shore.',
+          'You can also try some maggie and momos at the various food stalls around the lake.',
+          'Continue further to Baba Mandir, a revered shrine dedicated to Baba Harbhajan Singh, an Indian Army soldier.',
+          'Later, you can also opt to visit Nathula Pass at 14,140 feet, near the Indo-China border (subject to permit and availability).',
+          'After sightseeing, return to Gangtok by evening and relax at your hotel.',
+          'Overnight stay in Gangtok.'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Day 3 Gangtok To Pelling Via Ravangla | Enchey Monastery & Monk Blessing ( Approx Distance 130 Kms 6 Hrs )',
+        description: [
+          'After breakfast, check out from your hotel and begin your journey towards Pelling.',
+          'Before leaving Gangtok, visit Enchey Monastery, a peaceful 200-year-old monastery set on a hilltop.',
+          'Visit Namchi Chardham & Ravangla Park Enroute.',
+          'Spend some time here and receive a traditional monk blessing.',
+          'Then, we’ll head towards Pelling, which takes around 4–5 hours through winding hill roads and changing landscapes.',
+          'Reach Pelling by evening and check in to your hotel.',
+          'You can spend the evening at leisure either taking a short walk or enjoy views of the surrounding mountains from your stay.',
+          'Overnight stay in Pelling.'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Day 4 Pelling Sightseeing With Skywalk Experience Transfer To Darjeeling ( Approx Distance 100 Kms 4 Hrs Drive )',
+        description: [
+          'After Breakfast embark on a sightseeing tour of pelling covering - Kanchenjunga falls, Penyang Monastery, Rimbi Waterfall, Khecheopalri Lake, Orange Garden, Rabdentse Ruins & Skywalk.',
+          'Visit the Skywalk complex and the towering Chenrezig Statue, one of the tallest in Sikkim.',
+          'Walk on the glass Skywalk at around 7,000 ft, where you can see the valley slopes and monastery structures beneath your feet.',
+          'Next, we’ll head to Pemayangtse Monastery, a 17th-century monastery known for its detailed woodwork and spiritual significance.',
+          'From here, take a short 15 - 20 minute forest walk to reach the Rabdentse Ruins, the remains of the old Sikkim capital.',
+          'After sightseeing, we’ll begin our journey towards Darjeeling, which takes around 4–5 hours.',
+          'Reach Darjeeling by evening and check in to your hotel.',
+          'Overnight stay in Darjeeling.'
+        ]
+      },
+      {
+        day: 5,
+        title: 'Day 5 Mirik Excursion | Lakeside & Tea Gardens',
+        description: [
+          'After breakfast, head out for a day trip to Mirik, a quiet hill town located around 2 hours from Darjeeling.',
+          'On arrival, we’ll visit Sumendu Lake, surrounded by pine forests and connected by a curved footbridge.',
+          'Take a walk along the lakeside or simply relax by the water.',
+          'You can also opt for a short boat ride on the lake or explore the nearby viewpoints.',
+          'Spend some time around the tea gardens of Mirik, where neatly lined plantations stretch across the slopes.',
+          'Later, return to Darjeeling by evening and enjoy your time at leisure.',
+          'You can take a walk around Chowrasta ( On Your Own ) , watch the town slowly light up, or sit at a heritage café with a cup of Darjeeling tea.',
+          'Overnight stay in Darjeeling.'
+        ]
+      },
+      {
+        day: 6,
+        title: 'Day 6 Full Day Local Sightseeing In Darjeeling Toy Train Ride',
+        description: [
+          'Start your day early around 4:00 AM for the drive to Tiger Hill to see a magical sunrise.',
+          'Watch the first light hit Mt. Kanchenjunga, turning the peaks golden, with distant views of Mt. Everest on clear days.',
+          'On the way back, stop at Batasia Loop to take stunning photos, where the spiral railway track curves through landscaped gardens with mountain views.',
+          'Visit the Gorkha War Memorial here, built in honor of soldiers from the region.',
+          'Get back to your hotel for breakfast, and then step out to explore the town.',
+          'We’ll visit the Himalayan Mountaineering Institute ( closed on Thursday ) , Tenzing Rock ( closed on Thursday ) and the nearby zoo, home to species like the red panda and snow leopard.',
+          'Later, visit the Japanese Temple and Peace Pagoda, known for their quiet setting and views over the town.',
+          'Enjoy The Toy Train Ride ( Optional )',
+          'After a full day of sightseeing, get back to your hotel by evening and relax.',
+          'Overnight stay in Darjeeling.'
+        ]
+      },
+      {
+        day: 7,
+        title: 'Day 7 Departure | Farewell To The Queen Of Hills',
+        description: [
+          'Enjoy a tasty breakfast and then prepare to check out of your hotel.',
+          'We’ll drop you off at Bagdogra Airport or NJP Railway Station for your journey back home.',
+          'Board your onward journey, taking back memories of misty mornings, mountain views, and slow-paced days.'
+        ]
+      }
+    ],
+    included: [
+      '6 Nights Accommodation As Mentioned In Hotel Section',
+      'Transportation in Innova ( Or As Per the group size )',
+      'Meal Plan Breakfast & Dinner ( Except for Breakfast Day 1 & Dinner Day 7  ',
+      'Exclusive Non AC vehicle for transfers & sightseeing. Vehicle will not be at disposal it will be available to guest as per itinerary only (point to point basis).',
+      'All Permit Fees & Hotel Taxes (as per itinerary)',
+      'Rates are valid for INDIAN NATIONALS only'
+    ],
+    notIncluded: [
+      'GST (5%) is applicable extra.',
+      'Vehicle and Permit charges for the visit to Nathu-La Pass',
+      'Any kind of food and beverages that is not included in the package like alcohol drinks, mineral water, meals/refreshment/lunches on the highway.',
+      'Any personal expense like tip to the drivers, entry to the monuments. monasteries, camera/video camera charges, laundry, telephone bills, tips etc.',
+      'Any cost arising due to natural calamities like landslides, roadblocks etc. (to be borne by the customer on the spot)',
+      'Anything not mentioned in the inclusion.',
+      'Air fares/Train Tickets'
+    ],
+    stays: [
+      'Gangtok : Udaan Keepsa Hotel / Similar',
+      'Pelling : Udaan Pinecrest / Similar',
+      'Darjeeling : Anutri Hill Resort / Similar'
+    ],
+    note: 'Note:- Valid ID proof (Voter ID / Passport / Driving Licence). PAN Card & Aadhar Card is not acceptable. In case of a child below 18 years bring Aadhar or Birth Certificate. 4 Passport sized photographs of each person.',
+    thingsToCarry: [
+      'Authentic Government ID Card (Voter ID, Passport, or Driving License)',
+      'Comfortable warm clothing like woolen socks, cap, fleece jackets or warmers, down jacket, toiletries.',
+      'Sunscreen & lip balm, Good U/V protection sunglasses',
+      'Personal Medicines (if any)'
+    ],
+    costingDetails: [
+      { label: 'Price Starting at', value: '₹25,499/-' },
+      { label: 'Get Quote Option', value: 'Contact Us' }
+    ],
+    dates: []
+  },
+  {
+    id: '39',
+    title: '10 Days Offbeat & Adventure Sikkim Wanderphilia Exclusive',
+    slug: '10-days-offbeat-adventure-sikkim-wanderphilia-exclusive',
+    image: '/images/sikkim.png',
+    destination: 'Sikkim',
+    region: 'Sikkim',
+    category: 'Sikkim',
+    description: 'An ultimate 10-day offbeat adventure through Sikkim including Lachen, Lachung, Gurudongmar Lake, and Zuluk along the Old Silk Route.',
+    duration: 11,
+    nights: 10,
+    price: 45499,
+    rating: 4.9,
+    difficulty: 'Easy',
+    groupSize: 15,
+    tripType: 'India',
+    overviewPoints: [
+      'Route: Bagdogra/NJP Railway Station → Gangtok  → Lachen → Lachung → Gangtook → Zuluk → Baba Mandir → Tsogmo Lake → Darjeeling → Bagdogra/NJP Railway Station.',
+      'Duration: 9 Nights / 10 Days.',
+      'Trip Start: Bagdogra/NJP Railway Station',
+      'Trip End: Bagdogra/NJP Railway Station',
+      'Best Time to Visit: Summer May to July Winter November - February'
+    ],
+    highlights: [
+      'Gurudongmar Lake',
+      'Yumthang Valley',
+      'Baba Mandir',
+      'Tsogmo Lake',
+      'Nathula Pass',
+      'Zuluk',
+      'Tiger Hill',
+      'Batasia Loop'
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Day 1 Arrival At Bagdogra/NJP | Transfer To Gangtok ( Approximately 125–130 km 4.5 to 5.5 hours Drive )',
+        description: [
+          'Arrive at Bagdogra Airport or NJP Railway Station, and meet our representative who will assist you with your transfer to Gangtok.',
+          'Begin your 4 to 5 hour journey through scenic hill roads, passing tea gardens ( Outside View ) and forested slopes along the way.',
+          'Reach Gangtok by evening and check into your hotel.',
+          'Overnight stay in Gangtok.'
+        ]
+      },
+      {
+        day: 2,
+        title: 'Day 2 Excursion To Tsomgo Lake & Baba Mandir | Nathula Pass (Optional) ( Approx Distance: 120 Km • Est. Travel Time: 8 hrs )',
+        description: [
+          '(Note: Nathula Pass Closed on Monday).',
+          '( Todays Excursion Additional Cost 6000 Per Vehicle).',
+          'After an early breakfast, board your transfers towards Tsomgo Lake, a sacred glacial lake at 12,313 ft.',
+          'Enjoy the scenic mountain drive with winding roads and views of snow-covered landscapes along the way.',
+          'Spend some time by the lake, known for its changing colors and calm surroundings.',
+          'You can also enjoy a short yak ride or simply walk along the shore.',
+          'You can also try some maggie and momos at the various food stalls around the lake.',
+          'Continue further to Baba Mandir, a revered shrine dedicated to Baba Harbhajan Singh, an Indian Army soldier.',
+          'Later, you can also opt to visit Nathula Pass at 14,140 feet, near the Indo-China border (subject to permit and availability).',
+          'After sightseeing, return to Gangtok by evening and relax at your hotel.',
+          'Overnight stay in Gangtok.'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Day 3 Gangtok To Lachen | Transfer Via Mangan & Chungthang ( Approx 110 120  kms 5 - 6  Hrs Drive )',
+        description: [
+          'Wake up to a beautiful morning in Gangtok and have your breakfast.',
+          'Next, begin your journey towards Lachen, a remote mountain village tucked away in North Sikkim, far from the usual tourist trail.',
+          'The drive takes around 6–7 hours, following the Teesta River and gradually ascending into higher altitudes.',
+          'On the way, you\'ll pass through Mangan, a small hill town often called the gateway to North Sikkim, with local markets and hillside homes.',
+          'Along the way, you will pass through:',
+          'Kabi Lungchok – A historically significant site marking the blood brotherhood treaty between the Lepcha and Bhutia communities.',
+          'Seven Sisters Waterfall – One of the most photographed waterfalls in North Sikkim.',
+          'Naga Waterfall – A stunning multi-tiered waterfall surrounded by lush greenery.',
+          'Mangan – The district headquarters of North Sikkim and a popular refreshment stop.',
+          'Singhik View Point – Offers breathtaking views of Mt. Kanchenjunga and the Teesta Valley (weather permitting).',
+          'A little ahead comes Chungthang, where you can spot the meeting point of the Lachen Chu and Lachung Chu rivers set against the mountains.',
+          'Overnight in Lachen.'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Day 4 Lachen To Lachung | Excursion To Gurudongmar Lake ( Approx 55 60 Kms 2 3 Hrs Drive )',
+        description: [
+          'Have your breakfast early and start your journey to Gurudongmar Lake.',
+          'Enjoy the 3-4 hour drive, passing through high-altitude landscapes and rugged mountain terrain.',
+          'En route, you will pass through Thangu Village (13450ft), a remote high-altitude village of Tibetan Nomads.',
+          'Reach the surreal Gurudongmar Lake (17,800 ft), one of the highest lakes in the world.',
+          'Spend some time here exploring the vast, barren surroundings, turquoise waters, and snow-covered peaks reflecting on the lake\'s surface.',
+          'Due to the altitude, we\'ll make a brief stop and then begin the return journey.',
+          'Then, we\'ll head towards Lachung via Chungthang, where the Lachen Chu and Lachung Chu rivers meet.',
+          'Reach Lachung by evening and check in to your stay.',
+          'Spend the evening at leisure, relaxing in this quiet mountain village surrounded by forests and waterfalls.',
+          'Overnight stay in Lachung.'
+        ]
+      },
+      {
+        day: 5,
+        title: 'Day 5 Excursion To Yumthang Valley | Optional Visit to Zero Point ( Approx 25 kms One Way 1 1.5 Hrs One Way )',
+        description: [
+          'Have your breakfast early and get ready for an exciting adventure.',
+          'Today, we\'ll head to Yumthang Valley, located about 25 km from Lachung.',
+          'Known as the "Valley of Flowers," this region is filled with alpine meadows, flowing rivers, and snow-covered peaks in the distance.',
+          'Spend some time walking through the valley, crossing small streams, and soaking in the wide open landscapes.',
+          'Depending on the season, you\'ll either see blooming rhododendrons or a blanket of snow covering the valley.',
+          'You can also choose to visit Zero Point, where the road ends close to the Indo-China border (subject to weather and permits).',
+          'Later, return to Lachung for an overnight stay.',
+          'Overnight Stay in Lachung.'
+        ]
+      },
+      {
+        day: 6,
+        title: 'Day 6 Transfer From Lachung To Gangtok | Leisure Time ( Approx 115 - 120 kms 5-6 Hrs Drive )',
+        description: [
+          'Enjoy your breakfast in Lachung and then check out of the hotel.',
+          'We\'ll begin our journey back to Gangtok, passing through Chungthang and following the Teesta River.',
+          'By the time we reach Gangtok, the familiar buzz of the town sets in again.',
+          'Check in and settle into your hotel and relax after the long drive.',
+          'You can step out to explore MG Marg ( On Your Own ) in the evening, to try hot momos, sip on local tea, or just walk through the lively street.',
+          'Overnight stay in Gangtok.'
+        ]
+      },
+      {
+        day: 7,
+        title: 'Day 7 Gangtok To Zuluk | Into The Old Silk Route ( Approx 90 100 Kms 4 - 5 Hrs Drive )',
+        description: [
+          'After a filling breakfast, proceed to check out of the hotel.',
+          'Board your transfer towards Zuluk, a hidden mountain hamlet tucked along the historic Old Silk Route, far away from the usual touristy spots.',
+          'Along the way, you will pass through:',
+          'Rongli – The gateway to the Old Silk Route and permit checkpoint.',
+          'Lush Pine Forests – Dense forests and winding mountain roads.',
+          'Historic Silk Route – Once an important trade route connecting India and Tibet.',
+          'Padamchen – A charming Himalayan village surrounded by forests and mist-covered mountains.',
+          'Panoramic Mountain Landscapes – Spectacular views of valleys, clouds, and rugged Himalayan terrain.',
+          'Wanderphilia Signature Moment  - As dusk settles over the mountains, witness the clouds drifting through the valleys while the silence of the Himalayas creates a truly magical experience—an unforgettable evening on the legendary Old Silk Route.',
+          'Overnight In Zuluk.'
+        ]
+      },
+      {
+        day: 8,
+        title: 'Day 8 Zuluk To Pelling | Into The West Sikkim ( Approx 150 170 kms 6 - 8 Hrs Drive )',
+        description: [
+          'Wake up to a crisp mountain morning in Zuluk and enjoy your breakfast.',
+          'Today, we leave behind the rugged terrain of the Old Silk Route and head towards Pelling in West Sikkim.',
+          'Along the way, you will pass through:',
+          'Thambi View Point – Famous for its iconic zig-zag roads and breathtaking Himalayan panoramas.',
+          'Lungthung View Point – Spectacular views of the Eastern Himalayas (weather permitting).',
+          'Ravangla Region – Known for its seasonal beauty, offering vistas of mountains and deep valleys.',
+          'Traditional Sikkimese Villages – Offering glimpses into local culture and mountain life.',
+          'Overnight Stay in Pelling.'
+        ]
+      },
+      {
+        day: 9,
+        title: 'Day 9 Half-Day Pelling Sightseeing with Skywalk | Transfer To Darjeeling ( Approx Distance 100 Kms 4 Hrs Drive )',
+        description: [
+          'Enjoy your breakfast and get ready to explore some of Pelling\'s key highlights.',
+          'Visit the Skywalk complex and Chenrezig Statue, one of the tallest in the world.',
+          'Experience walking on India\'s first skywalk at 7,000 ft with the valley and monastery below you.',
+          'Next, we\'ll head to Pemayangtse Monastery, a 17th century marvel known for its peaceful setting and detailed woodwork.',
+          'From here, take a short 15–20 minute forest walk to reach the Rabdentse Ruins, the ancient Sikkim capital, overlooking the valley.',
+          'After sightseeing, we\'ll begin the 4-5 hours journey towards Darjeeling.',
+          'By evening, you\'ll reach Darjeeling and check into your stay.',
+          'You can step out later for a short walk around Chowrasta ( On Your Own ) or relax at a café overlooking the tea estates.',
+          'Overnight stay in Darjeeling.'
+        ]
+      },
+      {
+        day: 10,
+        title: 'Day 10 Full Day Local Sightseeing In Darjeeling',
+        description: [
+          'Start your day early around 4:00 AM for the drive to Tiger Hill to see a magical sunrise.',
+          'Watch the first light hit Mt. Kanchenjunga, turning the peaks golden, with distant views of Mt. Everest on clear days.',
+          'On the way back, stop at Batasia Loop to take stunning photos, where the spiral railway track curves through landscaped gardens with mountain views.',
+          'Visit the Gorkha War Memorial here, built in honor of soldiers from the region.',
+          'Get back to your hotel for breakfast, and then step out to explore the town.',
+          'We’ll visit the Himalayan Mountaineering Institute ( closed on Thursday ) , Tenzing Rock ( closed on Thursday ) and the nearby zoo, home to species like the red panda and snow leopard.',
+          'Later, visit the Japanese Temple and Peace Pagoda, known for their quiet setting and views over the town.',
+          'Enjoy The Toy Train Ride ( Optional )',
+          'After a full day of sightseeing, get back to your hotel by evening and relax.',
+          'Overnight stay in Darjeeling.'
+        ]
+      },
+      {
+        day: 11,
+        title: 'Day 11 Departure | Farewell To The Queen Of Hills',
+        description: [
+          'Enjoy a tasty breakfast and then prepare to check out of your hotel.',
+          'We’ll drop you off at Bagdogra Airport or NJP Railway Station for your journey back home.',
+          'Board your onward journey, taking back memories of misty mornings, mountain views, and slow-paced days.'
+        ]
+      }
+    ],
+    included: [
+      '10 Nights Accommodation As Mentioned In Hotel Section',
+      'Transportation in Innova/Xylo ( Or As Per the group size )',
+      'Meal Plan Breakfast & Dinner ( Except for Breakfast Day 1 & Dinner Day 11  ',
+      'Exclusive Non AC vehicle for transfers & sightseeing. The vehicle will not be at disposal; it will be available to guests as per itinerary only (point to point basis).',
+      'All Permit Fees & Hotel Taxes (as per itinerary)',
+      'Rates are valid for INDIAN NATIONALS only'
+    ],
+    notIncluded: [
+      'GST (5%) is applicable extra.',
+      'Vehicle and Permit charges for the visit to Nathu-La Pass and Zero Point.',
+      'Any kind of food and beverages that is not included in the package like alcohol drinks, mineral water, meals/refreshment/lunches on the highway.',
+      'Any personal expense like tip to the drivers, entry to the monuments. monasteries, camera/video camera charges, laundry, telephone bills, tips etc.',
+      'Any cost arising due to natural calamities like landslides, roadblocks etc. (to be borne by the customer on the spot)',
+      'Anything not mentioned in the inclusion.',
+      'Air fares/Train Tickets'
+    ],
+    stays: [
+      'Gangtok : Udaan Keepsa Hotel / Similar',
+      'Lachen : Rufina Blue Pine Lachen / Similar',
+      'Lachung : Magellan’s The Golden Bridge / Similar',
+      'Zuluk : Voyage Glenz Resort / Similar',
+      'Pelling : Udaan Pinecrest / Similar',
+      'Darjeeling : Anutri Hill Resort / Similar'
+    ],
+    note: 'Note:- Valid ID proof (Voter ID / Passport / Driving Licence). PAN Card & Aadhar Card is not acceptable. In case of a child below 18 years bring Aadhar or Birth Certificate. 4 Passport sized photographs of each person.',
+    thingsToCarry: [
+      'Authentic Government ID Card (Voter ID, Passport, or Driving License)',
+      'Comfortable warm clothing like woolen socks, cap, fleece jackets or warmers, down jacket, toiletries.',
+      'Sunscreen & lip balm, Good U/V protection sunglasses',
+      'Personal Medicines (if any)'
+    ],
+    costingDetails: [
+      { label: 'Price Starting at', value: '₹45,499/-' },
+      { label: 'Get Quote Option', value: 'Contact Us' }
+    ],
+    dates: []
+  },
+  {
+    id: '40',
+    title: '8 Days Unseen Sikkim Escape Zuluk , Aritar & Rishikhola with Darjeeling',
+    slug: '8-days-unseen-sikkim-escape-zuluk-aritar-rishikhola-with-darjeeling',
+    image: '/images/sikkim.png',
+    destination: 'Sikkim',
+    region: 'Sikkim',
+    category: 'Sikkim',
+    description: 'An ultimate 8-day unseen Sikkim escape through Zuluk, Aritar, Rishikhola, and Darjeeling along the Old Silk Route.',
+    duration: 8,
+    nights: 7,
+    price: 29499,
+    rating: 4.9,
+    difficulty: 'Easy',
+    groupSize: 15,
+    tripType: 'India',
+    overviewPoints: [
+      'Route: Bagdogra/NJP Railway Station → Gangtok  → Zuluk → Aritar → Rishikhola → Darjeeling → Bagdogra/NJP Railway Station.',
+      'Duration: 7 Nights / 8 Days.',
+      'Trip Start: Bagdogra/NJP Railway Station',
+      'Trip End: Bagdogra/NJP Railway Station',
+      'Best Time to Visit: Summer May to July Winter November - February'
+    ],
+    highlights: [
+      'Lampokhari Lake',
+      'Nathang Valley',
+      'Baba Mandir',
+      'Tsogmo Lake',
+      'Nathula Pass',
+      'Zuluk',
+      'Tiger Hill',
+      'Batasia Loop'
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Day 1 Arrival At Bagdogra/NJP | Transfer To Gangtok ( Approximately 125–130 km 4.5 to 5.5 hours Drive )',
+        description: [
+          'Arrive at Bagdogra Airport or NJP Railway Station, and meet our representative who will assist you with your transfer to Gangtok.',
+          'Begin your 4 to 5 hour journey through scenic hill roads, passing tea gardens ( Outside View ) and forested slopes along the way.',
+          'Reach Gangtok by evening and check into your hotel.',
+          'Overnight stay in Gangtok.'
+        ]
+      },
+      {
+        day: 2,
+        title: 'Day 2 Excursion To Tsomgo Lake & Baba Mandir | Nathula Pass (Optional) ( Approx Distance: 120 Km • Est. Travel Time: 8 hrs )',
+        description: [
+          '(Note: Nathula Pass Closed on Monday).',
+          '( Todays Excursion Additional Cost 6000 Per Vehicle).',
+          'After an early breakfast, board your transfers towards Tsomgo Lake, a sacred glacial lake at 12,313 ft.',
+          'Enjoy the scenic mountain drive with winding roads and views of snow-covered landscapes along the way.',
+          'Spend some time by the lake, known for its changing colors and calm surroundings.',
+          'You can also enjoy a short yak ride or simply walk along the shore.',
+          'You can also try some maggie and momos at the various food stalls around the lake.',
+          'Continue further to Baba Mandir, a revered shrine dedicated to Baba Harbhajan Singh, an Indian Army soldier.',
+          'Later, you can also opt to visit Nathula Pass at 14,140 feet, near the Indo-China border (subject to permit and availability).',
+          'After sightseeing, return to Gangtok by evening and relax at your hotel.',
+          'Overnight stay in Gangtok.'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Day 3 Gangtok To Zuluk | Into The Old Silk Route ( Approx 90 100 Kms 4 - 5 Hrs Drive )',
+        description: [
+          'After a filling breakfast, proceed to check out of the hotel.',
+          'Board your transfer towards Zuluk, a hidden mountain hamlet tucked along the historic Old Silk Route, far away from the usual touristy spots.',
+          'Along the way, you will pass through:',
+          'Rongli – The gateway to the Old Silk Route and permit checkpoint.',
+          'Lush Pine Forests – Dense forests and winding mountain roads.',
+          'Historic Silk Route – Once an important trade route connecting India and Tibet.',
+          'Padamchen – A charming Himalayan village surrounded by forests and mist-covered mountains.',
+          'Panoramic Mountain Landscapes – Spectacular views of valleys, clouds, and rugged Himalayan terrain.',
+          'Wanderphilia Signature Moment  - As dusk settles over the mountains, witness the clouds drifting through the valleys while the silence of the Himalayas creates a truly magical experience—an unforgettable evening on the legendary Old Silk Route.',
+          'Overnight In Zuluk.'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Day 4 Zuluk To Aritar | Via Thambi Viewpoint & Nathang Valley ( Approx 35 45 Kms 1 - 2 Hrs Drive )',
+        description: [
+          'Wake up before dawn for one of the most rewarding mornings of your trip.',
+          'Drive up to Thambi View Point (11,200 ft) to catch the first light of the sun touching the Kanchenjunga range, with the entire Himalayan skyline glowing gold in front of you.',
+          'After soaking in the views, return for breakfast and then begin your drive deeper into this lesser-explored corner of East Sikkim.',
+          'Continue towards Nathang Valley (13,500 ft), often called the "Ladakh of the East," for its wide, barren landscape and rugged mountain charm.',
+          'Pass by Lungthung and Eagle\'s Nest Bunker, where panoramic valley views unfold in every direction',
+          'Later, descend gradually towards Aritar, a peaceful little village in East Sikkim known for its calm lake and old-world charm.',
+          'By evening, reach your stay and rest after a long, scenic drive.',
+          'Overnight stay in Aritar.'
+        ]
+      },
+      {
+        day: 5,
+        title: 'Day 5 Aritar To Rishikhola | A Quiet Riverside Retreat ( Approx 15 20 Kms 1 Hr Drive )',
+        description: [
+          'Begin your morning at a slow pace with breakfast and a short walk around Aritar.',
+          'Visit Lampokhari Lake, a serene foot-shaped lake surrounded by pine forests, where you can take a small boat ride across the calm waters.',
+          'Stop by the nearby Aritar Monastery, one of the oldest in the region, known for its quiet setting and traditional architecture.',
+          'Later, check out and begin your drive towards Rishikhola, a hidden riverside hamlet on the Sikkim–Bengal border.',
+          'The drive takes around 2–3 hours, winding down through small villages, terraced fields, and forested slopes.',
+          'Reach Rishikhola by afternoon, where the gentle sound of the river greets you as soon as you step out of the vehicle.',
+          'Check in to your riverside cottage and spend the rest of the day at complete leisure.',
+          'You can take a walk along the river bed, dip your feet in the cool waters, or simply sit by the banks watching the day slowly fade.',
+          'As the night falls, enjoy the rare quiet of a place untouched by city sounds, with just the river flowing in the background.',
+          'Overnight Stay in Rishikhola.'
+        ]
+      },
+      {
+        day: 6,
+        title: 'Day 6 Rishikhola To Darjeeling | Towards The Queen Of Hills ( Approx 70 80 Kms   4 - 5 Hrs )',
+        description: [
+          'Wake up to the sound of the river and enjoy a relaxed breakfast by the banks.',
+          'After checking out, begin your journey towards Darjeeling, leaving behind the quiet of Rishikhola.',
+          'The drive takes around 4–5 hours, gradually opening into rolling tea estates with neatly lined plantations stretching along the slopes.',
+          'Reach Darjeeling by evening, check in to your hotel, and spend the rest of the time at leisure.',
+          'You can take a walk along Mall Road ( On Your Own ), browse the shops at Chowrasta, or relax at a heritage café with a cup of fresh Darjeeling tea overlooking the hills.',
+          'Overnight stay in Darjeeling.'
+        ]
+      },
+      {
+        day: 7,
+        title: 'Day 7 Full Day Local Sightseeing In Darjeeling Toy Train Ride',
+        description: [
+          'Start your day early around 4:00 AM for the drive to Tiger Hill to see a magical sunrise.',
+          'Watch the first light hit Mt. Kanchenjunga, turning the peaks golden, with distant views of Mt. Everest on clear days.',
+          'On the way back, stop at Batasia Loop to take stunning photos, where the spiral railway track curves through landscaped gardens with mountain views.',
+          'Visit the Gorkha War Memorial here, built in honor of soldiers from the region.',
+          'Get back to your hotel for breakfast, and then step out to explore the town.',
+          'We’ll visit the Himalayan Mountaineering Institute ( closed on Thursday ) , Tenzing Rock ( closed on Thursday ) and the nearby zoo, home to species like the red panda and snow leopard.',
+          'Later, visit the Japanese Temple and Peace Pagoda, known for their quiet setting and views over the town.',
+          'Enjoy The Toy Train Ride ( Optional )',
+          'After a full day of sightseeing, get back to your hotel by evening and relax.',
+          'Overnight In Darjeeling.',
+          'Overnight stay in Darjeeling.'
+        ]
+      },
+      {
+        day: 8,
+        title: 'Day 8 Departure | Farewell To The Queen Of Hills',
+        description: [
+          'Enjoy a tasty breakfast and then prepare to check out of your hotel.',
+          'We’ll drop you off at Bagdogra Airport or NJP Railway Station for your journey back home.',
+          'Board your onward journey, taking back memories of misty mornings, mountain views, and slow-paced days.'
+        ]
+      }
+    ],
+    included: [
+      '7 Nights Accommodation As Mentioned In Hotels.',
+      'Transportation in Innova/Xylo ( Or As Per the group size )',
+      'Meal Plan Breakfast & Dinner ( Except for Breakfast Day 1 & Dinner Day 11  ',
+      'Exclusive Non AC vehicle for transfers & sightseeing. The vehicle will not be at disposal; it will be available to guests as per itinerary only (point to point basis).',
+      'All Permit Fees & Hotel Taxes (as per itinerary)',
+      'Rates are valid for INDIAN NATIONALS only'
+    ],
+    notIncluded: [
+      'GST (5%) is applicable extra.',
+      'Vehicle and Permit charges for the visit to Nathu-La Pass and Zero Point.',
+      'Any kind of food and beverages that is not included in the package like alcohol drinks, mineral water, meals/refreshment/lunches on the highway.',
+      'Any personal expense like tip to the drivers, entry to the monuments. monasteries, camera/video camera charges, laundry, telephone bills, tips etc.',
+      'Any cost arising due to natural calamities like landslides, roadblocks etc. (to be borne by the customer on the spot)',
+      'Anything not mentioned in the inclusion.',
+      'Air fares/Train Tickets'
+    ],
+    stays: [
+      'Gangtok : Udaan Keepsa Hotel / Similar',
+      'Zuluk : Voyage Glenz Resort / Similar',
+      'Aritar : Eco Log Hut Resort / Similar',
+      'Rishikhola : Rose Dell Inn / Similar',
+      'Darjeeling : Anutri Hill Resort / Similar'
+    ],
+    note: 'Note:- Valid ID proof (Voter ID / Passport / Driving Licence). PAN Card & Aadhar Card is not acceptable. In case of a child below 18 years bring Aadhar or Birth Certificate. 4 Passport sized photographs of each person.',
+    thingsToCarry: [
+      'Authentic Government ID Card (Voter ID, Passport, or Driving License)',
+      'Comfortable warm clothing like woolen socks, cap, fleece jackets or warmers, down jacket, toiletries.',
+      'Sunscreen & lip balm, Good U/V protection sunglasses',
+      'Personal Medicines (if any)'
+    ],
+    costingDetails: [
+      { label: 'Price Starting at', value: '₹29,499/-' },
+      { label: 'Get Quote Option', value: 'Contact Us' }
+    ],
+    dates: []
   }
 ];
 
@@ -6388,6 +7258,13 @@ export const destinations: Destination[] = [
     slug: 'singapore',
     image: '/images/singapore.png',
     description: 'A futuristic city-state combining lush gardens, thrilling attractions, and diverse culture.',
+    tripCount: 1,
+  },
+  {
+    title: 'Sikkim',
+    slug: 'sikkim',
+    image: '/images/sikkim.png',
+    description: 'Explore the land of mystic valleys, pristine lakes, and majestic peaks.',
     tripCount: 1,
   },
 ];

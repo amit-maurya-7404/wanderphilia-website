@@ -81,6 +81,7 @@ export function IndiaTripsSection() {
     { title: 'Spiti', region: 'Spiti', image: '/images/spiti-valley.jpg', price: getCheapestPriceForCategory('spiti', 24499) },
     { title: 'Himachal', region: 'Himachal', image: '/images/himachal.jpg', price: getCheapestPriceForCategory('himachal', 6999) },
     { title: 'Kashmir', region: 'Kashmir', image: '/images/kashmir.jpg', price: getCheapestPriceForCategory('kashmir', 24499) },
+    { title: 'Sikkim', region: 'Sikkim', image: '/images/sikkim.png', price: getCheapestPriceForCategory('sikkim', 21999) },
     { title: 'Meghalaya', region: 'Meghalaya', image: '/images/meghalaya.jpg', price: getCheapestPriceForCategory('meghalaya', 21499) },
   ]
 

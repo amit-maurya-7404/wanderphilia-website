@@ -164,22 +164,37 @@ export function Navbar({ forceWhiteDesktop }: NavbarProps) {
                 >
                   Himachal
                 </Link>
-                <Link
-                  href="/trips/singapore"
 
-                  className="block px-4 py-3 text-gray-700 hover:bg-primary/10 hover:text-primary font-medium text-sm rounded-lg mx-2 transition-colors"
-                >
-                  Singapore
-                </Link>
                 <div className="border-t border-gray-200 my-2" />
                 <Link href="/upcoming-tours" className="block px-4 py-3 text-primary font-bold text-sm rounded-lg mx-2 hover:bg-primary/5 transition-colors">
                   View All Upcoming Trips
                 </Link>
               </div>
             </div>
-            <Link href="/honeymoon" className={`text-sm font-semibold transition-colors ${isScrolled || isAboutPage || forceWhiteDesktop ? 'text-gray-700   hover:text-primary' : 'text-white  hover:text-primary'}`}>
-              Honeymoon Getaway
-            </Link>
+            <div className="relative group">
+              <button className={`text-sm font-semibold transition-colors flex items-center gap-1 ${isScrolled || isAboutPage || forceWhiteDesktop ? 'text-gray-700  hover:text-primary' : 'text-white  hover:text-primary'}`}>
+                Honeymoon Getaway
+                <ChevronDown size={16} className="group-hover:rotate-180 transition-transform" />
+              </button>
+              <div className="absolute left-0 mt-0 w-56 bg-white rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 py-2 z-50 border border-gray-100">
+                <Link
+                  href="/trips/singapore"
+                  className="block px-4 py-3 text-gray-700 hover:bg-primary/10 hover:text-primary font-medium text-sm rounded-lg mx-2 transition-colors"
+                >
+                  Singapore
+                </Link>
+                <Link
+                  href="/trips/sikkim"
+                  className="block px-4 py-3 text-gray-700 hover:bg-primary/10 hover:text-primary font-medium text-sm rounded-lg mx-2 transition-colors"
+                >
+                  Sikkim
+                </Link>
+                <div className="border-t border-gray-200 my-2" />
+                <Link href="/honeymoon" className="block px-4 py-3 text-primary font-bold text-sm rounded-lg mx-2 hover:bg-primary/5 transition-colors">
+                  View All Honeymoon Getaways
+                </Link>
+              </div>
+            </div>
             <Link href="/blog" className={`text-sm font-semibold transition-colors ${isScrolled || isAboutPage || forceWhiteDesktop ? 'text-gray-700   hover:text-primary' : 'text-white  hover:text-primary'}`}>
               Blog
             </Link>
@@ -352,17 +367,7 @@ export function Navbar({ forceWhiteDesktop }: NavbarProps) {
                   >
                     Himachal
                   </Link>
-                  <Link
-                    href="/trips/singapore"
 
-                    className="block px-6 py-3 text-sm text-gray-600 hover:text-primary hover:bg-gray-100 transition-colors"
-                    onClick={() => {
-                      setIsMobileOpen(false)
-                      setOpenDropdown(null)
-                    }}
-                  >
-                    Singapore
-                  </Link>
                   <div className="border-t border-gray-200 my-1" />
                   <Link
                     href="/upcoming-tours"
@@ -378,9 +383,47 @@ export function Navbar({ forceWhiteDesktop }: NavbarProps) {
                 </div>
               )}
             </div>
-            <Link href="/honeymoon" className="px-4 py-4 text-base font-medium text-gray-700 hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
-              Honeymoon
-            </Link>
+            <div className="border-t border-gray-100">
+              <button className="w-full text-left px-4 py-4 text-base font-medium text-gray-700 hover:bg-gray-100 transition-colors flex items-center justify-between" onClick={() => setOpenDropdown(openDropdown === 'honeymoon' ? null : 'honeymoon')}>
+                Honeymoon Getaway
+                <ChevronDown size={18} className={`transition-transform duration-300 ${openDropdown === 'honeymoon' ? 'rotate-180' : ''}`} />
+              </button>
+              {openDropdown === 'honeymoon' && (
+                <div className="bg-gray-50 py-2 border-t border-gray-100">
+                  <Link
+                    href="/trips/singapore"
+                    className="block px-6 py-3 text-sm text-gray-600 hover:text-primary hover:bg-gray-100 transition-colors"
+                    onClick={() => {
+                      setIsMobileOpen(false)
+                      setOpenDropdown(null)
+                    }}
+                  >
+                    Singapore
+                  </Link>
+                  <Link
+                    href="/trips/sikkim"
+                    className="block px-6 py-3 text-sm text-gray-600 hover:text-primary hover:bg-gray-100 transition-colors"
+                    onClick={() => {
+                      setIsMobileOpen(false)
+                      setOpenDropdown(null)
+                    }}
+                  >
+                    Sikkim
+                  </Link>
+                  <div className="border-t border-gray-200 my-1" />
+                  <Link
+                    href="/honeymoon"
+                    className="block px-6 py-3 text-sm font-semibold text-primary hover:bg-gray-100 transition-colors"
+                    onClick={() => {
+                      setIsMobileOpen(false)
+                      setOpenDropdown(null)
+                    }}
+                  >
+                    View All Honeymoon Getaways
+                  </Link>
+                </div>
+              )}
+            </div>
             <Link href="/blog" className="px-4 py-4 text-base font-medium text-gray-700 hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
               Blog
             </Link>

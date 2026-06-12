@@ -58,9 +58,12 @@ function createMongoClient() {
 
 function getClientPromise() {
   if (!globalMongo._mongoClientPromise) {
-    globalMongo._mongoClientPromise = createMongoClient().connect()
+    globalMongo._mongoClientPromise = createMongoClient().connect().catch(err => {
+      globalMongo._mongoClientPromise = undefined;
+      throw err;
+    });
   }
-  return globalMongo._mongoClientPromise
+  return globalMongo._mongoClientPromise;
 }
 
 export async function getDb() {

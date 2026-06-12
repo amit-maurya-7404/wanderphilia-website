@@ -117,11 +117,11 @@ export function MobileNavbar() {
                     <Link href="/trips?type=India&region=Kashmir" className="block px-6 py-3 text-sm text-gray-600 hover:text-primary hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
                       Kashmir
                     </Link>
-                    <Link href="/trips?type=India&region=Meghalaya" className="block px-6 py-3 text-sm text-gray-600 hover:text-primary hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
-                      Meghalaya
-                    </Link>
                     <Link href="/trips?type=India&region=Himachal" className="block px-6 py-3 text-sm text-gray-600 hover:text-primary hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
                       Himachal Pradesh
+                    </Link>
+                    <Link href="/trips?type=India&region=Meghalaya" className="block px-6 py-3 text-sm text-gray-600 hover:text-primary hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
+                      Meghalaya
                     </Link>
                     <div className="border-t border-gray-200 my-1" />
                     <Link href="/trips?type=India" className="block px-6 py-3 text-sm font-semibold text-primary hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
