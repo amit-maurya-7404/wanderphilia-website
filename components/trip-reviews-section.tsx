@@ -14,6 +14,8 @@ interface ReviewItem {
   profilePhotoUrl?: string
   relativeTime?: string
   images?: string[]
+  tripSlug?: string | null
+  categoryId?: string | null
 }
 
 interface TripReviewsSectionProps {
@@ -49,21 +51,21 @@ export function TripReviewsSection({ tripSlug, categoryId }: TripReviewsSectionP
   const reviewStats = useMemo(() => {
     // Separate trip-specific reviews from general reviews
     const specificReviews = reviews.filter(r => r.tripSlug === tripSlug)
-    
+
     // Fallback to general reviews if no specific reviews exist
     const displayList = specificReviews.length > 0 ? specificReviews : reviews.filter(r => !r.tripSlug)
-    
+
     if (displayList.length === 0) {
       return { avgRating: '0.0', totalReviews: 0, displayReviews: [], hasSpecific: false }
     }
-    
+
     const avgRating = (displayList.reduce((sum, r) => sum + r.rating, 0) / displayList.length).toFixed(1)
     const totalReviews = displayList.length
     const displayReviews = displayList.slice(0, 6)
-    
-    return { 
-      avgRating, 
-      totalReviews, 
+
+    return {
+      avgRating,
+      totalReviews,
       displayReviews,
       hasSpecific: specificReviews.length > 0
     }
@@ -108,9 +110,8 @@ export function TripReviewsSection({ tripSlug, categoryId }: TripReviewsSectionP
                   <Star
                     key={i}
                     size={20}
-                    className={`fill-amber-400 text-amber-400 ${
-                      i < Math.round(Number(reviewStats.avgRating)) ? 'fill-amber-400 text-amber-400' : 'text-slate-200 fill-none'
-                    }`}
+                    className={`fill-amber-400 text-amber-400 ${i < Math.round(Number(reviewStats.avgRating)) ? 'fill-amber-400 text-amber-400' : 'text-slate-200 fill-none'
+                      }`}
                   />
                 ))}
               </div>
