@@ -1,5 +1,6 @@
 'use client'
 
+import { TripReviewsSection } from '@/components/trip-reviews-section'
 import { useState, useMemo, useEffect, useRef, use } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { notFound } from 'next/navigation'
@@ -878,6 +879,12 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
 
       {/* ADD BOTTOM PADDING FOR MOBILE */}
       <div className="h-[12vh] lg:h-0 min-h-20 lg:min-h-0" />
+
+            {/* REVIEWS SECTION */}
+      <TripReviewsSection 
+        tripSlug={trip.slug} 
+        categoryId={trip.category.toLowerCase()} 
+      />
 
       {/* GALLERY SECTION */}
       <TripGallerySection 

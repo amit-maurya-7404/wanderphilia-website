@@ -22,19 +22,28 @@ export async function GET(request: Request) {
 
   const isConfigured = !!(process.env.GOOGLE_PLACES_API_KEY && process.env.GOOGLE_PLACE_ID)
 
-  // Try to parse categoryId from query parameter
+  // Try to parse categoryId and tripSlug from query parameters
   const { searchParams } = new URL(request.url)
   const queryCategoryId = searchParams.get('categoryId')
+  const queryTripSlug = searchParams.get('tripSlug')
 
   // Fallback to parsing from Referer header
   const referer = request.headers.get('referer')
   let refererCategoryId: string | null = null
+  let refererTripSlug: string | null = null
   if (referer) {
     try {
       const url = new URL(referer)
       const pathParts = url.pathname.split('/').filter(Boolean)
-      if (pathParts[0] === 'trips' && pathParts[1] && pathParts[1] !== 'page') {
-        refererCategoryId = pathParts[1]
+      if (pathParts[0] === 'trips') {
+        if (pathParts[1]) {
+          if (pathParts[2] && pathParts[2] !== 'page') {
+            refererCategoryId = pathParts[1]
+            refererTripSlug = pathParts[2]
+          } else if (pathParts[1] !== 'page') {
+            refererCategoryId = pathParts[1]
+          }
+        }
       } else if (pathParts[0] === 'category' && pathParts[1]) {
         refererCategoryId = pathParts[1]
       }
@@ -44,6 +53,7 @@ export async function GET(request: Request) {
   }
 
   const targetCategoryId = queryCategoryId || refererCategoryId
+  const targetTripSlug = queryTripSlug || refererTripSlug
 
   try {
     const db = await getDb()
@@ -97,8 +107,25 @@ export async function GET(request: Request) {
       reviews = reviews.filter((item) => !item._id.toString().startsWith('review-'))
     }
 
-    // Filter by destination category if targetCategoryId is present
-    if (targetCategoryId) {
+    // Filter by specific trip slug if present
+    if (targetTripSlug) {
+      reviews = reviews.filter(
+        (r) => !r.tripSlug || r.tripSlug === targetTripSlug
+      )
+
+      // Sort: trip-specific first, then general reviews
+      reviews.sort((a, b) => {
+        const aIsSpecific = a.tripSlug === targetTripSlug
+        const bIsSpecific = b.tripSlug === targetTripSlug
+        if (aIsSpecific && !bIsSpecific) return -1
+        if (!aIsSpecific && bIsSpecific) return 1
+        
+        const aTime = a.createdAt ? new Date(a.createdAt).getTime() : 0
+        const bTime = b.createdAt ? new Date(b.createdAt).getTime() : 0
+        return bTime - aTime
+      })
+    } else if (targetCategoryId) {
+      // Filter by destination category if targetCategoryId is present
       reviews = reviews.filter(
         (r) => !r.categoryId || r.categoryId === targetCategoryId
       )
@@ -130,7 +157,21 @@ export async function GET(request: Request) {
       localReviews = localReviews.filter((item: any) => !item._id.startsWith('review-'))
     }
 
-    if (targetCategoryId) {
+    if (targetTripSlug) {
+      localReviews = localReviews.filter(
+        (r: any) => !r.tripSlug || r.tripSlug === targetTripSlug
+      )
+      localReviews.sort((a: any, b: any) => {
+        const aIsSpecific = a.tripSlug === targetTripSlug
+        const bIsSpecific = b.tripSlug === targetTripSlug
+        if (aIsSpecific && !bIsSpecific) return -1
+        if (!aIsSpecific && bIsSpecific) return 1
+        
+        const aTime = a.createdAt ? new Date(a.createdAt).getTime() : 0
+        const bTime = b.createdAt ? new Date(b.createdAt).getTime() : 0
+        return bTime - aTime
+      })
+    } else if (targetCategoryId) {
       localReviews = localReviews.filter(
         (r: any) => !r.categoryId || r.categoryId === targetCategoryId
       )
@@ -157,12 +198,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
     }
 
-    const { name, rating, platform, comment, categoryId, images } = body as {
+    const { name, rating, platform, comment, categoryId, tripSlug, images } = body as {
       name?: string
       rating?: number
       platform?: string
       comment?: string
       categoryId?: string
+      tripSlug?: string
       images?: string[]
     }
 
@@ -192,6 +234,7 @@ export async function POST(request: Request) {
       platform: targetPlatform,
       comment,
       categoryId: categoryId || null,
+      tripSlug: tripSlug || null,
       images: Array.isArray(images) ? images : [],
       createdAt: new Date(),
     }

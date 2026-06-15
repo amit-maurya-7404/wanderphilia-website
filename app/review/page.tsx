@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect, useMemo, Suspense } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { 
   Star, 
   Upload, 
@@ -13,12 +13,13 @@ import {
   ArrowLeft, 
   Compass, 
   Loader2, 
-  Image as ImageIcon,
-  Search,
-  ChevronRight,
-  ChevronLeft
+  Search, 
+  ChevronRight, 
+  ChevronLeft,
+  Calendar
 } from 'lucide-react'
 import { getAllCategories } from '@/lib/trip-categories'
+import { trips } from '@/lib/data'
 
 interface Category {
   id: string
@@ -35,8 +36,11 @@ interface UploadedFile {
   errorMsg?: string
 }
 
-export default function ReviewPage() {
+function ReviewFormContent() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const tripSlugParam = searchParams.get('tripSlug')
+  
   const [categories, setCategories] = useState<Category[]>([])
   const [searchQuery, setSearchQuery] = useState('')
   
@@ -46,6 +50,7 @@ export default function ReviewPage() {
   // Form State
   const [name, setName] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('')
+  const [selectedTripSlug, setSelectedTripSlug] = useState('')
   const [rating, setRating] = useState(0)
   const [hoverRating, setHoverRating] = useState(0)
   const [comment, setComment] = useState('')
@@ -64,20 +69,50 @@ export default function ReviewPage() {
     comment: false,
   })
 
-  // Load categories on client
+  // Load categories on client & handle URL pre-selection
   useEffect(() => {
     try {
       const cats = getAllCategories()
       setCategories(cats)
+
+      if (tripSlugParam) {
+        const matchedTrip = trips.find(t => t.slug === tripSlugParam)
+        if (matchedTrip) {
+          // Normalize matched category ID
+          const catId = matchedTrip.category.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '-')
+          setSelectedCategory(catId)
+          setSelectedTripSlug(tripSlugParam)
+        }
+      }
     } catch (e) {
-      console.error('Failed to load categories', e)
+      console.error('Failed to load categories or trips', e)
     }
-  }, [])
+  }, [tripSlugParam])
 
   // Filter categories by search query
   const filteredCategories = categories.filter(cat => 
     cat.name.toLowerCase().includes(searchQuery.toLowerCase())
   )
+
+  // Get specific itineraries (trips) belonging to the selected category
+  const categoryTrips = useMemo(() => {
+    if (!selectedCategory || selectedCategory === 'general') return []
+    return trips.filter(t => {
+      const catId = t.category.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '-')
+      return catId === selectedCategory
+    })
+  }, [selectedCategory])
+
+  // Reset selected trip when category changes (except when pre-selected by URL)
+  const handleCategorySelect = (catId: string) => {
+    setSelectedCategory(catId)
+    // Only reset trip slug if it doesn't match the URL pre-selected trip
+    if (tripSlugParam && trips.find(t => t.slug === tripSlugParam)?.category.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '-') === catId) {
+      setSelectedTripSlug(tripSlugParam)
+    } else {
+      setSelectedTripSlug('')
+    }
+  }
 
   // Rating feedback labels
   const getRatingLabel = (val: number) => {
@@ -189,10 +224,11 @@ export default function ReviewPage() {
   // Wizard Validation
   const isNameInvalid = touched.name && !name.trim()
   const isCategoryInvalid = touched.category && !selectedCategory
+  const isTripInvalid = touched.category && selectedCategory !== 'general' && !selectedTripSlug
   const isRatingInvalid = touched.rating && rating === 0
   const isCommentInvalid = touched.comment && comment.trim().length < 10
-
-  const canGoToStep2 = name.trim() && selectedCategory
+  
+  const canGoToStep2 = name.trim() && selectedCategory && (selectedCategory === 'general' || selectedTripSlug)
   const canGoToStep3 = canGoToStep2 && rating > 0 && comment.trim().length >= 10
 
   // Move forward in Wizard
@@ -238,6 +274,7 @@ export default function ReviewPage() {
           rating,
           comment: comment.trim(),
           categoryId: selectedCategory === 'general' ? null : selectedCategory,
+          tripSlug: selectedCategory === 'general' ? null : selectedTripSlug,
           platform: 'Wanderphilia',
           images: imageUrls
         })
@@ -293,7 +330,7 @@ export default function ReviewPage() {
               Feedback Received!
             </h1>
             <p className="text-slate-600 mb-8 max-w-md mx-auto leading-relaxed text-sm sm:text-base font-medium">
-              Thank you for sharing your travel experience! Your review and photos have been saved and will appear on the destination's page automatically.
+              Thank you for sharing your travel experience! Your review and photos have been saved and will appear on the destination and itinerary pages automatically.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -307,6 +344,7 @@ export default function ReviewPage() {
                 onClick={() => {
                   setName('')
                   setSelectedCategory('')
+                  setSelectedTripSlug('')
                   setRating(0)
                   setComment('')
                   setFiles([])
@@ -395,7 +433,7 @@ export default function ReviewPage() {
                   <div className="space-y-3">
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                       <label className="block text-sm font-bold text-slate-800">
-                        Which destination did you visit?
+                        Which destination region did you visit?
                       </label>
                       
                       {/* Interactive Search Field */}
@@ -407,21 +445,21 @@ export default function ReviewPage() {
                           type="text"
                           value={searchQuery}
                           onChange={(e) => setSearchQuery(e.target.value)}
-                          placeholder="Search destination..."
+                          placeholder="Search region..."
                           className="w-full pl-9 pr-3 py-1.5 bg-slate-50 focus:bg-white border border-slate-200 rounded-xl text-xs font-semibold outline-hidden focus:ring-1 focus:ring-primary/20 focus:border-primary/30 transition duration-200"
                         />
                       </div>
                     </div>
 
                     {/* Destination Grid */}
-                    <div className="border border-slate-100 bg-slate-50/30 rounded-2xl p-3 max-h-[300px] overflow-y-auto custom-scroll">
+                    <div className="border border-slate-100 bg-slate-50/30 rounded-2xl p-3 max-h-[160px] overflow-y-auto custom-scroll">
                       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                         
                         {/* General Feedback Card */}
                         {searchQuery === '' && (
                           <button
                             type="button"
-                            onClick={() => setSelectedCategory('general')}
+                            onClick={() => handleCategorySelect('general')}
                             className={`relative aspect-video rounded-xl overflow-hidden border-2 text-left group transition-all duration-300 bg-linear-to-br from-slate-800 to-slate-950 ${
                               selectedCategory === 'general'
                                 ? 'border-primary shadow-lg ring-2 ring-primary/20 scale-[1.01]'
@@ -438,7 +476,7 @@ export default function ReviewPage() {
                                 )}
                               </div>
                               <div>
-                                <p className="text-[10px] font-bold uppercase tracking-wider opacity-80">General</p>
+                                <p className="text-[10px] font-bold uppercase tracking-wider opacity-85">General</p>
                                 <p className="text-xs font-extrabold tracking-tight">Overall Experience</p>
                               </div>
                             </div>
@@ -452,7 +490,7 @@ export default function ReviewPage() {
                             <button
                               key={cat.id}
                               type="button"
-                              onClick={() => setSelectedCategory(cat.id)}
+                              onClick={() => handleCategorySelect(cat.id)}
                               className={`relative aspect-video rounded-xl overflow-hidden border-2 text-left group transition-all duration-300 ${
                                 isSelected 
                                   ? 'border-primary shadow-lg ring-2 ring-primary/20 scale-[1.01]' 
@@ -476,7 +514,7 @@ export default function ReviewPage() {
                               )}
 
                               <div className="absolute bottom-2.5 left-2.5 text-white pr-2">
-                                <p className="text-[9px] font-bold uppercase tracking-wider opacity-80">Destination</p>
+                                <p className="text-[9px] font-bold uppercase tracking-wider opacity-85">Destination</p>
                                 <p className="text-xs font-extrabold tracking-tight truncate">{cat.name}</p>
                               </div>
                             </button>
@@ -485,7 +523,7 @@ export default function ReviewPage() {
 
                         {filteredCategories.length === 0 && searchQuery !== '' && (
                           <div className="col-span-full py-8 text-center text-slate-400 font-semibold text-xs">
-                            No destinations match "{searchQuery}"
+                            No regions match "{searchQuery}"
                           </div>
                         )}
                       </div>
@@ -494,6 +532,61 @@ export default function ReviewPage() {
                       <p className="text-xs text-rose-500 font-semibold pl-1">Please select the destination you visited.</p>
                     )}
                   </div>
+
+                  {/* Itinerary Selection Section */}
+                  {selectedCategory && selectedCategory !== 'general' && (
+                    <div className="space-y-3 animate-in fade-in duration-300">
+                      <label className="block text-sm font-bold text-slate-800">
+                        Which specific trip itinerary did you experience?
+                      </label>
+                      <div className="border border-slate-100 bg-slate-50/30 rounded-2xl p-3 max-h-[180px] overflow-y-auto custom-scroll">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                          {categoryTrips.map((trip) => {
+                            const isTripSelected = selectedTripSlug === trip.slug
+                            return (
+                              <button
+                                key={trip.id}
+                                type="button"
+                                onClick={() => setSelectedTripSlug(trip.slug)}
+                                className={`p-3.5 rounded-xl border text-left flex items-start justify-between gap-3 group transition-all duration-200 cursor-pointer ${
+                                  isTripSelected 
+                                    ? 'bg-primary/5 border-primary shadow-xs' 
+                                    : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50/50'
+                                }`}
+                              >
+                                <div className="min-w-0">
+                                  <p className="text-xs font-extrabold text-slate-900 group-hover:text-primary transition-colors leading-tight line-clamp-2">
+                                    {trip.title}
+                                  </p>
+                                  <div className="flex items-center gap-1.5 text-[10px] text-slate-400 font-bold mt-1.5">
+                                    <Calendar size={10} className="shrink-0" />
+                                    <span>{trip.nights ? `${trip.nights}N / ${trip.duration}D` : `${trip.duration}D`}</span>
+                                  </div>
+                                </div>
+                                {isTripSelected ? (
+                                  <div className="w-5 h-5 bg-primary text-white rounded-full flex items-center justify-center shrink-0 shadow-xs scale-100 transition duration-200">
+                                    <Check size={12} className="stroke-[3]" />
+                                  </div>
+                                ) : (
+                                  <div className="w-5 h-5 bg-slate-100 border border-slate-200 text-transparent rounded-full flex items-center justify-center shrink-0 group-hover:border-slate-300" />
+                                )}
+                              </button>
+                            )
+                          })}
+                          
+                          {categoryTrips.length === 0 && (
+                            <div className="col-span-full py-6 text-center text-slate-400 font-semibold text-xs">
+                              No packages found for this region.
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      {isTripInvalid && (
+                        <p className="text-xs text-rose-500 font-semibold pl-1">Please select the itinerary package.</p>
+                      )}
+                    </div>
+                  )}
+
                 </div>
               )}
 
@@ -743,5 +836,18 @@ export default function ReviewPage() {
       </footer>
 
     </div>
+  )
+}
+
+export default function ReviewPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex flex-col items-center justify-center bg-linear-to-tr from-[#FFF7ED] via-[#F4FAF9] to-[#FDFBF7]">
+        <Loader2 className="w-10 h-10 animate-spin text-primary mb-2" />
+        <p className="text-slate-500 font-bold text-sm">Preparing Review Form...</p>
+      </div>
+    }>
+      <ReviewFormContent />
+    </Suspense>
   )
 }
