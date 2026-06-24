@@ -80,7 +80,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || 'G-GFPXJ77HPK'} />
       <head>
         <script
           type="application/ld+json"
@@ -112,6 +111,7 @@ export default function RootLayout({
         />
       </head>
       <body className={`${inter.className} font-sans antialiased overflow-x-hidden`}>
+        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || 'G-GFPXJ77HPK'} />
         <div className="min-h-screen pb-14 md:pb-0">
           {children}
         </div>

@@ -9,7 +9,18 @@ declare global {
   }
 }
 
-const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || 'G-GFPXJ77HPK';
+
+// Initialize the gtag queue on the client side immediately when the module is imported
+if (typeof window !== 'undefined') {
+  window.dataLayer = window.dataLayer || [];
+  if (!window.gtag) {
+    window.gtag = function gtag() {
+      // eslint-disable-next-line prefer-rest-params
+      window.dataLayer!.push(arguments);
+    };
+  }
+}
 
 // Initialization is handled in the Analytics component to ensure client-side only
 // This file only provides the utility functions
