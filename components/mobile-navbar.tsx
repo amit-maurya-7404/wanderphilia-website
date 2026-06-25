@@ -44,11 +44,10 @@ export function MobileNavbar() {
           {/* Mobile Menu Button */}
           <div className="relative z-100000">
             <button
-              className={`p-2 h-10 w-10 flex items-center justify-center cursor-pointer transition-all duration-300 rounded-lg touch-manipulation border-2 focus:outline-none focus:ring-2 ${
-                isScrolled
+              className={`p-2 h-10 w-10 flex items-center justify-center cursor-pointer transition-all duration-300 rounded-lg touch-manipulation border-2 focus:outline-none focus:ring-2 ${isScrolled
                   ? 'bg-primary hover:bg-primary/90 border-primary text-white focus:ring-primary/50'
                   : 'bg-white/90 hover:bg-white border-white text-gray-800 focus:ring-white/50'
-              }`}
+                }`}
               onClick={(e) => {
                 e.preventDefault()
                 e.stopPropagation()

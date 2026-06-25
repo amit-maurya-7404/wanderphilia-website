@@ -104,7 +104,7 @@ export const sectionMappings: Record<string, Record<string, string[]>> = {
 // Page-specific trip card mappings for standalone pages
 export const pageSectionMappings: Record<string, string[]> = {
   upcomingTours: ['13', '14', '15', '16', '17', '18', '19', '20', '21', '41', '42', '43'],
-  honeymoonPackages: ['2', '5', '6', '9', '10', '12', '14', '18', '37', '44'],
+  honeymoonPackages: ['2', '5', '6', '9', '10', '11', '12', '14', '18', '33', '34', '37', '44'],
   featured: ['13', '12', '21']
 }
 

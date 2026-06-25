@@ -164,6 +164,13 @@ export function Navbar({ forceWhiteDesktop }: NavbarProps) {
                 >
                   Himachal
                 </Link>
+                <Link
+                  href="/trips/thailand"
+
+                  className="block px-4 py-3 text-gray-700 hover:bg-primary/10 hover:text-primary font-medium text-sm rounded-lg mx-2 transition-colors"
+                >
+                  Thailand
+                </Link>
 
                 <div className="border-t border-gray-200 my-2" />
                 <Link href="/upcoming-tours" className="block px-4 py-3 text-primary font-bold text-sm rounded-lg mx-2 hover:bg-primary/5 transition-colors">
@@ -189,10 +196,37 @@ export function Navbar({ forceWhiteDesktop }: NavbarProps) {
                 >
                   Sikkim
                 </Link>
+                <Link
+                  href="/trips/thailand"
+                  className="block px-4 py-3 text-gray-700 hover:bg-primary/10 hover:text-primary font-medium text-sm rounded-lg mx-2 transition-colors"
+                >
+                  Thailand
+                </Link>
+                <Link
+                  href="/trips/kashmir"
+                  className="block px-4 py-3 text-gray-700 hover:bg-primary/10 hover:text-primary font-medium text-sm rounded-lg mx-2 transition-colors"
+                >
+                  Kashmir
+                </Link>
+                <Link
+                  href="/trips/himachal"
+                  className="block px-4 py-3 text-gray-700 hover:bg-primary/10 hover:text-primary font-medium text-sm rounded-lg mx-2 transition-colors"
+                >
+                  Himachal
+                </Link>
+                <Link
+                  href="/trips/bhutan"
+                  className="block px-4 py-3 text-gray-700 hover:bg-primary/10 hover:text-primary font-medium text-sm rounded-lg mx-2 transition-colors"
+                >
+                  Bhutan
+                </Link>
+
+
                 <div className="border-t border-gray-200 my-2" />
                 <Link href="/honeymoon" className="block px-4 py-3 text-primary font-bold text-sm rounded-lg mx-2 hover:bg-primary/5 transition-colors">
                   View All Honeymoon Getaways
                 </Link>
+
               </div>
             </div>
             <Link href="/blog" className={`text-sm font-semibold transition-colors ${isScrolled || isAboutPage || forceWhiteDesktop ? 'text-gray-700   hover:text-primary' : 'text-white  hover:text-primary'}`}>
@@ -409,6 +443,46 @@ export function Navbar({ forceWhiteDesktop }: NavbarProps) {
                     }}
                   >
                     Sikkim
+                  </Link>
+                  <Link
+                    href="/trips/thailand"
+                    className="block px-6 py-3 text-sm text-gray-600 hover:text-primary hover:bg-gray-100 transition-colors"
+                    onClick={() => {
+                      setIsMobileOpen(false)
+                      setOpenDropdown(null)
+                    }}
+                  >
+                    Thailand
+                  </Link>
+                  <Link
+                    href="/trips/kashmir"
+                    className="block px-6 py-3 text-sm text-gray-600 hover:text-primary hover:bg-gray-100 transition-colors"
+                    onClick={() => {
+                      setIsMobileOpen(false)
+                      setOpenDropdown(null)
+                    }}
+                  >
+                    Kashmir
+                  </Link>
+                  <Link
+                    href="/trips/himachal"
+                    className="block px-6 py-3 text-sm text-gray-600 hover:text-primary hover:bg-gray-100 transition-colors"
+                    onClick={() => {
+                      setIsMobileOpen(false)
+                      setOpenDropdown(null)
+                    }}
+                  >
+                    Himachal
+                  </Link>
+                  <Link
+                    href="/trips/bhutan"
+                    className="block px-6 py-3 text-sm text-gray-600 hover:text-primary hover:bg-gray-100 transition-colors"
+                    onClick={() => {
+                      setIsMobileOpen(false)
+                      setOpenDropdown(null)
+                    }}
+                  >
+                    Bhutan
                   </Link>
                   <div className="border-t border-gray-200 my-1" />
                   <Link

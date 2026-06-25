@@ -10,6 +10,7 @@ export interface Category {
 const categoryImageMap: Record<string, string> = {
   Bhutan: '/images/Bhutan_cat.jpg',
   Nepal: '/images/nepal-dest.jpg',
+  Thailand: '/images/thailand.jpg',
   Indonesia: '/images/indonesia-dest.jpg',
   Switzerland: '/images/switzerland-dest.jpg',
   Peru: '/images/peru-dest.jpg',
@@ -21,7 +22,7 @@ const categoryImageMap: Record<string, string> = {
   Himachal: '/images/himachal.jpg',
   Singapore: '/images/singapore.png',
   Sikkim: '/images/sikkim.png',
-  Thailand: '/images/thailand.jpg'
+
 }
 
 const categoryOrder: string[] = [
@@ -29,6 +30,7 @@ const categoryOrder: string[] = [
   'Spiti',
   'Bhutan',
   'Singapore',
+  'Thailand',
   'Switzerland',
   'Peru',
   'Iceland',
@@ -39,7 +41,7 @@ const categoryOrder: string[] = [
   'Himachal',
   'Sikkim',
   'Meghalaya',
-  'Thailand'
+
 ]
 
 const normalizeCategoryId = (category: string) =>
