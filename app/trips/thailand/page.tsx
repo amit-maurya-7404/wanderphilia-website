@@ -257,8 +257,8 @@ export default function ThailandPage() {
 
         {/* Packages Section */}
         <section className="py-16 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
-          <div className="mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+          <div className="mb-6">
+            <h2 className="text-2xl md:text-4xl font-bold text-slate-900 mb-4">
               Upcoming Trips 2026 - Wanderphilia Exclusives
 
             </h2>
@@ -341,9 +341,9 @@ export default function ThailandPage() {
 
         {/* Group Trips Section */}
         {groupPackages.length > 0 && (
-          <section className="py-16 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
-            <div className="mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+          <section className="py-8 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
+            <div className="mb-6">
+              <h2 className="text-2xl md:text-4xl font-bold text-slate-900 mb-4">
                 Upcoming Group Trips 2026 - Wanderphilia Exclusive
               </h2>
               <div className="w-20 h-1 bg-primary rounded-full" />
@@ -417,9 +417,9 @@ export default function ThailandPage() {
         )}
 
         {/* Family Packages Section */}
-        <section className="py-16 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
-          <div className="mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+        <section className="py-8 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
+          <div className="mb-6">
+            <h2 className="text-2xl md:text-4xl font-bold text-slate-900 mb-4">
               Family Special Thailand Getaway - Wanderphilia Exclusive
             </h2>
             <div className="w-20 h-1 bg-primary rounded-full" />
@@ -495,9 +495,9 @@ export default function ThailandPage() {
         </section>
 
         {/* Customized Packages Section */}
-        <section className="py-16 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
-          <div className="mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+        <section className="py-8 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
+          <div className="mb-6">
+            <h2 className="text-2xl md:text-4xl font-bold text-slate-900 mb-4">
               Honeymoon Thailand Getaway - Wanderphilia Exclusive
             </h2>
             <div className="w-20 h-1 bg-primary rounded-full" />
@@ -573,10 +573,10 @@ export default function ThailandPage() {
 
         {/* Related Packages Section */}
         {relatedPackages.length > 0 && (
-          <section className="py-16 px-4 md:px-8 lg:px-16 bg-slate-50">
+          <section className="py-10 px-4 md:px-8 lg:px-16 bg-slate-50">
             <div className="max-w-7xl mx-auto">
-              <div className="mb-12">
-                <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+              <div className="mb-6">
+                <h2 className="text-2xl md:text-4xl font-bold text-slate-900 mb-4">
                   Other {isCategoryInternational ? 'International' : 'India'} Destinations
                 </h2>
                 <div className="w-20 h-1 bg-primary rounded-full" />
@@ -678,7 +678,7 @@ export default function ThailandPage() {
                       />
                     ))}
                   </div>
-                  <div className="text-left">
+                  <div className="text-left ">
                     <p className="text-3xl font-bold text-gray-900">{reviewStats.avgRating}</p>
                     <p className="text-gray-600 text-sm">{reviewStats.totalReviews} reviews across platforms</p>
                   </div>
