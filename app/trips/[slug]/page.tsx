@@ -774,7 +774,15 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
               {/* MOBILE CTA */}
               <div className="lg:hidden space-y-3">
                 <Button size="lg" className="w-full" onClick={() => setCallbackOpen(true)}>
-                  <Phone size={18} /> Enquire Now
+                  {trip.showGetQuoteOnly ? (
+                    <>
+                      <MessageCircle size={18} /> Get Quote
+                    </>
+                  ) : (
+                    <>
+                      <Phone size={18} /> Enquire Now
+                    </>
+                  )}
                 </Button>
               </div>
             </div>
@@ -797,21 +805,33 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
                   </div>
 
                   <div className="grid gap-3">
-                    <Button
-                      size="lg"
-                      className="w-full justify-center"
-                      onClick={handleBookNow}
-                    >
-                      <Phone size={18} /> Book Now
-                    </Button>
-                    <Button
-                      size="lg"
-                      variant="outline"
-                      className="w-full justify-center"
-                      onClick={() => setCallbackOpen(true)}
-                    >
-                      <MessageCircle size={18} /> Request Callback
-                    </Button>
+                    {trip.showGetQuoteOnly ? (
+                      <Button
+                        size="lg"
+                        className="w-full justify-center bg-primary hover:bg-primary/95 text-white"
+                        onClick={() => setCallbackOpen(true)}
+                      >
+                        <MessageCircle size={18} /> Get Quote
+                      </Button>
+                    ) : (
+                      <>
+                        <Button
+                          size="lg"
+                          className="w-full justify-center"
+                          onClick={handleBookNow}
+                        >
+                          <Phone size={18} /> Book Now
+                        </Button>
+                        <Button
+                          size="lg"
+                          variant="outline"
+                          className="w-full justify-center"
+                          onClick={() => setCallbackOpen(true)}
+                        >
+                          <MessageCircle size={18} /> Request Callback
+                        </Button>
+                      </>
+                    )}
                   </div>
                 </Card>
 
@@ -871,9 +891,15 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
             </p>
             <p className="text-lg font-bold">₹{(selections.length > 0 ? total : lowestPrice).toLocaleString('en-IN')}</p>
           </div>
-          <Button onClick={handleBookNow} className="shrink-0">
-            Book Now
-          </Button>
+          {trip.showGetQuoteOnly ? (
+            <Button onClick={() => setCallbackOpen(true)} className="shrink-0 bg-primary hover:bg-primary/95 text-white">
+              Get Quote
+            </Button>
+          ) : (
+            <Button onClick={handleBookNow} className="shrink-0">
+              Book Now
+            </Button>
+          )}
         </div>
       </div>
 
@@ -899,6 +925,7 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
         onOpenChange={setCallbackOpen}
         title={trip.title}
         price={lowestPrice}
+        isQuote={trip.showGetQuoteOnly}
       />
     </div>
   )

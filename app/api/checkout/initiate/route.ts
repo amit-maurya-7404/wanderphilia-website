@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getZohoAccessToken, getZohoApiUrl } from '@/lib/zoho';
+import { getZohoAccessToken, getZohoApiUrl, getDestinationFromTrip } from '@/lib/zoho';
 
 export const dynamic = 'force-dynamic';
 
@@ -56,6 +56,8 @@ export async function POST(req: Request) {
     const url = getZohoApiUrl('/crm/v3/Leads');
 
     // 3. Make POST request to Zoho CRM Leads Endpoint
+    const destination = getDestinationFromTrip(tripSlug);
+
     const crmResponse = await fetch(url, {
       method: 'POST',
       headers: {
@@ -71,6 +73,7 @@ export async function POST(req: Request) {
             Lead_Status: 'New Enquiry',
             Event_Category: tripSlug.trim(),
             Lead_Source: 'Website',
+            Destination: destination || '',
           },
         ],
       }),

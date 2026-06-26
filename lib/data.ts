@@ -72,6 +72,7 @@ export interface Trip {
     endDate: string
     spots: number
   }[]
+  showGetQuoteOnly?: boolean
 }
 
 export function getLowestPriceForTrip(trip: Trip): number {
@@ -8151,11 +8152,12 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     description: `Embark on a perfect romantic getaway with our Wanderphilia Exclusive 7 Nights 8 Days Thailand Honeymoon Package. Discover the serene beauty of Krabi's limestone cliffs, watch a dazzling cabaret show in Phuket, explore the pristine Phi Phi Islands by speedboat, and enjoy a romantic Chao Phraya River dinner cruise under Bangkok's night sky. Designed for couples seeking both adventure and relaxation, this honeymoon tour combines breathtaking scenic beauty with premium tropical stays, ensuring romantic memories you will cherish forever.`,
     duration: 8,
     nights: 7,
-    price: 59999,
+    price: 45999,
     rating: 4.9,
     difficulty: 'Easy',
     groupSize: 2,
     tripType: 'International',
+    showGetQuoteOnly: true,
     highlights: [
       'Krabi',
       '4 Island',
@@ -8308,7 +8310,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     batchDates: [],
     dates: [],
     costingDetails: [
-      { label: 'Double Sharing (Per Person)', value: '₹59,999' }
+      { label: 'Double Sharing (Per Person)', value: '₹45,999' }
     ],
     paymentPolicy: [
       'At booking: 25% booking advance is non-refundable.',
@@ -8371,6 +8373,1486 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
           'Toothpaste, toothbrush',
           'Paper soap, or sanitizer',
           'Sunscreen minimum of spf40, lip balm, cold creams',
+          'Body spray',
+          'LED torch light'
+        ]
+      }
+    ],
+    note: [
+      'National Park Fees during 4 Island and Phi Phi Island tours are not included in the package. Customers will have to pay THB 400 per person on the spot.',
+      'Koh Phangan Fullmoon party expenses are on your own. 200 THB per person.',
+      'Normal Check-in and Check-out time is 03:00 PM and 12:00 noon respectively in Thailand.',
+      'Airport transfer is at fixed time (depending on the majority of arrival and departure time of the group) - Any early or late transfer will be charged extra.',
+      'Phuket arrival time should be 10:00 Am and Departure Flight time from Phuket should be after 02:00 Pm.',
+      'Rates are not valid for Festival Duration like Diwali, Dussehra, Christmas, and New Year'
+    ]
+  },
+  {
+    id: '45',
+    title: 'Wanderphilia Exclusive 5 Nights 6 Days Krabi Phuket Thailand Romantic Escape',
+    slug: 'wanderphilia-exclusive-5-nights-6-days-krabi-phuket-thailand-romantic-escape',
+    image: '/images/thailand.jpg',
+    destination: 'Thailand',
+    category: 'Thailand',
+    description: `Embark on an unforgettable romantic escape to Thailand with our Wanderphilia Exclusive 5 Nights 6 Days Krabi Phuket package. Discover Krabi's stunning limestone cliffs, explore the pristine Phi Phi Islands by speedboat, watch a dazzling cabaret show, and experience the cultural charm of Phuket. Perfectly curated for couples seeking romance, adventure, and relaxation, this package includes luxury transfers, premium accommodation, guided island tours, and wonderful romantic memories to cherish for a lifetime.`,
+    duration: 6,
+    nights: 5,
+    price: 35999,
+    rating: 4.9,
+    difficulty: 'Easy',
+    groupSize: 2,
+    tripType: 'International',
+    showGetQuoteOnly: true,
+    highlights: [
+      'Krabi',
+      '4 Island',
+      'Phuket',
+      'Phi Phi Island',
+      'Phuket City Tour'
+    ],
+    overviewPoints: [
+      'Route: Krabi → Phuket',
+      'Duration: 5 Nights / 6 Days.',
+      'Trip Start: Phuket.',
+      'Trip End: Phuket.',
+      'Major Highlights: Krabi 4 Island Speedboat Tour, Siam Cabaret Show, Phi Phi Island Tour, Phuket City Tour.'
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Arrive in Phuket. Transfer to Krabi.',
+        description: [
+          'Upon your arrival at the Phuket airport, complete the immigration formalities.',
+          'Meet our representative, who will help you board your transfers to Krabi.',
+          'Enjoy a 3-hour drive to Krabi, through scenic tropical landscapes.',
+          'Upon reaching Krabi, check-in to the hotel and have some rest.',
+          'You can then spend the rest of the day at leisure.',
+          'Overnight stay in Krabi.'
+        ]
+      },
+      {
+        day: 2,
+        title: '4 Island Tour by Speed Boat.',
+        description: [
+          'Post breakfast in the morning, get ready to spend an amazing day in the ocean.',
+          'Board your transfers to the starting point of your speed boat.',
+          'Hop on to your speedboat and spend the day exploring the scenic islands around Krabi.',
+          'On this tour, you will visit the scenic Phranang Cave Beach, Tup Island, Poda Island and Chicken Island.',
+          'You will also take a small stopover in between to have your lunch.',
+          'Spend this day exploring the secluded beaches, admiring the limestone rock formations or sit leisurely by the beach watching the blue ocean.',
+          'Adventure couples can indulge in some fun water activities and discover more about each other while spending quality time in this romantic setting.',
+          'After exploring all the islands, return back to the mainland of Thailand.',
+          'Upon reaching, you will be transferred back to your hotel.',
+          'Overnight stay in Krabi.'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Krabi to Phuket. Cabaret Show in the evening.',
+        description: [
+          'After having your breakfast in the morning, get ready for the day.',
+          'You will then board your transfers to Phuket.',
+          'Reach Phuket, check-in to the hotel and have some rest.',
+          'In the evening, watch the graceful movements of the artists as you enjoy the Siam Cabaret Show in Phuket.',
+          'Overnight stay in Phuket.'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Phi Phi Island Tour.',
+        description: [
+          'Wake up to a beautiful tropical morning and have your breakfast at the hotel.',
+          'Next, get ready and board your transfers to the starting point of your speed boat.',
+          'Hop on to your speedboat and spend the day exploring the scenic Phi Phi islands.',
+          'Enjoy this day with your partner as you spend some leisure time gliding through the ocean waters.',
+          'Upon reaching the Phi Phi Islands, you will visit some of the iconic locations like the Maya Bay and some stunning limestone caves.',
+          'You can also stroll hand in hand on the scenic Monkey Beach.',
+          'You will also take a small stopover in between to have your lunch.',
+          'After exploring all the islands, return back to the mainland of Thailand.',
+          'Upon reaching, you will be transferred back to your hotel.',
+          'Overnight stay in Phuket.'
+        ]
+      },
+      {
+        day: 5,
+        title: 'Phuket City Tour. Evening at Leisure.',
+        description: [
+          'Have your breakfast in the morning and get ready to explore Phuket.',
+          'Board your transfers for the day, which will take you to some iconic landmarks across Phuket.',
+          'On this city tour, you will visit the famous Karon View Point to admire stunning views of the crescent-shaped Kata and Kata Noi Beaches.',
+          'You will also visit the historic Wat Chalong Temple and the famous Buddha Statue of Phuket.',
+          'Upon completing the city tour, you can spend the rest of the day at leisure.',
+          'Overnight stay in Phuket.'
+        ]
+      },
+      {
+        day: 6,
+        title: 'Departure. Take back a lot of romantic memories.',
+        description: [
+          'Have your breakfast in the morning and pack your bags.',
+          'Board your transfer to Bangkok Airport for your onward journey.',
+          'Your amazing Thailand Honeymoon Tour concludes once you are dropped off at the airport.',
+          'Take back a lot of happy memories to cherish for a lifetime.'
+        ]
+      }
+    ],
+    included: [
+      '02 Nights Krabi accommodation',
+      '03 Nights Phuket accommodation',
+      'Krabi 4 Island Tour with Lunch',
+      'Siam Cabaret Show Phuket',
+      'Phi Phi island tour with lunch',
+      'Phuket city tour',
+      'Transfer: Airport -Krabi - Phuket - Airport'
+    ],
+    notIncluded: [
+      'Any expense of a personal nature.',
+      'Any meals not explicitly mentioned in the itinerary.',
+      'GST and TCS as applicable extra.',
+      'Any change in itinerary due to unforeseen conditions',
+      'Security deposit at the hotel.',
+      'Round trip flight is not included.',
+      'National park fees of 4 Island Tour and Phi Phi Island are not included in the package. Customers will have to pay THB 400 per person on the spot.'
+    ],
+    stays: [
+      'Krabi: Deluxe Room / Similar',
+      'Phuket: Deluxe Room / Similar'
+    ],
+    batchDates: [],
+    dates: [],
+    costingDetails: [
+      { label: 'Double Sharing (Per Person)', value: '₹35,999' }
+    ],
+    thingsToCarry: [
+      'Passport with minimum 6 months validity from the date of departure from India',
+      'Sunscreen & lip balm, Good U/V protection sunglasses',
+      'Personal Medicines (if any)'
+    ],
+    travelEssentials: [
+      {
+        title: 'Travel Essentials',
+        items: [
+          'A medium size trolley with one cabin bag',
+          'Reusable water bladder or water bottle',
+          'a sun cap',
+          'UV protected sunglasses'
+        ]
+      },
+      {
+        title: 'Clothes',
+        items: [
+          'Cotton Shirts and T-shirts',
+          'Jeans, Shorts and cotton pants',
+          'Sets of undergarments',
+          'Pair of socks',
+          'A small towel or Beach Towel',
+          'A rain jacket or a poncho'
+        ]
+      },
+      {
+        title: 'Footwear',
+        items: [
+          'Sport Shoes or Sneakers',
+          'Flip flops/sandals'
+        ]
+      },
+      {
+        title: 'Medication',
+        items: [
+          'Glucose powder',
+          'Medicines for headaches, diarrhoea, motion sickness',
+          'Dettol',
+          'Bandages',
+          'Cotton'
+        ]
+      },
+      {
+        title: 'Personal Accessories',
+        items: [
+          'toothpaste, toothbrush',
+          'Paper soap, or sanitizer',
+          'Sunscreen minimum of spf40 , lip balm, cold creams',
+          'Body spray',
+          'LED torch light'
+        ]
+      }
+    ],
+    note: [
+      'National Park Fees during 4 Island and Phi Phi Island tours are not included in the package. Customers will have to pay THB 400 per person on the spot.',
+      'Koh Phangan Fullmoon party expenses are on your own. 200 THB per person.',
+      'Normal Check-in and Check-out time is 03:00 PM and 12:00 noon respectively in Thailand.',
+      'Airport transfer is at fixed time (depending on the majority of arrival and departure time of the group) - Any early or late transfer will be charged extra.',
+      'Phuket arrival time should be 10:00 Am and Departure Flight time from Phuket should be after 02:00 Pm.',
+      'Rates are not valid for Festival Duration like Diwali, Dussehra, Christmas, and New Year'
+    ]
+  },
+  {
+    id: '46',
+    title: 'Wanderphilia Exclusive 5 Nights 6 Days Thailand Phuket Bangkok Couple Leisure Getaway',
+    slug: 'wanderphilia-exclusive-5-nights-6-days-thailand-phuket-bangkok-couple-leisure-getaway',
+    image: '/images/thailand.jpg',
+    destination: 'Thailand',
+    category: 'Thailand',
+    description: `Embark on a perfect couple's getaway to Thailand with our Wanderphilia Exclusive 5 Nights 6 Days Phuket Bangkok Leisure Package. Experience a dazzling cabaret show in Phuket, explore the breathtaking Phi Phi Islands by speedboat, enjoy a romantic evening dinner cruise down the Chao Phraya River, and embark on a guided city and temple tour of Bangkok. This package is ideal for couples seeking a blend of tropical relaxation and cultural wonders.`,
+    duration: 6,
+    nights: 5,
+    price: 35999,
+    rating: 4.9,
+    difficulty: 'Easy',
+    groupSize: 2,
+    tripType: 'International',
+    showGetQuoteOnly: true,
+    highlights: [
+      'Phuket',
+      'Phi Phi Island',
+      'Bangkok Evening Dinner Cruise',
+      'Bangkok City & Temple Tour'
+    ],
+    overviewPoints: [
+      'Route: Phuket → Bangkok',
+      'Duration: 5 Nights / 6 Days.',
+      'Trip Start: Phuket.',
+      'Trip End: Bangkok.',
+      'Major Highlights: Simon Cabaret Show, Phi Phi Island Tour, Chao Phraya Dinner Cruise, Bangkok City & Temple Tour.'
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Arrival in Phuket. Cabaret Show in the evening.',
+        description: [
+          'Upon your arrival at the Phuket airport, complete the immigration formalities.',
+          'Meet our representative, who will help you board your transfers to your hotel.',
+          'Upon reaching your hotel in Phuket, check-in to the hotel and have some rest.',
+          'In the evening, watch the graceful movements of the artists as you enjoy the Simon Cabaret Show in Phuket.',
+          'Overnight stay in Phuket.'
+        ]
+      },
+      {
+        day: 2,
+        title: 'Phi Phi Island Tour.',
+        description: [
+          'Wake up to a beautiful tropical morning and have your breakfast at the hotel.',
+          'Next, get ready and board your transfers to the starting point of your speed boat.',
+          'Hop on to your speedboat and spend the day exploring the scenic Phi Phi islands.',
+          'Enjoy this day with your partner as you spend some leisure time gliding through the ocean waters.',
+          'Upon reaching the Phi Phi Islands, you will visit some of the iconic locations like the Maya Bay and some stunning limestone caves.',
+          'You can also stroll hand in hand on the scenic Monkey Beach.',
+          'You will also take a small stopover in between to have your lunch.',
+          'After exploring all the islands, return back to the mainland of Thailand.',
+          'Upon reaching, you will be transferred back to your hotel.',
+          'Overnight stay in Phuket.'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Phuket City Tour. Evening at Leisure.',
+        description: [
+          'Have your breakfast in the morning and get ready to explore Phuket.',
+          'Board your transfers for the day, which will take you to some iconic landmarks across Phuket.',
+          'On this city tour, you will visit the famous Karon View Point to admire stunning views of the crescent-shaped Kata and Kata Noi Beaches.',
+          'You will also visit the historic Wat Chalong Temple and the famous Buddha Statue of Phuket.',
+          'Upon completing the city tour, you can spend the rest of the day at leisure.',
+          'Overnight stay in Phuket.'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Phuket to Bangkok. Evening Dinner Cruise.',
+        description: [
+          'After having your breakfast at the hotel, pack your bag and board your transfers to the airport.',
+          'You will then board a 2-hour flight to Bangkok.',
+          'Upon reaching Bangkok, meet our representative who will transfer you to your hotel in Bangkok.',
+          'Upon reaching, check-in to your hotel and rest for some time.',
+          'In the evening, we will take you to enjoy a romantic dinner on a luxury cruise through the Chao Phraya River.',
+          'Marvel at the beautiful skyline of Thailand and enjoy the live performances.',
+          'Relish in the delicious buffet dinner in a perfect romantic setting.',
+          'After completing your dinner, return back to your hotel.',
+          'Overnight stay in Bangkok.'
+        ]
+      },
+      {
+        day: 5,
+        title: 'Bangkok City Tour and Temple Tour.',
+        description: [
+          'Wake up to a beautiful morning in Bangkok and have your breakfast.',
+          'Next, get ready to explore the iconic landmarks of Bangkok as you embark on a city tour today.',
+          'Board your transfers to begin your city tour.',
+          'On this tour, you will visit some of the famous temples like the Golden Buddha Temple, and Temple of the Emerald Buddha.',
+          'We will also take you to the dazzling Gems Gallery, where you can shop some precious and semi-precious stones.',
+          'Upon completing the city tour, return back to your hotel and have some rest.',
+          'Overnight stay in Bangkok.'
+        ]
+      },
+      {
+        day: 6,
+        title: 'Departure. Take back a lot of romantic memories.',
+        description: [
+          'Have your breakfast in the morning and pack your bags.',
+          'Board your transfer to Bangkok Airport for your onward journey.',
+          'Your amazing Thailand Honeymoon Tour concludes once you are dropped off at the airport.',
+          'Take back a lot of happy memories to cherish for a lifetime.'
+        ]
+      }
+    ],
+    included: [
+      '03 Nights Phuket accommodation',
+      '02 Nights Bangkok accommodation',
+      'Siam Cabaret Show Phuket',
+      'Phi Phi island tour with lunch',
+      'Phuket city tour',
+      'Cruise Dinner at Chopraya River',
+      'Bangkok City and Temple Tour',
+      'Transfer: Airport -Krabi - Phuket - Airport',
+      'Transfer: Bangkok Airport to Hotel - Airport'
+    ],
+    notIncluded: [
+      'Any expense of a personal nature.',
+      'Any meals not explicitly mentioned in the itinerary.',
+      'GST and TCS as applicable extra.',
+      'Any change in itinerary due to unforeseen conditions',
+      'Security deposit at the hotel.',
+      'Round trip flight is not included.',
+      'National park fees of 4 Island Tour and Phi Phi Island are not included in the package. Customers will have to pay THB 400 per person on the spot.'
+    ],
+    stays: [
+      'Phuket: Deluxe Room / Similar',
+      'Bangkok: Deluxe Room / Similar'
+    ],
+    batchDates: [],
+    dates: [],
+    costingDetails: [
+      { label: 'Double Sharing (Per Person)', value: '₹35,999' }
+    ],
+    thingsToCarry: [
+      'Passport with minimum 6 months validity from the date of departure from India',
+      'Sunscreen & lip balm, Good U/V protection sunglasses',
+      'Personal Medicines (if any)'
+    ],
+    travelEssentials: [
+      {
+        title: 'Travel Essentials',
+        items: [
+          'A medium size trolley with one cabin bag',
+          'Reusable water bladder or water bottle',
+          'a sun cap',
+          'UV protected sunglasses'
+        ]
+      },
+      {
+        title: 'Clothes',
+        items: [
+          'Cotton Shirts and T-shirts',
+          'Jeans, Shorts and cotton pants',
+          'Sets of undergarments',
+          'Pair of socks',
+          'A small towel or Beach Towel',
+          'A rain jacket or a poncho'
+        ]
+      },
+      {
+        title: 'Footwear',
+        items: [
+          'Sport Shoes or Sneakers',
+          'Flip flops/sandals'
+        ]
+      },
+      {
+        title: 'Medication',
+        items: [
+          'Glucose powder',
+          'Medicines for headaches, diarrhoea, motion sickness',
+          'Dettol',
+          'Bandages',
+          'Cotton'
+        ]
+      },
+      {
+        title: 'Personal Accessories',
+        items: [
+          'toothpaste, toothbrush',
+          'Paper soap, or sanitizer',
+          'Sunscreen minimum of spf40 , lip balm, cold creams',
+          'Body spray',
+          'LED torch light'
+        ]
+      }
+    ],
+    note: [
+      'National Park Fees during 4 Island and Phi Phi Island tours are not included in the package. Customers will have to pay THB 400 per person on the spot.',
+      'Koh Phangan Fullmoon party expenses are on your own. 200 THB per person.',
+      'Normal Check-in and Check-out time is 03:00 PM and 12:00 noon respectively in Thailand.',
+      'Airport transfer is at fixed time (depending on the majority of arrival and departure time of the group) - Any early or late transfer will be charged extra.',
+      'Phuket arrival time should be 10:00 Am and Departure Flight time from Phuket should be after 02:00 Pm.',
+      'Rates are not valid for Festival Duration like Diwali, Dussehra, Christmas, and New Year'
+    ]
+  },
+  {
+    id: '47',
+    title: 'Wanderphilia Exclusive 8 Nights 9 Days Whole Of Thailand Bangkok Pattaya Phuket Perfect Couple Trip',
+    slug: 'wanderphilia-exclusive-8-nights-9-days-whole-of-thailand-bangkok-pattaya-phuket-perfect-couple-trip',
+    image: '/images/thailand.jpg',
+    destination: 'Thailand',
+    category: 'Thailand',
+    description: `Embark on the ultimate romantic getaway with our Wanderphilia Exclusive 8 Nights 9 Days Whole of Thailand Honeymoon Package. This comprehensive couple's tour takes you through the beautiful sights of Pattaya, the bustling capital of Bangkok, and the tropical paradise of Phuket. Enjoy the stunning Alcazar Show, speed boat transfers to Coral Island, botanical gardens in Nong Nooch Village, a full day at Safari World, a scenic dinner cruise on Chao Phraya River, wat and temple tours, a Simon Cabaret show, and exploring Phi Phi Islands. Perfect for couples desiring the complete Thailand experience.`,
+    duration: 9,
+    nights: 8,
+    price: 55999,
+    rating: 4.9,
+    difficulty: 'Easy',
+    groupSize: 2,
+    tripType: 'International',
+    showGetQuoteOnly: true,
+    highlights: [
+      'Pattaya',
+      'Alcazar Show',
+      'Coral Island',
+      'Nong Nooch Village',
+      'Full Day Bangkok Safari with Marine Park',
+      'Bangkok Evening Dinner Cruise',
+      'Bangkok City & Temple Tour',
+      'Phuket',
+      'Siam Niramit Show',
+      'Phi Phi Island'
+    ],
+    overviewPoints: [
+      'Route: Pattaya → Bangkok → Phuket',
+      'Duration: 8 Nights / 9 Days.',
+      'Trip Start: Bangkok.',
+      'Trip End: Phuket.',
+      'Major Highlights: Alcazar Show, Coral Island speedboat tour, Nong Nooch Village, Safari World & Marine Park, Chao Phraya Dinner Cruise, Bangkok Temple Tour, Simon Cabaret Show, Phi Phi Island Speedboat Tour.'
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Arrive in Bangkok. Transfer to Pattaya and Evening Alcazar Show.',
+        description: [
+          'Upon your arrival at the Bangkok airport, complete the immigration formalities.',
+          'Meet our representative, who will help you board your transfers to Pattaya.',
+          'Enjoy a 2-hour drive to Pattaya, through scenic tropical landscapes.',
+          'Upon reaching Pattaya, check in to the hotel and have some rest.',
+          'In the evening, head out to visit the famous Alcazar Show which will amaze you with its mesmerizing and exotic set designs.',
+          'The duration of the show is 70 minutes and features 17 acts that showcase the culture, dance, and songs of Chinese, Thai, Indian, Russian, Persian, etc',
+          'After enjoying the show, return back to your hotel.',
+          'Overnight stay in Pattaya.'
+        ]
+      },
+      {
+        day: 2,
+        title: 'Coral Island Tour. Spend the Evening at Pattaya Night Street.',
+        description: [
+          'Start your day early and have your breakfast at the hotel.',
+          'Get ready for a fun-filled day as you board your transfers for the Coral Island Tour.',
+          'Reach the port, hop on your speedboat and enjoy a 45-minute boat ride to Coral Island.',
+          'Upon reaching, spend some peaceful time by strolling leisurely on the famous Tawaen Beach.',
+          'Adventure enthusiasts can indulge in some fun water activities and feel the adrenaline rush.',
+          'You can choose to indulge in snorkeling and sea walker diving to discover the colourful aquatic life here.',
+          'After exploring the islands, return to the mainland of Thailand.',
+          'You can then spend the rest of the time partying on the famous Night street of Pattaya which has several bars, pubs, etc. to enjoy the nightlife.',
+          'Overnight stay in Pattaya.'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Nong Nooch Village Tour.',
+        description: [
+          'Wake up to a refreshing tropical morning in Pattaya and have your breakfast.',
+          'Get ready and board your transfers to Nong Nooch Village which has a botanical garden, zoo and Thai Cultural Center with impressive shows.',
+          'Spend some fun time with your family as you walk through the various themed parks, watch the live entertainment and watch the wild animals.',
+          'You can also go for paddle boating in the scenic lake here.',
+          'You will also get an insight into the countryside life and the cultural side of Thailand.',
+          'Upon completing the exploration of Nong Nooch Tropical Village, return back to your hotel in Pattaya.',
+          'Overnight stay in Pattaya.'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Pattaya to Bangkok. City Tour and Evening Dinner Cruise.',
+        description: [
+          'After having your breakfast at the hotel, pack your bag and board your transfers to Bangkok',
+          'Upon reaching Bangkok, check in to your hotel and head out to explore Bangkok.',
+          'On this tour, you will visit some of the famous temples like the Golden Buddha Temple, and Temple of the Emerald Buddha.',
+          'We will also take you to the dazzling Gems Gallery, where you can shop for some precious and semi-precious stones.',
+          'Upon completing the city tour, return back to your hotel and have some rest.',
+          'In the evening, we will take you to enjoy your dinner on a luxury cruise through the Chao Phraya River.',
+          'Marvel at the beautiful skyline of Thailand and enjoy the live performances onboard.',
+          'Relish in the delicious buffet dinner in a perfect setting.',
+          'After completing your dinner, return back to your hotel.',
+          'Overnight stay in Bangkok.'
+        ]
+      },
+      {
+        day: 5,
+        title: 'Full Day at the Safari World and Marine Park.',
+        description: [
+          'Have your breakfast at the hotel in the morning and get ready for the day.',
+          'Board your transfers to enjoy an amazing day with your family and friends at the Safari World and Marine Park.',
+          'Spend the whole day here, by participating in several activities.',
+          'You can watch some exotic animals like giraffes, zebras, white tigers, and lions in the open-air zoo at Safari World.',
+          'In the afternoon, you can relish the delicious lunch served at the restaurants or cafes inside this park.',
+          'You can also watch the colorful birds in the aviary here.',
+          'Enjoy watching the aquatic animals like dolphins and sea lions.',
+          'You can also watch some shows for entertainment in various zones - Cowboy shows, tricks by various animals like elephants, dolphins, etc.',
+          'After spending this fun-filled day, return to the hotel.',
+          'Overnight stay in Bangkok.'
+        ]
+      },
+      {
+        day: 6,
+        title: 'Bangkok to Phuket. Cabaret Show in the evening.',
+        description: [
+          'After having your breakfast at the hotel, pack your bag and board your transfers to the airport.',
+          'You will then board a 2-hour flight to Phuket.',
+          'Upon reaching Phuket, meet our representative who will transfer you to your hotel.',
+          'Upon reaching, check in to your hotel and rest for some time.',
+          'In the evening, watch the graceful movements of the artists as you enjoy the Simon Cabaret Show in Phuket.',
+          'Overnight stay in Phuket.'
+        ]
+      },
+      {
+        day: 7,
+        title: 'Phi Phi Island Tour.',
+        description: [
+          'Wake up to a beautiful tropical morning and have your breakfast at the hotel.',
+          'Next, get ready and board your transfers to the starting point of your speed boat.',
+          'Hop on to your speedboat and spend the day exploring the scenic Phi Phi islands.',
+          'Enjoy this day with your partner as you spend some leisure time gliding through the ocean waters.',
+          'Upon reaching the Phi Phi Islands, you will visit some of the iconic locations like the Maya Bay and some stunning limestone caves.',
+          'You can also stroll hand in hand on the scenic Monkey Beach.',
+          'You will also take a small stopover in between to have your lunch.',
+          'After exploring all the islands, return back to the mainland of Thailand.',
+          'Upon reaching, you will be transferred back to your hotel.',
+          'Overnight stay in Phuket.'
+        ]
+      },
+      {
+        day: 8,
+        title: 'Phuket City Tour. Evening at Leisure.',
+        description: [
+          'Have your breakfast in the morning and get ready to explore Phuket.',
+          'Board your transfers for the day, which will take you to some iconic landmarks across Phuket.',
+          'On this city tour, you will visit the famous Karon View Point to admire stunning views of the crescent-shaped Kata and Kata Noi Beaches.',
+          'You will also visit the historic Wat Chalong Temple and the famous Buddha Statue of Phuket.',
+          'Upon completing the city tour, you can spend the rest of the day at leisure.',
+          'Overnight stay in Phuket.'
+        ]
+      },
+      {
+        day: 9,
+        title: 'Departure. Take back a lot of romantic memories.',
+        description: [
+          'Have your breakfast in the morning and pack your bags.',
+          'Board your transfer to Phuket Airport for your onward journey.',
+          'Your romantic Thailand Tour concludes once you are dropped off at the airport.',
+          'Take back a lot of happy memories to cherish for a lifetime.'
+        ]
+      }
+    ],
+    included: [
+      '03 Nights Pattaya accommodation',
+      '02 Nights Bangkok accommodation',
+      '03 Nights Phuket accommodation',
+      'Alcazar shows',
+      'Coral Island with lunch',
+      'Nong Nooch Village tour',
+      'Bangkok City and Temple (Golden Buddha & Reclining Buddha) tour',
+      'Dinner Cruise Chao River',
+      'Safari world with Marine Park tour with lunch',
+      'Simon Cabaret Show Phuket',
+      'Phi Phi island tour with lunch',
+      'Phuket city tour',
+      'Transfer: Airport - Pattaya - Bangkok - Airport - Phuket - Airport PVT'
+    ],
+    notIncluded: [
+      'Airfare, advised separately',
+      'Any Expenses of a personal nature',
+      'Any meals not explicitly mentioned in the itinerary',
+      'GST & TCS as applicable extra',
+      'National Park Fee'
+    ],
+    stays: [
+      'Pattaya: Deluxe Room / Similar',
+      'Bangkok: Deluxe Room / Similar',
+      'Phuket: Deluxe Room / Similar'
+    ],
+    batchDates: [],
+    dates: [],
+    costingDetails: [
+      { label: 'Double Sharing (Per Person)', value: '₹55,999' }
+    ],
+    thingsToCarry: [
+      'Passport with minimum 6 months validity from the date of departure from India',
+      'Sunscreen & lip balm, Good U/V protection sunglasses',
+      'Personal Medicines (if any)'
+    ],
+    travelEssentials: [
+      {
+        title: 'Travel Essentials',
+        items: [
+          'A medium size trolley with one cabin bag',
+          'Reusable water bladder or water bottle',
+          'a sun cap',
+          'UV protected sunglasses'
+        ]
+      },
+      {
+        title: 'Clothes',
+        items: [
+          'Cotton Shirts and T-shirts',
+          'Jeans, Shorts and cotton pants',
+          'Sets of undergarments',
+          'Pair of socks',
+          'A small towel or Beach Towel',
+          'A rain jacket or a poncho'
+        ]
+      },
+      {
+        title: 'Footwear',
+        items: [
+          'Sport Shoes or Sneakers',
+          'Flip flops/sandals'
+        ]
+      },
+      {
+        title: 'Medication',
+        items: [
+          'Glucose powder',
+          'Medicines for headaches, diarrhoea, motion sickness',
+          'Dettol',
+          'Bandages',
+          'Cotton'
+        ]
+      },
+      {
+        title: 'Personal Accessories',
+        items: [
+          'toothpaste, toothbrush',
+          'Paper soap, or sanitizer',
+          'Sunscreen minimum of spf40 , lip balm, cold creams',
+          'Body spray',
+          'LED torch light'
+        ]
+      }
+    ],
+    note: [
+      'National Park Fees during 4 Island and Phi Phi Island tours are not included in the package. Customers will have to pay THB 400 per person on the spot.',
+      'Koh Phangan Fullmoon party expenses are on your own. 200 THB per person.',
+      'Normal Check-in and Check-out time is 03:00 PM and 12:00 noon respectively in Thailand.',
+      'Airport transfer is at fixed time (depending on the majority of arrival and departure time of the group) - Any early or late transfer will be charged extra.',
+      'Phuket arrival time should be 10:00 Am and Departure Flight time from Phuket should be after 02:00 Pm.',
+      'Rates are not valid for Festival Duration like Diwali, Dussehra, Christmas, and New Year'
+    ]
+  },
+  {
+    id: '48',
+    title: 'Wanderphilia Exclusive 6 Nights 7 Days Thailand Bangkok Pattaya Perfect Family Getaway',
+    slug: 'wanderphilia-exclusive-6-nights-7-days-thailand-bangkok-pattaya-perfect-family-getaway',
+    image: '/images/thailand.jpg',
+    destination: 'Thailand',
+    category: 'Thailand',
+    description: `Embark on the perfect family getaway to Thailand with our Wanderphilia Exclusive 6 Nights 7 Days Bangkok Pattaya Package. Create lifelong family memories as you enjoy Pattaya's famous Alcazar Show, explore Coral Island by speedboat, wander Nong Nooch Village botanical gardens, spend full days at Safari World & Marine Park and Dream World theme park, experience a scenic dinner cruise on Chao Phraya River, and enjoy a guided wat and temple tour of Bangkok.`,
+    duration: 7,
+    nights: 6,
+    price: 30999,
+    rating: 4.9,
+    difficulty: 'Easy',
+    groupSize: 4,
+    tripType: 'International',
+    showGetQuoteOnly: true,
+    highlights: [
+      'Pattaya',
+      'Alcazar Show',
+      'Coral Island Tour',
+      'Nong Nooch Village',
+      'Full Day Bangkok Safari with Marine Park',
+      'Full Day Dream World',
+      'Bangkok Evening Dinner Cruise',
+      'Bangkok City & Temple Tour'
+    ],
+    overviewPoints: [
+      'Route: Pattaya → Bangkok',
+      'Duration: 6 Nights / 7 Days.',
+      'Trip Start: Bangkok.',
+      'Trip End: Bangkok.',
+      'Major Highlights: Alcazar Show, Coral Island speedboat tour, Nong Nooch Village, Safari World & Marine Park, Dream World Amusement Park, Chao Phraya Dinner Cruise, Bangkok Temple Tour.'
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Arrive in Bangkok. Transfer to Pattaya and Evening Alcazar Show.',
+        description: [
+          'Upon your arrival at the Bangkok airport, complete the immigration formalities.',
+          'Meet our representative, who will help you board your transfers to Pattaya.',
+          'Enjoy a 2-hour drive to Pattaya, through scenic tropical landscapes.',
+          'Upon reaching Pattaya, check in to the hotel and have some rest.',
+          'In the evening, head out to visit the famous Alcazar Show which will amaze you with its mesmerizing and exotic set designs.',
+          'The duration of the show is 70 minutes and features 17 acts that showcase the culture, dance, and songs of Chinese, Thai, Indian, Russian, Persian, etc',
+          'After enjoying the show, return back to your hotel.',
+          'Overnight stay in Pattaya.'
+        ]
+      },
+      {
+        day: 2,
+        title: 'Coral Island Tour. Spend the Evening at Pattaya Night Street.',
+        description: [
+          'Start your day early and have your breakfast at the hotel.',
+          'Get ready for a fun-filled day as you board your transfers for the Coral Island Tour.',
+          'Reach the port, hop on your speedboat and enjoy a 45-minute boat ride to Coral Island.',
+          'Upon reaching, spend some peaceful time by strolling leisurely on the famous Tawaen Beach.',
+          'Adventure enthusiasts can indulge in some fun water activities and feel the adrenaline rush.',
+          'You can choose to indulge in snorkeling and sea walker diving to discover the colourful aquatic life here.',
+          'After exploring the islands, return to the mainland of Thailand.',
+          'You can then spend the rest of the time partying on the famous Night street of Pattaya which has several bars, pubs, etc. to enjoy the nightlife.',
+          'Overnight stay in Pattaya.'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Nong Nooch Village Tour.',
+        description: [
+          'Wake up to a refreshing tropical morning in Pattaya and have your breakfast.',
+          'Get ready and board your transfers to Nong Nooch Village which has a botanical garden, zoo and Thai Cultural Center with impressive shows.',
+          'Spend some fun time with your family as you walk through the various themed parks, watch the live entertainment and watch the wild animals.',
+          'You can also go for paddle boating in the scenic lake here.',
+          'You will also get an insight into the countryside life and the cultural side of Thailand.',
+          'Upon completing the exploration of Nong Nooch Tropical Village, return back to your hotel in Pattaya.',
+          'Overnight stay in Pattaya.'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Pattaya to Bangkok. City Tour and Evening Dinner Cruise.',
+        description: [
+          'After having your breakfast at the hotel, pack your bag and board your transfers to Bangkok',
+          'Upon reaching Bangkok, check in to your hotel and head out to explore Bangkok.',
+          'On this tour, you will visit some of the famous temples like the Golden Buddha Temple, and Temple of the Emerald Buddha.',
+          'We will also take you to the dazzling Gems Gallery, where you can shop for some precious and semi-precious stones.',
+          'Upon completing the city tour, return back to your hotel and have some rest.',
+          'In the evening, we will take you to enjoy your dinner on a luxury cruise through the Chao Phraya River.',
+          'Marvel at the beautiful skyline of Thailand and enjoy the live performances onboard.',
+          'Relish in the delicious buffet dinner in a perfect setting.',
+          'After completing your dinner, return back to your hotel.',
+          'Overnight stay in Bangkok.'
+        ]
+      },
+      {
+        day: 5,
+        title: 'Full Day at the Safari World and Marine Park.',
+        description: [
+          'Have your breakfast at the hotel in the morning and get ready for the day.',
+          'Board your transfers to enjoy an amazing day with your family and friends at the Safari World and Marine Park.',
+          'Spend the whole day here, by participating in several activities.',
+          'You can watch some exotic animals like giraffes, zebras, white tigers, and lions in the open-air zoo at Safari World.',
+          'In the afternoon, you can relish the delicious lunch served at the restaurants or cafes inside this park.',
+          'You can also watch the colorful birds in the aviary here.',
+          'Enjoy watching the aquatic animals like dolphins and sea lions.',
+          'You can also watch some shows for entertainment in various zones - Cowboy shows, tricks by various animals like elephants, dolphins, etc.',
+          'After spending this fun-filled day, return to the hotel.',
+          'Overnight stay in Bangkok.'
+        ]
+      },
+      {
+        day: 6,
+        title: 'Full-Day Tour of Dream World.',
+        description: [
+          'Post breakfast in the morning, get ready, and board your transfers to the Dream World.',
+          'Reach Dream World and enjoy the day exploring various theme-based zones here.',
+          'Experience the adrenaline rush as you hop on fun rides such as the Sky Coaster, the Speed Mouse Coaster, Grand Canyon, Super Splash, and more.',
+          'Enjoy the thrill at some of the park’s most daring slides like Super Splash, Hanging Coaster, and Space Mountain.',
+          'The kid in you will jump for joy as you meet your favorite childhood cartoon characters here.',
+          'In the afternoon, have your lunch at the in-house restaurant and cafes.',
+          'You can also enjoy snow sports in the snow world here and enjoy many water rides in the water canyon.',
+          'After enjoying your day at the Dream World, return back to the hotel.',
+          'Overnight stay in Bangkok.'
+        ]
+      },
+      {
+        day: 7,
+        title: 'Departure. Take back a lot of romantic memories.',
+        description: [
+          'Have your breakfast in the morning and pack your bags.',
+          'Board your transfer to Bangkok Airport for your onward journey.',
+          'Your amazing Thailand Family Tour concludes once you are dropped off at the airport.',
+          'Take back a lot of happy memories to cherish for a lifetime.'
+        ]
+      }
+    ],
+    included: [
+      '03 Nights Pattaya accommodation',
+      '03 Nights Bangkok accommodation',
+      'Alcazar shows',
+      'Coral Island with lunch',
+      'Nong Nooch Village tour',
+      'Bangkok City and Temple (Golden Buddha & Reclining Buddha) tour',
+      'Dinner Cruise Chao Phraya River',
+      'Safari world with Marine Park tour with lunch',
+      'Dream World with Lunch',
+      'Transfer: Airport - Pattaya - Bangkok - Airport PVT'
+    ],
+    notIncluded: [
+      'Airfare, advised separately',
+      'Any Expenses of a personal nature',
+      'Any meals not explicitly mentioned in the itinerary',
+      'GST & TCS as applicable extra',
+      'National Park Fee'
+    ],
+    stays: [
+      'Pattaya: Deluxe Room / Similar',
+      'Bangkok: Deluxe Room / Similar'
+    ],
+    batchDates: [],
+    dates: [],
+    costingDetails: [
+      { label: 'Double Sharing (Per Person)', value: '₹30,999' }
+    ],
+    thingsToCarry: [
+      'Passport with minimum 6 months validity from the date of departure from India',
+      'Sunscreen & lip balm, Good U/V protection sunglasses',
+      'Personal Medicines (if any)'
+    ],
+    travelEssentials: [
+      {
+        title: 'Travel Essentials',
+        items: [
+          'A medium size trolley with one cabin bag',
+          'Reusable water bladder or water bottle',
+          'a sun cap',
+          'UV protected sunglasses'
+        ]
+      },
+      {
+        title: 'Clothes',
+        items: [
+          'Cotton Shirts and T-shirts',
+          'Jeans, Shorts and cotton pants',
+          'Sets of undergarments',
+          'Pair of socks',
+          'A small towel or Beach Towel',
+          'A rain jacket or a poncho'
+        ]
+      },
+      {
+        title: 'Footwear',
+        items: [
+          'Sport Shoes or Sneakers',
+          'Flip flops/sandals'
+        ]
+      },
+      {
+        title: 'Medication',
+        items: [
+          'Glucose powder',
+          'Medicines for headaches, diarrhoea, motion sickness',
+          'Dettol',
+          'Bandages',
+          'Cotton'
+        ]
+      },
+      {
+        title: 'Personal Accessories',
+        items: [
+          'toothpaste, toothbrush',
+          'Paper soap, or sanitizer',
+          'Sunscreen minimum of spf40 , lip balm, cold creams',
+          'Body spray',
+          'LED torch light'
+        ]
+      }
+    ],
+    note: [
+      'National Park Fees during 4 Island and Phi Phi Island tours are not included in the package. Customers will have to pay THB 400 per person on the spot.',
+      'Koh Phangan Fullmoon party expenses are on your own. 200 THB per person.',
+      'Normal Check-in and Check-out time is 03:00 PM and 12:00 noon respectively in Thailand.',
+      'Airport transfer is at fixed time (depending on the majority of arrival and departure time of the group) - Any early or late transfer will be charged extra.',
+      'Phuket arrival time should be 10:00 Am and Departure Flight time from Phuket should be after 02:00 Pm.',
+      'Rates are not valid for Festival Duration like Diwali, Dussehra, Christmas, and New Year'
+    ]
+  },
+  {
+    id: '49',
+    title: 'Wanderphilia Exclusive 4 Nights 5 Days Thailand Exclusive Phuket Perfect Family Leisure Trip',
+    slug: 'wanderphilia-exclusive-4-nights-5-days-thailand-exclusive-phuket-perfect-family-leisure-trip',
+    image: '/images/thailand.jpg',
+    destination: 'Thailand',
+    category: 'Thailand',
+    description: `Experience the ultimate family vacation with our Wanderphilia Exclusive 4 Nights 5 Days Thailand Exclusive Phuket Family Leisure Trip. Take in spectacular views from the Big Buddha and Promthep Cape on a guided city tour, discover the breathtaking Phi Phi Islands by speedboat with a local lunch, and get up close with big cats at the Phuket Tiger Kingdom. Perfect for families looking for a mixture of adventure and tropical relaxation.`,
+    duration: 5,
+    nights: 4,
+    price: 25999,
+    rating: 4.9,
+    difficulty: 'Easy',
+    groupSize: 4,
+    tripType: 'International',
+    showGetQuoteOnly: true,
+    highlights: [
+      'Phuket',
+      'City Tour with Big Buddha',
+      'Promthep Cape Phuket',
+      'Phi Phi Island Tour',
+      'Visit Tiger Kingdom'
+    ],
+    overviewPoints: [
+      'Route: Phuket',
+      'Duration: 4 Nights / 5 Days.',
+      'Trip Start: Phuket.',
+      'Trip End: Phuket.',
+      'Major Highlights: Big Buddha City Tour, Promthep Cape, Phi Phi Islands Speedboat Tour, Tiger Kingdom (Medium Tiger Zone).'
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Arrive in Phuket. Day at leisure.',
+        description: [
+          'Upon your arrival at the Phuket airport, complete the immigration formalities.',
+          'Meet our representative, who will help you board your transfers to your hotel.',
+          'Upon reaching your hotel in Phuket, check in to the hotel and have some rest.',
+          'You can spend the rest of the day at leisure.',
+          'Overnight stay in Phuket.'
+        ]
+      },
+      {
+        day: 2,
+        title: 'Phuket City Tour. Evening at Leisure.',
+        description: [
+          'Have your breakfast in the morning and get ready to explore Phuket.',
+          'Board your transfers for the day, which will take you to some iconic landmarks across Phuket.',
+          'On this city tour, you will visit the famous Karon View Point to admire stunning views of the crescent-shaped Kata and Kata Noi Beaches.',
+          'You will also visit the historic Wat Chalong Temple and the famous Buddha Statue of Phuket.',
+          'We will also explore Old Phuket Town known for the Sino-Portuguese style architecture.',
+          'Upon completing the city tour, you can spend the rest of the day at leisure.',
+          'Overnight stay in Phuket.'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Phi Phi Island Tour with Local Lunch',
+        description: [
+          'Wake up to a beautiful tropical morning and have your breakfast at the hotel.',
+          'Next, get ready and board your transfers to the starting point of your speed boat.',
+          'Hop on to your speedboat and spend the day exploring the scenic Phi Phi islands.',
+          'Enjoy this day as you spend some leisure time gliding through the ocean waters.',
+          'Upon reaching the Phi Phi Islands, you will visit some of the iconic locations like the Maya Bay and some stunning limestone caves.',
+          'Stroll on the soft sand at the scenic Monkey Beach.',
+          'You will also take a small stopover in between to have your lunch.',
+          'After exploring all the islands, return back to the mainland of Thailand.',
+          'Upon reaching, you will be transferred back to your hotel.',
+          'Overnight stay in Phuket.'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Visit Tiger Kingdom (Medium Tiger Zone). Evening at Leisure.',
+        description: [
+          'Have your breakfast at the hotel in the morning and get ready for the day.',
+          'Today, we will participate in one of the most unique and fun experiences in Phuket.',
+          'Get ready to meet the big cats as we take you to the Tiger Kingdom in Phuket.',
+          'Upon reaching, we will visit the Medium-sized Tiger Zone where you can feed, pet, and click pictures with the tigers.',
+          'You can also get information on tiger behavior and conservation efforts taken to protect them.',
+          'You can also shop some tiger souvenirs and enjoy some delicious food in the cafe of the Tiger Kingdom',
+          'After completely exploring the Tiger Kingdom, board your return transfers to the hotel.',
+          'You can then spend the rest of the day at leisure.',
+          'Overnight stay in Phuket.'
+        ]
+      },
+      {
+        day: 5,
+        title: 'Departure. Take back a lot of happy memories.',
+        description: [
+          'Have your breakfast in the morning and pack your bags.',
+          'Board your transfer to Phuket Airport for your onward journey.',
+          'Your amazing Thailand Family Tour concludes once you are dropped off at the airport.',
+          'Take back a lot of happy memories to cherish for a lifetime.'
+        ]
+      }
+    ],
+    included: [
+      '4 nights’ accommodation with breakfast.',
+      'All transportation by A/c Vehicles on a shared basis.',
+      'Phuket City tour with shared transfers.',
+      'Full Day Phi Phi Island Tour with Lunch by Speed boat (Excluding National Park Fee)',
+      'Half day Tiger Kingdom tour with shared Transfer (Medium Tiger)',
+      '24*7 on-call travel assistance.',
+      'Airport pick-up and drop transfers.'
+    ],
+    notIncluded: [
+      'Any expense of a personal nature.',
+      'Any meals not explicitly mentioned in the itinerary.',
+      'GST and TCS as applicable extra.',
+      'Any change in itinerary due to unforeseen conditions.',
+      'Security deposit at the hotel',
+      'Round trip flight'
+    ],
+    stays: [
+      'Phuket: Deluxe Room / Similar'
+    ],
+    batchDates: [],
+    dates: [],
+    costingDetails: [
+      { label: 'Double Sharing (Per Person)', value: '₹25,999' }
+    ],
+    thingsToCarry: [
+      'Passport with minimum 6 months validity from the date of departure from India',
+      'Sunscreen & lip balm, Good U/V protection sunglasses',
+      'Personal Medicines (if any)'
+    ],
+    travelEssentials: [
+      {
+        title: 'Travel Essentials',
+        items: [
+          'A medium size trolley with one cabin bag',
+          'Reusable water bladder or water bottle',
+          'a sun cap',
+          'UV protected sunglasses'
+        ]
+      },
+      {
+        title: 'Clothes',
+        items: [
+          'Cotton Shirts and T-shirts',
+          'Jeans, Shorts and cotton pants',
+          'Sets of undergarments',
+          'Pair of socks',
+          'A small towel or Beach Towel',
+          'A rain jacket or a poncho'
+        ]
+      },
+      {
+        title: 'Footwear',
+        items: [
+          'Sport Shoes or Sneakers',
+          'Flip flops/sandals'
+        ]
+      },
+      {
+        title: 'Medication',
+        items: [
+          'Glucose powder',
+          'Medicines for headaches, diarrhoea, motion sickness',
+          'Dettol',
+          'Bandages',
+          'Cotton'
+        ]
+      },
+      {
+        title: 'Personal Accessories',
+        items: [
+          'toothpaste, toothbrush',
+          'Paper soap, or sanitizer',
+          'Sunscreen minimum of spf40 , lip balm, cold creams',
+          'Body spray',
+          'LED torch light'
+        ]
+      }
+    ],
+    note: [
+      'National Park Fees during 4 Island and Phi Phi Island tours are not included in the package. Customers will have to pay THB 400 per person on the spot.',
+      'Koh Phangan Fullmoon party expenses are on your own. 200 THB per person.',
+      'Normal Check-in and Check-out time is 03:00 PM and 12:00 noon respectively in Thailand.',
+      'Airport transfer is at fixed time (depending on the majority of arrival and departure time of the group) - Any early or late transfer will be charged extra.',
+      'Phuket arrival time should be 10:00 Am and Departure Flight time from Phuket should be after 02:00 Pm.',
+      'Rates are not valid for Festival Duration like Diwali, Dussehra, Christmas, and New Year'
+    ]
+  },
+  {
+    id: '50',
+    title: 'Wanderphilia Exclusive 5 Nights 6 Days Thailand Bangkok Pattaya Relaxed Family Trip',
+    slug: 'wanderphilia-exclusive-5-nights-6-days-thailand-bangkok-pattaya-relaxed-family-trip',
+    image: '/images/thailand.jpg',
+    destination: 'Thailand',
+    category: 'Thailand',
+    description: `Embark on a relaxed family getaway to Thailand with our Wanderphilia Exclusive 5 Nights 6 Days Bangkok Pattaya Family Package. Perfect for families looking to create wonderful memories, this tour features Pattaya's famous Alcazar Show, a speedboat tour to Coral Island, a full day exploring Safari World and Marine Park, and a city and temple tour of Bangkok. Enjoy a blend of leisure, entertainment, and sightseeing designed to keep all family members engaged and relaxed.`,
+    duration: 6,
+    nights: 5,
+    price: 30999,
+    rating: 4.9,
+    difficulty: 'Easy',
+    groupSize: 4,
+    tripType: 'International',
+    showGetQuoteOnly: true,
+    highlights: [
+      'Pattaya',
+      'Alcazar Show',
+      'Coral Island Tour',
+      'Full Day Bangkok Safari with Marine Park',
+      'Bangkok City & Temple Tour'
+    ],
+    overviewPoints: [
+      'Route: Pattaya → Bangkok',
+      'Duration: 5 Nights / 6 Days.',
+      'Trip Start: Bangkok.',
+      'Trip End: Bangkok.',
+      'Major Highlights: Coral Island speedboat tour, Safari World & Marine Park, Bangkok City & Temple Tour.'
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Arrive in Bangkok. Transfer to Pattaya.',
+        description: [
+          'Upon your arrival at the Bangkok airport, complete the immigration formalities.',
+          'Meet our representative, who will help you board your transfers to Pattaya.',
+          'Enjoy a 2-hour drive to Pattaya, through scenic tropical landscapes.',
+          'Upon reaching Pattaya, check in to the hotel and have some rest.',
+          'You can spend the rest of your time at leisure.',
+          'Overnight stay in Pattaya.'
+        ]
+      },
+      {
+        day: 2,
+        title: 'Coral Island Tour. Spend the Evening at Pattaya Night Street.',
+        description: [
+          'Start your day early and have your breakfast at the hotel.',
+          'Get ready for a fun-filled day as you board your transfers for the Coral Island Tour.',
+          'Reach the port, hop on your speedboat and enjoy a 45-minute boat ride to Coral Island.',
+          'Upon reaching, spend some peaceful time by strolling leisurely on the famous Tawaen Beach.',
+          'Adventure enthusiasts can indulge in some fun water activities and feel the adrenaline rush.',
+          'You can choose to indulge in snorkeling and sea walker diving to discover the colourful aquatic life here.',
+          'After exploring the islands, return to the mainland of Thailand.',
+          'You can then spend the rest of the time partying on the famous Night street of Pattaya which has several bars, pubs, etc. to enjoy the nightlife.',
+          'Overnight stay in Pattaya.'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Day at leisure (Free Day to Explore the city)',
+        description: [
+          'Wake up to a pleasant morning in Pattaya and have your breakfast at the hotel.',
+          'You can then spend the rest of the day at leisure.',
+          'Either relax in the hotel or explore around the city.',
+          'Visit attractions like Big Buddha Temple, Pattaya City View Point, and the Sanctuary of Truth (at an additional cost).',
+          'In the evening you can watch the Alcazar Show or party at Pattaya Night Street (on your own).',
+          'After completing your exploration, return back to your hotel.',
+          'Overnight stay in Pattaya.'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Pattaya to Bangkok. En route Bangkok City Tour.',
+        description: [
+          'After having your breakfast at the hotel, pack your bag and board your transfers to Bangkok.',
+          'Before heading to the hotel in Bangkok, we will first visit some of the famous landmarks here like the Golden Buddha Temple and Mini Reclining Buddha.',
+          'After completing the sightseeing tour, reach your hotel and check in.',
+          'You can then spend the rest of the time at leisure.',
+          'Overnight stay in Bangkok.'
+        ]
+      },
+      {
+        day: 5,
+        title: 'Full Day at the Safari World and Marine Park.',
+        description: [
+          'Have your breakfast at the hotel in the morning and get ready for the day.',
+          'Board your transfers to enjoy an amazing day with your family and friends at the Safari World and Marine Park.',
+          'Spend the whole day here, by participating in several activities.',
+          'You can watch some exotic animals like giraffes, zebras, white tigers, and lions in the open-air zoo at Safari World.',
+          'In the afternoon, you can relish the delicious lunch served at the restaurants or cafes inside this park.',
+          'You can also watch the colorful birds in the aviary here.',
+          'Enjoy watching the aquatic animals like dolphins and sea lions.',
+          'You can also watch some shows for entertainment in various zones - Cowboy shows, tricks by various animals like elephants, dolphins, etc.',
+          'After spending this fun-filled day, return to the hotel.',
+          'Overnight stay in Bangkok.'
+        ]
+      },
+      {
+        day: 6,
+        title: 'Departure. Take back a lot of happy memories.',
+        description: [
+          'Have your breakfast in the morning and pack your bags.',
+          'Board your transfer to Bangkok Airport for your onward journey.',
+          'Your amazing Thailand Family Tour concludes once you are dropped off at the airport.',
+          'Take back a lot of happy memories to cherish for a lifetime.'
+        ]
+      }
+    ],
+    included: [
+      '03 Nights Pattaya accommodation',
+      '02 Nights Bangkok accommodation',
+      'Coral Island with lunch',
+      'Bangkok City and Temple (Golden Buddha & Reclining Buddha) tour',
+      'Safari world with Marine Park tour with lunch',
+      'Transfer: Airport - Pattaya - Bangkok - Airport PVT'
+    ],
+    notIncluded: [
+      'Airfare, advised separately',
+      'Any Expenses of a personal nature',
+      'Any meals not explicitly mentioned in the itinerary',
+      'GST & TCS as applicable extra',
+      'National Park Fee'
+    ],
+    stays: [
+      'Pattaya: Deluxe Room / Similar',
+      'Bangkok: Deluxe Room / Similar'
+    ],
+    batchDates: [],
+    dates: [],
+    costingDetails: [
+      { label: 'Double Sharing (Per Person)', value: '₹30,999' }
+    ],
+    thingsToCarry: [
+      'Passport with minimum 6 months validity from the date of departure from India',
+      'Sunscreen & lip balm, Good U/V protection sunglasses',
+      'Personal Medicines (if any)'
+    ],
+    travelEssentials: [
+      {
+        title: 'Travel Essentials',
+        items: [
+          'A medium size trolley with one cabin bag',
+          'Reusable water bladder or water bottle',
+          'a sun cap',
+          'UV protected sunglasses'
+        ]
+      },
+      {
+        title: 'Clothes',
+        items: [
+          'Cotton Shirts and T-shirts',
+          'Jeans, Shorts and cotton pants',
+          'Sets of undergarments',
+          'Pair of socks',
+          'A small towel or Beach Towel',
+          'A rain jacket or a poncho'
+        ]
+      },
+      {
+        title: 'Footwear',
+        items: [
+          'Sport Shoes or Sneakers',
+          'Flip flops/sandals'
+        ]
+      },
+      {
+        title: 'Medication',
+        items: [
+          'Glucose powder',
+          'Medicines for headaches, diarrhoea, motion sickness',
+          'Dettol',
+          'Bandages',
+          'Cotton'
+        ]
+      },
+      {
+        title: 'Personal Accessories',
+        items: [
+          'toothpaste, toothbrush',
+          'Paper soap, or sanitizer',
+          'Sunscreen minimum of spf40 , lip balm, cold creams',
+          'Body spray',
+          'LED torch light'
+        ]
+      }
+    ],
+    note: [
+      'National Park Fees during 4 Island and Phi Phi Island tours are not included in the package. Customers will have to pay THB 400 per person on the spot.',
+      'Koh Phangan Fullmoon party expenses are on your own. 200 THB per person.',
+      'Normal Check-in and Check-out time is 03:00 PM and 12:00 noon respectively in Thailand.',
+      'Airport transfer is at fixed time (depending on the majority of arrival and departure time of the group) - Any early or late transfer will be charged extra.',
+      'Phuket arrival time should be 10:00 Am and Departure Flight time from Phuket should be after 02:00 Pm.',
+      'Rates are not valid for Festival Duration like Diwali, Dussehra, Christmas, and New Year'
+    ]
+  },
+  {
+    id: '51',
+    title: 'Wanderphilia Exclusive 5 Nights 6 Days Krabi Phuket Thailand Romantic Escape',
+    slug: 'wanderphilia-exclusive-6-nights-7-days-krabi-phuket-thailand-romantic-escape',
+    image: '/images/thailand.jpg',
+    destination: 'Thailand',
+    category: 'Thailand',
+    description: `Embark on a beautiful tropical romance with our Wanderphilia Exclusive 5 Nights 6 Days Krabi Phuket Thailand Romantic Escape. Specially crafted for couples, this tour features a speedboat trip exploring Krabi's 4 Islands, a morning city tour of Krabi's natural and cultural landmarks, speedboat excursion of the scenic Phi Phi Islands with a local lunch, and a guided Phuket city tour. Enjoy premium beach stays and custom transfers, creating memories of a lifetime with your partner.`,
+    duration: 7,
+    nights: 6,
+    price: 30999,
+    rating: 4.9,
+    difficulty: 'Easy',
+    groupSize: 2,
+    tripType: 'International',
+    showGetQuoteOnly: true,
+    highlights: [
+      'Krabi',
+      '4 Island',
+      'Phuket',
+      'Phi Phi Island',
+      'Phuket City Tour'
+    ],
+    overviewPoints: [
+      'Route: Krabi → Phuket',
+      'Duration: 6 Nights / 7 Days.',
+      'Trip Start: Phuket.',
+      'Trip End: Phuket.',
+      'Major Highlights: Krabi 4 Island speedboat tour, Krabi City Tour, Phi Phi Islands Speedboat Tour, Phuket City Tour.'
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Arrive in Phuket. Transfer to Krabi.',
+        description: [
+          'Upon your arrival at the Phuket airport, complete the immigration formalities.',
+          'Meet our representative, who will help you board your transfers to Krabi.',
+          'Enjoy a 3-hour drive to Krabi, through scenic tropical landscapes.',
+          'Upon reaching Krabi, check-in to the hotel and have some rest.',
+          'You can then spend the rest of the day at leisure.',
+          'Overnight stay in Krabi.'
+        ]
+      },
+      {
+        day: 2,
+        title: '4 Island Tour by Speed Boat.',
+        description: [
+          'Post breakfast in the morning, get ready to spend an amazing day in the ocean.',
+          'Board your transfers to the starting point of your speed boat.',
+          'Hop on to your speedboat and spend the day exploring the scenic islands around Krabi.',
+          'On this tour, you will visit the scenic Phranang Cave Beach, Tup Island, Poda Island and Chicken Island.',
+          'You will also take a small stopover in between to have your lunch.',
+          'Spend this day exploring the secluded beaches, admiring the limestone rock formations or sit leisurely by the beach watching the blue ocean.',
+          'Adventure couples can indulge in some fun water activities and discover more about each other while spending quality time in this romantic setting.',
+          'After exploring all the islands, return back to the mainland of Thailand.',
+          'Upon reaching, you will be transferred back to your hotel.',
+          'Overnight stay in Krabi.'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Krabi Half Day Morning City Tour. Evening at leisure.',
+        description: [
+          'Wake up to a pleasant morning in Krabi and have your breakfast at the hotel.',
+          'Get ready as we begin our morning city tour of Krabi.',
+          'We will start by taking a scenic drive along the coastline of Krabi and marvel at the endless views of the Andaman Sea.',
+          'Our first stop here would be Khao Khanab Nam - a secluded cave along the Krabi River with beautiful limestone cave formations.',
+          'Later, drive a little further along the mangrove forest to reach the symbol of Krabi - “The Mud Crabs Sculpture”, to click some pictures.',
+          'Next, we will visit Wat Sai Thai - a temple backed with a limestone cliff housing a 150-year-old reclining Buddha Statue.',
+          'Our tour concludes with a short hike to Wat Sai Thai also known as Tiger Cave temple.',
+          'Here, we will marvel at the panoramic view of the surroundings and take a walk in the rainforest to see big trees 1000 years old.',
+          'Upon completing the sightseeing, we will return to our hotel.',
+          'You can then spend the day at leisure.',
+          'Overnight stay in Krabi.'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Transfer from Krabi to Phuket. Day at leisure.',
+        description: [
+          'After having your breakfast in the morning, get ready for the day.',
+          'You will then board your transfers to Phuket which will take around 2-3 hours.',
+          'Reach Phuket, check in to the hotel, and have some rest.',
+          'You can then spend the rest of the day at leisure.',
+          'Overnight stay in Phuket.'
+        ]
+      },
+      {
+        day: 5,
+        title: 'Phi Phi Island Tour.',
+        description: [
+          'Wake up to a beautiful tropical morning and have your breakfast at the hotel.',
+          'Next, get ready and board your transfers to the starting point of your speed boat.',
+          'Hop on to your speedboat and spend the day exploring the scenic Phi Phi islands.',
+          'Enjoy this day with your partner as you spend some leisure time gliding through the ocean waters.',
+          'Upon reaching the Phi Phi Islands, you will visit some of the iconic locations like the Maya Bay and some stunning limestone caves.',
+          'You can also stroll hand in hand on the scenic Monkey Beach.',
+          'You will also take a small stopover in between to have your lunch.',
+          'After exploring all the islands, return back to the mainland of Thailand.',
+          'Upon reaching, you will be transferred back to your hotel.',
+          'Overnight stay in Phuket.'
+        ]
+      },
+      {
+        day: 6,
+        title: 'Phuket City Tour. Evening at Leisure.',
+        description: [
+          'Have your breakfast in the morning and get ready to explore Phuket.',
+          'Board your transfers for the day, which will take you to some iconic landmarks across Phuket.',
+          'On this city tour, you will visit the famous Karon View Point to admire stunning views of the crescent-shaped Kata and Kata Noi Beaches.',
+          'You will also visit the historic Wat Chalong Temple and the famous Buddha Statue of Phuket.',
+          'Upon completing the city tour, you can spend the rest of the day at leisure.',
+          'Overnight stay in Phuket.'
+        ]
+      },
+      {
+        day: 7,
+        title: 'Departure. Take back a lot of romantic memories.',
+        description: [
+          'Have your breakfast in the morning and pack your bags.',
+          'Board your transfer to Bangkok Airport for your onward journey.',
+          'Your amazing Thailand Honeymoon Tour concludes once you are dropped off at the airport.',
+          'Take back a lot of happy memories to cherish for a lifetime.'
+        ]
+      }
+    ],
+    included: [
+      '3 nights’ accommodation with breakfast in Krabi Hotel.',
+      '3 nights’ accommodation with breakfast in Phuket Hotel.',
+      'All transportation by A/c Vehicles on a shared basis.',
+      'Four Island tour with speed boat on a shared basis.',
+      'Half day Krabi Morning City Tour with shared transfers',
+      'Krabi hotel to Phuket hotel transfers.',
+      'Phuket City tour with shared transfers.',
+      'Full Day Phi Phi Island Tour with Lunch by Speed boat (Excluding National Park Fee)',
+      '24*7 on-call travel assistance.',
+      'Airport pick-up and drop transfers.'
+    ],
+    notIncluded: [
+      'Any expense of a personal nature.',
+      'Any meals not explicitly mentioned in the itinerary.',
+      'GST and TCS as applicable extra.',
+      'Any change in itinerary due to unforeseen conditions',
+      'Security deposit at the hotel.',
+      'Round trip flight is not included.',
+      'National park fees of 4 Island Tour and Phi Phi Island are not included in the package. Customers will have to pay THB 400 per person on the spot.'
+    ],
+    stays: [
+      'Krabi: Deluxe Room / Similar',
+      'Phuket: Deluxe Room / Similar'
+    ],
+    batchDates: [],
+    dates: [],
+    costingDetails: [
+      { label: 'Double Sharing (Per Person)', value: '₹30,999' }
+    ],
+    thingsToCarry: [
+      'Passport with minimum 6 months validity from the date of departure from India',
+      'Sunscreen & lip balm, Good U/V protection sunglasses',
+      'Personal Medicines (if any)'
+    ],
+    travelEssentials: [
+      {
+        title: 'Travel Essentials',
+        items: [
+          'A medium size trolley with one cabin bag',
+          'Reusable water bladder or water bottle',
+          'a sun cap',
+          'UV protected sunglasses'
+        ]
+      },
+      {
+        title: 'Clothes',
+        items: [
+          'Cotton Shirts and T-shirts',
+          'Jeans, Shorts and cotton pants',
+          'Sets of undergarments',
+          'Pair of socks',
+          'A small towel or Beach Towel',
+          'A rain jacket or a poncho'
+        ]
+      },
+      {
+        title: 'Footwear',
+        items: [
+          'Sport Shoes or Sneakers',
+          'Flip flops/sandals'
+        ]
+      },
+      {
+        title: 'Medication',
+        items: [
+          'Glucose powder',
+          'Medicines for headaches, diarrhoea, motion sickness',
+          'Dettol',
+          'Bandages',
+          'Cotton'
+        ]
+      },
+      {
+        title: 'Personal Accessories',
+        items: [
+          'toothpaste, toothbrush',
+          'Paper soap, or sanitizer',
+          'Sunscreen minimum of spf40 , lip balm, cold creams',
           'Body spray',
           'LED torch light'
         ]

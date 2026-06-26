@@ -12,9 +12,10 @@ interface RequestCallbackDialogProps {
   onOpenChange: (open: boolean) => void
   title: string
   price: number
+  isQuote?: boolean
 }
 
-export function RequestCallbackDialog({ open, onOpenChange, title, price }: RequestCallbackDialogProps) {
+export function RequestCallbackDialog({ open, onOpenChange, title, price, isQuote }: RequestCallbackDialogProps) {
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [email, setEmail] = useState('')
@@ -74,10 +75,14 @@ export function RequestCallbackDialog({ open, onOpenChange, title, price }: Requ
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent showCloseButton={false} className="max-w-xl rounded-4xl p-0 overflow-hidden">
-          <DialogTitle className="sr-only">Request Callback</DialogTitle>
+          <DialogTitle className="sr-only">
+            {isQuote ? 'Quote Requested' : 'Request Callback'}
+          </DialogTitle>
 
           <DialogDescription className="sr-only">
-            Fill this form to request a callback from our team.
+            {isQuote
+              ? 'Thank you for requesting a quote.'
+              : 'Fill this form to request a callback from our team.'}
           </DialogDescription>
 
           <div className="bg-white px-6 py-12 sm:px-8 sm:py-10 text-center">
@@ -87,7 +92,11 @@ export function RequestCallbackDialog({ open, onOpenChange, title, price }: Requ
               </svg>
             </div>
             <h3 className="text-2xl font-bold text-slate-900 mb-2">Thank You!</h3>
-            <p className="text-slate-600 mb-4">Your callback request has been sent successfully.</p>
+            <p className="text-slate-600 mb-4">
+              {isQuote
+                ? 'Your quote request has been sent successfully.'
+                : 'Your callback request has been sent successfully.'}
+            </p>
             <p className="text-sm text-slate-500">Our team will contact you soon at {phone} or {email}</p>
           </div>
         </DialogContent>
@@ -104,7 +113,9 @@ export function RequestCallbackDialog({ open, onOpenChange, title, price }: Requ
         onEscapeKeyDown={(e) => e.preventDefault()}
         className="max-w-xl rounded-4xl p-0 mt-[5vh] overflow-hidden"
       >
-        <DialogTitle className="sr-only">Request Callback</DialogTitle>
+        <DialogTitle className="sr-only">
+          {isQuote ? 'Request a Free Quote' : 'Request Callback'}
+        </DialogTitle>
 
         <div className="bg-white px-6 py-6 sm:px-8 sm:py-6 relative">
           {/* Close Button */}
@@ -118,8 +129,14 @@ export function RequestCallbackDialog({ open, onOpenChange, title, price }: Requ
           </div>
 
           <div className='relative p-0 mb-0 text-center'>
-            <div className='text-2xl font-bold text-slate-900 mb-2'>Don't Just Dream, Travel 🔥</div>
-            <p className="text-slate-600 mb-4">Allow us to call you back!</p>
+            <div className='text-2xl font-bold text-slate-900 mb-2'>
+              {isQuote ? 'Get a Free Quote' : "Don't Just Dream, Travel 🔥"}
+            </div>
+            <p className="text-slate-600 mb-4">
+              {isQuote
+                ? 'Please share your details to customize your dream escape!'
+                : 'Allow us to call you back!'}
+            </p>
           </div>
 
           <div className="mt-[2vh]">
@@ -177,7 +194,7 @@ export function RequestCallbackDialog({ open, onOpenChange, title, price }: Requ
                 disabled={loading}
                 className="w-full bg-primary px-5 py-4 text-base font-semibold text-white disabled:opacity-50"
               >
-                {loading ? 'Sending...' : 'Connect with an Expert'}
+                {loading ? 'Sending...' : (isQuote ? 'Get Quote' : 'Connect with an Expert')}
               </Button>
             </form>
           </div>

@@ -37,6 +37,7 @@ export default function ThailandPage() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [carouselIndex1, setCarouselIndex1] = useState(0)
   const [carouselIndex2, setCarouselIndex2] = useState(0)
+  const [groupCarouselIndex, setGroupCarouselIndex] = useState(0)
   const [familyCarouselIndex, setFamilyCarouselIndex] = useState(0)
   const [customizedCarouselIndex, setCustomizedCarouselIndex] = useState(0)
   const [isMobile, setIsMobile] = useState(false)
@@ -124,6 +125,7 @@ export default function ThailandPage() {
   useEffect(() => {
     setCarouselIndex1(0)
     setCarouselIndex2(0)
+    setGroupCarouselIndex(0)
     setFamilyCarouselIndex(0)
     setCustomizedCarouselIndex(0)
   }, [cardsPerView])
@@ -167,6 +169,11 @@ export default function ThailandPage() {
     }
     fetchGallery()
   }, [categoryId])
+
+  // Group Packages Data
+  const groupPackages = useMemo(() => {
+    return getTripsBySection('group')
+  }, [])
 
   // Family Packages Data
   const familyPackages = useMemo(() => {
@@ -212,7 +219,7 @@ export default function ThailandPage() {
                     10+ Thailand Tour Packages 2026
                   </h1>
 
-                  <p className="mt-4 text-sm sm:text-base md:text-lg max-w-2xl text-slate-100 leading-7">
+                  <p className="mt-4 text-sm sm:text-base md:text-lg max-w-2xl text-slate-100 leading-normal">
                     All inclusive curated Best Thailand Group & Customised Tour Packages 2026 For Friends Family Kids & Couples covering all the major Attractions.
                   </p>
 
@@ -252,7 +259,7 @@ export default function ThailandPage() {
         <section className="py-16 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
           <div className="mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
-              Upcoming Group Trips 2026 - Wanderphilia Exclusives
+              Upcoming Trips 2026 - Wanderphilia Exclusives
 
             </h2>
             <div className="w-20 h-1 bg-primary rounded-full" />
@@ -332,11 +339,88 @@ export default function ThailandPage() {
           )}
         </section>
 
+        {/* Group Trips Section */}
+        {groupPackages.length > 0 && (
+          <section className="py-16 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
+            <div className="mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+                Upcoming Group Trips 2026 - Wanderphilia Exclusive
+              </h2>
+              <div className="w-20 h-1 bg-primary rounded-full" />
+            </div>
+
+            <div>
+              {/* ✅ MOBILE SCROLLER */}
+              {isMobile ? (
+                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+                  {groupPackages.map((trip) => (
+                    <div
+                      key={trip.id}
+                      className="min-w-[75%] flex-shrink-0"
+                    >
+                      <TripCard {...trip} />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <>
+                  {/* DESKTOP CAROUSEL */}
+                  <div className="relative">
+
+                    {/* LEFT */}
+                    <button
+                      onClick={() => {
+                        setGroupCarouselIndex((prev) => Math.max(prev - 1, 0))
+                      }}
+                      disabled={groupCarouselIndex === 0}
+                      className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
+                    >
+                      <ChevronLeft size={20} />
+                    </button>
+
+                    {/* RIGHT */}
+                    <button
+                      onClick={() => {
+                        const maxIndex = Math.max(0, groupPackages.length - cardsPerView)
+                        setGroupCarouselIndex((prev) => Math.min(prev + 1, maxIndex))
+                      }}
+                      disabled={groupCarouselIndex === Math.max(0, groupPackages.length - cardsPerView)}
+                      className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
+                    >
+                      <ChevronRight size={20} />
+                    </button>
+
+                    {/* TRACK */}
+                    <div className="overflow-hidden">
+                      <div
+                        className="flex transition-transform duration-500 ease-in-out"
+                        style={{
+                          transform: `translateX(-${groupCarouselIndex * (100 / cardsPerView)}%)`,
+                        }}
+                      >
+                        {groupPackages.map((trip) => (
+                          <div
+                            key={trip.id}
+                            className="flex-shrink-0 basis-1/4 p-2"
+                          >
+                            <TripCard {...trip} />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                  </div>
+                </>
+              )}
+            </div>
+          </section>
+        )}
+
         {/* Family Packages Section */}
         <section className="py-16 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
           <div className="mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
-              Wanderphilia Exclusive | Honeymoon Thailand Getaway
+              Family Special Thailand Getaway - Wanderphilia Exclusive
             </h2>
             <div className="w-20 h-1 bg-primary rounded-full" />
           </div>
@@ -414,7 +498,7 @@ export default function ThailandPage() {
         <section className="py-16 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
           <div className="mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
-              Customized Packages
+              Honeymoon Thailand Getaway - Wanderphilia Exclusive
             </h2>
             <div className="w-20 h-1 bg-primary rounded-full" />
           </div>

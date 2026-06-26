@@ -87,9 +87,10 @@ export const sectionMappings: Record<string, Record<string, string[]>> = {
     related: ['13', '22', '34']
   },
   'thailand': {
-    available: ['43', '44'],
-    family: ['44'],
-    custom: ['43', '44'],
+    available: ['43', '44', '45', '46', '47', '48', '49', '50', '51'],
+    group: ['43'],
+    family: ['48', '49', '50', '51'],
+    custom: ['44', '45', '46', '47'],
     related: ['29', '13']
   },
   // Default fallback
@@ -104,7 +105,7 @@ export const sectionMappings: Record<string, Record<string, string[]>> = {
 // Page-specific trip card mappings for standalone pages
 export const pageSectionMappings: Record<string, string[]> = {
   upcomingTours: ['13', '14', '15', '16', '17', '18', '19', '20', '21', '41', '42', '43'],
-  honeymoonPackages: ['2', '5', '6', '9', '10', '11', '12', '14', '18', '33', '34', '37', '44'],
+  honeymoonPackages: ['2', '5', '6', '9', '10', '11', '12', '14', '18', '33', '34', '37', '44', '45', '46', '47', '51'],
   featured: ['13', '12', '21']
 }
 

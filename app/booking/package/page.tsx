@@ -17,7 +17,7 @@ export default async function BookingPackagePage({ searchParams }: BookingPackag
 
   const trip = trips.find((item) => item.slug === slug)
 
-  if (!trip) {
+  if (!trip || trip.showGetQuoteOnly) {
     notFound()
   }
 

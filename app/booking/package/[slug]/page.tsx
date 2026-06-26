@@ -12,7 +12,7 @@ export default async function BookingPackagePage({ params }: BookingPackagePageP
   const { slug } = await params
   const trip = trips.find((item) => item.slug === slug)
 
-  if (!trip) {
+  if (!trip || trip.showGetQuoteOnly) {
     notFound()
   }
 
