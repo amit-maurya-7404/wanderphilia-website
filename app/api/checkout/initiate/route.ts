@@ -73,7 +73,7 @@ export async function POST(req: Request) {
             Lead_Status: 'New Enquiry',
             Event_Category: tripSlug.trim(),
             Lead_Source: 'Website',
-            Destination: destination || '',
+            Destinations: destination || '',
           },
         ],
       }),

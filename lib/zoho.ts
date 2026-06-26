@@ -168,7 +168,7 @@ export async function submitToZohoCRM(data: {
           Lead_Source: data.leadSource,
           Lead_Status: 'New Enquiry',
           Event_Category: data.tripTitle || '',
-          Destination: destination || '',
+          Destinations: destination || '',
         }
       ]
     }
@@ -232,7 +232,7 @@ export async function submitToZohoCRM(data: {
   formData.append('Description', description)
   formData.append('Lead Source', data.leadSource)
   if (destination) {
-    formData.append('Destination', destination)
+    formData.append('Destinations', destination)
   }
 
   try {
