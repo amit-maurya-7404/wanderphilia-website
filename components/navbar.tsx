@@ -171,6 +171,13 @@ export function Navbar({ forceWhiteDesktop }: NavbarProps) {
                 >
                   Thailand
                 </Link>
+                <Link
+                  href="/trips/vietnam"
+
+                  className="block px-4 py-3 text-gray-700 hover:bg-primary/10 hover:text-primary font-medium text-sm rounded-lg mx-2 transition-colors"
+                >
+                  Vietnam
+                </Link>
 
                 <div className="border-t border-gray-200 my-2" />
                 <Link href="/upcoming-tours" className="block px-4 py-3 text-primary font-bold text-sm rounded-lg mx-2 hover:bg-primary/5 transition-colors">
@@ -219,6 +226,12 @@ export function Navbar({ forceWhiteDesktop }: NavbarProps) {
                   className="block px-4 py-3 text-gray-700 hover:bg-primary/10 hover:text-primary font-medium text-sm rounded-lg mx-2 transition-colors"
                 >
                   Bhutan
+                </Link>
+                <Link
+                  href="/trips/vietnam"
+                  className="block px-4 py-3 text-gray-700 hover:bg-primary/10 hover:text-primary font-medium text-sm rounded-lg mx-2 transition-colors"
+                >
+                  Vietnam
                 </Link>
 
 
@@ -401,6 +414,28 @@ export function Navbar({ forceWhiteDesktop }: NavbarProps) {
                   >
                     Himachal
                   </Link>
+                  <Link
+                    href="/trips/thailand"
+
+                    className="block px-6 py-3 text-sm text-gray-600 hover:text-primary hover:bg-gray-100 transition-colors"
+                    onClick={() => {
+                      setIsMobileOpen(false)
+                      setOpenDropdown(null)
+                    }}
+                  >
+                    Thailand
+                  </Link>
+                  <Link
+                    href="/trips/vietnam"
+
+                    className="block px-6 py-3 text-sm text-gray-600 hover:text-primary hover:bg-gray-100 transition-colors"
+                    onClick={() => {
+                      setIsMobileOpen(false)
+                      setOpenDropdown(null)
+                    }}
+                  >
+                    Vietnam
+                  </Link>
 
                   <div className="border-t border-gray-200 my-1" />
                   <Link
@@ -483,6 +518,16 @@ export function Navbar({ forceWhiteDesktop }: NavbarProps) {
                     }}
                   >
                     Bhutan
+                  </Link>
+                  <Link
+                    href="/trips/vietnam"
+                    className="block px-6 py-3 text-sm text-gray-600 hover:text-primary hover:bg-gray-100 transition-colors"
+                    onClick={() => {
+                      setIsMobileOpen(false)
+                      setOpenDropdown(null)
+                    }}
+                  >
+                    Vietnam
                   </Link>
                   <div className="border-t border-gray-200 my-1" />
                   <Link

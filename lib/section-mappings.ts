@@ -93,6 +93,13 @@ export const sectionMappings: Record<string, Record<string, string[]>> = {
     custom: ['44', '45', '46', '47'],
     related: ['29', '13']
   },
+  'vietnam': {
+    available: ['52', '53', '54', '55', '56', '57', '58', '59', '60', '61', '62', '63', '64', '65', '66', '67', '68'],
+    group: ['52', '53', '54', '55', '56', '57', '58'],
+    family: ['65', '66', '67', '68'],
+    custom: ['59', '60', '61', '62', '63', '64'],
+    related: ['51', '13']
+  },
   // Default fallback
   default: {
     available: ['13', '2'],
@@ -104,9 +111,9 @@ export const sectionMappings: Record<string, Record<string, string[]>> = {
 
 // Page-specific trip card mappings for standalone pages
 export const pageSectionMappings: Record<string, string[]> = {
-  upcomingTours: ['13', '14', '15', '16', '17', '18', '19', '20', '21', '41', '42', '43'],
-  honeymoonPackages: ['2', '5', '6', '9', '10', '11', '12', '14', '18', '33', '34', '37', '44', '45', '46', '47', '51'],
-  featured: ['13', '12', '21']
+  upcomingTours: ['13', '14', '15', '16', '17', '18', '19', '20', '21', '41', '42', '43', '52', '53', '54', '55', '56', '57', '58', '59', '60', '61', '62', '63', '64', '65', '66', '67', '68'],
+  honeymoonPackages: ['2', '5', '6', '9', '10', '11', '12', '14', '18', '33', '34', '37', '44', '45', '46', '47', '51', '52', '53', '54', '55', '56', '57', '58', '59', '60', '61', '62', '63', '64', '65', '66', '67', '68'],
+  featured: ['13', '12', '21', '52', '53', '54', '55', '56', '57', '58', '59', '60', '61', '62', '63', '64', '65', '66', '67', '68']
 }
 
 // Helper function to get section mapping for a category

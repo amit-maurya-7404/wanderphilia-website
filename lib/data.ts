@@ -9866,6 +9866,4595 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
       'Phuket arrival time should be 10:00 Am and Departure Flight time from Phuket should be after 02:00 Pm.',
       'Rates are not valid for Festival Duration like Diwali, Dussehra, Christmas, and New Year'
     ]
+  },
+  {
+    id: '52',
+    title: '9 Days Exclusive Vietnam with Phu Quoc Group Trip',
+    slug: 'vietnam-phu-quoc-group-trip',
+    image: '/images/vietnam.png',
+    destination: 'Vietnam',
+    category: 'Vietnam',
+    description: "Experience the ultimate 9-day journey through the wonders of Vietnam and the tropical paradise of Phu Quoc. Discover the historic charm of Hanoi, cruise through the breathtaking limestone karsts of Ha Long Bay, marvel at the Golden Bridge and Ba Na Hills in Da Nang, step back in time at Hoi An Ancient Town, and unwind on the pristine beaches of Phu Quoc. A perfect blend of culture, history, adventure, and relaxation.",
+    duration: 9,
+    nights: 8,
+    price: 64999,
+    rating: 4.9,
+    difficulty: 'Easy',
+    groupSize: 16,
+    tripType: 'International',
+    showGetQuoteOnly: false,
+    highlights: [
+      'Hanoi',
+      'Ha Long Bay Luxury Cruise',
+      'Danang',
+      'Golden Bridge',
+      'Fantasy Park',
+      'Hoi An',
+      'Bana Hills',
+      'Phu Quoc'
+    ],
+    overviewPoints: [
+      'Route: Hanoi → Ha Long Bay → Da Nang → Hoi An → Ba Na Hills → Phu Quoc',
+      'Duration: 8 Nights / 9 Days.',
+      'Trip Start: Hanoi.',
+      'Trip End: Phu Quoc.',
+      'Major Highlights: Hanoi Train Street, Ha Long Bay Luxury Cruise with Kayaking, Ba Na Hills & Golden Bridge, Coconut Forest, Hoi An Ancient Town with Lantern Boat ride, and Phu Quoc island hopping.'
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Arrival in Hanoi - Half-Day City Tour',
+        description: [
+          'Arrive at Noi Bai International Airport, Hanoi, and complete the immigration formalities.',
+          'You will then board your transfers to your hotel for check-in and some rest.',
+          'In the afternoon, we will begin our city tour with a visit to Tran Quoc Pagoda, the oldest Buddhist temple in Hanoi, located on the peaceful West Lake.',
+          'We will then continue to the famous Train Street, where you can experience the thrill of seeing a railway pass through a narrow residential lane lined with cafes.',
+          'Next, we will visit the Ho Chi Minh Mausoleum, where you can learn about the life of Vietnam’s national leader, followed by a stop at the nearby One Pillar Pagoda, a unique lotus-shaped temple.',
+          'Our last stop for the day will be the Old Quarter Market, where you can shop for souvenirs and taste local street food.',
+          'Spend the rest of your time enjoying the lively atmosphere of Beer Street and the Hanoi Night Market.',
+          'Lastly, return to your hotel after the tour (as per your convenience) and call it a day.',
+          'Overnight stay in Hanoi.'
+        ]
+      },
+      {
+        day: 2,
+        title: 'Ha Long Bay Luxury Cruise - Kayaking & Sunset Party',
+        description: [
+          'Wake up to a pleasant morning in Hanoi at the hotel.',
+          'After breakfast, we will head out for a day trip to Ha Long Bay, a UNESCO World Heritage Site.',
+          'Enjoy a scenic drive of about 3.5 hours through the Vietnamese countryside to reach Tuan Chau Marina.',
+          'Board your luxury day cruise and sail through the emerald waters surrounded by limestone islands.',
+          'Relish a delicious Vietnamese lunch on board while enjoying the stunning views.',
+          'Post lunch, you will go kayaking to explore hidden lagoons, caves, and enjoy spotting monkeys around the rocks.',
+          'In the evening, enjoy a fun-filled Sunset Party on the cruise with music, drinks, and a lively atmosphere.',
+          'After a fun-filled day, we will return to Tuan Chau harbour and transfer back to Hanoi.',
+          'Overnight stay in Hanoi.'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Transfer from Hanoi to Da Nang. Day at Leisure.',
+        description: [
+          'Have your breakfast at the hotel in the morning and get ready for the day.',
+          'Today, you will proceed to the Hanoi airport for your flight to Da Nang.',
+          'Enjoy a scenic 1.5-hour flight journey to Da Nang.',
+          'Upon arrival, we will board our transfers to the hotel, where check-in is typically between 14:00 and 15:00.',
+          'You can then spend the rest of your day at leisure, wherein you can relax on the beaches, see the famous Golden Dragon Bridge, or explore local markets.',
+          'Overnight stay at your hotel in Da Nang.'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Full Day Trip to Marble Mountain, Hoi An Ancient Town and Lantern on Boat Tour.',
+        description: [
+          'After breakfast at the hotel, we will get ready for an exciting day.',
+          'At 9:00 AM, we will board our transfer to the Marble Mountains.',
+          'Upon arrival, we will climb Thuy Son (Water Mountain) using carved stone stairs to enjoy panoramic views.',
+          'Next, we will visit the Huyen Khong Cave, one of Da Nang’s most beautiful cave temples.',
+          'We will then explore the ancient pagodas: Tam Thai and Linh Ung.',
+          'In the main cave, we will admire the Cham Buddha under a natural shaft of light.',
+          'By 12:00 PM, we will visit the Am Phu Caves to see rock formations representing hell and purgatory.',
+          'In the afternoon, we will admire stone sculptures created by artisans at Non-Nuoc Village.',
+          'Later, we will enjoy the Coconut Boat Tour (Basket Boat Tour).',
+          'By evening, we will head to the UNESCO World Heritage town of Hoi An.',
+          'We will walk across the 17th-century Japanese Bridge, reflecting Japanese traders’ presence.',
+          'Next, we will visit the Chinese Assembly Halls and explore ancient houses or enjoy folk music.',
+          'Later, we will stroll through the market by the Thu Bon River and soak in Hoi An’s Oriental vibes.',
+          'You will have time to shop for lanterns or have silk clothes tailored.',
+          'In the evening, we will take a 15-20 minute boat ride past glowing flower lanterns.',
+          'You can also choose to release a flower lantern for the good luck of your family and loved ones.',
+          'After sightseeing, we will return to Da Nang.',
+          'Overnight stay at the hotel in Da Nang.'
+        ]
+      },
+      {
+        day: 5,
+        title: 'Ba Na Hills Day Trip - Golden Bridge, Fantasy Park & French Village',
+        description: [
+          'Wake up in your hotel in Da Nang and enjoy a hearty breakfast.',
+          'After breakfast, we will travel to Ba Na Hills near Da Nang.',
+          'Take a scenic cable car ride up the mountains to reach the summit.',
+          'Visit the famous Ba Na Hills Golden Bridge held by giant stone hands, and enjoy stunning views.',
+          'We will explore the French Village with its European-style architecture and churches.',
+          'Spend time at Fantasy Park, where you can enjoy fun games and activities.',
+          'You can also visit Linh Ung Pagoda and the beautiful gardens at Ba Na Hills.',
+          'Later, come down via cable car and return to your hotel in Da Nang.',
+          'Overnight stay in Da Nang.'
+        ]
+      },
+      {
+        day: 6,
+        title: 'Transfer to Phu Quoc. Leisure Day. Optional Visit to Grand World.',
+        description: [
+          'Wake up in your hotel in Da Nang and enjoy a hearty breakfast.',
+          'After breakfast, you will be transferred to the airport for your 2-hour flight to Phu Quoc Island, also known as the Pearl Island of Vietnam.',
+          'Upon arrival at Phu Quoc Airport, you will board your transfer to your hotel in Phu Quoc.',
+          'Complete the check-in formalities and take some time to relax after your journey.',
+          'Later in the day, you can spend your time at leisure, enjoying the island at your own pace.',
+          'You may explore Grand World Phu Quoc on your own.',
+          'Here you can walk along the Venice-style canals, enjoy a gondola ride, admire the Bamboo Legend structure, shop at local stalls, and watch cultural performances in the evening.',
+          'If you prefer a calmer experience, spend time on Long Beach, swim in the clear waters.',
+          'You can also visit the lively Duong Dong Night Market to try fresh seafood and shop for souvenirs.',
+          'You can also opt for a relaxing spa treatment at your resort.',
+          'After enjoying your day, return to your hotel.',
+          'Overnight stay in Phu Quoc.'
+        ]
+      },
+      {
+        day: 7,
+        title: '4 Islands Tour with Cable Car and Aquatopia Water Park.',
+        description: [
+          'Wake up in Phu Quoc and enjoy your breakfast.',
+          'Today, we will explore four beautiful islands around the south of Phu Quoc.',
+          'Start with a speedboat ride to Gam Ghi and Xuong islands for snorkelling among coral reefs and colourful fish.',
+          'Next, visit May Rut Island, where you will enjoy a local lunch and optional activities like sea walking.',
+          'Continue to Thom Island, home to the Aquatopia Water Park, where you can enjoy over 20 exciting rides.',
+          'Return to the harbour on a scenic cable car ride, offering stunning aerial views of the islands.',
+          'Later, transfer back to your hotel and relax after a fun-filled day.',
+          'Overnight stay in Phu Quoc.'
+        ]
+      },
+      {
+        day: 8,
+        title: 'Day at Leisure. Optional Tour to Vin Wonders and Vinpearl Safari Park.',
+        description: [
+          'Wake up in Phu Quoc and have breakfast at your hotel.',
+          'Today, you can spend the rest of the day at leisure.',
+          'If you are into adventure, you can choose to spend your day at Vin Wonders Amusement Park, Vinpearl Safari Park or both.',
+          'You can choose the option that best suits you.',
+          'Spend time enjoying the thrilling activities and rides at the Vin Wonders amusement park.',
+          'You can also visit Vinpearl Safari Park, Vietnam’s largest wildlife conservation park.',
+          'Here, you can enjoy a thrilling safari experience where you stay in a bus while animals roam freely around you.',
+          'You will get to see exotic animals such as giraffes, tigers, rhinos, and more.',
+          'Watch entertaining animal shows and explore the open zoo area at your own pace.',
+          'After completing your sightseeing tour for the day, return to your hotel.',
+          'Overnight stay in Phu Quoc.'
+        ]
+      },
+      {
+        day: 9,
+        title: 'Departure from Phu Quoc. Depart with a lot of happy memories.',
+        description: [
+          'Wake up and enjoy breakfast at your hotel in Phu Quoc.',
+          'After checking out, we will drive you to phu Quoc International Airport for your flight back home.',
+          'Your fun-filled Vietnam group trip comes to an end as you board your flight back home with beautiful memories.'
+        ]
+      }
+    ],
+    included: [
+      '08 Nights Accommodation based on double/twin sharing room with daily buffet breakfast.',
+      'A total of 9 meals included Breakfast from Day 2 to Day 9 and Lunch on Day 2.',
+      'Half-day Hanoi City tour',
+      'Halong Bay day tour with Sunset party and Kayaking',
+      'Marble Mountains Tour',
+      'Coconut Village Tour with Basket Boat ride',
+      'Hoi An Ancient Town Tour',
+      'Lantern boat ride on Hoai River',
+      'Full Day Bana Hill Tour with Cable Car and tickets to Golden Bridge, French Village, Fantasy Park (with rides)',
+      '4 Island Hopping Tour (cable car ticket and speedboat included) + Aquatopia waterpark',
+      'Sightseeing as mentioned in the program',
+      'Transportation by vehicle with A/C as per the program',
+      'Local English-speaking guides in Vietnam',
+      'Bottles of mineral water on the tour day',
+      'Fixed Airport Pickup & Drop.'
+    ],
+    notIncluded: [
+      'Single Supplement. Early check-in and late check-out. Hotel/Room upgrade.',
+      'Visa Service to Vietnam.',
+      'Tours which are not included in the package.',
+      'Meals not mentioned in the program.',
+      'Any International Flight and airport tax.',
+      'Drinks, personal expenses and any services not clearly mentioned in the program.',
+      'Travel Insurance.',
+      'GST & TCS as applicable extra.',
+      'Wax Museum, cotton animal game, and carnival skill tickets at Fantasy Park are not included.',
+      'Tips for Guide and Driver extra @ $3/- per adult per day'
+    ],
+    stays: [
+      'Hanoi: Hotel / Similar',
+      'Da Nang: Hotel / Similar',
+      'Phu Quoc: Hotel / Similar'
+    ],
+    batchDates: [
+      {
+        month: 'July',
+        ranges: ['12th July - 20th July', '26th July - 3rd Aug']
+      },
+      {
+        month: 'August',
+        ranges: ['15th Aug - 23rd Aug', '23rd - 31st Aug']
+      },
+      {
+        month: 'September',
+        ranges: ['13th Sept - 21st Sept', '27th Sept - 5th Oct']
+      },
+      {
+        month: 'October',
+        ranges: ['4th Oct - 12th Oct', '18th Oct - 26th Oct']
+      },
+      {
+        month: 'November',
+        ranges: ['7th Nov - 15th Nov', '15th Nov - 23rd Nov', '22nd Nov - 30th Nov']
+      },
+      {
+        month: 'December',
+        ranges: ['5th Dec - 13th Dec', '13th - 21st Dec']
+      }
+    ],
+    dates: [],
+    costingDetails: [
+      { label: 'Double Sharing Rate', value: '₹64,999' }
+    ],
+    thingsToCarry: [
+      'Passport with minimum 6 months validity from the date of departure from India',
+      'Sunscreen & lip balm, Good U/V protection sunglasses',
+      'Personal Medicines (if any)'
+    ],
+    travelEssentials: [
+      {
+        title: 'Gears',
+        items: [
+          'A medium size trolley with one cabin bag',
+          'Reusable water bladder or water bottle'
+        ]
+      },
+      {
+        title: 'Clothes',
+        items: [
+          'a sun cap',
+          'UV protected sunglasses',
+          'Cotton Shirts and T-shirts',
+          'Jeans, Shorts and cotton pants',
+          'Sets of undergarments',
+          'Pair of socks',
+          'A small towel or Beach Towel',
+          'A rain jacket or a poncho'
+        ]
+      },
+      {
+        title: 'Footwear',
+        items: [
+          'Sport Shoes or Sneakers',
+          'Flip flops/sandals'
+        ]
+      },
+      {
+        title: 'Medication',
+        items: [
+          'Glucose powder',
+          'Medicines for headaches, diarrhoea, motion sickness',
+          'Dettol',
+          'Bandages',
+          'Cotton'
+        ]
+      },
+      {
+        title: 'Personal Accessories',
+        items: [
+          'toothpaste, toothbrush',
+          'Paper soap, or sanitizer',
+          'Sunscreen minimum of spf40 , lip balm, cold creams',
+          'Body spray',
+          'LED torch light'
+        ]
+      }
+    ],
+    note: [
+      'Normal Check-in and Check-out time is 03:00 PM and 12:00 noon respectively in Vietnam. Early check-in with breakfast is available at an extra cost of 30 USD/ per person.',
+      'Airport transfer is at fixed time (depending on the majority of arrival and departure time of the group) - Any early or late transfer will be charged extra.',
+      'The age limit of our group departures is 18 to 42 years due to the power packed itineraries that we provide to our travellers. We can customize trips for travellers beyond the mentioned age bracket.',
+      'Every traveler is required to be holding a valid passport with an expiry date at least 6 months post the date of entering Vietnam.',
+      'Tour rates are calculated based on current fuel rates and may be revised if there is a sudden increase in fuel prices or an increase of 15% or above.',
+      'If the guest count for a batch is fewer than 9 guests, only a local guide will be available during the tour, and an Indian Trip Captain will not be accompanying the group.'
+    ]
+  },
+  {
+    id: '53',
+    title: '9 Days Best Of Vietnam with Sapa Group Trip',
+    slug: 'best-of-vietnam-with-sapa-group-trip',
+    image: '/images/vietnam-sapa.png',
+    destination: 'Vietnam',
+    category: 'Vietnam',
+    description: "Embark on the ultimate 9-day journey through the natural, cultural, and historical highlights of Vietnam. Hike through the stunning rice terraces of Sapa and learn about mountain cultures in Cat Cat Village. Climb Fansipan peak on the legendary cable car and enjoy views from the Glass Bridge. Explore Hanoi's historic landmarks, and cruise past limestone karsts on a luxury Ha Long Bay cruise. Travel south to Da Nang, step on the famous Golden Bridge at Ba Na Hills, take traditional basket boat rides, stroll Hoi An Ancient Town's lantern-lit streets, and explore Ho Chi Minh City's landmarks and the historic Cu Chi Tunnels. A comprehensive journey through Vietnam's best landmarks.",
+    duration: 9,
+    nights: 8,
+    price: 69999,
+    rating: 4.9,
+    difficulty: 'Easy',
+    groupSize: 16,
+    tripType: 'International',
+    showGetQuoteOnly: false,
+    highlights: [
+      'Hanoi',
+      'Sapa',
+      'Ha Long Bay Luxury Cruise',
+      'Danang',
+      'Golden Bridge',
+      'Fantasy Park',
+      'Ho Chi Minh City',
+      'Bana Hills',
+      'Cu Chi Tunnel'
+    ],
+    overviewPoints: [
+      'Route: Hanoi → Sapa → Hanoi → Ha Long Bay → Da Nang → Hoi An → Ba Na Hills → Ho Chi Minh City',
+      'Duration: 8 Nights / 9 Days.',
+      'Trip Start: Hanoi.',
+      'Trip End: Ho Chi Minh City.',
+      'Major Highlights: Fansipan Peak & Glass Bridge in Sapa, Hanoi City Tour, Ha Long Bay Day Cruise, Ba Na Hills & Golden Bridge, Coconut Forest, Hoi An Ancient Town & Lantern Boat Ride, Saigon City Sightseeing, and Cu Chi Tunnels.'
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Arrival In Hanoi & Transfer To Sapa | Evening At Leisure',
+        description: [
+          'Arrive at Noi Bai International Airport, where our representative will assist you with your onward transfer.',
+          'Board your scheduled sleeper bus or limousine bus from Hanoi to Sapa through the scenic northern highlands to begin your Vietnam group trip.',
+          'Enjoy views of rolling mountains, terraced landscapes, and rural countryside along the route.',
+          'Upon arrival in Sapa, transfer to your hotel and complete the check-in formalities.',
+          'The rest of the day is at leisure to relax after your journey and settle into the mountain town.',
+          'You can explore Sapa Town at your own pace, browse local cafés, or stroll around the central square.',
+          'Overnight stay in Sapa.'
+        ]
+      },
+      {
+        day: 2,
+        title: 'Sapa Sightseeing Tour | Fansipan Peak, Glass Bridge & Cat Cat Village',
+        description: [
+          'After breakfast, we’ll begin the Vietnam group tour with Sapa’s most popular attractions.',
+          'Board the cable car to Fansipan, the highest peak in Indochina, with spectacular views across the Hoang Lien Son mountain range.',
+          'Spend time exploring the summit complex, viewing platforms, and spiritual landmarks near the peak.',
+          'Later, visit the Glass Bridge, where transparent walkways offer dramatic views of the surrounding valleys and mountains.',
+          'Continue to Cat Cat Village, a traditional Hmong village nestled among terraced hillsides.',
+          'Walk through village pathways lined with local homes, handicraft stalls, and mountain viewpoints.',
+          'Learn about the culture and daily life of the local ethnic communities while exploring the village.',
+          'Return to the hotel by evening and relax.',
+          'Overnight stay in Sapa.'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Sapa To Hanoi | Hanoi Half-Day City Tour',
+        description: [
+          'Enjoy a tasty breakfast and then proceed to check out from the hotel.',
+          'Board your sleeper bus or limousine bus for the journey back to Hanoi.',
+          'Arrive in Hanoi, check in at your hotel for some rest and begin the Hanoi city group tour.',
+          'Start with the Ho Chi Minh Complex, home to the Ho Chi Minh Mausoleum, Presidential Palace area, and landscaped gardens.',
+          'Continue to One Pillar Pagoda, a small temple built on a single stone pillar above a lotus pond.',
+          'Later, visit the Temple of Literature, known for its traditional courtyards, stone stelae, and historic pavilions.',
+          'Head to Hoan Kiem Lake and cross the iconic red bridge leading to Ngoc Son Temple.',
+          'Wrap up the Hanoi cultural tour with a walk through Hanoi Old Quarter, famous for its narrow lanes, local shops, cafés, and colonial-era buildings.',
+          'Post sightseeing, return to the hotel and relax.',
+          'Overnight stay in Hanoi.'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Ha Long Bay | Luxury Day Cruise, Kayaking & Buffet Lunch.',
+        description: [
+          'After an early breakfast, board your shared transfer to Ha Long Bay for a full-day cruise experience.',
+          'Arrive at the pier and board your Ha Long Bay luxury cruise as you sail through emerald waters dotted with limestone karsts and rocky islets.',
+          'Cruise past some of the bay’s most scenic formations, with towering cliffs rising directly from the water.',
+          'Later, enjoy a kayaking session with your group through calm lagoons and narrow waterways surrounded by limestone walls.',
+          'A buffet lunch will be served onboard as the cruise continues through the heart of the bay.',
+          'Spend the afternoon soaking in panoramic views from the deck and capturing the region’s dramatic landscapes.',
+          'By evening, disembark and take your shared transfer to the hotel.',
+          'Overnight stay in Hanoi.'
+        ]
+      },
+      {
+        day: 5,
+        title: 'Hanoi To Da Nang | Evening At Leisure.',
+        description: [
+          'Enjoy a hearty breakfast and then check out of your hotel.',
+          'Board your transfer to Noi Bai International Airport and take your flight to Da Nang.',
+          'Upon arrival at Da Nang International Airport, our representative will transfer to your hotel for check-in.',
+          'The rest of the day is free to explore the city at your own pace.',
+          'You can visit Dragon Bridge and admire its illuminated dragon-shaped structure overlooking the Han River.',
+          'Take a walk along the Han River Promenade, lined with cafés, bridges, and waterfront views.',
+          'Alternatively, spend some time at My Khe Beach, known for its long stretch of sand and relaxed coastal atmosphere.',
+          'Overnight stay in Da Nang.'
+        ]
+      },
+      {
+        day: 6,
+        title: 'Da Nang | Marble Mountain, Coconut Forest, Hoi An Ancient Town & Lantern Boat Ride',
+        description: [
+          'Start your day with a tasty breakfast and get ready for Da Nang exploration.',
+          'Today, our group trip itinerary will start with a visit to Marble Mountains, a cluster of limestone hills known for caves, pagodas, and panoramic viewpoints.',
+          'Explore stone pathways, hidden cave chambers, and Buddhist shrines tucked into the mountainside.',
+          'Later, continue to Cam Thanh Coconut Village, famous for its coconut forests and winding canals.',
+          'Board a traditional basket boat and glide through coconut-lined waterways while watching local rowing demonstrations.',
+          'In the afternoon, head to Hoi An Ancient Town, one of Vietnam’s best-preserved trading ports.',
+          'Walk past centuries-old merchant houses, colourful assembly halls, lantern-lined streets, and riverside cafés.',
+          'As evening sets in, board a lantern boat on the Hoai River and watch the old town glow under hundreds of colourful lanterns.',
+          'After the tour, return to Da Nang for an overnight stay.',
+          'Overnight Stay in Da Nang.'
+        ]
+      },
+      {
+        day: 7,
+        title: 'Ba Na Hills Day Trip | Cable Car, Golden Bridge, Fantasy Park & French Village.',
+        description: [
+          'After breakfast, we’ll set out for a full-day excursion to Ba Na Hills, one of the major highlights of our Vietnam group trip.',
+          'Board the cable car and enjoy sweeping views of forests, waterfalls, and mountain slopes during the ascent.',
+          'Visit the iconic Golden Bridge, famous for its giant stone hands appearing to lift the bridge above the hills - a perfect spot for a group picture.',
+          'Spend time capturing panoramic views of the surrounding mountains and valleys from the bridge.',
+          'Continue to French Village, featuring European-style architecture, cobbled streets, churches, and lively plazas.',
+          'Later, explore Fantasy Park with its indoor rides, arcade games, and entertainment attractions.',
+          'Enjoy free time to explore the hilltop complex before descending by cable car.',
+          'Return to Da Nang by evening for an overnight stay.',
+          'Overnight Stay in Da Nang.'
+        ]
+      },
+      {
+        day: 8,
+        title: 'Da Nang To Ho Chi Minh City | Evening At Leisure.',
+        description: [
+          'After breakfast, check out from the hotel and proceed to Da Nang International Airport for your flight to Ho Chi Minh City.',
+          'Upon arrival, meet our representative and transfer to the hotel for check-in.',
+          'The rest of the day is free to explore the city at your own pace.',
+          'You can take a stroll along Nguyen Hue Walking Street, a lively boulevard surrounded by cafés, shops, and colonial-era landmarks.',
+          'Visit the exterior of Saigon Central Post Office and Notre-Dame Cathedral Basilica of Saigon, two of the city\'s most iconic landmarks.',
+          'For a relaxed evening, head to a rooftop café or bar and enjoy views of the illuminated city skyline.',
+          'Overnight stay in Ho Chi Minh City.'
+        ]
+      },
+      {
+        day: 9,
+        title: 'Explore Cu Chi Tunnels | Depart With A Lot Of Happy Memories',
+        description: [
+          'After breakfast, check out of the hotel and set out for a visit to the famous Cu Chi Tunnels.',
+          'Explore sections of this vast underground network used during the Vietnam War, including living areas, storage spaces, and hidden passageways.',
+          'Learn about the strategies and daily life of those who lived and operated within the tunnels.',
+          'Later, return to the city and proceed to the airport for your onward journey.',
+          'As your Vietnam community trip comes to an end, take back memories of mountain peaks, bay cruises, and unforgettable experiences.'
+        ]
+      }
+    ],
+    included: [
+      '08 Nights Accommodation based on double/twin sharing room as per the itinerary',
+      'A total of 9 meals included Breakfast from Day 2 to Day 9 and Lunch on Day 4',
+      'Hanoi to Sapa & Sapa to Hanoi VIA Sleeper or Limo Bus',
+      'Sun World Fansipan Legend With Cable car ticket',
+      'Glass Bridge Ticket',
+      'Cat Cat Village Tour',
+      'Half-day Hanoi City tour',
+      'Halong Bay day tour with onboard Cruise Lunch and Kayaking',
+      'Full Day Bana - Hill Tour with Cable Car and tickets to Golden Bridge, French Village, Fantasy Park (with rides)',
+      'Hoi An Ancient Town Tour',
+      'Basket Boat Ride in Coconut Forest and Lantern boat ride on Hoai River',
+      'Cu Chi Tunnels Tour',
+      'All entrance fees and sightseeing as mentioned in the program',
+      'Transportation by vehicle with A/C as per program',
+      'Local English-speaking guides in Vietnam',
+      'Bottles of mineral water on tour day.'
+    ],
+    notIncluded: [
+      'Single Supplement. Early check-in and late check-out. Hotel/Room upgrade.',
+      'Visa Service to Vietnam.',
+      'Tours which are not included in the package.',
+      'Meals not mentioned in the program.',
+      'Any International Flight and airport tax.',
+      'Drinks, personal expenses and any services not clearly mentioned in the program.',
+      'Travel Insurance.',
+      'GST & TCS as applicable extra.',
+      'Wax Museum, cotton animal game, and carnival skill tickets at Fantasy Park are not included.',
+      'Tips for Guide and Driver extra @ $3/- per adult per day'
+    ],
+    stays: [
+      'Sapa: Deluxe Room / Similar',
+      'Hanoi: Deluxe Room / Similar',
+      'Da Nang: Deluxe Room / Similar'
+    ],
+    batchDates: [
+      {
+        month: 'July',
+        ranges: ['10th July - 18th July', '24th July - 1st Aug']
+      },
+      {
+        month: 'August',
+        ranges: ['13th Aug - 21st Aug', '21st Aug - 29th Aug']
+      },
+      {
+        month: 'September',
+        ranges: ['11th Sept - 19th Sept', '25th Sept - 3rd Oct']
+      },
+      {
+        month: 'October',
+        ranges: ['2nd Oct - 10th Oct', '16th Oct - 24th Oct']
+      },
+      {
+        month: 'November',
+        ranges: ['5th Nov - 13th Nov', '13th Nov - 21st Nov', '20th Nov - 27th Nov']
+      },
+      {
+        month: 'December',
+        ranges: ['3rd Dec - 11th Dec', '11th - 19th Dec']
+      }
+    ],
+    dates: [],
+    costingDetails: [
+      { label: 'Double Sharing Rate', value: '₹69,999' }
+    ],
+    thingsToCarry: [
+      'Passport with minimum 6 months validity from the date of departure from India',
+      'Sunscreen & lip balm, Good U/V protection sunglasses',
+      'Personal Medicines (if any)'
+    ],
+    travelEssentials: [
+      {
+        title: 'Gears',
+        items: [
+          'A medium size trolley with one cabin bag',
+          'Reusable water bladder or water bottle'
+        ]
+      },
+      {
+        title: 'Clothes',
+        items: [
+          'a sun cap',
+          'UV protected sunglasses',
+          'Cotton Shirts and T-shirts',
+          'Jeans, Shorts and cotton pants',
+          'Sets of undergarments',
+          'Pair of socks',
+          'A small towel or Beach Towel',
+          'A rain jacket or a poncho'
+        ]
+      },
+      {
+        title: 'Footwear',
+        items: [
+          'Sport Shoes or Sneakers',
+          'Flip flops/sandals'
+        ]
+      },
+      {
+        title: 'Medication',
+        items: [
+          'Glucose powder',
+          'Medicines for headaches, diarrhoea, motion sickness',
+          'Dettol',
+          'Bandages',
+          'Cotton'
+        ]
+      },
+      {
+        title: 'Personal Accessories',
+        items: [
+          'toothpaste, toothbrush',
+          'Paper soap, or sanitizer',
+          'Sunscreen minimum of spf40 , lip balm, cold creams',
+          'Body spray',
+          'LED torch light'
+        ]
+      }
+    ],
+    note: [
+      'Normal Check-in and Check-out time is 03:00 PM and 12:00 noon respectively in Vietnam. Early check-in with breakfast is available at an extra cost of 30 USD/ per person.',
+      'Airport transfer is at fixed time (depending on the majority of arrival and departure time of the group) - Any early or late transfer will be charged extra.',
+      'The age limit of our group departures is 18 to 42 years due to the power packed itineraries that we provide to our travellers. We can customize trips for travellers beyond the mentioned age bracket.',
+      'Every traveler is required to be holding a valid passport with an expiry date at least 6 months post the date of entering Vietnam.',
+      'Tour rates are calculated based on current fuel rates and may be revised if there is a sudden increase in fuel prices or an increase of 15% or above.',
+      'If the guest count for a batch is fewer than 9 guests, only a local guide will be available during the tour, and an Indian Trip Captain will not be accompanying the group.'
+    ]
+  },
+  {
+    id: '54',
+    title: '8 Days Highlights of Vietnam with Sapa Group Trip',
+    slug: 'highlights-of-vietnam-with-sapa-group-trip',
+    image: '/images/vietnam-highlights.png',
+    destination: 'Vietnam',
+    category: 'Vietnam',
+    description: "Embark on an incredible 8-day group trip highlighting the very best of Vietnam. Hike the scenic, mist-shrouded hills of Sapa and experience traditional Hmong culture in Cat Cat Village. Climb Fansipan peak on the legendary cable car, explore the historic Old Quarter and Ho Chi Minh Complex in Hanoi, and cruise the breathtaking karsts of Ha Long Bay on a luxury day cruise. Travel south to Da Nang, stroll down lantern-lit canals in the UNESCO World Heritage town of Hoi An, and step onto the famous Golden Bridge at Ba Na Hills. A perfect adventure covering Vietnam's top landmarks.",
+    duration: 8,
+    nights: 7,
+    price: 59999,
+    rating: 4.9,
+    difficulty: 'Easy',
+    groupSize: 16,
+    tripType: 'International',
+    showGetQuoteOnly: false,
+    highlights: [
+      'Hanoi',
+      'Sapa',
+      'Ha Long Bay Luxury Cruise',
+      'Danang',
+      'Golden Bridge',
+      'Fantasy Park',
+      'Hoi An Ancient Town',
+      'Bana Hills'
+    ],
+    overviewPoints: [
+      'Route: Hanoi → Sapa → Hanoi → Ha Long Bay → Da Nang → Hoi An → Ba Na Hills',
+      'Duration: 7 Nights / 8 Days.',
+      'Trip Start: Hanoi.',
+      'Trip End: Da Nang.',
+      'Major Highlights: Fansipan Peak & Glass Bridge in Sapa, Hanoi City Tour, Ha Long Bay Luxury Day Cruise, Marble Mountains, Coconut Village Basket Boat, Hoi An Ancient Town & Lantern Boat Ride, Golden Bridge & Ba Na Hills.'
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Arrival In Hanoi & Transfer To Sapa | Evening At Leisure',
+        description: [
+          'Arrive at Noi Bai International Airport, where our representative will assist you with your onward transfer.',
+          'Board your scheduled sleeper bus or limousine bus from Hanoi to Sapa through the scenic northern highlands to begin your Vietnam group trip.',
+          'Enjoy views of rolling mountains, terraced landscapes, and rural countryside along the route.',
+          'Upon arrival in Sapa, transfer to your hotel and complete the check-in formalities.',
+          'The rest of the day is at leisure to relax after your journey and settle into the mountain town.',
+          'You can explore Sapa Town at your own pace, browse local cafés, or stroll around the central square.',
+          'Overnight stay in Sapa.'
+        ]
+      },
+      {
+        day: 2,
+        title: 'Sapa Sightseeing Tour | Fansipan Peak, Glass Bridge & Cat Cat Village',
+        description: [
+          'After breakfast, we’ll begin the Vietnam group tour with Sapa’s most popular attractions.',
+          'Board the cable car to Fansipan, the highest peak in Indochina, with spectacular views across the Hoang Lien Son mountain range.',
+          'Spend time exploring the summit complex, viewing platforms, and spiritual landmarks near the peak.',
+          'Later, visit the Glass Bridge, where transparent walkways offer dramatic views of the surrounding valleys and mountains.',
+          'Continue to Cat Cat Village, a traditional Hmong village nestled among terraced hillsides.',
+          'Walk through village pathways lined with local homes, handicraft stalls, and mountain viewpoints.',
+          'Learn about the culture and daily life of the local ethnic communities while exploring the village.',
+          'Return to the hotel by evening and relax.',
+          'Overnight stay in Sapa.'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Sapa To Hanoi | Hanoi Half-Day City Tour',
+        description: [
+          'Enjoy a tasty breakfast and then proceed to check out from the hotel.',
+          'Board your sleeper bus or limousine bus for the journey back to Hanoi.',
+          'Arrive in Hanoi, check in at your hotel for some rest and begin the Hanoi city group tour.',
+          'Start with the Ho Chi Minh Complex, home to the Ho Chi Minh Mausoleum, Presidential Palace area, and landscaped gardens.',
+          'Continue to One Pillar Pagoda, a small temple built on a single stone pillar above a lotus pond.',
+          'Later, visit the Temple of Literature, known for its traditional courtyards, stone stelae, and historic pavilions.',
+          'Head to Hoan Kiem Lake and cross the iconic red bridge leading to Ngoc Son Temple.',
+          'Wrap up the Hanoi cultural tour with a walk through Hanoi Old Quarter, famous for its narrow lanes, local shops, cafés, and colonial-era buildings.',
+          'Post sightseeing, return to the hotel and relax.',
+          'Overnight stay in Hanoi.'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Ha Long Bay | Luxury Day Cruise, Kayaking & Buffet Lunch.',
+        description: [
+          'After an early breakfast, board your shared transfer to Ha Long Bay for a full-day cruise experience.',
+          'Arrive at the pier and board your Ha Long Bay luxury cruise as you sail through emerald waters dotted with limestone karsts and rocky islets.',
+          'Cruise past some of the bay’s most scenic formations, with towering cliffs rising directly from the water.',
+          'Later, enjoy a kayaking session with your group through calm lagoons and narrow waterways surrounded by limestone walls.',
+          'A buffet lunch will be served onboard as the cruise continues through the heart of the bay.',
+          'Spend the afternoon soaking in panoramic views from the deck and capturing the region’s dramatic landscapes.',
+          'By evening, disembark and take your shared transfer to the hotel.',
+          'Overnight stay in Hanoi.'
+        ]
+      },
+      {
+        day: 5,
+        title: 'Hanoi To Da Nang | Evening At Leisure.',
+        description: [
+          'Enjoy a hearty breakfast and then check out of your hotel.',
+          'Board your transfer to Noi Bai International Airport and take your flight to Da Nang.',
+          'Upon arrival at Da Nang International Airport, our representative will transfer to your hotel for check-in.',
+          'The rest of the day is free to explore the city at your own pace.',
+          'You can visit Dragon Bridge and admire its illuminated dragon-shaped structure overlooking the Han River.',
+          'Take a walk along the Han River Promenade, lined with cafés, bridges, and waterfront views.',
+          'Alternatively, spend some time at My Khe Beach, known for its long stretch of sand and relaxed coastal atmosphere.',
+          'Overnight stay in Da Nang.'
+        ]
+      },
+      {
+        day: 6,
+        title: 'Da Nang | Marble Mountain, Coconut Forest, Hoi An Ancient Town & Lantern Boat Ride',
+        description: [
+          'Start your day with a tasty breakfast and get ready for Da Nang exploration.',
+          'Today, our group trip itinerary will start with a visit to Marble Mountains, a cluster of limestone hills known for caves, pagodas, and panoramic viewpoints.',
+          'Explore stone pathways, hidden cave chambers, and Buddhist shrines tucked into the mountainside.',
+          'Later, continue to Cam Thanh Coconut Village, famous for its coconut forests and winding canals.',
+          'Board a traditional basket boat and glide through coconut-lined waterways while watching local rowing demonstrations.',
+          'In the afternoon, head to Hoi An Ancient Town, one of Vietnam’s best-preserved trading ports.',
+          'Walk past centuries-old merchant houses, colourful assembly halls, lantern-lined streets, and riverside cafés.',
+          'As evening sets in, board a lantern boat on the Hoai River and watch the old town glow under hundreds of colourful lanterns.',
+          'After the tour, return to Da Nang for an overnight stay.',
+          'Overnight Stay in Da Nang.'
+        ]
+      },
+      {
+        day: 7,
+        title: 'Ba Na Hills Day Trip | Cable Car, Golden Bridge, Fantasy Park & French Village.',
+        description: [
+          'After breakfast, we’ll set out for a full-day excursion to Ba Na Hills, one of the major highlights of our Vietnam group trip.',
+          'Board the cable car and enjoy sweeping views of forests, waterfalls, and mountain slopes during the ascent.',
+          'Visit the iconic Golden Bridge, famous for its giant stone hands appearing to lift the bridge above the hills - a perfect spot for a group picture.',
+          'Spend time capturing panoramic views of the surrounding mountains and valleys from the bridge.',
+          'Continue to French Village, featuring European-style architecture, cobbled streets, churches, and lively plazas.',
+          'Later, explore Fantasy Park with its indoor rides, arcade games, and entertainment attractions.',
+          'Enjoy free time to explore the hilltop complex before descending by cable car.',
+          'Return to Da Nang by evening for an overnight stay.',
+          'Overnight Stay in Da Nang.'
+        ]
+      },
+      {
+        day: 8,
+        title: 'Depart With A Lot Of Happy Memories',
+        description: [
+          'After breakfast, complete the check-out formalities at the hotel.',
+          'Board your transfer to Da Nang International Airport for your onward journey.',
+          'As your Vietnam group tour comes to an end, take back memories of mountain landscapes, limestone wonders, lantern-lit streets and the scenic hills.'
+        ]
+      }
+    ],
+    included: [
+      '07 Nights Accommodation based on double/twin sharing room as per the itinerary',
+      'A total of 8 meals included Breakfast from Day 2 to Day 8 and Lunch on Day 2',
+      'Hanoi to Sapa & Sapa to Hanoi VIA Sleeper or Limo Bus',
+      'Sun World Fansipan Legend With Cable car ticket',
+      'Glass Bridge Ticket',
+      'Cat Cat Village Tour',
+      'Half-day Hanoi City tour',
+      'Halong Bay day tour with Sunset party and Kayaking',
+      'Marble Mountains Tour',
+      'Coconut Village Tour with Basket Boat ride',
+      'Hoi An Ancient Town Tour',
+      'Lantern boat ride on Hoai River',
+      'Full Day Bana Hill Tour with Cable Car and tickets to Golden Bridge, French Village, Fantasy Park (with rides)',
+      'Sightseeing as mentioned in the program',
+      'Transportation by vehicle with A/C as per the program',
+      'Local English-speaking guides in Vietnam',
+      'Bottles of mineral water on the tour day',
+      'Fixed Airport Pick-up & Drop-off'
+    ],
+    notIncluded: [
+      'Single Supplement. Early check-in and late check-out. Hotel/Room upgrade.',
+      'Visa Service to Vietnam.',
+      'Tours which are not included in the package.',
+      'Meals not mentioned in the program.',
+      'Any International Flight and airport tax.',
+      'Drinks, personal expenses and any services not clearly mentioned in the program.',
+      'Travel Insurance.',
+      'GST & TCS as applicable extra.',
+      'Wax Museum, cotton animal game, and carnival skill tickets at Fantasy Park are not included.',
+      'Tips for Guide and Driver extra @ $3/- per adult per day'
+    ],
+    stays: [
+      'Sapa: Deluxe Room / Similar',
+      'Hanoi: Deluxe Room / Similar',
+      'Da Nang: Deluxe Room / Similar'
+    ],
+    batchDates: [
+      {
+        month: 'July',
+        ranges: ['10th July - 17th July', '24th July - 31st July']
+      },
+      {
+        month: 'August',
+        ranges: ['13th Aug - 20th Aug', '21st Aug - 28th Aug']
+      },
+      {
+        month: 'September',
+        ranges: ['11th Sept - 18th Sept', '25th Sept - 2nd Oct']
+      },
+      {
+        month: 'October',
+        ranges: ['2nd Oct - 11th Oct', '16th Oct - 23rd Oct']
+      },
+      {
+        month: 'November',
+        ranges: ['5th Nov - 12th Nov', '13th Nov - 20th Nov', '20th Nov - 27th Nov']
+      },
+      {
+        month: 'December',
+        ranges: ['3rd Dec - 10th Dec', '11th - 18th Dec']
+      }
+    ],
+    dates: [],
+    costingDetails: [
+      { label: 'Double Sharing Rate', value: '₹59,999' }
+    ],
+    thingsToCarry: [
+      'Passport with minimum 6 months validity from the date of departure from India',
+      'Sunscreen & lip balm, Good U/V protection sunglasses',
+      'Personal Medicines (if any)'
+    ],
+    travelEssentials: [
+      {
+        title: 'Gears',
+        items: [
+          'A medium size trolley with one cabin bag',
+          'Reusable water bladder or water bottle'
+        ]
+      },
+      {
+        title: 'Clothes',
+        items: [
+          'a sun cap',
+          'UV protected sunglasses',
+          'Cotton Shirts and T-shirts',
+          'Jeans, Shorts and cotton pants',
+          'Sets of undergarments',
+          'Pair of socks',
+          'A small towel or Beach Towel',
+          'A rain jacket or a poncho'
+        ]
+      },
+      {
+        title: 'Footwear',
+        items: [
+          'Sport Shoes or Sneakers',
+          'Flip flops/sandals'
+        ]
+      },
+      {
+        title: 'Medication',
+        items: [
+          'Glucose powder',
+          'Medicines for headaches, diarrhoea, motion sickness',
+          'Dettol',
+          'Bandages',
+          'Cotton'
+        ]
+      },
+      {
+        title: 'Personal Accessories',
+        items: [
+          'toothpaste, toothbrush',
+          'Paper soap, or sanitizer',
+          'Sunscreen minimum of spf40 , lip balm, cold creams',
+          'Body spray',
+          'LED torch light'
+        ]
+      }
+    ],
+    note: [
+      'Normal Check-in and Check-out time is 03:00 PM and 12:00 noon respectively in Vietnam. Early check-in with breakfast is available at an extra cost of 30 USD/ per person.',
+      'Airport transfer is at fixed time (depending on the majority of arrival and departure time of the group) - Any early or late transfer will be charged extra.',
+      'The age limit of our group departures is 18 to 42 years due to the power packed itineraries that we provide to our travellers. We can customize trips for travellers beyond the mentioned age bracket.',
+      'Every traveler is required to be holding a valid passport with an expiry date at least 6 months post the date of entering Vietnam.',
+      'Tour rates are calculated based on current fuel rates and may be revised if there is a sudden increase in fuel prices or an increase of 15% or above.',
+      'If the guest count for a batch is fewer than 9 guests, only a local guide will be available during the tour, and an Indian Trip Captain will not be accompanying the group.'
+    ]
+  },
+  {
+    id: '55',
+    title: '11 Days Wonders Of Vietnam with Sapa & Phu Quoc Group Trip',
+    slug: 'wonders-of-vietnam-with-sapa-and-phu-quoc-group-trip',
+    image: '/images/vietnam-wonders.png',
+    destination: 'Vietnam',
+    category: 'Vietnam',
+    description: "Experience the ultimate 11-day group trip covering the complete wonders of Vietnam. Explore Sapa's misty peaks, climb Fansipan Legend on the scenic cable car, walk Sapa's Glass Bridge, and stroll the paths of Cat Cat Village. Experience Hanoi's historic landmarks and cruise through Ha Long Bay's dramatic karsts on a luxury day cruise. Take a flight to Da Nang, visit the Marble Mountains, ride basket boats in Coconut Forest, walk through lantern-lined streets in Hoi An, and step on the famous Golden Bridge at Ba Na Hills. Continue to Phu Quoc Island to relax on Long Beach, visit Grand World, and take speedboat hopping tours of the southern islands and Aquatopia waterpark. A comprehensive, power-packed travel adventure.",
+    duration: 11,
+    nights: 10,
+    price: 82999,
+    rating: 4.9,
+    difficulty: 'Easy',
+    groupSize: 16,
+    tripType: 'International',
+    showGetQuoteOnly: false,
+    highlights: [
+      'Hanoi',
+      'Sapa',
+      'Ha Long Bay Luxury Cruise',
+      'Danang',
+      'Golden Bridge',
+      'Fantasy Park',
+      'Ho Chi Minh City',
+      'Bana Hills',
+      'Phu Quoc'
+    ],
+    overviewPoints: [
+      'Route: Hanoi → Sapa → Hanoi → Ha Long Bay → Da Nang → Hoi An → Ba Na Hills → Phu Quoc',
+      'Duration: 10 Nights / 11 Days.',
+      'Trip Start: Hanoi.',
+      'Trip End: Phu Quoc.',
+      'Major Highlights: Fansipan Legend & Glass Bridge in Sapa, Hanoi City Tour, Ha Long Bay Luxury Day Cruise, Golden Bridge & Ba Na Hills, Coconut Forest & Hoi An Lantern Boat Ride, Phu Quoc 4-Islands Tour & Aquatopia Water Park.'
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Arrival In Hanoi & Transfer To Sapa | Evening At Leisure',
+        description: [
+          'Arrive at Noi Bai International Airport, where our representative will assist you with your onward transfer.',
+          'Board your scheduled sleeper bus or limousine bus from Hanoi to Sapa through the scenic northern highlands to begin your Vietnam group trip.',
+          'Enjoy views of rolling mountains, terraced landscapes, and rural countryside along the route.',
+          'Upon arrival in Sapa, transfer to your hotel and complete the check-in formalities.',
+          'The rest of the day is at leisure to relax after your journey and settle into the mountain town.',
+          'You can explore Sapa Town at your own pace, browse local cafés, or stroll around the central square.',
+          'Overnight stay in Sapa.'
+        ]
+      },
+      {
+        day: 2,
+        title: 'Sapa Sightseeing Tour | Fansipan Peak, Glass Bridge & Cat Cat Village',
+        description: [
+          'After breakfast, we’ll begin the Vietnam group tour with Sapa’s most popular attractions.',
+          'Board the cable car to Fansipan, the highest peak in Indochina, with spectacular views across the Hoang Lien Son mountain range.',
+          'Spend time exploring the summit complex, viewing platforms, and spiritual landmarks near the peak.',
+          'Later, visit the Glass Bridge, where transparent walkways offer dramatic views of the surrounding valleys and mountains.',
+          'Continue to Cat Cat Village, a traditional Hmong village nestled among terraced hillsides.',
+          'Walk through village pathways lined with local homes, handicraft stalls, and mountain viewpoints.',
+          'Learn about the culture and daily life of the local ethnic communities while exploring the village.',
+          'Return to the hotel by evening and relax.',
+          'Overnight stay in Sapa.'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Sapa To Hanoi | Hanoi Half-Day City Tour',
+        description: [
+          'Enjoy a tasty breakfast and then proceed to check out from the hotel.',
+          'Board your sleeper bus or limousine bus for the journey back to Hanoi.',
+          'Arrive in Hanoi, check in at your hotel for some rest and begin the Hanoi city group tour.',
+          'Start with the Ho Chi Minh Complex, home to the Ho Chi Minh Mausoleum, Presidential Palace area, and landscaped gardens.',
+          'Continue to One Pillar Pagoda, a small temple built on a single stone pillar above a lotus pond.',
+          'Later, visit the Temple of Literature, known for its traditional courtyards, stone stelae, and historic pavilions.',
+          'Head to Hoan Kiem Lake and cross the iconic red bridge leading to Ngoc Son Temple.',
+          'Wrap up the Hanoi cultural tour with a walk through Hanoi Old Quarter, famous for its narrow lanes, local shops, cafés, and colonial-era buildings.',
+          'Post sightseeing, return to the hotel and relax.',
+          'Overnight stay in Hanoi.'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Ha Long Bay | Luxury Day Cruise, Kayaking & Buffet Lunch.',
+        description: [
+          'After an early breakfast, board your shared transfer to Ha Long Bay for a full-day cruise experience.',
+          'Arrive at the pier and board your Ha Long Bay luxury cruise as you sail through emerald waters dotted with limestone karsts and rocky islets.',
+          'Cruise past some of the bay’s most scenic formations, with towering cliffs rising directly from the water.',
+          'Later, enjoy a kayaking session with your group through calm lagoons and narrow waterways surrounded by limestone walls.',
+          'A buffet lunch will be served onboard as the cruise continues through the heart of the bay.',
+          'Spend the afternoon soaking in panoramic views from the deck and capturing the region’s dramatic landscapes.',
+          'By evening, disembark and take your shared transfer to the hotel.',
+          'Overnight stay in Hanoi.'
+        ]
+      },
+      {
+        day: 5,
+        title: 'Hanoi To Da Nang | Evening At Leisure.',
+        description: [
+          'Enjoy a hearty breakfast and then check out of your hotel.',
+          'Board your transfer to Noi Bai International Airport and take your flight to Da Nang.',
+          'Upon arrival at Da Nang International Airport, our representative will transfer to your hotel for check-in.',
+          'The rest of the day is free to explore the city at your own pace.',
+          'You can visit Dragon Bridge and admire its illuminated dragon-shaped structure overlooking the Han River.',
+          'Take a walk along the Han River Promenade, lined with cafés, bridges, and waterfront views.',
+          'Alternatively, spend some time at My Khe Beach, known for its long stretch of sand and relaxed coastal atmosphere.',
+          'Overnight stay in Da Nang.'
+        ]
+      },
+      {
+        day: 6,
+        title: 'Da Nang | Marble Mountain, Coconut Forest, Hoi An Ancient Town & Lantern Boat Ride',
+        description: [
+          'Start your day with a tasty breakfast and get ready for Da Nang exploration.',
+          'Today, our group trip itinerary will start with a visit to Marble Mountains, a cluster of limestone hills known for caves, pagodas, and panoramic viewpoints.',
+          'Explore stone pathways, hidden cave chambers, and Buddhist shrines tucked into the mountainside.',
+          'Later, continue to Cam Thanh Coconut Village, famous for its coconut forests and winding canals.',
+          'Board a traditional basket boat and glide through coconut-lined waterways while watching local rowing demonstrations.',
+          'In the afternoon, head to Hoi An Ancient Town, one of Vietnam’s best-preserved trading ports.',
+          'Walk past centuries-old merchant houses, colourful assembly halls, lantern-lined streets, and riverside cafés.',
+          'As evening sets in, board a lantern boat on the Hoai River and watch the old town glow under hundreds of colourful lanterns.',
+          'After the tour, return to Da Nang for an overnight stay.',
+          'Overnight Stay in Da Nang.'
+        ]
+      },
+      {
+        day: 7,
+        title: 'Ba Na Hills Day Trip | Cable Car, Golden Bridge, Fantasy Park & French Village.',
+        description: [
+          'After breakfast, we’ll set out for a full-day excursion to Ba Na Hills, one of the major highlights of our Vietnam group trip.',
+          'Board the cable car and enjoy sweeping views of forests, waterfalls, and mountain slopes during the ascent.',
+          'Visit the iconic Golden Bridge, famous for its giant stone hands appearing to lift the bridge above the hills - a perfect spot for a group picture.',
+          'Spend time capturing panoramic views of the surrounding mountains and valleys from the bridge.',
+          'Continue to French Village, featuring European-style architecture, cobbled streets, churches, and lively plazas.',
+          'Later, explore Fantasy Park with its indoor rides, arcade games, and entertainment attractions.',
+          'Enjoy free time to explore the hilltop complex before descending by cable car.',
+          'Return to Da Nang by evening for an overnight stay.',
+          'Overnight Stay in Da Nang.'
+        ]
+      },
+      {
+        day: 8,
+        title: 'Da Nang To Phu Quoc | Island Leisure.',
+        description: [
+          'Enjoy a delicious breakfast and then check out from the hotel.',
+          'Board your transfer to Da Nang International Airport for your flight to Phu Quoc.',
+          'Upon arrival at Phu Quoc airport, we’ll transfer to your hotel and complete the check-in formalities.',
+          'This is a leisure day on your Vietnam community tour so that you can explore Vietnam\'s largest island at your own pace.',
+          'You can relax along the shores of Long Beach, known for its golden sands and sunset views.',
+          'Explore the lively atmosphere of Phu Quoc Night Market, popular for local food, souvenirs, and seafood stalls.',
+          'For a relaxed evening, stop by a beachfront café and enjoy views of the Gulf of Thailand as the sun sets over the island.',
+          'Overnight stay in Phu Quoc.'
+        ]
+      },
+      {
+        day: 9,
+        title: '4 Islands Tour with Cable Car and Aquatopia Water Park.',
+        description: [
+          'Wake up in Phu Quoc and enjoy your breakfast.',
+          'Today, we will explore four beautiful islands around the south of Phu Quoc.',
+          'Start with a speedboat ride to Gam Ghi and Xuong islands for snorkelling among coral reefs and colourful fish.',
+          'Next, visit May Rut Island, where you will enjoy a local lunch and optional activities like sea walking.',
+          'Continue to Thom Island, home to the Aquatopia Water Park, where you can enjoy over 20 exciting rides.',
+          'Return to the harbour on a scenic cable car ride, offering stunning aerial views of the islands.',
+          'Later, transfer back to your hotel and relax after a fun-filled day.',
+          'Overnight stay in Phu Quoc.'
+        ]
+      },
+      {
+        day: 10,
+        title: 'Day at Leisure. Optional Tour to Vin Wonders and Vinpearl Safari Park.',
+        description: [
+          'Wake up in Phu Quoc and have breakfast at your hotel.',
+          'Today, you can spend the rest of the day at leisure.',
+          'If you are into adventure, you can choose to spend your day at Vin Wonders Amusement Park, Vinpearl Safari Park or both.',
+          'You can choose the option that best suits you.',
+          'Spend time enjoying the thrilling activities and rides at the Vin Wonders amusement park.',
+          'You can also visit Vinpearl Safari Park, Vietnam’s largest wildlife conservation park.',
+          'Here, you can enjoy a thrilling safari experience where you stay in a bus while animals roam freely around you.',
+          'You will get to see exotic animals such as giraffes, tigers, rhinos, and more.',
+          'Watch entertaining animal shows and explore the open zoo area at your own pace.',
+          'After completing your sightseeing tour for the day, return to your hotel.',
+          'Overnight stay in Phu Quoc.'
+        ]
+      },
+      {
+        day: 11,
+        title: 'Departure from Phu Quoc. Depart with a lot of happy memories.',
+        description: [
+          'Wake up and enjoy breakfast at your hotel in Phu Quoc.',
+          'After checking out, we will drive you to Phu Quoc International Airport for your flight back home.',
+          'Your fun-filled Vietnam group trip comes to an end as you board your flight back home with beautiful memories.'
+        ]
+      }
+    ],
+    included: [
+      '10 Nights Accommodation based on double/twin sharing room as per the itinerary',
+      'A total of 11 meals included Breakfast from Day 2 to Day 11 and Lunch on Day 4',
+      'Hanoi to Sapa & Sapa to Hanoi VIA Sleeper or Limo Bus',
+      'Sun World Fansipan Legend With Cable car ticket',
+      'Glass Bridge Ticket',
+      'Cat Cat Village Tour',
+      'Half-day Hanoi City tour',
+      'Halong Bay day tour with onboard Cruise Lunch and Kayaking',
+      'Marble Mountains Tour',
+      'Coconut Village Tour with Basket Boat ride',
+      'Hoi An Ancient Town Tour',
+      'Lantern boat ride on Hoai River',
+      'Full Day Bana Hill Tour with Cable Car and tickets to Golden Bridge, French Village, Fantasy Park (with rides)',
+      '4 Island Hopping Tour (cable car ticket and speedboat included) + Aquatopia waterpark',
+      'Sightseeing as mentioned in the program',
+      'Transportation by vehicle with A/C as per the program',
+      'Local English-speaking guides in Vietnam',
+      'Bottles of mineral water on the tour day',
+      'Fixed Airport Pick-up & Drop-off'
+    ],
+    notIncluded: [
+      'Single Supplement. Early check-in and late check-out. Hotel/Room upgrade.',
+      'Visa Service to Vietnam.',
+      'Tours which are not included in the package.',
+      'Meals not mentioned in the program.',
+      'Any International Flight and airport tax.',
+      'Drinks, personal expenses and any services not clearly mentioned in the program.',
+      'Travel Insurance.',
+      'GST & TCS as applicable extra.',
+      'Wax Museum, cotton animal game, and carnival skill tickets at Fantasy Park are not included.',
+      'Tips for Guide and Driver extra @ $3/- per adult per day'
+    ],
+    stays: [
+      'Sapa: Deluxe Room / Similar',
+      'Hanoi: Deluxe Room / Similar',
+      'Da Nang: Deluxe Room / Similar',
+      'Phu Quoc: Deluxe Room / Similar'
+    ],
+    batchDates: [
+      {
+        month: 'July',
+        ranges: ['10th July - 20th July', '24th July - 3rd Aug']
+      },
+      {
+        month: 'August',
+        ranges: ['13th Aug - 23rd Aug', '21st Aug - 31st Aug']
+      },
+      {
+        month: 'September',
+        ranges: ['11th Sept - 21st Sept', '25th Sept - 5th Oct']
+      },
+      {
+        month: 'October',
+        ranges: ['2nd Oct - 12th Oct', '16th Oct - 26th Oct']
+      },
+      {
+        month: 'November',
+        ranges: ['5th Nov - 15th Nov', '13th Nov - 21st Nov', '20th Nov - 30th Nov']
+      },
+      {
+        month: 'December',
+        ranges: ['3rd Dec - 13th Dec', '11th - 21st Dec']
+      }
+    ],
+    dates: [],
+    costingDetails: [
+      { label: 'Double Sharing Rate', value: '₹82,999' }
+    ],
+    thingsToCarry: [
+      'Passport with minimum 6 months validity from the date of departure from India',
+      'Sunscreen & lip balm, Good U/V protection sunglasses',
+      'Personal Medicines (if any)'
+    ],
+    travelEssentials: [
+      {
+        title: 'Gears',
+        items: [
+          'A medium size trolley with one cabin bag',
+          'Reusable water bladder or water bottle'
+        ]
+      },
+      {
+        title: 'Clothes',
+        items: [
+          'a sun cap',
+          'UV protected sunglasses',
+          'Cotton Shirts and T-shirts',
+          'Jeans, Shorts and cotton pants',
+          'Sets of undergarments',
+          'Pair of socks',
+          'A small towel or Beach Towel',
+          'A rain jacket or a poncho'
+        ]
+      },
+      {
+        title: 'Footwear',
+        items: [
+          'Sport Shoes or Sneakers',
+          'Flip flops/sandals'
+        ]
+      },
+      {
+        title: 'Medication',
+        items: [
+          'Glucose powder',
+          'Medicines for headaches, diarrhoea, motion sickness',
+          'Dettol',
+          'Bandages',
+          'Cotton'
+        ]
+      },
+      {
+        title: 'Personal Accessories',
+        items: [
+          'toothpaste, toothbrush',
+          'Paper soap, or sanitizer',
+          'Sunscreen minimum of spf40 , lip balm, cold creams',
+          'Body spray',
+          'LED torch light'
+        ]
+      }
+    ],
+    note: [
+      'Normal Check-in and Check-out time is 03:00 PM and 12:00 noon respectively in Vietnam. Early check-in with breakfast is available at an extra cost of 30 USD/ per person.',
+      'Airport transfer is at fixed time (depending on the majority of arrival and departure time of the group) - Any early or late transfer will be charged extra.',
+      'The age limit of our group departures is 18 to 42 years due to the power packed itineraries that we provide to our travellers. We can customize trips for travellers beyond the mentioned age bracket.',
+      'Every traveler is required to be holding a valid passport with an expiry date at least 6 months post the date of entering Vietnam.',
+      'Tour rates are calculated based on current fuel rates and may be revised if there is a sudden increase in fuel prices or an increase of 15% or above.',
+      'If the guest count for a batch is fewer than 9 guests, only a local guide will be available during the tour, and an Indian Trip Captain will not be accompanying the group.'
+    ]
+  },
+  {
+    id: '56',
+    title: '7 Days Backpacking Vietnam with Hanoi , Ha Long Bay , Da Nang , Saigon Group Trip',
+    slug: 'backpacking-vietnam-with-hanoi-ha-long-bay-da-nang-saigon-group-trip',
+    image: '/images/vietnam-backpacking.png',
+    destination: 'Vietnam',
+    category: 'Vietnam',
+    description: "Join the ultimate 7-day backpacking group adventure across Vietnam. Start in the historic streets of Hanoi with a half-day city tour, see the famous Train Street, and cruise the emerald waters of Ha Long Bay on a luxury cruise. Travel south to Da Nang, climb the Marble Mountains, ride traditional basket boats, and walk the romantic lantern-lit streets of Hoi An. Explore Saigon (Ho Chi Minh City) and discover the historic Cu Chi Tunnels before departing. Perfect for budget-conscious explorers and backpackers looking to experience Vietnam's top highlights.",
+    duration: 7,
+    nights: 6,
+    price: 32999,
+    rating: 4.9,
+    difficulty: 'Easy',
+    groupSize: 16,
+    tripType: 'International',
+    showGetQuoteOnly: false,
+    highlights: [
+      'Hanoi',
+      'Ha Long Bay Luxury Cruise',
+      'Danang',
+      'Golden Bridge',
+      'Fantasy Park',
+      'Latern on Boat Tour',
+      'Hoi An Ancient Tour',
+      'Bana Hills',
+      'Cu Chi Tunnel'
+    ],
+    overviewPoints: [
+      'Route: Hanoi → Ha Long Bay → Da Nang → Hoi An → Ba Na Hills → Saigon (Ho Chi Minh City)',
+      'Duration: 6 Nights / 7 Days.',
+      'Trip Start: Hanoi.',
+      'Trip End: Saigon (Ho Chi Minh City).',
+      'Major Highlights: Hanoi Train Street & City Tour, Ha Long Bay Luxury Day Cruise, Marble Mountains, Coconut Forest & Hoi An Lantern Boat Ride, Saigon City Exploration, Cu Chi Tunnels.'
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Arrival in Hanoi - Half-Day City Tour',
+        description: [
+          'Arrive at Noi Bai International Airport, Hanoi, and complete the immigration formalities.',
+          'You will then board your transfers to your hotel for check-in and some rest.',
+          'In the afternoon, we will begin our city tour with a visit to Tran Quoc Pagoda, the oldest Buddhist temple in Hanoi, located on the peaceful West Lake.',
+          'We will then continue to the famous Train Street, where you can experience the thrill of seeing a railway pass through a narrow residential lane lined with cafes.',
+          'Next, we will visit the Ho Chi Minh Mausoleum, where you can learn about the life of Vietnam’s national leader, followed by a stop at the nearby One Pillar Pagoda, a unique lotus-shaped temple.',
+          'Our last stop for the day will be the Old Quarter Market, where you can shop for souvenirs and taste local street food.',
+          'Spend the rest of your time enjoying the lively atmosphere of Beer Street and the Hanoi Night Market.',
+          'Lastly, return to your hotel after the tour (as per your convenience) and call it a day.',
+          'Overnight stay in Hanoi.'
+        ]
+      },
+      {
+        day: 2,
+        title: 'Ha Long Bay Luxury Cruise - Kayaking & Sunset Party',
+        description: [
+          'Wake up to a pleasant morning in Hanoi at the hotel.',
+          'After breakfast, we will head out for a day trip to Ha Long Bay, a UNESCO World Heritage Site.',
+          'Enjoy a scenic drive of about 3.5 hours through the Vietnamese countryside to reach Tuan Chau Marina.',
+          'Board your luxury day cruise and sail through the emerald waters surrounded by limestone islands.',
+          'Relish a delicious Vietnamese lunch on board while enjoying the stunning views.',
+          'Post lunch, you will go kayaking to explore hidden lagoons, caves, and enjoy spotting monkeys around the rocks.',
+          'In the evening, enjoy a fun-filled Sunset Party on the cruise with music, drinks, and a lively atmosphere.',
+          'After a fun-filled day, we will return to Tuan Chau harbour and transfer back to Hanoi.',
+          'Overnight stay in Hanoi.'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Transfer from Hanoi to Da Nang. Day at Leisure.',
+        description: [
+          'Have your breakfast at the hotel in the morning and get ready for the day.',
+          'Today, you will proceed to the Hanoi airport for your flight to Da Nang.',
+          'Enjoy a scenic 1.5-hour flight journey to Da Nang.',
+          'Upon arrival, we will board our transfers to the hotel, where check-in is typically between 14:00 and 15:00.',
+          'You can then spend the rest of your day at leisure, wherein you can relax on the beaches, see the famous Golden Dragon Bridge, or explore local markets.',
+          'Overnight stay at your hotel in Da Nang.'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Full Day Trip to Marble Mountain, Hoi An Ancient Town and Lantern on Boat Tour.',
+        description: [
+          'After breakfast at the hotel, we will get ready for an exciting day.',
+          'At 9:00 AM, we will board our transfer to the Marble Mountains.',
+          'Upon arrival, we will climb Thuy Son (Water Mountain) using carved stone stairs to enjoy panoramic views.',
+          'Next, we will visit the Huyen Khong Cave, one of Da Nang’s most beautiful cave temples.',
+          'We will then explore the ancient pagodas: Tam Thai and Linh Ung.',
+          'In the main cave, we will admire the Cham Buddha under a natural shaft of light.',
+          'By 12:00 PM, we will visit the Am Phu Caves to see rock formations representing hell and purgatory.',
+          'In the afternoon, we will admire stone sculptures created by artisans at Non-Nuoc Village.',
+          'Later, we will enjoy the Coconut Boat Tour (Basket Boat Tour).',
+          'By evening, we will head to the UNESCO World Heritage town of Hoi An.',
+          'We will walk across the 17th-century Japanese Bridge, reflecting Japanese traders’ presence.',
+          'Next, we will visit the Chinese Assembly Halls and explore ancient houses or enjoy folk music.',
+          'Later, we will stroll through the market by the Thu Bon River and soak in Hoi An’s Oriental vibes.',
+          'You will have time to shop for lanterns or have silk clothes tailored.',
+          'In the evening, we will take a 15-20 minute boat ride past glowing flower lanterns.',
+          'You can also choose to release a flower lantern for the good luck of your family and loved ones.',
+          'After sightseeing, we will return to Da Nang.',
+          'Overnight stay at the hotel in Da Nang.'
+        ]
+      },
+      {
+        day: 5,
+        title: 'Ba Na Hills Day Trip - Golden Bridge, Fantasy Park & French Village',
+        description: [
+          'Wake up in your hotel in Da Nang and enjoy a hearty breakfast.',
+          'After breakfast, we will travel to Ba Na Hills near Da Nang.',
+          'Take a scenic cable car ride up the mountains to reach the summit.',
+          'Visit the famous Ba Na Hills Golden Bridge held by giant stone hands, and enjoy stunning views.',
+          'We will explore the French Village with its European-style architecture and churches.',
+          'Spend time at Fantasy Park, where you can enjoy fun games and activities.',
+          'You can also visit Linh Ung Pagoda and the beautiful gardens at Ba Na Hills.',
+          'Later, come down via cable car and return to your hotel in Da Nang.',
+          'Overnight stay in Da Nang.'
+        ]
+      },
+      {
+        day: 6,
+        title: 'Da Nang to Saigon. Spend the day at Leisure.',
+        description: [
+          'Have your breakfast and head towards the airport in your A/C transfer.',
+          'Our team will drop you off at the Da Nang airport, where you will have to board your flight to Ho Chi Minh or Saigon.',
+          'Land at the Ho Chi Minh airport, and our local English-speaking guide will be waiting for you at the airport.',
+          'Since you will be arriving by afternoon or evening, our team will escort you directly to the hostel.',
+          'Complete the check-in formalities, and the entire day is at your leisure.',
+          'Relax in your hostel room or go out for a walk around the nearby places, relishing the local dishes.',
+          'Return to your hostel for the overnight stay.',
+          'Overnight stay in Saigon.'
+        ]
+      },
+      {
+        day: 7,
+        title: 'Visit Cu Chi Tunnels | Depart with a lot of happy memories.',
+        description: [
+          'The last leg of your Vietnam tour package begins with a filling breakfast at the hostel.',
+          'Check out from your hostel and head towards the last destination you visit before your departure.',
+          'You will be driven across the underground tunnels for a morning drive to Cu Chi Tunnels which were used by the Vietnamese Congress during the Vietnam War.',
+          'Our guide will provide a glimpse of the history and significance of these tunnels.',
+          'You can also crawl into the tunnels to experience the life of soldiers during the Vietnam War.',
+          'The Vietnam tour package comes to an end, and you will be dropped off at the airport by 14:30.',
+          'You can then board your flight to your final destination.',
+          'Your amazing Vietnam backpacking trip concludes with a lot of fun memories.'
+        ]
+      }
+    ],
+    included: [
+      '06 Nights Accommodation in hostel',
+      'A total of 7 meals included Breakfast from Day 2 to Day 7 and Lunch on Day 2.',
+      'Half-day Hanoi City tour',
+      'Halong Bay day tour with onboard Cruise Lunch and Kayaking',
+      'Full Day Bana - Hill Tour with Cable Car and tickets to Golden Bridge, French Village, Fantasy Park (with rides)',
+      'Hoi An Ancient Town Tour',
+      'Basket Boat Ride in Coconut Forest and Lantern boat ride on Hoai River',
+      'Cu Chi Tunnels Tour',
+      'All entrance fees and sightseeing as mentioned in the program',
+      'Transportation by vehicle with A/C as per program',
+      'Local English-speaking guides in Vietnam',
+      'Bottles of mineral water on tour day'
+    ],
+    notIncluded: [
+      'Single Supplement. Early check-in and late check-out. Hotel/Room upgrade.',
+      'Visa Service to Vietnam.',
+      'Tours which are not included in the package.',
+      'Meals not mentioned in the program.',
+      'Any International Flight and airport tax.',
+      'Drinks, personal expenses and any services not clearly mentioned in the program.',
+      'Travel Insurance.',
+      'GST & TCS as applicable extra.',
+      'Wax Museum, cotton animal game, and carnival skill tickets at Fantasy Park are not included.',
+      'Tips for Guide and Driver extra @ $3/- per adult per day'
+    ],
+    stays: [
+      'Hanoi: Hotel / Similar',
+      'Da Nang: Hotel / Similar',
+      'Saigon: Hostel / Similar'
+    ],
+    batchDates: [
+      {
+        month: 'July',
+        ranges: ['12th July - 18th July', '26th July - 1st Aug']
+      },
+      {
+        month: 'August',
+        ranges: ['15th Aug - 21st Aug', '23rd Aug - 29th Aug']
+      },
+      {
+        month: 'September',
+        ranges: ['13th Sept - 19th Sept', '27th Sept - 3rd Oct']
+      },
+      {
+        month: 'October',
+        ranges: ['4th Oct - 10th Oct', '18th Oct - 24th Oct']
+      }
+    ],
+    dates: [],
+    costingDetails: [
+      { label: 'Double Sharing Rate', value: '₹32,999' }
+    ],
+    thingsToCarry: [
+      'Passport with minimum 6 months validity from the date of departure from India',
+      'Sunscreen & lip balm, Good U/V protection sunglasses',
+      'Personal Medicines (if any)'
+    ],
+    travelEssentials: [
+      {
+        title: 'Gears',
+        items: [
+          'A medium size trolley with one cabin bag',
+          'Reusable water bladder or water bottle'
+        ]
+      },
+      {
+        title: 'Clothes',
+        items: [
+          'a sun cap',
+          'UV protected sunglasses',
+          'Cotton Shirts and T-shirts',
+          'Jeans, Shorts and cotton pants',
+          'Sets of undergarments',
+          'Pair of socks',
+          'A small towel or Beach Towel',
+          'A rain jacket or a poncho'
+        ]
+      },
+      {
+        title: 'Footwear',
+        items: [
+          'Sport Shoes or Sneakers',
+          'Flip flops/sandals'
+        ]
+      },
+      {
+        title: 'Medication',
+        items: [
+          'Glucose powder',
+          'Medicines for headaches, diarrhoea, motion sickness',
+          'Dettol',
+          'Bandages',
+          'Cotton'
+        ]
+      },
+      {
+        title: 'Personal Accessories',
+        items: [
+          'toothpaste, toothbrush',
+          'Paper soap, or sanitizer',
+          'Sunscreen minimum of spf40 , lip balm, cold creams',
+          'Body spray',
+          'LED torch light'
+        ]
+      }
+    ],
+    note: [
+      'Normal Check-in and Check-out time is 03:00 PM and 12:00 noon respectively in Vietnam. Early check-in with breakfast is available at an extra cost of 30 USD/ per person.',
+      'Airport transfer is at fixed time (depending on the majority of arrival and departure time of the group) - Any early or late transfer will be charged extra.',
+      'The age limit of our group departures is 18 to 42 years due to the power packed itineraries that we provide to our travellers. We can customize trips for travellers beyond the mentioned age bracket.',
+      'Every traveler is required to be holding a valid passport with an expiry date at least 6 months post the date of entering Vietnam.',
+      'Tour rates are calculated based on current fuel rates and may be revised if there is a sudden increase in fuel prices or an increase of 15% or above.',
+      'If the guest count for a batch is fewer than 9 guests, only a local guide will be available during the tour, and an Indian Trip Captain will not be accompanying the group.'
+    ]
+  },
+  {
+    id: '57',
+    title: '7 Days Mesmerising Vietnam Group Trip',
+    slug: 'mesmerising-vietnam-group-trip',
+    image: '/images/vietnam-mesmerising.png',
+    destination: 'Vietnam',
+    category: 'Vietnam',
+    description: `Uncover the magic of Vietnam on this mesmerising 7-day group trip. Stroll through Hanoi's historic Old Quarter and see the famous Train Street. Cruise past majestic limestone karsts and islets on a luxury Ha Long Bay day tour, including kayaking and a sunset party. Fly south to Da Nang, step onto the stunning Golden Bridge held by giant stone hands at Ba Na Hills, explore the caves of Marble Mountain, and experience a lantern boat ride in the UNESCO World Heritage town of Hoi An. End your adventure in Saigon (Ho Chi Minh City) with a trip through the historic Cu Chi Tunnels. The perfect balance of history, scenery, and culture.`,
+    duration: 7,
+    nights: 6,
+    price: 47999,
+    rating: 4.9,
+    difficulty: 'Easy',
+    groupSize: 16,
+    tripType: 'International',
+    showGetQuoteOnly: false,
+    highlights: [
+      'Hanoi',
+      'Ha Long Bay Luxury Cruise',
+      'Danang',
+      'Golden Bridge',
+      'Fantasy Park',
+      'Bana Hills',
+      'Cu Chi Tunnel'
+    ],
+    overviewPoints: [
+      'Route: Hanoi → Ha Long Bay → Da Nang → Hoi An → Ba Na Hills → Saigon (Ho Chi Minh City)',
+      'Duration: 6 Nights / 7 Days.',
+      'Trip Start: Hanoi.',
+      'Trip End: Saigon (Ho Chi Minh City).',
+      'Major Highlights: Hanoi Train Street & City Tour, Ha Long Bay Luxury Day Cruise, Marble Mountains, Coconut Forest & Hoi An Lantern Boat Ride, Ba Na Hills & Golden Bridge, Cu Chi Tunnels.'
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Arrival in Hanoi - Half-Day City Tour',
+        description: [
+          'Arrive at Noi Bai International Airport, Hanoi, and complete the immigration formalities.',
+          'You will then board your transfers to your hotel for check-in and some rest.',
+          'In the afternoon, we will begin our city tour with a visit to Tran Quoc Pagoda, the oldest Buddhist temple in Hanoi, located on the peaceful West Lake.',
+          'We will then continue to the famous Train Street, where you can experience the thrill of seeing a railway pass through a narrow residential lane lined with cafes.',
+          'Next, we will visit the Ho Chi Minh Mausoleum, where you can learn about the life of Vietnam’s national leader, followed by a stop at the nearby One Pillar Pagoda, a unique lotus-shaped temple.',
+          'Our last stop for the day will be the Old Quarter Market, where you can shop for souvenirs and taste local street food.',
+          'Spend the rest of your time enjoying the lively atmosphere of Beer Street and the Hanoi Night Market.',
+          'Lastly, return to your hotel after the tour (as per your convenience) and call it a day.',
+          'Overnight stay in Hanoi.'
+        ]
+      },
+      {
+        day: 2,
+        title: 'Ha Long Bay Luxury Cruise - Kayaking & Sunset Party',
+        description: [
+          'Wake up to a pleasant morning in Hanoi at the hotel.',
+          'After breakfast, we will head out for a day trip to Ha Long Bay, a UNESCO World Heritage Site.',
+          'Enjoy a scenic drive of about 3.5 hours through the Vietnamese countryside to reach Tuan Chau Marina.',
+          'Board your luxury day cruise and sail through the emerald waters surrounded by limestone islands.',
+          'Relish a delicious Vietnamese lunch on board while enjoying the stunning views.',
+          'Post lunch, you will go kayaking to explore hidden lagoons, caves, and enjoy spotting monkeys around the rocks.',
+          'In the evening, enjoy a fun-filled Sunset Party on the cruise with music, drinks, and a lively atmosphere.',
+          'After a fun-filled day, we will return to Tuan Chau harbour and transfer back to Hanoi.',
+          'Overnight stay in Hanoi.'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Transfer from Hanoi to Da Nang. Day at Leisure.',
+        description: [
+          'Have your breakfast at the hotel in the morning and get ready for the day.',
+          'Today, you will proceed to the Hanoi airport for your flight to Da Nang.',
+          'Enjoy a scenic 1.5-hour flight journey to Da Nang.',
+          'Upon arrival, we will board our transfers to the hotel, where check-in is typically between 14:00 and 15:00.',
+          'You can then spend the rest of your day at leisure, wherein you can relax on the beaches, see the famous Golden Dragon Bridge, or explore local markets.',
+          'Overnight stay at your hotel in Da Nang.'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Full Day Trip to Marble Mountain, Hoi An Ancient Town and Lantern on Boat Tour.',
+        description: [
+          'After breakfast at the hotel, we will get ready for an exciting day.',
+          'At 9:00 AM, we will board our transfer to the Marble Mountains.',
+          'Upon arrival, we will climb Thuy Son (Water Mountain) using carved stone stairs to enjoy panoramic views.',
+          'Next, we will visit the Huyen Khong Cave, one of Da Nang’s most beautiful cave temples.',
+          'We will then explore the ancient pagodas: Tam Thai and Linh Ung.',
+          'In the main cave, we will admire the Cham Buddha under a natural shaft of light.',
+          'By 12:00 PM, we will visit the Am Phu Caves to see rock formations representing hell and purgatory.',
+          'In the afternoon, we will admire stone sculptures created by artisans at Non-Nuoc Village.',
+          'Later, we will enjoy the Coconut Boat Tour (Basket Boat Tour).',
+          'By evening, we will head to the UNESCO World Heritage town of Hoi An.',
+          'We will walk across the 17th-century Japanese Bridge, reflecting Japanese traders’ presence.',
+          'Next, we will visit the Chinese Assembly Halls and explore ancient houses or enjoy folk music.',
+          'Later, we will stroll through the market by the Thu Bon River and soak in Hoi An’s Oriental vibes.',
+          'You will have time to shop for lanterns or have silk clothes tailored.',
+          'In the evening, we will take a 15-20 minute boat ride past glowing flower lanterns.',
+          'You can also choose to release a flower lantern for the good luck of your family and loved ones.',
+          'After sightseeing, we will return to Da Nang.',
+          'Overnight stay at the hotel in Da Nang.'
+        ]
+      },
+      {
+        day: 5,
+        title: 'Ba Na Hills Day Trip - Golden Bridge, Fantasy Park & French Village',
+        description: [
+          'Wake up in your hotel in Da Nang and enjoy a hearty breakfast.',
+          'After breakfast, we will travel to Ba Na Hills near Da Nang.',
+          'Take a scenic cable car ride up the mountains to reach the summit.',
+          'Visit the famous Ba Na Hills Golden Bridge held by giant stone hands, and enjoy stunning views.',
+          'We will explore the French Village with its European-style architecture and churches.',
+          'Spend time at Fantasy Park, where you can enjoy fun games and activities.',
+          'You can also visit Linh Ung Pagoda and the beautiful gardens at Ba Na Hills.',
+          'Later, come down via cable car and return to your hotel in Da Nang.',
+          'Overnight stay in Da Nang.'
+        ]
+      },
+      {
+        day: 6,
+        title: 'Da Nang to Saigon. Spend the day at Leisure.',
+        description: [
+          'Have your breakfast and head towards the airport in your A/C transfer.',
+          'Our team will drop you off at the Da Nang airport, where you will have to board your flight to Ho Chi Minh or Saigon.',
+          'Land at the Ho Chi Minh airport, and our local English-speaking guide will be waiting for you at the airport.',
+          'Since you will be arriving by afternoon or evening, our team will escort you directly to the hotel.',
+          'Complete the check-in formalities, and the entire day is at your leisure.',
+          'Relax in your hotel room or go out for a walk around the nearby places, relishing the local dishes.',
+          'Return to your hotel for the overnight stay.'
+        ]
+      },
+      {
+        day: 7,
+        title: 'Cu Chi Tunnels and Departure',
+        description: [
+          'The last leg of your Vietnam tour package begins with a filling breakfast at the hotel.',
+          'Check out from your hotel and head towards the last destination you visit before your departure.',
+          'You will be driven across the underground tunnels for a morning drive to Cu Chi Tunnels which were used by the Vietnamese Congress during the Vietnam War.',
+          'Our guide will provide a glimpse of the history and significance of these tunnels.',
+          'You can also crawl into the tunnels to experience the life of soldiers during the Vietnam War.',
+          'The Vietnam tour package comes to an end, and you will be dropped off at the airport by 14:30.',
+          'You can then board your flight to your final destination.'
+        ]
+      }
+    ],
+    included: [
+      '06 Nights Accommodation based on double/twin sharing room with daily buffet breakfast',
+      'A total of 7 meals included Breakfast from Day 2 to Day 7 and Lunch on Day 2.',
+      'Half-day Hanoi City tour',
+      'Halong Bay day tour with onboard Cruise Lunch and Kayaking',
+      'Full Day Bana - Hill Tour with Cable Car and tickets to Golden Bridge, French Village, Fantasy Park (with rides)',
+      'Hoi An Ancient Town Tour',
+      'Basket Boat Ride in Coconut Forest and Lantern boat ride on Hoai River',
+      'Cu Chi Tunnels Tour',
+      'All entrance fees and sightseeing as mentioned in the program',
+      'Transportation by vehicle with A/C as per program',
+      'Local English-speaking guides in Vietnam.',
+      'Bottles of mineral water on tour day'
+    ],
+    notIncluded: [
+      'Single Supplement. Early check-in and late check-out. Hotel/Room upgrade.',
+      'Visa Service to Vietnam.',
+      'Tours which are not included in the package.',
+      'Meals not mentioned in the program.',
+      'Any International Flight and airport tax.',
+      'Drinks, personal expenses and any services not clearly mentioned in the program.',
+      'Travel Insurance.',
+      'GST & TCS as applicable extra.',
+      'Wax Museum, cotton animal game, and carnival skill tickets at Fantasy Park are not included.',
+      'Tips for Guide and Driver extra @ $3/- per adult per day'
+    ],
+    stays: [
+      'Hanoi: Hotel / Similar',
+      'Da Nang: Hotel / Similar',
+      'Saigon: Hotel / Similar'
+    ],
+    batchDates: [
+      {
+        month: 'July',
+        ranges: ['12th July - 18th July', '26th July - 1st Aug']
+      },
+      {
+        month: 'August',
+        ranges: ['15th Aug - 21st Aug', '23rd - 29th Aug']
+      },
+      {
+        month: 'September',
+        ranges: ['13th Sept - 19th Sept', '27th Sept - 3rd Oct']
+      },
+      {
+        month: 'October',
+        ranges: ['4th Oct - 10th Oct', '18th Oct - 24th Oct']
+      },
+      {
+        month: 'November',
+        ranges: ['7th Nov - 13th Nov', '15th Nov - 21st Nov', '22nd Nov - 28th Nov']
+      },
+      {
+        month: 'December',
+        ranges: ['5th Dec - 11th Dec', '13th - 19th Dec']
+      }
+    ],
+    dates: [],
+    costingDetails: [
+      { label: 'Double Sharing Rate', value: '₹47,999' }
+    ],
+    thingsToCarry: [
+      'Passport with minimum 6 months validity from the date of departure from India',
+      'Sunscreen & lip balm, Good U/V protection sunglasses',
+      'Personal Medicines (if any)'
+    ],
+    travelEssentials: [
+      {
+        title: 'Gears',
+        items: [
+          'A medium size trolley with one cabin bag',
+          'Reusable water bladder or water bottle'
+        ]
+      },
+      {
+        title: 'Clothes',
+        items: [
+          'a sun cap',
+          'UV protected sunglasses',
+          'Cotton Shirts and T-shirts',
+          'Jeans, Shorts and cotton pants',
+          'Sets of undergarments',
+          'Pair of socks',
+          'A small towel or Beach Towel',
+          'A rain jacket or a poncho'
+        ]
+      },
+      {
+        title: 'Footwear',
+        items: [
+          'Sport Shoes or Sneakers',
+          'Flip flops/sandals'
+        ]
+      },
+      {
+        title: 'Medication',
+        items: [
+          'Glucose powder',
+          'Medicines for headaches, diarrhoea, motion sickness',
+          'Dettol',
+          'Bandages',
+          'Cotton'
+        ]
+      },
+      {
+        title: 'Personal Accessories',
+        items: [
+          'toothpaste, toothbrush',
+          'Paper soap, or sanitizer',
+          'Sunscreen minimum of spf40 , lip balm, cold creams',
+          'Body spray',
+          'LED torch light'
+        ]
+      }
+    ],
+    note: [
+      'Normal Check-in and Check-out time is 03:00 PM and 12:00 noon respectively in Vietnam. Early check-in with breakfast is available at an extra cost of 30 USD/ per person.',
+      'Airport transfer is at fixed time (depending on the majority of arrival and departure time of the group) - Any early or late transfer will be charged extra.',
+      'The age limit of our group departures is 18 to 42 years due to the power packed itineraries that we provide to our travellers. We can customize trips for travellers beyond the mentioned age bracket.',
+      'Every traveler is required to be holding a valid passport with an expiry date at least 6 months post the date of entering Vietnam.',
+      'Tour rates are calculated based on current fuel rates and may be revised if there is a sudden increase in fuel prices or an increase of 15% or above.',
+      'If the guest count for a batch is fewer than 9 guests, only a local guide will be available during the tour, and an Indian Trip Captain will not be accompanying the group.'
+    ]
+  },
+  {
+    id: '58',
+    title: '6 Days Best of Vietnam Group Trip',
+    slug: 'best-of-vietnam-group-trip',
+    image: '/images/vietnam-best.png',
+    destination: 'Vietnam',
+    category: 'Vietnam',
+    description: `Experience the highlights of Vietnam in 6 days. Walk through the bustling historic streets of Hanoi and check out the famous Train Street. Board a luxury day cruise to sail past the limestone islands of Ha Long Bay, go kayaking, and enjoy a sunset party. Travel to Da Nang, step onto the famous Golden Bridge at Ba Na Hills, take a basket boat ride in Cam Thanh Coconut Village, and wander the historic lantern-lit streets of Hoi An Ancient Town. The perfect introductory trip to Vietnam's north and central wonders.`,
+    duration: 6,
+    nights: 5,
+    price: 36999,
+    rating: 4.9,
+    difficulty: 'Easy',
+    groupSize: 16,
+    tripType: 'International',
+    showGetQuoteOnly: false,
+    highlights: [
+      'Hanoi',
+      'Ha Long Bay Luxury Cruise',
+      'Danang',
+      'Golden Bridge',
+      'Fantasy Park',
+      'Hoi An',
+      'Bana Hills'
+    ],
+    overviewPoints: [
+      'Route: Hanoi → Ha Long Bay → Da Nang → Hoi An → Ba Na Hills',
+      'Duration: 5 Nights / 6 Days.',
+      'Trip Start: Hanoi.',
+      'Trip End: Da Nang.',
+      'Major Highlights: Hanoi Train Street & City Tour, Ha Long Bay Luxury Day Cruise, Marble Mountains, Coconut Village Basket Boat Tour, Hoi An Ancient Town & Lantern Boat Ride, Ba Na Hills & Golden Bridge.'
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Arrival in Hanoi - Half-Day City Tour',
+        description: [
+          'Arrive at Noi Bai International Airport, Hanoi, and complete the immigration formalities.',
+          'You will then board your transfers to your hotel for check-in and some rest.',
+          'In the afternoon, we will begin our city tour with a visit to Tran Quoc Pagoda, the oldest Buddhist temple in Hanoi, located on the peaceful West Lake.',
+          'We will then continue to the famous Train Street, where you can experience the thrill of seeing a railway pass through a narrow residential lane lined with cafes.',
+          'Next, we will visit the Ho Chi Minh Mausoleum, where you can learn about the life of Vietnam’s national leader, followed by a stop at the nearby One Pillar Pagoda, a unique lotus-shaped temple.',
+          'Our last stop for the day will be the Old Quarter Market, where you can shop for souvenirs and taste local street food.',
+          'Spend the rest of your time enjoying the lively atmosphere of Beer Street and the Hanoi Night Market.',
+          'Lastly, return to your hotel after the tour (as per your convenience) and call it a day.',
+          'Overnight stay in Hanoi.'
+        ]
+      },
+      {
+        day: 2,
+        title: 'Ha Long Bay Luxury Cruise - Kayaking & Sunset Party',
+        description: [
+          'Wake up to a pleasant morning in Hanoi at the hotel.',
+          'After breakfast, we will head out for a day trip to Ha Long Bay, a UNESCO World Heritage Site.',
+          'Enjoy a scenic drive of about 3.5 hours through the Vietnamese countryside to reach Tuan Chau Marina.',
+          'Board your luxury day cruise and sail through the emerald waters surrounded by limestone islands.',
+          'Relish a delicious Vietnamese lunch on board while enjoying the stunning views.',
+          'Post lunch, you will go kayaking to explore hidden lagoons, caves, and enjoy spotting monkeys around the rocks.',
+          'In the evening, enjoy a fun-filled Sunset Party on the cruise with music, drinks, and a lively atmosphere.',
+          'After a fun-filled day, we will return to Tuan Chau harbour and transfer back to Hanoi.',
+          'Overnight stay in Hanoi.'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Transfer from Hanoi to Da Nang. Day at Leisure.',
+        description: [
+          'Have your breakfast at the hotel in the morning and get ready for the day.',
+          'Today, you will proceed to the Hanoi airport for your flight to Da Nang.',
+          'Enjoy a scenic 1.5-hour flight journey to Da Nang.',
+          'Upon arrival, we will board our transfers to the hotel, where check-in is typically between 14:00 and 15:00.',
+          'You can then spend the rest of your day at leisure, wherein you can relax on the beaches, see the famous Golden Dragon Bridge, or explore local markets.',
+          'Overnight stay at your hotel in Da Nang.'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Full Day Trip to Marble Mountain, Hoi An Ancient Town and Lantern on Boat Tour.',
+        description: [
+          'After breakfast at the hotel, we will get ready for an exciting day.',
+          'At 9:00 AM, we will board our transfer to the Marble Mountains.',
+          'Upon arrival, we will climb Thuy Son (Water Mountain) using carved stone stairs to enjoy panoramic views.',
+          'Next, we will visit the Huyen Khong Cave, one of Da Nang’s most beautiful cave temples.',
+          'We will then explore the ancient pagodas: Tam Thai and Linh Ung.',
+          'In the main cave, we will admire the Cham Buddha under a natural shaft of light.',
+          'By 12:00 PM, we will visit the Am Phu Caves to see rock formations representing hell and purgatory.',
+          'In the afternoon, we will admire stone sculptures created by artisans at Non-Nuoc Village.',
+          'Later, we will enjoy the Coconut Boat Tour (Basket Boat Tour).',
+          'By evening, we will head to the UNESCO World Heritage town of Hoi An.',
+          'We will walk across the 17th-century Japanese Bridge, reflecting Japanese traders’ presence.',
+          'Next, we will visit the Chinese Assembly Halls and explore ancient houses or enjoy folk music.',
+          'Later, we will stroll through the market by the Thu Bon River and soak in Hoi An’s Oriental vibes.',
+          'You will have time to shop for lanterns or have silk clothes tailored.',
+          'In the evening, we will take a 15-20 minute boat ride past glowing flower lanterns.',
+          'You can also choose to release a flower lantern for the good luck of your family and loved ones.',
+          'After sightseeing, we will return to Da Nang.',
+          'Overnight stay at the hotel in Da Nang.'
+        ]
+      },
+      {
+        day: 5,
+        title: 'Ba Na Hills Day Trip - Golden Bridge, Fantasy Park & French Village',
+        description: [
+          'Wake up in your hotel in Da Nang and enjoy a hearty breakfast.',
+          'After breakfast, we will travel to Ba Na Hills near Da Nang.',
+          'Take a scenic cable car ride up the mountains to reach the summit.',
+          'Visit the famous Ba Na Hills Golden Bridge held by giant stone hands, and enjoy stunning views.',
+          'We will explore the French Village with its European-style architecture and churches.',
+          'Spend time at Fantasy Park, where you can enjoy fun games and activities.',
+          'You can also visit Linh Ung Pagoda and the beautiful gardens at Ba Na Hills.',
+          'Later, come down via cable car and return to your hotel in Da Nang.',
+          'Overnight stay in Da Nang.'
+        ]
+      },
+      {
+        day: 6,
+        title: 'Departure from Da Nang. Take back a lot of happy memories.',
+        description: [
+          'Wake up and enjoy your breakfast at the hotel.',
+          'Check out from the hotel and board your transfer to Da Nang International Airport.',
+          'Your amazing Vietnam group trip concludes with a lot of fun memories.',
+          'Depart with a camera full of pictures from Vietnam’s magical landscapes.'
+        ]
+      }
+    ],
+    included: [
+      '05 Nights Accommodation based on double/twin sharing room with daily buffet breakfast',
+      'A total of 6 meals included Breakfast from Day 2 to Day 6 and Lunch on Day 2.',
+      'Half-day Hanoi City tour.',
+      'Halong Bay day tour with Sunset party and Kayaking.',
+      'Marble Mountains Tour.',
+      'Coconut Village Tour with Basket Boat ride.',
+      'Hoi An Ancient Town Tour.',
+      'Lantern boat ride on Hoai River.',
+      'Full Day Bana Hill Tour with Cable Car and tickets to Golden Bridge, French Village, Fantasy Park (with rides).',
+      'Sightseeing as mentioned in the program',
+      'Transportation by vehicle with A/C as per the program.',
+      'Local English-speaking guides in Vietnam.',
+      'Bottles of mineral water on the tour day.',
+      'Fixed Airport Pickup & Drop.'
+    ],
+    notIncluded: [
+      'Single Supplement. Early check-in and late check-out. Hotel/Room upgrade.',
+      'Visa Service to Vietnam.',
+      'Tours which are not included in the package.',
+      'Meals not mentioned in the program.',
+      'Any International Flight and airport tax.',
+      'Drinks, personal expenses and any services not clearly mentioned in the program.',
+      'Travel Insurance.',
+      'GST & TCS as applicable extra.',
+      'Wax Museum, cotton animal game, and carnival skill tickets at Fantasy Park are not included.',
+      'Tips for Guide and Driver extra @ $3/- per adult per day'
+    ],
+    stays: [
+      'Hanoi: Hotel / Similar',
+      'Da Nang: Hotel / Similar'
+    ],
+    batchDates: [
+      {
+        month: 'July',
+        ranges: ['12th July - 17th July', '26th July - 31st July']
+      },
+      {
+        month: 'August',
+        ranges: ['15th Aug - 20th Aug', '23rd - 28th Aug']
+      },
+      {
+        month: 'September',
+        ranges: ['13th Sept - 18th Sept', '27th Sept - 2nd Oct']
+      },
+      {
+        month: 'October',
+        ranges: ['4th Oct - 9th Oct', '18th Oct - 23rd Oct']
+      },
+      {
+        month: 'November',
+        ranges: ['7th Nov - 12th Nov', '15th Nov - 20th Nov', '22nd Nov - 28th Nov']
+      },
+      {
+        month: 'December',
+        ranges: ['5th Dec - 11th Dec', '13th - 19th Dec.']
+      }
+    ],
+    dates: [],
+    costingDetails: [
+      { label: 'Double Sharing Rate', value: '₹36,999' }
+    ],
+    thingsToCarry: [
+      'Passport with minimum 6 months validity from the date of departure from India',
+      'Sunscreen & lip balm, Good U/V protection sunglasses',
+      'Personal Medicines (if any)'
+    ],
+    travelEssentials: [
+      {
+        title: 'Gears',
+        items: [
+          'A medium size trolley with one cabin bag',
+          'Reusable water bladder or water bottle'
+        ]
+      },
+      {
+        title: 'Clothes',
+        items: [
+          'a sun cap',
+          'UV protected sunglasses',
+          'Cotton Shirts and T-shirts',
+          'Jeans, Shorts and cotton pants',
+          'Sets of undergarments',
+          'Pair of socks',
+          'A small towel or Beach Towel',
+          'A rain jacket or a poncho'
+        ]
+      },
+      {
+        title: 'Footwear',
+        items: [
+          'Sport Shoes or Sneakers',
+          'Flip flops/sandals'
+        ]
+      },
+      {
+        title: 'Medication',
+        items: [
+          'Glucose powder',
+          'Medicines for headaches, diarrhoea, motion sickness',
+          'Dettol',
+          'Bandages',
+          'Cotton'
+        ]
+      },
+      {
+        title: 'Personal Accessories',
+        items: [
+          'toothpaste, toothbrush',
+          'Paper soap, or sanitizer',
+          'Sunscreen minimum of spf40 , lip balm, cold creams',
+          'Body spray',
+          'LED torch light'
+        ]
+      }
+    ],
+    note: [
+      'Normal Check-in and Check-out time is 03:00 PM and 12:00 noon respectively in Vietnam. Early check-in with breakfast is available at an extra cost of 30 USD/ per person.',
+      'Airport transfer is at fixed time (depending on the majority of arrival and departure time of the group) - Any early or late transfer will be charged extra.',
+      'The age limit of our group departures is 18 to 42 years due to the power packed itineraries that we provide to our travellers. We can customize trips for travellers beyond the mentioned age bracket.',
+      'Every traveler is required to be holding a valid passport with an expiry date at least 6 months post the date of entering Vietnam.',
+      'Tour rates are calculated based on current fuel rates and may be revised if there is a sudden increase in fuel prices or an increase of 15% or above.',
+      'If the guest count for a batch is fewer than 9 guests, only a local guide will be available during the tour, and an Indian Trip Captain will not be accompanying the group.'
+    ]
+  },
+  {
+    id: '59',
+    title: '6 Days Romantic Escape Vietnam Couple Special',
+    slug: 'romantic-escape-vietnam-couple-special',
+    image: '/images/vietnam-couple.png',
+    destination: 'Vietnam',
+    category: 'Vietnam',
+    description: `Indulge in a romantic 6-day couple's getaway discovering the charm and natural beauty of Vietnam. Begin with Hanoi's historic landmarks and unique Train Street. Take a peaceful boat ride through the scenic Hoa Lu and Tam Coc caves of Ninh Binh, often called the "Halong Bay on Land." Spend a magical night cruising along Halong Bay on a luxurious overnight cruise, kayaking through caves and watching the sunset. Fly to Saigon (Ho Chi Minh City) to explore the vibrant city life and take a scenic boat trip down the iconic Mekong Delta. A perfect, intimate escape tailored for couples.`,
+    duration: 6,
+    nights: 5,
+    price: 35999,
+    rating: 4.9,
+    difficulty: 'Easy',
+    groupSize: 10,
+    tripType: 'International',
+    showGetQuoteOnly: true,
+    highlights: [
+      'Hanoi',
+      'Ninh Binh',
+      'Saigao',
+      'Mekong Delta'
+    ],
+    overviewPoints: [
+      'Route: Hanoi → Ninh Binh → Halong Bay → Saigon (Ho Chi Minh City) → Mekong Delta',
+      'Duration: 5 Nights / 6 Days.',
+      'Trip Start: Hanoi.',
+      'Trip End: Saigon (Ho Chi Minh City).',
+      'Major Highlights: Hanoi Train Street & City Tour, Hoa Lu & Tam Coc Caves in Ninh Binh, Halong Bay Luxury Overnight Cruise, Mekong Delta Scenic Boat Ride.'
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Arrival in Hanoi - Half-Day City Tour',
+        description: [
+          'Arrive at Noi Bai International Airport, Hanoi, and complete the immigration formalities.',
+          'You will then board your transfers to your hotel for check-in and some rest.',
+          'In the afternoon, we will begin our city tour with a visit to Tran Quoc Pagoda, the oldest Buddhist temple in Hanoi, located on the peaceful West Lake.',
+          'We will then continue to the famous Train Street, where you can experience the thrill of seeing a railway pass through a narrow residential lane lined with cafes.',
+          'Next, we will visit the Ho Chi Minh Mausoleum, where you can learn about the life of Vietnam’s national leader, followed by a stop at the nearby One Pillar Pagoda, a unique lotus-shaped temple.',
+          'Our last stop for the day will be the Old Quarter Market, where you can shop for souvenirs and taste local street food.',
+          'Spend the rest of your time enjoying the lively atmosphere of Beer Street and the Hanoi Night Market.',
+          'Lastly, return to your hotel after the tour (as per your convenience) and call it a day.',
+          'Overnight stay in Hanoi.'
+        ]
+      },
+      {
+        day: 2,
+        title: 'Full Day Sic Tour To Ninh Binh – Hoa Lu – Tam Coc.',
+        description: [
+          'Wake up to a delicious breakfast at your hotel, and get ready for an exciting day ahead.',
+          'Today we will drive you 90km south of Hanoi to the historic site of Ninh Binh, the ancient capital city of Vietnam.',
+          'Next, we will take you on a boat ride through the stunning series of Tam Coc Caves, which is known as “Halong Bay on Land” as the huge limestone karsts dot the river amidst the lush paddy fields.',
+          'Enjoy a delicious lunch at a local restaurant before we continue our adventure and visit Hoa Lu, the site of the former kings\' palace in the 10th century.',
+          'Marvel at the intricate wooden reliefs of the Dinh and Le temples that stand tall to this day.',
+          'Our exploration of Ninh Binh concludes with a visit to Bich Dong Pagoda, a serene and peaceful place that will leave you in awe.',
+          'Upon completing the sightseeing by late afternoon, we will start our journey back to Hanoi, feeling enriched and rejuvenated from the day\'s adventures.',
+          'Overnight stay in Hanoi.'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Transfer from Hanoi to Halong Bay. Overnight Stay on Cruise.',
+        description: [
+          'Start your day by having your breakfast at the hotel and get ready for the day.',
+          'Board your transfers to Halong Bay at 9 AM, a natural UNESCO World Heritage Site.',
+          'Enjoy a 3 hour road journey through the picturesque countryside of Vietnam, through the Red River Delta where you will see the daily life of the farmers working in the paddy fields.',
+          'Upon reaching the Tuan Chau Marina, embark on the overnight cruise to experience the breathtaking beauty of this "Descending-dragon" bay, formed by thousands of odd-shaped limestone rocks and karst grottoes.',
+          'After having a delicious lunch on board, we will make our way inside this natural wonder by taking a tours of the grottos.',
+          'Have some adrenaline rush by swimming or kayaking in the ocean and enjoying the beauty of the islets up close.',
+          'Later, we will enjoy a cooking demonstration onboard followed by some evening activities on the boat.',
+          'You can choose to enjoy some leisurely time by watching a beautiful sunset while sipping your favourite drink.',
+          'Have your dinner onboard and call it a day.',
+          'Overnight stay in Halong Bay on cruise.'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Halong Bay to Hanoi. Transfer From Hanoi to Saigon.',
+        description: [
+          'Wake up to a beautiful morning in Halong Bay and get captivated by a beautiful sunrise over the islets in the Bay.',
+          'After breakfast, we\'ll continue our cruise through the magnificent areas of Halong Bay, where each islet has its own name, based on its shape like Sail Island, Fisherman\'s Head Rock, Butterfly Rock, or Turtle Islet.',
+          'We will also stop by the caves and pass by the floating houses of the villagers living in the Halong Bay.',
+          'Before getting back to the port, enjoy a delicious brunch onboard.',
+          'Reach the harbor, disembark and board your return transfers to Hanoi.',
+          'Upon reaching Hanoi, we will then transfer you to the airport (without guide) for your flight to Ho Chi Minh City, also known as Saigon which is the most dynamic city in Vietnam.',
+          'Fly to Saigon and meet your local tour guide outside the airport who will help you board your transfer to the downtown area.',
+          'Upon reaching, check into your hotel and call it a day.',
+          'If time permits, you can explore around or go shopping in the Ben Thanh Market.',
+          'Overnight stay in Saigon.'
+        ]
+      },
+      {
+        day: 5,
+        title: 'Full-Day Tour to Mekong Delta',
+        description: [
+          'Post breakfast at the hotel, get ready to explore the countryside of Vietnam.',
+          'From the hotel, board your transfers to My Tho, which is the homeland of coconut and family factories of local products like coconut candy, rice paper, etc.',
+          'Upon reaching, board a scenic boat that will take you to explore the Mekong Delta where you will witness the amazing life of the locals.',
+          'During this boat ride, we will take a small stopover to savor the local tropical fruits accompanied by traditional southern Vietnamese folk music.',
+          'We also visit the small canals shadowed with coconut trees, through small boats that are used by locals to visit the factories.',
+          'Stroll through the garden and watch locals produce coconut candy milk and how they feed the honeybees. Do try the popular honey tea.',
+          'Upon completing the boat ride, we will visit the Vinh Trang pagoda, a famous pagoda in the area, with a unique blend of Chinese, Cambodian and French architecture.',
+          'After completing the exploration for the day, we will board our transfers back to Saigon.',
+          'In the evening, reach Saigon and call it a day.',
+          'Overnight stay in Saigon.'
+        ]
+      },
+      {
+        day: 6,
+        title: 'Departure from Da Nang. Take back a lot of happy memories.',
+        description: [
+          'Wake up and enjoy your breakfast at the hotel.',
+          'Check out from the hotel and board your transfer to Da Nang International Airport.',
+          'Your amazing Vietnam group trip concludes with a lot of fun memories.',
+          'Depart with a camera full of pictures from Vietnam’s magical landscapes.'
+        ]
+      }
+    ],
+    included: [
+      'Meet & Greet assistance at the Airport',
+      '05 Nights\' Accommodation on Breakfast Basis',
+      'Airport Pickup and Drop on a private basis',
+      'Half-Day Hanoi City Tour with 1-hour Cyclo tour',
+      'SIC tour to Ninh Binh with Local Lunch',
+      'Overnight Cruise in Halong on SIC basis',
+      'Full-Day Tour to Mekong Delta with Boat Ride',
+      'To and Fro flights from Ahmedabad.'
+    ],
+    notIncluded: [
+      'Single Supplement. Early check-in and late check-out. Hotel/Room upgrade.',
+      'Visa Service to Vietnam.',
+      'Tours which are not included in the package.',
+      'Meals not mentioned in the program.',
+      'Any International Flight and airport tax.',
+      'Drinks, personal expenses and any services not clearly mentioned in the program.',
+      'Travel Insurance.',
+      'GST & TCS as applicable extra.',
+      'Wax Museum, cotton animal game, and carnival skill tickets at Fantasy Park are not included.',
+      'Tips for Guide and Driver extra @ $3/- per adult per day'
+    ],
+    stays: [
+      'Hanoi: Hotel / Similar',
+      'Halong Bay: Overnight Cruise / Similar',
+      'Saigon: Hotel / Similar'
+    ],
+    batchDates: [
+      {
+        month: 'July',
+        ranges: ['12th July - 17th July', '26th July - 31st July']
+      },
+      {
+        month: 'August',
+        ranges: ['15th Aug - 20th Aug', '23rd - 28th Aug']
+      },
+      {
+        month: 'September',
+        ranges: ['13th Sept - 18th Sept', '27th Sept - 2nd Oct']
+      },
+      {
+        month: 'October',
+        ranges: ['4th Oct - 9th Oct', '18th Oct - 23rd Oct']
+      },
+      {
+        month: 'November',
+        ranges: ['7th Nov - 12th Nov', '15th Nov - 20th Nov', '22nd Nov - 28th Nov']
+      },
+      {
+        month: 'December',
+        ranges: ['5th Dec - 11th Dec', '13th - 19th Dec.']
+      }
+    ],
+    dates: [],
+    costingDetails: [
+      { label: 'Starting from', value: '₹35,999' }
+    ],
+    thingsToCarry: [
+      'Passport with minimum 6 months validity from the date of departure from India',
+      'Sunscreen & lip balm, Good U/V protection sunglasses',
+      'Personal Medicines (if any)'
+    ],
+    travelEssentials: [
+      {
+        title: 'Gears',
+        items: [
+          'A medium size trolley with one cabin bag',
+          'Reusable water bladder or water bottle'
+        ]
+      },
+      {
+        title: 'Clothes',
+        items: [
+          'a sun cap',
+          'UV protected sunglasses',
+          'Cotton Shirts and T-shirts',
+          'Jeans, Shorts and cotton pants',
+          'Sets of undergarments',
+          'Pair of socks',
+          'A small towel or Beach Towel',
+          'A rain jacket or a poncho'
+        ]
+      },
+      {
+        title: 'Footwear',
+        items: [
+          'Sport Shoes or Sneakers',
+          'Flip flops/sandals'
+        ]
+      },
+      {
+        title: 'Medication',
+        items: [
+          'Glucose powder',
+          'Medicines for headaches, diarrhoea, motion sickness',
+          'Dettol',
+          'Bandages',
+          'Cotton'
+        ]
+      },
+      {
+        title: 'Personal Accessories',
+        items: [
+          'toothpaste, toothbrush',
+          'Paper soap, or sanitizer',
+          'Sunscreen minimum of spf40 , lip balm, cold creams',
+          'Body spray',
+          'LED torch light'
+        ]
+      }
+    ],
+    note: [
+      'Normal Check-in and Check-out time is 03:00 PM and 12:00 noon respectively in Vietnam. Early check-in with breakfast is available at an extra cost of 30 USD/ per person.',
+      'Airport transfer is at fixed time (depending on the majority of arrival and departure time of the group) - Any early or late transfer will be charged extra.',
+      'The age limit of our group departures is 18 to 42 years due to the power packed itineraries that we provide to our travellers. We can customize trips for travellers beyond the mentioned age bracket.',
+      'Every traveler is required to be holding a valid passport with an expiry date at least 6 months post the date of entering Vietnam.',
+      'Tour rates are calculated based on current fuel rates and may be revised if there is a sudden increase in fuel prices or an increase of 15% or above.',
+      'If the guest count for a batch is fewer than 9 guests, only a local guide will be available during the tour, and an Indian Trip Captain will not be accompanying the group.'
+    ]
+  },
+  {
+    id: '60',
+    title: '8 Days Honeymoon Escape Vietnam Couple Special',
+    slug: 'honeymoon-escape-vietnam-couple-special',
+    image: '/images/vietnam-honeymoon.png',
+    destination: 'Vietnam',
+    category: 'Vietnam',
+    description: `Embark on a romantic 8-day honeymoon escape through the highlights of Vietnam. Stroll through Ba Dinh Square and Hanoi's Temple of Literature, and take a traditional 1-hour cyclo ride. Sail through the natural wonder of Ha Long Bay on a luxury overnight cruise with gourmet meals and kayaking. Travel to Da Nang and take a romantic walk through Hoi An Ancient Town, then ride the cable car to Ba Na Hills and stand on the famous Golden Bridge. End in dynamic Saigon (Ho Chi Minh City) with a historic city sightseeing tour and crawl through the legendary Cu Chi Tunnels. Specially designed for couples celebrating their love.`,
+    duration: 8,
+    nights: 7,
+    price: 55999,
+    rating: 4.9,
+    difficulty: 'Easy',
+    groupSize: 10,
+    tripType: 'International',
+    showGetQuoteOnly: true,
+    highlights: [
+      'Hanoi',
+      'Saigon City Tour',
+      'Ho Chi Minh',
+      'Hoi An Ancient Town',
+      'Ha Long Bay Cruise',
+      'Bana Hills',
+      'Cu Chi Tunnel'
+    ],
+    overviewPoints: [
+      'Route: Hanoi → Halong Bay → Hanoi → Da Nang → Hoi An → Ba Na Hills → Saigon (Ho Chi Minh City) → Cu Chi Tunnels',
+      'Duration: 7 Nights / 8 Days.',
+      'Trip Start: Hanoi.',
+      'Trip End: Saigon (Ho Chi Minh City).',
+      'Major Highlights: Hanoi 1-hour Cyclo Tour & City Sights, Halong Bay Luxury Overnight Cruise, Hoi An Ancient Town Tour, Ba Na Hills Cable Car & Golden Bridge, Saigon Landmarks, Cu Chi Tunnels.'
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Arrival in Hanoi. Local sightseeing of Hanoi. Overnight stay in Hanoi.',
+        description: [
+          'Welcome to Hanoi, the capital city of Vietnam.',
+          'Upon arrival, greeted by the local tour guide and transfer to downtown. Check in to your hotel.',
+          'Afternoon, visit Ba Dinh Square – the biggest square in Hanoi where all the biggest cultural, political events of the cities, especially demonstrations, take place.',
+          'Start your visit at the Complex of Ho Chi Minh including Ho Chi Minh Mausoleum (from outside only as it closes in the afternoon), Ho Chi Minh’s house-on-stilts, his fishpond and the One-Pillar Pagoda. Then, the Temple of Literature which is considered as the first university of Vietnam.',
+          'Later, we have an overall view of the capital by cycle in 1 hour, which wanders around the Old Quarter of Hanoi and the Hoan Kiem Lake (the “Sword” Lake). From here wandering on the narrow streets of the Old Quarter to experience the daily life of the local people. Transfer back to your hotel.',
+          'Overnight stay in Hanoi.'
+        ]
+      },
+      {
+        day: 2,
+        title: 'Transfer from Hanoi to Halong. Overnight stay in the cruise.',
+        description: [
+          'Breakfast at hotel and then check out. At 9am we will head to East for 3 hours drive to Halong Bay, the pride of the Gulf of Tonkin, a Natural World Heritage as designated by UNESCO in 1994 and 2006.',
+          'The road will pass by the Red River delta with green paddy fields and rural villages, where hard-work farmers are busy with their farming jobs, ploughing buffaloes or planting seedling.',
+          'Upon arrival in Halong, check in the overnight cruise to discover the magnificent beauty of this “Descending-dragon” bay, created by thousands odd-shaped limestone rocks and karst grottoes.',
+          'After a lunch on board, we can visit the Grottos, stop for swimming or kayaking, passing floating houses and approach islets to enjoy their beauty in close distance.',
+          'Back to the cruise, enjoy cooking demonstration before having dinner.',
+          'Evening attend activities on the boat or relax at your own leisure.',
+          'Overnight on the cruise.'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Transfer from Halong to Hanoi. Overnight stay in Hanoi.',
+        description: [
+          'You should wake up early to enjoy the dawn on the sea in the early morning.',
+          'The Vietnamese call the "East Sea" by a point-oriented name "Eastern Sea", so you may guess how miraculous seeing the sunrise over the islets of the Bay.',
+          'After breakfast our boat will continue to cruise in marvelous areas, where almost each islet has its own name, adopting its shape or reminiscent like Sail Island, Fisherman’s head rock, Butterfly rock or Turtle islet etc.',
+          'Check out your room and have brunch on board while the cruise coming back the pier.',
+          'Disembark from the cruise, transfer back to Hanoi. Check in hotel. Your time at leisure.',
+          'Overnight in Hanoi.'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Transfer from Hanoi to Danang. Local sightseeing of Danang. Overnight stay in Danang.',
+        description: [
+          'Breakfast at the hotel and then check out.',
+          'Transfer to the airport to board a flight to Danang.',
+          'Upon arrival, welcomed by the local tour guide and transfer to check in hotel by the beach (The normal check in time is 14:00-15:00).',
+          'Afternoon, transfer to Hoian Town. You take interesting walk over the tile-roofed Japanese Bridge, visit taciturn Chinese Assembly Halls, enjoy the attractiveness of ancient houses or listen to folk music of Central Vietnam at old clubhouses.',
+          'Later we can stop at shrines or stroll into the market located by Thu Bon River, where you may find the same feelings of the artists, who see the rooftops of Hoian a magical old world of Oriental feel and source of inspiration.',
+          'This is also a wonderful town to shop for lanterns, soft silk, raw silk, or get your clothes tailored within a day. Transfer back to Da Nang.',
+          'Overnight stay in Da Nang.'
+        ]
+      },
+      {
+        day: 5,
+        title: 'Visit to Ba Na Hill. Overnight stay in Da Nang.',
+        description: [
+          'Post breakfast get ready to transfer to Ba Na Hill, one of the most spectacular landscapes of Danang City.',
+          'You will take a cable car to the summit of mountain (at 1487m of sea level).',
+          'Start visiting Ba Na Hill with many different attractions: Funicular, Debay ancient wine cellar & Le Jardin D’Amour, Linh Ung pagoda, Thich Ca Buddist statue, etc.',
+          'This afternoon you continue to join activities and games in Fantasy Park.',
+          'Later walk to the summit of the mountain at the height 1487m – the highest one of Ba Na Mountain, visit Bell Tower, Nghinh Phong tower and Golden Bridge, to take beautiful photos of the mountain and Da Nang city.',
+          'Late afternoon, taking the cable car back to foothill.',
+          'Transfer back to your hotel, rest of the time is free for leisure.',
+          'Overnight stay in Da Nang.'
+        ]
+      },
+      {
+        day: 6,
+        title: 'Transfer from Danang to Saigon. Saigon Local sightseeing. Overnight stay in Saigon.',
+        description: [
+          'Post breakfast get ready for check-out and transfer to Ho Chi Minh city, also known as Saigon. Overnight stay in Saigon.',
+          'Transfer to the airport to take a flight to Ho Chi Minh City, also called as Saigon, the most dynamic city in Vietnam.',
+          'Upon arrival, welcomed by the local tour guide and transfer to the downtown.',
+          'Check in to your hotel and freshen up for local sightseeing.',
+          'Start your city tour at the War Remnants Museum, one of the most famous historical attractions in Saigon.',
+          'Coming to the War Remnants Museum, you can learn a part of how Vietnamese had struggled and fought for their independence, freedom, and peace of the nation and the locals\' perspective of the Vietnam War.',
+          'The exhibits, such as weapons, documents, and photographs, display in the museum are firm evidence of war crimes in Vietnam and speak for the heroic actions of the former Vietnamese generation.',
+          'We then visit the Reunification Palace, the witness of the fierce Vietnam War ended in 1975. The grand building today is a Museum and Hall of official receptions. Nearby the Palace are the Notre Dame Cathedral (view from outside only), built between 1877 and 1883 and colonial-styled Central Post Office, one of the city’s major landmarks. Late afternoon, visit Ben Thanh market, a symbol of Saigon.',
+          'You can choose to spend some leisure time for shopping.',
+          'Overnight stay in Saigon (Ho Chi Minh).'
+        ]
+      },
+      {
+        day: 7,
+        title: 'Visit Cu Chi Tunnel. Overnight stay in Ho Chi Minh City.',
+        description: [
+          'Breakfast at hotel and later drive to Cu Chi Tunnels.',
+          'Cu Chi Tunnels is the network of over 200km of tunnels became legendary when they played a vital role in the War.',
+          'In their heyday, the tunnels were functioning underground cities including numerous trap doors, specially constructed living areas, storage facilities, weapons factories, field hospitals, command centers & kitchens.',
+          'After a short introduction video showing how the tunnels were constructed, you will have a chance to crawl into a short section of the tunnels to feel the oppressive narrowness and heat inside.',
+          'After lunch return to Ho Chi Minh, afternoon is free time at leisure or own sightseeing/shopping around the town.',
+          'Overnight stay in Ho Chi Minh.'
+        ]
+      },
+      {
+        day: 8,
+        title: 'Departure back to your hometown.',
+        description: [
+          'Post breakfast spend some leisure time until check out and transfer to the airport for the departure flight back to your sweet home.'
+        ]
+      }
+    ],
+    included: [
+      '6 nights accommodation based on double/twin sharing room in Hanoi, Danang and Ho Chi Minh city',
+      '1-night cruise stay based on twin sharing cabin on non-private junk in Halong Bay (shuttle bus round trip transfer)',
+      'A total of 10 meals ( Day 2- B+ L+D, Day 3- B+ Brunch, Day 4- B , Day 5- B, Day 6- B, Day 7- B, Day 8 B ) are included.',
+      'All entrance fees and sightseeing as mentioned in the program',
+      'Transportation by vehicle with A/C as per program',
+      'Local English-speaking guides in Vietnam.'
+    ],
+    notIncluded: [
+      'Single Supplement. Early check-in and late check-out. Hotel/Room upgrade.',
+      'Visa Service to Vietnam.',
+      'Tours which are not included in the package.',
+      'Meals not mentioned in the program.',
+      'Any International Flight and airport tax.',
+      'Drinks, personal expenses and any services not clearly mentioned in the program.',
+      'Travel Insurance.',
+      'GST & TCS as applicable extra.',
+      'Wax Museum, cotton animal game, and carnival skill tickets at Fantasy Park are not included.',
+      'Tips for Guide and Driver extra @ $3/- per adult per day'
+    ],
+    stays: [
+      'Hanoi: Hotel / Similar',
+      'Halong Bay: Overnight Cruise / Similar',
+      'Da Nang: Hotel / Similar',
+      'Saigon: Hotel / Similar'
+    ],
+    batchDates: [
+      {
+        month: 'July',
+        ranges: ['12th July - 17th July', '26th July - 31st July']
+      },
+      {
+        month: 'August',
+        ranges: ['15th Aug - 20th Aug', '23rd - 28th Aug']
+      },
+      {
+        month: 'September',
+        ranges: ['13th Sept - 18th Sept', '27th Sept - 2nd Oct']
+      },
+      {
+        month: 'October',
+        ranges: ['4th Oct - 9th Oct', '18th Oct - 23rd Oct']
+      },
+      {
+        month: 'November',
+        ranges: ['7th Nov - 12th Nov', '15th Nov - 20th Nov', '22nd Nov - 28th Nov']
+      },
+      {
+        month: 'December',
+        ranges: ['5th Dec - 11th Dec', '13th - 19th Dec.']
+      }
+    ],
+    dates: [],
+    costingDetails: [
+      { label: 'Starting from', value: '₹55,999' }
+    ],
+    thingsToCarry: [
+      'Passport with minimum 6 months validity from the date of departure from India',
+      'Sunscreen & lip balm, Good U/V protection sunglasses',
+      'Personal Medicines (if any)'
+    ],
+    travelEssentials: [
+      {
+        title: 'Gears',
+        items: [
+          'A medium size trolley with one cabin bag',
+          'Reusable water bladder or water bottle'
+        ]
+      },
+      {
+        title: 'Clothes',
+        items: [
+          'a sun cap',
+          'UV protected sunglasses',
+          'Cotton Shirts and T-shirts',
+          'Jeans, Shorts and cotton pants',
+          'Sets of undergarments',
+          'Pair of socks',
+          'A small towel or Beach Towel',
+          'A rain jacket or a poncho'
+        ]
+      },
+      {
+        title: 'Footwear',
+        items: [
+          'Sport Shoes or Sneakers',
+          'Flip flops/sandals'
+        ]
+      },
+      {
+        title: 'Medication',
+        items: [
+          'Glucose powder',
+          'Medicines for headaches, diarrhoea, motion sickness',
+          'Dettol',
+          'Bandages',
+          'Cotton'
+        ]
+      },
+      {
+        title: 'Personal Accessories',
+        items: [
+          'toothpaste, toothbrush',
+          'Paper soap, or sanitizer',
+          'Sunscreen minimum of spf40 , lip balm, cold creams',
+          'Body spray',
+          'LED torch light'
+        ]
+      }
+    ],
+    note: [
+      'Normal Check-in and Check-out time is 03:00 PM and 12:00 noon respectively in Vietnam. Early check-in with breakfast is available at an extra cost of 30 USD/ per person.',
+      'Airport transfer is at fixed time (depending on the majority of arrival and departure time of the group) - Any early or late transfer will be charged extra.',
+      'The age limit of our group departures is 18 to 42 years due to the power packed itineraries that we provide to our travellers. We can customize trips for travellers beyond the mentioned age bracket.',
+      'Every traveler is required to be holding a valid passport with an expiry date at least 6 months post the date of entering Vietnam.',
+      'Tour rates are calculated based on current fuel rates and may be revised if there is a sudden increase in fuel prices or an increase of 15% or above.',
+      'If the guest count for a batch is fewer than 9 guests, only a local guide will be available during the tour, and an Indian Trip Captain will not be accompanying the group.'
+    ]
+  },
+  {
+    id: '61',
+    title: '9 Days Beauty Of Vietnam Couple Trip',
+    slug: 'beauty-of-vietnam-couple-trip',
+    image: '/images/vietnam-beauty.png',
+    destination: 'Vietnam',
+    category: 'Vietnam',
+    description: `Discover the true beauty of Vietnam on an unforgettable 9-day romantic couple's trip. Travel from the historic streets of Hanoi to the UNESCO World Heritage Site of Halong Bay for an overnight luxury cruise. Fly to Da Nang to take a sunset walk through Hoi An Ancient Town and visit the spectacular Ba Na Hills to see the iconic Golden Bridge. Complete your romance in dynamic Saigon (Ho Chi Minh City) with a scenic Mekong Delta boat excursion and a visit to the historic Cu Chi Tunnels. A perfect tour combining nature, history, and intimate travel experiences.`,
+    duration: 9,
+    nights: 8,
+    price: 65999,
+    rating: 4.9,
+    difficulty: 'Easy',
+    groupSize: 10,
+    tripType: 'International',
+    showGetQuoteOnly: true,
+    highlights: [
+      'Hanoi',
+      'Saigon City Tour',
+      'Ho Chi Minh',
+      'Hoi An Ancient Town',
+      'Ha Long Bay Cruise',
+      'Bana Hills',
+      'Mekong Delta',
+      'Cu Chi Tunnel'
+    ],
+    overviewPoints: [
+      'Route: Hanoi → Halong Bay → Hanoi → Da Nang → Hoi An → Ba Na Hills → Saigon (Ho Chi Minh City) → Mekong Delta → Cu Chi Tunnels',
+      'Duration: 8 Nights / 9 Days.',
+      'Trip Start: Hanoi.',
+      'Trip End: Saigon (Ho Chi Minh City).',
+      'Major Highlights: Hanoi 1-hour Cyclo Tour & City Sights, Halong Bay Luxury Overnight Cruise, Hoi An Ancient Town Tour, Ba Na Hills Cable Car & Golden Bridge, Saigon Landmarks, Mekong Delta Boat Excursion, Cu Chi Tunnels.'
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Arrival in Hanoi. Local sightseeing of Hanoi. Overnight stay in Hanoi.',
+        description: [
+          'Welcome to Hanoi, the capital city of Vietnam.',
+          'Upon arrival, greeted by the local tour guide and transfer to downtown. Check in to your hotel.',
+          'Afternoon, visit Ba Dinh Square – the biggest square in Hanoi where all the biggest cultural, political events of the cities, especially demonstrations, take place.',
+          'Start your visit at the Complex of Ho Chi Minh including Ho Chi Minh Mausoleum (from outside only as it closes in the afternoon), Ho Chi Minh’s house-on-stilts, his fishpond and the One-Pillar Pagoda. Then, the Temple of Literature which is considered as the first university of Vietnam.',
+          'Later, we have an overall view of the capital by cycle in 1 hour, which wanders around the Old Quarter of Hanoi and the Hoan Kiem Lake (the “Sword” Lake). From here wandering on the narrow streets of the Old Quarter to experience the daily life of the local people. Transfer back to your hotel.',
+          'Overnight stay in Hanoi.'
+        ]
+      },
+      {
+        day: 2,
+        title: 'Transfer from Hanoi to Halong. Overnight stay in the cruise.',
+        description: [
+          'Breakfast at hotel and then check out. At 9am we will head to East for 3 hours drive to Halong Bay, the pride of the Gulf of Tonkin, a Natural World Heritage as designated by UNESCO in 1994 and 2006.',
+          'The road will pass by the Red River delta with green paddy fields and rural villages, where hard-work farmers are busy with their farming jobs, ploughing buffaloes or planting seedling.',
+          'Upon arrival in Halong, check in the overnight cruise to discover the magnificent beauty of this “Descending-dragon” bay, created by thousands odd-shaped limestone rocks and karst grottoes.',
+          'After a lunch on board, we can visit the Grottos, stop for swimming or kayaking, passing floating houses and approach islets to enjoy their beauty in close distance.',
+          'Back to the cruise, enjoy cooking demonstration before having dinner.',
+          'Evening attend activities on the boat or relax at your own leisure.',
+          'Overnight on the cruise.'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Transfer from Halong to Hanoi. Overnight stay in Hanoi.',
+        description: [
+          'You should wake up early to enjoy the dawn on the sea in the early morning.',
+          'The Vietnamese call the "East Sea" by a point-oriented name "Eastern Sea", so you may guess how miraculous seeing the sunrise over the islets of the Bay.',
+          'After breakfast our boat will continue to cruise in marvelous areas, where almost each islet has its own name, adopting its shape or reminiscent like Sail Island, Fisherman’s head rock, Butterfly rock or Turtle islet etc.',
+          'Check out your room and have brunch on board while the cruise coming back the pier.',
+          'Disembark from the cruise, transfer back to Hanoi. Check in hotel. Your time at leisure.',
+          'Overnight in Hanoi.'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Transfer from Hanoi to Danang. Local sightseeing of Danang. Overnight stay in Danang.',
+        description: [
+          'Breakfast at the hotel and then check out.',
+          'Transfer to the airport to board a flight to Danang.',
+          'Upon arrival, welcomed by the local tour guide and transfer to check in hotel by the beach (The normal check in time is 14:00-15:00).',
+          'Afternoon, transfer to Hoi an Town. You take interesting walk over the tile-roofed Japanese Bridge, visit taciturn Chinese Assembly Halls, enjoy the attractiveness of ancient houses or listen to folk music of Central Vietnam at old clubhouses.',
+          'Later we can stop at shrines or stroll into the market located by Thu Bon River, where you may find the same feelings of the artists, who see the rooftops of Hoian a magical old world of Oriental feel and source of inspiration.',
+          'This is also a wonderful town to shop for lanterns, soft silk, raw silk, or get your clothes tailored within a day. Transfer back to Danang.',
+          'Overnight stay in Danang.'
+        ]
+      },
+      {
+        day: 5,
+        title: 'Visit to Ba Na Hill & Golden Hands Bridge Overnight stay in Danang',
+        description: [
+          'Post breakfast get ready to transfer to Ba Na Hill, one of the most spectacular landscapes of Danang City.',
+          'You will take a cable car to the summit of mountain (at 1487m of sea level).',
+          'Start visiting Ba Na Hill with many different attractions: Funicular, Debay ancient wine cellar & Le Jardin D’Amour, Linh Ung pagoda, Thich Ca Buddist statue, etc.',
+          'This afternoon you continue to join activities and games in Fantasy Park.',
+          'Later walk to the summit of the mountain at the height 1487m – the highest one of Ba Na Mountain, visit Bell Tower, Nghinh Phong tower and Golden Bridge, to take beautiful photos of the mountain and Da Nang city.',
+          'Late afternoon, taking the cable car back to foothill.',
+          'Transfer back to your hotel, rest of the time is free for leisure.',
+          'Overnight stay in Danang'
+        ]
+      },
+      {
+        day: 6,
+        title: 'Transfer from Danang to Saigon. Saigon Local sightseeing. Overnight stay in Saigon',
+        description: [
+          'Post breakfast get ready for check-out and transfer to Ho Chi Minh city, also known as Saigon. Overnight stay in Saigon',
+          'Transfer to the airport to take a flight to Ho Chi Minh City, also called as Saigon, the most dynamic city in Vietnam.',
+          'Upon arrival, welcomed by the local tour guide and transfer to the downtown.',
+          'Check in to your hotel and freshen up for local sightseeing.',
+          'Start your city tour at the War Remnants Museum, one of the most famous historical attractions in Saigon.',
+          'Coming to the War Remnants Museum, you can learn a part of how Vietnamese had struggled and fought for their independence, freedom, and peace of the nation and the locals\' perspective of the Vietnam War.',
+          'The exhibits, such as weapons, documents, and photographs, display in the museum are firm evidence of war crimes in Vietnam and speak for the heroic actions of the former Vietnamese generation.',
+          'We then visit the Reunification Palace, the witness of the fierce Vietnam War ended in 1975. The grand building today is a Museum and Hall of official receptions. Nearby the Palace are the Notre Dame Cathedral (view from outside only), built between 1877 and 1883 and colonial-styled Central Post Office, one of the city’s major landmarks. Late afternoon, visit Ben Thanh market, a symbol of Saigon.',
+          'You can choose to spend some leisure time for shopping',
+          'Overnight stay in Saigon (Ho Chi Minh).'
+        ]
+      },
+      {
+        day: 7,
+        title: 'Excursion to the Mekong Delta.',
+        description: [
+          'Start your day with breakfast at the hotel and prepare for an exciting day ahead.',
+          'We’ll first head to My Tho, famous for its coconuts and family-run factories producing coconut candy and rice paper.',
+          'Here, you’ll board a boat along the Mekong Delta where you can watch floating homes and local farmers at work along the riverbanks.',
+          'We’ll stop at a small island to enjoy fresh tropical fruits in a light garden while listening to southern Vietnamese folk music.',
+          'Next, sail through narrow canals on small rowboats to visit local factories, and see how coconut candy and honey are made.',
+          'Explore the gardens and watch locals feed honeybees, a charming glimpse into everyday village life.',
+          'Next, visit Vinh Trang Pagoda, known for its beautiful mix of Chinese, Cambodian, and French architecture.',
+          'In the late afternoon, we’ll make our way back to Ho Chi Minh City.',
+          'You can spend the evening at your own leisure where you can explore Nguyen Hue Walking Street, or try a drink at a rooftop cafe with views of the Saigon River.',
+          'Enjoy an overnight stay in Ho Chi Minh City.'
+        ]
+      },
+      {
+        day: 8,
+        title: 'Visit Cu Chi Tunnel. Overnight stay in Ho Chi Minh City.',
+        description: [
+          'Breakfast at hotel and later drive to Cu Chi Tunnels.',
+          'Cu Chi Tunnels is the network of over 200km of tunnels became legendary when they played a vital role in the War.',
+          'In their heyday, the tunnels were functioning underground cities including numerous trap doors, specially constructed living areas, storage facilities, weapons factories, field hospitals, command centers & kitchens.',
+          'After a short introduction video showing how the tunnels were constructed, you will have a chance to crawl into a short section of the tunnels to feel the oppressive narrowness and heat inside.',
+          'After lunch return to Ho Chi Minh, afternoon is free time at leisure or own sightseeing/shopping around the town.',
+          'Overnight stay in Ho Chi Minh.'
+        ]
+      },
+      {
+        day: 9,
+        title: 'Departure back to your hometown.',
+        description: [
+          'Post breakfast spend some leisure time until check out and transfer to the airport for the departure flight back to your sweet home.'
+        ]
+      }
+    ],
+    included: [
+      'Meet & Greet assistance on airport',
+      'Local english-speaking guide/driver in Vietnam',
+      '8 nights accommodation in double/twin sharing rooms (2 nights in Hanoi, 2 nights in Danang, 3 nights in Ho Chi Minh city and 1 night cruise stay in Halong Bay)',
+      'Meals Included - 8 breakfasts (Day 2-7), 1 Lunch & 1 Dinner (Day 2), 1 Brunch (Day 3)',
+      'All entrance fees and sightseeing as mentioned in the itinerary',
+      'Transportation by vehicle with A/C as per itinerary',
+      'Travel assistance'
+    ],
+    notIncluded: [
+      'Single Supplement. Early check-in and late check-out. Hotel/Room upgrade.',
+      'Visa Service to Vietnam.',
+      'Tours which are not included in the package.',
+      'Meals not mentioned in the program.',
+      'Any International Flight and airport tax.',
+      'Drinks, personal expenses and any services not clearly mentioned in the program.',
+      'Travel Insurance.',
+      'GST & TCS as applicable extra.',
+      'Wax Museum, cotton animal game, and carnival skill tickets at Fantasy Park are not included.',
+      'Tips for Guide and Driver extra @ $3/- per adult per day'
+    ],
+    stays: [
+      'Hanoi: Hotel / Similar',
+      'Halong Bay: Overnight Cruise / Similar',
+      'Da Nang: Hotel / Similar',
+      'Saigon: Hotel / Similar'
+    ],
+    batchDates: [
+      {
+        month: 'July',
+        ranges: ['12th July - 17th July', '26th July - 31st July']
+      },
+      {
+        month: 'August',
+        ranges: ['15th Aug - 20th Aug', '23rd - 28th Aug']
+      },
+      {
+        month: 'September',
+        ranges: ['13th Sept - 18th Sept', '27th Sept - 2nd Oct']
+      },
+      {
+        month: 'October',
+        ranges: ['4th Oct - 9th Oct', '18th Oct - 23rd Oct']
+      },
+      {
+        month: 'November',
+        ranges: ['7th Nov - 12th Nov', '15th Nov - 20th Nov', '22nd Nov - 28th Nov']
+      },
+      {
+        month: 'December',
+        ranges: ['5th Dec - 11th Dec', '13th - 19th Dec.']
+      }
+    ],
+    dates: [],
+    costingDetails: [
+      { label: 'Starting from', value: '₹65,999' }
+    ],
+    thingsToCarry: [
+      'Passport with minimum 6 months validity from the date of departure from India',
+      'Sunscreen & lip balm, Good U/V protection sunglasses',
+      'Personal Medicines (if any)'
+    ],
+    travelEssentials: [
+      {
+        title: 'Gears',
+        items: [
+          'A medium size trolley with one cabin bag',
+          'Reusable water bladder or water bottle'
+        ]
+      },
+      {
+        title: 'Clothes',
+        items: [
+          'a sun cap',
+          'UV protected sunglasses',
+          'Cotton Shirts and T-shirts',
+          'Jeans, Shorts and cotton pants',
+          'Sets of undergarments',
+          'Pair of socks',
+          'A small towel or Beach Towel',
+          'A rain jacket or a poncho'
+        ]
+      },
+      {
+        title: 'Footwear',
+        items: [
+          'Sport Shoes or Sneakers',
+          'Flip flops/sandals'
+        ]
+      },
+      {
+        title: 'Medication',
+        items: [
+          'Glucose powder',
+          'Medicines for headaches, diarrhoea, motion sickness',
+          'Dettol',
+          'Bandages',
+          'Cotton'
+        ]
+      },
+      {
+        title: 'Personal Accessories',
+        items: [
+          'toothpaste, toothbrush',
+          'Paper soap, or sanitizer',
+          'Sunscreen minimum of spf40 , lip balm, cold creams',
+          'Body spray',
+          'LED torch light'
+        ]
+      }
+    ],
+    note: [
+      'Normal Check-in and Check-out time is 03:00 PM and 12:00 noon respectively in Vietnam. Early check-in with breakfast is available at an extra cost of 30 USD/ per person.',
+      'Airport transfer is at fixed time (depending on the majority of arrival and departure time of the group) - Any early or late transfer will be charged extra.',
+      'The age limit of our group departures is 18 to 42 years due to the power packed itineraries that we provide to our travellers. We can customize trips for travellers beyond the mentioned age bracket.',
+      'Every traveler is required to be holding a valid passport with an expiry date at least 6 months post the date of entering Vietnam.',
+      'Tour rates are calculated based on current fuel rates and may be revised if there is a sudden increase in fuel prices or an increase of 15% or above.',
+      'If the guest count for a batch is fewer than 9 guests, only a local guide will be available during the tour, and an Indian Trip Captain will not be accompanying the group.'
+    ]
+  },
+  {
+    id: '62',
+    title: '8 Days Dreamy Escape Vietnam Couple Special Trip',
+    slug: 'dreamy-escape-vietnam-couple-special-trip',
+    image: '/images/vietnam-dreamy.png',
+    destination: 'Vietnam',
+    category: 'Vietnam',
+    description: `Experience the magic of Vietnam on a romantic 8-day couple's dreamy escape. Begin with a historic Hanoi city tour and unique Train Street experience. Drive to Ninh Binh to visit the ancient capital of Hoa Lu and take a scenic boat trip through Tam Coc Caves. Enjoy a wonderful day cruise along the limestone karsts of Halong Bay with a delicious lunch onboard. Fly to Da Nang to stroll through the charming streets of Hoi An Ancient Town and ride the cable car to the summit of Ba Na Hills to see the famous Golden Bridge. Conclude your trip in Saigon (Ho Chi Minh City) with leisure time for shopping or nightlife. A dreamy getaway designed for couples.`,
+    duration: 8,
+    nights: 7,
+    price: 35999,
+    rating: 4.9,
+    difficulty: 'Easy',
+    groupSize: 10,
+    tripType: 'International',
+    showGetQuoteOnly: true,
+    highlights: [
+      'Hanoi',
+      'Ninh Binh',
+      'Ha Long Bay',
+      'Bana Hills',
+      'Hoi An Ancient Town',
+      'Ho Chi Minh',
+      'Da Nang',
+      'Saigao'
+    ],
+    overviewPoints: [
+      'Route: Hanoi → Ninh Binh → Halong Bay → Da Nang → Hoi An → Ba Na Hills → Saigon (Ho Chi Minh City)',
+      'Duration: 7 Nights / 8 Days.',
+      'Trip Start: Hanoi.',
+      'Trip End: Saigon (Ho Chi Minh City).',
+      'Major Highlights: Hanoi Train Street & City Tour, Hoa Lu & Tam Coc Caves in Ninh Binh, Halong Bay Day Cruise, Hoi An Ancient Town Tour, Ba Na Hills Cable Car & Golden Bridge, Saigon Sights.'
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Arrival in Hanoi - Half-Day City Tour',
+        description: [
+          'Arrive at Noi Bai International Airport, Hanoi, and complete the immigration formalities.',
+          'You will then board your transfers to your hotel for check-in and some rest.',
+          'In the afternoon, we will begin our city tour with a visit to Tran Quoc Pagoda, the oldest Buddhist temple in Hanoi, located on the peaceful West Lake.',
+          'We will then continue to the famous Train Street, where you can experience the thrill of seeing a railway pass through a narrow residential lane lined with cafes.',
+          'Next, we will visit the Ho Chi Minh Mausoleum, where you can learn about the life of Vietnam’s national leader, followed by a stop at the nearby One Pillar Pagoda, a unique lotus-shaped temple.',
+          'Our last stop for the day will be the Old Quarter Market, where you can shop for souvenirs and taste local street food.',
+          'Spend the rest of your time enjoying the lively atmosphere of Beer Street and the Hanoi Night Market.',
+          'Lastly, return to your hotel after the tour (as per your convenience) and call it a day.',
+          'Overnight stay in Hanoi.'
+        ]
+      },
+      {
+        day: 2,
+        title: 'Full Day Sic Tour To Ninh Binh – Hoa Lu – Tam Coc.',
+        description: [
+          'Wake up to a delicious breakfast at your hotel, and get ready for an exciting day ahead.',
+          'Today we will drive you 90km south of Hanoi to the historic site of Ninh Binh, the ancient capital city of Vietnam.',
+          'Next, we will take you on a boat ride through the stunning series of Tam Coc Caves, which is known as “Halong Bay on Land” as the huge limestone karsts dot the river amidst the lush paddy fields.',
+          'Enjoy a delicious lunch at a local restaurant before we continue our adventure and visit Hoa Lu, the site of the former kings\' palace in the 10th century.',
+          'Marvel at the intricate wooden reliefs of the Dinh and Le temples that stand tall to this day.',
+          'Our exploration of Ninh Binh concludes with a visit to Bich Dong Pagoda, a serene and peaceful place that will leave you in awe.',
+          'Upon completing the sightseeing by late afternoon, we will start our journey back to Hanoi, feeling enriched and rejuvenated from the day\'s adventures.',
+          'Overnight stay in Hanoi.'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Lunch Cruise in Halong Bay. Evening at leisure.',
+        description: [
+          'Start your day by having your breakfast at the hotel and get ready for the day.',
+          'Board your transfers to Halong Bay, a natural UNESCO World Heritage Site.',
+          'After a 3.5-hour road journey through the picturesque countryside of Vietnam, we will reach the Tuan Chau Marina from where you will board your lunch cruise.',
+          'Embark on this 4-hour day cruise to explore Halong Bay also known as the "Descending-dragon" Bay.',
+          'As we make our way inside this natural wonder, marvel at the uniquely shaped limestone and karst formations named based on their shape like Sail Island, Fisherman\'s Head Rock, Butterfly Rock, or Turtle Islet.',
+          'During this lunch cruise, we will also stop by the caves and pass by the floating houses.',
+          'Enjoy a delicious lunch onboard before heading back to the mainland.',
+          'Reach the harbor, disembark and board your return transfers to Hanoi.',
+          'Upon reaching Hanoi, spend the rest of the day at leisure.',
+          'Overnight stay in Hanoi.'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Transfer from Hanoi to Danang. Day at leisure.',
+        description: [
+          'After having your breakfast at the hotel, get ready and check out from the hotel.',
+          'We will then transfer you to the airport (without guide) for your flight to Danang - a scenic coastal town in central Vietnam.',
+          'Fly to Danang and meet your local tour guide outside the airport who will help you board your transfer to the hotel.',
+          'Upon reaching, check into your hotel and freshen up.',
+          'You can then spend the rest of the evening at leisure.',
+          'You are free to explore around and visit the beaches, markets, or the famous Golden Dragon Bridge of Danang.',
+          'Overnight stay in Danang.'
+        ]
+      },
+      {
+        day: 5,
+        title: 'Visit to Ba Na Hill & Golden Hands Bridge Overnight stay in Danang',
+        description: [
+          'Post breakfast get ready to transfer to Ba Na Hill, one of the most spectacular landscapes of Danang City.',
+          'You will take a cable car to the summit of mountain (at 1487m of sea level).',
+          'Start visiting Ba Na Hill with many different attractions: Funicular, Debay ancient wine cellar & Le Jardin D’Amour, Linh Ung pagoda, Thich Ca Buddist statue, etc.',
+          'This afternoon you continue to join activities and games in Fantasy Park.',
+          'Later walk to the summit of the mountain at the height 1487m – the highest one of Ba Na Mountain, visit Bell Tower, Nghinh Phong tower and Golden Bridge, to take beautiful photos of the mountain and Da Nang city.',
+          'Late afternoon, taking the cable car back to foothill.',
+          'Transfer back to your hotel, rest of the time is free for leisure.',
+          'Overnight stay in Danang'
+        ]
+      },
+      {
+        day: 6,
+        title: 'Full-Day Tour To Hoi An. Explore the UNESCO Ancient Town',
+        description: [
+          'Begin your day by having your breakfast and then get ready for a fun-filled day.',
+          'Board your transfers that will take you to the ancient Port Town of Hoi An - a UNESCO World Heritage town that will captivate you with its charm.',
+          'Upon reaching, we will begin exploring the Hoi An Town starting from a nice walk over the tile-roofed Japanese Bridge built in the 17th century.',
+          'Next, we will visit the Chinese Hall Assembly and take a walk through the ancient houses of Hoi An.',
+          'We will enjoy some folk music of Central Vietnam by visiting the old clubhouses lined across the town.',
+          'Enjoy some shopping at the local market lined along the Thu Bon River which exudes oriental and vintage vibes.',
+          'You can shop some lanterns, soft silk, raw silk or get your clothes tailored within a day in Hoian.',
+          'After enjoying your day in this ancient town, board your transfers back to Danang.',
+          'Overnight stay in Danang.'
+        ]
+      },
+      {
+        day: 7,
+        title: 'Transfer from Danang to Saigon. Day at leisure.',
+        description: [
+          'After having your breakfast at the hotel, get ready and check out from the hotel.',
+          'We will then transfer you to the airport (without guide) for your flight to Ho Chi Minh City, also known as Saigon which is the most dynamic city in Vietnam',
+          'Fly to Saigon and meet your local tour guide outside the airport who will help you board your transfer to the downtown area.',
+          'Upon reaching, check into your hotel and freshen up.',
+          'You can then spend the rest of the day at leisure.',
+          'During this time, you can choose several activities like exploring the best tourist attractions in Saigon, shopping in the Ben Thanh Market, or enjoying the bustling nightlife of Saigon.',
+          'After exploration, return back to your hotel.',
+          'Overnight stay in Saigon.'
+        ]
+      },
+      {
+        day: 8,
+        title: 'Departure back to your hometown.',
+        description: [
+          'Post breakfast spend some leisure time until check out and transfer to the airport for the departure flight back to your sweet home.'
+        ]
+      }
+    ],
+    included: [
+      'Meet & Greet assistance at the Airport',
+      '07 Nights\' Accommodation on Breakfast Basis',
+      'Airport Pickup and Drop on a private basis',
+      'Half-Day Hanoi City Tour with 1-hour Cyclo tour',
+      'SIC tour to Ninh Binh with Local Lunch',
+      'Lunch Cruise in Halong on SIC basis',
+      'Bana Hill Cable Car Tickets',
+      'Full-Day Tour to Bana Hills',
+      'Full-Day Tour to Ancient Town of Hoi An.'
+    ],
+    notIncluded: [
+      'Single Supplement. Early check-in and late check-out. Hotel/Room upgrade.',
+      'Visa Service to Vietnam.',
+      'Tours which are not included in the package.',
+      'Meals not mentioned in the program.',
+      'Any International Flight and airport tax.',
+      'Drinks, personal expenses and any services not clearly mentioned in the program.',
+      'Travel Insurance.',
+      'GST & TCS as applicable extra.',
+      'Wax Museum, cotton animal game, and carnival skill tickets at Fantasy Park are not included.',
+      'Tips for Guide and Driver extra @ $3/- per adult per day'
+    ],
+    stays: [
+      'Hanoi: Hotel / Similar',
+      'Da Nang: Hotel / Similar',
+      'Saigon: Hotel / Similar'
+    ],
+    batchDates: [
+      {
+        month: 'July',
+        ranges: ['12th July - 17th July', '26th July - 31st July']
+      },
+      {
+        month: 'August',
+        ranges: ['15th Aug - 20th Aug', '23rd - 28th Aug']
+      },
+      {
+        month: 'September',
+        ranges: ['13th Sept - 18th Sept', '27th Sept - 2nd Oct']
+      },
+      {
+        month: 'October',
+        ranges: ['4th Oct - 9th Oct', '18th Oct - 23rd Oct']
+      },
+      {
+        month: 'November',
+        ranges: ['7th Nov - 12th Nov', '15th Nov - 20th Nov', '22nd Nov - 28th Nov']
+      },
+      {
+        month: 'December',
+        ranges: ['5th Dec - 11th Dec', '13th - 19th Dec.']
+      }
+    ],
+    dates: [],
+    costingDetails: [
+      { label: 'Starting from', value: '₹35,999' }
+    ],
+    thingsToCarry: [
+      'Passport with minimum 6 months validity from the date of departure from India',
+      'Sunscreen & lip balm, Good U/V protection sunglasses',
+      'Personal Medicines (if any)'
+    ],
+    travelEssentials: [
+      {
+        title: 'Gears',
+        items: [
+          'A medium size trolley with one cabin bag',
+          'Reusable water bladder or water bottle'
+        ]
+      },
+      {
+        title: 'Clothes',
+        items: [
+          'a sun cap',
+          'UV protected sunglasses',
+          'Cotton Shirts and T-shirts',
+          'Jeans, Shorts and cotton pants',
+          'Sets of undergarments',
+          'Pair of socks',
+          'A small towel or Beach Towel',
+          'A rain jacket or a poncho'
+        ]
+      },
+      {
+        title: 'Footwear',
+        items: [
+          'Sport Shoes or Sneakers',
+          'Flip flops/sandals'
+        ]
+      },
+      {
+        title: 'Medication',
+        items: [
+          'Glucose powder',
+          'Medicines for headaches, diarrhoea, motion sickness',
+          'Dettol',
+          'Bandages',
+          'Cotton'
+        ]
+      },
+      {
+        title: 'Personal Accessories',
+        items: [
+          'toothpaste, toothbrush',
+          'Paper soap, or sanitizer',
+          'Sunscreen minimum of spf40 , lip balm, cold creams',
+          'Body spray',
+          'LED torch light'
+        ]
+      }
+    ],
+    note: [
+      'Normal Check-in and Check-out time is 03:00 PM and 12:00 noon respectively in Vietnam. Early check-in with breakfast is available at an extra cost of 30 USD/ per person.',
+      'Airport transfer is at fixed time (depending on the majority of arrival and departure time of the group) - Any early or late transfer will be charged extra.',
+      'The age limit of our group departures is 18 to 42 years due to the power packed itineraries that we provide to our travellers. We can customize trips for travellers beyond the mentioned age bracket.',
+      'Every traveler is required to be holding a valid passport with an expiry date at least 6 months post the date of entering Vietnam.',
+      'Tour rates are calculated based on current fuel rates and may be revised if there is a sudden increase in fuel prices or an increase of 15% or above.',
+      'If the guest count for a batch is fewer than 9 guests, only a local guide will be available during the tour, and an Indian Trip Captain will not be accompanying the group.'
+    ]
+  },
+  {
+    id: '63',
+    title: '9 Days Luxury Vietnam Couple Getaway',
+    slug: 'luxury-vietnam-couple-getaway',
+    image: '/images/vietnam-luxury-couple.png',
+    destination: 'Vietnam',
+    category: 'Vietnam',
+    description: `Indulge in a romantic and luxurious 9-day couple's getaway exploring Vietnam's most iconic destinations. Start your journey with a half-day tour of Hanoi and its famous Train Street. Spend a full day exploring Ninh Binh's Hoa Lu and cruising through the beautiful Tam Coc caves. Embark on a scenic Halong Bay day cruise with a delicious lunch. Fly to Da Nang to visit the scenic Ba Na Hills and Golden Hands Bridge, and take a guided walk in the ancient town of Hoi An. End in Saigon with a premium full-day Mekong Delta boat tour and local sightseeing. Designed to combine comfort and magic.`,
+    duration: 9,
+    nights: 8,
+    price: 65999,
+    rating: 4.9,
+    difficulty: 'Easy',
+    groupSize: 10,
+    tripType: 'International',
+    showGetQuoteOnly: true,
+    highlights: [
+      'Hanoi',
+      'Ninh Binh',
+      'Ha Long Bay',
+      'Bana Hills',
+      'Hoi An Ancient Town',
+      'Ho Chi Minh',
+      'Da Nang',
+      'Saigao'
+    ],
+    overviewPoints: [
+      'Route: Hanoi → Ninh Binh → Halong Bay → Da Nang → Hoi An → Ba Na Hills → Saigon (Ho Chi Minh City)',
+      'Duration: 8 Nights / 9 Days.',
+      'Trip Start: Hanoi.',
+      'Trip End: Saigon (Ho Chi Minh City).',
+      'Major Highlights: Hanoi Train Street & City Tour, Hoa Lu & Tam Coc Caves in Ninh Binh, Halong Bay Day Cruise, Hoi An Ancient Town Tour, Ba Na Hills Cable Car & Golden Bridge, Mekong Delta Full-Day Tour.'
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Arrival in Hanoi - Half-Day City Tour',
+        description: [
+          'Arrive at Noi Bai International Airport, Hanoi, and complete the immigration formalities.',
+          'You will then board your transfers to your hotel for check-in and some rest.',
+          'In the afternoon, we will begin our city tour with a visit to Tran Quoc Pagoda, the oldest Buddhist temple in Hanoi, located on the peaceful West Lake.',
+          'We will then continue to the famous Train Street, where you can experience the thrill of seeing a railway pass through a narrow residential lane lined with cafes.',
+          'Next, we will visit the Ho Chi Minh Mausoleum, where you can learn about the life of Vietnam’s national leader, followed by a stop at the nearby One Pillar Pagoda, a unique lotus-shaped temple.',
+          'Our last stop for the day will be the Old Quarter Market, where you can shop for souvenirs and taste local street food.',
+          'Spend the rest of your time enjoying the lively atmosphere of Beer Street and the Hanoi Night Market.',
+          'Lastly, return to your hotel after the tour (as per your convenience) and call it a day.',
+          'Overnight stay in Hanoi.'
+        ]
+      },
+      {
+        day: 2,
+        title: 'Full Day Sic Tour To Ninh Binh – Hoa Lu – Tam Coc.',
+        description: [
+          'Wake up to a delicious breakfast at your hotel, and get ready for an exciting day ahead.',
+          'Today we will drive you 90km south of Hanoi to the historic site of Ninh Binh, the ancient capital city of Vietnam.',
+          'Next, we will take you on a boat ride through the stunning series of Tam Coc Caves, which is known as “Halong Bay on Land” as the huge limestone karsts dot the river amidst the lush paddy fields.',
+          'Enjoy a delicious lunch at a local restaurant before we continue our adventure and visit Hoa Lu, the site of the former kings\' palace in the 10th century.',
+          'Marvel at the intricate wooden reliefs of the Dinh and Le temples that stand tall to this day.',
+          'Our exploration of Ninh Binh concludes with a visit to Bich Dong Pagoda, a serene and peaceful place that will leave you in awe.',
+          'Upon completing the sightseeing by late afternoon, we will start our journey back to Hanoi, feeling enriched and rejuvenated from the day\'s adventures.',
+          'Overnight stay in Hanoi.'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Lunch Cruise in Halong Bay. Evening at leisure.',
+        description: [
+          'Start your day by having your breakfast at the hotel and get ready for the day.',
+          'Board your transfers to Halong Bay, a natural UNESCO World Heritage Site.',
+          'After a 3.5-hour road journey through the picturesque countryside of Vietnam, we will reach the Tuan Chau Marina from where you will board your lunch cruise.',
+          'Embark on this 4-hour day cruise to explore Halong Bay also known as the "Descending-dragon" Bay.',
+          'As we make our way inside this natural wonder, marvel at the uniquely shaped limestone and karst formations named based on their shape like Sail Island, Fisherman\'s Head Rock, Butterfly Rock, or Turtle Islet.',
+          'During this lunch cruise, we will also stop by the caves and pass by the floating houses.',
+          'Enjoy a delicious lunch onboard before heading back to the mainland.',
+          'Reach the harbor, disembark and board your return transfers to Hanoi.',
+          'Upon reaching Hanoi, spend the rest of the day at leisure.',
+          'Overnight stay in Hanoi.'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Transfer from Hanoi to Danang. Day at leisure.',
+        description: [
+          'After having your breakfast at the hotel, get ready and check out from the hotel.',
+          'We will then transfer you to the airport (without guide) for your flight to Danang - a scenic coastal town in central Vietnam.',
+          'Fly to Danang and meet your local tour guide outside the airport who will help you board your transfer to the hotel.',
+          'Upon reaching, check into your hotel and freshen up.',
+          'You can then spend the rest of the evening at leisure.',
+          'You are free to explore around and visit the beaches, markets, or the famous Golden Dragon Bridge of Danang.',
+          'Overnight stay in Danang.'
+        ]
+      },
+      {
+        day: 5,
+        title: 'Visit to Ba Na Hill & Golden Hands Bridge Overnight stay in Danang',
+        description: [
+          'Post breakfast get ready to transfer to Ba Na Hill, one of the most spectacular landscapes of Danang City.',
+          'You will take a cable car to the summit of mountain (at 1487m of sea level).',
+          'Start visiting Ba Na Hill with many different attractions: Funicular, Debay ancient wine cellar & Le Jardin D’Amour, Linh Ung pagoda, Thich Ca Buddist statue, etc.',
+          'This afternoon you continue to join activities and games in Fantasy Park.',
+          'Later walk to the summit of the mountain at the height 1487m – the highest one of Ba Na Mountain, visit Bell Tower, Nghinh Phong tower and Golden Bridge, to take beautiful photos of the mountain and Da Nang city.',
+          'Late afternoon, taking the cable car back to foothill.',
+          'Transfer back to your hotel, rest of the time is free for leisure.',
+          'Overnight stay in Danang'
+        ]
+      },
+      {
+        day: 6,
+        title: 'Full-Day Tour To Hoi An. Explore the UNESCO Ancient Town',
+        description: [
+          'Begin your day by having your breakfast and then get ready for a fun-filled day.',
+          'Board your transfers that will take you to the ancient Port Town of Hoi An - a UNESCO World Heritage town that will captivate you with its charm.',
+          'Upon reaching, we will begin exploring the Hoi An Town starting from a nice walk over the tile-roofed Japanese Bridge built in the 17th century.',
+          'Next, we will visit the Chinese Hall Assembly and take a walk through the ancient houses of Hoi An.',
+          'We will enjoy some folk music of Central Vietnam by visiting the old clubhouses lined across the town.',
+          'Enjoy some shopping at the local market lined along the Thu Bon River which exudes oriental and vintage vibes.',
+          'You can shop some lanterns, soft silk, raw silk or get your clothes tailored within a day in Hoian.',
+          'After enjoying your day in this ancient town, board your transfers back to Danang.',
+          'Overnight stay in Danang.'
+        ]
+      },
+      {
+        day: 7,
+        title: 'Transfer from Danang to Saigon. Day at leisure.',
+        description: [
+          'After having your breakfast at the hotel, get ready and check out from the hotel.',
+          'We will then transfer you to the airport (without guide) for your flight to Ho Chi Minh City, also known as Saigon which is the most dynamic city in Vietnam',
+          'Fly to Saigon and meet your local tour guide outside the airport who will help you board your transfer to the downtown area.',
+          'Upon reaching, check into your hotel and freshen up.',
+          'You can then spend the rest of the day at leisure.',
+          'During this time, you can choose several activities like exploring the best tourist attractions in Saigon, shopping in the Ben Thanh Market, or enjoying the bustling nightlife of Saigon.',
+          'After exploration, return back to your hotel.',
+          'Overnight stay in Saigon.'
+        ]
+      },
+      {
+        day: 8,
+        title: 'Full-Day Tour to Mekong Delta',
+        description: [
+          'Post breakfast at the hotel, get ready to explore the countryside of Vietnam.',
+          'From the hotel, board your transfers to My Tho, which is the homeland of coconut and family factories of local products like coconut candy, rice paper, etc.',
+          'Upon reaching, board a scenic boat that will take you to explore the Mekong Delta where you will witness the amazing life of the locals.',
+          'During this boat ride, we will take a small stopover to savor the local tropical fruits accompanied by traditional southern Vietnamese folk music.',
+          'We also visit the small canals shadowed with coconut trees, through small boats that are used by locals to visit the factories.',
+          'Stroll through the garden and watch locals produce coconut candy milk and how they feed the honeybees. Do try the popular honey tea.',
+          'Upon completing the boat ride, we will visit the Vinh Trang pagoda, a famous pagoda in the area, with a unique blend of Chinese, Cambodian and French architecture.',
+          'After completing the exploration for the day, we will board our transfers back to Saigon.',
+          'In the evening, reach Saigon and call it a day.',
+          'Overnight stay in Saigon.'
+        ]
+      },
+      {
+        day: 9,
+        title: 'Departure from Da Nang. Take back a lot of happy memories.',
+        description: [
+          'Wake up and enjoy your breakfast at the hotel.',
+          'Check out from the hotel and board your transfer to Da Nang International Airport.',
+          'Your amazing Vietnam group trip concludes with a lot of fun memories.',
+          'Depart with a camera full of pictures from Vietnam’s magical landscapes.'
+        ]
+      }
+    ],
+    included: [
+      'Meet & Greet assistance at the Airport',
+      '08 Nights\' Accommodation on Breakfast Basis',
+      'Airport Pickup and Drop on a private basis',
+      'Half-Day Hanoi City Tour with 1-hour Cyclo tour',
+      'SIC tour to Ninh Binh with Local Lunch',
+      'Lunch Cruise in Halong on SIC basis',
+      'Bana Hill Cable Car Tickets',
+      'Full-Day Tour to Bana Hills',
+      'Full-Day Tour to Ancient Town of Hoi An',
+      'Full-Day Tour to Mekong Delta with Boat Ride'
+    ],
+    notIncluded: [
+      'Single Supplement. Early check-in and late check-out. Hotel/Room upgrade.',
+      'Visa Service to Vietnam.',
+      'Tours which are not included in the package.',
+      'Meals not mentioned in the program.',
+      'Any International Flight and airport tax.',
+      'Drinks, personal expenses and any services not clearly mentioned in the program.',
+      'Travel Insurance.',
+      'GST & TCS as applicable extra.',
+      'Wax Museum, cotton animal game, and carnival skill tickets at Fantasy Park are not included.',
+      'Tips for Guide and Driver extra @ $3/- per adult per day'
+    ],
+    stays: [
+      'Hanoi: Hotel / Similar',
+      'Da Nang: Hotel / Similar',
+      'Saigon: Hotel / Similar'
+    ],
+    batchDates: [
+      {
+        month: 'July',
+        ranges: ['12th July - 17th July', '26th July - 31st July']
+      },
+      {
+        month: 'August',
+        ranges: ['15th Aug - 20th Aug', '23rd - 28th Aug']
+      },
+      {
+        month: 'September',
+        ranges: ['13th Sept - 18th Sept', '27th Sept - 2nd Oct']
+      },
+      {
+        month: 'October',
+        ranges: ['4th Oct - 9th Oct', '18th Oct - 23rd Oct']
+      },
+      {
+        month: 'November',
+        ranges: ['7th Nov - 12th Nov', '15th Nov - 20th Nov', '22nd Nov - 28th Nov']
+      },
+      {
+        month: 'December',
+        ranges: ['5th Dec - 11th Dec', '13th - 19th Dec.']
+      }
+    ],
+    dates: [],
+    costingDetails: [
+      { label: 'Starting from', value: '₹65,999' }
+    ],
+    thingsToCarry: [
+      'Passport with minimum 6 months validity from the date of departure from India',
+      'Sunscreen & lip balm, Good U/V protection sunglasses',
+      'Personal Medicines (if any)'
+    ],
+    travelEssentials: [
+      {
+        title: 'Gears',
+        items: [
+          'A medium size trolley with one cabin bag',
+          'Reusable water bladder or water bottle'
+        ]
+      },
+      {
+        title: 'Clothes',
+        items: [
+          'a sun cap',
+          'UV protected sunglasses',
+          'Cotton Shirts and T-shirts',
+          'Jeans, Shorts and cotton pants',
+          'Sets of undergarments',
+          'Pair of socks',
+          'A small towel or Beach Towel',
+          'A rain jacket or a poncho'
+        ]
+      },
+      {
+        title: 'Footwear',
+        items: [
+          'Sport Shoes or Sneakers',
+          'Flip flops/sandals'
+        ]
+      },
+      {
+        title: 'Medication',
+        items: [
+          'Glucose powder',
+          'Medicines for headaches, diarrhoea, motion sickness',
+          'Dettol',
+          'Bandages',
+          'Cotton'
+        ]
+      },
+      {
+        title: 'Personal Accessories',
+        items: [
+          'toothpaste, toothbrush',
+          'Paper soap, or sanitizer',
+          'Sunscreen minimum of spf40 , lip balm, cold creams',
+          'Body spray',
+          'LED torch light'
+        ]
+      }
+    ],
+    note: [
+      'Normal Check-in and Check-out time is 03:00 PM and 12:00 noon respectively in Vietnam. Early check-in with breakfast is available at an extra cost of 30 USD/ per person.',
+      'Airport transfer is at fixed time (depending on the majority of arrival and departure time of the group) - Any early or late transfer will be charged extra.',
+      'The age limit of our group departures is 18 to 42 years due to the power packed itineraries that we provide to our travellers. We can customize trips for travellers beyond the mentioned age bracket.',
+      'Every traveler is required to be holding a valid passport with an expiry date at least 6 months post the date of entering Vietnam.',
+      'Tour rates are calculated based on current fuel rates and may be revised if there is a sudden increase in fuel prices or an increase of 15% or above.',
+      'If the guest count for a batch is fewer than 9 guests, only a local guide will be available during the tour, and an Indian Trip Captain will not be accompanying the group.'
+    ]
+  },
+  {
+    id: '64',
+    title: '6 Day Exotic Vietnam Couple Special Trip',
+    slug: 'exotic-vietnam-couple-special-trip',
+    image: '/images/vietnam-exotic.png',
+    destination: 'Vietnam',
+    category: 'Vietnam',
+    description: `Indulge in a romantic 6-day exotic couple's getaway discovering the charm and natural beauty of Vietnam. Start with Hanoi's historic landmarks, including a 1-hour cyclo tour around the Old Quarter. Board an overnight luxury cruise along Halong Bay, a UNESCO World Heritage Site. Fly to Saigon (Ho Chi Minh City) to explore the War Remnants Museum and the Reunification Palace, and visit the historic Cu Chi Tunnels. A perfect short escape designed for couples.`,
+    duration: 6,
+    nights: 5,
+    price: 32999,
+    rating: 4.9,
+    difficulty: 'Easy',
+    groupSize: 10,
+    tripType: 'International',
+    showGetQuoteOnly: true,
+    highlights: [
+      'Hanoi',
+      'Saigon City Tour',
+      'Ho Chi Minh',
+      'Hoi An Ancient Town',
+      'Ha Long Bay Cruise',
+      'Bana Hills',
+      'Cu Chi Tunnel'
+    ],
+    overviewPoints: [
+      'Route: Hanoi → Halong Bay → Hanoi → Saigon (Ho Chi Minh City) → Cu Chi Tunnels',
+      'Duration: 5 Nights / 6 Days.',
+      'Trip Start: Hanoi.',
+      'Trip End: Saigon (Ho Chi Minh City).',
+      'Major Highlights: Hanoi 1-hour Cyclo Tour & City Tour, Halong Bay Luxury Overnight Cruise, Saigon Landmarks, Cu Chi Tunnels.'
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Arrival in Hanoi. Local sightseeing of Hanoi. Overnight stay in Hanoi.',
+        description: [
+          'Welcome to Hanoi, the capital city of Vietnam.',
+          'Upon arrival, greeted by the local tour guide and transfer to downtown. Check in to your hotel.',
+          'Afternoon, visit Ba Dinh Square – the biggest square in Hanoi where all the biggest cultural, political events of the cities, especially demonstrations, take place.',
+          'Start your visit at the Complex of Ho Chi Minh including Ho Chi Minh Mausoleum (from outside only as it closes in the afternoon), Ho Chi Minh’s house-on-stilts, his fishpond and the One-Pillar Pagoda. Then, the Temple of Literature which is considered as the first university of Vietnam.',
+          'Later, we have an overall view of the capital by cycle in 1 hour, which wanders around the Old Quarter of Hanoi and the Hoan Kiem Lake (the “Sword” Lake). From here wandering on the narrow streets of the Old Quarter to experience the daily life of the local people. Transfer back to your hotel.',
+          'Overnight stay in Hanoi.'
+        ]
+      },
+      {
+        day: 2,
+        title: 'Transfer from Hanoi to Halong. Overnight stay in the cruise.',
+        description: [
+          'Breakfast at hotel and then check out. At 9am we will head to East for 3 hours drive to Halong Bay, the pride of the Gulf of Tonkin, a Natural World Heritage as designated by UNESCO in 1994 and 2006.',
+          'The road will pass by the Red River delta with green paddy fields and rural villages, where hard-work farmers are busy with their farming jobs, ploughing buffaloes or planting seedling.',
+          'Upon arrival in Halong, check in the overnight cruise to discover the magnificent beauty of this “Descending-dragon” bay, created by thousands odd-shaped limestone rocks and karst grottoes.',
+          'After a lunch on board, we can visit the Grottos, stop for swimming or kayaking, passing floating houses and approach islets to enjoy their beauty in close distance.',
+          'Back to the cruise, enjoy cooking demonstration before having dinner.',
+          'Evening attend activities on the boat or relax at your own leisure.',
+          'Overnight on the cruise.'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Transfer from Halong to Hanoi. Overnight stay in Hanoi.',
+        description: [
+          'You should wake up early to enjoy the dawn on the sea in the early morning.',
+          'The Vietnamese call the "East Sea" by a point-oriented name "Eastern Sea", so you may guess how miraculous seeing the sunrise over the islets of the Bay.',
+          'After breakfast our boat will continue to cruise in marvelous areas, where almost each islet has its own name, adopting its shape or reminiscent like Sail Island, Fisherman’s head rock, Butterfly rock or Turtle islet etc.',
+          'Check out your room and have brunch on board while the cruise coming back the pier.',
+          'Disembark from the cruise, transfer back to Hanoi. Check in hotel. Your time at leisure.',
+          'Overnight in Hanoi.'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Transfer from Hanoi to Saigon. Saigon local sightseeing. Overnight stay in Saigon',
+        description: [
+          'Post breakfast get ready for check-out and transfer to Ho Chi Minh city, also known as Saigon. Overnight stay in Saigon',
+          'Transfer to the airport to take a flight to Ho Chi Minh City, also called as Saigon, the most dynamic city in Vietnam.',
+          'Upon arrival, welcomed by the local tour guide and transfer to the downtown.',
+          'Check in to your hotel and freshen up for local sightseeing.',
+          'Start your city tour at the War Remnants Museum, one of the most famous historical attractions in Saigon.',
+          'Coming to the War Remnants Museum, you can learn a part of how Vietnamese had struggled and fought for their independence, freedom, and peace of the nation and the locals\' perspective of the Vietnam War.',
+          'The exhibits, such as weapons, documents, and photographs, display in the museum are firm evidence of war crimes in Vietnam and speak for the heroic actions of the former Vietnamese generation.',
+          'We then visit the Reunification Palace, the witness of the fierce Vietnam War ended in 1975. The grand building today is a Museum and Hall of official receptions. Nearby the Palace are the Notre Dame Cathedral (view from outside only), built between 1877 and 1883 and colonial-styled Central Post Office, one of the city’s major landmarks. Late afternoon, visit Ben Thanh market, a symbol of Saigon.',
+          'You can choose to spend some leisure time for shopping',
+          'Overnight stay in Saigon (Ho Chi Minh).'
+        ]
+      },
+      {
+        day: 5,
+        title: 'Visit Cu Chi Tunnel. Overnight stay in Ho Chi Minh City.',
+        description: [
+          'Breakfast at hotel and later drive to Cu Chi Tunnels.',
+          'Cu Chi Tunnels is the network of over 200km of tunnels became legendary when they played a vital role in the War.',
+          'In their heyday, the tunnels were functioning underground cities including numerous trap doors, specially constructed living areas, storage facilities, weapons factories, field hospitals, command centers & kitchens.',
+          'After a short introduction video showing how the tunnels were constructed, you will have a chance to crawl into a short section of the tunnels to feel the oppressive narrowness and heat inside.',
+          'After lunch return to Ho Chi Minh, afternoon is free time at leisure or own sightseeing/shopping around the town.',
+          'Overnight stay in Ho Chi Minh.'
+        ]
+      },
+      {
+        day: 6,
+        title: 'Departure back to your hometown.',
+        description: [
+          'Post breakfast spend some leisure time until check out and transfer to the airport for the departure flight back to your sweet home.'
+        ]
+      }
+    ],
+    included: [
+      '4 nights accommodation based on double/twin sharing room (2 nights in Hanoi and 3 nights in Ho Chi Minh city).',
+      '1-night cruise stay based on twin sharing cabin on non-private junk in Halong Bay (shuttle bus round trip transfer)',
+      'A total of 8 meals ( Day 2- B+ L+ D, Day 3- B+ Brunch , Day 4- B , Day 5- B, Day 6- B, Day 7- B ) are included.',
+      'All entrance fees and sightseeing as mentioned in the program',
+      'Transportation by vehicle with A/C as per program',
+      'Local English-speaking guides in Vietnam.'
+    ],
+    notIncluded: [
+      'Single Supplement. Early check-in and late check-out. Hotel/Room upgrade.',
+      'Visa Service to Vietnam.',
+      'Tours which are not included in the package.',
+      'Meals not mentioned in the program.',
+      'Any International Flight and airport tax.',
+      'Drinks, personal expenses and any services not clearly mentioned in the program.',
+      'Travel Insurance.',
+      'GST & TCS as applicable extra.',
+      'Wax Museum, cotton animal game, and carnival skill tickets at Fantasy Park are not included.',
+      'Tips for Guide and Driver extra @ $3/- per adult per day'
+    ],
+    stays: [
+      'Hanoi: Hotel / Similar',
+      'Saigon: Hotel / Similar'
+    ],
+    batchDates: [
+      {
+        month: 'July',
+        ranges: ['12th July - 17th July', '26th July - 31st July']
+      },
+      {
+        month: 'August',
+        ranges: ['15th Aug - 20th Aug', '23rd - 28th Aug']
+      },
+      {
+        month: 'September',
+        ranges: ['13th Sept - 18th Sept', '27th Sept - 2nd Oct']
+      },
+      {
+        month: 'October',
+        ranges: ['4th Oct - 9th Oct', '18th Oct - 23rd Oct']
+      },
+      {
+        month: 'November',
+        ranges: ['7th Nov - 12th Nov', '15th Nov - 20th Nov', '22nd Nov - 28th Nov']
+      },
+      {
+        month: 'December',
+        ranges: ['5th Dec - 11th Dec', '13th - 19th Dec.']
+      }
+    ],
+    dates: [],
+    costingDetails: [
+      { label: 'Starting from', value: '₹32,999' }
+    ],
+    thingsToCarry: [
+      'Passport with minimum 6 months validity from the date of departure from India',
+      'Sunscreen & lip balm, Good U/V protection sunglasses',
+      'Personal Medicines (if any)'
+    ],
+    travelEssentials: [
+      {
+        title: 'Gears',
+        items: [
+          'A medium size trolley with one cabin bag',
+          'Reusable water bladder or water bottle'
+        ]
+      },
+      {
+        title: 'Clothes',
+        items: [
+          'a sun cap',
+          'UV protected sunglasses',
+          'Cotton Shirts and T-shirts',
+          'Jeans, Shorts and cotton pants',
+          'Sets of undergarments',
+          'Pair of socks',
+          'A small towel or Beach Towel',
+          'A rain jacket or a poncho'
+        ]
+      },
+      {
+        title: 'Footwear',
+        items: [
+          'Sport Shoes or Sneakers',
+          'Flip flops/sandals'
+        ]
+      },
+      {
+        title: 'Medication',
+        items: [
+          'Glucose powder',
+          'Medicines for headaches, diarrhoea, motion sickness',
+          'Dettol',
+          'Bandages',
+          'Cotton'
+        ]
+      },
+      {
+        title: 'Personal Accessories',
+        items: [
+          'toothpaste, toothbrush',
+          'Paper soap, or sanitizer',
+          'Sunscreen minimum of spf40 , lip balm, cold creams',
+          'Body spray',
+          'LED torch light'
+        ]
+      }
+    ],
+    note: [
+      'Normal Check-in and Check-out time is 03:00 PM and 12:00 noon respectively in Vietnam. Early check-in with breakfast is available at an extra cost of 30 USD/ per person.',
+      'Airport transfer is at fixed time (depending on the majority of arrival and departure time of the group) - Any early or late transfer will be charged extra.',
+      'The age limit of our group departures is 18 to 42 years due to the power packed itineraries that we provide to our travellers. We can customize trips for travellers beyond the mentioned age bracket.',
+      'Every traveler is required to be holding a valid passport with an expiry date at least 6 months post the date of entering Vietnam.',
+      'Tour rates are calculated based on current fuel rates and may be revised if there is a sudden increase in fuel prices or an increase of 15% or above.',
+      'If the guest count for a batch is fewer than 9 guests, only a local guide will be available during the tour, and an Indian Trip Captain will not be accompanying the group.'
+    ]
+  },
+  {
+    id: '65',
+    title: '7 Days Family Vietnam Vacation',
+    slug: 'family-vietnam-vacation',
+    image: '/images/vietnam-family.png',
+    destination: 'Vietnam',
+    category: 'Vietnam',
+    description: `Create lifelong memories with your loved ones on this premium 7-day family vacation to Vietnam. Start with a cultural sightseeing tour of Hanoi's oldest temples and a fun walk down the iconic Train Street. Discover the scenic ancient capital of Hoa Lu and boat through the limestone karsts of Ninh Binh. Experience a magic overnight luxury cruise in Halong Bay, featuring swimming, kayaking, and culinary activities. Fly to dynamic Saigon (Ho Chi Minh City) for a family boat excursion along the Mekong Delta and a historic visit to the Cu Chi Tunnels. The perfect balanced adventure for families.`,
+    duration: 7,
+    nights: 6,
+    price: 40999,
+    rating: 4.9,
+    difficulty: 'Easy',
+    groupSize: 10,
+    tripType: 'International',
+    showGetQuoteOnly: true,
+    highlights: [
+      'Hanoi',
+      'Ninh Binh',
+      'Saigao',
+      'Mekong Delta'
+    ],
+    overviewPoints: [
+      'Route: Hanoi → Ninh Binh → Halong Bay → Saigon (Ho Chi Minh City) → Mekong Delta → Cu Chi Tunnels',
+      'Duration: 6 Nights / 7 Days.',
+      'Trip Start: Hanoi.',
+      'Trip End: Saigon (Ho Chi Minh City).',
+      'Major Highlights: Hanoi Train Street & City Tour, Hoa Lu & Tam Coc Caves in Ninh Binh, Halong Bay Overnight Luxury Cruise, Mekong Delta Boat Excursion, Cu Chi Tunnels.'
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Arrival in Hanoi - Half-Day City Tour',
+        description: [
+          'Arrive at Noi Bai International Airport, Hanoi, and complete the immigration formalities.',
+          'You will then board your transfers to your hotel for check-in and some rest.',
+          'In the afternoon, we will begin our city tour with a visit to Tran Quoc Pagoda, the oldest Buddhist temple in Hanoi, located on the peaceful West Lake.',
+          'We will then continue to the famous Train Street, where you can experience the thrill of seeing a railway pass through a narrow residential lane lined with cafes.',
+          'Next, we will visit the Ho Chi Minh Mausoleum, where you can learn about the life of Vietnam’s national leader, followed by a stop at the nearby One Pillar Pagoda, a unique lotus-shaped temple.',
+          'Our last stop for the day will be the Old Quarter Market, where you can shop for souvenirs and taste local street food.',
+          'Spend the rest of your time enjoying the lively atmosphere of Beer Street and the Hanoi Night Market.',
+          'Lastly, return to your hotel after the tour (as per your convenience) and call it a day.',
+          'Overnight stay in Hanoi.'
+        ]
+      },
+      {
+        day: 2,
+        title: 'Full Day Sic Tour To Ninh Binh – Hoa Lu – Tam Coc.',
+        description: [
+          'Wake up to a delicious breakfast at your hotel, and get ready for an exciting day ahead.',
+          'Today we will drive you 90km south of Hanoi to the historic site of Ninh Binh, the ancient capital city of Vietnam.',
+          'Next, we will take you on a boat ride through the stunning series of Tam Coc Caves, which is known as “Halong Bay on Land” as the huge limestone karsts dot the river amidst the lush paddy fields.',
+          'Enjoy a delicious lunch at a local restaurant before we continue our adventure and visit Hoa Lu, the site of the former kings\' palace in the 10th century.',
+          'Marvel at the intricate wooden reliefs of the Dinh and Le temples that stand tall to this day.',
+          'Our exploration of Ninh Binh concludes with a visit to Bich Dong Pagoda, a serene and peaceful place that will leave you in awe.',
+          'Upon completing the sightseeing by late afternoon, we will start our journey back to Hanoi, feeling enriched and rejuvenated from the day\'s adventures.',
+          'Overnight stay in Hanoi.'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Transfer from Hanoi to Halong Bay. Overnight Stay on Cruise.',
+        description: [
+          'Start your day by having your breakfast at the hotel and get ready for the day.',
+          'Board your transfers to Halong Bay at 9 AM, a natural UNESCO World Heritage Site.',
+          'Enjoy a 3 hour road journey through the picturesque countryside of Vietnam, through the Red River Delta where you will see the daily life of the farmers working in the paddy fields.',
+          'Upon reaching the Tuan Chau Marina, embark on the overnight cruise to experience the breathtaking beauty of this "Descending-dragon" bay, formed by thousands of odd-shaped limestone rocks and karst grottoes.',
+          'After having a delicious lunch on board, we will make our way inside this natural wonder by taking a tours of the grottos.',
+          'Have some adrenaline rush by swimming or kayaking in the ocean and enjoying the beauty of the islets up close.',
+          'Later, we will enjoy a cooking demonstration onboard followed by some evening activities on the boat.',
+          'You can choose to enjoy some leisurely time by watching a beautiful sunset while sipping your favourite drink.',
+          'Have your dinner onboard and call it a day.',
+          'Overnight stay in Halong Bay on cruise.'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Halong Bay to Hanoi. Transfer From Hanoi to Saigon.',
+        description: [
+          'Wake up to a beautiful morning in Halong Bay and get captivated by a beautiful sunrise over the islets in the Bay.',
+          'After breakfast, we\'ll continue our cruise through the magnificent areas of Halong Bay, where each islet has its own name, based on its shape like Sail Island, Fisherman\'s Head Rock, Butterfly Rock, or Turtle Islet.',
+          'We will also stop by the caves and pass by the floating houses of the villagers living in the Halong Bay.',
+          'Before getting back to the port, enjoy a delicious brunch onboard',
+          'Reach the harbor, disembark and board your return transfers to Hanoi.',
+          'Upon reaching Hanoi, we will then transfer you to the airport (without guide) for your flight to Ho Chi Minh City, also known as Saigon which is the most dynamic city in Vietnam',
+          'Fly to Saigon and meet your local tour guide outside the airport who will help you board your transfer to the downtown area.',
+          'Upon reaching, check into your hotel and call it a day.',
+          'If time permits, you can explore around or go shopping in the Ben Thanh Market.',
+          'Overnight stay in Saigon.'
+        ]
+      },
+      {
+        day: 5,
+        title: 'Full-Day Tour to Mekong Delta',
+        description: [
+          'Post breakfast at the hotel, get ready to explore the countryside of Vietnam.',
+          'From the hotel, board your transfers to My Tho, which is the homeland of coconut and family factories of local products like coconut candy, rice paper, etc.',
+          'Upon reaching, board a scenic boat that will take you to explore the Mekong Delta where you will witness the amazing life of the locals.',
+          'During this boat ride, we will take a small stopover to savor the local tropical fruits accompanied by traditional southern Vietnamese folk music.',
+          'We also visit the small canals shadowed with coconut trees, through small boats that are used by locals to visit the factories.',
+          'Stroll through the garden and watch locals produce coconut candy milk and how they feed the honeybees. Do try the popular honey tea.',
+          'Upon completing the boat ride, we will visit the Vinh Trang pagoda, a famous pagoda in the area, with a unique blend of Chinese, Cambodian and French architecture.',
+          'After completing the exploration for the day, we will board our transfers back to Saigon.',
+          'In the evening, reach Saigon and call it a day.',
+          'Overnight stay in Saigon.'
+        ]
+      },
+      {
+        day: 6,
+        title: 'Half-day tour to Chu Chi tunnel. Evening at Leisure.',
+        description: [
+          'Post breakfast in the morning, get ready, and board your transfers to the historic Chu Chi Tunnels.',
+          'Upon reaching, explore this historic site which was once a 200 km underground network through various cities used for soldier moments during the Vietnam War.',
+          'Once we reach the tunnel, there will be a short introduction video showing how the tunnels were constructed, and you can also crawl into a short section of the tunnels to feel the oppressive narrowness and heat inside it.',
+          'Visit the various aspects of this underground network of tunnels which include trap doors, storage facilities, weapon factories, field hospitals, command centers and kitchens.',
+          'After returning from the tunnel, we will stop for lunch at a local restaurant.',
+          'Later, we will head back to Saigon, where you can spend the rest of the day at leisure.',
+          'You can choose to enjoy the nightlife, go shopping in the local markets, or visit other tourist attractions.',
+          'Overnight stay in Saigon.'
+        ]
+      },
+      {
+        day: 7,
+        title: 'Departure. Return with a bag of memories.',
+        description: [
+          'Have your breakfast in the morning and pack your bags.',
+          'Board your transfer that will take you to the Tan Son Nhat International Airport (Saigon).',
+          'Your amazing Vietnam tour concludes once you are dropped at the airport for your onward journey.',
+          'Take back a lot of memories to cherish for a lifetime.'
+        ]
+      }
+    ],
+    included: [
+      'Meet & Greet assistance at the Airport',
+      '06 Nights\' Accommodation on Breakfast Basis',
+      'Airport Pickup and Drop on a private basis',
+      'Half-Day Hanoi City Tour with 1-hour Cyclo tour',
+      'SIC tour to Ninh Binh with Local Lunch',
+      'Overnight Cruise in Halong on SIC basis',
+      'Half-Day Excursion to Chu Chi Tunnels on SIC basis',
+      'Full-Day Tour to Mekong Delta with Boat Ride'
+    ],
+    notIncluded: [
+      'Single Supplement. Early check-in and late check-out. Hotel/Room upgrade.',
+      'Visa Service to Vietnam.',
+      'Tours which are not included in the package.',
+      'Meals not mentioned in the program.',
+      'Any International Flight and airport tax.',
+      'Drinks, personal expenses and any services not clearly mentioned in the program.',
+      'Travel Insurance.',
+      'GST & TCS as applicable extra.',
+      'Wax Museum, cotton animal game, and carnival skill tickets at Fantasy Park are not included.',
+      'Tips for Guide and Driver extra @ $3/- per adult per day'
+    ],
+    stays: [
+      'Hanoi: Hotel / Similar',
+      'Halong Bay: Overnight Cruise / Similar',
+      'Saigon: Hotel / Similar'
+    ],
+    batchDates: [
+      {
+        month: 'July',
+        ranges: ['12th July - 17th July', '26th July - 31st July']
+      },
+      {
+        month: 'August',
+        ranges: ['15th Aug - 20th Aug', '23rd - 28th Aug']
+      },
+      {
+        month: 'September',
+        ranges: ['13th Sept - 18th Sept', '27th Sept - 2nd Oct']
+      },
+      {
+        month: 'October',
+        ranges: ['4th Oct - 9th Oct', '18th Oct - 23rd Oct']
+      },
+      {
+        month: 'November',
+        ranges: ['7th Nov - 12th Nov', '15th Nov - 20th Nov', '22nd Nov - 28th Nov']
+      },
+      {
+        month: 'December',
+        ranges: ['5th Dec - 11th Dec', '13th - 19th Dec.']
+      }
+    ],
+    dates: [],
+    costingDetails: [
+      { label: 'Starting from', value: '₹40,999' }
+    ],
+    thingsToCarry: [
+      'Passport with minimum 6 months validity from the date of departure from India',
+      'Sunscreen & lip balm, Good U/V protection sunglasses',
+      'Personal Medicines (if any)'
+    ],
+    travelEssentials: [
+      {
+        title: 'Gears',
+        items: [
+          'A medium size trolley with one cabin bag',
+          'Reusable water bladder or water bottle'
+        ]
+      },
+      {
+        title: 'Clothes',
+        items: [
+          'a sun cap',
+          'UV protected sunglasses',
+          'Cotton Shirts and T-shirts',
+          'Jeans, Shorts and cotton pants',
+          'Sets of undergarments',
+          'Pair of socks',
+          'A small towel or Beach Towel',
+          'A rain jacket or a poncho'
+        ]
+      },
+      {
+        title: 'Footwear',
+        items: [
+          'Sport Shoes or Sneakers',
+          'Flip flops/sandals'
+        ]
+      },
+      {
+        title: 'Medication',
+        items: [
+          'Glucose powder',
+          'Medicines for headaches, diarrhoea, motion sickness',
+          'Dettol',
+          'Bandages',
+          'Cotton'
+        ]
+      },
+      {
+        title: 'Personal Accessories',
+        items: [
+          'toothpaste, toothbrush',
+          'Paper soap, or sanitizer',
+          'Sunscreen minimum of spf40 , lip balm, cold creams',
+          'Body spray',
+          'LED torch light'
+        ]
+      }
+    ],
+    note: [
+      'Normal Check-in and Check-out time is 03:00 PM and 12:00 noon respectively in Vietnam. Early check-in with breakfast is available at an extra cost of 30 USD/ per person.',
+      'Airport transfer is at fixed time (depending on the majority of arrival and departure time of the group) - Any early or late transfer will be charged extra.',
+      'The age limit of our group departures is 18 to 42 years due to the power packed itineraries that we provide to our travellers. We can customize trips for travellers beyond the mentioned age bracket.',
+      'Every traveler is required to be holding a valid passport with an expiry date at least 6 months post the date of entering Vietnam.',
+      'Tour rates are calculated based on current fuel rates and may be revised if there is a sudden increase in fuel prices or an increase of 15% or above.',
+      'If the guest count for a batch is fewer than 9 guests, only a local guide will be available during the tour, and an Indian Trip Captain will not be accompanying the group.'
+    ]
+  },
+  {
+    id: '66',
+    title: '8 Days Best Of Vietnam Family Vacation',
+    slug: 'best-of-vietnam-family-vacation',
+    image: '/images/vietnam-family-best.png',
+    destination: 'Vietnam',
+    category: 'Vietnam',
+    description: `Embark on the ultimate 8-day family vacation showcasing the very best of Vietnam. Start with a historic city tour of Hanoi and experience its unique Train Street. Enjoy a magical overnight cruise in Halong Bay with a cooking demonstration and water activities. Fly to Da Nang to stroll through the charming streets of Hoi An Ancient Town and ride the cable car to Ba Na Hills to see the iconic Golden Bridge. Finish your journey in dynamic Saigon (Ho Chi Minh City) with local sightseeing and a tour of the historic Cu Chi Tunnels. A perfect balanced trip for the entire family.`,
+    duration: 8,
+    nights: 7,
+    price: 45999,
+    rating: 4.9,
+    difficulty: 'Easy',
+    groupSize: 10,
+    tripType: 'International',
+    showGetQuoteOnly: true,
+    highlights: [
+      'Hanoi',
+      'Ha Long Bay Cruise',
+      'Bana Hills & Golden Gate Bridge',
+      'Hoi An Ancient Town',
+      'Ho Chi Minh',
+      'Saigao'
+    ],
+    overviewPoints: [
+      'Route: Hanoi → Halong Bay → Hanoi → Da Nang → Hoi An → Ba Na Hills → Saigon (Ho Chi Minh City) → Cu Chi Tunnels',
+      'Duration: 7 Nights / 8 Days.',
+      'Trip Start: Hanoi.',
+      'Trip End: Saigon (Ho Chi Minh City).',
+      'Major Highlights: Hanoi Train Street & City Sights, Halong Bay Luxury Overnight Cruise, Hoi An Ancient Town Tour, Ba Na Hills Cable Car & Golden Bridge, Saigon Landmarks, Cu Chi Tunnels.'
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Arrival in Hanoi - Half-Day City Tour',
+        description: [
+          'Arrive at Noi Bai International Airport, Hanoi, and complete the immigration formalities.',
+          'You will then board your transfers to your hotel for check-in and some rest.',
+          'In the afternoon, we will begin our city tour with a visit to Tran Quoc Pagoda, the oldest Buddhist temple in Hanoi, located on the peaceful West Lake.',
+          'We will then continue to the famous Train Street, where you can experience the thrill of seeing a railway pass through a narrow residential lane lined with cafes.',
+          'Next, we will visit the Ho Chi Minh Mausoleum, where you can learn about the life of Vietnam’s national leader, followed by a stop at the nearby One Pillar Pagoda, a unique lotus-shaped temple.',
+          'Our last stop for the day will be the Old Quarter Market, where you can shop for souvenirs and taste local street food.',
+          'Spend the rest of your time enjoying the lively atmosphere of Beer Street and the Hanoi Night Market.',
+          'Lastly, return to your hotel after the tour (as per your convenience) and call it a day.',
+          'Overnight stay in Hanoi.'
+        ]
+      },
+      {
+        day: 2,
+        title: 'Hanoi – Halong – Overnight On Cruise (B/L/D) – Shuttle Bus',
+        description: [
+          'Enjoy breakfast in the hotel and then check out.',
+          'We depart at 9am and head East for a 3-hour drive to Halong Bay.',
+          'We come across Red River Delta, Green Paddy Fields, and rural villages on the way to Halong Bay.',
+          'Once we reach the Halong Bay, check into the overnight cruise.',
+          'Witness the beauty of Halong Bay, a Natural World Heritage as designated by UNESCO.',
+          'Lunch will be on board and we also visit the Grottos, stop for swimming or kayaking, and pass floating houses and islets to admire their beauty.',
+          'The dinner will be on the cruise but before dinner, we will attend a cooking demonstration.',
+          'The evening is for leisure time or activities on the cruise.',
+          'Overnight stay in Halong Bay on cruise.'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Halong Bay to Hanoi.',
+        description: [
+          'Rise up early to witness the mesmerizing sunrise over the islets of the Bay. Vietnamese call the "East Sea" by the name "Eastern Sea"',
+          'Enjoy the delicious breakfast on the boat before continuing the cruise.',
+          'Marvel at the unique islets with names like Sail Island, Fisherman\'s Head Rock, Butterfly Rock, and Turtle Islet.',
+          'Check out of the room and have brunch on board while the cruise returns to the pier.',
+          'Disembark from the cruise and transfer back to Hanoi.',
+          'Check in to the hotel and have some leisure time.',
+          'Overnight stay at Hanoi.'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Hanoi – Morning Flight To Danang – Hoian Ancient Town (B)',
+        description: [
+          'Start the day with breakfast at your hotel and check out.',
+          'You will be transferred to the airport with a driver only (no guide) to board a flight to Danang.',
+          'Reach Danang and meet the local tour guide and check in at the hotel by the beach(Check-in time is 14:00-15:00)',
+          'Spend your afternoon exploring various attraction of Hoian Town and go for a nice walk over the tile-roofed Japanese Bridge, visit taciturn Chinese Assembly Halls, enjoy the attractiveness of ancient houses, or listen to folk music of Central Vietnam at old club-houses.',
+          'Go shopping at shrines or stroll into the market located by Thu Bon river, where you may find the same feelings of the artists who see the rooftops of Hoian as a magical old world of Oriental feel and a source of inspiration.',
+          'You can shop for lanterns, soft silk, raw silk, or get your clothes tailored within a day in Hoian.',
+          'You will be transferred back to Danang for overnight stay here.',
+          'Overnight stay in Danang.'
+        ]
+      },
+      {
+        day: 5,
+        title: 'Danang – Ba Na Hill – Danang (B)',
+        description: [
+          'Start the day with breakfast at hotel.',
+          'Drive to Ba Na Hill, one of the most spectacular landscapes of Danang City.',
+          'Enjoy the cable car ride to summit the mountain which is 1487 m above sea level.',
+          'Check out the Ba Na Hill\'s Funicular, Debay ancient wine cellar & Le Jardin D’Amour, Linh Ung pagoda, and Thich Ca Buddist statue.',
+          'Spend the afternoon, enjoying activities and games in Fantasy Park.',
+          'Walk to the summit of the mountain at the height of 1487m, which is the highest point of Ba Na Mountain. We will also visit the Bell Tower, Nghinh Phong tower, and Golden Bridge to take beautiful photos of the mountain and Da Nang city.',
+          'Take the cable car ride to return the foothill and then go back to the hotel.',
+          'Overnight stay in Danang.'
+        ]
+      },
+      {
+        day: 6,
+        title: 'Danang – Morning Flight To Saigon – City Tour (B)',
+        description: [
+          'After breakfast check out from the hotel.',
+          'You\'ll be transferred to the airport(without guide) for your flight to Ho Chi Minh City, also known as Saigon which is the most dynamic city of Vietnam',
+          'Fly to Saigon and meet your local tour guide and transfer to downtown area.',
+          'Check into your hotel and freshen up.',
+          'We start city tour at the War Remnants Museum, which is one of the historical attractions in Saigon.',
+          'Learn about the struggles of the Vietnamese people for freedom and peace and also about the local\'s perspective of the Vietnam War.',
+          'The War Museums has exhibits that serve as evidence of the war such as photographs, weapons and certain documents and also speak for the heroic actions of Vietnamese generation who fought the war.',
+          'We move towards the Reunification Palace, that witnessed the fierce Vietnam War that ended in the year 1975. Today this grand building is a museum and a hall of official receptions.',
+          'We now move towards Notre Dame Cathedral(view from outside only) which is near to the Palace and was built between 1877 and 1883. We also visit a major landmark of the place which is the Central Post Office built in a Colonial-Styled Structure.',
+          'In the late afternoon, we go for some shopping at Ben Thanh market.',
+          'Overnight stay in Saigon.'
+        ]
+      },
+      {
+        day: 7,
+        title: 'Saigon – Cu Chi Tunnels – Free Afternoon (B)',
+        description: [
+          'After breakfast at the hotel, drive towards Cu Chi Tunnels.',
+          'We drive to Cu Chi Tunnels, whose names has been etched in the history because Cu Chi Tunnels is a network of 200 km tunnels which were operational during the heyday of Vietnam. These tunnels were functioning underground through various cities and included trap doors, storage facilities, weapon factories, field hospitals, command centres and kitchen.',
+          'Once we reach the tunnel, there will be a short introduction video showing how the tunnels were constructed, and you can also crawl into a short section of the tunnels to feel the oppressive narrowness and heat inside it.',
+          'After returning from the tunnel, we will stop for lunch at a local restaurant.',
+          'We return to Saigon and afternoon is free for leisure, shopping and own sightseeing.',
+          'Overnight stay in Saigon.'
+        ]
+      },
+      {
+        day: 8,
+        title: 'Saigon – Departure (B)',
+        description: [
+          'Enjoy breakfast and leisure time before check out.',
+          'After check out, you will be transferred to the airport(No Guide)'
+        ]
+      }
+    ],
+    included: [
+      '6-night accommodation based on twin sharing room.',
+      '1-night cruise based on twin sharing cabin on non-private junk in Halong Bay.',
+      'Meals as mentioned in the program. B-Breakfast, Br-Brunch, L-Lunch, D-Dinner .',
+      'All entrance fees and sightseeing as mentioned in the program.',
+      'Transportation by vehicle with A/C as per program.',
+      'Local English speaking guides in Vietnam.',
+      'Bottles of mineral water on tour day.'
+    ],
+    notIncluded: [
+      'Single Supplement. Early check-in and late check-out. Hotel/Room upgrade.',
+      'Visa Service to Vietnam.',
+      'Tours which are not included in the package.',
+      'Meals not mentioned in the program.',
+      'Any International Flight and airport tax.',
+      'Drinks, personal expenses and any services not clearly mentioned in the program.',
+      'Travel Insurance.',
+      'GST & TCS as applicable extra.',
+      'Wax Museum, cotton animal game, and carnival skill tickets at Fantasy Park are not included.',
+      'Tips for Guide and Driver extra @ $3/- per adult per day'
+    ],
+    stays: [
+      'Hanoi: Hotel / Similar',
+      'Halong Bay: Overnight Cruise / Similar',
+      'Da Nang: Hotel / Similar',
+      'Saigon: Hotel / Similar'
+    ],
+    batchDates: [
+      {
+        month: 'July',
+        ranges: ['12th July - 17th July', '26th July - 31st July']
+      },
+      {
+        month: 'August',
+        ranges: ['15th Aug - 20th Aug', '23rd - 28th Aug']
+      },
+      {
+        month: 'September',
+        ranges: ['13th Sept - 18th Sept', '27th Sept - 2nd Oct']
+      },
+      {
+        month: 'October',
+        ranges: ['4th Oct - 9th Oct', '18th Oct - 23rd Oct']
+      },
+      {
+        month: 'November',
+        ranges: ['7th Nov - 12th Nov', '15th Nov - 20th Nov', '22nd Nov - 28th Nov']
+      },
+      {
+        month: 'December',
+        ranges: ['5th Dec - 11th Dec', '13th - 19th Dec.']
+      }
+    ],
+    dates: [],
+    costingDetails: [
+      { label: 'Starting from', value: '₹45,999' }
+    ],
+    thingsToCarry: [
+      'Passport with minimum 6 months validity from the date of departure from India',
+      'Sunscreen & lip balm, Good U/V protection sunglasses',
+      'Personal Medicines (if any)'
+    ],
+    travelEssentials: [
+      {
+        title: 'Gears',
+        items: [
+          'A medium size trolley with one cabin bag',
+          'Reusable water bladder or water bottle'
+        ]
+      },
+      {
+        title: 'Clothes',
+        items: [
+          'a sun cap',
+          'UV protected sunglasses',
+          'Cotton Shirts and T-shirts',
+          'Jeans, Shorts and cotton pants',
+          'Sets of undergarments',
+          'Pair of socks',
+          'A small towel or Beach Towel',
+          'A rain jacket or a poncho'
+        ]
+      },
+      {
+        title: 'Footwear',
+        items: [
+          'Sport Shoes or Sneakers',
+          'Flip flops/sandals'
+        ]
+      },
+      {
+        title: 'Medication',
+        items: [
+          'Glucose powder',
+          'Medicines for headaches, diarrhoea, motion sickness',
+          'Dettol',
+          'Bandages',
+          'Cotton'
+        ]
+      },
+      {
+        title: 'Personal Accessories',
+        items: [
+          'toothpaste, toothbrush',
+          'Paper soap, or sanitizer',
+          'Sunscreen minimum of spf40 , lip balm, cold creams',
+          'Body spray',
+          'LED torch light'
+        ]
+      }
+    ],
+    note: [
+      'Normal Check-in and Check-out time is 03:00 PM and 12:00 noon respectively in Vietnam. Early check-in with breakfast is available at an extra cost of 30 USD/ per person.',
+      'Airport transfer is at fixed time (depending on the majority of arrival and departure time of the group) - Any early or late transfer will be charged extra.',
+      'The age limit of our group departures is 18 to 42 years due to the power packed itineraries that we provide to our travellers. We can customize trips for travellers beyond the mentioned age bracket.',
+      'Every traveler is required to be holding a valid passport with an expiry date at least 6 months post the date of entering Vietnam.',
+      'Tour rates are calculated based on current fuel rates and may be revised if there is a sudden increase in fuel prices or an increase of 15% or above.',
+      'If the guest count for a batch is fewer than 9 guests, only a local guide will be available during the tour, and an Indian Trip Captain will not be accompanying the group.'
+    ]
+  },
+  {
+    id: '67',
+    title: '10 Days Exciting Vietnam Family Trip',
+    slug: 'exciting-vietnam-family-trip',
+    image: '/images/vietnam-family-exciting.png',
+    destination: 'Vietnam',
+    category: 'Vietnam',
+    description: `Treat your family to an exciting 10-day vacation exploring the treasures of Vietnam. Discover Hanoi's oldest pagoda and walk down the thrilling Train Street. Spend a day in Ninh Binh to visit the ancient temples of Hoa Lu and take a scenic rowboat ride through Tam Coc Caves. Take a relaxing day cruise along the limestone formations of Halong Bay with a delicious lunch. Fly to Da Nang to stroll Hoi An Ancient Town and visit the spectacular Ba Na Hills and Golden Bridge. Complete your holiday in dynamic Saigon (Ho Chi Minh City) with a Mekong Delta boat excursion and a visit to the historic Cu Chi Tunnels. An unforgettable experience for all ages.`,
+    duration: 10,
+    nights: 9,
+    price: 65999,
+    rating: 4.9,
+    difficulty: 'Easy',
+    groupSize: 10,
+    tripType: 'International',
+    showGetQuoteOnly: true,
+    highlights: [
+      'Hanoi',
+      'Ha Long Bay Cruise',
+      'Bana Hills & Golden Gate Bridge',
+      'Hoi An Ancient Town',
+      'Ho Chi Minh',
+      'Saigao'
+    ],
+    overviewPoints: [
+      'Route: Hanoi → Ninh Binh → Halong Bay → Da Nang → Hoi An → Ba Na Hills → Saigon (Ho Chi Minh City) → Mekong Delta → Cu Chi Tunnels',
+      'Duration: 9 Nights / 10 Days.',
+      'Trip Start: Hanoi.',
+      'Trip End: Saigon (Ho Chi Minh City).',
+      'Major Highlights: Hanoi Train Street & City Tour, Hoa Lu & Tam Coc Caves in Ninh Binh, Halong Bay Day Cruise, Hoi An Ancient Town Tour, Ba Na Hills Cable Car & Golden Bridge, Mekong Delta Boat Excursion, Cu Chi Tunnels.'
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Arrival in Hanoi - Half-Day City Tour',
+        description: [
+          'Arrive at Noi Bai International Airport, Hanoi, and complete the immigration formalities.',
+          'You will then board your transfers to your hotel for check-in and some rest.',
+          'In the afternoon, we will begin our city tour with a visit to Tran Quoc Pagoda, the oldest Buddhist temple in Hanoi, located on the peaceful West Lake.',
+          'We will then continue to the famous Train Street, where you can experience the thrill of seeing a railway pass through a narrow residential lane lined with cafes.',
+          'Next, we will visit the Ho Chi Minh Mausoleum, where you can learn about the life of Vietnam’s national leader, followed by a stop at the nearby One Pillar Pagoda, a unique lotus-shaped temple.',
+          'Our last stop for the day will be the Old Quarter Market, where you can shop for souvenirs and taste local street food.',
+          'Spend the rest of your time enjoying the lively atmosphere of Beer Street and the Hanoi Night Market.',
+          'Lastly, return to your hotel after the tour (as per your convenience) and call it a day.',
+          'Overnight stay in Hanoi.'
+        ]
+      },
+      {
+        day: 2,
+        title: 'Full Day Sic Tour To Ninh Binh – Hoa Lu – Tam Coc.',
+        description: [
+          'Wake up to a delicious breakfast at your hotel, and get ready for an exciting day ahead.',
+          'Today we will drive you 90km south of Hanoi to the historic site of Ninh Binh, the ancient capital city of Vietnam.',
+          'Next, we will take you on a boat ride through the stunning series of Tam Coc Caves, which is known as “Halong Bay on Land” as the huge limestone karsts dot the river amidst the lush paddy fields.',
+          'Enjoy a delicious lunch at a local restaurant before we continue our adventure and visit Hoa Lu, the site of the former kings\' palace in the 10th century.',
+          'Marvel at the intricate wooden reliefs of the Dinh and Le temples that stand tall to this day.',
+          'Our exploration of Ninh Binh concludes with a visit to Bich Dong Pagoda, a serene and peaceful place that will leave you in awe.',
+          'Upon completing the sightseeing by late afternoon, we will start our journey back to Hanoi, feeling enriched and rejuvenated from the day\'s adventures.',
+          'Overnight stay in Hanoi.'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Lunch Cruise in Halong Bay. Evening at leisure.',
+        description: [
+          'Start your day by having your breakfast at the hotel and get ready for the day.',
+          'Board your transfers to Halong Bay, a natural UNESCO World Heritage Site.',
+          'After a 3.5-hour road journey through the picturesque countryside of Vietnam, we will reach the Tuan Chau Marina from where you will board your lunch cruise.',
+          'Embark on this 4-hour day cruise to explore Halong Bay also known as the "Descending-dragon" Bay.',
+          'As we make our way inside this natural wonder, marvel at the uniquely shaped limestone and karst formations named based on their shape like Sail Island, Fisherman\'s Head Rock, Butterfly Rock, or Turtle Islet.',
+          'During this lunch cruise, we will also stop by the caves and pass by the floating houses.',
+          'Enjoy a delicious lunch onboard before heading back to the mainland.',
+          'Reach the harbor, disembark and board your return transfers to Hanoi.',
+          'Upon reaching Hanoi, spend the rest of the day at leisure.',
+          'Overnight stay in Hanoi.'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Transfer from Hanoi to Danang. Day at leisure.',
+        description: [
+          'After having your breakfast at the hotel, get ready and check out from the hotel.',
+          'We will then transfer you to the airport (without guide) for your flight to Danang - a scenic coastal town in central Vietnam.',
+          'Fly to Danang and meet your local tour guide outside the airport who will help you board your transfer to the hotel.',
+          'Upon reaching, check into your hotel and freshen up.',
+          'You can then spend the rest of the evening at leisure.',
+          'You are free to explore around and visit the beaches, markets, or the famous Golden Dragon Bridge of Danang.',
+          'Overnight stay in Danang.'
+        ]
+      },
+      {
+        day: 5,
+        title: 'Visit to Ba Na Hill & Golden Hands Bridge Overnight stay in Danang',
+        description: [
+          'Post breakfast get ready to transfer to Ba Na Hill, one of the most spectacular landscapes of Danang City.',
+          'You will take a cable car to the summit of mountain (at 1487m of sea level).',
+          'Start visiting Ba Na Hill with many different attractions: Funicular, Debay ancient wine cellar & Le Jardin D’Amour, Linh Ung pagoda, Thich Ca Buddist statue, etc.',
+          'This afternoon you continue to join activities and games in Fantasy Park.',
+          'Later walk to the summit of the mountain at the height 1487m – the highest one of Ba Na Mountain, visit Bell Tower, Nghinh Phong tower and Golden Bridge, to take beautiful photos of the mountain and Da Nang city.',
+          'Late afternoon, taking the cable car back to foothill.',
+          'Transfer back to your hotel, rest of the time is free for leisure.',
+          'Overnight stay in Danang'
+        ]
+      },
+      {
+        day: 6,
+        title: 'Full-Day Tour To Hoi An. Explore the UNESCO Ancient Town',
+        description: [
+          'Begin your day by having your breakfast and then get ready for a fun-filled day.',
+          'Board your transfers that will take you to the ancient Port Town of Hoi An - a UNESCO World Heritage town that will captivate you with its charm.',
+          'Upon reaching, we will begin exploring the Hoi An Town starting from a nice walk over the tile-roofed Japanese Bridge built in the 17th century.',
+          'Next, we will visit the Chinese Hall Assembly and take a walk through the ancient houses of Hoi An.',
+          'We will enjoy some folk music of Central Vietnam by visiting the old clubhouses lined across the town.',
+          'Enjoy some shopping at the local market lined along the Thu Bon River which exudes oriental and vintage vibes.',
+          'You can shop some lanterns, soft silk, raw silk or get your clothes tailored within a day in Hoian.',
+          'After enjoying your day in this ancient town, board your transfers back to Danang.',
+          'Overnight stay in Danang.'
+        ]
+      },
+      {
+        day: 7,
+        title: 'Transfer from Danang to Saigon. Day at leisure.',
+        description: [
+          'After having your breakfast at the hotel, get ready and check out from the hotel.',
+          'We will then transfer you to the airport (without guide) for your flight to Ho Chi Minh City, also known as Saigon which is the most dynamic city in Vietnam',
+          'Fly to Saigon and meet your local tour guide outside the airport who will help you board your transfer to the downtown area.',
+          'Upon reaching, check into your hotel and freshen up.',
+          'You can then spend the rest of the day at leisure.',
+          'During this time, you can choose several activities like exploring the best tourist attractions in Saigon, shopping in the Ben Thanh Market, or enjoying the bustling nightlife of Saigon.',
+          'After exploration, return back to your hotel.',
+          'Overnight stay in Saigon.'
+        ]
+      },
+      {
+        day: 8,
+        title: 'Full-Day Tour to Mekong Delta',
+        description: [
+          'Post breakfast at the hotel, get ready to explore the countryside of Vietnam.',
+          'From the hotel, board your transfers to My Tho, which is the homeland of coconut and family factories of local products like coconut candy, rice paper, etc.',
+          'Upon reaching, board a scenic boat that will take you to explore the Mekong Delta where you will witness the amazing life of the locals.',
+          'During this boat ride, we will take a small stopover to savor the local tropical fruits accompanied by traditional southern Vietnamese folk music.',
+          'We also visit the small canals shadowed with coconut trees, through small boats that are used by locals to visit the factories.',
+          'Stroll through the garden and watch locals produce coconut candy milk and how they feed the honeybees. Do try the popular honey tea.',
+          'Upon completing the boat ride, we will visit the Vinh Trang pagoda, a famous pagoda in the area, with a unique blend of Chinese, Cambodian and French architecture.',
+          'After completing the exploration for the day, we will board our transfers back to Saigon.',
+          'In the evening, reach Saigon and call it a day.',
+          'Overnight stay in Saigon.'
+        ]
+      },
+      {
+        day: 9,
+        title: 'Visit Cu Chi Tunnel. Overnight stay in Ho Chi Minh City.',
+        description: [
+          'Breakfast at hotel and later drive to Cu Chi Tunnels.',
+          'Cu Chi Tunnels is the network of over 200km of tunnels became legendary when they played a vital role in the War.',
+          'In their heyday, the tunnels were functioning underground cities including numerous trap doors, specially constructed living areas, storage facilities, weapons factories, field hospitals, command centers & kitchens.',
+          'After a short introduction video showing how the tunnels were constructed, you will have a chance to crawl into a short section of the tunnels to feel the oppressive narrowness and heat inside.',
+          'After lunch return to Ho Chi Minh, afternoon is free time at leisure or own sightseeing/shopping around the town.',
+          'Overnight stay in Ho Chi Minh.'
+        ]
+      },
+      {
+        day: 10,
+        title: 'Departure back to your hometown.',
+        description: [
+          'Have your breakfast in the morning and pack your bags.',
+          'Board your transfer that will take you to the Tan Son Nhat International Airport (Saigon).',
+          'Your amazing Vietnam tour concludes once you are dropped at the airport for your onward journey.',
+          'Take back a lot of memories to cherish for a lifetime.'
+        ]
+      }
+    ],
+    included: [
+      'Meet & Greet assistance at the Airport',
+      '09 Nights\' Accommodation on Breakfast Basis',
+      'Airport Pickup and Drop on a private basis',
+      'Half-Day Hanoi City Tour with 1-hour Cyclo tour',
+      'SIC tour to Ninh Binh with Local Lunch',
+      'Lunch Cruise in Halong on SIC basis',
+      'Bana Hill Cable Car Tickets',
+      'Full-Day Tour to Bana Hills',
+      'Full-Day Tour to Ancient Town of Hoi An',
+      'Full-Day Tour to Mekong Delta with Boat Ride',
+      'Half-Day Excursion to Chu Chi Tunnels on SIC basis'
+    ],
+    notIncluded: [
+      'Single Supplement. Early check-in and late check-out. Hotel/Room upgrade.',
+      'Visa Service to Vietnam.',
+      'Tours which are not included in the package.',
+      'Meals not mentioned in the program.',
+      'Any International Flight and airport tax.',
+      'Drinks, personal expenses and any services not clearly mentioned in the program.',
+      'Travel Insurance.',
+      'GST & TCS as applicable extra.',
+      'Wax Museum, cotton animal game, and carnival skill tickets at Fantasy Park are not included.',
+      'Tips for Guide and Driver extra @ $3/- per adult per day'
+    ],
+    stays: [
+      'Hanoi: Hotel / Similar',
+      'Da Nang: Hotel / Similar',
+      'Saigon: Hotel / Similar'
+    ],
+    batchDates: [
+      {
+        month: 'July',
+        ranges: ['12th July - 17th July', '26th July - 31st July']
+      },
+      {
+        month: 'August',
+        ranges: ['15th Aug - 20th Aug', '23rd - 28th Aug']
+      },
+      {
+        month: 'September',
+        ranges: ['13th Sept - 18th Sept', '27th Sept - 2nd Oct']
+      },
+      {
+        month: 'October',
+        ranges: ['4th Oct - 9th Oct', '18th Oct - 23rd Oct']
+      },
+      {
+        month: 'November',
+        ranges: ['7th Nov - 12th Nov', '15th Nov - 20th Nov', '22nd Nov - 28th Nov']
+      },
+      {
+        month: 'December',
+        ranges: ['5th Dec - 11th Dec', '13th - 19th Dec.']
+      }
+    ],
+    dates: [],
+    costingDetails: [
+      { label: 'Starting from', value: '₹65,999' }
+    ],
+    thingsToCarry: [
+      'Passport with minimum 6 months validity from the date of departure from India',
+      'Sunscreen & lip balm, Good U/V protection sunglasses',
+      'Personal Medicines (if any)'
+    ],
+    travelEssentials: [
+      {
+        title: 'Gears',
+        items: [
+          'A medium size trolley with one cabin bag',
+          'Reusable water bladder or water bottle'
+        ]
+      },
+      {
+        title: 'Clothes',
+        items: [
+          'a sun cap',
+          'UV protected sunglasses',
+          'Cotton Shirts and T-shirts',
+          'Jeans, Shorts and cotton pants',
+          'Sets of undergarments',
+          'Pair of socks',
+          'A small towel or Beach Towel',
+          'A rain jacket or a poncho'
+        ]
+      },
+      {
+        title: 'Footwear',
+        items: [
+          'Sport Shoes or Sneakers',
+          'Flip flops/sandals'
+        ]
+      },
+      {
+        title: 'Medication',
+        items: [
+          'Glucose powder',
+          'Medicines for headaches, diarrhoea, motion sickness',
+          'Dettol',
+          'Bandages',
+          'Cotton'
+        ]
+      },
+      {
+        title: 'Personal Accessories',
+        items: [
+          'toothpaste, toothbrush',
+          'Paper soap, or sanitizer',
+          'Sunscreen minimum of spf40 , lip balm, cold creams',
+          'Body spray',
+          'LED torch light'
+        ]
+      }
+    ],
+    note: [
+      'Normal Check-in and Check-out time is 03:00 PM and 12:00 noon respectively in Vietnam. Early check-in with breakfast is available at an extra cost of 30 USD/ per person.',
+      'Airport transfer is at fixed time (depending on the majority of arrival and departure time of the group) - Any early or late transfer will be charged extra.',
+      'The age limit of our group departures is 18 to 42 years due to the power packed itineraries that we provide to our travellers. We can customize trips for travellers beyond the mentioned age bracket.',
+      'Every traveler is required to be holding a valid passport with an expiry date at least 6 months post the date of entering Vietnam.',
+      'Tour rates are calculated based on current fuel rates and may be revised if there is a sudden increase in fuel prices or an increase of 15% or above.',
+      'If the guest count for a batch is fewer than 9 guests, only a local guide will be available during the tour, and an Indian Trip Captain will not be accompanying the group.'
+    ]
+  },
+  {
+    id: '68',
+    title: '9 Days Exclusive Vietnam Family Trip',
+    slug: 'exclusive-vietnam-family-trip',
+    image: '/images/vietnam-family-exclusive.png',
+    destination: 'Vietnam',
+    category: 'Vietnam',
+    description: `Treat your family to an exclusive 9-day vacation exploring the treasures of Vietnam. Discover Hanoi's oldest pagoda and walk down the thrilling Train Street. Spend a day in Ninh Binh to visit the ancient temples of Hoa Lu and take a scenic rowboat ride through Tam Coc Caves. Take a relaxing day cruise along the limestone formations of Halong Bay with a delicious lunch. Fly to Da Nang to stroll Hoi An Ancient Town and visit the spectacular Ba Na Hills and Golden Bridge. Complete your holiday in dynamic Saigon (Ho Chi Minh City) with a visit to the historic Cu Chi Tunnels. An unforgettable experience for all ages.`,
+    duration: 9,
+    nights: 8,
+    price: 55999,
+    rating: 4.9,
+    difficulty: 'Easy',
+    groupSize: 10,
+    tripType: 'International',
+    showGetQuoteOnly: true,
+    highlights: [
+      'Hanoi',
+      'Ha Long Bay Cruise',
+      'Bana Hills & Golden Gate Bridge',
+      'Hoi An Ancient Town',
+      'Ho Chi Minh',
+      'Saigao'
+    ],
+    overviewPoints: [
+      'Route: Hanoi → Ninh Binh → Halong Bay → Da Nang → Hoi An → Ba Na Hills → Saigon (Ho Chi Minh City) → Cu Chi Tunnels',
+      'Duration: 8 Nights / 9 Days.',
+      'Trip Start: Hanoi.',
+      'Trip End: Saigon (Ho Chi Minh City).',
+      'Major Highlights: Hanoi Train Street & City Tour, Hoa Lu & Tam Coc Caves in Ninh Binh, Halong Bay Day Cruise, Hoi An Ancient Town Tour, Ba Na Hills Cable Car & Golden Bridge, Cu Chi Tunnels.'
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Arrival in Hanoi - Half-Day City Tour',
+        description: [
+          'Arrive at Noi Bai International Airport, Hanoi, and complete the immigration formalities.',
+          'You will then board your transfers to your hotel for check-in and some rest.',
+          'In the afternoon, we will begin our city tour with a visit to Tran Quoc Pagoda, the oldest Buddhist temple in Hanoi, located on the peaceful West Lake.',
+          'We will then continue to the famous Train Street, where you can experience the thrill of seeing a railway pass through a narrow residential lane lined with cafes.',
+          'Next, we will visit the Ho Chi Minh Mausoleum, where you can learn about the life of Vietnam’s national leader, followed by a stop at the nearby One Pillar Pagoda, a unique lotus-shaped temple.',
+          'Our last stop for the day will be the Old Quarter Market, where you can shop for souvenirs and taste local street food.',
+          'Spend the rest of your time enjoying the lively atmosphere of Beer Street and the Hanoi Night Market.',
+          'Lastly, return to your hotel after the tour (as per your convenience) and call it a day.',
+          'Overnight stay in Hanoi.'
+        ]
+      },
+      {
+        day: 2,
+        title: 'Full Day Sic Tour To Ninh Binh – Hoa Lu – Tam Coc.',
+        description: [
+          'Wake up to a delicious breakfast at your hotel, and get ready for an exciting day ahead.',
+          'Today we will drive you 90km south of Hanoi to the historic site of Ninh Binh, the ancient capital city of Vietnam.',
+          'Next, we will take you on a boat ride through the stunning series of Tam Coc Caves, which is known as “Halong Bay on Land” as the huge limestone karsts dot the river amidst the lush paddy fields.',
+          'Enjoy a delicious lunch at a local restaurant before we continue our adventure and visit Hoa Lu, the site of the former kings\' palace in the 10th century.',
+          'Marvel at the intricate wooden reliefs of the Dinh and Le temples that stand tall to this day.',
+          'Our exploration of Ninh Binh concludes with a visit to Bich Dong Pagoda, a serene and peaceful place that will leave you in awe.',
+          'Upon completing the sightseeing by late afternoon, we will start our journey back to Hanoi, feeling enriched and rejuvenated from the day\'s adventures.',
+          'Overnight stay in Hanoi.'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Lunch Cruise in Halong Bay. Evening at leisure.',
+        description: [
+          'Start your day by having your breakfast at the hotel and get ready for the day.',
+          'Board your transfers to Halong Bay, a natural UNESCO World Heritage Site.',
+          'After a 3.5-hour road journey through the picturesque countryside of Vietnam, we will reach the Tuan Chau Marina from where you will board your lunch cruise.',
+          'Embark on this 4-hour day cruise to explore Halong Bay also known as the "Descending-dragon" Bay.',
+          'As we make our way inside this natural wonder, marvel at the uniquely shaped limestone and karst formations named based on their shape like Sail Island, Fisherman\'s Head Rock, Butterfly Rock, or Turtle Islet.',
+          'During this lunch cruise, we will also stop by the caves and pass by the floating houses.',
+          'Enjoy a delicious lunch onboard before heading back to the mainland.',
+          'Reach the harbor, disembark and board your return transfers to Hanoi.',
+          'Upon reaching Hanoi, spend the rest of the day at leisure.',
+          'Overnight stay in Hanoi.'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Transfer from Hanoi to Danang. Day at leisure.',
+        description: [
+          'After having your breakfast at the hotel, get ready and check out from the hotel.',
+          'We will then transfer you to the airport (without guide) for your flight to Danang - a scenic coastal town in central Vietnam.',
+          'Fly to Danang and meet your local tour guide outside the airport who will help you board your transfer to the hotel.',
+          'Upon reaching, check into your hotel and freshen up.',
+          'You can then spend the rest of the evening at leisure.',
+          'You are free to explore around and visit the beaches, markets, or the famous Golden Dragon Bridge of Danang.',
+          'Overnight stay in Danang.'
+        ]
+      },
+      {
+        day: 5,
+        title: 'Visit to Ba Na Hill & Golden Hands Bridge Overnight stay in Danang',
+        description: [
+          'Post breakfast get ready to transfer to Ba Na Hill, one of the most spectacular landscapes of Danang City.',
+          'You will take a cable car to the summit of mountain (at 1487m of sea level).',
+          'Start visiting Ba Na Hill with many different attractions: Funicular, Debay ancient wine cellar & Le Jardin D’Amour, Linh Ung pagoda, Thich Ca Buddist statue, etc.',
+          'This afternoon you continue to join activities and games in Fantasy Park.',
+          'Later walk to the summit of the mountain at the height 1487m – the highest one of Ba Na Mountain, visit Bell Tower, Nghinh Phong tower and Golden Bridge, to take beautiful photos of the mountain and Da Nang city.',
+          'Late afternoon, taking the cable car back to foothill.',
+          'Transfer back to your hotel, rest of the time is free for leisure.',
+          'Overnight stay in Danang'
+        ]
+      },
+      {
+        day: 6,
+        title: 'Full-Day Tour To Hoi An. Explore the UNESCO Ancient Town',
+        description: [
+          'Begin your day by having your breakfast and then get ready for a fun-filled day.',
+          'Board your transfers that will take you to the ancient Port Town of Hoi An - a UNESCO World Heritage town that will captivate you with its charm.',
+          'Upon reaching, we will begin exploring the Hoi An Town starting from a nice walk over the tile-roofed Japanese Bridge built in the 17th century.',
+          'Next, we will visit the Chinese Hall Assembly and take a walk through the ancient houses of Hoi An.',
+          'We will enjoy some folk music of Central Vietnam by visiting the old clubhouses lined across the town.',
+          'Enjoy some shopping at the local market lined along the Thu Bon River which exudes oriental and vintage vibes.',
+          'You can shop some lanterns, soft silk, raw silk or get your clothes tailored within a day in Hoian.',
+          'After enjoying your day in this ancient town, board your transfers back to Danang.',
+          'Overnight stay in Danang.'
+        ]
+      },
+      {
+        day: 7,
+        title: 'Transfer from Danang to Saigon. Day at leisure.',
+        description: [
+          'After having your breakfast at the hotel, get ready and check out from the hotel.',
+          'We will then transfer you to the airport (without guide) for your flight to Ho Chi Minh City, also known as Saigon which is the most dynamic city in Vietnam',
+          'Fly to Saigon and meet your local tour guide outside the airport who will help you board your transfer to the hotel.',
+          'Upon reaching, check into your hotel and freshen up.',
+          'You can then spend the rest of the day at leisure.',
+          'During this time, you can choose several activities like exploring the best tourist attractions in Saigon, shopping in the Ben Thanh Market, or enjoying the bustling nightlife of Saigon.',
+          'After exploration, return back to your hotel.',
+          'Overnight stay in Saigon.'
+        ]
+      },
+      {
+        day: 8,
+        title: 'Half-day tour to Chu Chi tunnel. Evening at Leisure.',
+        description: [
+          'Post breakfast in the morning, get ready, and board your transfers to the historic Chu Chi Tunnels.',
+          'Upon reaching, explore this historic site which was once a 200 km underground network through various cities used for soldier moments during the Vietnam War.',
+          'Once we reach the tunnel, there will be a short introduction video showing how the tunnels were constructed, and you can also crawl into a short section of the tunnels to feel the oppressive narrowness and heat inside it.',
+          'Visit the various aspects of this underground network of tunnels which include trap doors, storage facilities, weapon factories, field hospitals, command centers and kitchens.',
+          'After returning from the tunnel, we will stop for lunch at a local restaurant.',
+          'Later, we will head back to Saigon, where you can spend the rest of the day at leisure.',
+          'You can choose to enjoy the nightlife, go shopping in the local markets, or visit other tourist attractions.',
+          'Overnight stay in Saigon.'
+        ]
+      },
+      {
+        day: 9,
+        title: 'Departure. Return with a bag of memories.',
+        description: [
+          'Have your breakfast in the morning and pack your bags.',
+          'Board your transfer that will take you to the Tan Son Nhat International Airport (Saigon).',
+          'Your amazing Vietnam tour concludes once you are dropped at the airport for your onward journey.',
+          'Take back a lot of memories to cherish for a lifetime.'
+        ]
+      }
+    ],
+    included: [
+      'Meet & Greet assistance at the Airport',
+      '08 Nights\' Accommodation on Breakfast Basis',
+      'Airport Pickup and Drop on a private basis',
+      'Half-Day Hanoi City Tour with 1-hour Cyclo tour',
+      'SIC tour to Ninh Binh with Local Lunch',
+      'Lunch Cruise in Halong on SIC basis',
+      'Bana Hill Cable Car Tickets',
+      'Full-Day Tour to Bana Hills',
+      'Full-Day Tour to Ancient Town of Hoi An',
+      'Half-Day Excursion to Chu Chi Tunnels on SIC basis.'
+    ],
+    notIncluded: [
+      'Single Supplement. Early check-in and late check-out. Hotel/Room upgrade.',
+      'Visa Service to Vietnam.',
+      'Tours which are not included in the package.',
+      'Meals not mentioned in the program.',
+      'Any International Flight and airport tax.',
+      'Drinks, personal expenses and any services not clearly mentioned in the program.',
+      'Travel Insurance.',
+      'GST & TCS as applicable extra.',
+      'Wax Museum, cotton animal game, and carnival skill tickets at Fantasy Park are not included.',
+      'Tips for Guide and Driver extra @ $3/- per adult per day'
+    ],
+    stays: [
+      'Hanoi: Hotel / Similar',
+      'Da Nang: Hotel / Similar',
+      'Saigon: Hotel / Similar'
+    ],
+    batchDates: [
+      {
+        month: 'July',
+        ranges: ['12th July - 17th July', '26th July - 31st July']
+      },
+      {
+        month: 'August',
+        ranges: ['15th Aug - 20th Aug', '23rd - 28th Aug']
+      },
+      {
+        month: 'September',
+        ranges: ['13th Sept - 18th Sept', '27th Sept - 2nd Oct']
+      },
+      {
+        month: 'October',
+        ranges: ['4th Oct - 9th Oct', '18th Oct - 23rd Oct']
+      },
+      {
+        month: 'November',
+        ranges: ['7th Nov - 12th Nov', '15th Nov - 20th Nov', '22nd Nov - 28th Nov']
+      },
+      {
+        month: 'December',
+        ranges: ['5th Dec - 11th Dec', '13th - 19th Dec.']
+      }
+    ],
+    dates: [],
+    costingDetails: [
+      { label: 'Starting from', value: '₹55,999' }
+    ],
+    thingsToCarry: [
+      'Passport with minimum 6 months validity from the date of departure from India',
+      'Sunscreen & lip balm, Good U/V protection sunglasses',
+      'Personal Medicines (if any)'
+    ],
+    travelEssentials: [
+      {
+        title: 'Gears',
+        items: [
+          'A medium size trolley with one cabin bag',
+          'Reusable water bladder or water bottle'
+        ]
+      },
+      {
+        title: 'Clothes',
+        items: [
+          'a sun cap',
+          'UV protected sunglasses',
+          'Cotton Shirts and T-shirts',
+          'Jeans, Shorts and cotton pants',
+          'Sets of undergarments',
+          'Pair of socks',
+          'A small towel or Beach Towel',
+          'A rain jacket or a poncho'
+        ]
+      },
+      {
+        title: 'Footwear',
+        items: [
+          'Sport Shoes or Sneakers',
+          'Flip flops/sandals'
+        ]
+      },
+      {
+        title: 'Medication',
+        items: [
+          'Glucose powder',
+          'Medicines for headaches, diarrhoea, motion sickness',
+          'Dettol',
+          'Bandages',
+          'Cotton'
+        ]
+      },
+      {
+        title: 'Personal Accessories',
+        items: [
+          'toothpaste, toothbrush',
+          'Paper soap, or sanitizer',
+          'Sunscreen minimum of spf40 , lip balm, cold creams',
+          'Body spray',
+          'LED torch light'
+        ]
+      }
+    ],
+    note: [
+      'Normal Check-in and Check-out time is 03:00 PM and 12:00 noon respectively in Vietnam. Early check-in with breakfast is available at an extra cost of 30 USD/ per person.',
+      'Airport transfer is at fixed time (depending on the majority of arrival and departure time of the group) - Any early or late transfer will be charged extra.',
+      'The age limit of our group departures is 18 to 42 years due to the power packed itineraries that we provide to our travellers. We can customize trips for travellers beyond the mentioned age bracket.',
+      'Every traveler is required to be holding a valid passport with an expiry date at least 6 months post the date of entering Vietnam.',
+      'Tour rates are calculated based on current fuel rates and may be revised if there is a sudden increase in fuel prices or an increase of 15% or above.',
+      'If the guest count for a batch is fewer than 9 guests, only a local guide will be available during the tour, and an Indian Trip Captain will not be accompanying the group.'
+    ]
   }
 ];
 
@@ -9926,6 +14515,13 @@ export const destinations: Destination[] = [
     description: 'Tropical paradise with gorgeous islands, white sand beaches, and vibrant nightlife.',
     tripCount: 1,
   },
+  {
+    title: 'Vietnam',
+    slug: 'vietnam',
+    image: '/images/vietnam.png',
+    description: 'Discover pristine beaches, ancient cities, dynamic cultures, and breathtaking natural wonders of Vietnam.',
+    tripCount: 17,
+  }
 ];
 
 export const testimonials: Testimonial[] = [

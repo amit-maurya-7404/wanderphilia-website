@@ -93,6 +93,7 @@ export function TripTypesSection() {
     { title: 'Bhutan', region: 'Bhutan', image: '/images/Bhutan_cat.jpg', price: getCheapestPriceForCategory('bhutan', 109900) },
     { title: 'Singapore', region: 'Singapore', image: '/images/singapore.png', price: getCheapestPriceForCategory('singapore', 49900) },
     { title: 'Thailand', region: 'Thailand', image: '/images/thailand.jpg', price: getCheapestPriceForCategory('thailand', 99900) },
+    { title: 'Vietnam', region: 'Vietnam', image: '/images/vietnam.png', price: getCheapestPriceForCategory('vietnam', 32999) },
     { title: 'Nepal', region: 'Nepal', image: '/images/everest.jpg', price: getCheapestPriceForCategory('nepal', 99900) },
     { title: 'Indonesia', region: 'Indonesia', image: '/images/bali.jpg', price: getCheapestPriceForCategory('indonesia', 69900) },
     { title: 'Switzerland', region: 'Switzerland', image: '/images/swiss.jpg', price: getCheapestPriceForCategory('switzerland', 129900) },

@@ -22,7 +22,7 @@ const categoryImageMap: Record<string, string> = {
   Himachal: '/images/himachal.jpg',
   Singapore: '/images/singapore.png',
   Sikkim: '/images/sikkim.png',
-
+  Vietnam: '/images/vietnam.png',
 }
 
 const categoryOrder: string[] = [
@@ -31,6 +31,7 @@ const categoryOrder: string[] = [
   'Bhutan',
   'Singapore',
   'Thailand',
+  'Vietnam',
   'Switzerland',
   'Peru',
   'Iceland',
