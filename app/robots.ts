@@ -10,6 +10,7 @@ export default function robots(): MetadataRoute.Robots {
         '/admin/',
         '/login',
         '/booking/package',
+        '/trips',
       ],
     },
     sitemap: 'https://wanderphilia.com/sitemap.xml',

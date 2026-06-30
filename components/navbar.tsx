@@ -233,6 +233,12 @@ export function Navbar({ forceWhiteDesktop }: NavbarProps) {
                 >
                   Vietnam
                 </Link>
+                <Link
+                  href="/trips/bali"
+                  className="block px-4 py-3 text-gray-700 hover:bg-primary/10 hover:text-primary font-medium text-sm rounded-lg mx-2 transition-colors"
+                >
+                  Bali
+                </Link>
 
 
                 <div className="border-t border-gray-200 my-2" />
@@ -528,6 +534,16 @@ export function Navbar({ forceWhiteDesktop }: NavbarProps) {
                     }}
                   >
                     Vietnam
+                  </Link>
+                  <Link
+                    href="/trips/bali"
+                    className="block px-6 py-3 text-sm text-gray-600 hover:text-primary hover:bg-gray-100 transition-colors"
+                    onClick={() => {
+                      setIsMobileOpen(false)
+                      setOpenDropdown(null)
+                    }}
+                  >
+                    Bali
                   </Link>
                   <div className="border-t border-gray-200 my-1" />
                   <Link

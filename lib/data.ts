@@ -204,7 +204,7 @@ export const trips: Trip[] = [
     slug: 'bali-culture',
     image: '/images/bali.jpg',
     destination: 'Indonesia',
-    category: 'Indonesia',
+    category: 'Bali',
     description: 'Experience the mystical temples, lush rice terraces, and pristine beaches of Bali.',
     duration: 8,
     price: 69900,
@@ -7886,7 +7886,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     id: '43',
     title: '7 Days Exclusive Thailand Full Moon Party Group Tour',
     slug: '7-days-exclusive-thailand-full-moon-party-group-tour',
-    image: '/images/thailand.jpg',
+    image: '/images/thailand-full-moon-party.png',
     destination: 'Thailand',
     category: 'Thailand',
     description: `Experience the ultimate tropical adventure with our 7 Days Exclusive Thailand Full Moon Party Group Tour. This journey takes you through Krabi's stunning limestone cliffs, the world-famous Full Moon Party in Koh Phangan, the vibrant fire shows on Koh Samui's beaches, and the beautiful Phi Phi Islands in Phuket. Enjoy high-speed boat rides, snorkeling in crystal-clear waters, and dance under the moonlit sky with travelers from all over the world. This is the perfect blend of natural beauty, tropical island hopping, and legendary nightlife.`,
@@ -8146,7 +8146,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     id: '44',
     title: 'Exclusive 7 Nights 8 Days Thailand Honeymoon Package – A Perfect Romantic Getaway',
     slug: 'exclusive-7-nights-8-days-thailand-honeymoon-package',
-    image: '/images/thailand.jpg',
+    image: '/images/thailand-honeymoon.png',
     destination: 'Thailand',
     category: 'Thailand',
     description: `Embark on a perfect romantic getaway with our Wanderphilia Exclusive 7 Nights 8 Days Thailand Honeymoon Package. Discover the serene beauty of Krabi's limestone cliffs, watch a dazzling cabaret show in Phuket, explore the pristine Phi Phi Islands by speedboat, and enjoy a romantic Chao Phraya River dinner cruise under Bangkok's night sky. Designed for couples seeking both adventure and relaxation, this honeymoon tour combines breathtaking scenic beauty with premium tropical stays, ensuring romantic memories you will cherish forever.`,
@@ -8391,7 +8391,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     id: '45',
     title: 'Wanderphilia Exclusive 5 Nights 6 Days Krabi Phuket Thailand Romantic Escape',
     slug: 'wanderphilia-exclusive-5-nights-6-days-krabi-phuket-thailand-romantic-escape',
-    image: '/images/thailand.jpg',
+    image: '/images/thailand-romantic-escape.png',
     destination: 'Thailand',
     category: 'Thailand',
     description: `Embark on an unforgettable romantic escape to Thailand with our Wanderphilia Exclusive 5 Nights 6 Days Krabi Phuket package. Discover Krabi's stunning limestone cliffs, explore the pristine Phi Phi Islands by speedboat, watch a dazzling cabaret show, and experience the cultural charm of Phuket. Perfectly curated for couples seeking romance, adventure, and relaxation, this package includes luxury transfers, premium accommodation, guided island tours, and wonderful romantic memories to cherish for a lifetime.`,
@@ -8590,7 +8590,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     id: '46',
     title: 'Wanderphilia Exclusive 5 Nights 6 Days Thailand Phuket Bangkok Couple Leisure Getaway',
     slug: 'wanderphilia-exclusive-5-nights-6-days-thailand-phuket-bangkok-couple-leisure-getaway',
-    image: '/images/thailand.jpg',
+    image: '/images/thailand-couple-leisure.png',
     destination: 'Thailand',
     category: 'Thailand',
     description: `Embark on a perfect couple's getaway to Thailand with our Wanderphilia Exclusive 5 Nights 6 Days Phuket Bangkok Leisure Package. Experience a dazzling cabaret show in Phuket, explore the breathtaking Phi Phi Islands by speedboat, enjoy a romantic evening dinner cruise down the Chao Phraya River, and embark on a guided city and temple tour of Bangkok. This package is ideal for couples seeking a blend of tropical relaxation and cultural wonders.`,
@@ -8790,7 +8790,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     id: '47',
     title: 'Wanderphilia Exclusive 8 Nights 9 Days Whole Of Thailand Bangkok Pattaya Phuket Perfect Couple Trip',
     slug: 'wanderphilia-exclusive-8-nights-9-days-whole-of-thailand-bangkok-pattaya-phuket-perfect-couple-trip',
-    image: '/images/thailand.jpg',
+    image: '/images/thailand-whole-couple.png',
     destination: 'Thailand',
     category: 'Thailand',
     description: `Embark on the ultimate romantic getaway with our Wanderphilia Exclusive 8 Nights 9 Days Whole of Thailand Honeymoon Package. This comprehensive couple's tour takes you through the beautiful sights of Pattaya, the bustling capital of Bangkok, and the tropical paradise of Phuket. Enjoy the stunning Alcazar Show, speed boat transfers to Coral Island, botanical gardens in Nong Nooch Village, a full day at Safari World, a scenic dinner cruise on Chao Phraya River, wat and temple tours, a Simon Cabaret show, and exploring Phi Phi Islands. Perfect for couples desiring the complete Thailand experience.`,
@@ -9046,7 +9046,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     id: '48',
     title: 'Wanderphilia Exclusive 6 Nights 7 Days Thailand Bangkok Pattaya Perfect Family Getaway',
     slug: 'wanderphilia-exclusive-6-nights-7-days-thailand-bangkok-pattaya-perfect-family-getaway',
-    image: '/images/thailand.jpg',
+    image: '/images/thailand-family-getaway.png',
     destination: 'Thailand',
     category: 'Thailand',
     description: `Embark on the perfect family getaway to Thailand with our Wanderphilia Exclusive 6 Nights 7 Days Bangkok Pattaya Package. Create lifelong family memories as you enjoy Pattaya's famous Alcazar Show, explore Coral Island by speedboat, wander Nong Nooch Village botanical gardens, spend full days at Safari World & Marine Park and Dream World theme park, experience a scenic dinner cruise on Chao Phraya River, and enjoy a guided wat and temple tour of Bangkok.`,
@@ -9271,7 +9271,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     id: '49',
     title: 'Wanderphilia Exclusive 4 Nights 5 Days Thailand Exclusive Phuket Perfect Family Leisure Trip',
     slug: 'wanderphilia-exclusive-4-nights-5-days-thailand-exclusive-phuket-perfect-family-leisure-trip',
-    image: '/images/thailand.jpg',
+    image: '/images/thailand-phuket-family.png',
     destination: 'Thailand',
     category: 'Thailand',
     description: `Experience the ultimate family vacation with our Wanderphilia Exclusive 4 Nights 5 Days Thailand Exclusive Phuket Family Leisure Trip. Take in spectacular views from the Big Buddha and Promthep Cape on a guided city tour, discover the breathtaking Phi Phi Islands by speedboat with a local lunch, and get up close with big cats at the Phuket Tiger Kingdom. Perfect for families looking for a mixture of adventure and tropical relaxation.`,
@@ -9456,7 +9456,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     id: '50',
     title: 'Wanderphilia Exclusive 5 Nights 6 Days Thailand Bangkok Pattaya Relaxed Family Trip',
     slug: 'wanderphilia-exclusive-5-nights-6-days-thailand-bangkok-pattaya-relaxed-family-trip',
-    image: '/images/thailand.jpg',
+    image: '/images/thailand-bangkok-pattaya-family.png',
     destination: 'Thailand',
     category: 'Thailand',
     description: `Embark on a relaxed family getaway to Thailand with our Wanderphilia Exclusive 5 Nights 6 Days Bangkok Pattaya Family Package. Perfect for families looking to create wonderful memories, this tour features Pattaya's famous Alcazar Show, a speedboat tour to Coral Island, a full day exploring Safari World and Marine Park, and a city and temple tour of Bangkok. Enjoy a blend of leisure, entertainment, and sightseeing designed to keep all family members engaged and relaxed.`,
@@ -9652,7 +9652,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     id: '51',
     title: 'Wanderphilia Exclusive 5 Nights 6 Days Krabi Phuket Thailand Romantic Escape',
     slug: 'wanderphilia-exclusive-6-nights-7-days-krabi-phuket-thailand-romantic-escape',
-    image: '/images/thailand.jpg',
+    image: '/images/thailand-krabi-phuket-romantic.png',
     destination: 'Thailand',
     category: 'Thailand',
     description: `Embark on a beautiful tropical romance with our Wanderphilia Exclusive 5 Nights 6 Days Krabi Phuket Thailand Romantic Escape. Specially crafted for couples, this tour features a speedboat trip exploring Krabi's 4 Islands, a morning city tour of Krabi's natural and cultural landmarks, speedboat excursion of the scenic Phi Phi Islands with a local lunch, and a guided Phuket city tour. Enjoy premium beach stays and custom transfers, creating memories of a lifetime with your partner.`,
@@ -14455,6 +14455,612 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
       'Tour rates are calculated based on current fuel rates and may be revised if there is a sudden increase in fuel prices or an increase of 15% or above.',
       'If the guest count for a batch is fewer than 9 guests, only a local guide will be available during the tour, and an Indian Trip Captain will not be accompanying the group.'
     ]
+  },
+  {
+    id: '69',
+    title: '8 Days Wonderful Bali with Gili Island & Nusa Penida Group Trip',
+    slug: 'wonderful-bali-group-trip',
+    image: '/images/bali-group-trip.png',
+    destination: 'Bali',
+    category: 'Bali',
+    description: 'Experience Ubud, Bali Swing, ATV Ride, Gili Island, Nusa Penida, Uluwatu Temple and Kecak Dance on this wonderful 8-day group trip.',
+    duration: 8,
+    price: 52999,
+    rating: 4.9,
+    difficulty: 'Easy',
+    groupSize: 18,
+    tripType: 'International',
+    highlights: [
+      'Ubud',
+      'Bali Swing',
+      'ATV Ride',
+      'Gili Island',
+      'Nusa Penida',
+      'Uluwatu Temple',
+      'Kecak Dance'
+    ],
+    heroMedia: [
+      { type: 'image', src: '/images/bali-group-trip.png', alt: 'Wonderful Bali' }
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Arrive In Bali. Transfer To Ubud.',
+        description: 'Upon your arrival in Bali, meet our representative who will help you with your transfers to Ubud. Reach Ubud, check in to your hotel, and have some rest. You can then spend the rest of the day at leisure. Overnight stay in Ubud.'
+      },
+      {
+        day: 2,
+        title: 'Enjoy Bali Swing and Thrilling ATV Ride.',
+        description: 'Wake up to a pleasant morning in Ubud and have your breakfast at the hotel. We will then get ready to explore the countryside of Ubud while enjoying some thrilling activities. Start your day by riding on the Bali Swing over the lush green landscapes and rice terraces of Ubud. If you want to cherish this moment, you can also get dressed up and take stunning photos here for the Gram! After lunch, we will head for another adventure in Bali - an ATV Ride. We will then reach our location and gear up to ride our ATVs through the countryside landscapes of Bali. Pass through the lush green farms, paddy fields, small villages, and water streams as you make your way on the ATV. After completing the ATV ride, we will head back to our hotel in Ubud. Overnight stay in Ubud.'
+      },
+      {
+        day: 3,
+        title: 'Ubud to Gili Island transfer. Overnight stay in Gili Trawangan',
+        description: 'Wake up early in the morning and get ready by 6 AM. Today, we will have packed breakfast as we board our transfers to Bali Pier. From, here we will take a ferry to reach Gili Trawangan through the ocean which will take approx 2.5 hours to 3 hours. Upon reaching Gili Trawangan, we will transfer you to your hotel by Cidomo (Horse Cart). Gili is a non-motorable island so only horse carts or bicycles are available there for transportation. Reach the hotel and complete the check-in process. You can spend the rest of the day at leisure, wherein you can choose to explore the beaches on the island. In the evening we will go for Rabbit Jump for foam party. Later on you can relax in Gili market area and enjoy your leisure time. Overnight stay in Gili'
+      },
+      {
+        day: 4,
+        title: 'Explore Gili\'s Underwater Paradise. Overnight stay in Gili Trawangan.',
+        description: 'Wake up to a beautiful tropical morning and have your breakfast at the hotel. You can then spend the rest of the day at leisure exploring the island or relax at the property. Since Gili Islands does not have motor vehicles, you can explore around on bicycle, horse carts or by walking. Enjoy the laid back island life as you stroll along the beach. If you are adventure enthusiast, you can go for watersports like scuba diving and snorkeling. Dive into an unforgettable underwater adventure with a 2–3 hour scuba diving session. The experience begins with a safety briefing and basic training in a swimming pool, allowing beginners to get comfortable with the equipment. Once you\'re comfortable with the basics, dive into the crystal-clear ocean and discover a fascinating underwater world filled with vibrant coral reefs, colorful marine life, and unforgettable moments beneath the surface. Not a fan of scuba diving? No worries! Opt for an exciting full-day 3-Island Snorkelling Adventure instead. Cruise through the crystal-clear waters around Gili Air, Gili Meno, and Gili Trawangan, discovering vibrant coral reefs, colorful marine life, and some of the best snorkelling spots in the Gili Islands. Enjoy a scenic boat ride between the islands while soaking in the stunning tropical views. After enjoying a beautiful sunset, return back to the hotel or enjoy the nightlife of Gili. Overnight stay in Gili.'
+      },
+      {
+        day: 5,
+        title: 'Gili Trawangan To Nusa Penida Island. Watch a sunset from the Kelingking Beach.',
+        description: 'Wake up in the morning and have your breakfast at the hotel. Get ready and board your Cidomo, which will transfer you back to the port. Board your ferry and travel through the azure blue ocean to reach Nusa Penida. Reach Nusa Penida and enjoy your delicious Indian Lunch before moving ahead. Post lunch, head to Kelingking Beach which is famous for its its rock formation that depicts the shape of a T-Rex to watch a scenic sunset. After watching the sunset, return to your hotel for an overnight stay. Overnight stay in Nusa Penida.'
+      },
+      {
+        day: 6,
+        title: 'Sunrise at Diamond Beach. Transfer to Kuta. Evening Uluwatu temple and Kecak Dance.',
+        description: 'Wake up early in the morning and get ready by 3 AM to watch one of the most beautiful sunrise. We will then board our transfers to the stunning Diamond Beach famous for its diamond-shaped rock formation. Enjoy a stunning sunrise from here and click some postcard-perfect pictures. Later, we will head back to our hotel and have our breakfast. Get ready and check out from the hotel by 11 AM and head to the port. From here, we will board our ferry back to the mainland of Bali. Upon reaching the Sanur Port, we will take you to the scenic Uluwatu Temple, one of the important temples of Bali. Located on a mighty cliff, the Uluwatu Temple overlooks the beautiful ocean from where you can watch a beautiful sunset. Post sunset, you can witness the Kecak Fire Dance, an iconic Balinese art performance that depicts the tales from Ramayana. The Kecak Fire Dance is one of the traditional dances in Bali that depicts the famous epic of Ramayana. After completing the sightseeing, we will head to our hotel to check-in and call it a day. Overnight stay in Kuta.'
+      },
+      {
+        day: 7,
+        title: 'Day at Leisure in Kuta.',
+        description: 'Have your breakfast at the hotel and then you can spend the rest of the day at leisure. There are a number of options to choose from to spend your day like - taking a traditional Balinese Massage, learning surfing, visiting the Garuda Cultural Park, exploring the beaches, indulging in a shopping spree etc. Overnight stay in Kuta.'
+      },
+      {
+        day: 8,
+        title: 'Departure. Depart with a bag of happy memories.',
+        description: 'Have your breakfast in the morning and pack your bags. Get ready to board your transfer to the Denpasar International Airport for your return journey. Your amazing Bali tour concludes once you are dropped off at the Denpasar International Airport for your onward journey. Take back a lot of happy tropical memories to cherish for a lifetime.'
+      }
+    ],
+    included: [
+      'Accommodation for 7 nights (2 nights in Ubud, 2 nights in Gili Trawangan, 1 night in Nusa Penida and 2 nights in Kuta) with breakfast',
+      'Transfers from Ubud - Gili Island - Nusa Penida - Kuta',
+      'Half day tour of Bali Swing (3 swings)',
+      'Half day tour of Single ATV Ride (1 Hour)',
+      'Sunset Tour at Kelingking Beach',
+      'Sunrise Tour at Diamond Beach',
+      'Visit Uluwatu Temple for Sunset View and Kecak dance',
+      'Entire travel as per the itinerary',
+      'English-speaking guide throughout your journey in Bali',
+      'Entry tickets to all the attractions mentioned in the itinerary',
+      'Ubud to Gili, Gili to Nusa, and Nusa to Kuta ferry are included',
+      'Airport Pick up and Drop is included for fixed time according to the maximum people\'s arrival and departure timing'
+    ],
+    notIncluded: [
+      'GST and TCS as applicable extra',
+      'Water Sports or any other activity other than mentioned in the itinerary',
+      'Any kind of food or beverage that is not included in the package like alcoholic drinks, mineral water, meals/refreshments/lunches on the highway',
+      'Any personal expenses like a tip to the drivers, camera/video camera charges, laundry, telephone bills, tips, etc',
+      'Any cost arising due to natural calamities like landslides, roadblocks etc. (to be borne directly by the customer on the spot)',
+      'Anything not mentioned in the inclusions',
+      'Cost arises due to change or delay in flight timings. Wanderphilia as a responsible travel partner will definitely try to minimise the impact of delay but Wanderphilia shall not be liable/responsible for such incidents',
+      'Visa is available on arrival at an approx. cost of US$ 35 per person',
+      'JagaWisata Indonesia Travel Insurance, can be bought at Bali Airport upon arrival with an Insurance Premium of USD 36.00'
+    ],
+    travelEssentials: [
+      {
+        title: 'Gears',
+        items: [
+          'A medium size trolley with one cabin bag',
+          'Reusable water bladder or water bottle'
+        ]
+      },
+      {
+        title: 'Clothes',
+        items: [
+          'a sun cap',
+          'UV protected sunglasses',
+          'Cotton Shirts and T-shirts',
+          'Jeans, Shorts and cotton pants',
+          'Sets of undergarments',
+          'Pair of socks',
+          'A small towel or Beach Towel',
+          'A rain jacket or a poncho'
+        ]
+      },
+      {
+        title: 'Footwear',
+        items: [
+          'Sport Shoes or Sneakers',
+          'Flip flops/sandals'
+        ]
+      },
+      {
+        title: 'Medication',
+        items: [
+          'Glucose powder',
+          'Medicines for headaches, diarrhoea, motion sickness',
+          'Dettol',
+          'Bandages',
+          'Cotton'
+        ]
+      },
+      {
+        title: 'Personal Accessories',
+        items: [
+          'toothpaste, toothbrush',
+          'Paper soap, or sanitizer',
+          'Sunscreen minimum of spf40, lip balm, cold creams',
+          'Body spray',
+          'LED torch light'
+        ]
+      }
+    ],
+    note: [
+      'Normal Check-in and Check-out time is 03:00 PM and 12:00 noon respectively in Bali. Early check-in with breakfast is available at an extra cost of 30 USD/ per person.',
+      'Airport transfer is at fixed time (depending on the majority of arrival and departure time of the group) - Any early or late transfer will be charged extra.',
+      'The age limit of our group departures is 18 to 42 years due to the power packed itineraries that we provide to our travellers. We can customize trips for travellers beyond the mentioned age bracket.',
+      'Every traveler is required to be holding a valid passport with an expiry date at least 6 months post the date of entering Bali.',
+      'Tour rates are calculated based on current fuel rates and may be revised if there is a sudden increase in fuel prices or an increase of 15% or above.',
+      'If the guest count for a batch is fewer than 9 guests, only a local guide will be available during the tour, and an Indian Trip Captain will not be accompanying the group.'
+    ],
+    costingDetails: [
+      { label: 'Double Sharing Rate', value: '₹52,999/- per person' }
+    ],
+    batchDates: [
+      { month: 'July', ranges: ['18th July - 25th July'] },
+      { month: 'August', ranges: ['18th Aug - 25th Aug'] },
+      { month: 'September', ranges: ['26th Sept - 3rd Oct'] },
+      { month: 'October', ranges: ['17th Oct - 24th Oct'] },
+      { month: 'November', ranges: ['21st Nov - 28th Nov'] },
+      { month: 'December', ranges: ['12th Dec - 19th Dec'] }
+    ],
+    dates: [
+      { startDate: '2026-07-18', endDate: '2026-07-25', spots: 18 },
+      { startDate: '2026-08-18', endDate: '2026-08-25', spots: 18 },
+      { startDate: '2026-09-26', endDate: '2026-10-03', spots: 18 },
+      { startDate: '2026-10-17', endDate: '2026-10-24', spots: 18 },
+      { startDate: '2026-11-21', endDate: '2026-11-28', spots: 18 },
+      { startDate: '2026-12-12', endDate: '2026-12-19', spots: 18 }
+    ]
+  },
+  {
+    id: '70',
+    title: '6 Days Romantic Bali Getaway',
+    slug: 'romantic-bali-getaway',
+    image: '/images/romantic-bali-getaway.png',
+    destination: 'Bali',
+    category: 'Bali',
+    description: 'Experience Kuta, Water Activities in Tanjung Benoa, Tanah Lot Temple, Bali Swing, and Kintamani Village Tour on this romantic 6-day getaway.',
+    duration: 6,
+    price: 23999,
+    rating: 4.9,
+    difficulty: 'Easy',
+    groupSize: 18,
+    tripType: 'International',
+    highlights: [
+      'Kuta',
+      'Water Activities in Tanjung Benoa',
+      'Tanah Lot Temple',
+      'Bali Swing',
+      'Kintamani Village Tour'
+    ],
+    heroMedia: [
+      { type: 'image', src: '/images/romantic-bali-getaway.png', alt: 'Romantic Bali' }
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Arrival in Bali And Overnight stay in Kuta.',
+        description: 'Arrival in Bali. Transfer to Kuta. Overnight stay in Kuta.'
+      },
+      {
+        day: 2,
+        title: 'Water sports activities In Tanjung Benoa And Overnight stay in Kuta.',
+        description: 'Transfer to Tanjung Benoa for water sports activities (Banana boat ride, Jet ski, and Parasailing). Post lunch transfer to Uluwatu temple for sunset. Overnight stay in Kuta.'
+      },
+      {
+        day: 3,
+        title: 'Half-day tour to Tanah Lot temple And Overnight stay in Kuta.',
+        description: 'Half-day tour to Tanah Lot temple. Overnight stay in Kuta.'
+      },
+      {
+        day: 4,
+        title: 'Visit world-famous Bali Swing And Overnight stay in Ubud',
+        description: 'Transfer from Kuta to Ubud on the way visit world-famous Bali Swing. Overnight stay in Ubud.'
+      },
+      {
+        day: 5,
+        title: 'Full-day tour to Kintamani village And Overnight stay in Ubud.',
+        description: 'Full-day tour to Kintamani village for Mt. Batur volcano viewpoint, Tegalalang Rice Terrace, and Tegenungan Waterfall. Overnight stay in Ubud.'
+      },
+      {
+        day: 6,
+        title: 'Departure',
+        description: 'Departure back to your country.'
+      }
+    ],
+    included: [
+      '5 Nights Accomodation in 4 Star Deluxe Hotels',
+      'Water Sports Activities in Tanjung Benoa',
+      'Visit to Tanah Lot Temple',
+      'Kintamani Village Tour',
+      'Bali Swing',
+      'Transfer from Kuta to Ubud'
+    ],
+    notIncluded: [
+      'GST and TCS as applicable extra',
+      'Water Sports or any other activity other than mentioned in the itinerary',
+      'Any kind of food or beverage that is not included in the package like alcoholic drinks, mineral water, meals/refreshments/lunches on the highway',
+      'Any personal expenses like a tip to the drivers, camera/video camera charges, laundry, telephone bills, tips, etc',
+      'Any cost arising due to natural calamities like landslides, roadblocks etc. (to be borne directly by the customer on the spot)',
+      'Anything not mentioned in the inclusions',
+      'Cost arises due to change or delay in flight timings. Wanderphilia as a responsible travel partner will definitely try to minimise the impact of delay but Wanderphilia shall not be liable/responsible for such incidents',
+      'Visa is available on arrival at an approx. cost of US$ 35 per person',
+      'JagaWisata Indonesia Travel Insurance, can be bought at Bali Airport upon arrival with an Insurance Premium of USD 36.00'
+    ],
+    travelEssentials: [
+      {
+        title: 'Gears',
+        items: [
+          'A medium size trolley with one cabin bag',
+          'Reusable water bladder or water bottle'
+        ]
+      },
+      {
+        title: 'Clothes',
+        items: [
+          'a sun cap',
+          'UV protected sunglasses',
+          'Cotton Shirts and T-shirts',
+          'Jeans, Shorts and cotton pants',
+          'Sets of undergarments',
+          'Pair of socks',
+          'A small towel or Beach Towel',
+          'A rain jacket or a poncho'
+        ]
+      },
+      {
+        title: 'Footwear',
+        items: [
+          'Sport Shoes or Sneakers',
+          'Flip flops/sandals'
+        ]
+      },
+      {
+        title: 'Medication',
+        items: [
+          'Glucose powder',
+          'Medicines for headaches, diarrhoea, motion sickness',
+          'Dettol',
+          'Bandages',
+          'Cotton'
+        ]
+      },
+      {
+        title: 'Personal Accessories',
+        items: [
+          'toothpaste, toothbrush',
+          'Paper soap, or sanitizer',
+          'Sunscreen minimum of spf40, lip balm, cold creams',
+          'Body spray',
+          'LED torch light'
+        ]
+      }
+    ],
+    note: [
+      'Normal Check-in and Check-out time is 03:00 PM and 12:00 noon respectively in Bali. Early check-in with breakfast is available at an extra cost of 30 USD/ per person.',
+      'Airport transfer is at fixed time (depending on the majority of arrival and departure time of the group) - Any early or late transfer will be charged extra.',
+      'The age limit of our group departures is 18 to 42 years due to the power packed itineraries that we provide to our travellers. We can customize trips for travellers beyond the mentioned age bracket.',
+      'Every traveler is required to be holding a valid passport with an expiry date at least 6 months post the date of entering Bali.',
+      'Tour rates are calculated based on current fuel rates and may be revised if there is a sudden increase in fuel prices or an increase of 15% or above.',
+      'If the guest count for a batch is fewer than 9 guests, only a local guide will be available during the tour, and an Indian Trip Captain will not be accompanying the group.'
+    ],
+    costingDetails: [
+      { label: 'Double Sharing Rate', value: '₹23,999/- per person' }
+    ],
+    dates: []
+  },
+  {
+    id: '71',
+    title: '7 Days Honeymoon Special Bali Seminyak, Nusa Penida, Ubud & Kuta',
+    slug: 'honeymoon-special-bali',
+    image: '/images/honeymoon-special-bali.png',
+    destination: 'Bali',
+    category: 'Bali',
+    description: 'Experience 2N Seminyak, 1N Nusa Penida, 2N Ubud, and 1N Kuta on this honeymoon special 7-day tour with Uluwatu and Tanah Lot Temple sightseeing, Bali Swing, and traditional Balinese Spa.',
+    duration: 7,
+    price: 26999,
+    rating: 4.9,
+    difficulty: 'Easy',
+    groupSize: 18,
+    tripType: 'International',
+    highlights: [
+      'Seminyak',
+      'Visit Uluwatu & Tanah Lot Temple',
+      'Nusa Penida',
+      'Ubud',
+      'Bali Swing',
+      'Kuta',
+      'Traditional Bali Spa'
+    ],
+    heroMedia: [
+      { type: 'image', src: '/images/honeymoon-special-bali.png', alt: 'Honeymoon Special Bali' }
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Arrive in Bali. Transfer to Seminyak.',
+        description: 'Upon your arrival at Ngurah Rai International Airport in Denpasar, you will have to complete your immigration process. Next, you will meet our representative who will help you board your transfers to Seminyak. Reach Seminyak and then check-in to the hotel. You can then spend the rest of the day at leisure wherein you can either relax or explore around. In the evening, enjoy a romantic candlelight dinner in your hotel. Overnight stay in Seminyak.'
+      },
+      {
+        day: 2,
+        title: 'Temple Tour Day. Visit Uluwatu and Tanah Lot Temple.',
+        description: 'Post breakfast in the morning, get ready to head out for the day. You visit the picturesque Uluwatu Temple, which is located on a cliff along the coast of Bali. The Uluwatu Temple is one of the most important temples of Bali and it overlooks the mighty ocean from the cliff. After admiring the views and soaking in the spiritual vibe, you will return back to your hotel. Rest for some time and next, board your transfers as we take you to the coastal Tanah Lot temple. Spend some time admiring the sunset views around this beautiful coastal temple and capture some Insta Worthy Pictures. After completing the sightseeing for the day, return back to your hotel. Overnight stay in Seminyak.'
+      },
+      {
+        day: 3,
+        title: 'Seminyak to Nusa Penida Island. Sightseeing in Nusa Penida.',
+        description: 'After breakfast in the morning, get ready to board your transfers. We will take a fast boat to reach Nusa Penida through the azure blue ocean. Reach Nusa Penida and travel from Sampalan Beach to Crystal Beach where you can indulge in snorkeling (optional). Post lunch, head to Kelingking Beach majorly known for its rock formation that depicts the shape of a T-Rex. Next, we will take you to a Secret Point - an offbeat destination that is also popular amongst surfers. Reach your hotel for an overnight stay. Overnight stay in Nusa Penida.'
+      },
+      {
+        day: 4,
+        title: 'Nusa Penida to Ubud. Sunrise Tour to Diamond Beach.',
+        description: 'Start your day early at 4:30 am to board your transfers for a Sunrise Tour at Diamond Beach which is famous for its diamond-shaped rock formations. We will take you to the famous Rumah Pohon Tree House, where you can click some romantic pictures backed with views of Diamond Beach. Start your return journey to the hotel and reach by 9:30 am. Have your breakfast at the hotel and get ready to return back to the mainland of Bali. We will take a fast boat to the Sanur Port of Bali. Upon your arrival at the Sanur Port, you will board your transfers to Ubud. Next, reach your hotel in Ubud and check-in for an overnight stay. Overnight stay in Ubud.'
+      },
+      {
+        day: 5,
+        title: 'Enjoy Bali Swing and Thrilling ATV Ride.',
+        description: 'Wake up to a pleasant morning in Ubud and have your breakfast at the hotel. We will then get ready to explore the countryside of Ubud while enjoying some thrilling activities. Start your day by riding on the Bali Swing over the lush green landscapes and rice terraces of Ubud. If you want to cherish this moment, you can also get dressed up and take stunning photos here for the Gram! After lunch, we will head for another adventure in Bali - an ATV Ride. We will then reach our location and gear up to ride our ATVs through the countryside landscapes of Bali. Pass through the lush green farms, paddy fields, small villages, and water streams as you make your way on the ATV. After completing the ATV ride, we will head back to our hotel in Ubud. Overnight stay in Ubud.'
+      },
+      {
+        day: 6,
+        title: 'Ubud to Kuta. Take a traditional Balinese Spa.',
+        description: 'Wake up to a beautiful morning in the tropical paradise of Bali. Have your breakfast and get ready to board your transfers to Kuta. Upon reaching Kuta, check-in to the hotel and rest for some time. Post afternoon, you can spend some quality time together by pampering yourselves with a traditional Balinese Spa and Massage. You can then spend the rest of the evening at leisure. You can go on a shopping spree to take back souvenirs for your loved ones. Overnight stay in Kuta.'
+      },
+      {
+        day: 7,
+        title: 'Departure. Take back a lot of romantic memories.',
+        description: 'Have your breakfast in the morning and pack your bags. Board your transfer to the airport for your onward journey. Your amazing Romantic Bali Tour concludes once you are dropped off at the airport. Take back a lot of romantic memories to cherish for a lifetime.'
+      }
+    ],
+    included: [
+      '6 Nights Accommodation on Deluxe Properties.',
+      'Entire travel as per the itinerary',
+      'Airport transfer included',
+      'Above all mentioned tours are included.',
+      'All the entry tickets are included',
+      'Breakfast from Day 2 to Day 7'
+    ],
+    notIncluded: [
+      'GST and TCS as applicable extra',
+      'Water Sports or any other activity other than mentioned in the itinerary',
+      'Any kind of food or beverage that is not included in the package like alcoholic drinks, mineral water, meals/refreshments/lunches on the highway',
+      'Any personal expenses like a tip to the drivers, camera/video camera charges, laundry, telephone bills, tips, etc',
+      'Any cost arising due to natural calamities like landslides, roadblocks etc. (to be borne directly by the customer on the spot)',
+      'Anything not mentioned in the inclusions',
+      'Cost arises due to change or delay in flight timings. Wanderphilia as a responsible travel partner will definitely try to minimise the impact of delay but Wanderphilia shall not be liable/responsible for such incidents',
+      'Visa is available on arrival at an approx. cost of US$ 35 per person',
+      'JagaWisata Indonesia Travel Insurance, can be bought at Bali Airport upon arrival with an Insurance Premium of USD 36.00'
+    ],
+    travelEssentials: [
+      {
+        title: 'Gears',
+        items: [
+          'A medium size trolley with one cabin bag',
+          'Reusable water bladder or water bottle'
+        ]
+      },
+      {
+        title: 'Clothes',
+        items: [
+          'a sun cap',
+          'UV protected sunglasses',
+          'Cotton Shirts and T-shirts',
+          'Jeans, Shorts and cotton pants',
+          'Sets of undergarments',
+          'Pair of socks',
+          'A small towel or Beach Towel',
+          'A rain jacket or a poncho'
+        ]
+      },
+      {
+        title: 'Footwear',
+        items: [
+          'Sport Shoes or Sneakers',
+          'Flip flops/sandals'
+        ]
+      },
+      {
+        title: 'Medication',
+        items: [
+          'Glucose powder',
+          'Medicines for headaches, diarrhoea, motion sickness',
+          'Dettol',
+          'Bandages',
+          'Cotton'
+        ]
+      },
+      {
+        title: 'Personal Accessories',
+        items: [
+          'toothpaste, toothbrush',
+          'Paper soap, or sanitizer',
+          'Sunscreen minimum of spf40, lip balm, cold creams',
+          'Body spray',
+          'LED torch light'
+        ]
+      }
+    ],
+    note: [
+      'Normal Check-in and Check-out time is 03:00 PM and 12:00 noon respectively in Bali. Early check-in with breakfast is available at an extra cost of 30 USD/ per person.',
+      'Airport transfer is at fixed time (depending on the majority of arrival and departure time of the group) - Any early or late transfer will be charged extra.',
+      'The age limit of our group departures is 18 to 42 years due to the power packed itineraries that we provide to our travellers. We can customize trips for travellers beyond the mentioned age bracket.',
+      'Every traveler is required to be holding a valid passport with an expiry date at least 6 months post the date of entering Bali.',
+      'Tour rates are calculated based on current fuel rates and may be revised if there is a sudden increase in fuel prices or an increase of 15% or above.',
+      'If the guest count for a batch is fewer than 9 guests, only a local guide will be available during the tour, and an Indian Trip Captain will not be accompanying the group.'
+    ],
+    costingDetails: [
+      { label: 'Double Sharing Rate', value: '₹26,999/- per person' }
+    ],
+    dates: []
+  },
+  {
+    id: '72',
+    title: '8 Days Honeymoon Special Bali Seminyak, Nusa Penida, Ubud & Kuta',
+    slug: 'honeymoon-special-bali-8days',
+    image: '/images/honeymoon-special-bali-8days.png',
+    destination: 'Bali',
+    category: 'Bali',
+    description: 'Experience 3N Ubud and 4N Kuta on this honeymoon special 8-day tour with Ayung River white water rafting, Bali Swing, ATV ride, Kelingking Beach excursion, Tanah Lot and Uluwatu Temple tours, and traditional Balinese Spa.',
+    duration: 8,
+    price: 35999,
+    rating: 4.9,
+    difficulty: 'Easy',
+    groupSize: 18,
+    tripType: 'International',
+    highlights: [
+      'Ubud',
+      'Bali Swing',
+      'Water Sports & ATV Ride',
+      'Nusa Penida Island Tour',
+      'Tanah Lot Temple',
+      'Ulawatu Temple',
+      'Gate To Heaven'
+    ],
+    heroMedia: [
+      { type: 'image', src: '/images/honeymoon-special-bali-8days.png', alt: '8 Days Honeymoon Special Bali' }
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Arrive in Bali. Transfer to Ubud.',
+        description: 'Upon your arrival at Ngurah Rai International Airport in Denpasar, you will have to complete your immigration process. Next, you will meet our representative who will help you board your transfers to Ubud. Reach Ubud and then check in to the hotel. You can then spend the rest of the day at leisure wherein you can either relax or explore around. In the evening, enjoy a romantic candlelight dinner in your hotel. Overnight stay in Ubud.'
+      },
+      {
+        day: 2,
+        title: 'Adventure Sports Day. Indulge in River Rafting and ATV rides.',
+        description: 'Wake up to a beautiful tropical morning and have your breakfast at the hotel. Next, get ready for an adventurous day and board your transfers to the Ayung River. Here, you will embark on a thrilling whitewater rafting experience. After a safety briefing, begin your rafting as you navigate your way through the river and enjoy the landscape around you. Upon completing your rafting session, head further for another fun activity for couples to bond over. You can embark on your ATV and ride your way through the lush green landscape to explore the countryside of Bali. After completing the sightseeing for the day, return back to your hotel. Overnight stay in Ubud.'
+      },
+      {
+        day: 3,
+        title: 'Local Sightseeing Around Ubud. Embark on the Bali Swing.',
+        description: 'Post breakfast in the morning, get ready to explore Ubud. Start by visiting the famous Bali Swing over the lush green countryside landscape of Bali. Next, we will head to the Kintamani viewpoint to admire the views of an active volcano called Mt.Batur. Later, we will take you to the lush green Tegalalang Rice Terrace where you can stroll hand in hand and spend some quality time with your partner. Further, you will head to the Tegenungan Waterfalls to spend some time connecting with nature by admiring this cascading fall. Upon completing the day’s sightseeing, return back to the hotel. Overnight stay in Ubud.'
+      },
+      {
+        day: 4,
+        title: 'Ubud to Kuta. Enjoy a sunset from Tanah Lot Temple.',
+        description: 'Wake up to a beautiful morning in the tropical paradise of Bali. Have your breakfast and get ready to board your transfers to Kuta. Upon reaching Kuta, check-in to the hotel and rest for some time. In the evening, board your transfers as we take you to the coastal Tanah Lot temple. Spend some time admiring the sunset views around this beautiful coastal temple and capture some Insta Worthy Pictures. After completing the sightseeing for the day, return back to your hotel. Overnight stay in Kuta.'
+      },
+      {
+        day: 5,
+        title: 'Excursion to Nusa Penida Islands. Visit the Kelingking Beach.',
+        description: 'After breakfast in the morning, get ready to board your transfers. Today, we will take a fast boat to reach Nusa Penida through the azure blue ocean. Reach Nusa Penida and travel from Sampalan Beach to Crystal Beach where you can indulge in snorkeling (optional). Post lunch, head to Kelingking Beach majorly known for its rock formation that depicts the shape of a T-Rex. After completing the day’s sightseeing we will return back to the mainland of Bali. You will take a fast boat to the Sanur Port of Bali. Upon your arrival at the Sanur Port, you will board your transfers to Kuta. Overnight stay in Kuta.'
+      },
+      {
+        day: 6,
+        title: 'Local Sightseeing in Kuta. Visit the Uluwatu Temple.',
+        description: 'Post breakfast in the morning, get ready to head out for the day. You visit the picturesque Uluwatu Temple, which is located on a cliff along the coast of Bali. The Uluwatu Temple is one of the most important temples of Bali and it overlooks the mighty ocean from the cliff. After admiring the views and soaking in the spiritual vibe, we will head further to one of the most popular beaches of South Bali. You visit the picturesque Padang-Padang Beach where you can spend some strolling hand in hand on the beach or sit leisurely. You can then spend the rest of the day and have fun at the Single Fin Day Club (entry on your own). Return back to your hotel, after enjoying your day. Overnight stay in Kuta.'
+      },
+      {
+        day: 7,
+        title: 'Visit the Gate of Heaven. Take a traditional Balinese Spa.',
+        description: 'Wake up to the beautiful tropical climate of Bali and have your breakfast at the hotel. Get ready and head to seek the blessings for your newly married life from the local deities, as you will be exploring one the best temples in Bali. Board the transfers that will take you to the eastern side of Bali. Visit the Pura Lempuyang Temple, which is famous for its “Gate of Heaven” and the stunning views of Mt.Agung. Return back to Kuta and post afternoon, you can spend some quality time together by pampering yourselves with a traditional Balinese Spa and Massage. You can then spend the rest of the evening at leisure. You can go on a shopping spree to take back souvenirs for your loved ones. Overnight stay in Kuta.'
+      },
+      {
+        day: 8,
+        title: 'Departure. Take back a lot of romantic memories.',
+        description: 'Have your breakfast in the morning and pack your bags. Board your transfer to the airport for your onward journey. Your amazing Romantic Bali Tour concludes once you are dropped off at the airport. Take back a lot of romantic memories to cherish for a lifetime.'
+      }
+    ],
+    included: [
+      'Entire travel in a private vehicle as per the itinerary.',
+      '7Nights Accomodation on 4 Star Deluxe Water Villa',
+      'Airport pick up and drop.',
+      'Water sports activities in Tanjung Benoa (Banana boat ride, Jet Ski and Parasailing)',
+      'Dolphin watching tour in Lovina.',
+      'Half day tour to Uluwatu temple.',
+      'Full day tour to Nusa penida.',
+      'Half day tour to bali Swing.',
+      'Full day tour to Kintamani village for Mt Batur volcano view point, Tegalalang Rice Terrace and Tegenungan Waterfall.',
+      'Half day tour to Tanah Lot temple',
+      'English speaking driver cum guide.',
+      'Breakfast from Day 2 to Day 8'
+    ],
+    notIncluded: [
+      'GST and TCS as applicable extra',
+      'Water Sports or any other activity other than mentioned in the itinerary',
+      'Any kind of food or beverage that is not included in the package like alcoholic drinks, mineral water, meals/refreshments/lunches on the highway',
+      'Any personal expenses like a tip to the drivers, camera/video camera charges, laundry, telephone bills, tips, etc',
+      'Any cost arising due to natural calamities like landslides, roadblocks etc. (to be borne directly by the customer on the spot)',
+      'Anything not mentioned in the inclusions',
+      'Cost arises due to change or delay in flight timings. Wanderphilia as a responsible travel partner will definitely try to minimise the impact of delay but Wanderphilia shall not be liable/responsible for such incidents',
+      'Visa is available on arrival at an approx. cost of US$ 35 per person',
+      'JagaWisata Indonesia Travel Insurance, can be bought at Bali Airport upon arrival with an Insurance Premium of USD 36.00'
+    ],
+    travelEssentials: [
+      {
+        title: 'Gears',
+        items: [
+          'A medium size trolley with one cabin bag',
+          'Reusable water bladder or water bottle'
+        ]
+      },
+      {
+        title: 'Clothes',
+        items: [
+          'a sun cap',
+          'UV protected sunglasses',
+          'Cotton Shirts and T-shirts',
+          'Jeans, Shorts and cotton pants',
+          'Sets of undergarments',
+          'Pair of socks',
+          'A small towel or Beach Towel',
+          'A rain jacket or a poncho'
+        ]
+      },
+      {
+        title: 'Footwear',
+        items: [
+          'Sport Shoes or Sneakers',
+          'Flip flops/sandals'
+        ]
+      },
+      {
+        title: 'Medication',
+        items: [
+          'Glucose powder',
+          'Medicines for headaches, diarrhoea, motion sickness',
+          'Dettol',
+          'Bandages',
+          'Cotton'
+        ]
+      },
+      {
+        title: 'Personal Accessories',
+        items: [
+          'toothpaste, toothbrush',
+          'Paper soap, or sanitizer',
+          'Sunscreen minimum of spf40, lip balm, cold creams',
+          'Body spray',
+          'LED torch light'
+        ]
+      }
+    ],
+    note: [
+      'Normal Check-in and Check-out time is 03:00 PM and 12:00 noon respectively in Bali. Early check-in with breakfast is available at an extra cost of 30 USD/ per person.',
+      'Airport transfer is at fixed time (depending on the majority of arrival and departure time of the group) - Any early or late transfer will be charged extra.',
+      'The age limit of our group departures is 18 to 42 years due to the power packed itineraries that we provide to our travellers. We can customize trips for travellers beyond the mentioned age bracket.',
+      'Every traveler is required to be holding a valid passport with an expiry date at least 6 months post the date of entering Bali.',
+      'Tour rates are calculated based on current fuel rates and may be revised if there is a sudden increase in fuel prices or an increase of 15% or above.',
+      'If the guest count for a batch is fewer than 9 guests, only a local guide will be available during the tour, and an Indian Trip Captain will not be accompanying the group.'
+    ],
+    costingDetails: [
+      { label: 'Double Sharing Rate', value: '₹35,999/- per person' }
+    ],
+    dates: []
   }
 ];
 

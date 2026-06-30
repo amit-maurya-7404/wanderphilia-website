@@ -130,7 +130,7 @@ export default function WhyUsPage() {
             Join thousands of satisfied travelers who have chosen Wanderphilia.
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
-            <Link href="/trips">
+            <Link href="/upcoming-tours">
               <Button size="lg" className="gap-2">
                 Browse Trips <ArrowRight size={20} />
               </Button>

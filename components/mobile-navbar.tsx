@@ -195,7 +195,7 @@ export function MobileNavbar() {
 
               <div className="border-t border-gray-100 px-4 py-4">
                 <Button asChild className="w-full bg-primary hover:bg-primary/90 text-white py-3">
-                  <Link href="/trips" onClick={() => setIsMobileOpen(false)}>Explore Now</Link>
+                  <Link href="/upcoming-tours" onClick={() => setIsMobileOpen(false)}>Explore Now</Link>
                 </Button>
               </div>
             </div>

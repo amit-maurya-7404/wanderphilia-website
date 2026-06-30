@@ -1,4 +1,4 @@
-import { trips } from './data'
+import { trips, getLowestPriceForTrips } from './data'
 
 export interface Category {
   id: string
@@ -12,6 +12,7 @@ const categoryImageMap: Record<string, string> = {
   Nepal: '/images/nepal-dest.jpg',
   Thailand: '/images/thailand.jpg',
   Indonesia: '/images/indonesia-dest.jpg',
+  Bali: '/images/bali.jpg',
   Switzerland: '/images/switzerland-dest.jpg',
   Peru: '/images/peru-dest.jpg',
   Japan: '/images/japan.jpg',
@@ -32,6 +33,7 @@ const categoryOrder: string[] = [
   'Singapore',
   'Thailand',
   'Vietnam',
+  'Bali',
   'Switzerland',
   'Peru',
   'Iceland',
@@ -42,7 +44,6 @@ const categoryOrder: string[] = [
   'Himachal',
   'Sikkim',
   'Meghalaya',
-
 ]
 
 const normalizeCategoryId = (category: string) =>
@@ -106,4 +107,33 @@ export const getCategoriesByType = (type: 'India' | 'International') => {
       trip => normalizeCategoryId(trip.category) === cat.id && trip.tripType === type
     )
   })
+}
+
+// Get categories for a given list of trip IDs with lowest price and trip count
+export const getCategoriesForTripIds = (tripIds: string[]) => {
+  const matchingTrips = trips.filter(t => tripIds.includes(t.id))
+  const uniqueCategoryNames = Array.from(new Set(matchingTrips.map(t => t.category.trim())))
+  const allCategories = getAllCategories()
+
+  return allCategories
+    .filter(cat =>
+      uniqueCategoryNames.some(name =>
+        name.toLowerCase() === cat.name.toLowerCase() ||
+        cat.id === name.toLowerCase().replace(/\s+/g, '-')
+      )
+    )
+    .map(cat => {
+      const categoryTrips = trips.filter(t =>
+        t.category.trim().toLowerCase() === cat.name.toLowerCase() ||
+        t.category.trim().toLowerCase() === cat.id
+      )
+      const price = getLowestPriceForTrips(categoryTrips)
+      return {
+        id: cat.id,
+        name: cat.name,
+        image: cat.image,
+        price: price > 0 ? price : 15000,
+        tripCount: categoryTrips.length
+      }
+    })
 }

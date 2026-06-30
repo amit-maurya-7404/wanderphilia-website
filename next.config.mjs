@@ -13,6 +13,15 @@ const nextConfig = {
     ],
   },
   allowedDevOrigins: ['192.168.1.109', '*'],
+  async redirects() {
+    return [
+      {
+        source: '/trips',
+        destination: '/upcoming-tours',
+        permanent: true,
+      },
+    ]
+  },
 }
 
 export default nextConfig

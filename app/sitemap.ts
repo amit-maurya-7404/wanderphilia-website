@@ -7,7 +7,6 @@ const BASE_URL = 'https://wanderphilia.com'
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes = [
     '/',
-    '/trips',
     '/india-trips',
     '/international-trips',
     '/honeymoon',
@@ -22,6 +21,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/terms',
     '/payment',
     '/login',
+    '/trips/bali',
     '/trips/bhutan',
     '/trips/himachal',
     '/trips/iceland',
