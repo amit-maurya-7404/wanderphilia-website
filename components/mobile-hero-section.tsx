@@ -7,18 +7,15 @@ import { getAllCategories } from '@/lib/trip-categories'
 import { trips } from '@/lib/data'
 import { getPageSectionMapping } from '@/lib/section-mappings'
 import { TripCard } from '@/components/trip-card'
+import Link from 'next/link'
 
 export function MobileHeroSection() {
     const [destination, setDestination] = useState('')
     const [banners] = useState<any[]>([
-        { _id: '1', title: 'Special Winter Offer', image: '/images/mobile-hero1.jpg' },
-        { _id: '2', title: 'Group Discount 25%', image: '/images/mobile-hero2.jpg' },
-        { _id: '3', title: 'Early Bird Booking', image: '/images/mobile-hero3.jpg' },
-        { _id: '4', title: 'Early Bird Booking', image: '/images/mobile-hero4.jpeg' },
-        { _id: '5', title: 'Early Bird Booking', image: '/images/mobile-hero5.jpeg' },
-        { _id: '6', title: 'Early Bird Booking', image: '/images/mobile-hero6.jpeg' }
-
-
+        { _id: '1', title: "Bali's Zamna Fest", image: '/images/mobile-hero-bali-zamna.png', link: '/trips/bali' },
+        { _id: '2', title: "Spiti Winter Expedition", image: '/images/mobile-hero-spiti-winter.png', link: '/trips/spiti' },
+        { _id: '3', title: "Ladakh Bike Odyssey", image: '/images/mobile-hero-ladakh-bike.png', link: '/trips/leh-ladakh' },
+        { _id: '4', title: "Vietnam Wonders Cruise", image: '/images/mobile-hero-vietnam-cruise.png', link: '/trips/vietnam' }
     ])
 
     const categories = useMemo(() => getAllCategories(), [])
@@ -112,7 +109,7 @@ export function MobileHeroSection() {
                 </div>
 
                 {/* 🎯 CAROUSEL (FIXED HEIGHT) */}
-                <div className="relative overflow-hidden rounded-2xl h-35">
+                <div className="relative overflow-hidden rounded-2xl h-40 shadow-md">
                     <div
                         className="flex h-full transition-transform duration-500"
                         style={{
@@ -120,12 +117,33 @@ export function MobileHeroSection() {
                         }}
                     >
                         {banners.map(banner => (
-                            <div key={banner._id} className="w-full shrink-0 h-full">
+                            <Link 
+                                href={banner.link || '#'} 
+                                key={banner._id} 
+                                className="w-full shrink-0 h-full relative block"
+                            >
                                 <img
                                     src={banner.image}
+                                    alt={banner.title}
                                     className="w-full h-full object-cover"
                                 />
-                            </div>
+                                <div className="absolute inset-0 bg-linear-to-t from-black/85 via-black/25 to-transparent flex flex-col justify-end p-4">
+                                    <span className="text-[10px] text-amber-400 font-extrabold uppercase tracking-wider">Special Promotion</span>
+                                    <h4 className="text-white text-base font-black tracking-tight leading-tight">{banner.title}</h4>
+                                </div>
+                            </Link>
+                        ))}
+                    </div>
+
+                    {/* Banner slide dots */}
+                    <div className="absolute bottom-2 right-4 flex gap-1 z-20">
+                        {banners.map((_, index) => (
+                            <div
+                                key={index}
+                                className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
+                                    index === bannerIndex ? 'bg-white w-3' : 'bg-white/40'
+                                }`}
+                            />
                         ))}
                     </div>
                 </div>

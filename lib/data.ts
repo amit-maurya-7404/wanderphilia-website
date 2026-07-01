@@ -166,541 +166,6 @@ export interface VideoTestimonial {
 export const trips: Trip[] = [
   {
     id: '1',
-    title: 'Everest Base Camp Trek',
-    slug: 'everest-base-camp',
-    image: '/images/everest.jpg',
-    destination: 'Nepal',
-    category: 'Nepal',
-    description: 'Trek to the base camp of the world\'s highest mountain through stunning Himalayan landscapes.',
-    duration: 14,
-    price: 99900,
-    rating: 4.9,
-    difficulty: 'Hard',
-    groupSize: 12,
-    tripType: 'International',
-    highlights: [
-      'Stunning mountain vistas',
-      'Traditional Sherpa villages',
-      'Namche Bazaar market',
-      'Close proximity to Everest'
-    ],
-    itinerary: [
-      { day: 1, title: 'Arrival in Kathmandu', description: 'Welcome to Nepal! Meet your guides and prepare for the adventure.' },
-      { day: 2, title: 'Kathmandu Exploration', description: 'Visit ancient temples and markets in Kathmandu.' },
-      { day: 3, title: 'Flight to Lukla', description: 'Scenic flight to Lukla, gateway to Everest region.' },
-      { day: 4, title: 'Lukla to Namche', description: 'Trek through pine forests to Namche Bazaar.' },
-      { day: 5, title: 'Acclimatization Day', description: 'Explore Namche Bazaar and nearby trails.' },
-    ],
-    included: ['All meals', 'Local guides', 'Accommodation', 'Trek permits'],
-    notIncluded: ['International flights', 'Personal insurance', 'Tips'],
-    dates: [
-      { startDate: '2024-05-01', endDate: '2024-05-14', spots: 5 },
-      { startDate: '2024-09-15', endDate: '2024-09-28', spots: 8 },
-    ]
-  },
-  {
-    id: '2',
-    title: 'Bali Culture & Beaches',
-    slug: 'bali-culture',
-    image: '/images/bali.jpg',
-    destination: 'Indonesia',
-    category: 'Bali',
-    description: 'Experience the mystical temples, lush rice terraces, and pristine beaches of Bali.',
-    duration: 8,
-    price: 69900,
-    rating: 4.8,
-    difficulty: 'Easy',
-    groupSize: 18,
-    tripType: 'International',
-    highlights: [
-      'Ancient temples',
-      'Rice terraces',
-      'Pristine beaches',
-      'Traditional ceremonies'
-    ],
-    itinerary: [
-      { day: 1, title: 'Arrival in Denpasar', description: 'Welcome to Bali. Transfer to your resort.' },
-      { day: 2, title: 'Temple Tour', description: 'Visit Tanah Lot and Besakih temples.' },
-      { day: 3, title: 'Rice Terraces', description: 'Trek through iconic Tegallalang rice terraces.' },
-    ],
-    included: ['Accommodation', 'Daily breakfast', 'Airport transfers', 'Tour guide'],
-    notIncluded: ['International flights', 'Activities', 'Meals'],
-    dates: [
-      { startDate: '2024-06-01', endDate: '2024-06-08', spots: 12 },
-    ]
-  },
-  {
-    id: '3',
-    title: 'Swiss Alpine Adventure',
-    slug: 'swiss-alpine',
-    image: '/images/swiss.jpg',
-    destination: 'Switzerland',
-    category: 'Switzerland',
-    description: 'Hike through the majestic Swiss Alps with breathtaking views and charming mountain villages.',
-    duration: 10,
-    price: 129900,
-    rating: 4.9,
-    difficulty: 'Moderate',
-    groupSize: 14,
-    tripType: 'International',
-    highlights: [
-      'Mountain peaks',
-      'Alpine villages',
-      'Crystal clear lakes',
-      'Cable car rides'
-    ],
-    itinerary: [
-      { day: 1, title: 'Zurich Arrival', description: 'Meet in Zurich and travel to Interlaken.' },
-      { day: 2, title: 'Jungfrau Expedition', description: 'Train to Jungfrau, Europe\'s highest railway station.' },
-    ],
-    included: ['All accommodations', 'Meals', 'Transport passes', 'Guide'],
-    notIncluded: ['International flights'],
-    dates: [
-      { startDate: '2024-07-15', endDate: '2024-07-24', spots: 6 },
-    ]
-  },
-  {
-    id: '4',
-    title: 'Amazon Rainforest Expedition',
-    slug: 'amazon-expedition',
-    image: '/images/amazon.jpg',
-    destination: 'Peru',
-    category: 'Peru',
-    description: 'Discover the world\'s largest rainforest and encounter exotic wildlife in their natural habitat.',
-    duration: 7,
-    price: 94900,
-    rating: 4.7,
-    difficulty: 'Moderate',
-    groupSize: 10,
-    tripType: 'International',
-    highlights: [
-      'Wildlife spotting',
-      'River cruises',
-      'Indigenous cultures',
-      'Jungle lodges'
-    ],
-    itinerary: [
-      { day: 1, title: 'Lima to Iquitos', description: 'Fly to the gateway of the Amazon.' },
-    ],
-    included: ['Lodge accommodation', 'All meals', 'Boat tours', 'Naturalist guide'],
-    notIncluded: ['Flights to Iquitos', 'Travel insurance'],
-    dates: [
-      { startDate: '2024-08-01', endDate: '2024-08-07', spots: 4 },
-    ]
-  },
-  {
-    id: '5',
-    title: 'Iceland Northern Lights',
-    slug: 'iceland-lights',
-    image: '/images/iceland.jpg',
-    destination: 'Iceland',
-    category: 'Iceland',
-    description: 'Chase the magical Aurora Borealis under the Arctic skies of Iceland.',
-    duration: 9,
-    price: 114900,
-    rating: 4.8,
-    difficulty: 'Easy',
-    groupSize: 16,
-    tripType: 'International',
-    highlights: [
-      'Northern Lights',
-      'Hot springs',
-      'Waterfalls',
-      'Glacier hiking'
-    ],
-    itinerary: [
-      { day: 1, title: 'Reykjavik Arrival', description: 'Welcome to Iceland\'s vibrant capital.' },
-    ],
-    included: ['Accommodation', 'Breakfast', 'Tours', 'Guide'],
-    notIncluded: ['Flights', 'Dinner'],
-    dates: [
-      { startDate: '2024-10-15', endDate: '2024-10-23', spots: 10 },
-    ]
-  },
-  {
-    id: '6',
-    title: 'Japan Cultural Journey',
-    slug: 'japan-cultural',
-    image: '/images/japan.jpg',
-    destination: 'Japan',
-    category: 'Japan',
-    description: 'Journey through ancient temples, modern cities, and serene gardens of Japan.',
-    duration: 12,
-    price: 154900,
-    rating: 4.9,
-    difficulty: 'Easy',
-    groupSize: 20,
-    tripType: 'International',
-    highlights: [
-      'Tokyo bustling streets',
-      'Kyoto temples',
-      'Mount Fuji views',
-      'Traditional tea ceremonies'
-    ],
-    itinerary: [
-      { day: 1, title: 'Tokyo Arrival', description: 'Welcome to the Land of the Rising Sun.' },
-    ],
-    included: ['Hotel stays', 'Breakfast', 'Tours', 'Train pass'],
-    notIncluded: ['International flights', 'Most meals'],
-    dates: [
-      { startDate: '2024-11-01', endDate: '2024-11-12', spots: 15 },
-    ]
-  },
-  {
-    id: '7',
-    title: '6 Days Leh - Leh Bike Group Trip with Nubra Valley & Pangong Lake',
-    slug: 'leh-ladakh',
-    image: '/images/leh-ladakh.jpg',
-    destination: 'Leh Ladakh',
-    region: 'Leh Ladakh',
-    category: 'Leh Ladakh',
-    description: 'Are you ready for an unforgettable adventure in the breathtaking landscapes of Ladakh? This Ladakh tour package takes you on an exciting 6-day journey through some of the most stunning places in the Himalayas. From the moment you land in Leh, you will experience mesmerizing views, peaceful monasteries, thrilling high-altitude passes, and crystal-clear lakes.',
-    duration: 6,
-    price: 15800,
-    rating: 4.9,
-    difficulty: 'Moderate',
-    nights: 5,
-    groupSize: 15,
-    tripType: 'India',
-    highlights: [
-      'Khardung La',
-      'Pangong Lake',
-      'Chang La',
-      'Nubra Valley',
-      'Magnetic Hill',
-      'Shanti Stupa',
-    ],
-    itinerary: [
-      {
-        day: 1,
-        title: 'Arrival in Leh',
-        description: 'Take a flight from Mumbai and arrive at Leh airport after a scenic Himalayan flight. Meet our representative for transfers to the hotel, complete check-in, and rest. Spend the rest of the day at leisure and take a short walk around the hotel to acclimatize. Later, the trip captain will brief you about the journey. Overnight stay in Leh.',
-      },
-      {
-        day: 2,
-        title: 'Leh Local Sightseeing',
-        description: 'Explore Leh after breakfast with visits to Shanti Stupa, Gurudwara Pathar Sahib, Magnetic Hill, Sangam Point, and the Hall of Fame. Spend the evening exploring the local market and cafes. Return to the hotel for dinner and overnight stay in Leh.',
-      },
-      {
-        day: 3,
-        title: 'Leh to Nubra Valley via Khardung-La',
-        description: 'Depart Leh for Nubra Valley via Khardung La, one of the highest motorable roads. Visit Diskit Monastery and see the 106-foot Maitreya Buddha statue. Cross the Shyok River and arrive in Nubra Valley, where you can enjoy a double-humped camel safari or ATV ride if time permits. Overnight stay in Nubra Valley.',
-      },
-      {
-        day: 4,
-        title: 'Nubra Valley to Pangong Lake',
-        description: 'Travel from Nubra Valley to Pangong Lake via the scenic Shyok route. Pass through Agam and Shyok villages before reaching the stunning blue waters of Pangong Tso. Spend time at the lake and capture photos at the famous 3 Idiots filming location. Check in to your campsite and enjoy dinner. Overnight stay near Pangong Lake.',
-      },
-      {
-        day: 5,
-        title: 'Pangong to Leh via Chang-La',
-        description: 'Witness sunrise at the lake, enjoy breakfast, and return to Leh via Chang La. Pass through Karu, Thikshey, and Shey before arriving in Leh in the evening. Spend the evening shopping and cafe hopping in Leh market. Overnight stay in Leh.',
-      },
-      {
-        day: 6,
-        title: 'Departure',
-        description: 'Have breakfast, pack your bags, and transfer to Leh airport for your onward journey. Take back adventurous memories to cherish for a lifetime.',
-      },
-    ],
-    included: [
-      'Stay for 5 nights – 3 nights in Leh hotel, 1 night in Nubra Valley hotel, 1 night in Pangong camp on triple/quad sharing basis',
-      'Breakfast & Dinner (Breakfast except Day 1 & Dinner Day 6)',
-      'Bike rent for 4 days for biking option from Day 2 to Day 5',
-      'Fuel for the bike (Leh to Leh) from Day 2 to Day 5',
-      'Riding gear – helmet, riding gloves, riding jacket, knee pads',
-      'Mechanical backup and bike support',
-      'Entire travel from Leh to Leh by tempo traveler/cab for tempo option',
-      'Driver night charges, toll tax, parking charges, and permits',
-      'Team captain throughout the trip',
-      'Oxygen cylinder available 24x7 in the vehicle for emergencies',
-      'Airport pick-up and drop in shared group taxi slots based on flight timings',
-      'All inner line permits and environmental fees as applicable',
-    ],
-    notIncluded: [
-      'GST (5%) applicable extra',
-      'Any food or beverage not included in the package, including alcoholic drinks, mineral water, meals on the highway, and refreshments',
-      'Personal expenses such as tips, monastery/monument entry fees, camera/video charges, camel safari, river rafting, laundry, telephone bills, and other incidentals',
-      'Costs arising from natural calamities such as landslides, roadblocks, or weather-related delays',
-      'Anything not specifically mentioned under inclusions',
-      'Any damage to the bike except engine damage must be borne by the client',
-      'INR 5,000/- security deposit for the bike',
-    ],
-    overviewPoints: [
-      'Route: Leh → Nubra Valley → Pangong → Chang La → Leh',
-      'Duration: 5 Nights / 6 Days',
-      'Trip Start: Leh',
-      'Bike Ride Starts From: Leh',
-      'Trip End: Leh',
-      'Highest Point: Khardung La (18,380 ft)',
-      'Difficulty Level: Easy to Moderate',
-      'Best Time to Visit: May to September',
-      'Major Highlights: Khardung La, Pangong Lake, Chang La',
-    ],
-    stays: [
-      'Leh: The Kaal Hotel / Hotel Zanang / Similar',
-      'Nubra Valley: Hideout Camps / Similar',
-      'Pangong: Snow Pine Cottages',
-    ],
-    note: 'INR 5,000/- needs to be submitted as security for the bike before the start of the trip. Any damage to the bike, except engine damage, has to be borne directly by the client.',
-    paymentPolicy: [
-      'At booking: 25% booking advance is non-refundable',
-      'Within 45 days: Minimum 50% deduction',
-      'Within 30 days: Minimum 75% deduction',
-      '20 days or less: 100% forfeited',
-    ],
-    cancellationPolicy: [
-      'At booking: 25% booking advance is non-refundable',
-      'Within 45 days: Minimum 50% deduction',
-      'Within 30 days: Minimum 75% deduction',
-      '20 days or less: 100% forfeited',
-    ],
-    thingsToCarry: [
-      'Authentic government ID card',
-      'Comfortable warm clothing like woolen socks, cap, fleece jackets, down jacket, and toiletries',
-      'Sunscreen & lip balm, UV protection sunglasses',
-      'Personal medicines and altitude sickness medication',
-      'Power banks (no electricity at Pangong Tso)',
-      'Post-paid phone numbers, since most areas have no network',
-    ],
-    travelEssentials: [
-      {
-        title: 'Gears',
-        items: ['Rucksack bag and day pack', '3-litre water bladder or water bottle'],
-      },
-      {
-        title: 'Clothes',
-        items: ['Sun cap and woolen cap', 'UV protected sunglasses', 'Cotton long sleeves and 2 short sleeve t-shirts', 'Fleece jacket', 'Heavy jacket/down jacket', 'Gloves', 'At least 2 long pants', '4 sets of undergarments', '2 pairs of socks', 'Small towel', 'Rain jacket or poncho'],
-      },
-      {
-        title: 'Footwear',
-        items: ['Above-the-ankle waterproof hiking boots with good grip', 'Flip flops or sandals'],
-      },
-      {
-        title: 'Medication',
-        items: ['Diamox', 'Glucose powder', 'Headache and altitude sickness medicines', 'Diarrhea medicine', 'Dettol', 'Bandages', 'Cotton'],
-      },
-      {
-        title: 'Personal accessories',
-        items: ['Toothpaste and toothbrush', 'Paper soap or sanitizer', 'Sunscreen SPF 40+', 'Lip balm', 'Cold cream', 'Body spray', 'LED torch light'],
-      },
-    ],
-    costingDetails: [
-      { label: 'Tempo Traveller', value: 'Double Sharing & Triple Sharing' },
-      { label: 'Himalayan 411cc Bike Solo', value: 'Double Sharing & Triple Sharing' },
-      { label: 'Himalayan 411cc Bike Dual', value: 'Double Sharing & Triple Sharing' },
-    ],
-    batchDates: [
-      { month: 'May', ranges: ['16th May - 21st May', '23rd May - 28th May (Eid Holiday)'] },
-      { month: 'June', ranges: ['6th June - 11th June', '20th June - 25th June'] },
-      { month: 'July', ranges: ['4th July - 9th July', '18th July - 23rd July'] },
-      { month: 'Aug', ranges: ['1st Aug - 6th Aug', '15th Aug - 20th Aug', '29th Aug - 3rd Sept'] },
-      { month: 'Sept', ranges: ['12th Sept - 17th Sept (Ganesh Chaturthi Holiday)', '26th Sept - 1st Oct'] },
-    ],
-    dates: [
-      { startDate: '2024-05-16', endDate: '2024-05-21', spots: 8 },
-      { startDate: '2024-05-23', endDate: '2024-05-28', spots: 8 },
-    ],
-  },
-  {
-    id: '8',
-    title: 'Spiti Valley Trek',
-    slug: 'spiti-valley',
-    image: '/images/spiti-valley.jpg',
-    destination: 'Spiti Valley',
-    region: 'Spiti',
-    category: 'Spiti',
-    description: 'Trek through the high desert valleys of Spiti with ancient monasteries.',
-    duration: 7,
-    price: 24499,
-    rating: 4.8,
-    difficulty: 'Hard',
-    groupSize: 12,
-    tripType: 'India',
-    highlights: [
-      'Key Monastery',
-      'Tabo Monastery',
-      'Kaza village',
-      'High altitude trekking'
-    ],
-    itinerary: [
-      { day: 1, title: 'Arrival in Shimla', description: 'Start your Spiti adventure from Shimla.' },
-      { day: 2, title: 'Journey to Spiti', description: 'Drive through beautiful landscapes to Spiti.' },
-    ],
-    included: ['Accommodation', 'All meals', 'Guide', 'Transport'],
-    notIncluded: ['Flight', 'Insurance'],
-    dates: [
-      { startDate: '2024-06-15', endDate: '2024-06-21', spots: 6 },
-      { startDate: '2024-09-01', endDate: '2024-09-07', spots: 8 },
-    ]
-  },
-  {
-    id: '9',
-    title: 'Kashmir Heaven Trek',
-    slug: 'kashmir-trek',
-    image: '/images/kashmir.jpg',
-    destination: 'Kashmir',
-    region: 'Kashmir',
-    category: 'Kashmir',
-    description: 'Explore the paradise of Kashmir with lush valleys and stunning alpine meadows.',
-    duration: 5,
-    price: 24499,
-    rating: 4.9,
-    difficulty: 'Moderate',
-    groupSize: 16,
-    tripType: 'India',
-    highlights: [
-      'Dal Lake',
-      'Gulmarg',
-      'Pahalgam',
-      'Alpine meadows'
-    ],
-    itinerary: [
-      { day: 1, title: 'Srinagar Arrival', description: 'Welcome to Kashmir, the land of natural beauty.' },
-      { day: 2, title: 'Dal Lake tour', description: 'Enjoy houseboat experience on Dal Lake.' },
-    ],
-    included: ['Houseboat stay', 'All meals', 'Shikara rides', 'Guide'],
-    notIncluded: ['Flight', 'Activities'],
-    dates: [
-      { startDate: '2024-04-01', endDate: '2024-04-05', spots: 10 },
-      { startDate: '2024-09-15', endDate: '2024-09-19', spots: 12 },
-    ]
-  },
-  {
-    id: '10',
-    title: 'Meghalaya Waterfalls Tour',
-    slug: 'meghalaya-tour',
-    image: '/images/meghalaya.jpg',
-    destination: 'Meghalaya',
-    region: 'Meghalaya',
-    category: 'Meghalaya',
-    description: 'Discover the wettest state with stunning waterfalls and living root bridges.',
-    duration: 4,
-    price: 21499,
-    rating: 4.7,
-    difficulty: 'Easy',
-    groupSize: 18,
-    tripType: 'India',
-    highlights: [
-      'Living Root Bridges',
-      'Nohkalikai Falls',
-      'Cherrapunji',
-      'Mawlynnong village'
-    ],
-    itinerary: [
-      { day: 1, title: 'Shillong Arrival', description: 'Arrive in the hill station of Shillong.' },
-      { day: 2, title: 'Cherrapunji tour', description: 'Visit the wettest place on earth.' },
-    ],
-    included: ['Hotel', 'All meals', 'Transport', 'Guide'],
-    notIncluded: ['Flight', 'Activities'],
-    dates: [
-      { startDate: '2024-07-01', endDate: '2024-07-04', spots: 12 },
-      { startDate: '2024-10-01', endDate: '2024-10-04', spots: 14 },
-    ]
-  },
-  {
-    id: '11',
-    title: 'Himachal Adventure',
-    slug: 'himachal-adventure',
-    image: '/images/himachal.jpg',
-    destination: 'Himachal Pradesh',
-    region: 'Himachal',
-    category: 'Himachal',
-    description: 'Adventure through the Himalayas with trekking, paragliding, and scenic beauty.',
-    duration: 5,
-    price: 6999,
-    rating: 4.8,
-    difficulty: 'Moderate',
-    groupSize: 14,
-    tripType: 'India',
-    highlights: [
-      'Bir Billing',
-      'Kufri trek',
-      'Rohtang Pass',
-      'Adventure sports'
-    ],
-    itinerary: [
-      { day: 1, title: 'Shimla arrival', description: 'Arrive in the queen of hills.' },
-      { day: 2, title: 'Adventure activities', description: 'Try paragliding and trekking.' },
-    ],
-    included: ['Accommodation', 'Meals', 'Activities', 'Guide'],
-    notIncluded: ['Flight', 'Insurance'],
-    dates: [
-      { startDate: '2024-05-15', endDate: '2024-05-19', spots: 8 },
-      { startDate: '2024-10-15', endDate: '2024-10-19', spots: 10 },
-    ]
-  },
-  {
-    id: '12',
-    title: 'Bhutan Road Trip Package',
-    slug: 'bhutan-road-trip',
-    image: '/images/Bhutan_cat.jpg',
-    destination: 'Bhutan',
-    region: 'Bhutan',
-    category: 'Bhutan',
-    description: 'Bhutan, nestled in the Eastern Himalayas, is a peaceful kingdom known for its stunning landscapes, rich Buddhist culture, and focus on happiness through Gross National Happiness. This 6 Nights / 7 Days journey covers Thimphu, Punakha, and Paro, featuring scenic valleys, monasteries like Tiger\'s Nest, and highlights such as Dochula Pass and Punakha Dzong—offering a perfect blend of culture, nature, and adventure. ✨',
-    duration: 7,
-    price: 33000,
-    rating: 4.9,
-    difficulty: 'Easy',
-    groupSize: 11,
-    tripType: 'International',
-    highlights: [
-      'Tiger\'s Nest Monastery Hike',
-      'Dochula Pass',
-      'Punakha Dzong',
-      'Traditional Bhutanese Hot Stone Bath',
-      'River Rafting in Punakha',
-      'Buddhist monasteries',
-      'Scenic valleys and mountain landscapes',
-      'Gross National Happiness culture'
-    ],
-    itinerary: [
-      { day: 1, title: 'Arrival in Bagdogra', description: 'Arrival in Bagdogra. Transfer to Phuentsholing, the gateway to Bhutan.' },
-      { day: 2, title: 'Travel to Thimphu', description: 'Travel to the capital city of Bhutan, Thimphu. Settle in and prepare for your journey.' },
-      { day: 3, title: 'Excursion to Punakha and Dochula Pass', description: 'Excursion to Punakha. Visit the beautiful Dochula Pass with scenic mountain views and traditional chortens.' },
-      { day: 4, title: 'Thimphu Local Sightseeing', description: 'Overnight stay in Thimphu. Thimphu local sightseeing including key attractions. Transfer from Thimphu to Paro.' },
-      { day: 5, title: 'Paro Local Sightseeing and Tiger\'s Nest Hike', description: 'Overnight stay in Paro. Paro local sightseeing. Embark on a scenic hike to the iconic Tiger\'s Nest monastery.' },
-      { day: 6, title: 'Scenic Road Journey to Pheuntsholing', description: 'Paro to Pheuntsholing. Embark on a scenic road journey enjoying the stunning Bhutanese landscapes.' },
-      { day: 7, title: 'Departure', description: 'Departure. Pheuntsholing to Bagdogra Airport for your onward journey.' },
-    ],
-    included: [
-      '6 Nights accommodation on double sharing basis',
-      'Daily breakfast (except Day 1) & dinner (except Day 7)',
-      'River rafting experience in Punakha',
-      'Traditional Bhutanese Hot Stone Bath in Paro',
-      'Comfortable 11 Seater Tata Winger for 6 days',
-      'Professional English speaking Bhutanese guide',
-      'Sustainable Development Fee (SDF) included',
-      'All tolls, parking and driver night charges'
-    ],
-    notIncluded: [
-      'GST (5%) applicable extra',
-      'Food or beverages not in package (alcoholic drinks, mineral water, highway meals)',
-      'Personal expenses (tips, camera/video charges, laundry, phone bills)',
-      'Costs due to natural calamities (landslides, roadblocks)',
-      'Costs from changes in tourism policy between Bhutan and India',
-      'Costs from flight timing changes or delays',
-      'Entry tickets to monuments or attractions',
-      'Return transfer from Siliguri Hotel to Airport',
-      'Self-arranged conveyance based on flight timings'
-    ],
-    importantInformation: [
-      'Phuntsholing stay: Lakhi Hotel or Similar',
-      'Thimphu stay: Hotel White Tara or Similar',
-      'Paro stay: Rema Resort or Similar',
-      'Siliguri stay: Hotel Cinderella or Similar'
-    ],
-    dates: [
-      { startDate: '2026-04-25', endDate: '2026-05-01', spots: 12 },
-      { startDate: '2026-05-02', endDate: '2026-05-08', spots: 14 },
-      { startDate: '2026-05-16', endDate: '2026-05-22', spots: 12 },
-      { startDate: '2026-05-30', endDate: '2026-06-05', spots: 15 },
-      { startDate: '2026-06-06', endDate: '2026-06-12', spots: 13 },
-      { startDate: '2026-06-20', endDate: '2026-06-26', spots: 14 },
-    ]
-  },
-  {
-    id: '13',
     title: '6 Days Leh - Leh Bike Group Trip with Nubra Valley & Pangong Lake',
     slug: 'leh-leh-bike-group-trip',
     image: '/images/LL2.jpg',
@@ -991,7 +456,7 @@ export const trips: Trip[] = [
     ]
   },
   {
-    id: '14',
+    id: '2',
     title: '7 Days Leh - Leh Group Trip with Turtuk',
     slug: '7-days-leh-leh-group-trip-with-turtuk',
     image: '/images/LL1.PNG',
@@ -1271,7 +736,7 @@ export const trips: Trip[] = [
     ]
   },
   {
-    id: '15',
+    id: '3',
     title: '7 Days Leh - Leh Bike Group Trip with Nubra Valley Pangong Lake & Hanle',
     slug: 'leh-leh-bike-group-trip-hanle',
     image: '/images/LL3.jpg',
@@ -1558,7 +1023,7 @@ export const trips: Trip[] = [
     ]
   },
   {
-    id: '16',
+    id: '4',
     title: '8 Days Leh - Leh Bike Group Trip with Hanle , Umingla & Tso Moriri ( Excursion )',
     slug: 'leh-leh-bike-group-trip-hanle-umlingla-tso-moriri',
     image: '/images/LL4.PNG',
@@ -1870,7 +1335,7 @@ This tour gives you the real feel of Ladakh’s nature and open roads, without e
     ]
   },
   {
-    id: '17',
+    id: '5',
     title: '8 Days Leh - Leh Bike Group Trip with Turtuk & Tso Moriri',
     slug: 'leh-leh-bike-group-trip-turtuk-tso-moriri',
     image: '/images/LL5.PNG',
@@ -2176,7 +1641,7 @@ As the trip concludes, you’ll fly back home with a heart full of happiness and
     ]
   },
   {
-    id: '18',
+    id: '6',
     title: '9 Days Leh - Leh Bike Group Trip with Hanle , Umling La  & Tso Moriri.',
     slug: 'leh-leh-bike-group-trip-hanle-umling-la-tso-moriri',
     image: '/images/LL6.jpg',
@@ -2491,7 +1956,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     ]
   },
   {
-    id: '19',
+    id: '7',
     title: '12 Days Delhi - Leh - Delhi Group Trip with Hanle , Turtuk , Umling La  & Tso Moriri.',
     slug: 'delhi-leh-delhi-group-trip-hanle-turtuk-umling-la-tso-moriri',
     image: '/images/LL7.jpg',
@@ -2880,7 +2345,7 @@ This journey is not just about the road—it's about the adventure, the stories,
 
   },
   {
-    id: '20',
+    id: '8',
     title: '12 Days Delhi - Leh - Srinagar Group Trip with Turtuk, Hanle, Umling La & Tso Moriri.',
     slug: 'delhi-leh-srinagar-group-trip-turtuk-hanle-umling-la-tso-moriri',
     image: '/images/LL10.PNG',
@@ -3280,7 +2745,7 @@ Long scenic drives, simple mountain stays, and raw landscapes make this journey 
     ],
   },
   {
-    id: '21',
+    id: '9',
     title: '12 Days Srinagar - Leh - Delhi Group Trip with Hanle, Umling La & Tso Moriri.',
     slug: 'srinagar-leh-delhi-group-trip-hanle-umling-la-tso-moriri',
     image: '/images/LL11.PNG',
@@ -3638,7 +3103,7 @@ Long scenic drives, simple mountain stays, and raw landscapes make this journey 
     ],
   },
   {
-    id: '22',
+    id: '10',
     title: '7 Days Perfect Winter Spiti Valley Group Trip Super Saver Budget.',
     slug: '7-days-perfect-winter-spiti-valley-group-trip-super-saver-budget',
     image: '/images/spiti1.JPG',
@@ -3832,7 +3297,7 @@ The approaches to Spiti remain among the most rugged and scenically spectacular 
     ],
   },
   {
-    id: '23',
+    id: '11',
     title: '8 Days Exclusive Summer Spiti Valley with Chandratal Group Road Trip.',
     slug: '8-days-exclusive-summer-spiti-valley-with-chandratal-group-road-trip',
     image: '/images/spiti2.JPG',
@@ -4023,7 +3488,7 @@ As you leave behind the chaos of cities, Spiti Valley will happily embrace you i
     ]
   },
   {
-    id: '24',
+    id: '12',
     title: '7 Days Summer Spiti Valley with Chandratal Group Road Trip Super Saver Budget',
     slug: '7-days-summer-spiti-valley-with-chandratal-group-road-trip-super-saver-budget',
     image: '/images/spiti9.JPG',
@@ -4223,7 +3688,7 @@ As you leave behind the chaos of cities, Spiti Valley will happily embrace you i
     ]
   },
   {
-    id: '25',
+    id: '13',
     title: '5 Days Summer Spiti Valley Short Circuit with Chandratal Group Road Trip Super Saver Budget',
     slug: '5-days-summer-spiti-valley-short-circuit-with-chandratal-group-road-trip-super-saver-budget',
     image: '/images/spiti5.JPG',
@@ -4389,7 +3854,7 @@ So now that you know what to expect on this voyage to the high altitude desert, 
     ]
   },
   {
-    id: '26',
+    id: '14',
     title: '9 Days Summer Spiti Valley Bike Road Trip with Chandratal Lake Group Trip',
     slug: '9-days-summer-spiti-valley-bike-road-trip-with-chandratal-lake-group-trip',
     image: '/images/spiti12.JPG',
@@ -4610,7 +4075,7 @@ Our Bikes are already vrooming and we are all set to take you to this less explo
     ]
   },
   {
-    id: '27',
+    id: '15',
     title: 'Bhutan Road Trip Package',
     slug: 'bhutan-road-trip-package-27',
     image: '/images/bhutan-cover1.jpg',
@@ -4825,7 +4290,7 @@ Our Bikes are already vrooming and we are all set to take you to this less explo
     ],
   },
   {
-    id: '28',
+    id: '16',
     title: 'Bhutan Road Trip Package',
     slug: 'bhutan-road-trip-package-28',
     image: '/images/bhutan-cover2.jpg',
@@ -5020,7 +4485,7 @@ Our Bikes are already vrooming and we are all set to take you to this less explo
     ]
   },
   {
-    id: '29',
+    id: '17',
     title: 'Bhutan Road Trip Package',
     slug: 'bhutan-road-trip-package-29',
     image: '/images/bhutan-cover3.PNG',
@@ -5225,7 +4690,7 @@ Our Bikes are already vrooming and we are all set to take you to this less explo
     ]
   },
   {
-    id: '30',
+    id: '18',
     title: 'Bhutan Road Trip Package',
     slug: 'bhutan-road-trip-package-30',
     image: '/images/bhutan-cover4.PNG',
@@ -5417,7 +4882,7 @@ Our Bikes are already vrooming and we are all set to take you to this less explo
     ]
   },
   {
-    id: '31',
+    id: '19',
     title: '6 Days Ultimate Adventurous Himachal Group Trip',
     slug: '6-days-ultimate-adventurous-himachal-group-trip',
     image: '/images/himachal.jpg',
@@ -5640,7 +5105,7 @@ This trip promises lifelong experiences, whether you're an action seeker, a natu
     ]
   },
   {
-    id: '32',
+    id: '20',
     title: '5 Days Offbeat Himachal Group Trip',
     slug: '5-days-offbeat-himachal-group-trip',
     image: '/images/himachal.jpg',
@@ -5855,7 +5320,7 @@ This trip promises lifelong experiences, whether you're an action seeker, a natu
     ]
   },
   {
-    id: '33',
+    id: '21',
     title: 'Mesmerising Himachal Family Getaway | 7 days & 6  nights',
     slug: 'mesmerising-himachal-family-getaway-7-days-6-nights',
     image: '/images/himachal.jpg',
@@ -6013,7 +5478,7 @@ This trip promises lifelong experiences, whether you're an action seeker, a natu
     dates: []
   },
   {
-    id: '34',
+    id: '22',
     title: '6 Days Wonderful Kashmir Group Trip',
     slug: '6-days-wonderful-kashmir-group-trip',
     image: '/images/kashmir.jpg',
@@ -6192,7 +5657,7 @@ This trip promises lifelong experiences, whether you're an action seeker, a natu
     ]
   },
   {
-    id: '35',
+    id: '23',
     title: '7 Days Exclusive Singapore with Universal Studios',
     slug: '7-days-exclusive-singapore-with-universal-studios',
     image: '/images/singapore.png',
@@ -6347,7 +5812,7 @@ This trip promises lifelong experiences, whether you're an action seeker, a natu
     dates: []
   },
   {
-    id: '36',
+    id: '24',
     title: '7 Days Exclusive Sikkim with Gangtok Pelling Darjeeling',
     slug: '7-days-exclusive-sikkim-with-gangtok-pelling-darjeeling',
     image: '/images/sikkim.png',
@@ -6510,7 +5975,7 @@ This trip promises lifelong experiences, whether you're an action seeker, a natu
     dates: []
   },
   {
-    id: '37',
+    id: '25',
     title: '5 Days Romantic Getaway Gangtok & Darjeeling Couple Special',
     slug: '5-days-romantic-getaway-gangtok-darjeeling-couple-special',
     image: '/images/sikkim.png',
@@ -6639,7 +6104,7 @@ This trip promises lifelong experiences, whether you're an action seeker, a natu
     dates: []
   },
   {
-    id: '38',
+    id: '26',
     title: '7 Days Wonderful Sikkim Darjeeling with Mirik',
     slug: '7-days-wonderful-sikkim-darjeeling-with-mirik',
     image: '/images/sikkim.png',
@@ -6804,7 +6269,7 @@ This trip promises lifelong experiences, whether you're an action seeker, a natu
     dates: []
   },
   {
-    id: '39',
+    id: '27',
     title: '10 Days Offbeat & Adventure Sikkim Wanderphilia Exclusive',
     slug: '10-days-offbeat-adventure-sikkim-wanderphilia-exclusive',
     image: '/images/sikkim.png',
@@ -7034,7 +6499,7 @@ This trip promises lifelong experiences, whether you're an action seeker, a natu
     dates: []
   },
   {
-    id: '40',
+    id: '28',
     title: '8 Days Unseen Sikkim Escape Zuluk , Aritar & Rishikhola with Darjeeling',
     slug: '8-days-unseen-sikkim-escape-zuluk-aritar-rishikhola-with-darjeeling',
     image: '/images/sikkim.png',
@@ -7217,7 +6682,7 @@ This trip promises lifelong experiences, whether you're an action seeker, a natu
     dates: []
   },
   {
-    id: '41',
+    id: '29',
     title: '9 Days Exclusive Leh - Leh Group Trip with Turtuk , Hanle , Umling La & Tso Moriri.',
     slug: '9-days-exclusive-leh-leh-group-trip-with-turtuk-hanle-umling-la-tso-moriri',
     image: '/images/LL6.jpg',
@@ -7555,7 +7020,7 @@ Throughout these 10 days, you will travel on thrilling roads, stay in simple and
     note: 'NOTE: INR 5,000/- needs to be submitted as security for the bike before the start of the trip. Any damage to the bike, except engine damage, has to be borne directly by the client.'
   },
   {
-    id: '42',
+    id: '30',
     title: '9 Days Leh - Leh Bike Group Trip with Hanle , Umling La  & Tso Moriri.',
     slug: '9-days-leh-leh-bike-group-trip-with-turtuk-hanle-umling-la-tso-moriri',
     image: '/images/LL6.jpg',
@@ -7883,7 +7348,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     note: 'NOTE: INR 5,000/- needs to be submitted as security for the bike before the start of the trip. Any damage to the bike, except engine damage, has to be borne directly by the client.'
   },
   {
-    id: '43',
+    id: '31',
     title: '7 Days Exclusive Thailand Full Moon Party Group Tour',
     slug: '7-days-exclusive-thailand-full-moon-party-group-tour',
     image: '/images/thailand-full-moon-party.png',
@@ -8143,7 +7608,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     ]
   },
   {
-    id: '44',
+    id: '32',
     title: 'Exclusive 7 Nights 8 Days Thailand Honeymoon Package – A Perfect Romantic Getaway',
     slug: 'exclusive-7-nights-8-days-thailand-honeymoon-package',
     image: '/images/thailand-honeymoon.png',
@@ -8388,7 +7853,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     ]
   },
   {
-    id: '45',
+    id: '33',
     title: 'Wanderphilia Exclusive 5 Nights 6 Days Krabi Phuket Thailand Romantic Escape',
     slug: 'wanderphilia-exclusive-5-nights-6-days-krabi-phuket-thailand-romantic-escape',
     image: '/images/thailand-romantic-escape.png',
@@ -8587,7 +8052,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     ]
   },
   {
-    id: '46',
+    id: '34',
     title: 'Wanderphilia Exclusive 5 Nights 6 Days Thailand Phuket Bangkok Couple Leisure Getaway',
     slug: 'wanderphilia-exclusive-5-nights-6-days-thailand-phuket-bangkok-couple-leisure-getaway',
     image: '/images/thailand-couple-leisure.png',
@@ -8787,7 +8252,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     ]
   },
   {
-    id: '47',
+    id: '35',
     title: 'Wanderphilia Exclusive 8 Nights 9 Days Whole Of Thailand Bangkok Pattaya Phuket Perfect Couple Trip',
     slug: 'wanderphilia-exclusive-8-nights-9-days-whole-of-thailand-bangkok-pattaya-phuket-perfect-couple-trip',
     image: '/images/thailand-whole-couple.png',
@@ -9043,7 +8508,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     ]
   },
   {
-    id: '48',
+    id: '36',
     title: 'Wanderphilia Exclusive 6 Nights 7 Days Thailand Bangkok Pattaya Perfect Family Getaway',
     slug: 'wanderphilia-exclusive-6-nights-7-days-thailand-bangkok-pattaya-perfect-family-getaway',
     image: '/images/thailand-family-getaway.png',
@@ -9268,7 +8733,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     ]
   },
   {
-    id: '49',
+    id: '37',
     title: 'Wanderphilia Exclusive 4 Nights 5 Days Thailand Exclusive Phuket Perfect Family Leisure Trip',
     slug: 'wanderphilia-exclusive-4-nights-5-days-thailand-exclusive-phuket-perfect-family-leisure-trip',
     image: '/images/thailand-phuket-family.png',
@@ -9453,7 +8918,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     ]
   },
   {
-    id: '50',
+    id: '38',
     title: 'Wanderphilia Exclusive 5 Nights 6 Days Thailand Bangkok Pattaya Relaxed Family Trip',
     slug: 'wanderphilia-exclusive-5-nights-6-days-thailand-bangkok-pattaya-relaxed-family-trip',
     image: '/images/thailand-bangkok-pattaya-family.png',
@@ -9649,7 +9114,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     ]
   },
   {
-    id: '51',
+    id: '39',
     title: 'Wanderphilia Exclusive 5 Nights 6 Days Krabi Phuket Thailand Romantic Escape',
     slug: 'wanderphilia-exclusive-6-nights-7-days-krabi-phuket-thailand-romantic-escape',
     image: '/images/thailand-krabi-phuket-romantic.png',
@@ -9868,7 +9333,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     ]
   },
   {
-    id: '52',
+    id: '40',
     title: '9 Days Exclusive Vietnam with Phu Quoc Group Trip',
     slug: 'vietnam-phu-quoc-group-trip',
     image: '/images/vietnam.png',
@@ -10169,7 +9634,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     ]
   },
   {
-    id: '53',
+    id: '41',
     title: '9 Days Best Of Vietnam with Sapa Group Trip',
     slug: 'best-of-vietnam-with-sapa-group-trip',
     image: '/images/vietnam-sapa.png',
@@ -10460,7 +9925,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     ]
   },
   {
-    id: '54',
+    id: '42',
     title: '8 Days Highlights of Vietnam with Sapa Group Trip',
     slug: 'highlights-of-vietnam-with-sapa-group-trip',
     image: '/images/vietnam-highlights.png',
@@ -10737,7 +10202,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     ]
   },
   {
-    id: '55',
+    id: '43',
     title: '11 Days Wonders Of Vietnam with Sapa & Phu Quoc Group Trip',
     slug: 'wonders-of-vietnam-with-sapa-and-phu-quoc-group-trip',
     image: '/images/vietnam-wonders.png',
@@ -11062,7 +10527,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     ]
   },
   {
-    id: '56',
+    id: '44',
     title: '7 Days Backpacking Vietnam with Hanoi , Ha Long Bay , Da Nang , Saigon Group Trip',
     slug: 'backpacking-vietnam-with-hanoi-ha-long-bay-da-nang-saigon-group-trip',
     image: '/images/vietnam-backpacking.png',
@@ -11323,7 +10788,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     ]
   },
   {
-    id: '57',
+    id: '45',
     title: '7 Days Mesmerising Vietnam Group Trip',
     slug: 'mesmerising-vietnam-group-trip',
     image: '/images/vietnam-mesmerising.png',
@@ -11588,7 +11053,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     ]
   },
   {
-    id: '58',
+    id: '46',
     title: '6 Days Best of Vietnam Group Trip',
     slug: 'best-of-vietnam-group-trip',
     image: '/images/vietnam-best.png',
@@ -11838,7 +11303,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     ]
   },
   {
-    id: '59',
+    id: '47',
     title: '6 Days Romantic Escape Vietnam Couple Special',
     slug: 'romantic-escape-vietnam-couple-special',
     image: '/images/vietnam-couple.png',
@@ -12076,7 +11541,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     ]
   },
   {
-    id: '60',
+    id: '48',
     title: '8 Days Honeymoon Escape Vietnam Couple Special',
     slug: 'honeymoon-escape-vietnam-couple-special',
     image: '/images/vietnam-honeymoon.png',
@@ -12328,7 +11793,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     ]
   },
   {
-    id: '61',
+    id: '49',
     title: '9 Days Beauty Of Vietnam Couple Trip',
     slug: 'beauty-of-vietnam-couple-trip',
     image: '/images/vietnam-beauty.png',
@@ -12598,7 +12063,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     ]
   },
   {
-    id: '62',
+    id: '50',
     title: '8 Days Dreamy Escape Vietnam Couple Special Trip',
     slug: 'dreamy-escape-vietnam-couple-special-trip',
     image: '/images/vietnam-dreamy.png',
@@ -12862,7 +12327,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     ]
   },
   {
-    id: '63',
+    id: '51',
     title: '9 Days Luxury Vietnam Couple Getaway',
     slug: 'luxury-vietnam-couple-getaway',
     image: '/images/vietnam-luxury-couple.png',
@@ -13146,7 +12611,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     ]
   },
   {
-    id: '64',
+    id: '52',
     title: '6 Day Exotic Vietnam Couple Special Trip',
     slug: 'exotic-vietnam-couple-special-trip',
     image: '/images/vietnam-exotic.png',
@@ -13369,7 +12834,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     ]
   },
   {
-    id: '65',
+    id: '53',
     title: '7 Days Family Vietnam Vacation',
     slug: 'family-vietnam-vacation',
     image: '/images/vietnam-family.png',
@@ -13621,7 +13086,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     ]
   },
   {
-    id: '66',
+    id: '54',
     title: '8 Days Best Of Vietnam Family Vacation',
     slug: 'best-of-vietnam-family-vacation',
     image: '/images/vietnam-family-best.png',
@@ -13882,7 +13347,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     ]
   },
   {
-    id: '67',
+    id: '55',
     title: '10 Days Exciting Vietnam Family Trip',
     slug: 'exciting-vietnam-family-trip',
     image: '/images/vietnam-family-exciting.png',
@@ -14177,7 +13642,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     ]
   },
   {
-    id: '68',
+    id: '56',
     title: '9 Days Exclusive Vietnam Family Trip',
     slug: 'exclusive-vietnam-family-trip',
     image: '/images/vietnam-family-exclusive.png',
@@ -14457,7 +13922,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     ]
   },
   {
-    id: '69',
+    id: '57',
     title: '8 Days Wonderful Bali with Gili Island & Nusa Penida Group Trip',
     slug: 'wonderful-bali-group-trip',
     image: '/images/bali-group-trip.png',
@@ -14627,7 +14092,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     ]
   },
   {
-    id: '70',
+    id: '58',
     title: '6 Days Romantic Bali Getaway',
     slug: 'romantic-bali-getaway',
     image: '/images/romantic-bali-getaway.png',
@@ -14764,7 +14229,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     dates: []
   },
   {
-    id: '71',
+    id: '59',
     title: '7 Days Honeymoon Special Bali Seminyak, Nusa Penida, Ubud & Kuta',
     slug: 'honeymoon-special-bali',
     image: '/images/honeymoon-special-bali.png',
@@ -14908,7 +14373,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     dates: []
   },
   {
-    id: '72',
+    id: '60',
     title: '8 Days Honeymoon Special Bali Seminyak, Nusa Penida, Ubud & Kuta',
     slug: 'honeymoon-special-bali-8days',
     image: '/images/honeymoon-special-bali-8days.png',

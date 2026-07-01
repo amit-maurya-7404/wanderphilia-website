@@ -2,124 +2,124 @@
 // This controls which trips appear in which sections on category pages
 export const sectionMappings: Record<string, Record<string, string[]>> = {
   'leh-ladakh': {
-    available: ['13', '14', '15', '16', '17', '18', '19', '20', '21', '41', '42'], // Available Packages - Leh Ladakh trips
-    family: ['13', '14', '15', '16', '17', '18', '41', '42'], // Family Packages
-    custom: ['19'], // Customized Packages
-    related: ['20'], // Other India Destinations
-    related2: ['21'] // Additional Related Packages
+    available: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '29', '30'], // Available Packages - Leh Ladakh trips
+    family: ['1', '2', '3', '4', '5', '6', '29', '30'], // Family Packages
+    custom: ['7'], // Customized Packages
+    related: ['8'], // Other India Destinations
+    related2: ['9'] // Additional Related Packages
   },
   'kashmir': {
-    available: ['34'],
-    family: ['34'],
-    custom: ['34'],
-    related: ['31', '22', '13']
+    available: ['22'],
+    family: ['22'],
+    custom: ['22'],
+    related: ['19', '10', '1']
   },
   'switzerland': {
-    available: ['13', '21'],
-    family: ['22', '23'],
-    custom: ['24', '25'],
-    related: ['26', '27']
+    available: ['1', '9'],
+    family: ['10', '11'],
+    custom: ['12', '13'],
+    related: ['14', '15']
   },
   'indonesia': {
-    available: ['13', '29'],
-    family: ['30', '31'],
-    custom: ['32', '33'],
-    related: ['34', '35']
+    available: ['1', '17'],
+    family: ['18', '19'],
+    custom: ['20', '21'],
+    related: ['22', '23']
   },
   'bali': {
-    available: ['69', '70', '71', '72'],
-    family: ['69'],
-    custom: ['70', '71', '72'],
-    related: ['35', '52', '43']
+    available: ['57', '58', '59', '60'],
+    family: ['57'],
+    custom: ['58', '59', '60'],
+    related: ['23', '40', '31']
   },
   'bhutan': {
-    available: ['27', '28', '29', '30'],
-    family: ['27', '29'],
-    custom: ['28', '30'],
-    related: ['12']
+    available: ['15', '16', '17', '18'],
+    family: ['15', '17'],
+    custom: ['16', '18'],
+    related: ['59', '23']
   },
   'himachal': {
-    available: ['31', '32', '33'],
-    family: ['31', '32'],
-    custom: ['33'],
-    related: ['50', '51']
+    available: ['19', '20', '21'],
+    family: ['19', '20'],
+    custom: ['21'],
+    related: ['38', '39']
   },
   'iceland': {
-    available: ['13', '53'],
-    family: ['54', '55'],
-    custom: ['56', '57'],
-    related: ['58', '59']
+    available: ['1', '41'],
+    family: ['42', '43'],
+    custom: ['44', '45'],
+    related: ['46', '47']
   },
   'japan': {
-    available: ['13', '61'],
-    family: ['62', '63'],
-    custom: ['64', '65'],
-    related: ['66', '67']
+    available: ['1', '49'],
+    family: ['50', '51'],
+    custom: ['52', '53'],
+    related: ['54', '55']
   },
   'meghalaya': {
-    available: ['13', '69'],
-    family: ['70', '71'],
-    custom: ['72', '73'],
+    available: ['1', '57'],
+    family: ['58', '59'],
+    custom: ['60', '73'],
     related: ['74', '75']
   },
   'nepal': {
-    available: ['13', '77'],
+    available: ['1', '77'],
     family: ['78', '79'],
     custom: ['80', '81'],
     related: ['82', '83']
   },
   'singapore': {
-    available: ['35'],
-    family: ['35'],
-    custom: ['35'],
-    related: ['13', '27']
+    available: ['23'],
+    family: ['23'],
+    custom: ['23'],
+    related: ['1', '15']
   },
   'peru': {
-    available: ['13', '85'],
+    available: ['1', '85'],
     family: ['86', '87'],
     custom: ['88', '89'],
     related: ['90', '91']
   },
   'spiti': {
-    available: ['22', '23', '24', '25', '26'],
-    family: ['22', '23', '24', '25', '26'],
+    available: ['10', '11', '12', '13', '14'],
+    family: ['10', '11', '12', '13', '14'],
     custom: [],
     related: []
   },
   'sikkim': {
-    available: ['36', '37', '38', '39', '40'],
-    family: ['36', '38'],
-    custom: ['37', '39', '40'],
-    related: ['13', '22', '34']
+    available: ['24', '25', '26', '27', '28'],
+    family: ['24', '26'],
+    custom: ['25', '27', '28'],
+    related: ['1', '10', '22']
   },
   'thailand': {
-    available: ['43', '44', '45', '46', '47', '48', '49', '50', '51'],
-    group: ['43'],
-    family: ['48', '49', '50', '51'],
-    custom: ['44', '45', '46', '47'],
-    related: ['29', '13']
+    available: ['31', '32', '33', '34', '35', '36', '37', '38', '39'],
+    group: ['31'],
+    family: ['36', '37', '38', '39'],
+    custom: ['32', '33', '34', '35'],
+    related: ['17', '1']
   },
   'vietnam': {
-    available: ['52', '53', '54', '55', '56', '57', '58', '59', '60', '61', '62', '63', '64', '65', '66', '67', '68'],
-    group: ['52', '53', '54', '55', '56', '57', '58'],
-    family: ['65', '66', '67', '68'],
-    custom: ['59', '60', '61', '62', '63', '64'],
-    related: ['51', '13']
+    available: ['40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56'],
+    group: ['40', '41', '42', '43', '44', '45', '46'],
+    family: ['53', '54', '55', '56'],
+    custom: ['47', '48', '49', '50', '51', '52'],
+    related: ['39', '1']
   },
   // Default fallback
   default: {
-    available: ['13', '2'],
-    family: ['3', '4'],
-    custom: ['5', '6'],
-    related: ['7', '8']
+    available: ['1'],
+    family: [],
+    custom: [],
+    related: []
   }
 }
 
 // Page-specific trip card mappings for standalone pages
 export const pageSectionMappings: Record<string, string[]> = {
-  upcomingTours: ['13', '14', '15', '16', '17', '18', '19', '20', '21', '41', '42', '43', '52', '53', '54', '55', '56', '57', '58', '59', '60', '61', '62', '63', '64', '65', '66', '67', '68'],
-  honeymoonPackages: ['2', '5', '6', '9', '10', '11', '12', '14', '18', '33', '34', '37', '44', '45', '46', '47', '51', '52', '53', '54', '55', '56', '57', '58', '59', '60', '61', '62', '63', '64', '65', '66', '67', '68'],
-  featured: ['13', '12', '21', '52', '53', '54', '55', '56', '57', '58', '59', '60', '61', '62', '63', '64', '65', '66', '67', '68']
+  upcomingTours: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '29', '30', '31', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56'],
+  honeymoonPackages: ['2', '6', '21', '22', '25', '32', '33', '34', '35', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56'],
+  featured: ['1', '9', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56']
 }
 
 // Helper function to get section mapping for a category

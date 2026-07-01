@@ -8,7 +8,9 @@ import { DestinationsSection } from '@/components/destinations-section'
 import { TestimonialsSection } from '@/components/testimonials-section'
 import { CTASection } from '@/components/cta-section'
 import { UpcomingGroupToursSection } from '@/components/upcoming-group-tours-section'
+import { PromotionalBanners } from '@/components/promotional-banners'
 import { HoneymoonPackagesSection } from '@/components/honeymoon-packages-section'
+import { UnexpectedSupportSection } from '@/components/unexpected-support-section'
 import { BlogsPreviewSection } from '@/components/blogs-preview-section'
 import { InstagramSection } from '@/components/instagram-section'
 import { ReviewsSection } from '@/components/reviews-section'
@@ -33,12 +35,14 @@ export default function Home() {
         <section id="upcoming-tours">
           <UpcomingGroupToursSection />
         </section>
+        <PromotionalBanners />
         <TripTypesSection />
 
         {/* <FeaturedTripsSection /> */}
         <section id="honeymoon-trips">
           <HoneymoonPackagesSection />
         </section>
+        <UnexpectedSupportSection />
 
         {/* <DestinationsSection   ./> */}
         <BlogsPreviewSection />

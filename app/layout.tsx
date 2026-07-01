@@ -7,6 +7,7 @@ import ScrollActionButtons from '@/components/ScrollActionButtons'
 import ScrollToTopButton from '@/components/ScrollToTopButton'
 import { MobileBottomNavConditional } from '@/components/mobile-bottom-nav-conditional'
 import { ScrollTracker } from '@/components/scroll-tracker'
+import { AITripPlanner } from '@/components/ai-trip-planner'
 // import { PromoAdCard } from '@/components/promo-ad'
 
 const inter = Inter({ subsets: ["latin"] });
@@ -120,6 +121,7 @@ export default function RootLayout({
         </div>
         <ScrollToTopButton />
         <MobileBottomNavConditional />
+        <AITripPlanner />
 
 
         {/* Scroll Depth Tracking */}

@@ -23,9 +23,11 @@ export function BlogsPreviewSection() {
         </div>
 
         {/* Blog Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="flex overflow-x-auto md:grid md:grid-cols-3 gap-8 pb-6 md:pb-0 scrollbar-hide">
           {latestBlogs.map((blog) => (
-            <BlogCard key={blog.id} {...blog} />
+            <div key={blog.id} className="w-[290px] md:w-full shrink-0">
+              <BlogCard {...blog} />
+            </div>
           ))}
         </div>
 

@@ -1,19 +1,19 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Himachal Tour Packages | Wanderphilia',
-  description: 'Book the best Himachal Pradesh tour packages with Wanderphilia. Explore Manali, Kasol, Jibhi, Shimla, and more with our curated group trips.',
+  title: 'Himachal Tour Packages | Group Trips & Customized Tours | Wanderphilia',
+  description: 'Explore the best Himachal tour packages with Wanderphilia. Book standard or customized trips, honeymoon packages, and group tours to Himachal.',
   alternates: {
     canonical: 'https://wanderphilia.com/trips/himachal',
   },
   openGraph: {
     title: 'Himachal Tour Packages | Wanderphilia',
-    description: 'Book the best Himachal Pradesh tour packages with Wanderphilia.',
+    description: 'Explore the best Himachal tour packages with Wanderphilia.',
     url: 'https://wanderphilia.com/trips/himachal',
     type: 'website',
   }
 }
 
-export default function HimachalLayout({ children }: { children: React.ReactNode }) {
+export default function Layout({ children }: { children: React.ReactNode }) {
   return <>{children}</>
 }
