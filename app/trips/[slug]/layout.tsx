@@ -8,7 +8,12 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const trip = trips.find((t) => t.slug === slug);
-  if (!trip) return {};
+  if (!trip) {
+    return {
+      title: 'Page Not Found | Wanderphilia',
+      robots: 'noindex, nofollow',
+    };
+  }
 
   const title = `${trip.title} | Wanderphilia`;
   const description = Array.isArray(trip.description) ? trip.description[0] : trip.description;

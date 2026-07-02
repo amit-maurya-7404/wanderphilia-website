@@ -31,7 +31,7 @@ interface GalleryImage {
   createdAt: string
 }
 
-export default function IcelandPage() {
+export default function LehLadakhPage() {
   const categoryId = 'leh-ladakh'
   const categoryName = 'Leh Ladakh'
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
