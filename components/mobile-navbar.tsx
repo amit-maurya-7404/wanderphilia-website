@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { Menu, X, ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { getCategoriesByType } from '@/lib/trip-categories'
 
 export function MobileNavbar() {
   const [isScrolled, setIsScrolled] = useState(false)
@@ -107,21 +108,16 @@ export function MobileNavbar() {
                 </button>
                 {openDropdown === 'india' && (
                   <div className="bg-gray-50 py-2 border-t border-gray-100">
-                    <Link href="/trips?type=India&region=Leh Ladakh" className="block px-6 py-3 text-sm text-gray-600 hover:text-primary hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
-                      Leh Ladakh
-                    </Link>
-                    <Link href="/trips?type=India&region=Spiti" className="block px-6 py-3 text-sm text-gray-600 hover:text-primary hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
-                      Spiti Valley
-                    </Link>
-                    <Link href="/trips?type=India&region=Kashmir" className="block px-6 py-3 text-sm text-gray-600 hover:text-primary hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
-                      Kashmir
-                    </Link>
-                    <Link href="/trips?type=India&region=Himachal" className="block px-6 py-3 text-sm text-gray-600 hover:text-primary hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
-                      Himachal Pradesh
-                    </Link>
-                    <Link href="/trips?type=India&region=Meghalaya" className="block px-6 py-3 text-sm text-gray-600 hover:text-primary hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
-                      Meghalaya
-                    </Link>
+                    {getCategoriesByType('India').map((category) => (
+                      <Link
+                        key={category.id}
+                        href={`/trips/${category.id}`}
+                        className="block px-6 py-3 text-sm text-gray-600 hover:text-primary hover:bg-gray-100 transition-colors"
+                        onClick={() => setIsMobileOpen(false)}
+                      >
+                        {category.name}
+                      </Link>
+                    ))}
                     <div className="border-t border-gray-200 my-1" />
                     <Link href="/trips?type=India" className="block px-6 py-3 text-sm font-semibold text-primary hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
                       View All India Trips
@@ -141,21 +137,16 @@ export function MobileNavbar() {
                 </button>
                 {openDropdown === 'international' && (
                   <div className="bg-gray-50 py-2 border-t border-gray-100">
-                    <Link href="/trips?type=International&destination=Nepal" className="block px-6 py-3 text-sm text-gray-600 hover:text-primary hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
-                      Nepal
-                    </Link>
-                    <Link href="/trips?type=International&destination=Indonesia" className="block px-6 py-3 text-sm text-gray-600 hover:text-primary hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
-                      Indonesia
-                    </Link>
-                    <Link href="/trips?type=International&destination=Switzerland" className="block px-6 py-3 text-sm text-gray-600 hover:text-primary hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
-                      Switzerland
-                    </Link>
-                    <Link href="/trips?type=International&destination=Peru" className="block px-6 py-3 text-sm text-gray-600 hover:text-primary hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
-                      Peru
-                    </Link>
-                    <Link href="/trips?type=International&destination=Iceland" className="block px-6 py-3 text-sm text-gray-600 hover:text-primary hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
-                      Iceland
-                    </Link>
+                    {getCategoriesByType('International').map((category) => (
+                      <Link
+                        key={category.id}
+                        href={`/trips/${category.id}`}
+                        className="block px-6 py-3 text-sm text-gray-600 hover:text-primary hover:bg-gray-100 transition-colors"
+                        onClick={() => setIsMobileOpen(false)}
+                      >
+                        {category.name}
+                      </Link>
+                    ))}
                     <div className="border-t border-gray-200 my-1" />
                     <Link href="/trips?type=International" className="block px-6 py-3 text-sm font-semibold text-primary hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
                       View All International

@@ -1,14 +1,14 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Himachal Tour Packages | Group Trips & Customized Tours | Wanderphilia',
-  description: 'Explore the best Himachal tour packages with Wanderphilia. Book standard or customized trips, honeymoon packages, and group tours to Himachal.',
+  title: 'Himachal Tour Packages | Group Trips & Custom Holidays | Wanderphilia',
+  description: 'Book scenic Himachal tour packages with Wanderphilia. Explore Shimla, Manali, Dharamshala, Dalhousie, and Kasol in curated group tours or customized family packages.',
   alternates: {
     canonical: 'https://wanderphilia.com/trips/himachal',
   },
   openGraph: {
-    title: 'Himachal Tour Packages | Wanderphilia',
-    description: 'Explore the best Himachal tour packages with Wanderphilia.',
+    title: 'Himachal Tour Packages | Group Trips & Custom Holidays | Wanderphilia',
+    description: 'Book scenic Himachal tour packages with Wanderphilia. Explore Shimla, Manali, Dharamshala, Dalhousie, and Kasol in curated group tours or customized family packages.',
     url: 'https://wanderphilia.com/trips/himachal',
     type: 'website',
   }

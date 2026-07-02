@@ -24,16 +24,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/trips/bali',
     '/trips/bhutan',
     '/trips/himachal',
-    '/trips/iceland',
-    '/trips/indonesia',
-    '/trips/japan',
     '/trips/kashmir',
     '/trips/leh-ladakh',
-    '/trips/meghalaya',
-    '/trips/nepal',
-    '/trips/peru',
+    '/trips/sikkim',
+    '/trips/singapore',
     '/trips/spiti',
-    '/trips/switzerland',
+    '/trips/thailand',
+    '/trips/vietnam',
   ]
 
   const routeEntries = staticRoutes.map((route) => ({

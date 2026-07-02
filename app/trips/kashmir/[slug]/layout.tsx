@@ -17,12 +17,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title,
     description: description.substring(0, 160),
     alternates: {
-      canonical: `https://wanderphilia.com/trips/${slug}`,
+      canonical: `https://wanderphilia.com/trips/kashmir/${slug}`,
     },
     openGraph: {
       title,
       description: description.substring(0, 160),
-      url: `https://wanderphilia.com/trips/${slug}`,
+      url: `https://wanderphilia.com/trips/kashmir/${slug}`,
       type: 'website',
     }
   };

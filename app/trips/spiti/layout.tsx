@@ -1,14 +1,14 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Spiti Tour Packages | Group Trips & Customized Tours | Wanderphilia',
-  description: 'Explore the best Spiti tour packages with Wanderphilia. Book standard or customized trips, honeymoon packages, and group tours to Spiti.',
+  title: 'Spiti Valley Tour Packages | Spiti Group & Bike Trips | Wanderphilia',
+  description: 'Join thrilling Spiti Valley tour packages from Delhi. Experience high-altitude monasteries, Kaza, Key Monastery, Hikkim, and Pin Valley with Wanderphilia.',
   alternates: {
     canonical: 'https://wanderphilia.com/trips/spiti',
   },
   openGraph: {
-    title: 'Spiti Tour Packages | Wanderphilia',
-    description: 'Explore the best Spiti tour packages with Wanderphilia.',
+    title: 'Spiti Valley Tour Packages | Spiti Group & Bike Trips | Wanderphilia',
+    description: 'Join thrilling Spiti Valley tour packages from Delhi. Experience high-altitude monasteries, Kaza, Key Monastery, Hikkim, and Pin Valley with Wanderphilia.',
     url: 'https://wanderphilia.com/trips/spiti',
     type: 'website',
   }

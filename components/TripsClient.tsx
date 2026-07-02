@@ -24,11 +24,11 @@ export default function TripsPage() {
   const [cardsPerView, setCardsPerView] = useState(4)
 
   const tripImages = [
-    '/images/everest.jpg',
+    '/images/vietnam.png',
     '/images/leh-ladakh.jpg',
-    '/images/swiss.jpg',
+    '/images/thailand.jpg',
     '/images/bali.jpg',
-    '/images/iceland.jpg',
+    '/images/singapore.png',
     '/images/kashmir.jpg',
   ]
 

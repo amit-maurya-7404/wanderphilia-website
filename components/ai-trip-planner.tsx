@@ -11,7 +11,7 @@ interface ChatMessage {
   id: string
   sender: 'ai' | 'user'
   text: string
-  type?: 'text' | 'options' | 'results'
+  type?: 'text' | 'options' | 'results' | 'custom-dest-input' | 'calendar' | 'contact-form'
   options?: string[]
   results?: Array<{
     id: string
@@ -33,9 +33,13 @@ export function AITripPlanner() {
   const [selections, setSelections] = useState({
     zone: '',
     vibe: '',
-    budget: ''
+    budget: '',
+    month: '',
+    destination: '',
+    travelDate: ''
   })
 
+  const [submitLoading, setSubmitLoading] = useState(false)
   const [showScrollToTop, setShowScrollToTop] = useState(false)
 
   // Track window scroll coordinates for positioning animation
@@ -54,9 +58,19 @@ export function AITripPlanner() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, isTyping])
 
+  const getNext6Months = () => {
+    const months = []
+    const date = new Date()
+    for (let i = 0; i < 6; i++) {
+      const d = new Date(date.getFullYear(), date.getMonth() + i, 1)
+      months.push(d.toLocaleString('en-US', { month: 'long' }))
+    }
+    return months
+  }
+
   // Initialize chat when opened
   const initChat = () => {
-    setSelections({ zone: '', vibe: '', budget: '' })
+    setSelections({ zone: '', vibe: '', budget: '', month: '', destination: '', travelDate: '' })
     setExpandedMessages({})
     setIsTyping(true)
     setMessages([])
@@ -69,7 +83,7 @@ export function AITripPlanner() {
           sender: 'ai',
           text: "Hello! I am your AI Travel Planner assistant. ✈️ Where are you planning to travel next?",
           type: 'options',
-          options: ['Domestic India 🇮🇳', 'International 🌍']
+          options: ['Domestic India 🇮🇳', 'International 🌍', 'Customise Trip 🎨']
         }
       ])
     }, 1000)
@@ -80,6 +94,150 @@ export function AITripPlanner() {
     setHasPulse(false)
     if (messages.length === 0) {
       initChat()
+    }
+  }
+
+  const handleCustomDestinationSubmit = (dest: string) => {
+    const newMessages = [...messages]
+    if (newMessages.length > 0) {
+      const last = { ...newMessages[newMessages.length - 1] }
+      if (last.type === 'custom-dest-input') {
+        last.type = 'text'
+        newMessages[newMessages.length - 1] = last
+      }
+    }
+
+    setMessages([
+      ...newMessages,
+      {
+        id: `user-dest-${Date.now()}`,
+        sender: 'user',
+        text: dest
+      }
+    ])
+
+    setSelections(prev => ({ ...prev, destination: dest }))
+    setIsTyping(true)
+
+    setTimeout(() => {
+      setIsTyping(false)
+      setMessages(prev => [
+        ...prev,
+        {
+          id: `calendar-q`,
+          sender: 'ai',
+          text: `Great choice! ✈️ Please select your travel date from the calendar below: 📅`,
+          type: 'calendar'
+        }
+      ])
+    }, 1000)
+  }
+
+  const handleDateConfirm = (dateStr: string) => {
+    const newMessages = [...messages]
+    if (newMessages.length > 0) {
+      const last = { ...newMessages[newMessages.length - 1] }
+      if (last.type === 'calendar') {
+        last.type = 'text'
+        newMessages[newMessages.length - 1] = last
+      }
+    }
+
+    setMessages([
+      ...newMessages,
+      {
+        id: `user-date-${Date.now()}`,
+        sender: 'user',
+        text: `Travel Date: ${dateStr}`
+      }
+    ])
+
+    setSelections(prev => ({ ...prev, travelDate: dateStr }))
+    setIsTyping(true)
+
+    setTimeout(() => {
+      setIsTyping(false)
+      setMessages(prev => [
+        ...prev,
+        {
+          id: `contact-q`,
+          sender: 'ai',
+          text: `Perfect! 📅 Please share your contact details to get a customized itinerary & quote from our travel experts:`,
+          type: 'contact-form'
+        }
+      ])
+    }, 1000)
+  }
+
+  const handleContactFormSubmit = async (details: { name: string; email: string; phone: string }) => {
+    const newMessages = [...messages]
+    if (newMessages.length > 0) {
+      const last = { ...newMessages[newMessages.length - 1] }
+      if (last.type === 'contact-form') {
+        last.type = 'text'
+        newMessages[newMessages.length - 1] = last
+      }
+    }
+
+    setMessages([
+      ...newMessages,
+      {
+        id: `user-contact-${Date.now()}`,
+        sender: 'user',
+        text: `Name: ${details.name}\nEmail: ${details.email}\nPhone: ${details.phone}`
+      }
+    ])
+
+    setIsTyping(true)
+    setSubmitLoading(true)
+
+    try {
+      const res = await fetch('/api/chatbot-lead', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: details.name,
+          email: details.email,
+          phone: details.phone,
+          destination: selections.destination,
+          travelDate: selections.travelDate
+        })
+      })
+
+      if (!res.ok) throw new Error('API submission failed')
+
+      setTimeout(() => {
+        setIsTyping(false)
+        setSubmitLoading(false)
+        setMessages(prev => [
+          ...prev,
+          {
+            id: `success-msg`,
+            sender: 'ai',
+            text: `Thank you, ${details.name}! 🎉 Your custom trip request to **${selections.destination}** on **${selections.travelDate}** has been received successfully.\n\nOur travel expert will connect with you shortly. You can also chat with us directly on WhatsApp!`,
+            type: 'results',
+            results: []
+          }
+        ])
+      }, 1200)
+    } catch (err) {
+      console.error(err)
+      setTimeout(() => {
+        setIsTyping(false)
+        setSubmitLoading(false)
+        setMessages(prev => [
+          ...prev,
+          {
+            id: `error-msg`,
+            sender: 'ai',
+            text: `Oops! We encountered an error submitting your details. Please try again or connect with us directly on WhatsApp.`,
+            type: 'results',
+            results: []
+          }
+        ])
+      }, 1200)
     }
   }
 
@@ -111,8 +269,57 @@ export function AITripPlanner() {
       setIsTyping(false)
 
       if (!selections.zone) {
-        // Step 1 Completed -> Ask for vibe
-        setSelections(prev => ({ ...prev, zone: option }))
+        if (option.includes('Customise')) {
+          setSelections(prev => ({ ...prev, zone: 'Customise' }))
+          setMessages(prev => [
+            ...prev,
+            {
+              id: `dest-q`,
+              sender: 'ai',
+              text: "Awesome! Let's customize your perfect getaway. ✈️ What destination do you have in mind?",
+              type: 'options',
+              options: ['Leh Ladakh 🏔️', 'Spiti Valley ❄️', 'Kashmir 🌸', 'Bali 🌴', 'Thailand 🏖️', 'Other Location ✏️']
+            }
+          ])
+        } else {
+          setSelections(prev => ({ ...prev, zone: option }))
+          setMessages(prev => [
+            ...prev,
+            {
+              id: `month-q`,
+              sender: 'ai',
+              text: "Which month are you planning to travel? 📅",
+              type: 'options',
+              options: getNext6Months()
+            }
+          ])
+        }
+      } else if (selections.zone === 'Customise') {
+        if (option.includes('Other Location')) {
+          setMessages(prev => [
+            ...prev,
+            {
+              id: `custom-dest-q`,
+              sender: 'ai',
+              text: "Please type your preferred destination:",
+              type: 'custom-dest-input'
+            }
+          ])
+        } else {
+          const cleanDest = option.replace(/[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD00-\uDFFF]/g, "").trim()
+          setSelections(prev => ({ ...prev, destination: cleanDest }))
+          setMessages(prev => [
+            ...prev,
+            {
+              id: `calendar-q`,
+              sender: 'ai',
+              text: `Great choice! ✈️ Please select your travel date from the calendar below: 📅`,
+              type: 'calendar'
+            }
+          ])
+        }
+      } else if (!selections.month) {
+        setSelections(prev => ({ ...prev, month: option }))
         setMessages(prev => [
           ...prev,
           {
@@ -124,7 +331,6 @@ export function AITripPlanner() {
           }
         ])
       } else if (!selections.vibe) {
-        // Step 2 Completed -> Ask for budget
         setSelections(prev => ({ ...prev, vibe: option }))
         setMessages(prev => [
           ...prev,
@@ -137,12 +343,11 @@ export function AITripPlanner() {
           }
         ])
       } else {
-        // Step 3 Completed -> Show matching trips
         const finalSelections = { ...selections, budget: option }
         setSelections(prev => ({ ...prev, budget: option }))
         
         // Filter logical trips from database
-        const matching = getMatchingTrips(finalSelections.zone, finalSelections.vibe, option)
+        const matching = getMatchingTrips(finalSelections.zone, finalSelections.vibe, finalSelections.month, option)
         
         setMessages(prev => [
           ...prev,
@@ -161,12 +366,12 @@ export function AITripPlanner() {
   }
 
   // Filter trips based on parameters
-  const getMatchingTrips = (zone: string, vibe: string, budget: string) => {
+  const getMatchingTrips = (zone: string, vibe: string, month: string, budget: string) => {
     const isIntl = zone.includes('International')
     
     // Categorize destinations based on zones
-    const indiaCategories = ['leh-ladakh', 'spiti', 'kashmir', 'himachal', 'sikkim', 'meghalaya']
-    const intlCategories = ['singapore', 'thailand', 'bhutan', 'vietnam', 'bali', 'switzerland', 'peru', 'iceland', 'japan', 'nepal', 'indonesia']
+    const indiaCategories = ['leh-ladakh', 'spiti', 'kashmir', 'himachal', 'sikkim']
+    const intlCategories = ['singapore', 'thailand', 'bhutan', 'vietnam', 'bali']
     
     let candidates = trips.filter(trip => {
       const cat = trip.category?.toLowerCase() || ''
@@ -186,6 +391,21 @@ export function AITripPlanner() {
 
       return matchedZone && matchedVibe
     })
+
+    // Apply month filtering if month is selected
+    if (month) {
+      const selectedMonthLower = month.toLowerCase()
+      const withMonth = candidates.filter(trip => {
+        if (!trip.batchDates || trip.batchDates.length === 0) return true
+        return trip.batchDates.some(bd => 
+          bd.month.toLowerCase().includes(selectedMonthLower) || 
+          selectedMonthLower.includes(bd.month.toLowerCase())
+        )
+      })
+      if (withMonth.length > 0) {
+        candidates = withMonth
+      }
+    }
 
     // If candidates are empty, fall back to matching zone only
     if (candidates.length === 0) {
@@ -252,8 +472,14 @@ export function AITripPlanner() {
 
   // Construct WhatsApp Link dynamically based on choices
   const getWhatsAppLink = () => {
+    if (selections.zone === 'Customise') {
+      const text = encodeURIComponent(
+        `Hi Wanderphilia! I want to plan a custom trip to ${selections.destination || 'destination'} in ${selections.travelDate || 'date'}. Please share the best custom itineraries.`
+      )
+      return `https://wa.me/919217664099?text=${text}`
+    }
     const text = encodeURIComponent(
-      `Hi Wanderphilia! I used your AI Planner and I am planning a ${selections.zone || 'group'} trip with a ${selections.vibe || 'adventure'} vibe and budget of ${selections.budget || 'budget'}. Please share the best custom itineraries.`
+      `Hi Wanderphilia! I used your AI Planner and I am planning a ${selections.zone || 'group'} trip to go in ${selections.month || 'month'} with a ${selections.vibe || 'adventure'} vibe and budget of ${selections.budget || 'budget'}. Please share the best itineraries.`
     )
     return `https://wa.me/919217664099?text=${text}`
   }
@@ -326,6 +552,7 @@ export function AITripPlanner() {
                       ? 'bg-linear-to-r from-primary to-orange-500 text-white rounded-tr-none shadow-sm'
                       : 'bg-linear-to-b from-white to-slate-50 text-slate-800 rounded-tl-none border border-slate-200/50 shadow-xs'
                   }`}
+                  style={{ whiteSpace: 'pre-line' }}
                 >
                   {msg.text}
                 </div>
@@ -343,6 +570,21 @@ export function AITripPlanner() {
                       </button>
                     ))}
                   </div>
+                )}
+
+                {/* Custom Destination Input */}
+                {msg.type === 'custom-dest-input' && (
+                  <CustomDestinationInput onSubmit={handleCustomDestinationSubmit} />
+                )}
+
+                {/* Calendar Picker */}
+                {msg.type === 'calendar' && (
+                  <CalendarPicker onConfirm={handleDateConfirm} />
+                )}
+
+                {/* Contact Form */}
+                {msg.type === 'contact-form' && (
+                  <ContactForm onSubmit={handleContactFormSubmit} loading={submitLoading} />
                 )}
 
                 {/* Travel Recommendation Cards */}
@@ -435,5 +677,236 @@ export function AITripPlanner() {
         </div>
       )}
     </>
+  )
+}
+
+function CustomDestinationInput({ onSubmit }: { onSubmit: (value: string) => void }) {
+  const [value, setValue] = useState('')
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (value.trim()) {
+      onSubmit(value.trim())
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="mt-3 flex gap-2 w-full max-w-[280px]">
+      <input
+        type="text"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        placeholder="Enter destination (e.g. Maldives)..."
+        className="flex-1 px-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:border-primary text-slate-800 bg-white"
+        autoFocus
+      />
+      <button
+        type="submit"
+        disabled={!value.trim()}
+        className={`px-3 py-2 rounded-xl font-bold text-xs transition duration-200 cursor-pointer ${
+          value.trim()
+            ? 'bg-primary text-white hover:bg-primary/95'
+            : 'bg-slate-100 text-slate-400 cursor-not-allowed'
+        }`}
+      >
+        Next
+      </button>
+    </form>
+  )
+}
+
+function CalendarPicker({ onConfirm }: { onConfirm: (dateStr: string) => void }) {
+  const [currentDate, setCurrentDate] = useState(new Date())
+  const [selectedDay, setSelectedDay] = useState<number | null>(null)
+
+  const year = currentDate.getFullYear()
+  const month = currentDate.getMonth()
+
+  const firstDay = new Date(year, month, 1).getDay()
+  const totalDays = new Date(year, month + 1, 0).getDate()
+
+  const monthName = currentDate.toLocaleString('en-US', { month: 'long' })
+
+  const handlePrevMonth = () => {
+    const today = new Date()
+    if (year > today.getFullYear() || (year === today.getFullYear() && month > today.getMonth())) {
+      setCurrentDate(new Date(year, month - 1, 1))
+      setSelectedDay(null)
+    }
+  }
+
+  const handleNextMonth = () => {
+    const today = new Date()
+    const maxDate = new Date(today.getFullYear() + 1, today.getMonth(), 1)
+    if (currentDate < maxDate) {
+      setCurrentDate(new Date(year, month + 1, 1))
+      setSelectedDay(null)
+    }
+  }
+
+  const days = []
+  for (let i = 0; i < firstDay; i++) {
+    days.push(<div key={`empty-${i}`} className="w-8 h-8" />)
+  }
+
+  const today = new Date()
+  for (let d = 1; d <= totalDays; d++) {
+    const isPast = new Date(year, month, d) < new Date(today.getFullYear(), today.getMonth(), today.getDate())
+    const isSelected = selectedDay === d
+    days.push(
+      <button
+        key={`day-${d}`}
+        type="button"
+        disabled={isPast}
+        onClick={() => setSelectedDay(d)}
+        className={`w-8 h-8 text-xs font-bold rounded-full flex items-center justify-center transition-all ${
+          isPast 
+            ? 'text-slate-200 cursor-not-allowed' 
+            : isSelected
+              ? 'bg-primary text-white shadow-sm'
+              : 'text-slate-700 hover:bg-orange-50 cursor-pointer'
+        }`}
+      >
+        {d}
+      </button>
+    )
+  }
+
+  const handleConfirm = () => {
+    if (selectedDay) {
+      const selected = new Date(year, month, selectedDay)
+      const dateStr = selected.toLocaleDateString('en-IN', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      })
+      onConfirm(dateStr)
+    }
+  }
+
+  return (
+    <div className="bg-white border border-slate-200/80 rounded-2xl p-3 shadow-xs w-full max-w-[280px] mt-3 animate-fade-in">
+      <div className="flex items-center justify-between mb-2">
+        <button
+          type="button"
+          onClick={handlePrevMonth}
+          className="p-1 hover:bg-slate-100 rounded-full transition cursor-pointer text-slate-600 font-bold"
+        >
+          &larr;
+        </button>
+        <span className="text-xs font-black text-slate-800">{monthName} {year}</span>
+        <button
+          type="button"
+          onClick={handleNextMonth}
+          className="p-1 hover:bg-slate-100 rounded-full transition cursor-pointer text-slate-600 font-bold"
+        >
+          &rarr;
+        </button>
+      </div>
+
+      <div className="grid grid-cols-7 gap-1 text-center mb-1">
+        {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((label) => (
+          <span key={label} className="text-[10px] font-bold text-slate-400 uppercase">{label}</span>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-7 gap-1 text-center">
+        {days}
+      </div>
+
+      <button
+        type="button"
+        disabled={!selectedDay}
+        onClick={handleConfirm}
+        className={`mt-3 w-full py-2 rounded-xl font-bold text-xs transition duration-200 cursor-pointer text-center ${
+          selectedDay
+            ? 'bg-primary text-white hover:bg-primary/95 shadow-xs'
+            : 'bg-slate-100 text-slate-400 cursor-not-allowed'
+        }`}
+      >
+        Confirm Date
+      </button>
+    </div>
+  )
+}
+
+function ContactForm({ 
+  onSubmit, 
+  loading 
+}: { 
+  onSubmit: (details: { name: string; email: string; phone: string }) => void
+  loading: boolean
+}) {
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
+  const [error, setError] = useState('')
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!name.trim() || !email.trim() || !phone.trim()) {
+      setError('All fields are required.')
+      return
+    }
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      setError('Please enter a valid email address.')
+      return
+    }
+    if (phone.trim().length < 10) {
+      setError('Please enter a valid phone number.')
+      return
+    }
+    setError('')
+    onSubmit({ name: name.trim(), email: email.trim(), phone: phone.trim() })
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="mt-3 bg-white border border-slate-200/80 rounded-2xl p-4 shadow-xs w-full max-w-[280px] space-y-3 animate-fade-in">
+      <div>
+        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Full Name</label>
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="John Doe"
+          className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:border-primary text-slate-800 bg-white"
+          required
+        />
+      </div>
+      <div>
+        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Email Address</label>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="john@example.com"
+          className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:border-primary text-slate-800 bg-white"
+          required
+        />
+      </div>
+      <div>
+        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Phone Number</label>
+        <input
+          type="tel"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          placeholder="E.g., +91 9876543210"
+          className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:border-primary text-slate-800 bg-white"
+          required
+        />
+      </div>
+
+      {error && <p className="text-[11px] font-bold text-red-500 leading-tight">{error}</p>}
+
+      <button
+        type="submit"
+        disabled={loading}
+        className={`w-full py-2.5 rounded-xl font-bold text-xs transition duration-200 cursor-pointer text-center text-white bg-primary hover:bg-primary/95 shadow-sm ${
+          loading ? 'opacity-75 cursor-not-allowed' : ''
+        }`}
+      >
+        {loading ? 'Submitting...' : 'Submit Request'}
+      </button>
+    </form>
   )
 }

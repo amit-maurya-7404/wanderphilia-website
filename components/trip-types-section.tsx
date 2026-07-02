@@ -86,7 +86,6 @@ export function TripTypesSection() {
     { title: 'Himachal', region: 'Himachal', image: '/images/himachal.jpg', price: getCheapestPriceForCategory('himachal', 6999) },
     { title: 'Kashmir', region: 'Kashmir', image: '/images/kashmir.jpg', price: getCheapestPriceForCategory('kashmir', 24499) },
     { title: 'Sikkim', region: 'Sikkim', image: '/images/sikkim.png', price: getCheapestPriceForCategory('sikkim', 21999) },
-    { title: 'Meghalaya', region: 'Meghalaya', image: '/images/meghalaya.jpg', price: getCheapestPriceForCategory('meghalaya', 21499) },
   ]
 
   const internationalRegions = [
@@ -95,12 +94,6 @@ export function TripTypesSection() {
     { title: 'Thailand', region: 'Thailand', image: '/images/thailand.jpg', price: getCheapestPriceForCategory('thailand', 99900) },
     { title: 'Vietnam', region: 'Vietnam', image: '/images/vietnam.png', price: getCheapestPriceForCategory('vietnam', 32999) },
     { title: 'Bali', region: 'Bali', image: '/images/bali.jpg', price: getCheapestPriceForCategory('bali', 23999) },
-    { title: 'Nepal', region: 'Nepal', image: '/images/everest.jpg', price: getCheapestPriceForCategory('nepal', 99900) },
-    { title: 'Indonesia', region: 'Indonesia', image: '/images/bali.jpg', price: getCheapestPriceForCategory('indonesia', 69900) },
-    { title: 'Switzerland', region: 'Switzerland', image: '/images/swiss.jpg', price: getCheapestPriceForCategory('switzerland', 129900) },
-    { title: 'Peru', region: 'Peru', image: '/images/amazon.jpg', price: getCheapestPriceForCategory('peru', 94900) },
-    { title: 'Iceland', region: 'Iceland', image: '/images/iceland.jpg', price: getCheapestPriceForCategory('iceland', 114900) },
-    { title: 'Japan', region: 'Japan', image: '/images/japan.jpg', price: getCheapestPriceForCategory('japan', 139900) },
   ]
 
   const maxIndia = Math.max(0, indiaRegions.length - cardsPerView)

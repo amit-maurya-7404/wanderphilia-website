@@ -3,31 +3,15 @@
 
 import { usePathname, useSearchParams } from 'next/navigation';
 import { useEffect, Suspense } from 'react';
-import { gtag } from '@/lib/gtag';
-
-const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+import Script from 'next/script';
+import { GA_MEASUREMENT_ID, gtag } from '@/lib/gtag';
 
 function TrackPageView() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && GA_MEASUREMENT_ID) {
-      window.dataLayer = window.dataLayer || [];
-      if (!window.gtag) {
-        window.gtag = function gtag() {
-          window.dataLayer!.push(arguments);
-        };
-      }
-      window.gtag('js', new Date());
-      window.gtag('config', GA_MEASUREMENT_ID, {
-        page_title: document.title,
-        page_location: window.location.href,
-      });
-    }
-
-    if (pathname) {
-      // Track page view on route change
+    if (pathname && window.gtag) {
       gtag.pageview(pathname + (searchParams?.toString() ? `?${searchParams.toString()}` : ''));
     }
   }, [pathname, searchParams]);
@@ -48,10 +32,31 @@ function TrackPageView() {
   return null;
 }
 
-export function Analytics() {
+export function GoogleAnalyticsTracker() {
+  if (!GA_MEASUREMENT_ID) return null;
+
   return (
-    <Suspense fallback={null}>
-      <TrackPageView />
-    </Suspense>
+    <>
+      {/* Load Google Tag Manager Script */}
+      <Script
+        src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+        strategy="afterInteractive"
+      />
+      {/* Initialize gtag function */}
+      <Script id="google-analytics" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', '${GA_MEASUREMENT_ID}', {
+            send_page_view: false
+          });
+        `}
+      </Script>
+      {/* Track page views on route change (including first load) */}
+      <Suspense fallback={null}>
+        <TrackPageView />
+      </Suspense>
+    </>
   );
 }

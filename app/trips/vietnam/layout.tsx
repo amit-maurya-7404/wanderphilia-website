@@ -1,14 +1,14 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Vietnam Tour Packages | Group Trips & Customized Tours | Wanderphilia',
-  description: 'Explore the best Vietnam tour packages with Wanderphilia. Book standard or customized trips, honeymoon packages, and group tours to Vietnam.',
+  title: 'Vietnam Tour Packages from India | Group & Customised Trips | Wanderphilia',
+  description: 'Explore best Vietnam tour packages with Wanderphilia. All-inclusive group tours and customized travel itineraries for Hanoi, Halong Bay, Da Nang, and Hoi An.',
   alternates: {
     canonical: 'https://wanderphilia.com/trips/vietnam',
   },
   openGraph: {
-    title: 'Vietnam Tour Packages | Wanderphilia',
-    description: 'Explore the best Vietnam tour packages with Wanderphilia.',
+    title: 'Vietnam Tour Packages from India | Group & Customised Trips | Wanderphilia',
+    description: 'Explore best Vietnam tour packages with Wanderphilia. All-inclusive group tours and customized travel itineraries for Hanoi, Halong Bay, Da Nang, and Hoi An.',
     url: 'https://wanderphilia.com/trips/vietnam',
     type: 'website',
   }

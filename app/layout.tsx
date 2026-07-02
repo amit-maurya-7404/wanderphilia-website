@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import { GoogleAnalytics } from '@next/third-parties/google'
-import { Analytics } from '@vercel/analytics/next'
+import { Analytics as VercelAnalytics } from '@vercel/analytics/next'
+import { GoogleAnalyticsTracker } from '@/components/analytics'
 import './globals.css'
 import ScrollActionButtons from '@/components/ScrollActionButtons'
 import ScrollToTopButton from '@/components/ScrollToTopButton'
@@ -112,7 +112,7 @@ export default function RootLayout({
         />
       </head>
       <body className={`${inter.className} font-sans antialiased overflow-x-hidden`}>
-        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || 'G-GFPXJ77HPK'} />
+        <GoogleAnalyticsTracker />
         <div className="min-h-screen pb-14 md:pb-0">
           {children}
         </div>
@@ -128,7 +128,7 @@ export default function RootLayout({
         <ScrollTracker />
         {/* <PromoAdCard /> */}
 
-        {process.env.NODE_ENV === 'production' && <Analytics />}
+        {process.env.NODE_ENV === 'production' && <VercelAnalytics />}
       </body>
     </html>
   )
