@@ -8,6 +8,7 @@ import { trips } from '@/lib/data'
 import { getPageSectionMapping } from '@/lib/section-mappings'
 import { TripCard } from '@/components/trip-card'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export function MobileHeroSection() {
     const [destination, setDestination] = useState('')
@@ -145,6 +146,33 @@ export function MobileHeroSection() {
                                 }`}
                             />
                         ))}
+                    </div>
+                </div>
+
+                {/* UPCOMING COMMUNITY TRIPS BANNER */}
+                <div className="relative rounded-2xl overflow-hidden shadow-md h-24 bg-sky-950 group">
+                    <Image
+                        src="/images/everest.jpg"
+                        alt="Community Trips"
+                        fill
+                        className="object-cover object-center opacity-65 select-none pointer-events-none"
+                    />
+                    <div className="absolute inset-0 bg-linear-to-r from-sky-900/90 via-sky-850/50 to-transparent z-10" />
+                    
+                    <div className="absolute inset-0 z-11 flex items-center justify-between px-6 py-4">
+                        <div>
+                            <span className="text-[10px] text-sky-300 font-extrabold uppercase tracking-widest block mb-0.5">Upcoming</span>
+                            <h3 className="text-xl font-black text-white tracking-tight leading-none">
+                                Community <span className="text-yellow-400">Trips</span>
+                            </h3>
+                        </div>
+                        
+                        <Link 
+                            href="/upcoming-tours"
+                            className="px-4 py-2 rounded-full text-xs font-bold bg-white text-sky-950 hover:bg-yellow-400 hover:text-slate-900 transition-all duration-300"
+                        >
+                            Explore Now
+                        </Link>
                     </div>
                 </div>
 

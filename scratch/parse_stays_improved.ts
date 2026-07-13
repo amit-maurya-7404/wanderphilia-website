@@ -1,13 +1,7 @@
-'use client'
-
-import { useRef, useState } from 'react'
-import Image from 'next/image'
-import type { Trip } from '@/lib/data'
-import { gtag } from '@/lib/gtag'
-
-type TripCardProps = Trip
+import { trips } from '../lib/data';
 
 function cleanLocation(loc: string): string {
+  // Clean up location name
   let clean = loc.trim()
     .replace(/^(in|at|near|stay in|stay at|stay near|camps near|camp near|hotel in|hotel at|homestay in|homestay at|campsite near|resort in|resort at)\s+/i, '')
     .replace(/\.$/, '')
@@ -15,6 +9,7 @@ function cleanLocation(loc: string): string {
   
   const lower = clean.toLowerCase();
   
+  // Specific replacements to match common patterns
   if (lower.includes('leh')) return 'Leh';
   if (lower.includes('nubra')) return 'Nubra';
   if (lower.includes('pangong')) return 'Pangong';
@@ -112,17 +107,16 @@ function cleanLocation(loc: string): string {
   if (lower.includes('aritar')) return 'Aritar';
   if (lower.includes('rishikhola')) return 'Rishikhola';
 
+  // Fallback to title casing first word or full clean string if short
   if (clean.length < 15) {
     return clean.charAt(0).toUpperCase() + clean.slice(1);
   }
   return clean.split(' ')[0];
 }
 
-function getStaySummary(itinerary: Trip['itinerary']): string {
-  if (!itinerary || !itinerary.length) return '';
-
+function parseStaysForTrip(trip: typeof trips[0]) {
   const stays: string[] = [];
-  itinerary.forEach((day, index) => {
+  trip.itinerary.forEach((day, index) => {
     let descLines: string[] = [];
     if (typeof day.description === 'string') {
       descLines = [day.description];
@@ -130,13 +124,16 @@ function getStaySummary(itinerary: Trip['itinerary']): string {
       descLines = day.description;
     }
     
+    // Check if it's an overnight journey (transit night)
     const hasOvernightJourney = descLines.some(line => /overnight journey|overnight travel|overnight transit|overnight volvo/i.test(line)) ||
                                 /overnight journey|overnight travel|overnight transit|overnight volvo/i.test(day.title);
     
     if (hasOvernightJourney) {
+      // Don't count overnight journey as a hotel/stay location
       return;
     }
 
+    // Look for "Overnight stay"
     let stayFound = false;
     for (const line of descLines) {
       const match = line.match(/Overnight stay\s+(?:in|at|near|into)?\s+([^.]+)/i);
@@ -150,6 +147,7 @@ function getStaySummary(itinerary: Trip['itinerary']): string {
       }
     }
     if (!stayFound) {
+      // Check title for "Overnight" or check if it's the last day (usually no overnight stay on last day)
       const titleMatch = day.title.match(/Overnight stay\s+(?:in|at|near|into)?\s+([^.]+)/i);
       if (titleMatch) {
         const loc = cleanLocation(titleMatch[1]);
@@ -160,12 +158,14 @@ function getStaySummary(itinerary: Trip['itinerary']): string {
       }
     }
     if (!stayFound) {
+      // Look for check in / stay mentions
       for (const line of descLines) {
         const match = line.match(/(?:check in to your hotel in|check-in to your hotel in|check in to|check-in to|reach|arrive in|arrive at)\s+([^.]+)/i);
         if (match) {
           const loc = cleanLocation(match[1]);
           if (loc && loc.toLowerCase() !== 'the' && loc.toLowerCase() !== 'your' && loc.toLowerCase() !== 'hotel' && loc.toLowerCase() !== 'camp') {
-            if (index < itinerary.length - 1) {
+            // Only add if not last day
+            if (index < trip.itinerary.length - 1) {
               stays.push(loc);
               stayFound = true;
               break;
@@ -176,6 +176,7 @@ function getStaySummary(itinerary: Trip['itinerary']): string {
     }
   });
 
+  // Group consecutive stays, e.g. ['Leh', 'Leh', 'Nubra', 'Pangong', 'Leh'] -> 2N Leh, 1N Nubra, 1N Pangong, 1N Leh
   const grouped: { loc: string; nights: number }[] = [];
   stays.forEach((loc) => {
     if (grouped.length > 0 && grouped[grouped.length - 1].loc === loc) {
@@ -188,99 +189,10 @@ function getStaySummary(itinerary: Trip['itinerary']): string {
   return grouped.map(g => `${g.nights}N ${g.loc}`).join(' - ');
 }
 
-export function TripCard({
-  title,
-  image,
-  destination,
-  duration,
-  price,
-  rating,
-  slug,
-  category,
-  itinerary,
-  costingDetails,
-}: TripCardProps) {
-  const [callbackOpen, setCallbackOpen] = useState(false)
-  const ignoreClickRef = useRef(false)
-
-  const lowestPrice = costingDetails?.length
-    ? costingDetails
-        .map((item) => {
-          const match = item.value.match(/[\d,]+/)
-          return match ? parseInt(match[0].replace(/,/g, ''), 10) : NaN
-        })
-        .filter((value) => !Number.isNaN(value) && value > 0)
-        .reduce((min, value) => Math.min(min, value), Infinity)
-    : price
-
-  const displayPrice = Number.isFinite(lowestPrice) ? lowestPrice : price
-  const routeSummary = itinerary?.length
-    ? itinerary.slice(0, 4).map((day) => `${day.day}D ${day.title}`).join(' • ') + (itinerary.length > 4 ? ` • +${itinerary.length - 4}` : '')
-    : destination
-
-  const staySummary = getStaySummary(itinerary)
-
-  return (
-    <div
-      onClick={() => {
-        if (callbackOpen || ignoreClickRef.current) return
-        gtag.event({
-          action: 'click',
-          category: 'Navigation',
-          label: `Trip Card: ${title}`,
-        });
-        window.open(`/trips/${slug}`, '_blank')
-      }}
-      className="group relative overflow-hidden rounded-lg shadow-xl h-[50vh] md:h-[60vh] cursor-pointer"
-    >
-      {/* IMAGE */}
-      <Image
-        src={image}
-        alt={title}
-        fill
-        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-        className="object-cover group-hover:scale-110 transition-transform duration-700"
-      />
-
-      {/* DARK GRADIENT OVERLAY */}
-      <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/40 to-transparent" />
-
-      {/* TOP PRICE BADGE */}
-      <div className="absolute top-4 left-4 bg-yellow-400 text-black text-xs font-bold px-3 py-1 rounded-full">
-        ₹{displayPrice.toLocaleString('en-IN')} onwards
-      </div>
-
-      {/* BOTTOM CONTENT */}
-      <div className="absolute bottom-0 w-full p-4 text-white">
-
-        {/* TITLE */}
-        <h3 className="text-md font-bold leading-snug line-clamp-2">
-          {title}
-        </h3>
-
-        {/* ROUTE / TAG */}
-        <p className="text-xs text-gray-300 mt-1 line-clamp-1">
-          {routeSummary}
-        </p>
-
-        {/* STAY SUMMARY */}
-        {staySummary && (
-          <p className="text-xs text-sky-400 font-semibold mt-1 line-clamp-1">
-            {staySummary}
-          </p>
-        )}
-
-        {/* DETAILS ROW */}
-        <div className="flex items-center justify-between mt-2.5 text-xs">
-          <span>🕒 {duration}D / {duration - 1}N</span>
-          <span>⭐ {rating.toFixed(1)}</span>
-        </div>
-
-        {/* DATE / LOCATION */}
-        <div className="flex items-center justify-between mt-2 text-xs text-gray-300">
-          <span>{destination}</span>
-        </div>
-      </div>
-    </div>
-  )
-}
+// Print a few trips as sample
+const samples = trips.filter(t => t.title.includes('Spiti') || t.title.includes('Vietnam') || t.title.includes('Kashmir') || t.title.includes('Sikkim')).slice(0, 10);
+samples.forEach((trip) => {
+  console.log(`Trip: ${trip.title} (${trip.duration}D/${trip.duration-1}N)`);
+  console.log(`Parsed: ${parseStaysForTrip(trip)}`);
+  console.log('---');
+});
