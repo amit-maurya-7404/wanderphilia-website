@@ -81,8 +81,8 @@ export const sectionMappings: Record<string, Record<string, string[]>> = {
     related: ['90', '91']
   },
   'spiti': {
-    available: ['10', '11', '12', '13', '14'],
-    family: ['10', '11', '12', '13', '14'],
+    available: ['WNDPI-WSP-001', 'WNDPI-SSP-001', 'WNDPI-SSP-002', 'WNDPI-SSP-003', 'WNDPI-SSP-004'],
+    family: ['WNDPI-WSP-001', 'WNDPI-SSP-001', 'WNDPI-SSP-002', 'WNDPI-SSP-003', 'WNDPI-SSP-004'],
     custom: [],
     related: []
   },

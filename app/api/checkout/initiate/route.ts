@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getZohoAccessToken, getZohoApiUrl, getDestinationFromTrip } from '@/lib/zoho';
+import { trips } from '@/lib/data';
 
 export const dynamic = 'force-dynamic';
 
@@ -8,6 +9,9 @@ interface InitiateRequest {
   mobileNumber?: string;
   email?: string;
   tripSlug?: string;
+  numberOfGuests?: number;
+  pricingOptions?: string;
+  sharingType?: string;
 }
 
 export async function POST(req: Request) {
@@ -21,7 +25,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const { fullName, mobileNumber, email, tripSlug } = body;
+    const { fullName, mobileNumber, email, tripSlug, numberOfGuests, pricingOptions, sharingType } = body;
 
     // Validate request payload
     if (!fullName || typeof fullName !== 'string' || fullName.trim() === '') {
@@ -58,6 +62,10 @@ export async function POST(req: Request) {
     // 3. Make POST request to Zoho CRM Leads Endpoint
     const destination = getDestinationFromTrip(tripSlug);
 
+    // Find trip by slug to get exact unique ID
+    const trip = trips.find(t => t.slug === tripSlug.trim());
+    const exactId = trip ? trip.id : tripSlug.trim();
+
     const crmResponse = await fetch(url, {
       method: 'POST',
       headers: {
@@ -70,10 +78,14 @@ export async function POST(req: Request) {
             Last_Name: fullName.trim(),
             Phone: mobileNumber.trim(),
             Email: email.trim(),
-            Lead_Status: 'New Enquiry',
-            Event_Category: tripSlug.trim(),
+            Lead_Status: 'Query',
+            Event_Category: exactId,
             Lead_Source: 'Website',
             Destinations: destination || '',
+            Itinerary_Unique_id: exactId,
+            Number_Of_Guest: (numberOfGuests && numberOfGuests > 0) ? numberOfGuests : 1,
+            Description: pricingOptions || '',
+            Sharing_Type: sharingType || '',
           },
         ],
       }),

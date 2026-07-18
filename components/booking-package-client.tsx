@@ -142,6 +142,32 @@ export default function BookingPackageClient({ trip, slug }: BookingPackageClien
     setIsProcessing(true)
 
     try {
+      // Calculate total number of guests from quantities
+      const totalGuests = costingQuantities.reduce((sum, q) => sum + q, 0);
+
+      // Get selected pricing options descriptions
+      const selectedPricingOptions = costingItems
+        .map((item, idx) => ({ label: item.label, qty: costingQuantities[idx] }))
+        .filter(opt => opt.qty > 0)
+        .map(opt => `${opt.label} (Qty: ${opt.qty})`)
+        .join(', ');
+
+      // Determine the sharing type based on selected options (find first option with qty > 0)
+      let sharingType = '';
+      const selectedIndex = costingQuantities.findIndex(q => q > 0);
+      if (selectedIndex !== -1) {
+        const label = costingItems[selectedIndex].label;
+        if (/double/i.test(label)) {
+          sharingType = 'Double Sharing';
+        } else if (/triple/i.test(label)) {
+          sharingType = 'Triple Sharing';
+        } else if (/quad/i.test(label)) {
+          sharingType = 'Quad Sharing';
+        } else if (/single/i.test(label)) {
+          sharingType = 'Single Sharing';
+        }
+      }
+
       // 0. Create lead in Zoho CRM
       try {
         await fetch('/api/checkout/initiate', {
@@ -151,7 +177,10 @@ export default function BookingPackageClient({ trip, slug }: BookingPackageClien
             fullName: fullName,
             mobileNumber: mobileNumber,
             email: emailAddress,
-            tripSlug: slug
+            tripSlug: slug,
+            numberOfGuests: totalGuests,
+            pricingOptions: selectedPricingOptions || 'No sharing options selected',
+            sharingType: sharingType
           })
         })
       } catch (zohoError) {

@@ -3103,7 +3103,7 @@ Long scenic drives, simple mountain stays, and raw landscapes make this journey 
     ],
   },
   {
-    id: '10',
+    id: 'WNDPI-WSP-001',
     title: '7 Days Perfect Winter Spiti Valley Group Trip Super Saver Budget.',
     slug: '7-days-perfect-winter-spiti-valley-group-trip-super-saver-budget',
     image: '/images/spiti1.JPG',
@@ -3297,7 +3297,7 @@ The approaches to Spiti remain among the most rugged and scenically spectacular 
     ],
   },
   {
-    id: '11',
+    id: 'WNDPI-SSP-001',
     title: '8 Days Exclusive Summer Spiti Valley with Chandratal Group Road Trip.',
     slug: '8-days-exclusive-summer-spiti-valley-with-chandratal-group-road-trip',
     image: '/images/spiti2.JPG',
@@ -3488,7 +3488,7 @@ As you leave behind the chaos of cities, Spiti Valley will happily embrace you i
     ]
   },
   {
-    id: '12',
+    id: 'WNDPI-SSP-002',
     title: '7 Days Summer Spiti Valley with Chandratal Group Road Trip Super Saver Budget',
     slug: '7-days-summer-spiti-valley-with-chandratal-group-road-trip-super-saver-budget',
     image: '/images/spiti9.JPG',
@@ -3688,7 +3688,7 @@ As you leave behind the chaos of cities, Spiti Valley will happily embrace you i
     ]
   },
   {
-    id: '13',
+    id: 'WNDPI-SSP-003',
     title: '5 Days Summer Spiti Valley Short Circuit with Chandratal Group Road Trip Super Saver Budget',
     slug: '5-days-summer-spiti-valley-short-circuit-with-chandratal-group-road-trip-super-saver-budget',
     image: '/images/spiti5.JPG',
@@ -3854,7 +3854,7 @@ So now that you know what to expect on this voyage to the high altitude desert, 
     ]
   },
   {
-    id: '14',
+    id: 'WNDPI-SSP-004',
     title: '9 Days Summer Spiti Valley Bike Road Trip with Chandratal Lake Group Trip',
     slug: '9-days-summer-spiti-valley-bike-road-trip-with-chandratal-lake-group-trip',
     image: '/images/spiti12.JPG',
