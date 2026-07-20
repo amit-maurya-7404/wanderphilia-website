@@ -180,7 +180,9 @@ export default function BookingPackageClient({ trip, slug }: BookingPackageClien
             tripSlug: slug,
             numberOfGuests: totalGuests,
             pricingOptions: selectedPricingOptions || 'No sharing options selected',
-            sharingType: sharingType
+            sharingType: sharingType,
+            startDate: selectedDateValue.startDate,
+            endDate: selectedDateValue.endDate
           })
         })
       } catch (zohoError) {

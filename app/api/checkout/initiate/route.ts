@@ -2,6 +2,40 @@ import { NextResponse } from 'next/server';
 import { getZohoAccessToken, getZohoApiUrl, getDestinationFromTrip } from '@/lib/zoho';
 import { trips } from '@/lib/data';
 
+function parseToZohoDate(dateStr: string | undefined): string | null {
+  if (!dateStr) return null;
+  const cleaned = dateStr.trim();
+  if (/^\d{4}-\d{2}-\d{2}$/.test(cleaned)) {
+    return cleaned;
+  }
+
+  try {
+    const dayMatch = cleaned.match(/^(\d+)/);
+    if (!dayMatch) return null;
+    const day = parseInt(dayMatch[1], 10);
+
+    const months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+    const lowerStr = cleaned.toLowerCase();
+    let monthIdx = -1;
+    for (let i = 0; i < months.length; i++) {
+      if (lowerStr.includes(months[i])) {
+        monthIdx = i;
+        break;
+      }
+    }
+
+    if (monthIdx === -1) return null;
+
+    const year = new Date().getFullYear();
+    const mm = (monthIdx + 1).toString().padStart(2, '0');
+    const dd = day.toString().padStart(2, '0');
+
+    return `${year}-${mm}-${dd}`;
+  } catch (e) {
+    return null;
+  }
+}
+
 export const dynamic = 'force-dynamic';
 
 interface InitiateRequest {
@@ -12,6 +46,8 @@ interface InitiateRequest {
   numberOfGuests?: number;
   pricingOptions?: string;
   sharingType?: string;
+  startDate?: string;
+  endDate?: string;
 }
 
 export async function POST(req: Request) {
@@ -25,7 +61,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const { fullName, mobileNumber, email, tripSlug, numberOfGuests, pricingOptions, sharingType } = body;
+    const { fullName, mobileNumber, email, tripSlug, numberOfGuests, pricingOptions, sharingType, startDate, endDate } = body;
 
     // Validate request payload
     if (!fullName || typeof fullName !== 'string' || fullName.trim() === '') {
@@ -86,6 +122,8 @@ export async function POST(req: Request) {
             Number_Of_Guest: (numberOfGuests && numberOfGuests > 0) ? numberOfGuests : 1,
             Description: pricingOptions || '',
             Sharing_Type: sharingType || '',
+            Preferred_Start_date: parseToZohoDate(startDate),
+            Travel_End_Date: parseToZohoDate(endDate),
           },
         ],
       }),
