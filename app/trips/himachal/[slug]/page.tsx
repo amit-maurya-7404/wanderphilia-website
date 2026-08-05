@@ -765,7 +765,15 @@ export default function PackageDetailPage() {
               {/* MOBILE CTA */}
               <div className="lg:hidden space-y-3">
                 <Button size="lg" className="w-full" onClick={() => setCallbackOpen(true)}>
-                  <Phone size={18} /> Enquire Now
+                  {trip.showGetQuoteOnly ? (
+                    <>
+                      <MessageCircle size={18} /> Get Quote
+                    </>
+                  ) : (
+                    <>
+                      <Phone size={18} /> Enquire Now
+                    </>
+                  )}
                 </Button>
               </div>
             </div>
@@ -779,30 +787,50 @@ export default function PackageDetailPage() {
                     <p className="text-xs uppercase tracking-widest text-slate-500 font-semibold">
                       {selections.length > 0 ? 'Current Selection' : 'Starting Price'}
                     </p>
-                    <p className="text-3xl font-bold text-primary mt-1">
-                      ₹{(selections.length > 0 ? total : lowestPrice).toLocaleString('en-IN')}
-                    </p>
-                    <p className="text-sm text-slate-500 mt-2">
-                      {selections.length > 0 ? `${selections.length} item${selections.length > 1 ? 's' : ''} selected` : 'per person'}
-                    </p>
+                    {lowestPrice > 0 ? (
+                      <>
+                        <p className="text-3xl font-bold text-primary mt-1">
+                          ₹{(selections.length > 0 ? total : lowestPrice).toLocaleString('en-IN')}
+                        </p>
+                        <p className="text-sm text-slate-500 mt-2">
+                          {selections.length > 0 ? `${selections.length} item${selections.length > 1 ? 's' : ''} selected` : 'per person'}
+                        </p>
+                      </>
+                    ) : (
+                      <p className="text-2xl font-bold text-primary mt-1">
+                        Price on Request
+                      </p>
+                    )}
                   </div>
 
                   <div className="grid gap-3">
-                    <Button
-                      size="lg"
-                      className="w-full justify-center"
-                      onClick={handleBookNow}
-                    >
-                      <Phone size={18} /> Book Now
-                    </Button>
-                    <Button
-                      size="lg"
-                      variant="outline"
-                      className="w-full justify-center"
-                      onClick={() => setCallbackOpen(true)}
-                    >
-                      <MessageCircle size={18} /> Request Callback
-                    </Button>
+                    {trip.showGetQuoteOnly ? (
+                      <Button
+                        size="lg"
+                        className="w-full justify-center bg-primary hover:bg-primary/95 text-white"
+                        onClick={() => setCallbackOpen(true)}
+                      >
+                        <MessageCircle size={18} /> Get Quote
+                      </Button>
+                    ) : (
+                      <>
+                        <Button
+                          size="lg"
+                          className="w-full justify-center"
+                          onClick={handleBookNow}
+                        >
+                          <Phone size={18} /> Book Now
+                        </Button>
+                        <Button
+                          size="lg"
+                          variant="outline"
+                          className="w-full justify-center"
+                          onClick={() => setCallbackOpen(true)}
+                        >
+                          <MessageCircle size={18} /> Request Callback
+                        </Button>
+                      </>
+                    )}
                   </div>
                 </Card>
 
@@ -857,14 +885,26 @@ export default function PackageDetailPage() {
       <div className="fixed bottom-0 left-0 right-0 bg-white lg:hidden border-t shadow-2xl">
         <div className="max-w-6xl mx-auto px-[4vw] py-[3vh] flex items-center justify-between gap-3">
           <div>
-            <p className="text-xs text-slate-500">
-              {selections.length > 0 ? 'Total selected' : 'Starting at'}
-            </p>
-            <p className="text-lg font-bold">₹{(selections.length > 0 ? total : lowestPrice).toLocaleString('en-IN')}</p>
+            {lowestPrice > 0 ? (
+              <>
+                <p className="text-xs text-slate-500">
+                  {selections.length > 0 ? 'Total selected' : 'Starting at'}
+                </p>
+                <p className="text-lg font-bold">₹{(selections.length > 0 ? total : lowestPrice).toLocaleString('en-IN')}</p>
+              </>
+            ) : (
+              <p className="text-md font-bold text-slate-700">Price on Request</p>
+            )}
           </div>
-          <Button onClick={handleBookNow} className="shrink-0">
-            Book Now
-          </Button>
+          {trip.showGetQuoteOnly ? (
+            <Button onClick={() => setCallbackOpen(true)} className="shrink-0 bg-primary hover:bg-primary/95 text-white">
+              Get Quote
+            </Button>
+          ) : (
+            <Button onClick={handleBookNow} className="shrink-0">
+              Book Now
+            </Button>
+          )}
         </div>
       </div>
 
@@ -890,6 +930,7 @@ export default function PackageDetailPage() {
         onOpenChange={setCallbackOpen}
         title={trip.title}
         price={lowestPrice}
+        isQuote={trip.showGetQuoteOnly}
       />
     </div>
   )

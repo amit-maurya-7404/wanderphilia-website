@@ -5331,6 +5331,7 @@ This trip promises lifelong experiences, whether you're an action seeker, a natu
     duration: 7,
     nights: 6,
     price: 0,
+    showGetQuoteOnly: true,
     rating: 4.8,
     difficulty: 'Easy',
     groupSize: 10,

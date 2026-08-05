@@ -199,6 +199,7 @@ export function TripCard({
   category,
   itinerary,
   costingDetails,
+  showGetQuoteOnly,
 }: TripCardProps) {
   const [callbackOpen, setCallbackOpen] = useState(false)
   const ignoreClickRef = useRef(false)
@@ -247,7 +248,7 @@ export function TripCard({
 
       {/* TOP PRICE BADGE */}
       <div className="absolute top-4 left-4 bg-yellow-400 text-black text-xs font-bold px-3 py-1 rounded-full">
-        ₹{displayPrice.toLocaleString('en-IN')} onwards
+        {showGetQuoteOnly || displayPrice === 0 ? 'Get Quote' : `₹${displayPrice.toLocaleString('en-IN')} onwards`}
       </div>
 
       {/* BOTTOM CONTENT */}
