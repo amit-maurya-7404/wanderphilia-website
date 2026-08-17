@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     locale: 'en_IN',
     images: [
       {
-        url: 'https://wanderphilia.com/images/bali.jpg',
+        url: 'https://wanderphilia.com/images/team5.jpg',
         width: 1200,
         height: 630,
         alt: 'Wanderphilia travel company',
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Wanderphilia - India’s Most Trusted Travel Community',
     description: 'Group trips, honeymoon packages and international holidays from India’s trusted travel community.',
-    images: ['https://wanderphilia.com/images/bali.jpg'],
+    images: ['https://wanderphilia.com/images/team5.jpg'],
     creator: '@Wanderphilia',
     site: '@Wanderphilia',
   },
