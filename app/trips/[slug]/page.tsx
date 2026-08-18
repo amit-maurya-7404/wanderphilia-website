@@ -306,12 +306,20 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
       '/images/LL1.jpg',
       '/images/LL2.jpg'
     ]
-    let fbIdx = 0
-    while (list.length < 5) {
-      const src = fallbacks[fbIdx % fallbacks.length] || trip.image
+    
+    // First, try to add unique fallbacks to keep gallery diverse
+    for (const src of fallbacks) {
+      if (list.length >= 5) break
       if (!list.some(item => item.src === src)) {
         list.push({ type: 'image' as const, src, alt: `${trip.title} gallery ${list.length + 1}` })
       }
+    }
+
+    // If still less than 5, fill with fallbacks allowing duplicates to prevent any infinite loop
+    let fbIdx = 0
+    while (list.length < 5 && fbIdx < 10) {
+      const src = fallbacks[fbIdx % fallbacks.length] || trip.image
+      list.push({ type: 'image' as const, src, alt: `${trip.title} gallery ${list.length + 1}` })
       fbIdx++
     }
     return list.slice(0, 5)
@@ -480,9 +488,6 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
                 className="object-cover group-hover:scale-105 transition-transform duration-700"
               />
               <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
-              <div className="absolute bottom-4 left-4 text-white font-bold text-sm tracking-tight drop-shadow-md">
-                Destinations
-              </div>
             </div>
 
             {/* Image 3 (Top Right) */}
@@ -498,9 +503,6 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
                 className="object-cover group-hover:scale-105 transition-transform duration-700"
               />
               <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
-              <div className="absolute bottom-4 left-4 text-white font-bold text-sm tracking-tight drop-shadow-md">
-                Stays
-              </div>
             </div>
 
             {/* Image 4 (Bottom Middle) */}
@@ -516,9 +518,6 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
                 className="object-cover group-hover:scale-105 transition-transform duration-700"
               />
               <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
-              <div className="absolute bottom-4 left-4 text-white font-bold text-sm tracking-tight drop-shadow-md">
-                Activity & Sightseeing
-              </div>
             </div>
 
             {/* Image 5 (Bottom Right with "View All Images" button) */}
@@ -1128,7 +1127,7 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
           
           {/* Prev button */}
           <button
-            onClick={() => setLightboxIndex((prev) => (prev === 0 ? heroMedia.length - 1 : prev! - 1))}
+            onClick={() => setLightboxIndex((prev) => (prev === 0 ? collageImages.length - 1 : prev! - 1))}
             className="absolute left-5 top-1/2 -translate-y-1/2 text-white/80 hover:text-white bg-white/10 hover:bg-white/20 p-2.5 rounded-full transition-all cursor-pointer z-50"
           >
             <ChevronLeft size={24} />
@@ -1137,8 +1136,8 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
           {/* Image */}
           <div className="relative w-[90vw] h-[80vh] flex items-center justify-center">
             <Image
-              src={heroMedia[lightboxIndex].src}
-              alt={heroMedia[lightboxIndex].alt || 'Gallery'}
+              src={collageImages[lightboxIndex].src}
+              alt={collageImages[lightboxIndex].alt || 'Gallery'}
               fill
               className="object-contain"
             />
@@ -1146,7 +1145,7 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
 
           {/* Next button */}
           <button
-            onClick={() => setLightboxIndex((prev) => (prev === heroMedia.length - 1 ? 0 : prev! + 1))}
+            onClick={() => setLightboxIndex((prev) => (prev === collageImages.length - 1 ? 0 : prev! + 1))}
             className="absolute right-5 top-1/2 -translate-y-1/2 text-white/80 hover:text-white bg-white/10 hover:bg-white/20 p-2.5 rounded-full transition-all cursor-pointer z-50"
           >
             <ChevronRight size={24} />
@@ -1154,7 +1153,7 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
           
           {/* Image counter */}
           <div className="absolute bottom-5 text-white/70 text-sm font-semibold z-50">
-            {lightboxIndex + 1} / {heroMedia.length}
+            {lightboxIndex + 1} / {collageImages.length}
           </div>
         </div>
       )}
