@@ -73,6 +73,7 @@ export interface Trip {
     spots: number
   }[]
   showGetQuoteOnly?: boolean
+  images?: string[]
 }
 
 export function getLowestPriceForTrip(trip: Trip): number {

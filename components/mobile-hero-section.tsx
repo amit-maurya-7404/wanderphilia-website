@@ -118,9 +118,9 @@ export function MobileHeroSection() {
                         }}
                     >
                         {banners.map(banner => (
-                            <Link 
-                                href={banner.link || '#'} 
-                                key={banner._id} 
+                            <Link
+                                href={banner.link || '#'}
+                                key={banner._id}
                                 className="w-full shrink-0 h-full relative block"
                             >
                                 <img
@@ -141,9 +141,8 @@ export function MobileHeroSection() {
                         {banners.map((_, index) => (
                             <div
                                 key={index}
-                                className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
-                                    index === bannerIndex ? 'bg-white w-3' : 'bg-white/40'
-                                }`}
+                                className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${index === bannerIndex ? 'bg-white w-3' : 'bg-white/40'
+                                    }`}
                             />
                         ))}
                     </div>
@@ -158,7 +157,7 @@ export function MobileHeroSection() {
                         className="object-cover object-center opacity-65 select-none pointer-events-none"
                     />
                     <div className="absolute inset-0 bg-linear-to-r from-sky-900/90 via-sky-850/50 to-transparent z-10" />
-                    
+
                     <div className="absolute inset-0 z-11 flex items-center justify-between px-6 py-4">
                         <div>
                             <span className="text-[10px] text-sky-300 font-extrabold uppercase tracking-widest block mb-0.5">Upcoming</span>
@@ -166,8 +165,8 @@ export function MobileHeroSection() {
                                 Community <span className="text-yellow-400">Trips</span>
                             </h3>
                         </div>
-                        
-                        <Link 
+
+                        <Link
                             href="/upcoming-tours"
                             className="px-4 py-2 rounded-full text-xs font-bold bg-white text-sky-950 hover:bg-yellow-400 hover:text-slate-900 transition-all duration-300"
                         >
@@ -195,7 +194,7 @@ export function MobileHeroSection() {
                 {/* TRIPS */}
                 <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
                     {featuredCards.map(trip => (
-                        <div key={trip.id} className="min-w-[75%]">
+                        <div key={trip.id} className="w-[90%] shrink-0">
                             <TripCard {...trip} />
                         </div>
                     ))}

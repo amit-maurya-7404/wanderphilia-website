@@ -69,7 +69,7 @@ export function DestinationsSection() {
               {destinations.map((destination) => (
                 <div
                   key={destination.slug}
-                  className="min-w-[75%] flex-shrink-0"
+                  className="w-[90%] flex-shrink-0"
                 >
                   <DestinationCard {...destination} />
                 </div>

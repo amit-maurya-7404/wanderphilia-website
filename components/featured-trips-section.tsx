@@ -16,7 +16,7 @@ export function FeaturedTripsSection() {
     const update = () => {
       const mobile = window.innerWidth < 768
       setIsMobile(mobile)
-      setCardsPerView(mobile ? 2 : 4)
+      setCardsPerView(mobile ? 2 : 3)
     }
     update()
     window.addEventListener('resize', update)
@@ -62,58 +62,46 @@ export function FeaturedTripsSection() {
         {/* SLIDER */}
         <div className="relative mb-12">
 
-          {/* ✅ MOBILE SCROLLER */}
-          {isMobile ? (
-            <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+          {/* LEFT ARROW */}
+          <button
+            onClick={prevSlide}
+            disabled={index === 0}
+            className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
+          >
+            <ChevronLeft size={20} />
+          </button>
+
+          {/* RIGHT ARROW */}
+          <button
+            onClick={nextSlide}
+            disabled={index === maxIndex}
+            className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
+          >
+            <ChevronRight size={20} />
+          </button>
+
+          {/* TRACK */}
+          <div className="overflow-x-auto md:overflow-hidden pb-4 md:pb-0 scrollbar-hide">
+            <div
+              className="flex gap-4 md:gap-0 transition-transform duration-500 ease-in-out"
+              style={
+                isMobile
+                  ? undefined
+                  : {
+                      transform: `translateX(-${index * (100 / cardsPerView)}%)`,
+                    }
+              }
+            >
               {featuredTrips.map((trip) => (
                 <div
                   key={trip.id}
-                  className="min-w-[75%] flex-shrink-0"
+                  className="shrink-0 w-[90%] md:min-w-0 md:basis-1/3 p-0 md:p-2"
                 >
                   <TripCard {...trip} />
                 </div>
               ))}
             </div>
-          ) : (
-            <>
-              {/* LEFT ARROW */}
-              <button
-                onClick={prevSlide}
-                disabled={index === 0}
-                className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
-              >
-                <ChevronLeft size={20} />
-              </button>
-
-              {/* RIGHT ARROW */}
-              <button
-                onClick={nextSlide}
-                disabled={index === maxIndex}
-                className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
-              >
-                <ChevronRight size={20} />
-              </button>
-
-              {/* TRACK */}
-              <div className="overflow-hidden">
-                <div
-                  className="flex transition-transform duration-500 ease-in-out"
-                  style={{
-                    transform: `translateX(-${index * (100 / cardsPerView)}%)`,
-                  }}
-                >
-                  {featuredTrips.map((trip) => (
-                    <div
-                      key={trip.id}
-                      className="flex-shrink-0 basis-1/4 p-2"
-                    >
-                      <TripCard {...trip} />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </>
-          )}
+          </div>
 
         </div>
 

@@ -112,7 +112,7 @@ export default function SingaporePage() {
     const update = () => {
       const mobile = window.innerWidth < 768
       setIsMobile(mobile)
-      setCardsPerView(mobile ? 2 : 4)
+      setCardsPerView(mobile ? 2 : 3)
     }
     update()
     window.addEventListener('resize', update)
@@ -259,20 +259,18 @@ export default function SingaporePage() {
           {categoryTrips.length > 0 ? (
             <div>
               {/* ✅ MOBILE SCROLLER */}
-              {isMobile ? (
-                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+              <div className="flex md:hidden gap-4 overflow-x-auto pb-4 scrollbar-hide">
                   {categoryTrips.map((trip) => (
                     <div
                       key={trip.id}
-                      className="min-w-[75%] flex-shrink-0"
+                      className="w-[90%] flex-shrink-0"
                     >
                       <TripCard {...trip} />
                     </div>
                   ))}
                 </div>
-              ) : (
-                <>
-                  {/* DESKTOP CAROUSEL */}
+
+<div className="hidden md:block relative">{/* DESKTOP CAROUSEL */}
                   <div className="relative">
 
                     {/* LEFT */}
@@ -309,7 +307,7 @@ export default function SingaporePage() {
                         {categoryTrips.map((trip) => (
                           <div
                             key={trip.id}
-                            className="flex-shrink-0 basis-1/4 p-2"
+                            className="flex-shrink-0 basis-1/3 p-2"
                           >
                             <TripCard {...trip} />
                           </div>
@@ -317,9 +315,7 @@ export default function SingaporePage() {
                       </div>
                     </div>
 
-                  </div>
-                </>
-              )}
+                  </div></div>
             </div>
           ) : (
             <div className="text-center py-16">
@@ -342,20 +338,18 @@ export default function SingaporePage() {
           {familyPackages.length > 0 ? (
             <div>
               {/* ✅ MOBILE SCROLLER */}
-              {isMobile ? (
-                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+              <div className="flex md:hidden gap-4 overflow-x-auto pb-4 scrollbar-hide">
                   {familyPackages.map((trip) => (
                     <div
                       key={trip.id}
-                      className="min-w-[75%] flex-shrink-0"
+                      className="w-[90%] flex-shrink-0"
                     >
                       <TripCard {...trip} />
                     </div>
                   ))}
                 </div>
-              ) : (
-                <>
-                  {/* DESKTOP CAROUSEL */}
+
+<div className="hidden md:block relative">{/* DESKTOP CAROUSEL */}
                   <div className="relative">
 
                     {/* LEFT */}
@@ -393,7 +387,7 @@ export default function SingaporePage() {
                         {familyPackages.map((trip) => (
                           <div
                             key={trip.id}
-                            className="flex-shrink-0 basis-1/4 p-2"
+                            className="flex-shrink-0 basis-1/3 p-2"
                           >
                             <TripCard {...trip} />
                           </div>
@@ -401,9 +395,7 @@ export default function SingaporePage() {
                       </div>
                     </div>
 
-                  </div>
-                </>
-              )}
+                  </div></div>
             </div>
           ) : null}
         </section>
@@ -420,20 +412,18 @@ export default function SingaporePage() {
           {customizedPackages.length > 0 ? (
             <div>
               {/* ✅ MOBILE SCROLLER */}
-              {isMobile ? (
-                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+              <div className="flex md:hidden gap-4 overflow-x-auto pb-4 scrollbar-hide">
                   {customizedPackages.map((trip) => (
                     <div
                       key={trip.id}
-                      className="min-w-[75%] flex-shrink-0"
+                      className="w-[90%] flex-shrink-0"
                     >
                       <TripCard {...trip} />
                     </div>
                   ))}
                 </div>
-              ) : (
-                <>
-                  {/* DESKTOP CAROUSEL */}
+
+<div className="hidden md:block relative">{/* DESKTOP CAROUSEL */}
                   <div className="relative">
 
                     {/* LEFT */}
@@ -470,7 +460,7 @@ export default function SingaporePage() {
                         {customizedPackages.map((trip) => (
                           <div
                             key={trip.id}
-                            className="flex-shrink-0 basis-1/4 p-2"
+                            className="flex-shrink-0 basis-1/3 p-2"
                           >
                             <TripCard {...trip} />
                           </div>
@@ -478,9 +468,7 @@ export default function SingaporePage() {
                       </div>
                     </div>
 
-                  </div>
-                </>
-              )}
+                  </div></div>
             </div>
           ) : null}
         </section>
@@ -497,20 +485,18 @@ export default function SingaporePage() {
               </div>
 
               {/* ✅ MOBILE SCROLLER */}
-              {isMobile ? (
-                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+              <div className="flex md:hidden gap-4 overflow-x-auto pb-4 scrollbar-hide">
                   {relatedPackages.map((trip) => (
                     <div
                       key={trip.id}
-                      className="min-w-[75%] flex-shrink-0"
+                      className="w-[90%] flex-shrink-0"
                     >
                       <TripCard {...trip} />
                     </div>
                   ))}
                 </div>
-              ) : (
-                <>
-                  {/* DESKTOP CAROUSEL */}
+
+<div className="hidden md:block relative">{/* DESKTOP CAROUSEL */}
                   <div className="relative">
 
                     {/* LEFT */}
@@ -547,7 +533,7 @@ export default function SingaporePage() {
                         {relatedPackages.map((trip) => (
                           <div
                             key={trip.id}
-                            className="flex-shrink-0 basis-1/4 p-2"
+                            className="flex-shrink-0 basis-1/3 p-2"
                           >
                             <TripCard {...trip} />
                           </div>
@@ -555,9 +541,7 @@ export default function SingaporePage() {
                       </div>
                     </div>
 
-                  </div>
-                </>
-              )}
+                  </div></div>
             </div>
           </section>
         )}

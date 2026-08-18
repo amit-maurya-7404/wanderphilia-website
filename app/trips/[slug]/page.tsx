@@ -14,9 +14,10 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { TripHeroCarousel } from '@/components/trip-hero-carousel'
 import { RequestCallbackDialog } from '@/components/request-callback-dialog'
 import { trips } from '@/lib/data'
-import { MapPin, Calendar, Users, Star, Phone, MessageCircle, ChevronDown, Download } from 'lucide-react'
+import { MapPin, Calendar, Users, Star, Phone, MessageCircle, ChevronDown, Download, X, ChevronLeft, ChevronRight } from 'lucide-react'
 import { contactEmail, contactPhone, contactPhoneDisplay, instagramUrl } from '@/lib/contact'
 import { TripGallerySection } from '@/components/trip-gallery-section'
+import Image from 'next/image'
 
 
 function getFirstNarrativeParagraph(description: string | string[]): string {
@@ -204,6 +205,7 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
 
   const [selections, setSelections] = useState<SelectionItem[]>([])
   const [showFullDesc, setShowFullDesc] = useState(false)
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
 
   const clientParams = useParams()
   
@@ -251,6 +253,81 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
     router.push(`/booking/package/${encodeURIComponent(slug)}`)
   }
 
+  const [galleryImages, setGalleryImages] = useState<string[]>([])
+
+  useEffect(() => {
+    if (!trip) return
+    async function fetchGallery() {
+      try {
+        const response = await fetch('/api/gallery')
+        if (response.ok) {
+          const data = await response.json()
+          const filtered = data.filter((img: any) => img.category === trip?.category?.toLowerCase())
+          setGalleryImages(filtered.map((item: any) => item.image))
+        }
+      } catch (err) {
+        console.error(err)
+      }
+    }
+    fetchGallery()
+  }, [trip])
+
+  const heroMedia = useMemo(() => {
+    if (!trip) return []
+    return trip.heroMedia || [{ type: 'image' as const, src: trip.image, alt: trip.title }]
+  }, [trip])
+
+  const collageImages = useMemo(() => {
+    if (!trip) return []
+    const list = [...heroMedia]
+
+    // Add specific trip images
+    if (trip.images && trip.images.length > 0) {
+      trip.images.forEach((img: string) => {
+        if (!list.some(item => item.src === img)) {
+          list.push({ type: 'image' as const, src: img, alt: trip.title })
+        }
+      })
+    }
+
+    // Add category-specific gallery images
+    if (galleryImages.length > 0) {
+      galleryImages.forEach((img: string) => {
+        if (!list.some(item => item.src === img)) {
+          list.push({ type: 'image' as const, src: img, alt: trip.title })
+        }
+      })
+    }
+
+    // High quality scenic fallback pictures (no team photos)
+    const fallbacks = [
+      trip.image,
+      '/images/everest.jpg',
+      '/images/LL1.jpg',
+      '/images/LL2.jpg'
+    ]
+    let fbIdx = 0
+    while (list.length < 5) {
+      const src = fallbacks[fbIdx % fallbacks.length] || trip.image
+      if (!list.some(item => item.src === src)) {
+        list.push({ type: 'image' as const, src, alt: `${trip.title} gallery ${list.length + 1}` })
+      }
+      fbIdx++
+    }
+    return list.slice(0, 5)
+  }, [heroMedia, trip, galleryImages])
+
+  useEffect(() => {
+    if (lightboxIndex !== null) {
+      document.body.classList.add('lightbox-open')
+    } else {
+      document.body.classList.remove('lightbox-open')
+    }
+    return () => {
+      document.body.classList.remove('lightbox-open')
+    }
+  }, [lightboxIndex])
+
   useEffect(() => {
     activeTabRef.current = activeTab
   }, [activeTab])
@@ -286,7 +363,6 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
       trip.difficulty === 'Moderate' ? 'bg-amber-100 text-amber-700' :
         'bg-rose-100 text-rose-700'
 
-  const heroMedia = trip.heroMedia || [{ type: 'image' as const, src: trip.image, alt: trip.title }]
 
   const toggleDay = (dayNum: number) => {
     setExpandedDays(prev =>
@@ -369,16 +445,111 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
-      <Navbar />
+      <Navbar forceWhiteDesktop={true} />
 
       <main className="grow">
-        {/* HERO */}
-        <div className="relative h-[50vh] sm:h-[45vh] md:h-[70vh]  overflow-hidden pt-20">
-          <TripHeroCarousel media={heroMedia} />
+        {/* HERO IMAGE COLLAGE (Thrillophilia-style) */}
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-5 md:px-6 pt-24">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-2 h-64 sm:h-80 md:h-[450px] rounded-2xl overflow-hidden shadow-xs">
+            {/* Image 1 (Left - Large) */}
+            <div
+              onClick={() => setLightboxIndex(0)}
+              className="col-span-1 md:col-span-2 md:row-span-2 relative h-full w-full overflow-hidden cursor-pointer group"
+            >
+              <Image
+                src={collageImages[0].src}
+                alt={collageImages[0].alt || trip.title}
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-cover group-hover:scale-102 transition-transform duration-700"
+                priority
+              />
+              <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors" />
+            </div>
 
-          <div className="absolute inset-0 bg-linear-to-r from-slate-950/90 via-slate-950/40 to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 flex items-end">
-            <div className="w-full max-w-6xl mx-auto px-4 sm:px-5 md:px-6 pb-6 sm:pb-8 lg:pb-10">
+            {/* Image 2 (Top Middle) */}
+            <div
+              onClick={() => setLightboxIndex(1)}
+              className="hidden md:block relative h-full w-full overflow-hidden cursor-pointer group"
+            >
+              <Image
+                src={collageImages[1].src}
+                alt={collageImages[1].alt || 'Gallery 2'}
+                fill
+                sizes="25vw"
+                className="object-cover group-hover:scale-105 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
+              <div className="absolute bottom-4 left-4 text-white font-bold text-sm tracking-tight drop-shadow-md">
+                Destinations
+              </div>
+            </div>
+
+            {/* Image 3 (Top Right) */}
+            <div
+              onClick={() => setLightboxIndex(2)}
+              className="hidden md:block relative h-full w-full overflow-hidden cursor-pointer group"
+            >
+              <Image
+                src={collageImages[2].src}
+                alt={collageImages[2].alt || 'Gallery 3'}
+                fill
+                sizes="25vw"
+                className="object-cover group-hover:scale-105 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
+              <div className="absolute bottom-4 left-4 text-white font-bold text-sm tracking-tight drop-shadow-md">
+                Stays
+              </div>
+            </div>
+
+            {/* Image 4 (Bottom Middle) */}
+            <div
+              onClick={() => setLightboxIndex(3)}
+              className="hidden md:block relative h-full w-full overflow-hidden cursor-pointer group"
+            >
+              <Image
+                src={collageImages[3].src}
+                alt={collageImages[3].alt || 'Gallery 4'}
+                fill
+                sizes="25vw"
+                className="object-cover group-hover:scale-105 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
+              <div className="absolute bottom-4 left-4 text-white font-bold text-sm tracking-tight drop-shadow-md">
+                Activity & Sightseeing
+              </div>
+            </div>
+
+            {/* Image 5 (Bottom Right with "View All Images" button) */}
+            <div
+              onClick={() => setLightboxIndex(4)}
+              className="hidden md:block relative h-full w-full overflow-hidden cursor-pointer group"
+            >
+              <Image
+                src={collageImages[4].src}
+                alt={collageImages[4].alt || 'Gallery 5'}
+                fill
+                sizes="25vw"
+                className="object-cover group-hover:scale-105 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 bg-black/35 group-hover:bg-black/25 transition-colors" />
+              
+              {/* View All Button Overlay */}
+              <div className="absolute bottom-4 right-4 z-10">
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    scrollToSection('gallery');
+                  }}
+                  className="bg-white/95 hover:bg-white text-slate-800 text-xs font-bold px-4 py-2 rounded-lg shadow-md flex items-center gap-1.5 transition-all hover:scale-105 cursor-pointer"
+                >
+                  <svg className="w-4 h-4 text-slate-700" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.9 2.9m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 00-1.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375 0 11-.75 0 .375 0 01.75 0z" />
+                  </svg>
+                  View All Images
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -927,10 +1098,12 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
       />
 
       {/* GALLERY SECTION */}
-      <TripGallerySection 
-        categoryId={trip.category.toLowerCase()} 
-        categoryName={trip.destination} 
-      />
+      <div id="gallery">
+        <TripGallerySection 
+          categoryId={trip.category.toLowerCase()} 
+          categoryName={trip.destination} 
+        />
+      </div>
 
       <Footer />
 
@@ -941,6 +1114,50 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
         price={lowestPrice}
         isQuote={trip.showGetQuoteOnly}
       />
+
+      {/* CUSTOM FULLSCREEN IMAGE LIGHTBOX */}
+      {lightboxIndex !== null && (
+        <div className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center backdrop-blur-xs select-none">
+          {/* Close button */}
+          <button
+            onClick={() => setLightboxIndex(null)}
+            className="absolute top-5 right-5 text-white/80 hover:text-white bg-white/10 hover:bg-white/20 p-2.5 rounded-full transition-all cursor-pointer z-50"
+          >
+            <X size={24} />
+          </button>
+          
+          {/* Prev button */}
+          <button
+            onClick={() => setLightboxIndex((prev) => (prev === 0 ? heroMedia.length - 1 : prev! - 1))}
+            className="absolute left-5 top-1/2 -translate-y-1/2 text-white/80 hover:text-white bg-white/10 hover:bg-white/20 p-2.5 rounded-full transition-all cursor-pointer z-50"
+          >
+            <ChevronLeft size={24} />
+          </button>
+
+          {/* Image */}
+          <div className="relative w-[90vw] h-[80vh] flex items-center justify-center">
+            <Image
+              src={heroMedia[lightboxIndex].src}
+              alt={heroMedia[lightboxIndex].alt || 'Gallery'}
+              fill
+              className="object-contain"
+            />
+          </div>
+
+          {/* Next button */}
+          <button
+            onClick={() => setLightboxIndex((prev) => (prev === heroMedia.length - 1 ? 0 : prev! + 1))}
+            className="absolute right-5 top-1/2 -translate-y-1/2 text-white/80 hover:text-white bg-white/10 hover:bg-white/20 p-2.5 rounded-full transition-all cursor-pointer z-50"
+          >
+            <ChevronRight size={24} />
+          </button>
+          
+          {/* Image counter */}
+          <div className="absolute bottom-5 text-white/70 text-sm font-semibold z-50">
+            {lightboxIndex + 1} / {heroMedia.length}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

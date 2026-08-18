@@ -50,15 +50,15 @@ export function Navbar({ forceWhiteDesktop }: NavbarProps) {
   const navBackground = isDesktop === undefined
     ? 'white'
     : isDesktop
-      ? isScrolled
-        ? 'rgba(255,255,255,0.95)'   // scroll → white
+      ? isScrolled || forceWhiteDesktop
+        ? 'rgba(255,255,255,0.95)'   // scroll or forced white → solid white
         : 'rgba(255,255,255,0.15)'   // top → glass
       : 'white'
 
   return (
     <nav
       className={`fixed top-0 left-0 w-full z-9999 transition-all duration-500 ease-in-out
-    ${isScrolled
+    ${isScrolled || forceWhiteDesktop
           ? 'backdrop-blur-md shadow-lg border-b border-gray-200/50'
           : 'backdrop-blur-md backdrop-saturate-150'
         }

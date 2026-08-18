@@ -162,7 +162,7 @@ export function UpcomingGroupToursSection() {
             {isMobile ? (
               <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
                 {combinedCategories.map((cat) => (
-                  <div key={cat.id} className="min-w-[75%] shrink-0">
+                  <div key={cat.id} className="w-[90%] shrink-0">
                     <CategorySliderCard {...cat} />
                   </div>
                 ))}
@@ -225,7 +225,7 @@ export function UpcomingGroupToursSection() {
                 {isMobile ? (
                   <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
                     {indiaCategories.map((cat) => (
-                      <div key={cat.id} className="min-w-[75%] shrink-0">
+                      <div key={cat.id} className="w-[90%] shrink-0">
                         <CategorySliderCard {...cat} />
                       </div>
                     ))}
@@ -287,7 +287,7 @@ export function UpcomingGroupToursSection() {
                 {isMobile ? (
                   <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
                     {intlCategories.map((cat) => (
-                      <div key={cat.id} className="min-w-[75%] shrink-0">
+                      <div key={cat.id} className="w-[90%] shrink-0">
                         <CategorySliderCard {...cat} />
                       </div>
                     ))}

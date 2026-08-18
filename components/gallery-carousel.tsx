@@ -52,7 +52,7 @@ export function GalleryCarousel({ images }: GalleryCarouselProps) {
           spaceBetween={20}
           slidesPerView={1}
           centeredSlides={true}
-          loop={true}
+          loop={images.length >= 8}
           autoplay={{
             delay: 3000,
             disableOnInteraction: false,

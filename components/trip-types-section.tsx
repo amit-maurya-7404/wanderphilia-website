@@ -113,7 +113,7 @@ export function TripTypesSection() {
             {isMobile ? (
               <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
                 {indiaRegions.map((item) => (
-                  <div key={item.region} className="min-w-[75%] shrink-0">
+                  <div key={item.region} className="w-[90%] shrink-0">
                     <RegionCard {...item} />
                   </div>
                 ))}
@@ -165,7 +165,7 @@ export function TripTypesSection() {
             {isMobile ? (
               <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
                 {internationalRegions.map((item) => (
-                  <div key={item.region} className="min-w-[75%] shrink-0">
+                  <div key={item.region} className="w-[90%] shrink-0">
                     <RegionCard {...item} />
                   </div>
                 ))}

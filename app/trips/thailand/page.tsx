@@ -114,7 +114,7 @@ export default function ThailandPage() {
     const update = () => {
       const mobile = window.innerWidth < 768
       setIsMobile(mobile)
-      setCardsPerView(mobile ? 2 : 4)
+      setCardsPerView(mobile ? 2 : 3)
     }
     update()
     window.addEventListener('resize', update)
@@ -268,20 +268,18 @@ export default function ThailandPage() {
           {categoryTrips.length > 0 ? (
             <div>
               {/* ✅ MOBILE SCROLLER */}
-              {isMobile ? (
-                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+              <div className="flex md:hidden gap-4 overflow-x-auto pb-4 scrollbar-hide">
                   {categoryTrips.map((trip) => (
                     <div
                       key={trip.id}
-                      className="min-w-[75%] flex-shrink-0"
+                      className="w-[90%] flex-shrink-0"
                     >
                       <TripCard {...trip} />
                     </div>
                   ))}
                 </div>
-              ) : (
-                <>
-                  {/* DESKTOP CAROUSEL */}
+
+<div className="hidden md:block relative">{/* DESKTOP CAROUSEL */}
                   <div className="relative">
 
                     {/* LEFT */}
@@ -318,7 +316,7 @@ export default function ThailandPage() {
                         {categoryTrips.map((trip) => (
                           <div
                             key={trip.id}
-                            className="flex-shrink-0 basis-1/4 p-2"
+                            className="flex-shrink-0 basis-1/3 p-2"
                           >
                             <TripCard {...trip} />
                           </div>
@@ -326,9 +324,7 @@ export default function ThailandPage() {
                       </div>
                     </div>
 
-                  </div>
-                </>
-              )}
+                  </div></div>
             </div>
           ) : (
             <div className="text-center py-16">
@@ -351,20 +347,18 @@ export default function ThailandPage() {
 
             <div>
               {/* ✅ MOBILE SCROLLER */}
-              {isMobile ? (
-                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+              <div className="flex md:hidden gap-4 overflow-x-auto pb-4 scrollbar-hide">
                   {groupPackages.map((trip) => (
                     <div
                       key={trip.id}
-                      className="min-w-[75%] flex-shrink-0"
+                      className="w-[90%] flex-shrink-0"
                     >
                       <TripCard {...trip} />
                     </div>
                   ))}
                 </div>
-              ) : (
-                <>
-                  {/* DESKTOP CAROUSEL */}
+
+<div className="hidden md:block relative">{/* DESKTOP CAROUSEL */}
                   <div className="relative">
 
                     {/* LEFT */}
@@ -401,7 +395,7 @@ export default function ThailandPage() {
                         {groupPackages.map((trip) => (
                           <div
                             key={trip.id}
-                            className="flex-shrink-0 basis-1/4 p-2"
+                            className="flex-shrink-0 basis-1/3 p-2"
                           >
                             <TripCard {...trip} />
                           </div>
@@ -409,9 +403,7 @@ export default function ThailandPage() {
                       </div>
                     </div>
 
-                  </div>
-                </>
-              )}
+                  </div></div>
             </div>
           </section>
         )}
@@ -428,20 +420,18 @@ export default function ThailandPage() {
           {familyPackages.length > 0 ? (
             <div>
               {/* ✅ MOBILE SCROLLER */}
-              {isMobile ? (
-                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+              <div className="flex md:hidden gap-4 overflow-x-auto pb-4 scrollbar-hide">
                   {familyPackages.map((trip) => (
                     <div
                       key={trip.id}
-                      className="min-w-[75%] flex-shrink-0"
+                      className="w-[90%] flex-shrink-0"
                     >
                       <TripCard {...trip} />
                     </div>
                   ))}
                 </div>
-              ) : (
-                <>
-                  {/* DESKTOP CAROUSEL */}
+
+<div className="hidden md:block relative">{/* DESKTOP CAROUSEL */}
                   <div className="relative">
 
                     {/* LEFT */}
@@ -479,7 +469,7 @@ export default function ThailandPage() {
                         {familyPackages.map((trip) => (
                           <div
                             key={trip.id}
-                            className="flex-shrink-0 basis-1/4 p-2"
+                            className="flex-shrink-0 basis-1/3 p-2"
                           >
                             <TripCard {...trip} />
                           </div>
@@ -487,9 +477,7 @@ export default function ThailandPage() {
                       </div>
                     </div>
 
-                  </div>
-                </>
-              )}
+                  </div></div>
             </div>
           ) : null}
         </section>
@@ -506,20 +494,18 @@ export default function ThailandPage() {
           {customizedPackages.length > 0 ? (
             <div>
               {/* ✅ MOBILE SCROLLER */}
-              {isMobile ? (
-                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+              <div className="flex md:hidden gap-4 overflow-x-auto pb-4 scrollbar-hide">
                   {customizedPackages.map((trip) => (
                     <div
                       key={trip.id}
-                      className="min-w-[75%] flex-shrink-0"
+                      className="w-[90%] flex-shrink-0"
                     >
                       <TripCard {...trip} />
                     </div>
                   ))}
                 </div>
-              ) : (
-                <>
-                  {/* DESKTOP CAROUSEL */}
+
+<div className="hidden md:block relative">{/* DESKTOP CAROUSEL */}
                   <div className="relative">
 
                     {/* LEFT */}
@@ -556,7 +542,7 @@ export default function ThailandPage() {
                         {customizedPackages.map((trip) => (
                           <div
                             key={trip.id}
-                            className="flex-shrink-0 basis-1/4 p-2"
+                            className="flex-shrink-0 basis-1/3 p-2"
                           >
                             <TripCard {...trip} />
                           </div>
@@ -564,9 +550,7 @@ export default function ThailandPage() {
                       </div>
                     </div>
 
-                  </div>
-                </>
-              )}
+                  </div></div>
             </div>
           ) : null}
         </section>
@@ -583,20 +567,18 @@ export default function ThailandPage() {
               </div>
 
               {/* ✅ MOBILE SCROLLER */}
-              {isMobile ? (
-                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+              <div className="flex md:hidden gap-4 overflow-x-auto pb-4 scrollbar-hide">
                   {relatedPackages.map((trip) => (
                     <div
                       key={trip.id}
-                      className="min-w-[75%] flex-shrink-0"
+                      className="w-[90%] flex-shrink-0"
                     >
                       <TripCard {...trip} />
                     </div>
                   ))}
                 </div>
-              ) : (
-                <>
-                  {/* DESKTOP CAROUSEL */}
+
+<div className="hidden md:block relative">{/* DESKTOP CAROUSEL */}
                   <div className="relative">
 
                     {/* LEFT */}
@@ -633,7 +615,7 @@ export default function ThailandPage() {
                         {relatedPackages.map((trip) => (
                           <div
                             key={trip.id}
-                            className="flex-shrink-0 basis-1/4 p-2"
+                            className="flex-shrink-0 basis-1/3 p-2"
                           >
                             <TripCard {...trip} />
                           </div>
@@ -641,9 +623,7 @@ export default function ThailandPage() {
                       </div>
                     </div>
 
-                  </div>
-                </>
-              )}
+                  </div></div>
             </div>
           </section>
         )}

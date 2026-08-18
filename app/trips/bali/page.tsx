@@ -106,7 +106,7 @@ export default function BaliPage() {
     const update = () => {
       const mobile = window.innerWidth < 768
       setIsMobile(mobile)
-      setCardsPerView(mobile ? 2 : 4)
+      setCardsPerView(mobile ? 2 : 3)
     }
     update()
     window.addEventListener('resize', update)
@@ -253,20 +253,18 @@ export default function BaliPage() {
           {categoryTrips.length > 0 ? (
             <div>
               {/* ✅ MOBILE SCROLLER */}
-              {isMobile ? (
-                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+              <div className="flex md:hidden gap-4 overflow-x-auto pb-4 scrollbar-hide">
                   {categoryTrips.map((trip) => (
                     <div
                       key={trip.id}
-                      className="min-w-[75%] flex-shrink-0"
+                      className="w-[90%] flex-shrink-0"
                     >
                       <TripCard {...trip} />
                     </div>
                   ))}
                 </div>
-              ) : (
-                <>
-                  {/* DESKTOP CAROUSEL */}
+
+<div className="hidden md:block relative">{/* DESKTOP CAROUSEL */}
                   <div className="relative">
 
                     {/* LEFT */}
@@ -303,7 +301,7 @@ export default function BaliPage() {
                         {categoryTrips.map((trip) => (
                           <div
                             key={trip.id}
-                            className="flex-shrink-0 basis-1/4 p-2"
+                            className="flex-shrink-0 basis-1/3 p-2"
                           >
                             <TripCard {...trip} />
                           </div>
@@ -311,9 +309,7 @@ export default function BaliPage() {
                       </div>
                     </div>
 
-                  </div>
-                </>
-              )}
+                  </div></div>
             </div>
           ) : (
             <div className="text-center py-16">
@@ -336,20 +332,18 @@ export default function BaliPage() {
           {familyPackages.length > 0 ? (
             <div>
               {/* ✅ MOBILE SCROLLER */}
-              {isMobile ? (
-                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+              <div className="flex md:hidden gap-4 overflow-x-auto pb-4 scrollbar-hide">
                   {familyPackages.map((trip) => (
                     <div
                       key={trip.id}
-                      className="min-w-[75%] flex-shrink-0"
+                      className="w-[90%] flex-shrink-0"
                     >
                       <TripCard {...trip} />
                     </div>
                   ))}
                 </div>
-              ) : (
-                <>
-                  {/* DESKTOP CAROUSEL */}
+
+<div className="hidden md:block relative">{/* DESKTOP CAROUSEL */}
                   <div className="relative">
 
                     {/* LEFT */}
@@ -386,7 +380,7 @@ export default function BaliPage() {
                         {familyPackages.map((trip) => (
                           <div
                             key={trip.id}
-                            className="flex-shrink-0 basis-1/4 p-2"
+                            className="flex-shrink-0 basis-1/3 p-2"
                           >
                             <TripCard {...trip} />
                           </div>
@@ -394,9 +388,7 @@ export default function BaliPage() {
                       </div>
                     </div>
 
-                  </div>
-                </>
-              )}
+                  </div></div>
             </div>
           ) : null}
         </section>
@@ -413,20 +405,18 @@ export default function BaliPage() {
           {customizedPackages.length > 0 ? (
             <div>
               {/* ✅ MOBILE SCROLLER */}
-              {isMobile ? (
-                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+              <div className="flex md:hidden gap-4 overflow-x-auto pb-4 scrollbar-hide">
                   {customizedPackages.map((trip) => (
                     <div
                       key={trip.id}
-                      className="min-w-[75%] flex-shrink-0"
+                      className="w-[90%] flex-shrink-0"
                     >
                       <TripCard {...trip} />
                     </div>
                   ))}
                 </div>
-              ) : (
-                <>
-                  {/* DESKTOP CAROUSEL */}
+
+<div className="hidden md:block relative">{/* DESKTOP CAROUSEL */}
                   <div className="relative">
 
                     {/* LEFT */}
@@ -463,7 +453,7 @@ export default function BaliPage() {
                         {customizedPackages.map((trip) => (
                           <div
                             key={trip.id}
-                            className="flex-shrink-0 basis-1/4 p-2"
+                            className="flex-shrink-0 basis-1/3 p-2"
                           >
                             <TripCard {...trip} />
                           </div>
@@ -471,9 +461,7 @@ export default function BaliPage() {
                       </div>
                     </div>
 
-                  </div>
-                </>
-              )}
+                  </div></div>
             </div>
           ) : null}
         </section>
@@ -490,20 +478,18 @@ export default function BaliPage() {
               </div>
 
               {/* ✅ MOBILE SCROLLER */}
-              {isMobile ? (
-                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+              <div className="flex md:hidden gap-4 overflow-x-auto pb-4 scrollbar-hide">
                   {relatedPackages.map((trip) => (
                     <div
                       key={trip.id}
-                      className="min-w-[75%] flex-shrink-0"
+                      className="w-[90%] flex-shrink-0"
                     >
                       <TripCard {...trip} />
                     </div>
                   ))}
                 </div>
-              ) : (
-                <>
-                  {/* DESKTOP CAROUSEL */}
+
+<div className="hidden md:block relative">{/* DESKTOP CAROUSEL */}
                   <div className="relative">
 
                     {/* LEFT */}
@@ -540,7 +526,7 @@ export default function BaliPage() {
                         {relatedPackages.map((trip) => (
                           <div
                             key={trip.id}
-                            className="flex-shrink-0 basis-1/4 p-2"
+                            className="flex-shrink-0 basis-1/3 p-2"
                           >
                             <TripCard {...trip} />
                           </div>
@@ -548,9 +534,7 @@ export default function BaliPage() {
                       </div>
                     </div>
 
-                  </div>
-                </>
-              )}
+                  </div></div>
             </div>
           </section>
         )}
