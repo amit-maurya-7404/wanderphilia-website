@@ -201,6 +201,17 @@ function getStaySummary(itinerary: Trip['itinerary']): string {
   return grouped.map(g => `${g.nights}N ${g.loc}`).join(' - ');
 }
 
+function formatStaySummary(stayStr: string, maxItems: number = 5): string {
+  if (!stayStr) return '';
+  const parts = stayStr.split(/\s*-\s*/);
+  if (parts.length <= maxItems) {
+    return parts.join(' • ');
+  }
+  const shown = parts.slice(0, maxItems).join(' • ');
+  const remaining = parts.length - maxItems;
+  return `${shown} + ${remaining} more`;
+}
+
 export function TripCard({
   title,
   image,
@@ -390,7 +401,7 @@ export function TripCard({
 
         {/* ROUTE / STOPS */}
         <p className="text-[3.4vw] md:text-xs text-gray-500 leading-normal mb-2 flex-shrink-0">
-          {staySummary ? staySummary.replace(/\s*-\s*/g, ' • ') : destination}
+          {staySummary ? formatStaySummary(staySummary) : destination}
         </p>
 
         {/* DYNAMIC INCLUSIONS */}
