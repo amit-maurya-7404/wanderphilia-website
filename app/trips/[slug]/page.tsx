@@ -1002,36 +1002,7 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
           })()}
         </div>
 
-        {/* STICKY TAB NAVBAR */}
-        <div className="sticky top-20 z-40 bg-white border-b shadow-sm">
-          <div className="max-w-6xl mx-auto px-4 sm:px-5 md:px-6 flex">
-            <div className="flex w-fit overflow-hidden">
-              <div
-                ref={tabContainerRef}
-                className="flex w-fit overflow-x-auto gap-2 sm:gap-4 py-0 mr-auto scrollbar-hide"
-              >
-                {[
-                  { id: 'itinerary', label: 'Itinerary' },
-                  { id: 'inclusions', label: 'Inclusions' },
-                  { id: 'summary', label: 'Summary' },
-                  { id: 'highlights', label: 'Highlights' },
-                ].map(tab => (
-                  <button
-                    key={tab.id}
-                    data-tab-id={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`px-4 py-3 text-sm font-semibold whitespace-nowrap border-b-2 transition-all cursor-pointer ${activeTab === tab.id
-                      ? 'border-primary text-primary font-bold'
-                      : 'border-transparent text-slate-600 hover:text-slate-900'
-                      }`}
-                  >
-                    {tab.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
+
 
         <div className="max-w-6xl mx-auto px-[4vw] sm:px-[5vw] md:px-0 py-[4vh] sm:py-[5vh] md:py-[6vh]">
           <div className="grid lg:grid-cols-[2.5fr_1fr] gap-[4vw] lg:gap-[3vw]">
@@ -1093,6 +1064,35 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
                       </span>
                     </div>
                   ))}
+                </div>
+              </div>
+
+              {/* STICKY TAB NAVBAR */}
+              <div className="sticky top-20 z-40 bg-white border-b shadow-sm">
+                <div className="flex w-fit overflow-hidden">
+                  <div
+                    ref={tabContainerRef}
+                    className="flex w-fit overflow-x-auto gap-2 sm:gap-4 py-0 mr-auto scrollbar-hide"
+                  >
+                    {[
+                      { id: 'itinerary', label: 'Itinerary' },
+                      { id: 'inclusions', label: 'Inclusions' },
+                      { id: 'summary', label: 'Summary' },
+                      { id: 'highlights', label: 'Highlights' },
+                    ].map(tab => (
+                      <button
+                        key={tab.id}
+                        data-tab-id={tab.id}
+                        onClick={() => setActiveTab(tab.id)}
+                        className={`px-4 py-3 text-sm font-semibold whitespace-nowrap border-b-2 transition-all cursor-pointer ${activeTab === tab.id
+                          ? 'border-primary text-primary font-bold'
+                          : 'border-transparent text-slate-600 hover:text-slate-900'
+                          }`}
+                      >
+                        {tab.label}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
 
