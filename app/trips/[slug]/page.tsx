@@ -14,6 +14,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { TripHeroCarousel } from '@/components/trip-hero-carousel'
 import { RequestCallbackDialog } from '@/components/request-callback-dialog'
 import { trips } from '@/lib/data'
+import { destinationItineraryImages } from '@/lib/section-mappings'
 import { MapPin, Calendar, Users, Star, Phone, MessageCircle, ChevronDown, Download, X, ChevronLeft, ChevronRight, Car, Hotel, Camera, Utensils, Plane, Building2, FileText, User } from 'lucide-react'
 import { contactEmail, contactPhone, contactPhoneDisplay, instagramUrl } from '@/lib/contact'
 import { TripGallerySection } from '@/components/trip-gallery-section'
@@ -60,7 +61,7 @@ function cleanLocation(loc: string): string {
   if (lower.includes('ho chi minh')) return 'Ho Chi Minh';
   if (lower.includes('hoi an')) return 'Hoi An';
   if (lower.includes('saigon')) return 'Saigon';
-  if (lower.includes('phu quoc') || lower.includes('phu')) return 'Phu Quoc';
+  if (lower.includes('phu quoc') || lower === 'phu') return 'Phu Quoc';
   if (lower.includes('sapa')) return 'Sapa';
   if (lower.includes('ubud')) return 'Ubud';
   if (lower.includes('seminyak')) return 'Seminyak';
@@ -109,7 +110,8 @@ function cleanLocation(loc: string): string {
   if (lower.includes('pelling')) return 'Pelling';
   if (lower.includes('darjeeling')) return 'Darjeeling';
   if (lower.includes('hanle')) return 'Hanle';
-  if (lower.includes('phuentsholing')) return 'Phuentsholing';
+  if (lower.includes('phuentsholing') || lower.includes('phuntsholing')) return 'Phuentsholing';
+  if (lower.includes('siliguri')) return 'Siliguri';
   if (lower.includes('gili')) return 'Gili Island';
   if (lower.includes('kuta')) return 'Kuta';
   if (lower.includes('pattaya')) return 'Pattaya';
@@ -694,6 +696,23 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
 
   const collageImages = useMemo(() => {
     if (!trip) return []
+
+    // Check if there are custom images for this destination in the section-mappings file
+    const catId = trip.category?.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '-') || ''
+    const customImages = destinationItineraryImages[catId]
+
+    if (customImages && customImages.length >= 4) {
+      // Use the trip's main image as the first large image, and the 4 custom mapped images on the right
+      const mainImg = heroMedia[0] || { type: 'image' as const, src: trip.image, alt: trip.title }
+      return [
+        mainImg,
+        { type: 'image' as const, src: customImages[0], alt: `${trip.title} gallery 2` },
+        { type: 'image' as const, src: customImages[1], alt: `${trip.title} gallery 3` },
+        { type: 'image' as const, src: customImages[2], alt: `${trip.title} gallery 4` },
+        { type: 'image' as const, src: customImages[3], alt: `${trip.title} gallery 5` },
+      ]
+    }
+
     const list = [...heroMedia]
 
     // Add specific trip images
@@ -898,8 +917,13 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
         {/* HERO IMAGE — single if no gallery, collage if gallery exists */}
         <div className="relative max-w-6xl mx-auto px-4 sm:px-5 md:px-6 pt-24">
           {(() => {
+            const catId = trip?.category?.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '-') || ''
+            const customImages = destinationItineraryImages[catId]
+            const hasCustomMappedGallery = customImages && customImages.length >= 4
+
             // True only when there are actual unique images beyond the lone trip.image
             const hasRealGallery =
+              hasCustomMappedGallery ||
               (trip.heroMedia && trip.heroMedia.length > 1) ||
               (trip.images && trip.images.length > 0) ||
               galleryImages.length > 0;
@@ -940,7 +964,6 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
                     className="object-cover group-hover:scale-102 transition-transform duration-700"
                     priority
                   />
-                  <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors" />
                 </div>
 
                 {/* Image 2 (Top Middle) */}
@@ -949,7 +972,6 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
                   className="hidden md:block relative h-full w-full overflow-hidden cursor-pointer group"
                 >
                   <Image src={collageImages[1].src} alt={collageImages[1].alt || 'Gallery 2'} fill sizes="25vw" className="object-cover group-hover:scale-105 transition-transform duration-700" />
-                  <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
                 </div>
 
                 {/* Image 3 (Top Right) */}
@@ -958,7 +980,6 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
                   className="hidden md:block relative h-full w-full overflow-hidden cursor-pointer group"
                 >
                   <Image src={collageImages[2].src} alt={collageImages[2].alt || 'Gallery 3'} fill sizes="25vw" className="object-cover group-hover:scale-105 transition-transform duration-700" />
-                  <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
                 </div>
 
                 {/* Image 4 (Bottom Middle) */}
@@ -967,31 +988,14 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
                   className="hidden md:block relative h-full w-full overflow-hidden cursor-pointer group"
                 >
                   <Image src={collageImages[3].src} alt={collageImages[3].alt || 'Gallery 4'} fill sizes="25vw" className="object-cover group-hover:scale-105 transition-transform duration-700" />
-                  <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
                 </div>
 
-                {/* Image 5 (Bottom Right) with View All */}
+                {/* Image 5 (Bottom Right) */}
                 <div
                   onClick={() => setLightboxIndex(4)}
                   className="hidden md:block relative h-full w-full overflow-hidden cursor-pointer group"
                 >
                   <Image src={collageImages[4].src} alt={collageImages[4].alt || 'Gallery 5'} fill sizes="25vw" className="object-cover group-hover:scale-105 transition-transform duration-700" />
-                  <div className="absolute inset-0 bg-black/35 group-hover:bg-black/25 transition-colors" />
-                  <div className="absolute bottom-4 right-4 z-10">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        const el = document.getElementById('gallery');
-                        if (el) el.scrollIntoView({ behavior: 'smooth' });
-                      }}
-                      className="bg-white/95 hover:bg-white text-slate-800 text-xs font-bold px-4 py-2 rounded-lg shadow-md flex items-center gap-1.5 transition-all hover:scale-105 cursor-pointer"
-                    >
-                      <svg className="w-4 h-4 text-slate-700" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.9 2.9m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 00-1.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375 0 11-.75 0 .375 0 01.75 0z" />
-                      </svg>
-                      View All Images
-                    </button>
-                  </div>
                 </div>
               </div>
             );

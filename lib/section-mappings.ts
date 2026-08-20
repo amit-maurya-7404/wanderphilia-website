@@ -131,3 +131,103 @@ export const getSectionMapping = (categoryId: string) => {
 export const getPageSectionMapping = (pageName: string) => {
   return pageSectionMappings[pageName] || []
 }
+
+// Mapping of destination categories to 4 custom images to show on the right side of the itinerary/detail page gallery collage
+export const destinationItineraryImages: Record<string, string[]> = {
+  'himachal': [
+    '/images/Himachal1.jpg',
+    '/images/himachal2.jpg',
+    '/images/himachal3.jpg',
+    '/images/himachal4.jpg'
+  ],
+  'leh-ladakh': [
+    '/images/LL1.PNG',
+    '/images/LL2.jpg',
+    '/images/LL3.jpg',
+    '/images/LL4.PNG'
+  ],
+  'spiti': [
+    '/images/spiti1.JPG',
+    '/images/spiti2.JPG',
+    '/images/spiti3.jpg',
+    '/images/spiti5.JPG'
+  ],
+  'bhutan': [
+    '/images/bhutan1.jpg',
+    '/images/bhutan2.jpg',
+    '/images/bhutan3.jpg',
+    '/images/bhutan-cover3.PNG'
+  ],
+  'singapore': [
+    '/images/singapore1.jpg',
+    '/images/singapore2.jpg',
+    '/images/singapore3.jpg',
+    '/images/singapore4.jpg'
+  ],
+  'vietnam': [
+    '/images/vietnam.png',
+    '/images/vietnam-beauty.png',
+    '/images/vietnam-best.png',
+    '/images/vietnam-dreamy.png'
+  ],
+  'bali': [
+    '/images/bali.jpg',
+    '/images/bali-group-trip.png',
+    '/images/romantic-bali-getaway.png',
+    '/images/honeymoon-special-bali.png'
+  ],
+  'thailand': [
+    '/images/thailand.jpg',
+    '/images/thailand-couple-leisure.png',
+    '/images/thailand-family-getaway.png',
+    '/images/thailand-honeymoon.png'
+  ],
+  'kashmir': [
+    '/images/kashmir.jpg',
+    '/images/dummy1.jpg',
+    '/images/dummy2.jpg',
+    '/images/dummy3.jpg'
+  ],
+  'sikkim': [
+    '/images/sikkim.png',
+    '/images/dummy1.jpg',
+    '/images/dummy2.jpg',
+    '/images/dummy3.jpg'
+  ],
+  'meghalaya': [
+    '/images/meghalaya.jpg',
+    '/images/dummy1.jpg',
+    '/images/dummy2.jpg',
+    '/images/dummy3.jpg'
+  ],
+  'nepal': [
+    '/images/nepal-dest.jpg',
+    '/images/everest.jpg',
+    '/images/dummy1.jpg',
+    '/images/dummy2.jpg'
+  ],
+  'indonesia': [
+    '/images/indonesia-dest.jpg',
+    '/images/dummy1.jpg',
+    '/images/dummy2.jpg',
+    '/images/dummy3.jpg'
+  ],
+  'switzerland': [
+    '/images/switzerland-dest.jpg',
+    '/images/swiss.jpg',
+    '/images/dummy1.jpg',
+    '/images/dummy2.jpg'
+  ],
+  'peru': [
+    '/images/peru-dest.jpg',
+    '/images/dummy1.jpg',
+    '/images/dummy2.jpg',
+    '/images/dummy3.jpg'
+  ],
+  'japan': [
+    '/images/japan.jpg',
+    '/images/dummy1.jpg',
+    '/images/dummy2.jpg',
+    '/images/dummy3.jpg'
+  ]
+}

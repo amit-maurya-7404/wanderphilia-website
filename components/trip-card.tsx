@@ -60,7 +60,7 @@ function cleanLocation(loc: string): string {
   if (lower.includes('ho chi minh')) return 'Ho Chi Minh';
   if (lower.includes('hoi an')) return 'Hoi An';
   if (lower.includes('saigon')) return 'Saigon';
-  if (lower.includes('phu quoc') || lower.includes('phu')) return 'Phu Quoc';
+  if (lower.includes('phu quoc') || lower === 'phu') return 'Phu Quoc';
   if (lower.includes('sapa')) return 'Sapa';
   if (lower.includes('ubud')) return 'Ubud';
   if (lower.includes('seminyak')) return 'Seminyak';
@@ -109,7 +109,8 @@ function cleanLocation(loc: string): string {
   if (lower.includes('pelling')) return 'Pelling';
   if (lower.includes('darjeeling')) return 'Darjeeling';
   if (lower.includes('hanle')) return 'Hanle';
-  if (lower.includes('phuentsholing')) return 'Phuentsholing';
+  if (lower.includes('phuentsholing') || lower.includes('phuntsholing')) return 'Phuentsholing';
+  if (lower.includes('siliguri')) return 'Siliguri';
   if (lower.includes('gili')) return 'Gili Island';
   if (lower.includes('kuta')) return 'Kuta';
   if (lower.includes('pattaya')) return 'Pattaya';

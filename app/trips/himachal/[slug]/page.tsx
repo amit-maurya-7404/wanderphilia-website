@@ -14,7 +14,8 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { TripHeroCarousel } from '@/components/trip-hero-carousel'
 import { RequestCallbackDialog } from '@/components/request-callback-dialog'
 import { trips } from '@/lib/data'
-import { MapPin, Calendar, Users, Star, Phone, MessageCircle, ChevronDown, Download } from 'lucide-react'
+import { destinationItineraryImages } from '@/lib/section-mappings'
+import { MapPin, Calendar, Users, Star, Phone, MessageCircle, ChevronDown, Download, X, ChevronLeft, ChevronRight } from 'lucide-react'
 import { contactEmail, contactPhone, contactPhoneDisplay, instagramUrl } from '@/lib/contact'
 import { TripGallerySection } from '@/components/trip-gallery-section'
 
@@ -272,6 +273,69 @@ export default function PackageDetailPage() {
 
   const heroMedia = trip.heroMedia || [{ type: 'image' as const, src: trip.image, alt: trip.title }]
 
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
+
+  const collageImages = useMemo(() => {
+    if (!trip) return []
+
+    // Check if there are custom images for this destination in the section-mappings file
+    const catId = trip.category?.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '-') || ''
+    const customImages = destinationItineraryImages[catId]
+
+    if (customImages && customImages.length >= 4) {
+      const mainImg = heroMedia[0] || { type: 'image' as const, src: trip.image, alt: trip.title }
+      return [
+        mainImg,
+        { type: 'image' as const, src: customImages[0], alt: `${trip.title} gallery 2` },
+        { type: 'image' as const, src: customImages[1], alt: `${trip.title} gallery 3` },
+        { type: 'image' as const, src: customImages[2], alt: `${trip.title} gallery 4` },
+        { type: 'image' as const, src: customImages[3], alt: `${trip.title} gallery 5` },
+      ]
+    }
+
+    const list = []
+
+    // Add main image first
+    list.push({ type: 'image' as const, src: trip.image, alt: trip.title })
+
+    // Add specific trip images
+    if (trip.images && trip.images.length > 0) {
+      trip.images.forEach((img) => {
+        if (!list.some(item => item.src === img)) {
+          list.push({ type: 'image' as const, src: img, alt: trip.title })
+        }
+      })
+    }
+
+    // Fallback: always use the trip's own card image
+    const fallbacks = [trip.image]
+
+    // First, try to add unique fallbacks
+    for (const src of fallbacks) {
+      if (list.length >= 5) break
+      if (!list.some(item => item.src === src)) {
+        list.push({ type: 'image' as const, src, alt: `${trip.title} gallery ${list.length + 1}` })
+      }
+    }
+
+    // If still less than 5, fill with trip.image
+    while (list.length < 5) {
+      list.push({ type: 'image' as const, src: trip.image, alt: `${trip.title} gallery ${list.length + 1}` })
+    }
+    return list.slice(0, 5)
+  }, [trip, heroMedia])
+
+  useEffect(() => {
+    if (lightboxIndex !== null) {
+      document.body.classList.add('lightbox-open')
+    } else {
+      document.body.classList.remove('lightbox-open')
+    }
+    return () => {
+      document.body.classList.remove('lightbox-open')
+    }
+  }, [lightboxIndex])
+
   const toggleDay = (dayNum: number) => {
     setExpandedDays(prev =>
       prev.includes(dayNum)
@@ -353,7 +417,7 @@ export default function PackageDetailPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
-      <Navbar />
+      <Navbar forceWhiteDesktop={true} />
 
       <main className="grow">
         {/* HERO */}
@@ -932,6 +996,50 @@ export default function PackageDetailPage() {
         price={lowestPrice}
         isQuote={trip.showGetQuoteOnly}
       />
+
+      {/* CUSTOM FULLSCREEN IMAGE LIGHTBOX */}
+      {lightboxIndex !== null && (
+        <div className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center backdrop-blur-xs select-none">
+          {/* Close button */}
+          <button
+            onClick={() => setLightboxIndex(null)}
+            className="absolute top-5 right-5 text-white/80 hover:text-white bg-white/10 hover:bg-white/20 p-2.5 rounded-full transition-all cursor-pointer z-50"
+          >
+            <X size={24} />
+          </button>
+
+          {/* Prev button */}
+          <button
+            onClick={() => setLightboxIndex((prev) => (prev === 0 ? collageImages.length - 1 : prev! - 1))}
+            className="absolute left-5 top-1/2 -translate-y-1/2 text-white/80 hover:text-white bg-white/10 hover:bg-white/20 p-2.5 rounded-full transition-all cursor-pointer z-50"
+          >
+            <ChevronLeft size={24} />
+          </button>
+
+          {/* Image */}
+          <div className="relative w-[90vw] h-[80vh] flex items-center justify-center">
+            <Image
+              src={collageImages[lightboxIndex].src}
+              alt={collageImages[lightboxIndex].alt || 'Gallery'}
+              fill
+              className="object-contain"
+            />
+          </div>
+
+          {/* Next button */}
+          <button
+            onClick={() => setLightboxIndex((prev) => (prev === collageImages.length - 1 ? 0 : prev! + 1))}
+            className="absolute right-5 top-1/2 -translate-y-1/2 text-white/80 hover:text-white bg-white/10 hover:bg-white/20 p-2.5 rounded-full transition-all cursor-pointer z-50"
+          >
+            <ChevronRight size={24} />
+          </button>
+
+          {/* Image counter */}
+          <div className="absolute bottom-5 text-white/70 text-sm font-semibold z-50">
+            {lightboxIndex + 1} / {collageImages.length}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
