@@ -29,10 +29,10 @@ const categoryImageMap: Record<string, string> = {
 const categoryOrder: string[] = [
   'Ladakh',
   'Spiti',
+  'Vietnam',
   'Bhutan',
   'Singapore',
   'Thailand',
-  'Vietnam',
   'Bali',
   'Switzerland',
   'Peru',

@@ -94,8 +94,8 @@ export function UpcomingGroupToursSection() {
   const allCategories = getAllCategories()
 
   const indiaAllowed = ['leh-ladakh', 'spiti', 'kashmir', 'himachal']
-  const intlAllowed = ['bhutan', 'thailand', 'vietnam', 'bali']
-  const combinedAllowed = ['leh-ladakh', 'spiti', 'kashmir', 'himachal', 'bhutan', 'thailand', 'vietnam', 'bali']
+  const intlAllowed = ['vietnam', 'bhutan', 'thailand', 'bali']
+  const combinedAllowed = ['leh-ladakh', 'spiti', 'kashmir', 'himachal', 'vietnam', 'bhutan', 'thailand', 'bali']
 
   const getCategoryDetails = (allowedIds: string[]) => {
     return allowedIds
