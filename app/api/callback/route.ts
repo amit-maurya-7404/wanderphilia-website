@@ -4,11 +4,16 @@ import { submitToZohoCRM } from '@/lib/zoho'
 
 export async function POST(request: NextRequest) {
   try {
-    const { name, phone, email, title, price } = await request.json()
+    const body = await request.json()
+    const name = body.name || 'Customer'
+    const phone = body.phone
+    const email = body.email
+    const title = body.title || body.tripTitle || 'Wanderphilia Trip'
+    const price = body.price
 
-    if (!name || !phone || !email) {
+    if (!phone || !email) {
       return NextResponse.json(
-        { error: 'Name, phone, and email are required' },
+        { error: 'Phone and email are required' },
         { status: 400 }
       )
     }

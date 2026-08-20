@@ -19,35 +19,43 @@ interface CategorySliderCardProps {
 
 function CategorySliderCard({ id, name, image, price, tripCount }: CategorySliderCardProps) {
   return (
-    <Link href={`/trips/${id}`} target="_blank" rel="noopener noreferrer">
-      <div className="group relative overflow-hidden rounded-xl h-[50vh] md:h-[60vh] cursor-pointer shadow-xl hover:shadow-2xl transition-all duration-500 w-full hover:-translate-y-2">
+    <Link href={`/trips/${id}`} target="_blank" rel="noopener noreferrer" className="block w-full">
+      <div className="group relative overflow-hidden rounded-2xl h-[50vh] md:h-[60vh] cursor-pointer shadow-md hover:shadow-xl transition-all duration-500 w-full hover:-translate-y-1.5 border border-slate-100/50 bg-slate-900">
         {/* Background Image */}
         <Image
           src={image}
           alt={name}
           fill
-          className="object-cover group-hover:scale-110 transition-transform duration-700"
+          className="object-cover group-hover:scale-105 transition-transform duration-700 opacity-90 group-hover:opacity-100"
         />
 
         {/* Premium Gradient Overlay */}
-        <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-transparent opacity-70 group-hover:opacity-85 transition-opacity duration-300" />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/30 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-300" />
 
-        {/* Content */}
-        <div className="absolute inset-0 flex flex-col justify-end p-6 text-white">
-          {/* Tour Count above name */}
-          <span className="text-[10px] md:text-xs text-primary font-bold uppercase tracking-wider mb-1">
-            {tripCount} {tripCount === 1 ? 'Tour' : 'Tours'} Available
+        {/* Top Badges / Info */}
+        <div className="absolute top-4 left-4 z-10">
+          <span className="bg-white/90 backdrop-blur-xs text-[#ff5d09] text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full shadow-sm">
+            {tripCount} {tripCount === 1 ? 'Tour' : 'Tours'}
           </span>
+        </div>
 
-          {/* Title */}
-          <h3 className="text-2xl font-bold mb-2 group-hover:text-primary transition-colors duration-300">
-            {name}
-          </h3>
+        {/* Bottom Content Area */}
+        <div className="absolute inset-0 flex flex-col justify-end p-5 text-white z-10">
+          {/* Glass-styled title block */}
+          <div className="transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+            {/* Title with inline arrow */}
+            <h3 className="text-xl md:text-2xl font-black tracking-tight mb-1 group-hover:text-orange-400 transition-colors duration-300 flex items-center gap-1.5">
+              {name}
+              <span className="opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-[-10px] group-hover:translate-x-0 inline-block font-normal text-sm md:text-lg">
+                →
+              </span>
+            </h3>
 
-          {/* Pricing */}
-          <p className="text-sm text-gray-200">
-            Starting ₹ {price.toLocaleString('en-IN')}
-          </p>
+            {/* Pricing */}
+            <p className="text-xs md:text-sm text-slate-200/90 font-medium">
+              Starting from <span className="font-extrabold text-white text-sm md:text-base">₹{price.toLocaleString('en-IN')}</span>
+            </p>
+          </div>
         </div>
       </div>
     </Link>

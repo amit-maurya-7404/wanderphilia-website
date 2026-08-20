@@ -646,6 +646,7 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
           email: inquiryEmail,
           tripTitle: trip?.title,
           tripSlug: trip?.slug,
+          price: lowestPrice || trip?.price,
           source: 'Sidebar Callback Form'
         })
       })
