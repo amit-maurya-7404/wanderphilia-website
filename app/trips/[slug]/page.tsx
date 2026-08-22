@@ -599,6 +599,7 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
   }
 
   const slug = (resolvedParams?.slug || clientParams?.slug) as string | undefined
+  console.log("=== CATCH-ALL TRIP PAGE RENDERING ===", { slug, params, clientParams })
   const total = selections.reduce((sum, item) => sum + item.price, 0)
   const trip = useMemo(() => slug ? trips.find(t => t.slug === slug) : undefined, [slug])
 

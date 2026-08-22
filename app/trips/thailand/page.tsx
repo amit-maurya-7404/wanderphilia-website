@@ -12,6 +12,8 @@ import { TripHeroCarousel } from '@/components/trip-hero-carousel'
 import { RequestCallbackDialog } from '@/components/request-callback-dialog'
 import { trips } from '@/lib/data'
 import { getSectionMapping } from '@/lib/section-mappings'
+import { DurationFilter } from '@/components/duration-filter'
+import { NoPackagesCallbackForm } from '@/components/no-packages-callback-form'
 import { ChevronLeft, ChevronRight, Star, Phone, MessageCircle } from 'lucide-react'
 
 interface ReviewItem {
@@ -43,6 +45,8 @@ export default function ThailandPage() {
   const [isMobile, setIsMobile] = useState(false)
   const [cardsPerView, setCardsPerView] = useState(4);
   const [callbackOpen, setCallbackOpen] = useState(false)
+
+  const [isDescExpanded, setIsDescExpanded] = useState(false)
 
   // Reviews state
   const [reviews, setReviews] = useState<ReviewItem[]>([])
@@ -185,6 +189,50 @@ export default function ThailandPage() {
     return getTripsBySection('custom')
   }, [])
 
+  const [selectedDuration, setSelectedDuration] = useState<number | null>(null)
+
+  const allCategoryTrips = useMemo(() => {
+    const combined = [...categoryTrips, ...groupPackages, ...familyPackages, ...customizedPackages]
+    const seen = new Set<string>()
+    return combined.filter(trip => {
+      if (seen.has(trip.id)) return false
+      seen.add(trip.id)
+      return true
+    })
+  }, [categoryTrips, groupPackages, familyPackages, customizedPackages])
+
+  const filteredCategoryTrips = useMemo(() => {
+    if (!selectedDuration) return categoryTrips
+    return categoryTrips.filter(t => {
+      const tripNights = t.nights !== undefined ? t.nights : (t.duration ? t.duration - 1 : 0)
+      return tripNights === selectedDuration
+    })
+  }, [categoryTrips, selectedDuration])
+
+  const filteredGroupPackages = useMemo(() => {
+    if (!selectedDuration) return groupPackages
+    return groupPackages.filter(t => {
+      const tripNights = t.nights !== undefined ? t.nights : (t.duration ? t.duration - 1 : 0)
+      return tripNights === selectedDuration
+    })
+  }, [groupPackages, selectedDuration])
+
+  const filteredFamilyPackages = useMemo(() => {
+    if (!selectedDuration) return familyPackages
+    return familyPackages.filter(t => {
+      const tripNights = t.nights !== undefined ? t.nights : (t.duration ? t.duration - 1 : 0)
+      return tripNights === selectedDuration
+    })
+  }, [familyPackages, selectedDuration])
+
+  const filteredCustomizedPackages = useMemo(() => {
+    if (!selectedDuration) return customizedPackages
+    return customizedPackages.filter(t => {
+      const tripNights = t.nights !== undefined ? t.nights : (t.duration ? t.duration - 1 : 0)
+      return tripNights === selectedDuration
+    })
+  }, [customizedPackages, selectedDuration])
+
   // Compute review statistics
   const reviewStats = useMemo(() => {
     if (reviews.length === 0) {
@@ -219,9 +267,15 @@ export default function ThailandPage() {
                     10+ Thailand Tour Packages 2026
                   </h1>
 
-                  <p className="mt-4 text-sm sm:text-base md:text-lg max-w-2xl text-slate-100 leading-normal">
+                  <p className={`mt-4 text-sm sm:text-base md:text-lg max-w-2xl text-slate-100 leading-normal ${!isDescExpanded ? 'line-clamp-3 md:line-clamp-none' : ''}`}>
                     All inclusive curated Best Thailand Group & Customised Tour Packages 2026 For Friends Family Kids & Couples covering all the major Attractions.
                   </p>
+                  <button
+                    onClick={() => setIsDescExpanded(!isDescExpanded)}
+                    className="md:hidden text-amber-300 font-semibold text-xs mt-2 flex items-center gap-1 cursor-pointer select-none"
+                  >
+                    {isDescExpanded ? 'View Less ▲' : 'View More ▼'}
+                  </button>
 
                   <div className="mt-5 flex flex-row gap-2 sm:flex-row sm:items-center">
                     <Button
@@ -255,6 +309,12 @@ export default function ThailandPage() {
           </div>
         </div>
 
+        <DurationFilter
+          trips={allCategoryTrips}
+          selectedDuration={selectedDuration}
+          onChange={setSelectedDuration}
+        />
+
         {/* Packages Section */}
         <section className="py-16 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
           <div className="mb-6">
@@ -265,11 +325,11 @@ export default function ThailandPage() {
             <div className="w-20 h-1 bg-primary rounded-full" />
           </div>
 
-          {categoryTrips.length > 0 ? (
+          {filteredCategoryTrips.length > 0 ? (
             <div>
               {/* ✅ MOBILE SCROLLER */}
               <div className="flex md:hidden gap-4 overflow-x-auto pb-4 scrollbar-hide">
-                  {categoryTrips.map((trip) => (
+                  {filteredCategoryTrips.map((trip) => (
                     <div
                       key={trip.id}
                       className="w-[90%] flex-shrink-0"
@@ -296,10 +356,10 @@ export default function ThailandPage() {
                     {/* RIGHT */}
                     <button
                       onClick={() => {
-                        const maxIndex = Math.max(0, categoryTrips.length - cardsPerView)
+                        const maxIndex = Math.max(0, filteredCategoryTrips.length - cardsPerView)
                         setCarouselIndex1((prev) => Math.min(prev + 1, maxIndex))
                       }}
-                      disabled={carouselIndex1 === Math.max(0, categoryTrips.length - cardsPerView)}
+                      disabled={carouselIndex1 === Math.max(0, filteredCategoryTrips.length - cardsPerView)}
                       className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
                     >
                       <ChevronRight size={20} />
@@ -313,7 +373,7 @@ export default function ThailandPage() {
                           transform: `translateX(-${carouselIndex1 * (100 / cardsPerView)}%)`,
                         }}
                       >
-                        {categoryTrips.map((trip) => (
+                        {filteredCategoryTrips.map((trip) => (
                           <div
                             key={trip.id}
                             className="flex-shrink-0 basis-1/3 p-2"
@@ -327,16 +387,17 @@ export default function ThailandPage() {
                   </div></div>
             </div>
           ) : (
-            <div className="text-center py-16">
-              <p className="text-xl text-slate-600">
-                No packages found for this category.
-              </p>
+            <div className="py-12">
+              <NoPackagesCallbackForm
+                nights={selectedDuration}
+                destinationName={categoryName}
+              />
             </div>
           )}
         </section>
 
         {/* Group Trips Section */}
-        {groupPackages.length > 0 && (
+        {filteredGroupPackages.length > 0 && (
           <section className="py-8 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
             <div className="mb-6">
               <h2 className="text-2xl md:text-4xl font-bold text-slate-900 mb-4">
@@ -348,7 +409,7 @@ export default function ThailandPage() {
             <div>
               {/* ✅ MOBILE SCROLLER */}
               <div className="flex md:hidden gap-4 overflow-x-auto pb-4 scrollbar-hide">
-                  {groupPackages.map((trip) => (
+                  {filteredGroupPackages.map((trip) => (
                     <div
                       key={trip.id}
                       className="w-[90%] flex-shrink-0"
@@ -375,10 +436,10 @@ export default function ThailandPage() {
                     {/* RIGHT */}
                     <button
                       onClick={() => {
-                        const maxIndex = Math.max(0, groupPackages.length - cardsPerView)
+                        const maxIndex = Math.max(0, filteredGroupPackages.length - cardsPerView)
                         setGroupCarouselIndex((prev) => Math.min(prev + 1, maxIndex))
                       }}
-                      disabled={groupCarouselIndex === Math.max(0, groupPackages.length - cardsPerView)}
+                      disabled={groupCarouselIndex === Math.max(0, filteredGroupPackages.length - cardsPerView)}
                       className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
                     >
                       <ChevronRight size={20} />
@@ -392,7 +453,7 @@ export default function ThailandPage() {
                           transform: `translateX(-${groupCarouselIndex * (100 / cardsPerView)}%)`,
                         }}
                       >
-                        {groupPackages.map((trip) => (
+                        {filteredGroupPackages.map((trip) => (
                           <div
                             key={trip.id}
                             className="flex-shrink-0 basis-1/3 p-2"
@@ -417,11 +478,11 @@ export default function ThailandPage() {
             <div className="w-20 h-1 bg-primary rounded-full" />
           </div>
 
-          {familyPackages.length > 0 ? (
+          {filteredFamilyPackages.length > 0 ? (
             <div>
               {/* ✅ MOBILE SCROLLER */}
               <div className="flex md:hidden gap-4 overflow-x-auto pb-4 scrollbar-hide">
-                  {familyPackages.map((trip) => (
+                  {filteredFamilyPackages.map((trip) => (
                     <div
                       key={trip.id}
                       className="w-[90%] flex-shrink-0"
@@ -449,10 +510,10 @@ export default function ThailandPage() {
                     {/* RIGHT */}
                     <button
                       onClick={() => {
-                        const maxIndex = Math.max(0, familyPackages.length - cardsPerView)
+                        const maxIndex = Math.max(0, filteredFamilyPackages.length - cardsPerView)
                         setFamilyCarouselIndex((prev) => Math.min(prev + 1, maxIndex))
                       }}
-                      disabled={familyCarouselIndex === Math.max(0, familyPackages.length - cardsPerView)}
+                      disabled={familyCarouselIndex === Math.max(0, filteredFamilyPackages.length - cardsPerView)}
                       className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
                     >
                       <ChevronRight size={20} />
@@ -466,7 +527,7 @@ export default function ThailandPage() {
                           transform: `translateX(-${familyCarouselIndex * (100 / cardsPerView)}%)`,
                         }}
                       >
-                        {familyPackages.map((trip) => (
+                        {filteredFamilyPackages.map((trip) => (
                           <div
                             key={trip.id}
                             className="flex-shrink-0 basis-1/3 p-2"
@@ -491,11 +552,11 @@ export default function ThailandPage() {
             <div className="w-20 h-1 bg-primary rounded-full" />
           </div>
 
-          {customizedPackages.length > 0 ? (
+          {filteredCustomizedPackages.length > 0 ? (
             <div>
               {/* ✅ MOBILE SCROLLER */}
               <div className="flex md:hidden gap-4 overflow-x-auto pb-4 scrollbar-hide">
-                  {customizedPackages.map((trip) => (
+                  {filteredCustomizedPackages.map((trip) => (
                     <div
                       key={trip.id}
                       className="w-[90%] flex-shrink-0"
@@ -522,10 +583,10 @@ export default function ThailandPage() {
                     {/* RIGHT */}
                     <button
                       onClick={() => {
-                        const maxIndex = Math.max(0, customizedPackages.length - cardsPerView)
+                        const maxIndex = Math.max(0, filteredCustomizedPackages.length - cardsPerView)
                         setCustomizedCarouselIndex((prev) => Math.min(prev + 1, maxIndex))
                       }}
-                      disabled={customizedCarouselIndex === Math.max(0, customizedPackages.length - cardsPerView)}
+                      disabled={customizedCarouselIndex === Math.max(0, filteredCustomizedPackages.length - cardsPerView)}
                       className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
                     >
                       <ChevronRight size={20} />
@@ -539,7 +600,7 @@ export default function ThailandPage() {
                           transform: `translateX(-${customizedCarouselIndex * (100 / cardsPerView)}%)`,
                         }}
                       >
-                        {customizedPackages.map((trip) => (
+                        {filteredCustomizedPackages.map((trip) => (
                           <div
                             key={trip.id}
                             className="flex-shrink-0 basis-1/3 p-2"

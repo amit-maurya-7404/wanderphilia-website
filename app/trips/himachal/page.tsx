@@ -12,6 +12,8 @@ import { TripHeroCarousel } from '@/components/trip-hero-carousel'
 import { RequestCallbackDialog } from '@/components/request-callback-dialog'
 import { trips, getLowestPriceForTrips } from '@/lib/data'
 import { getSectionMapping } from '@/lib/section-mappings'
+import { DurationFilter } from '@/components/duration-filter'
+import { NoPackagesCallbackForm } from '@/components/no-packages-callback-form'
 import { ChevronLeft, ChevronRight, Star, Phone, MessageCircle } from 'lucide-react'
 
 interface ReviewItem {
@@ -172,6 +174,42 @@ export default function HimachalPage() {
     return getTripsBySection('custom')
   }, [])
 
+  const [selectedDuration, setSelectedDuration] = useState<number | null>(null)
+
+  const allCategoryTrips = useMemo(() => {
+    const combined = [...categoryTrips, ...familyPackages, ...customizedPackages]
+    const seen = new Set<string>()
+    return combined.filter(trip => {
+      if (seen.has(trip.id)) return false
+      seen.add(trip.id)
+      return true
+    })
+  }, [categoryTrips, familyPackages, customizedPackages])
+
+  const filteredCategoryTrips = useMemo(() => {
+    if (!selectedDuration) return categoryTrips
+    return categoryTrips.filter(t => {
+      const tripNights = t.nights !== undefined ? t.nights : (t.duration ? t.duration - 1 : 0)
+      return tripNights === selectedDuration
+    })
+  }, [categoryTrips, selectedDuration])
+
+  const filteredFamilyPackages = useMemo(() => {
+    if (!selectedDuration) return familyPackages
+    return familyPackages.filter(t => {
+      const tripNights = t.nights !== undefined ? t.nights : (t.duration ? t.duration - 1 : 0)
+      return tripNights === selectedDuration
+    })
+  }, [familyPackages, selectedDuration])
+
+  const filteredCustomizedPackages = useMemo(() => {
+    if (!selectedDuration) return customizedPackages
+    return customizedPackages.filter(t => {
+      const tripNights = t.nights !== undefined ? t.nights : (t.duration ? t.duration - 1 : 0)
+      return tripNights === selectedDuration
+    })
+  }, [customizedPackages, selectedDuration])
+
   // Compute review statistics
   const reviewStats = useMemo(() => {
     if (reviews.length === 0) {
@@ -250,6 +288,12 @@ export default function HimachalPage() {
         </div>
 
         {/* Packages Section */}
+        <DurationFilter
+          trips={allCategoryTrips}
+          selectedDuration={selectedDuration}
+          onChange={setSelectedDuration}
+        />
+
         <section className="py-16 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
           <div className="mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
@@ -258,11 +302,11 @@ export default function HimachalPage() {
             <div className="w-20 h-1 bg-primary rounded-full" />
           </div>
 
-          {categoryTrips.length > 0 ? (
+          {filteredCategoryTrips.length > 0 ? (
             <div>
               {/* ✅ MOBILE SCROLLER */}
               <div className="flex md:hidden gap-4 overflow-x-auto pb-4 scrollbar-hide">
-                  {categoryTrips.map((trip) => (
+                  {filteredCategoryTrips.map((trip) => (
                     <div
                       key={trip.id}
                       className="w-[90%] flex-shrink-0"
@@ -289,10 +333,10 @@ export default function HimachalPage() {
                     {/* RIGHT */}
                     <button
                       onClick={() => {
-                        const maxIndex = Math.max(0, categoryTrips.length - cardsPerView)
+                        const maxIndex = Math.max(0, filteredCategoryTrips.length - cardsPerView)
                         setCarouselIndex1((prev) => Math.min(prev + 1, maxIndex))
                       }}
-                      disabled={carouselIndex1 === Math.max(0, categoryTrips.length - cardsPerView)}
+                      disabled={carouselIndex1 === Math.max(0, filteredCategoryTrips.length - cardsPerView)}
                       className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
                     >
                       <ChevronRight size={20} />
@@ -306,7 +350,7 @@ export default function HimachalPage() {
                           transform: `translateX(-${carouselIndex1 * (100 / cardsPerView)}%)`,
                         }}
                       >
-                        {categoryTrips.map((trip) => (
+                        {filteredCategoryTrips.map((trip) => (
                           <div
                             key={trip.id}
                             className="flex-shrink-0 basis-1/3 p-2"
@@ -320,10 +364,11 @@ export default function HimachalPage() {
                   </div></div>
             </div>
           ) : (
-            <div className="text-center py-16">
-              <p className="text-xl text-slate-600">
-                No packages found for this category.
-              </p>
+            <div className="py-12">
+              <NoPackagesCallbackForm
+                nights={selectedDuration}
+                destinationName={categoryName}
+              />
             </div>
           )}
         </section>
@@ -339,11 +384,11 @@ export default function HimachalPage() {
             <div className="w-20 h-1 bg-primary rounded-full" />
           </div>
 
-          {familyPackages.length > 0 ? (
+          {filteredFamilyPackages.length > 0 ? (
             <div>
               {/* ✅ MOBILE SCROLLER */}
               <div className="flex md:hidden gap-4 overflow-x-auto pb-4 scrollbar-hide">
-                  {familyPackages.map((trip) => (
+                  {filteredFamilyPackages.map((trip) => (
                     <div
                       key={trip.id}
                       className="w-[90%] flex-shrink-0"
@@ -370,10 +415,10 @@ export default function HimachalPage() {
                     {/* RIGHT */}
                     <button
                       onClick={() => {
-                        const maxIndex = Math.max(0, familyPackages.length - cardsPerView)
+                        const maxIndex = Math.max(0, filteredFamilyPackages.length - cardsPerView)
                         setFamilyCarouselIndex((prev) => Math.min(prev + 1, maxIndex))
                       }}
-                      disabled={familyCarouselIndex === Math.max(0, familyPackages.length - cardsPerView)}
+                      disabled={familyCarouselIndex === Math.max(0, filteredFamilyPackages.length - cardsPerView)}
                       className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
                     >
                       <ChevronRight size={20} />
@@ -387,7 +432,7 @@ export default function HimachalPage() {
                           transform: `translateX(-${familyCarouselIndex * (100 / cardsPerView)}%)`,
                         }}
                       >
-                        {familyPackages.map((trip) => (
+                        {filteredFamilyPackages.map((trip) => (
                           <div
                             key={trip.id}
                             className="flex-shrink-0 basis-1/3 p-2"
@@ -412,11 +457,11 @@ export default function HimachalPage() {
             <div className="w-20 h-1 bg-primary rounded-full" />
           </div>
 
-          {customizedPackages.length > 0 ? (
+          {filteredCustomizedPackages.length > 0 ? (
             <div>
               {/* ✅ MOBILE SCROLLER */}
               <div className="flex md:hidden gap-4 overflow-x-auto pb-4 scrollbar-hide">
-                  {customizedPackages.map((trip) => (
+                  {filteredCustomizedPackages.map((trip) => (
                     <div
                       key={trip.id}
                       className="w-[90%] flex-shrink-0"
@@ -443,10 +488,10 @@ export default function HimachalPage() {
                     {/* RIGHT */}
                     <button
                       onClick={() => {
-                        const maxIndex = Math.max(0, customizedPackages.length - cardsPerView)
+                        const maxIndex = Math.max(0, filteredCustomizedPackages.length - cardsPerView)
                         setCustomizedCarouselIndex((prev) => Math.min(prev + 1, maxIndex))
                       }}
-                      disabled={customizedCarouselIndex === Math.max(0, customizedPackages.length - cardsPerView)}
+                      disabled={customizedCarouselIndex === Math.max(0, filteredCustomizedPackages.length - cardsPerView)}
                       className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
                     >
                       <ChevronRight size={20} />
@@ -460,7 +505,7 @@ export default function HimachalPage() {
                           transform: `translateX(-${customizedCarouselIndex * (100 / cardsPerView)}%)`,
                         }}
                       >
-                        {customizedPackages.map((trip) => (
+                        {filteredCustomizedPackages.map((trip) => (
                           <div
                             key={trip.id}
                             className="flex-shrink-0 basis-1/3 p-2"
