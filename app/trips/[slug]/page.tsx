@@ -15,7 +15,7 @@ import { TripHeroCarousel } from '@/components/trip-hero-carousel'
 import { RequestCallbackDialog } from '@/components/request-callback-dialog'
 import { trips } from '@/lib/data'
 import { destinationItineraryImages } from '@/lib/section-mappings'
-import { MapPin, Calendar, Users, Star, Phone, MessageCircle, ChevronDown, Download, X, ChevronLeft, ChevronRight, Car, Hotel, Camera, Utensils, Plane, Building2, FileText, User } from 'lucide-react'
+import { MapPin, Calendar, Users, Star, Phone, MessageCircle, ChevronDown, Download, X, ChevronLeft, ChevronRight, Car, Hotel, Camera, Utensils, Plane, Building2, FileText, User, Share2 } from 'lucide-react'
 import { contactEmail, contactPhone, contactPhoneDisplay, instagramUrl } from '@/lib/contact'
 import { TripGallerySection } from '@/components/trip-gallery-section'
 import Image from 'next/image'
@@ -599,7 +599,7 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
   }
 
   const slug = (resolvedParams?.slug || clientParams?.slug) as string | undefined
-  console.log("=== CATCH-ALL TRIP PAGE RENDERING ===", { slug, params, clientParams })
+  console.log("=== CATCH-ALL TRIP PAGE RENDERING ===", { slug, resolvedParams, clientParams })
   const total = selections.reduce((sum, item) => sum + item.price, 0)
   const trip = useMemo(() => slug ? trips.find(t => t.slug === slug) : undefined, [slug])
 
@@ -662,6 +662,87 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
       console.error(err)
     } finally {
       setInquirySubmitting(false)
+    }
+  }
+
+  const [notification, setNotification] = useState<string | null>(null)
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false)
+
+  const showNotification = (message: string) => {
+    setNotification(message)
+    setTimeout(() => setNotification(null), 3000)
+  }
+
+  const handleShare = async () => {
+    const shareText = `Check out ${trip?.title} on Wanderphilia.`
+    const shareUrl = typeof window !== 'undefined' ? window.location.href : ''
+
+    if (typeof navigator !== 'undefined' && 'share' in navigator) {
+      try {
+        await navigator.share({
+          title: trip?.title,
+          text: shareText,
+          url: shareUrl,
+        })
+        return
+      } catch (error) {
+        console.log('Share cancelled or failed:', error)
+      }
+    }
+
+    if (typeof navigator !== 'undefined' && 'clipboard' in navigator) {
+      try {
+        await navigator.clipboard.writeText(shareUrl)
+        showNotification('Link copied to clipboard!')
+      } catch (error) {
+        console.error('Failed to copy to clipboard:', error)
+        if (typeof window !== 'undefined') {
+          window.prompt('Copy this link:', shareUrl)
+        }
+      }
+    } else {
+      if (typeof window !== 'undefined') {
+        window.prompt('Copy this link:', shareUrl)
+      }
+    }
+  }
+
+  const loadScript = (src: string): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      if (typeof window === 'undefined') return resolve()
+      if (document.querySelector(`script[src="${src}"]`)) {
+        return resolve()
+      }
+      const script = document.createElement('script')
+      script.src = src
+      script.async = true
+      script.onload = () => resolve()
+      script.onerror = (err) => reject(err)
+      document.body.appendChild(script)
+    })
+  }
+
+  const handleDownloadPDF = async () => {
+    if (isGeneratingPdf) return
+    setIsGeneratingPdf(true)
+    try {
+      // 1. Dynamically load jsPDF from CDN
+      await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js')
+      const globalWindow = window as any
+      if (!globalWindow.jspdf || !globalWindow.jspdf.jsPDF) {
+        throw new Error('jsPDF UMD global not found')
+      }
+      const jsPDFClass = globalWindow.jspdf.jsPDF
+
+      // 2. Import the PDF generator and run it
+      const { generateItineraryPDF } = await import('@/lib/pdf-generator')
+      await generateItineraryPDF(trip, jsPDFClass)
+      showNotification('Itinerary PDF downloaded successfully!')
+    } catch (error) {
+      console.error('Error generating PDF:', error)
+      showNotification('Failed to generate PDF. Please try again.')
+    } finally {
+      setIsGeneratingPdf(false)
     }
   }
 
@@ -1070,10 +1151,10 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
 
               {/* STICKY TAB NAVBAR */}
               <div className="sticky top-20 z-40 bg-white border-b shadow-sm">
-                <div className="flex w-fit overflow-hidden">
+                <div className="flex items-center justify-between w-full">
                   <div
                     ref={tabContainerRef}
-                    className="flex w-fit overflow-x-auto gap-2 sm:gap-4 py-0 mr-auto scrollbar-hide"
+                    className="flex overflow-x-auto gap-2 sm:gap-4 py-0 scrollbar-hide"
                   >
                     {[
                       { id: 'itinerary', label: 'Itinerary' },
@@ -1093,6 +1174,34 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
                         {tab.label}
                       </button>
                     ))}
+                  </div>
+                  <div className="flex items-center gap-1 sm:gap-2 pr-2 sm:pr-4 shrink-0">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-slate-600 hover:text-slate-950 font-semibold flex items-center gap-1.5 cursor-pointer text-xs sm:text-sm px-2 sm:px-3"
+                      onClick={handleShare}
+                    >
+                      <Share2 size={16} />
+                      <span className="hidden md:inline">Share</span>
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      disabled={isGeneratingPdf}
+                      className="text-slate-600 hover:text-slate-950 font-semibold flex items-center gap-1.5 cursor-pointer text-xs sm:text-sm px-2 sm:px-3 disabled:opacity-50"
+                      onClick={handleDownloadPDF}
+                    >
+                      {isGeneratingPdf ? (
+                        <svg className="w-4 h-4 text-slate-600 animate-spin" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                        </svg>
+                      ) : (
+                        <Download size={16} />
+                      )}
+                      <span className="hidden md:inline">{isGeneratingPdf ? 'Downloading...' : 'Download'}</span>
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -1710,10 +1819,19 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
                 {/* DOWNLOAD ITINERARY */}
                 <Button
                   variant="outline"
-                  className="w-full font-bold text-xs justify-center"
-                  onClick={() => alert('Download feature coming soon!')}
+                  className="w-full font-bold text-xs justify-center cursor-pointer"
+                  disabled={isGeneratingPdf}
+                  onClick={handleDownloadPDF}
                 >
-                  <Download size={14} /> Download Itinerary
+                  {isGeneratingPdf ? (
+                    <svg className="w-4 h-4 mr-2 animate-spin text-slate-500" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                  ) : (
+                    <Download size={14} className="mr-2" />
+                  )}
+                  {isGeneratingPdf ? 'Generating PDF...' : 'Download Itinerary'}
                 </Button>
               </div>
             </div>
@@ -1816,6 +1934,14 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
           <div className="absolute bottom-5 text-white/70 text-sm font-semibold z-50">
             {lightboxIndex + 1} / {collageImages.length}
             r          </div>
+        </div>
+      )}
+
+      {/* Notification Toast */}
+      {notification && (
+        <div className="fixed bottom-6 right-6 bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-xl z-50 animate-in slide-in-from-bottom-5 font-semibold text-xs flex items-center gap-2 border border-slate-800">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          {notification}
         </div>
       )}
     </div>
