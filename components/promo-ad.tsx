@@ -14,7 +14,7 @@ export function PromoAdCard() {
     const timer = setTimeout(() => {
       setIsOpen(true)
       sessionStorage.setItem('callback_popup_shown', 'true')
-    }, 10000) // 10 seconds
+    }, 8000) // 8 seconds
 
     return () => clearTimeout(timer)
   }, [])

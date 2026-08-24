@@ -1,11 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, DialogOverlay, DialogTitle } from '@/components/ui/dialog'
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { contactEmail, contactPhoneDisplayInternational } from '@/lib/contact'
-import { MessageCircle, Phone } from 'lucide-react'
+import { User, Phone, Mail, X, Check, Compass, Sparkles, ShieldCheck } from 'lucide-react'
 
 interface RequestCallbackDialogProps {
   open: boolean
@@ -27,7 +26,12 @@ export function RequestCallbackDialog({ open, onOpenChange, title, price, isQuot
     event.preventDefault()
 
     if (!name.trim() || !phone.trim() || !email.trim()) {
-      setError('Please enter your name, phone number, and email.')
+      setError('Please fill in all details.')
+      return
+    }
+
+    if (phone.replace(/\D/g, '').length < 10) {
+      setError('Please enter a valid 10-digit phone number.')
       return
     }
 
@@ -54,15 +58,18 @@ export function RequestCallbackDialog({ open, onOpenChange, title, price, isQuot
       }
 
       setSuccess(true)
-      setName('')
-      setPhone('')
-      setEmail('')
 
-      // Close dialog after 2 seconds
+      // Auto-close dialog after 3 seconds
       setTimeout(() => {
         onOpenChange(false)
-        setSuccess(false)
-      }, 2000)
+        // Reset state after transition finishes
+        setTimeout(() => {
+          setSuccess(false)
+          setName('')
+          setPhone('')
+          setEmail('')
+        }, 300)
+      }, 3000)
     } catch (err) {
       setError('Failed to send your request. Please try again.')
       console.error(err)
@@ -71,148 +78,214 @@ export function RequestCallbackDialog({ open, onOpenChange, title, price, isQuot
     }
   }
 
-  if (success) {
-    return (
-      <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent showCloseButton={false} className="max-w-xl rounded-4xl p-0 overflow-hidden">
-          <DialogTitle className="sr-only">
-            {isQuote ? 'Quote Requested' : 'Request Callback'}
-          </DialogTitle>
-
-          <DialogDescription className="sr-only">
-            {isQuote
-              ? 'Thank you for requesting a quote.'
-              : 'Fill this form to request a callback from our team.'}
-          </DialogDescription>
-
-          <div className="bg-white px-6 py-12 sm:px-8 sm:py-10 text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-100 mb-4">
-              <svg className="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-            </div>
-            <h3 className="text-2xl font-bold text-slate-900 mb-2">Thank You!</h3>
-            <p className="text-slate-600 mb-4">
-              {isQuote
-                ? 'Your quote request has been sent successfully.'
-                : 'Your callback request has been sent successfully.'}
-            </p>
-            <p className="text-sm text-slate-500">Our team will contact you soon at {phone} or {email}</p>
-          </div>
-        </DialogContent>
-      </Dialog>
-    )
-  }
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogOverlay onClick={(e) => e.preventDefault()} />
+      {open && (
+        <style>{`
+          nav,
+          header {
+            display: none !important;
+          }
+        `}</style>
+      )}
       <DialogContent
-        onClick={(e) => e.stopPropagation()}
-        onPointerDownOutside={(e) => e.preventDefault()}
-        onEscapeKeyDown={(e) => e.preventDefault()}
-        className="max-w-xl rounded-4xl p-0 mt-[5vh] overflow-hidden"
+        showCloseButton={false}
+        className="md:max-w-3xl lg:max-w-4xl p-0 overflow-hidden border-0 shadow-2xl bg-white rounded-3xl"
       >
         <DialogTitle className="sr-only">
           {isQuote ? 'Request a Free Quote' : 'Request Callback'}
         </DialogTitle>
+        <DialogDescription className="sr-only">
+          Fill in this form to speak to a travel expert.
+        </DialogDescription>
 
-        <div className="bg-white px-6 py-6 sm:px-8 sm:py-6 relative">
-          {/* Close Button */}
-          <div className="absolute top-4 right-4">
-            <DialogClose className="inline-flex items-center justify-center w-12 h-12 rounded-full hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition">
-              {/* <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg> */}
+        {/* 2-Column Split Layout */}
+        <div className="grid grid-cols-1 md:grid-cols-[1.1fr_1.4fr] w-full min-h-[480px]">
+
+          {/* LEFT PANEL - Premium Brand Banner Image (Hidden on Mobile) */}
+          <div className="hidden md:flex relative flex-col justify-between p-8 text-white overflow-hidden bg-slate-900">
+            {/* Background Image with Overlay */}
+            <div
+              className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-60 scale-105 hover:scale-100 transition-transform duration-10000"
+              style={{ backgroundImage: "url('/images/about_hero4.jpg')" }}
+            />
+            {/* Gradient Overlay for Text Contrast */}
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-900/60 to-slate-900/40" />
+
+            {/* Content Overlays */}
+            <div className="relative z-10" />
+
+            <div className="relative z-10 space-y-4 mb-2">
+              <h3 className="text-2xl font-black leading-tight tracking-tight">
+                Your Dream Escape is Just a Callback Away! ✈️
+              </h3>
+
+              <div className="space-y-3 pt-2">
+                {[
+                  { text: 'Customized bespoke itineraries tailored to you', icon: <Sparkles size={13} className="text-orange-400" /> },
+                  { text: '24/7 dedicated support from trip curators', icon: <ShieldCheck size={13} className="text-orange-400" /> },
+                  { text: 'Exclusive access to direct local rates & deals', icon: <Compass size={13} className="text-orange-400" /> }
+                ].map((item, i) => (
+                  <div key={i} className="flex gap-2.5 items-start text-xs font-semibold text-slate-200/90 leading-relaxed">
+                    <span className="p-1 bg-white/10 rounded-md shrink-0 mt-0.5">{item.icon}</span>
+                    <span>{item.text}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Small Footer Text */}
+            <div className="relative z-10 text-[9px] text-slate-400 font-bold uppercase tracking-widest">
+              Trusted by 10k+ Travelers worldwide
+            </div>
+          </div>
+
+          {/* RIGHT PANEL - Interactive Form / Success Panel */}
+          <div className="relative flex flex-col justify-center bg-white min-h-[420px] overflow-hidden rounded-3xl md:rounded-l-none">
+
+            {/* Close Button */}
+            <DialogClose className="absolute top-4 right-4 z-20 p-2 rounded-full bg-slate-50 hover:bg-slate-100 text-slate-500 hover:text-slate-900 transition duration-200 cursor-pointer">
+              <X size={16} />
               <span className="sr-only">Close</span>
             </DialogClose>
+
+            {/* Form & Content Padding Wrapper */}
+            <div className="p-7 sm:p-9 md:p-10 grow flex flex-col justify-center">
+              {success ? (
+                /* SUCCESS STATE SCREEN */
+                <div className="text-center py-6 animate-in fade-in zoom-in-95 duration-300 space-y-4">
+                  <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-500 mb-2 shadow-sm animate-bounce">
+                    <Check size={26} strokeWidth={3} />
+                  </div>
+                  <h4 className="text-2xl font-black text-slate-900 tracking-tight">Request Received!</h4>
+                  <p className="text-slate-600 text-sm max-w-sm mx-auto leading-relaxed">
+                    Hi <span className="font-bold text-slate-900 capitalize">{name || 'there'}</span>, your request has been successfully registered.
+                  </p>
+                  <div className="p-3 bg-orange-50/50 border border-orange-100/50 rounded-2xl max-w-xs mx-auto text-xs text-orange-800 font-semibold leading-relaxed">
+                    📞 An expert travel designer will call you back within 30 minutes!
+                  </div>
+                  <p className="text-[10px] text-slate-400 font-semibold tracking-wider uppercase pt-2">
+                    Window will close automatically
+                  </p>
+                </div>
+              ) : (
+                /* FORM INTERFACE */
+                <div className="animate-in fade-in duration-300">
+                  <div className="mb-6">
+                    <div className="flex justify-center mb-5">
+                      <img
+                        src="/images/Made_LOGO.png"
+                        alt="Wanderphilia Logo"
+                        className="h-20 w-auto object-contain"
+                      />
+                    </div>
+                    <h4 className="text-2xl font-black text-slate-900 tracking-tight leading-none mb-2">
+                      {isQuote ? 'Get a Free Quote' : "Don't Just Dream, Travel! 🔥"}
+                    </h4>
+                    <p className="text-xs text-slate-500 font-medium leading-relaxed">
+                      {isQuote
+                        ? 'Share your requirements and our designers will customize a bespoke itinerary for you.'
+                        : 'Leave your mobile number and email. Our experts will call you to plan your holiday.'}
+                    </p>
+                  </div>
+
+                  <form onSubmit={handleSubmit} className="space-y-4.5">
+                    {/* Name Input */}
+                    <div className="space-y-1.5">
+                      <label htmlFor="callback-name" className="text-[10px] uppercase font-black text-slate-400 tracking-wider">
+                        Full Name
+                      </label>
+                      <div className="relative group">
+                        <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-orange-500 transition-colors">
+                          <User size={15} />
+                        </span>
+                        <Input
+                          id="callback-name"
+                          type="text"
+                          required
+                          disabled={loading}
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          placeholder="Enter your name"
+                          className="pl-10.5 py-5 w-full rounded-xl border border-slate-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-xs font-semibold placeholder:text-slate-400/80 transition"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Phone Input */}
+                    <div className="space-y-1.5">
+                      <label htmlFor="callback-phone" className="text-[10px] uppercase font-black text-slate-400 tracking-wider">
+                        Phone Number
+                      </label>
+                      <div className="relative group">
+                        <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-orange-500 transition-colors">
+                          <Phone size={15} />
+                        </span>
+                        <Input
+                          id="callback-phone"
+                          type="tel"
+                          required
+                          disabled={loading}
+                          value={phone}
+                          onChange={(e) => setPhone(e.target.value.replace(/[^\d+-\s]/g, ''))}
+                          placeholder="Enter your phone number"
+                          className="pl-10.5 py-5 w-full rounded-xl border border-slate-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-xs font-semibold placeholder:text-slate-400/80 transition"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Email Input */}
+                    <div className="space-y-1.5">
+                      <label htmlFor="callback-email" className="text-[10px] uppercase font-black text-slate-400 tracking-wider">
+                        Email Address
+                      </label>
+                      <div className="relative group">
+                        <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-orange-500 transition-colors">
+                          <Mail size={15} />
+                        </span>
+                        <Input
+                          id="callback-email"
+                          type="email"
+                          required
+                          disabled={loading}
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          placeholder="Enter your email address"
+                          className="pl-10.5 py-5 w-full rounded-xl border border-slate-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-xs font-semibold placeholder:text-slate-400/80 transition"
+                        />
+                      </div>
+                    </div>
+
+                    {error && (
+                      <div className="text-xs font-semibold text-red-500 bg-red-50 border border-red-100 rounded-xl px-3 py-2 animate-in slide-in-from-top-1">
+                        ⚠️ {error}
+                      </div>
+                    )}
+
+                    {/* Submit Button */}
+                    <Button
+                      type="submit"
+                      disabled={loading}
+                      className="w-full bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-500 hover:to-orange-600 text-white font-extrabold text-sm py-5 rounded-xl shadow-lg shadow-orange-500/10 transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {loading ? (
+                        <span className="flex items-center justify-center gap-2">
+                          <svg className="w-4 h-4 text-white animate-spin" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                          </svg>
+                          Sending Request...
+                        </span>
+                      ) : (
+                        isQuote ? 'Get My Free Quote ↗' : 'Connect with Travel Expert ↗'
+                      )}
+                    </Button>
+                  </form>
+                </div>
+              )}
+            </div>
           </div>
 
-          <div className='relative p-0 mb-0 text-center'>
-            <div className='text-2xl font-bold text-slate-900 mb-2'>
-              {isQuote ? 'Get a Free Quote' : "Don't Just Dream, Travel 🔥"}
-            </div>
-            <p className="text-slate-600 mb-4">
-              {isQuote
-                ? 'Please share your details to customize your dream escape!'
-                : 'Allow us to call you back!'}
-            </p>
-          </div>
-
-          <div className="mt-[2vh]">
-            <form onSubmit={handleSubmit} className=" space-y-4">
-              <div>
-                <label htmlFor="callback-name" className="text-sm font-semibold text-slate-700">
-                  Full Name
-                </label>
-                <Input
-                  id="callback-name"
-                  name="name"
-                  value={name}
-                  onChange={(event) => setName(event.target.value)}
-                  placeholder="Enter your name"
-                  required
-                  disabled={loading}
-                  className="mt-2"
-                />
-              </div>
-              <div>
-                <label htmlFor="callback-phone" className="text-sm font-semibold text-slate-700">
-                  Phone Number
-                </label>
-                <Input
-                  id="callback-phone"
-                  name="phone"
-                  type="tel"
-                  value={phone}
-                  onChange={(event) => setPhone(event.target.value)}
-                  placeholder="9217664099"
-                  required
-                  disabled={loading}
-                  className="mt-2"
-                />
-              </div>
-              <div>
-                <label htmlFor="callback-email" className="text-sm font-semibold text-slate-700">
-                  Email
-                </label>
-                <Input
-                  id="callback-email"
-                  name="email"
-                  type="email"
-                  value={email}
-                  onChange={(event) => setEmail(event.target.value)}
-                  placeholder="Enter your email"
-                  required
-                  disabled={loading}
-                  className="mt-2"
-                />
-              </div>
-              {error && <p className="text-sm text-red-600">{error}</p>}
-              <Button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-primary px-5 py-4 text-base font-semibold text-white disabled:opacity-50"
-              >
-                {loading ? 'Sending...' : (isQuote ? 'Get Quote' : 'Connect with an Expert')}
-              </Button>
-            </form>
-          </div>
-
-
-
-
-
-          {/* <div className="mt-6 rounded-3xl bg-slate-950/5 border border-slate-200 p-4 text-sm text-slate-600">
-            <div className="flex items-center gap-2 mb-2">
-              <Phone size={16} />
-              <span>Call us on {contactPhoneDisplayInternational}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <MessageCircle size={16} />
-              <span>Email: {contactEmail}</span>
-            </div>
-          </div> */}
         </div>
       </DialogContent>
     </Dialog>
