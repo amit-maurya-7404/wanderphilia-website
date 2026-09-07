@@ -110,6 +110,31 @@ export default function PaymentPage() {
     setIsProcessing(true)
 
     try {
+      // 0. Register lead in Zoho CRM & send dual emails (admin + customer)
+      try {
+        const totalGuests = quantities.length > 0 ? quantities.reduce((sum, q) => sum + q, 0) : 1
+        await fetch('/api/checkout/initiate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            fullName: `${firstName} ${lastName}`.trim(),
+            mobileNumber: phoneState.trim(),
+            email: email.trim(),
+            tripSlug: trip.slug,
+            tripTitle: trip.title,
+            destination: trip.destination,
+            numberOfGuests: totalGuests,
+            startDate,
+            endDate,
+            subtotal,
+            gst,
+            totalAmount: total,
+          }),
+        })
+      } catch (initiateErr) {
+        console.error('[Payment Page Initiate Error]:', initiateErr)
+      }
+
       // 1. Create order on the server side
       const orderRes = await fetch('/api/razorpay/order', {
         method: 'POST',

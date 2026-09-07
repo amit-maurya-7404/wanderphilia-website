@@ -123,13 +123,26 @@ export function TripTypesSection() {
   const maxIntl = Math.max(0, internationalRegions.length - cardsPerView)
 
   return (
-    <section className="py-20  ">
+    <section className="py-20 relative overflow-hidden">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* ================= INDIA ================= */}
-        <div id="india-trips" className="mb-20 text-center scroll-mt-20">
+        <div id="india-trips" className="mb-20 text-center scroll-mt-20 relative">
 
-          <h2 className="text-4xl md:text-5xl font-bold mb-10">India Trips</h2>
+          {/* Full Screen Skyline Background */}
+          <div className="absolute -top-4 md:-top-15 w-screen left-1/2 -translate-x-1/2 z-0 pointer-events-none opacity-16 h-24 md:h-full">
+            <Image
+              src="/images/chicago-skyline.png"
+              alt="Chicago Skyline Background"
+              fill
+              className="object-cover"
+              priority
+            />
+          </div>
+
+          <h2 className="relative z-10 text-4xl md:text-5xl font-bold mb-10">
+            India <span className="text-[#ff6309]">Trips</span>
+          </h2>
 
           <div className="relative">
 
@@ -179,9 +192,22 @@ export function TripTypesSection() {
         </div>
 
         {/* ================= INTERNATIONAL ================= */}
-        <div id="international-trips" className="text-center scroll-mt-20">
+        <div id="international-trips" className="text-center scroll-mt-20 relative">
 
-          <h2 className="text-4xl md:text-5xl font-bold mb-10">International Trips</h2>
+          {/* Full Screen Skyline Background */}
+          <div className="absolute -top-4 md:-top-15 w-screen left-1/2 -translate-x-1/2 z-0 pointer-events-none opacity-16 h-24 md:h-full">
+            <Image
+              src="/images/chicago-skyline.png"
+              alt="Chicago Skyline Background"
+              fill
+              className="object-cover"
+              priority
+            />
+          </div>
+
+          <h2 className="relative z-10 text-4xl md:text-5xl font-bold mb-10">
+            International <span className="text-[#ff6309]">Trips</span>
+          </h2>
 
           <div className="relative">
 

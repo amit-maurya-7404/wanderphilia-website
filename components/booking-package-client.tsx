@@ -168,7 +168,7 @@ export default function BookingPackageClient({ trip, slug }: BookingPackageClien
         }
       }
 
-      // 0. Create lead in Zoho CRM
+      // 0. Create lead in Zoho CRM & trigger email notifications (experiences@wanderphilia.com + customer)
       try {
         await fetch('/api/checkout/initiate', {
           method: 'POST',
@@ -178,15 +178,20 @@ export default function BookingPackageClient({ trip, slug }: BookingPackageClien
             mobileNumber: mobileNumber,
             email: emailAddress,
             tripSlug: slug,
+            tripTitle: trip.title,
+            destination: trip.destination,
             numberOfGuests: totalGuests,
             pricingOptions: selectedPricingOptions || 'No sharing options selected',
             sharingType: sharingType,
             startDate: selectedDateValue.startDate,
-            endDate: selectedDateValue.endDate
+            endDate: selectedDateValue.endDate,
+            subtotal: subtotal,
+            gst: gst,
+            totalAmount: total
           })
         })
-      } catch (zohoError) {
-        console.error('[Zoho CRM Lead Creation Error]:', zohoError)
+      } catch (initiateError) {
+        console.error('[Checkout Initiate Lead/Email Error]:', initiateError)
       }
 
       // 1. Create order on the server side

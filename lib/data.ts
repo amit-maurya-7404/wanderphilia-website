@@ -20,6 +20,15 @@ export function createHeroMedia(items: Array<{
   }))
 }
 
+export interface TripInclusionCounts {
+  hotels?: number | string
+  transfers?: number | string
+  experiences?: number | string
+  meals?: number | string
+  visa?: boolean | string
+  tripGuide?: boolean | string
+}
+
 export interface Trip {
   id: string
   title: string
@@ -49,6 +58,9 @@ export interface Trip {
   importantInformation?: string[]
   paymentTerms?: string[]
   nights?: number
+  route?: string
+  staySummary?: string
+  customRoute?: string
   overviewPoints?: string[]
   stays?: string[]
   note?: string | string[]
@@ -74,6 +86,180 @@ export interface Trip {
   }[]
   showGetQuoteOnly?: boolean
   images?: string[]
+  inclusionsSummary?: TripInclusionCounts
+  inclusionsCount?: TripInclusionCounts
+  hotelsCount?: number | string
+  transfersCount?: number | string
+  experiencesCount?: number | string
+  mealsCount?: number | string
+}
+
+export function getTripInclusionDetails(trip: Partial<Trip>): {
+  hotels: string
+  transfers: string
+  experiences: string
+  meals: string
+  visa?: string | null
+  tripGuide: string
+} {
+  const custom = trip.inclusionsSummary || trip.inclusionsCount || {}
+  const duration = trip.duration || 1
+  const itinerary = trip.itinerary || []
+
+  // 1. HOTELS
+  let hotelsStr = ''
+  if (custom.hotels !== undefined && custom.hotels !== null) {
+    if (typeof custom.hotels === 'number') {
+      hotelsStr = `${custom.hotels} ${custom.hotels === 1 ? 'Hotel' : 'Hotels'}`
+    } else {
+      const s = String(custom.hotels).trim()
+      hotelsStr = /hotel/i.test(s) ? s : `${s} Hotels`
+    }
+  } else if (trip.hotelsCount !== undefined) {
+    hotelsStr = typeof trip.hotelsCount === 'number' ? `${trip.hotelsCount} ${trip.hotelsCount === 1 ? 'Hotel' : 'Hotels'}` : String(trip.hotelsCount)
+  } else {
+    let stayCount = 0
+    if (trip.stays && trip.stays.length > 0) {
+      stayCount = trip.stays.length
+    } else if (itinerary.length > 0) {
+      const locations = new Set<string>()
+      itinerary.forEach((day) => {
+        const descLines = Array.isArray(day.description) ? day.description : [day.description || '']
+        for (const line of descLines) {
+          const match = line.match(/(?:overnight stay (?:in|at|near)?|check-in (?:to your hotel in|to|at)?)\s+([^.,]+)/i)
+          if (match && match[1]) {
+            const loc = match[1].trim().toLowerCase()
+            if (loc && !['hotel', 'camp', 'resort', 'the', 'your'].includes(loc)) {
+              locations.add(loc)
+            }
+          }
+        }
+      })
+      stayCount = locations.size
+    }
+    if (stayCount <= 0) {
+      stayCount = Math.max(1, Math.min(duration - 1, Math.max(2, Math.round(duration / 2.2))))
+    }
+    hotelsStr = `${stayCount} ${stayCount === 1 ? 'Hotel' : 'Hotels'}`
+  }
+
+  // 2. TRANSFERS
+  let transfersStr = ''
+  if (custom.transfers !== undefined && custom.transfers !== null) {
+    if (typeof custom.transfers === 'number') {
+      transfersStr = `${custom.transfers} Transfers`
+    } else {
+      const s = String(custom.transfers).trim()
+      transfersStr = /transfer/i.test(s) ? s : `${s} Transfers`
+    }
+  } else if (trip.transfersCount !== undefined) {
+    transfersStr = typeof trip.transfersCount === 'number' ? `${trip.transfersCount} Transfers` : String(trip.transfersCount)
+  } else {
+    let transferCount = 0
+    if (itinerary.length > 0) {
+      itinerary.forEach((day) => {
+        const lines = Array.isArray(day.description) ? day.description : [day.description || '']
+        lines.forEach((l) => {
+          const lower = l.toLowerCase()
+          if (
+            lower.includes('transfer') ||
+            lower.includes('pick up') ||
+            lower.includes('pickup') ||
+            lower.includes('drop') ||
+            lower.includes('airport') ||
+            lower.includes('drive to') ||
+            lower.includes('travel to') ||
+            lower.includes('proceed to') ||
+            lower.includes('flight') ||
+            lower.includes('ferry') ||
+            lower.includes('speed boat') ||
+            lower.includes('cruise') ||
+            lower.includes('cab')
+          ) {
+            transferCount++
+          }
+        })
+      })
+    }
+    if (transferCount < 4) {
+      transferCount = Math.max(4, Math.round(duration * 1.55))
+    }
+    transfersStr = `${transferCount} Transfers`
+  }
+
+  // 3. EXPERIENCES
+  let experiencesStr = ''
+  if (custom.experiences !== undefined && custom.experiences !== null) {
+    if (typeof custom.experiences === 'number') {
+      experiencesStr = `${custom.experiences} Experiences`
+    } else {
+      const s = String(custom.experiences).trim()
+      experiencesStr = /experience/i.test(s) ? s : `${s} Experiences`
+    }
+  } else if (trip.experiencesCount !== undefined) {
+    experiencesStr = typeof trip.experiencesCount === 'number' ? `${trip.experiencesCount} Experiences` : String(trip.experiencesCount)
+  } else {
+    let expCount = 0
+    if (trip.highlights && trip.highlights.length > 0) {
+      expCount = trip.highlights.length
+    }
+    if (expCount < 3 && itinerary.length > 0) {
+      expCount = Math.max(4, Math.round(duration * 1.1))
+    }
+    if (expCount <= 0) {
+      expCount = Math.max(4, duration)
+    }
+    experiencesStr = `${expCount} Experiences`
+  }
+
+  // 4. MEALS
+  let mealsStr = ''
+  if (custom.meals !== undefined && custom.meals !== null) {
+    if (typeof custom.meals === 'number') {
+      mealsStr = `${custom.meals} Meals`
+    } else {
+      const s = String(custom.meals).trim()
+      mealsStr = /meal/i.test(s) ? s : `${s} Meals`
+    }
+  } else if (trip.mealsCount !== undefined) {
+    mealsStr = typeof trip.mealsCount === 'number' ? `${trip.mealsCount} Meals` : String(trip.mealsCount)
+  } else {
+    const mealCount = Math.max(1, duration - 1)
+    mealsStr = `${mealCount} Meals`
+  }
+
+  // 5. VISA
+  let visaStr: string | null = null
+  if (custom.visa !== undefined && custom.visa !== null) {
+    if (typeof custom.visa === 'boolean') {
+      visaStr = custom.visa ? 'Visa' : null
+    } else {
+      visaStr = String(custom.visa).trim() || null
+    }
+  } else if (trip.tripType === 'International') {
+    visaStr = 'Visa'
+  } else {
+    visaStr = null
+  }
+
+  // 6. TRIP GUIDE
+  let guideStr = 'Trip Guide'
+  if (custom.tripGuide !== undefined && custom.tripGuide !== null) {
+    if (typeof custom.tripGuide === 'boolean') {
+      guideStr = custom.tripGuide ? 'Trip Guide' : ''
+    } else {
+      guideStr = String(custom.tripGuide).trim() || 'Trip Guide'
+    }
+  }
+
+  return {
+    hotels: hotelsStr,
+    transfers: transfersStr,
+    experiences: experiencesStr,
+    meals: mealsStr,
+    visa: visaStr,
+    tripGuide: guideStr,
+  }
 }
 
 export function getLowestPriceForTrip(trip: Trip): number {
@@ -9335,6 +9521,311 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     ]
   },
   {
+    id: '61',
+    title: 'Exclusive Vietnam Group Trip 7 Nights / 8 Days',
+    slug: 'exclusive-vietnam-group-trip-7n-8d',
+    image: '/images/vietnam.png',
+    images: [
+      '/images/vietnam.png',
+      '/images/vietnam-sapa.png',
+      '/images/vietnam2.jpg',
+      '/images/vietnam3.jpg',
+      '/images/vietnam4.jpg'
+    ],
+    destination: 'Vietnam',
+    category: 'Vietnam',
+    description: 'Embark on an unforgettable 8-day journey across Vietnam from Hanoi and Sapa in the northern mountains to the coastal beauty of Da Nang and Hoi An, and the bustling energy of Ho Chi Minh City. Experience Hanoi Old Quarters with a cyclo tour and Train Street, marvel at the Trang An boat ride and Mua Cave in Ninh Binh, ride the SP3 luxury overnight train to Sapa, and experience the thrilling Rong May Glass Bridge, Rainbow Slide, Alpine Coaster, and Fansipan Peak cable car. Discover Hoi An ancient town, take a coconut basket ride, explore Ba Na Hills with the iconic Golden Hands Bridge, crawl through the historic Cu Chi Tunnels with AK-47 shooting, and savor authentic egg coffee in Saigon.',
+    duration: 8,
+    nights: 7,
+    route: '2N Hanoi - 2N Sapa - 2N Danang - 1N Ho Chi Minh',
+    price: 57499,
+    rating: 4.9,
+    difficulty: 'Easy',
+    groupSize: 16,
+    tripType: 'International',
+    showGetQuoteOnly: false,
+    inclusionsSummary: {
+      hotels: 4,
+      transfers: 14,
+      experiences: 9,
+      meals: 8,
+      visa: true,
+      tripGuide: true,
+    },
+    highlights: [
+      'Hanoi Old Quarters & Cyclo Tour',
+      'Ninh Binh Trang An Boat Ride & Mua Cave',
+      'Luxury Overnight Train to Sapa',
+      'Rong May Glass Bridge & Alpine Coaster',
+      'Fansipan Peak Cable Car & Muong Hoa Train',
+      'Hoi An Ancient Town & Lantern Boat Ride',
+      'Ba Na Hills & Golden Bridge',
+      'Cu Chi Tunnels with AK-47 Shooting',
+      'Apartment Cafe Egg Coffee & Bui Vien Street'
+    ],
+    overviewPoints: [
+      'Route: 2N Hanoi - 2N Sapa - 2N Danang - 1N Ho Chi Minh',
+      'Duration: 7 Nights / 8 Days',
+      'Trip Start: Hanoi',
+      'Trip End: Ho Chi Minh',
+      'Major Highlights: Hanoi Old Quarters & Cyclo Tour, Ninh Binh Trang An Boat Ride & Mua Cave, Luxury Overnight Train & Sleeper Bus, Sapa Rong May Glass Bridge & Alpine Coaster, Fansipan Peak Cable Car, Hoi An Ancient Town & Lantern Boat Ride, Ba Na Hills & Golden Bridge, Cu Chi Tunnels with AK-47 Shooting.'
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Hanoi Arrival | Hanoi City Tour | Evening Visit Train Street & Beer Street',
+        description: [
+          'Transfer: We will pick you up at Noi Bai International Airport and transfer you to Hanoi Hotel by Private Mini Bus.',
+          'Hotels: Check-in to your hotel. Overnight stay at Babylon Grand Hotel / Similar in Hanoi.',
+          'Sightseeing: Hanoi Guided City Tour through the vibrant Old Quarters and historic French colonial quarters.',
+          'Sightseeing: Experience Hanoi on Cycle (Hanoi Cyclo Tour) exploring the bustling lanes, local markets, and Hoan Kiem Lake.',
+          'Sightseeing: Evening visit to the famous Train Street to watch trains pass through narrow residential alleys, followed by a lively beer and nightlife experience on Ta Hien Beer Street.',
+          'Meals: Welcome refreshment / Dinner at local cafe as per arrival schedule.'
+        ]
+      },
+      {
+        day: 2,
+        title: 'Ninh Binh Day Tour | Trang An Boat Ride, Mua Cave & Hoa Lu Ancient Capital | Overnight Train to Sapa',
+        description: [
+          'Meals: Wake up and enjoy a hearty breakfast at your hotel in Hanoi.',
+          'Transfer: Board your Private Mini Bus transfer heading south to the breathtaking province of Ninh Binh.',
+          'Sightseeing: Ninh Binh Experience — Embark on a serene Trang An Boat Ride gliding through emerald waterways surrounded by majestic limestone karst mountains and hidden water caves.',
+          'Sightseeing: Hike up to the spectacular Mua Cave Viewpoint for 360-degree panoramic vistas of the Ngo Dong River and rice valleys.',
+          'Sightseeing: Visit Hoa Lu Ancient Capital, the historic 10th-century seat of Vietnamese kings with ancient Dinh and Le temples.',
+          'Transfer: Return to Hanoi and board the SP3 Luxury Overnight Train to Sapa (Hanoi → Sapa SP3: 22:00–05:55 hrs).',
+          'Hotels: Overnight stay in Luxury Train (4-berth air-conditioned sleeper cabin).'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Sapa Exploration | Rong May Glass Bridge, Rainbow Slide, Alpine Coaster & Cat Cat Village',
+        description: [
+          'Transfer: Arrive at Lao Cai station early morning and take a scenic private transfer up to Sapa mountain town.',
+          'Hotels: Check-in and freshen up at Sapa Relax Hotel / Similar in Sapa.',
+          'Sightseeing: Rong May Glass Bridge Experience with Ziplining — Step out onto the transparent skywalk hovering high over the Hoang Lien Son mountain range.',
+          'Sightseeing: Thrilling Rainbow Slide & Alpine Coaster Ride Experience through the lush mountain curves for a memorable adrenaline rush.',
+          'Sightseeing: Cat Cat Village Trail — Trek through terraced rice fields, scenic waterfalls, and traditional Black Hmong ethnic wooden stilt houses and handicraft workshops.',
+          'Meals: Breakfast and local lunch / dinner in Sapa town.',
+          'Hotels: Overnight stay at Sapa Relax Hotel / Similar in Sapa.'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Fansipan Peak via Muong Hoa Monorail & Cable Car | Sleeper Bus Transfer from Sapa to Hanoi',
+        description: [
+          'Meals: Enjoy a delicious buffet breakfast with mountain views at your hotel.',
+          'Transfer: Private transfer to Sun World Fansipan Legend station.',
+          'Sightseeing: Ride the scenic Muong Hoa Monorail Train through the valley and ascend Indochina’s rooftop via the world’s longest three-rope Fansipan Cable Car.',
+          'Sightseeing: Explore Fansipan Peak (3,143m) summit complex, Giant Amitabha Buddha statue, and spiritual pagodas amid floating clouds.',
+          'Transfer: Board the comfortable Sleeper Bus from Sapa to Hanoi (Single Cabin) for a smooth afternoon journey.',
+          'Hotels: Check-in and overnight stay at Babylon Grand Hotel / Similar in Hanoi.',
+          'Sightseeing: Enjoy vibrant evening nightlife and shopping in Hanoi Old Quarter.',
+          'Meals: Breakfast at hotel.'
+        ]
+      },
+      {
+        day: 5,
+        title: 'Flight from Hanoi to Da Nang | Hoi An Ancient Town Exploration, Coconut Basket Ride & Lantern Boat',
+        description: [
+          'Meals: Enjoy breakfast at the hotel in Hanoi.',
+          'Transfer: Early morning private transfer to Noi Bai International Airport for your domestic flight to Da Nang.',
+          'Transfer: Arrive at Da Nang airport and board your private transfer to the historic port town of Hoi An.',
+          'Hotels: Check-in and freshen up. Overnight stay at Vinh Hung Old Town Hotel / Merry Hotel / Similar in Hoi An / Da Nang.',
+          'Sightseeing: Iconic Coconut Basket Boat Ride through the tranquil Bay Mau water coconut forest, complete with traditional boat spinning and folk performances.',
+          'Sightseeing: Scenic Bicycle Tour around the peaceful rural villages and lush countryside of Hoi An.',
+          'Sightseeing: Hoi An Ancient Town Exploration (UNESCO World Heritage Site) — Walk across the 17th-century Japanese Covered Bridge, Chinese Assembly Halls, and heritage houses.',
+          'Sightseeing: Evening Lantern Boat Ride on the Hoai River with a magical flower lantern release ceremony for good luck.',
+          'Hotels: Overnight stay at Vinh Hung Old Town Hotel / Merry Hotel / Similar in Hoi An / Da Nang.'
+        ]
+      },
+      {
+        day: 6,
+        title: 'Ba Na Hills & Golden Hands Bridge | French Village & Fantasy Park | Danang City Tour & Dragon Bridge',
+        description: [
+          'Meals: Wake up and savor breakfast at the hotel in Da Nang.',
+          'Transfer: Board your Private Mini Bus transfer to the Ba Na Hills mountain resort.',
+          'Sightseeing: Ba Na Hills Experience — Take the world-record cable car ride ascending through cloud forests to the summit.',
+          'Sightseeing: Walk along the world-famous Golden Bridge held aloft by colossal weathered stone hands with breathtaking vistas.',
+          'Sightseeing: Explore the European-style French Village, Linh Ung Pagoda, Le Jardin D\'Amour flower gardens, and thrilling indoor rides at Fantasy Park.',
+          'Transfer: Descend via cable car and return to Da Nang city by private bus.',
+          'Sightseeing: Danang City Tour — Visit the iconic Dragon Bridge, Love Bridge, Han River waterfront, and relax along My Khe Beach.',
+          'Hotels: Overnight stay at Merry Hotel / Similar in Da Nang.'
+        ]
+      },
+      {
+        day: 7,
+        title: 'Flight to Ho Chi Minh City | Historic Cu Chi Tunnels with AK-47 Shooting, Apartment Cafe & Bui Vien',
+        description: [
+          'Meals: Breakfast at the hotel in Da Nang.',
+          'Transfer: Early morning private transfer to Da Nang International Airport for your flight to Ho Chi Minh City (Saigon).',
+          'Transfer: Arrive at Tan Son Nhat Airport and transfer to the city center by Private Mini Bus.',
+          'Hotels: Check-in to your hotel. Overnight stay at Liberty Green Hotel / Similar in Ho Chi Minh City.',
+          'Sightseeing: Cu Chi Tunnels Underground Network Exploration — Walk through the historic military tunnels, secret trapdoors, underground bunkers, and enjoy the AK-47 live shooting range experience.',
+          'Sightseeing: Visit the iconic 9-story Apartment Cafe on Nguyen Hue Boulevard and taste the world-famous Vietnamese Egg Coffee at Poo Cafe.',
+          'Sightseeing: Dive into the high-energy nightlife, live music, and street food at Bui Vien Walking Street.',
+          'Hotels: Overnight stay at Liberty Green Hotel / Similar in Ho Chi Minh City.'
+        ]
+      },
+      {
+        day: 8,
+        title: 'Departure from Ho Chi Minh City | Unforgettable Memories of Vietnam',
+        description: [
+          'Meals: Enjoy your final Vietnamese breakfast at the hotel.',
+          'Hotels: Check-out from Liberty Green Hotel / Similar in Ho Chi Minh City.',
+          'Sightseeing: Last-minute souvenir shopping for Vietnamese coffee, silk, and handicrafts in local markets before departure.',
+          'Transfer: Board your fixed private airport transfer to Tan Son Nhat International Airport as per group departure flight schedule.',
+          'Transfer: Depart with unforgettable memories, photographs, and friendships from your 8-day Vietnam community adventure!'
+        ]
+      }
+    ],
+    included: [
+      'Hotels accommodation with daily Breakfast (Double & Triple Sharing): 2N Hanoi, 2N Sapa, 2N Danang, 1N Ho Chi Minh',
+      'Ground transfer by Private Mini Bus, joining Sleeper Bus & Luxury Train as mentioned in the itinerary',
+      'Hanoi to Sapa: SP3 Luxury Overnight Train Ticket (4-berth air-conditioned sleeper cabin)',
+      'Sapa to Hanoi: One-way Sleeper Bus transfer (single cabin)',
+      'Airport Pickups and Drops as per group flight schedule',
+      'Hanoi Guided City Tour & Old Quarters Cyclo Tour',
+      'Train Street & Beer Street experience in Hanoi',
+      'Ninh Binh Day Tour: Trang An boat ride, Mua Cave viewpoint & Hoa Lu ancient capital',
+      'Sapa Tour: Rong May Glass Bridge with Ziplining, Rainbow Slide & Alpine Coaster ride',
+      'Cat Cat Village cultural trail in Sapa',
+      'Fansipan Peak roundtrip Cable Car with Muong Hoa monorail train ticket',
+      'Hoi An Ancient Town tour with Bicycle ride around villages',
+      'Iconic Coconut Basket Boat ride with folk dance & show',
+      'Evening Lantern Boat ride on Hoai River with lantern release',
+      'Ba Na Hills full-day tour with Cable Car, Golden Hands Bridge, French Village & Fantasy Park',
+      'Danang City Tour: Dragon Bridge, Love Bridge & beach visit',
+      'Cu Chi Tunnels underground exploration with AK-47 Shooting experience',
+      'Iconic Apartment Cafe visit with famous Egg Coffee experience',
+      'Bui Vien Walking Street nightlife experience in Ho Chi Minh',
+      'Vietnam E-Visa assistance & approval',
+      'Wanderphilia Trip Guide plus experienced local English-speaking tour guides',
+      'Mineral water bottles provided on tour days (2 bottles per person per day)'
+    ],
+    notIncluded: [
+      'Domestic flights (Hanoi to Da Nang & Da Nang to Ho Chi Minh City)',
+      'International airfare and airport taxes',
+      'Meals not mentioned in the inclusions (Lunch & Dinner)',
+      'Compulsory tipping for guide & driver: $3 USD per person per day',
+      'Vietnam Visa stamping fee at airport (if applicable)',
+      'Personal expenses like laundry, telephone calls, drinks & additional activities',
+      'Government taxes, GST & TCS as applicable extra',
+      'Travel insurance and medical expenses',
+      'Any optional activities, rides, or services not explicitly mentioned in inclusions'
+    ],
+    stays: [
+      'Hanoi: Babylon Grand Hotel / Similar',
+      'Sapa: Sapa Relax Hotel / Similar',
+      'Hoi An: Vinh Hung Old Town Hotel / Similar',
+      'Da Nang: Merry Hotel / Similar',
+      'Ho Chi Minh: Liberty Green Hotel / Similar'
+    ],
+    batchDates: [
+      {
+        month: 'September',
+        ranges: ['19th - 26th September']
+      },
+      {
+        month: 'October',
+        ranges: ['2nd - 9th October']
+      },
+      {
+        month: 'November',
+        ranges: ['14th - 21st November']
+      },
+      {
+        month: 'December',
+        ranges: ['12th - 19th December']
+      }
+    ],
+    dates: [],
+    costingDetails: [
+      { label: 'Triple Sharing', value: '₹57,499' },
+      { label: 'Double Sharing', value: '₹57,499' }
+    ],
+    thingsToCarry: [
+      'Passport with minimum 6 months validity from the date of departure from India',
+      'Sunscreen & lip balm, Good U/V protection sunglasses',
+      'Personal Medicines (if any)'
+    ],
+    travelEssentials: [
+      {
+        title: 'Gears',
+        items: [
+          'A medium size trolley with one cabin bag',
+          'Reusable water bladder or water bottle'
+        ]
+      },
+      {
+        title: 'Clothes',
+        items: [
+          'A sun cap',
+          'UV protected sunglasses',
+          'Cotton Shirts and T-shirts',
+          'Jeans, Shorts and cotton pants',
+          'Warm layer/jacket for Sapa & Fansipan Peak',
+          'Sets of undergarments',
+          'Pair of socks',
+          'A small towel or Beach Towel',
+          'A rain jacket or a poncho'
+        ]
+      },
+      {
+        title: 'Footwear',
+        items: [
+          'Comfortable Walking/Hiking shoes or Sneakers',
+          'Flip flops/sandals'
+        ]
+      },
+      {
+        title: 'Medication',
+        items: [
+          'Glucose powder / Electrolytes',
+          'Medicines for headaches, diarrhoea, motion sickness',
+          'Dettol',
+          'Bandages',
+          'Cotton'
+        ]
+      },
+      {
+        title: 'Personal Accessories',
+        items: [
+          'Toothpaste, toothbrush',
+          'Paper soap, or sanitizer',
+          'Sunscreen minimum of SPF 40, lip balm, cold creams',
+          'Body spray',
+          'Universal power adapter'
+        ]
+      }
+    ],
+    paymentPolicy: [
+      '50% advance payment is required to confirm the booking and secure all travel services.',
+      'Balance 50% payment must be received at least 15 days prior to departure.',
+      'All bookings are subject to availability and confirmation from respective suppliers at the time of payment.',
+      'Any increase in taxes, government levies, fuel surcharges, or currency fluctuations before final payment may be charged additionally.'
+    ],
+    paymentTerms: [
+      '50% advance payment is required to confirm the booking and secure all travel services.',
+      'Balance 50% payment must be received at least 15 days prior to departure.',
+      'All bookings are subject to availability and confirmation from respective suppliers at the time of payment.',
+      'Any increase in taxes, government levies, fuel surcharges, or currency fluctuations before final payment may be charged additionally.'
+    ],
+    cancellationPolicy: [
+      'More than 30 days before departure – Cancellation charges as per actual expenses incurred and supplier policies.',
+      '30 to 16 days before departure – 50% of the total package cost.',
+      '15 to 08 days before departure – 75% of the total package cost.',
+      '07 days or less before departure / No Show – 100% of the total package cost.'
+    ],
+    note: [
+      'Normal Check-in and Check-out time is 03:00 PM and 12:00 noon respectively in Vietnam. Early check-in with breakfast is available at an extra cost of 30 USD/ per person.',
+      'Airport transfer is at fixed time (depending on the majority of arrival and departure time of the group) - Any early or late transfer will be charged extra.',
+      'The age limit of our group departures is 18 to 42 years due to the power packed itineraries that we provide to our travellers. We can customize trips for travellers beyond the mentioned age bracket.',
+      'Every traveler is required to be holding a valid passport with an expiry date at least 6 months post the date of entering Vietnam.',
+      'Tour rates are calculated based on current fuel rates and may be revised if there is a sudden increase in fuel prices or an increase of 15% or above.',
+      'If the guest count for a batch is fewer than 9 guests, only a local guide will be available during the tour, and an Indian Trip Captain will not be accompanying the group.'
+    ]
+  },
+  {
     id: '40',
     title: '9 Days Exclusive Vietnam with Phu Quoc Group Trip',
     slug: 'vietnam-phu-quoc-group-trip',
@@ -9350,6 +9841,14 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     groupSize: 16,
     tripType: 'International',
     showGetQuoteOnly: false,
+    inclusionsSummary: {
+      hotels: 4,
+      transfers: 14,
+      experiences: 9,
+      meals: 8,
+      visa: true,
+      tripGuide: true,
+    },
     highlights: [
       'Hanoi',
       'Ha Long Bay Luxury Cruise',
@@ -9651,6 +10150,14 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     groupSize: 16,
     tripType: 'International',
     showGetQuoteOnly: false,
+    inclusionsSummary: {
+      hotels: 4,
+      transfers: 14,
+      experiences: 9,
+      meals: 8,
+      visa: true,
+      tripGuide: true,
+    },
     highlights: [
       'Hanoi',
       'Sapa',
@@ -9942,6 +10449,14 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     groupSize: 16,
     tripType: 'International',
     showGetQuoteOnly: false,
+    inclusionsSummary: {
+      hotels: 4,
+      transfers: 14,
+      experiences: 9,
+      meals: 8,
+      visa: true,
+      tripGuide: true,
+    },
     highlights: [
       'Hanoi',
       'Sapa',

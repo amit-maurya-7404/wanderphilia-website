@@ -306,62 +306,62 @@ export default function HimachalPage() {
             <div>
               {/* ✅ MOBILE SCROLLER */}
               <div className="flex md:hidden gap-4 overflow-x-auto pb-4 scrollbar-hide">
-                  {filteredCategoryTrips.map((trip) => (
+                {filteredCategoryTrips.map((trip) => (
+                  <div
+                    key={trip.id}
+                    className="w-[90%] flex-shrink-0"
+                  >
+                    <TripCard {...trip} />
+                  </div>
+                ))}
+              </div>
+
+              <div className="hidden md:block relative">{/* DESKTOP CAROUSEL */}
+                <div className="relative">
+
+                  {/* LEFT */}
+                  <button
+                    onClick={() => {
+                      setCarouselIndex1((prev) => Math.max(prev - 1, 0))
+                    }}
+                    disabled={carouselIndex1 === 0}
+                    className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
+                  >
+                    <ChevronLeft size={20} />
+                  </button>
+
+                  {/* RIGHT */}
+                  <button
+                    onClick={() => {
+                      const maxIndex = Math.max(0, filteredCategoryTrips.length - cardsPerView)
+                      setCarouselIndex1((prev) => Math.min(prev + 1, maxIndex))
+                    }}
+                    disabled={carouselIndex1 === Math.max(0, filteredCategoryTrips.length - cardsPerView)}
+                    className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
+                  >
+                    <ChevronRight size={20} />
+                  </button>
+
+                  {/* TRACK */}
+                  <div className="overflow-hidden">
                     <div
-                      key={trip.id}
-                      className="w-[90%] flex-shrink-0"
-                    >
-                      <TripCard {...trip} />
-                    </div>
-                  ))}
-                </div>
-
-<div className="hidden md:block relative">{/* DESKTOP CAROUSEL */}
-                  <div className="relative">
-
-                    {/* LEFT */}
-                    <button
-                      onClick={() => {
-                        setCarouselIndex1((prev) => Math.max(prev - 1, 0))
+                      className="flex transition-transform duration-500 ease-in-out"
+                      style={{
+                        transform: `translateX(-${carouselIndex1 * (100 / cardsPerView)}%)`,
                       }}
-                      disabled={carouselIndex1 === 0}
-                      className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
                     >
-                      <ChevronLeft size={20} />
-                    </button>
-
-                    {/* RIGHT */}
-                    <button
-                      onClick={() => {
-                        const maxIndex = Math.max(0, filteredCategoryTrips.length - cardsPerView)
-                        setCarouselIndex1((prev) => Math.min(prev + 1, maxIndex))
-                      }}
-                      disabled={carouselIndex1 === Math.max(0, filteredCategoryTrips.length - cardsPerView)}
-                      className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
-                    >
-                      <ChevronRight size={20} />
-                    </button>
-
-                    {/* TRACK */}
-                    <div className="overflow-hidden">
-                      <div
-                        className="flex transition-transform duration-500 ease-in-out"
-                        style={{
-                          transform: `translateX(-${carouselIndex1 * (100 / cardsPerView)}%)`,
-                        }}
-                      >
-                        {filteredCategoryTrips.map((trip) => (
-                          <div
-                            key={trip.id}
-                            className="flex-shrink-0 basis-1/3 p-2"
-                          >
-                            <TripCard {...trip} />
-                          </div>
-                        ))}
-                      </div>
+                      {filteredCategoryTrips.map((trip) => (
+                        <div
+                          key={trip.id}
+                          className="flex-shrink-0 basis-1/3 p-2"
+                        >
+                          <TripCard {...trip} />
+                        </div>
+                      ))}
                     </div>
+                  </div>
 
-                  </div></div>
+                </div></div>
             </div>
           ) : (
             <div className="py-12">
@@ -388,62 +388,62 @@ export default function HimachalPage() {
             <div>
               {/* ✅ MOBILE SCROLLER */}
               <div className="flex md:hidden gap-4 overflow-x-auto pb-4 scrollbar-hide">
-                  {filteredFamilyPackages.map((trip) => (
+                {filteredFamilyPackages.map((trip) => (
+                  <div
+                    key={trip.id}
+                    className="w-[90%] flex-shrink-0"
+                  >
+                    <TripCard {...trip} />
+                  </div>
+                ))}
+              </div>
+
+              <div className="hidden md:block relative">{/* DESKTOP CAROUSEL */}
+                <div className="relative">
+
+                  {/* LEFT */}
+                  <button
+                    onClick={() => {
+                      setFamilyCarouselIndex((prev) => Math.max(prev - 1, 0))
+                    }}
+                    disabled={familyCarouselIndex === 0}
+                    className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
+                  >
+                    <ChevronLeft size={20} />
+                  </button>
+
+                  {/* RIGHT */}
+                  <button
+                    onClick={() => {
+                      const maxIndex = Math.max(0, filteredFamilyPackages.length - cardsPerView)
+                      setFamilyCarouselIndex((prev) => Math.min(prev + 1, maxIndex))
+                    }}
+                    disabled={familyCarouselIndex === Math.max(0, filteredFamilyPackages.length - cardsPerView)}
+                    className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
+                  >
+                    <ChevronRight size={20} />
+                  </button>
+
+                  {/* TRACK */}
+                  <div className="overflow-hidden">
                     <div
-                      key={trip.id}
-                      className="w-[90%] flex-shrink-0"
-                    >
-                      <TripCard {...trip} />
-                    </div>
-                  ))}
-                </div>
-
-<div className="hidden md:block relative">{/* DESKTOP CAROUSEL */}
-                  <div className="relative">
-
-                    {/* LEFT */}
-                    <button
-                      onClick={() => {
-                        setFamilyCarouselIndex((prev) => Math.max(prev - 1, 0))
+                      className="flex transition-transform duration-500 ease-in-out"
+                      style={{
+                        transform: `translateX(-${familyCarouselIndex * (100 / cardsPerView)}%)`,
                       }}
-                      disabled={familyCarouselIndex === 0}
-                      className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
                     >
-                      <ChevronLeft size={20} />
-                    </button>
-
-                    {/* RIGHT */}
-                    <button
-                      onClick={() => {
-                        const maxIndex = Math.max(0, filteredFamilyPackages.length - cardsPerView)
-                        setFamilyCarouselIndex((prev) => Math.min(prev + 1, maxIndex))
-                      }}
-                      disabled={familyCarouselIndex === Math.max(0, filteredFamilyPackages.length - cardsPerView)}
-                      className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
-                    >
-                      <ChevronRight size={20} />
-                    </button>
-
-                    {/* TRACK */}
-                    <div className="overflow-hidden">
-                      <div
-                        className="flex transition-transform duration-500 ease-in-out"
-                        style={{
-                          transform: `translateX(-${familyCarouselIndex * (100 / cardsPerView)}%)`,
-                        }}
-                      >
-                        {filteredFamilyPackages.map((trip) => (
-                          <div
-                            key={trip.id}
-                            className="flex-shrink-0 basis-1/3 p-2"
-                          >
-                            <TripCard {...trip} />
-                          </div>
-                        ))}
-                      </div>
+                      {filteredFamilyPackages.map((trip) => (
+                        <div
+                          key={trip.id}
+                          className="flex-shrink-0 basis-1/3 p-2"
+                        >
+                          <TripCard {...trip} />
+                        </div>
+                      ))}
                     </div>
+                  </div>
 
-                  </div></div>
+                </div></div>
             </div>
           ) : null}
         </section>
@@ -461,62 +461,62 @@ export default function HimachalPage() {
             <div>
               {/* ✅ MOBILE SCROLLER */}
               <div className="flex md:hidden gap-4 overflow-x-auto pb-4 scrollbar-hide">
-                  {filteredCustomizedPackages.map((trip) => (
+                {filteredCustomizedPackages.map((trip) => (
+                  <div
+                    key={trip.id}
+                    className="w-[90%] flex-shrink-0"
+                  >
+                    <TripCard {...trip} />
+                  </div>
+                ))}
+              </div>
+
+              <div className="hidden md:block relative">{/* DESKTOP CAROUSEL */}
+                <div className="relative">
+
+                  {/* LEFT */}
+                  <button
+                    onClick={() => {
+                      setCustomizedCarouselIndex((prev) => Math.max(prev - 1, 0))
+                    }}
+                    disabled={customizedCarouselIndex === 0}
+                    className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
+                  >
+                    <ChevronLeft size={20} />
+                  </button>
+
+                  {/* RIGHT */}
+                  <button
+                    onClick={() => {
+                      const maxIndex = Math.max(0, filteredCustomizedPackages.length - cardsPerView)
+                      setCustomizedCarouselIndex((prev) => Math.min(prev + 1, maxIndex))
+                    }}
+                    disabled={customizedCarouselIndex === Math.max(0, filteredCustomizedPackages.length - cardsPerView)}
+                    className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
+                  >
+                    <ChevronRight size={20} />
+                  </button>
+
+                  {/* TRACK */}
+                  <div className="overflow-hidden">
                     <div
-                      key={trip.id}
-                      className="w-[90%] flex-shrink-0"
-                    >
-                      <TripCard {...trip} />
-                    </div>
-                  ))}
-                </div>
-
-<div className="hidden md:block relative">{/* DESKTOP CAROUSEL */}
-                  <div className="relative">
-
-                    {/* LEFT */}
-                    <button
-                      onClick={() => {
-                        setCustomizedCarouselIndex((prev) => Math.max(prev - 1, 0))
+                      className="flex transition-transform duration-500 ease-in-out"
+                      style={{
+                        transform: `translateX(-${customizedCarouselIndex * (100 / cardsPerView)}%)`,
                       }}
-                      disabled={customizedCarouselIndex === 0}
-                      className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
                     >
-                      <ChevronLeft size={20} />
-                    </button>
-
-                    {/* RIGHT */}
-                    <button
-                      onClick={() => {
-                        const maxIndex = Math.max(0, filteredCustomizedPackages.length - cardsPerView)
-                        setCustomizedCarouselIndex((prev) => Math.min(prev + 1, maxIndex))
-                      }}
-                      disabled={customizedCarouselIndex === Math.max(0, filteredCustomizedPackages.length - cardsPerView)}
-                      className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
-                    >
-                      <ChevronRight size={20} />
-                    </button>
-
-                    {/* TRACK */}
-                    <div className="overflow-hidden">
-                      <div
-                        className="flex transition-transform duration-500 ease-in-out"
-                        style={{
-                          transform: `translateX(-${customizedCarouselIndex * (100 / cardsPerView)}%)`,
-                        }}
-                      >
-                        {filteredCustomizedPackages.map((trip) => (
-                          <div
-                            key={trip.id}
-                            className="flex-shrink-0 basis-1/3 p-2"
-                          >
-                            <TripCard {...trip} />
-                          </div>
-                        ))}
-                      </div>
+                      {filteredCustomizedPackages.map((trip) => (
+                        <div
+                          key={trip.id}
+                          className="flex-shrink-0 basis-1/3 p-2"
+                        >
+                          <TripCard {...trip} />
+                        </div>
+                      ))}
                     </div>
+                  </div>
 
-                  </div></div>
+                </div></div>
             </div>
           ) : null}
         </section>
@@ -534,62 +534,62 @@ export default function HimachalPage() {
 
               {/* ✅ MOBILE SCROLLER */}
               <div className="flex md:hidden gap-4 overflow-x-auto pb-4 scrollbar-hide">
-                  {relatedPackages.map((trip) => (
+                {relatedPackages.map((trip) => (
+                  <div
+                    key={trip.id}
+                    className="w-[90%] flex-shrink-0"
+                  >
+                    <TripCard {...trip} />
+                  </div>
+                ))}
+              </div>
+
+              <div className="hidden md:block relative">{/* DESKTOP CAROUSEL */}
+                <div className="relative">
+
+                  {/* LEFT */}
+                  <button
+                    onClick={() => {
+                      setCarouselIndex2((prev) => Math.max(prev - 1, 0))
+                    }}
+                    disabled={carouselIndex2 === 0}
+                    className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
+                  >
+                    <ChevronLeft size={20} />
+                  </button>
+
+                  {/* RIGHT */}
+                  <button
+                    onClick={() => {
+                      const maxIndex = Math.max(0, relatedPackages.length - cardsPerView)
+                      setCarouselIndex2((prev) => Math.min(prev + 1, maxIndex))
+                    }}
+                    disabled={carouselIndex2 === Math.max(0, relatedPackages.length - cardsPerView)}
+                    className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
+                  >
+                    <ChevronRight size={20} />
+                  </button>
+
+                  {/* TRACK */}
+                  <div className="overflow-hidden">
                     <div
-                      key={trip.id}
-                      className="w-[90%] flex-shrink-0"
-                    >
-                      <TripCard {...trip} />
-                    </div>
-                  ))}
-                </div>
-
-<div className="hidden md:block relative">{/* DESKTOP CAROUSEL */}
-                  <div className="relative">
-
-                    {/* LEFT */}
-                    <button
-                      onClick={() => {
-                        setCarouselIndex2((prev) => Math.max(prev - 1, 0))
+                      className="flex transition-transform duration-500 ease-in-out"
+                      style={{
+                        transform: `translateX(-${carouselIndex2 * (100 / cardsPerView)}%)`,
                       }}
-                      disabled={carouselIndex2 === 0}
-                      className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
                     >
-                      <ChevronLeft size={20} />
-                    </button>
-
-                    {/* RIGHT */}
-                    <button
-                      onClick={() => {
-                        const maxIndex = Math.max(0, relatedPackages.length - cardsPerView)
-                        setCarouselIndex2((prev) => Math.min(prev + 1, maxIndex))
-                      }}
-                      disabled={carouselIndex2 === Math.max(0, relatedPackages.length - cardsPerView)}
-                      className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
-                    >
-                      <ChevronRight size={20} />
-                    </button>
-
-                    {/* TRACK */}
-                    <div className="overflow-hidden">
-                      <div
-                        className="flex transition-transform duration-500 ease-in-out"
-                        style={{
-                          transform: `translateX(-${carouselIndex2 * (100 / cardsPerView)}%)`,
-                        }}
-                      >
-                        {relatedPackages.map((trip) => (
-                          <div
-                            key={trip.id}
-                            className="flex-shrink-0 basis-1/3 p-2"
-                          >
-                            <TripCard {...trip} />
-                          </div>
-                        ))}
-                      </div>
+                      {relatedPackages.map((trip) => (
+                        <div
+                          key={trip.id}
+                          className="flex-shrink-0 basis-1/3 p-2"
+                        >
+                          <TripCard {...trip} />
+                        </div>
+                      ))}
                     </div>
+                  </div>
 
-                  </div></div>
+                </div></div>
             </div>
           </section>
         )}

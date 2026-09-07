@@ -471,6 +471,56 @@
   ],
   "reviews": [
     {
+      "_id": "google-jatinpoojara-1776265314",
+      "name": "Jatin Poojara",
+      "platform": "Google",
+      "rating": 5,
+      "comment": "Just got back from our Andaman trip planned by Wanderphilia, and honestly, it was such a smooth experience. Everything—from hotel bookings to transfers—was well managed, so we didn’t have to stress about anything.\n\nThe itinerary was nicely balanced, not too hectic, and we got enough time to actually enjoy the places instead of just rushing through them. The team was also easily reachable whenever we needed help.\n\nOverall, a really good experience. Would definitely recommend Wanderphilia if you’re planning Andaman",
+      "createdAt": "2026-04-15T15:01:54.000Z",
+      "profilePhotoUrl": "https://lh3.googleusercontent.com/a-/ALV-UjXZr-JSivtq20dl9GU-B71s0hWw3z7KAcZqLavbFOn2c5-_Iyak=s128-c0x00000000-cc-rp-mo",
+      "relativeTime": "4 months ago"
+    },
+    {
+      "_id": "google-krutijain-1778259981",
+      "name": "Kruti Jain",
+      "platform": "Google",
+      "rating": 5,
+      "comment": "It was an amazing and a seamless experience to travel with them. They are extremely hands-on making it easier to actually enjoy your vacation without having to worry about the stays etc etc and letting your vacation feel like how it’s supposed to be- chill and relaxing! Highly recommend traveling with them!",
+      "createdAt": "2026-05-08T17:06:21.000Z",
+      "profilePhotoUrl": "https://lh3.googleusercontent.com/a/ACg8ocJYBphxsbvKXi7g8TOjKs3qYDY83SFZwfIHZirEuD18JhzAgQ=s128-c0x00000000-cc-rp-mo",
+      "relativeTime": "3 months ago"
+    },
+    {
+      "_id": "google-bhavyajain-1778269262",
+      "name": "Bhavya Jain",
+      "platform": "Google",
+      "rating": 5,
+      "comment": "We had a beautiful trip to ladakh with Wanderphilia. Everything was perfectly planned and their local team is really very supportive. Would surely go with them on our next trip",
+      "createdAt": "2026-05-08T19:41:02.000Z",
+      "profilePhotoUrl": "https://lh3.googleusercontent.com/a/ACg8ocLdiAOTPnRMENbcZhxmr1JE1FqBMhX68iFbqXvup8FpoZMivQ=s128-c0x00000000-cc-rp-mo",
+      "relativeTime": "3 months ago"
+    },
+    {
+      "_id": "google-dharmeshmaniar-1775912101",
+      "name": "Dharmesh Maniar",
+      "platform": "Google",
+      "rating": 5,
+      "comment": "We had an amazing experience on our Bhutan trip, all thanks to Wanderphilia. Their arrangements were absolutely perfect from start to finish. The stays they recommended were excellent—comfortable, well-located, and added greatly to the overall experience.\n\nEverything was well-organized, making the trip smooth and stress-free. Overall, it was a very satisfying and memorable experience. Highly recommended!",
+      "createdAt": "2026-04-11T12:55:01.000Z",
+      "profilePhotoUrl": "https://lh3.googleusercontent.com/a-/ALV-UjX6nsgCzUV2Cb2ExRWJDqnFo2IXlTvyZXhapEVnumrbTqNhlq0a=s128-c0x00000000-cc-rp-mo",
+      "relativeTime": "4 months ago"
+    },
+    {
+      "_id": "google-richashah-1778656156",
+      "name": "Richa Shah",
+      "platform": "Google",
+      "rating": 5,
+      "comment": "Had an incredible Thailand vacation with Wanderphilia! The entire trip was perfectly organised with great hotels, fun activities, and hassle-free travel throughout. Their team was super supportive and made sure everything went smoothly. If you want a travel company that genuinely understands personalised travel experiences, Wanderphilia is definitely worth it. Can’t wait to travel with them again!",
+      "createdAt": "2026-05-13T07:09:16.000Z",
+      "profilePhotoUrl": "https://lh3.googleusercontent.com/a-/ALV-UjXytAabqH6EV7NJXMfYXVRvKAHxs1WIBKadgmltdO8LtOoa7X-8QQ=s128-c0x00000000-cc-rp-mo-ba5",
+      "relativeTime": "3 months ago"
+    },
+    {
       "_id": "google-shwetasawane-1773123329",
       "name": "Shweta Sawane",
       "platform": "Google",
@@ -583,7 +633,7 @@
   ],
   "metadata": {
     "googleRating": 5,
-    "googleReviewsCount": 188,
-    "lastSyncedAt": "2026-06-11T04:51:54.719Z"
+    "googleReviewsCount": 228,
+    "lastSyncedAt": "2026-09-05T09:11:44.596Z"
   }
 }

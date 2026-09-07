@@ -539,7 +539,7 @@ const SwipeButton = ({ onSwipeComplete, text = "Slide to Book" }: { onSwipeCompl
       `}</style>
 
       {/* Background fill based on drag */}
-      <div 
+      <div
         className="absolute left-0 top-0 bottom-0 bg-gradient-to-r from-orange-500 to-orange-400 opacity-20 transition-all duration-75"
         style={{ width: `${dragX + 28}px` }}
       />
@@ -622,7 +622,7 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
 
   const [callbackOpen, setCallbackOpen] = useState(false)
   const [expandedDays, setExpandedDays] = useState<number[]>([1])
-  const [activeTab, setActiveTab] = useState('itinerary')
+  const [activeTab, setActiveTab] = useState('summary')
   const [activeDay, setActiveDay] = useState(1)
   const [isClient, setIsClient] = useState(false)
   const tabContainerRef = useRef<HTMLDivElement>(null)
@@ -851,55 +851,55 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
   if (!slug) return null
   if (!trip) return notFound()
 
-  const staySummary = getStaySummary(trip.itinerary)
+  const staySummary = trip.route || trip.staySummary || trip.customRoute || getStaySummary(trip.itinerary)
 
   const isGroup = trip.title.toLowerCase().includes('group')
   const isInte = trip.tripType === 'International'
 
-  const inclusionsList = [
-    {
-      id: 'flights',
-      label: 'Flights',
-      icon: <img src="/images/plane-icon.png" alt="Flights" className="w-full h-full object-contain p-1" />,
-      optional: !isGroup,
-    },
-    {
-      id: 'hotels',
-      label: 'Hotels',
-      icon: <img src="/images/hotel-icon.png" alt="Hotels" className="w-full h-full object-contain p-1" />,
-      optional: false,
-    },
-    {
-      id: 'sightseeing',
-      label: 'Sightseeing',
-      icon: <img src="/images/sighseeing-icon.png" alt="Sightseeing" className="w-full h-full object-contain p-1" />,
-      optional: false,
-    },
-    {
-      id: 'meals',
-      label: 'Meal',
-      icon: <img src="/images/meal-icon.png" alt="Meal" className="w-full h-full object-contain p-1" />,
-      optional: false,
-    },
-  ]
+  // const inclusionsList = [
+  //   {
+  //     id: 'flights',
+  //     label: 'Flights',
+  //     icon: <img src="/images/plane-icon.png" alt="Flights" className="w-full h-full object-contain p-1" />,
+  //     optional: !isGroup,
+  //   },
+  //   {
+  //     id: 'hotels',
+  //     label: 'Hotels',
+  //     icon: <img src="/images/hotel-icon.png" alt="Hotels" className="w-full h-full object-contain p-1" />,
+  //     optional: false,
+  //   },
+  //   {
+  //     id: 'sightseeing',
+  //     label: 'Sightseeing',
+  //     icon: <img src="/images/sighseeing-icon.png" alt="Sightseeing" className="w-full h-full object-contain p-1" />,
+  //     optional: false,
+  //   },
+  //   {
+  //     id: 'meals',
+  //     label: 'Meal',
+  //     icon: <img src="/images/meal-icon.png" alt="Meal" className="w-full h-full object-contain p-1" />,
+  //     optional: false,
+  //   },
+  // ]
 
-  if (isInte) {
-    inclusionsList.push({
-      id: 'visa',
-      label: 'Visa',
-      icon: <FileText className="text-indigo-500 w-full h-full p-1" />,
-      optional: false,
-    })
-  }
+  // if (isInte) {
+  //   inclusionsList.push({
+  //     id: 'visa',
+  //     label: 'Visa',
+  //     icon: <FileText className="text-indigo-500 w-full h-full p-1" />,
+  //     optional: false,
+  //   })
+  // }
 
-  if (isGroup) {
-    inclusionsList.push({
-      id: 'manager',
-      label: 'Tour Manager',
-      icon: <img src="/images/manager-icon.png" alt="Tour Manager" className="w-full h-full object-contain p-1" />,
-      optional: false,
-    })
-  }
+  // if (isGroup) {
+  //   inclusionsList.push({
+  //     id: 'manager',
+  //     label: 'Tour Manager',
+  //     icon: <img src="/images/manager-icon.png" alt="Tour Manager" className="w-full h-full object-contain p-1" />,
+  //     optional: false,
+  //   })
+  // }
 
   const scrollActiveTabIntoView = (tabId: string) => {
     if (typeof window === 'undefined' || !tabContainerRef.current) return
@@ -1113,11 +1113,11 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
                 {/* Stay Summary / Route */}
                 {staySummary && (
                   <p className="text-xs sm:text-sm font-semibold text-[#ff5d09] mb-4 uppercase tracking-wider bg-orange-50 w-fit px-3 py-1 rounded-lg border border-orange-100/60 shadow-3xs">
-                    {staySummary.replace(/\s*-\s*/g, ' • ')}
+                    {staySummary.replace(/\s*[-•]\s*/g, ' • ')}
                   </p>
                 )}
 
-                <div className="flex flex-wrap gap-3">
+                {/* <div className="flex flex-wrap gap-3">
                   <Badge className={`${difficultyColor} text-xs sm:text-sm px-3 py-1`}>
                     {trip.difficulty}
                   </Badge>
@@ -1127,10 +1127,10 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
                   <Badge className="bg-amber-100 text-amber-700 text-xs sm:text-sm px-3 py-1">
                     <Star size={14} className="mr-1" /> {trip.rating}
                   </Badge>
-                </div>
+                </div> */}
 
                 {/* INCLUSIONS ICONS ROW */}
-                <div className="flex flex-wrap items-center gap-2 sm:gap-3 mt-5 pt-4 border-t border-slate-100">
+                {/* <div className="flex flex-wrap items-center gap-2 sm:gap-3 mt-5 pt-4 border-t border-slate-100">
                   {inclusionsList.map((inc) => (
                     <div key={inc.id} className="relative flex flex-col items-center p-2 rounded-xl bg-gray-50 border border-gray-100 min-w-[76px] sm:min-w-[84px]">
                       {inc.optional && (
@@ -1146,7 +1146,7 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
                       </span>
                     </div>
                   ))}
-                </div>
+                </div> */}
               </div>
 
               {/* STICKY TAB NAVBAR */}
@@ -1157,10 +1157,10 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
                     className="flex overflow-x-auto gap-2 sm:gap-4 py-0 scrollbar-hide"
                   >
                     {[
-                      { id: 'itinerary', label: 'Itinerary' },
-                      { id: 'inclusions', label: 'Inclusions' },
                       { id: 'summary', label: 'Summary' },
-                      { id: 'highlights', label: 'Highlights' },
+                      { id: 'itinerary', label: 'Itinerary' },
+                      { id: 'highlights', label: 'Activities & Experiences' },
+                      { id: 'inclusions', label: 'Inclusions & Exclusions' },
                     ].map(tab => (
                       <button
                         key={tab.id}
@@ -1601,7 +1601,7 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
                     {/* Orange Header Bar */}
                     <div className="flex items-center gap-3 px-5 py-4 bg-gradient-to-r from-orange-500 to-orange-400 text-white shadow-3xs">
                       <Star size={18} className="fill-amber-300 text-amber-300" />
-                      <h3 className="font-extrabold text-sm uppercase tracking-wider">Tour Highlights</h3>
+                      <h3 className="font-extrabold text-sm uppercase tracking-wider">Activities & Experiences</h3>
                     </div>
 
                     <div className="bg-slate-50/30 p-5 sm:p-6">

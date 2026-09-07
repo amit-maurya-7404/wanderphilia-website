@@ -3,14 +3,15 @@
 import { useRef, useState } from 'react'
 import Image from 'next/image'
 import type { Trip } from '@/lib/data'
+import { getTripInclusionDetails } from '@/lib/data'
 import { gtag } from '@/lib/gtag'
 import {
   ChevronLeft,
   ChevronRight,
   ThumbsUp,
   Tag,
-  Plane,
   Building2,
+  Car,
   Camera,
   Utensils,
   FileText,
@@ -204,7 +205,7 @@ function getStaySummary(itinerary: Trip['itinerary']): string {
 
 function formatStaySummary(stayStr: string, maxItems: number = 5): string {
   if (!stayStr) return '';
-  const parts = stayStr.split(/\s*-\s*/);
+  const parts = stayStr.split(/\s*[-•]\s*/);
   if (parts.length <= maxItems) {
     return parts.join(' • ');
   }
@@ -213,21 +214,22 @@ function formatStaySummary(stayStr: string, maxItems: number = 5): string {
   return `${shown} + ${remaining} more`;
 }
 
-export function TripCard({
-  title,
-  image,
-  destination,
-  duration,
-  price,
-  rating,
-  slug,
-  category,
-  itinerary,
-  costingDetails,
-  showGetQuoteOnly,
-  heroMedia,
-  tripType,
-}: TripCardProps) {
+export function TripCard(props: TripCardProps) {
+  const {
+    title,
+    image,
+    destination,
+    duration,
+    price,
+    rating,
+    slug,
+    category,
+    itinerary,
+    costingDetails,
+    showGetQuoteOnly,
+    heroMedia,
+    tripType,
+  } = props
   const [callbackOpen, setCallbackOpen] = useState(false)
   const ignoreClickRef = useRef(false)
   const [imgIndex, setImgIndex] = useState(0)
@@ -243,7 +245,7 @@ export function TripCard({
     : price
 
   const displayPrice = Number.isFinite(lowestPrice) ? lowestPrice : price
-  const staySummary = getStaySummary(itinerary)
+  const staySummary = props.route || props.staySummary || props.customRoute || getStaySummary(itinerary)
 
   // Construct images array
   const images = [image]
@@ -271,54 +273,54 @@ export function TripCard({
   const badgeBg = isMostBooked ? 'bg-[#ff5d09]' : 'bg-[#ff8713]'
   const badgeIcon = isMostBooked ? <ThumbsUp size={11} className="fill-white" /> : <Tag size={11} className="fill-white" />
 
-  // Inclusions logic
+  // Inclusions sequence: Hotel, Transfers, Experiences, Meals, Visa, Trip Guide
   const isGroup = title.toLowerCase().includes('group')
-  const isInte = tripType === 'International'
+  const inclusionDetails = getTripInclusionDetails(props)
 
-  const inclusions = [
-    {
-      id: 'flights',
-      label: 'Flights',
-      icon: <Plane size={20} className="text-orange-500" />,
-      optional: !isGroup,
-    },
+  const inclusions: { id: string; label: string; icon: React.ReactNode; color: string }[] = [
     {
       id: 'hotels',
-      label: 'Hotels',
-      icon: <Building2 size={20} className="text-blue-500" />,
-      optional: false,
+      label: inclusionDetails.hotels,
+      icon: <Building2 size={18} className="text-blue-500" />,
+      color: 'text-blue-500',
     },
     {
-      id: 'sightseeing',
-      label: 'Sightseeing',
-      icon: <Camera size={20} className="text-sky-500" />,
-      optional: false,
+      id: 'transfers',
+      label: inclusionDetails.transfers,
+      icon: <Car size={18} className="text-orange-500" />,
+      color: 'text-orange-500',
+    },
+    {
+      id: 'experiences',
+      label: inclusionDetails.experiences,
+      icon: <Camera size={18} className="text-sky-500" />,
+      color: 'text-sky-500',
     },
     {
       id: 'meals',
-      label: 'Meal',
-      icon: <Utensils size={20} className="text-amber-600" />,
-      optional: false,
+      label: inclusionDetails.meals,
+      icon: <Utensils size={18} className="text-amber-600" />,
+      color: 'text-amber-600',
     },
   ]
 
-  if (isInte) {
+  if (inclusionDetails.visa) {
     inclusions.push({
       id: 'visa',
-      label: 'Visa',
-      icon: <FileText size={20} className="text-indigo-500" />,
-      optional: false,
+      label: inclusionDetails.visa,
+      icon: <FileText size={18} className="text-indigo-500" />,
+      color: 'text-indigo-500',
     })
   }
 
-  if (isGroup) {
-    inclusions.push({
-      id: 'manager',
-      label: 'Tour Manager',
-      icon: <User size={20} className="text-teal-600" />,
-      optional: false,
-    })
-  }
+  // if (inclusionDetails.tripGuide) {
+  //   inclusions.push({
+  //     id: 'guide',
+  //     label: inclusionDetails.tripGuide,
+  //     icon: <User size={14} className="text-teal-600" />,
+  //     color: 'text-teal-600',
+  //   })
+  // }
 
   // Price calculations
   const originalPrice = displayPrice > 0 ? Math.round((displayPrice * 1.15) / 100) * 100 : 0
@@ -406,22 +408,38 @@ export function TripCard({
         </p>
 
         {/* DYNAMIC INCLUSIONS */}
-        <div className="flex items-center gap-1 justify-between mt-auto pt-0 border-t border-gray-50 flex-shrink-0">
-          {inclusions.map((inc) => (
-            <div key={inc.id} className="relative flex flex-col items-center flex-1 min-w-0 py-1">
-              {inc.optional && (
-                <span className="absolute -top-1 bg-yellow-300 text-black text-[6px] md:text-[7px] font-black px-0.5 rounded-xs uppercase scale-90 border border-white leading-none">
-                  Optional
-                </span>
-              )}
-              <div className="w-7 h-7 md:w-8 md:h-8 rounded bg-gray-50 border border-gray-100 flex items-center justify-center mb-1">
-                {inc.icon}
+        <div className="flex items-center gap-0.5 sm:gap-1 justify-between mt-auto pt-1 border-t border-gray-100 flex-shrink-0">
+          {inclusions.map((inc) => {
+            const match = inc.label ? inc.label.match(/^(\d+)\s*(.*)$/) : null
+            const count = match ? match[1] : null
+            const text = match ? match[2] : inc.label
+
+            return (
+              <div
+                key={inc.id}
+                className="relative flex items-center justify-center flex-1 min-w-0 py-0.5 gap-0.5 sm:gap-1"
+                title={inc.label}
+              >
+                {/* BIG NUMBER ON LEFT */}
+                {count && (
+                  <span className={`pt-5 text-[13px] sm:text-[15px] md:text-base lg:text-[20px] font-semibold ${inc.color} tracking-tighter tabular-nums leading-none flex-shrink-0`}>
+                    {count}
+                  </span>
+                )}
+
+                {/* RIGHT COLUMN: ICON BOX (TOP) + LABEL (BOTTOM) */}
+                <div className="flex flex-col items-center justify-center min-w-0">
+                  <span className="text-[2vw] sm:text-[7.5px] md:text-[8px] lg:text-[10px] text-gray-500 font-semibold truncate max-w-[38px] sm:max-w-[42px] text-center leading-tight">
+                    {text}
+                  </span>
+                  <div className="w-6 h-6 md:w-8 md:h-8 rounded-lg bg-gray-50 border border-gray-100 flex items-center justify-center mb-0.5 transition-transform group-hover:scale-105 flex-shrink-0 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
+                    {inc.icon}
+                  </div>
+
+                </div>
               </div>
-              <span className="text-[2.6vw] md:text-[9px] text-gray-500 text-center font-medium truncate w-full">
-                {inc.label}
-              </span>
-            </div>
-          ))}
+            )
+          })}
         </div>
 
         {/* DASHED LINE DIVIDER */}

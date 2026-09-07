@@ -112,6 +112,40 @@ export async function getZohoAccessToken(): Promise<string> {
   }
 }
 
+export function parseToZohoDate(dateStr: string | undefined): string | null {
+  if (!dateStr) return null;
+  const cleaned = dateStr.trim();
+  if (/^\d{4}-\d{2}-\d{2}$/.test(cleaned)) {
+    return cleaned;
+  }
+
+  try {
+    const dayMatch = cleaned.match(/^(\d+)/);
+    if (!dayMatch) return null;
+    const day = parseInt(dayMatch[1], 10);
+
+    const months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+    const lowerStr = cleaned.toLowerCase();
+    let monthIdx = -1;
+    for (let i = 0; i < months.length; i++) {
+      if (lowerStr.includes(months[i])) {
+        monthIdx = i;
+        break;
+      }
+    }
+
+    if (monthIdx === -1) return null;
+
+    const year = new Date().getFullYear();
+    const mm = (monthIdx + 1).toString().padStart(2, '0');
+    const dd = day.toString().padStart(2, '0');
+
+    return `${year}-${mm}-${dd}`;
+  } catch (e) {
+    return null;
+  }
+}
+
 /**
  * Builds the fully qualified URL for Zoho CRM endpoints based on the configured api domain.
  */
@@ -125,23 +159,39 @@ export function getZohoApiUrl(endpoint: string): string {
   return `https://www.${cleanDomain}${cleanEndpoint}`;
 }
 
-/**
- * Submits form leads to Zoho CRM Web-to-Lead endpoint.
- */
-export async function submitToZohoCRM(data: {
+export interface ZohoLeadData {
   name: string
   email: string
   phone?: string
+  mobile?: string
   message?: string
   leadSource: string
+  leadStatus?: string
   tripTitle?: string
+  tripSlug?: string
   tripPrice?: number
   destination?: string
-}) {
-  let destination = data.destination || getDestinationFromTrip(data.tripTitle);
+  itineraryId?: string
+  numberOfGuests?: number
+  sharingType?: string
+  startDate?: string
+  endDate?: string
+  pricingOptions?: string
+  totalAmount?: number
+}
+
+/**
+ * Submits form leads to Zoho CRM (Direct API V3 with Web-to-Lead fallback).
+ */
+export async function submitToZohoCRM(data: ZohoLeadData) {
+  let destination = data.destination || getDestinationFromTrip(data.tripTitle || data.tripSlug);
   if (!destination && data.message) {
     destination = getDestinationFromTrip(data.message);
   }
+
+  const exactTrip = trips.find(t => t.slug === (data.tripSlug || '').trim() || t.title === (data.tripTitle || '').trim());
+  const itineraryId = data.itineraryId || (exactTrip ? exactTrip.id : data.tripSlug || data.tripTitle || '');
+  const contactNumber = data.mobile || data.phone || '';
 
   // Try direct API V3 first (most reliable, bypasses Web-to-Lead approvals & captchas)
   try {
@@ -152,25 +202,50 @@ export async function submitToZohoCRM(data: {
     const firstName = nameParts.length > 1 ? nameParts[0] : ''
     const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : nameParts[0]
 
-    let description = data.message || ''
-    if (data.tripTitle) {
-      description = `Interested Trip: ${data.tripTitle}\nPrice: INR ${data.tripPrice || 'N/A'}\n${description}`
+    let descriptionParts: string[] = []
+    if (data.tripTitle) descriptionParts.push(`Trip: ${data.tripTitle}`)
+    if (data.startDate && data.endDate) descriptionParts.push(`Dates: ${data.startDate} to ${data.endDate}`)
+    if (data.numberOfGuests) descriptionParts.push(`Guests: ${data.numberOfGuests}`)
+    if (data.sharingType) descriptionParts.push(`Sharing: ${data.sharingType}`)
+    if (data.pricingOptions) descriptionParts.push(`Options: ${data.pricingOptions}`)
+    if (data.totalAmount) descriptionParts.push(`Total Amount: INR ${data.totalAmount}`)
+    if (data.tripPrice) descriptionParts.push(`Price: INR ${data.tripPrice}`)
+    if (data.message) descriptionParts.push(`Message: ${data.message}`)
+
+    const description = descriptionParts.join('\n')
+
+    const leadRecord: Record<string, any> = {
+      First_Name: firstName,
+      Last_Name: lastName,
+      Email: data.email,
+      Mobile: contactNumber,
+      Description: description,
+      Lead_Source: data.leadSource || 'Website',
+      Lead_Status: data.leadStatus || 'New Enquiry',
+      Event_Category: itineraryId || data.tripTitle || '',
+      Destinations: destination || '',
+    }
+
+    if (itineraryId) {
+      leadRecord.Itinerary_Unique_id = itineraryId
+    }
+    if (data.numberOfGuests && data.numberOfGuests > 0) {
+      leadRecord.Number_Of_Guest = data.numberOfGuests
+    }
+    if (data.sharingType) {
+      leadRecord.Sharing_Type = data.sharingType
+    }
+    const formattedStartDate = parseToZohoDate(data.startDate)
+    if (formattedStartDate) {
+      leadRecord.Preferred_Start_date = formattedStartDate
+    }
+    const formattedEndDate = parseToZohoDate(data.endDate)
+    if (formattedEndDate) {
+      leadRecord.Travel_End_Date = formattedEndDate
     }
 
     const payload = {
-      data: [
-        {
-          First_Name: firstName,
-          Last_Name: lastName,
-          Email: data.email,
-          Phone: data.phone || '',
-          Description: description,
-          Lead_Source: data.leadSource,
-          Lead_Status: 'New Enquiry',
-          Event_Category: data.tripTitle || '',
-          Destinations: destination || '',
-        }
-      ]
+      data: [leadRecord]
     }
 
     const response = await fetch(url, {
@@ -189,8 +264,9 @@ export async function submitToZohoCRM(data: {
 
     const resData = await response.json()
     if (resData.data && resData.data[0] && resData.data[0].status === 'success') {
-      console.log(`[Zoho CRM API V3] Lead successfully created for ${data.email} with ID ${resData.data[0].details?.id}`)
-      return { success: true, leadId: resData.data[0].details?.id }
+      const createdLeadId = resData.data[0].details?.id
+      console.log(`[Zoho CRM API V3] Lead successfully created for ${data.email} with ID ${createdLeadId}`)
+      return { success: true, leadId: createdLeadId }
     } else {
       throw new Error(`Zoho API payload result failed: ${JSON.stringify(resData)}`)
     }
@@ -214,10 +290,16 @@ export async function submitToZohoCRM(data: {
   const firstName = nameParts.length > 1 ? nameParts[0] : ''
   const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : nameParts[0]
 
-  let description = data.message || ''
-  if (data.tripTitle) {
-    description = `Interested Trip: ${data.tripTitle}\nPrice: INR ${data.tripPrice || 'N/A'}\n${description}`
-  }
+  let descriptionParts: string[] = []
+  if (data.tripTitle) descriptionParts.push(`Trip: ${data.tripTitle}`)
+  if (data.startDate && data.endDate) descriptionParts.push(`Dates: ${data.startDate} to ${data.endDate}`)
+  if (data.numberOfGuests) descriptionParts.push(`Guests: ${data.numberOfGuests}`)
+  if (data.pricingOptions) descriptionParts.push(`Options: ${data.pricingOptions}`)
+  if (data.totalAmount) descriptionParts.push(`Total Amount: INR ${data.totalAmount}`)
+  if (data.tripPrice) descriptionParts.push(`Price: INR ${data.tripPrice}`)
+  if (data.message) descriptionParts.push(`Message: ${data.message}`)
+
+  const description = descriptionParts.join('\n')
 
   const formData = new URLSearchParams()
   formData.append('xnQsjsdp', portalId)
@@ -226,8 +308,8 @@ export async function submitToZohoCRM(data: {
   formData.append('First Name', firstName)
   formData.append('Last Name', lastName)
   formData.append('Email', data.email)
-  if (data.phone) {
-    formData.append('Phone', data.phone)
+  if (contactNumber) {
+    formData.append('Mobile', contactNumber)
   }
   formData.append('Description', description)
   formData.append('Lead Source', data.leadSource)

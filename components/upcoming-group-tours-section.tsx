@@ -130,16 +130,32 @@ export function UpcomingGroupToursSection() {
     <section className="pt-20 pb-16 md:pt-20 bg-white">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-20">
-          <span className="inline-block px-4 py-2 rounded-full bg-primary/10 text-primary font-semibold text-sm mb-4">
-            ✨ Limited Spots Available
-          </span>
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            Upcoming Group Tours
-          </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Choose a destination to explore our curated upcoming group adventures.
-          </p>
+        <div className="relative text-center mb-6 py-8 overflow-visible">
+          {/* Background World Travel Image */}
+          <div className="absolute -top-20 md:top-0 left-25 md:-left-25 z-0 pointer-events-none opacity-100">
+            <div className="relative w-32 h-32 md:w-76 md:h-76">
+              <Image
+                src="/images/World-Travel-Background-PNG.png"
+                alt="World Travel Background"
+                fill
+                className="object-contain"
+                priority
+              />
+            </div>
+          </div>
+
+          {/* Header Content */}
+          <div className="relative z-10">
+            <span className="z-1000 inline-block px-4 py-2 rounded-full bg-primary/10 text-primary font-semibold text-sm mb-4">
+              ✨ Limited Spots Available
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+              Upcoming Group Tours
+            </h2>
+            <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
+              Choose a destination to explore our curated upcoming group adventures.
+            </p>
+          </div>
         </div>
 
         {!isUpcomingToursPage ? (
