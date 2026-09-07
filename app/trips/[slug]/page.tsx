@@ -718,6 +718,19 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
 
   const [callbackOpen, setCallbackOpen] = useState(false)
   const [expandedDays, setExpandedDays] = useState<number[]>([1])
+  const [expandedSummarySections, setExpandedSummarySections] = useState<string[]>([
+    'accommodation',
+    'meals',
+    'transfers',
+    'activities'
+  ])
+
+  const toggleSummarySection = (section: string) => {
+    setExpandedSummarySections(prev =>
+      prev.includes(section) ? prev.filter(s => s !== section) : [...prev, section]
+    )
+  }
+
   const [activeTab, setActiveTab] = useState('summary')
   const [activeDay, setActiveDay] = useState(1)
   const [isClient, setIsClient] = useState(false)
@@ -1182,25 +1195,25 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
 
 
 
-        <div className="max-w-6xl mx-auto px-[4vw] sm:px-[5vw] md:px-0 py-[4vh] sm:py-[5vh] md:py-[6vh]">
-          <div className="grid lg:grid-cols-[2.5fr_1fr] gap-[4vw] lg:gap-[3vw]">
+        <div className="max-w-6xl mx-auto px-4 sm:px-5 md:px-0 py-3 sm:py-5">
+          <div className="grid lg:grid-cols-[2.5fr_1fr] gap-4 sm:gap-6 lg:gap-8">
             {/* LEFT CONTENT */}
-            <div className="space-y-[6vh] min-w-0 w-full overflow-hidden">
+            <div className="space-y-3.5 sm:space-y-4 min-w-0 w-full overflow-hidden">
               {/* HEADER SECTION (Always visible) */}
               <div>
-                <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-3">
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight mb-2">
                   {trip.title}
                 </h1>
 
-                <div className="flex flex-wrap items-center gap-3 text-slate-600 mb-4">
+                <div className="flex flex-wrap items-center gap-2.5 text-slate-600 mb-2.5 text-xs sm:text-sm">
                   <div className="flex items-center gap-1">
-                    <MapPin size={16} className="shrink-0" />
-                    <span className="text-sm sm:text-base">{trip.destination}</span>
+                    <MapPin size={15} className="shrink-0" />
+                    <span>{trip.destination}</span>
                   </div>
                   <span className="text-slate-300">•</span>
                   <div className="flex items-center gap-1">
-                    <Calendar size={16} className="shrink-0" />
-                    <span className="text-sm sm:text-base">
+                    <Calendar size={15} className="shrink-0" />
+                    <span>
                       {trip.nights ? `${trip.nights}N / ${trip.duration}D` : `${trip.duration}D`}
                     </span>
                   </div>
@@ -1208,7 +1221,7 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
 
                 {/* Stay Summary / Route */}
                 {staySummary && (
-                  <p className="text-xs sm:text-sm font-semibold text-[#ff5d09] mb-4 uppercase tracking-wider bg-orange-50 w-fit px-3 py-1 rounded-lg border border-orange-100/60 shadow-3xs">
+                  <p className="text-[11px] sm:text-xs font-semibold text-[#ff5d09] mb-2.5 uppercase tracking-wider bg-orange-50 w-fit px-2.5 py-0.5 rounded-md border border-orange-100/60 shadow-3xs">
                     {staySummary.replace(/\s*[-•]\s*/g, ' • ')}
                   </p>
                 )}
@@ -1678,137 +1691,87 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
 
               {activeTab === 'summary' && (() => {
                 const summaryOverview = getTripSummaryDetails(trip);
+                const isAccOpen = expandedSummarySections.includes('accommodation');
+                const isMealsOpen = expandedSummarySections.includes('meals');
+                const isTransOpen = expandedSummarySections.includes('transfers');
+                const isActOpen = expandedSummarySections.includes('activities');
+
                 return (
-                  <div className="space-y-6 animate-in fade-in duration-300">
-                    {/* 1. ACCOMMODATION */}
-                    <div className="bg-white border border-slate-200/90 rounded-2xl overflow-hidden shadow-2xs hover:shadow-xs transition-all">
-                      <div className="flex items-center gap-2.5 px-5 py-3.5 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white font-extrabold text-sm uppercase tracking-wider">
-                        <Hotel size={18} />
-                        <span>Accomodation</span>
-                      </div>
-                      <div className="p-4 sm:p-5 bg-slate-50/40">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                          {summaryOverview.accommodation.map((item, idx) => {
-                            const isObj = typeof item === 'object' && item !== null;
-                            const city = isObj ? (item as any).city : '';
-                            const hotel = isObj ? (item as any).hotel : item;
-                            return (
-                              <div
-                                key={idx}
-                                className="flex flex-col justify-between gap-1.5 p-3.5 bg-white border border-slate-200/80 rounded-xl shadow-3xs hover:border-indigo-200 hover:shadow-2xs transition-all"
-                              >
-                                {city && (
-                                  <div className="flex items-center gap-1.5">
-                                    <span className="w-2 h-2 rounded-full bg-indigo-500 shrink-0" />
-                                    <span className="text-xs font-bold text-indigo-700 uppercase tracking-wide">
-                                      {city}
-                                    </span>
-                                  </div>
-                                )}
-                                <p className="text-xs sm:text-sm font-semibold text-slate-800 leading-snug">
-                                  {hotel}
-                                </p>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* 2. MEALS & 3. TRANSFERS GRID */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      {/* MEALS */}
-                      <div className="bg-white border border-slate-200/90 rounded-2xl overflow-hidden shadow-2xs flex flex-col">
-                        <div className="flex items-center gap-2.5 px-5 py-3.5 bg-gradient-to-r from-emerald-600 to-emerald-500 text-white font-extrabold text-sm uppercase tracking-wider">
-                          <Utensils size={18} />
-                          <span>Meals</span>
-                        </div>
-                        <div className="p-4 sm:p-5 space-y-2.5 flex-1 bg-slate-50/40">
-                          {summaryOverview.meals.map((item, idx) => (
-                            <div
-                              key={idx}
-                              className="flex items-center gap-3 p-3 bg-white border border-emerald-100 rounded-xl shadow-3xs"
-                            >
-                              <span className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
-                                <Utensils size={14} />
-                              </span>
-                              <span className="text-xs sm:text-sm font-bold text-slate-800">
-                                {item}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* TRANSFERS */}
-                      <div className="bg-white border border-slate-200/90 rounded-2xl overflow-hidden shadow-2xs flex flex-col">
-                        <div className="flex items-center gap-2.5 px-5 py-3.5 bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-extrabold text-sm uppercase tracking-wider">
-                          <Car size={18} />
-                          <span>Transfers</span>
-                        </div>
-                        <div className="p-4 sm:p-5 space-y-2.5 flex-1 bg-slate-50/40">
-                          {summaryOverview.transfers.map((item, idx) => (
-                            <div
-                              key={idx}
-                              className="flex items-start gap-3 p-3 bg-white border border-blue-100 rounded-xl shadow-3xs"
-                            >
-                              <span className="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 mt-0.5">
-                                <Car size={14} />
-                              </span>
-                              <span className="text-xs sm:text-sm font-semibold text-slate-800 leading-snug">
-                                {item}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* 4. ACTIVITIES & EXPERIENCES */}
-                    <div className="bg-white border border-slate-200/90 rounded-2xl overflow-hidden shadow-2xs">
-                      <div className="flex items-center gap-2.5 px-5 py-3.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-extrabold text-sm uppercase tracking-wider">
-                        <Sparkles size={18} />
-                        <span>Activities & Experiences</span>
-                      </div>
-                      <div className="p-4 sm:p-6 bg-slate-50/40">
-                        {summaryOverview.activities.length > 0 &&
-                          typeof summaryOverview.activities[0] === 'object' &&
-                          'items' in (summaryOverview.activities[0] as any) ? (
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
-                            {(summaryOverview.activities as any[]).map((group, gIdx) => (
-                              <div
-                                key={gIdx}
-                                className="bg-white border border-slate-200/80 rounded-2xl p-5 space-y-3.5 shadow-3xs hover:border-orange-200 transition-all flex flex-col"
-                              >
-                                {group.city && (
-                                  <div className="flex items-center gap-2 pb-2.5 border-b border-slate-100 text-orange-600 font-extrabold text-xs sm:text-sm uppercase tracking-wider">
-                                    <MapPin size={16} className="text-orange-500 shrink-0" />
-                                    <span>{group.city}</span>
-                                  </div>
-                                )}
-                                <ul className="space-y-2.5 flex-1">
-                                  {group.items.map((it: string, itIdx: number) => (
-                                    <li
-                                      key={itIdx}
-                                      className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-700 leading-relaxed"
-                                    >
-                                      <span className="w-1.5 h-1.5 rounded-full bg-orange-400 mt-2 shrink-0" />
-                                      <span className="font-medium text-slate-800">{it}</span>
-                                    </li>
-                                  ))}
-                                </ul>
-                              </div>
-                            ))}
+                  <div className="space-y-3 sm:space-y-4 animate-in fade-in duration-300">
+                    {/* 1. HOTELS (ACCOMMODATION) & 2. MEALS SIDE-BY-SIDE */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 items-start">
+                      {/* ACCOMMODATION / HOTELS */}
+                      <div className="bg-white border border-slate-200/90 rounded-xl overflow-hidden shadow-2xs hover:shadow-xs transition-all flex flex-col">
+                        <button
+                          type="button"
+                          onClick={() => toggleSummarySection('accommodation')}
+                          className="w-full flex items-center justify-between px-3.5 py-2.5 sm:px-4 sm:py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white font-bold text-xs sm:text-sm uppercase tracking-wider text-left cursor-pointer hover:brightness-105 transition-all"
+                        >
+                          <div className="flex items-center gap-2">
+                            <Hotel size={16} />
+                            <span>Accomodation</span>
                           </div>
-                        ) : (
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
-                            {(summaryOverview.activities as string[]).map((item, idx) => (
+                          <ChevronDown
+                            size={16}
+                            className={`shrink-0 text-white/90 transition-transform duration-200 ${isAccOpen ? 'rotate-180' : ''}`}
+                          />
+                        </button>
+                        {isAccOpen && (
+                          <div className="p-2.5 sm:p-3 bg-slate-50/40 space-y-1.5 flex-1">
+                            {summaryOverview.accommodation.map((item, idx) => {
+                              const isObj = typeof item === 'object' && item !== null;
+                              const city = isObj ? (item as any).city : '';
+                              const hotel = isObj ? (item as any).hotel : item;
+                              return (
+                                <div
+                                  key={idx}
+                                  className="flex items-center justify-between gap-2 px-2.5 py-1.5 bg-white border border-slate-200/80 rounded-lg shadow-3xs hover:border-indigo-200 transition-all text-xs"
+                                >
+                                  {city && (
+                                    <div className="flex items-center gap-1.5 shrink-0">
+                                      <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 shrink-0" />
+                                      <span className="text-[11px] font-bold text-indigo-700 uppercase tracking-wide">
+                                        {city}
+                                      </span>
+                                    </div>
+                                  )}
+                                  <span className="font-semibold text-slate-800 text-right truncate text-[11px] sm:text-xs">
+                                    {hotel}
+                                  </span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* MEALS */}
+                      <div className="bg-white border border-slate-200/90 rounded-xl overflow-hidden shadow-2xs hover:shadow-xs transition-all flex flex-col">
+                        <button
+                          type="button"
+                          onClick={() => toggleSummarySection('meals')}
+                          className="w-full flex items-center justify-between px-3.5 py-2.5 sm:px-4 sm:py-2.5 bg-gradient-to-r from-emerald-600 to-emerald-500 text-white font-bold text-xs sm:text-sm uppercase tracking-wider text-left cursor-pointer hover:brightness-105 transition-all"
+                        >
+                          <div className="flex items-center gap-2">
+                            <Utensils size={16} />
+                            <span>Meals</span>
+                          </div>
+                          <ChevronDown
+                            size={16}
+                            className={`shrink-0 text-white/90 transition-transform duration-200 ${isMealsOpen ? 'rotate-180' : ''}`}
+                          />
+                        </button>
+                        {isMealsOpen && (
+                          <div className="p-2.5 sm:p-3 space-y-1.5 flex-1 bg-slate-50/40">
+                            {summaryOverview.meals.map((item, idx) => (
                               <div
                                 key={idx}
-                                className="flex items-start gap-3 p-3.5 bg-white border border-slate-200/80 rounded-xl shadow-3xs hover:border-orange-200 transition-colors"
+                                className="flex items-center gap-2 px-2.5 py-1.5 bg-white border border-emerald-100 rounded-lg shadow-3xs text-xs"
                               >
-                                <span className="w-2 h-2 rounded-full bg-orange-500 mt-1.5 shrink-0" />
-                                <span className="text-xs sm:text-sm font-semibold text-slate-800 leading-snug">
+                                <span className="w-5 h-5 rounded bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                                  <Utensils size={12} />
+                                </span>
+                                <span className="font-semibold text-slate-800 text-[11px] sm:text-xs">
                                   {item}
                                 </span>
                               </div>
@@ -1816,6 +1779,109 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
                           </div>
                         )}
                       </div>
+                    </div>
+
+                    {/* 3. TRANSFERS */}
+                    <div className="bg-white border border-slate-200/90 rounded-xl overflow-hidden shadow-2xs hover:shadow-xs transition-all">
+                      <button
+                        type="button"
+                        onClick={() => toggleSummarySection('transfers')}
+                        className="w-full flex items-center justify-between px-3.5 py-2.5 sm:px-4 sm:py-2.5 bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-bold text-xs sm:text-sm uppercase tracking-wider text-left cursor-pointer hover:brightness-105 transition-all"
+                      >
+                        <div className="flex items-center gap-2">
+                          <Car size={16} />
+                          <span>Transfers</span>
+                        </div>
+                        <ChevronDown
+                          size={16}
+                          className={`shrink-0 text-white/90 transition-transform duration-200 ${isTransOpen ? 'rotate-180' : ''}`}
+                        />
+                      </button>
+                      {isTransOpen && (
+                        <div className="p-2.5 sm:p-3 bg-slate-50/40">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2">
+                            {summaryOverview.transfers.map((item, idx) => (
+                              <div
+                                key={idx}
+                                className="flex items-start gap-2 px-2.5 py-1.5 sm:px-3 sm:py-2 bg-white border border-blue-100 rounded-lg shadow-3xs text-xs"
+                              >
+                                <span className="w-5 h-5 rounded bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 mt-0.5">
+                                  <Car size={12} />
+                                </span>
+                                <span className="font-medium text-slate-800 leading-snug text-[11px] sm:text-xs">
+                                  {item}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* 4. ACTIVITIES & EXPERIENCES */}
+                    <div className="bg-white border border-slate-200/90 rounded-xl overflow-hidden shadow-2xs hover:shadow-xs transition-all">
+                      <button
+                        type="button"
+                        onClick={() => toggleSummarySection('activities')}
+                        className="w-full flex items-center justify-between px-3.5 py-2.5 sm:px-4 sm:py-2.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold text-xs sm:text-sm uppercase tracking-wider text-left cursor-pointer hover:brightness-105 transition-all"
+                      >
+                        <div className="flex items-center gap-2">
+                          <Sparkles size={16} />
+                          <span>Activities & Experiences</span>
+                        </div>
+                        <ChevronDown
+                          size={16}
+                          className={`shrink-0 text-white/90 transition-transform duration-200 ${isActOpen ? 'rotate-180' : ''}`}
+                        />
+                      </button>
+                      {isActOpen && (
+                        <div className="p-2.5 sm:p-3 bg-slate-50/40">
+                          {summaryOverview.activities.length > 0 &&
+                            typeof summaryOverview.activities[0] === 'object' &&
+                            'items' in (summaryOverview.activities[0] as any) ? (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5">
+                              {(summaryOverview.activities as any[]).map((group, gIdx) => (
+                                <div
+                                  key={gIdx}
+                                  className="bg-white border border-slate-200/80 rounded-lg p-2.5 sm:p-3 space-y-1.5 shadow-3xs hover:border-orange-200 transition-all flex flex-col"
+                                >
+                                  {group.city && (
+                                    <div className="flex items-center gap-1.5 pb-1 border-b border-slate-100 text-orange-600 font-extrabold text-[11px] sm:text-xs uppercase tracking-wider">
+                                      <MapPin size={12} className="text-orange-500 shrink-0" />
+                                      <span>{group.city}</span>
+                                    </div>
+                                  )}
+                                  <ul className="space-y-1 flex-1">
+                                    {group.items.map((it: string, itIdx: number) => (
+                                      <li
+                                        key={itIdx}
+                                        className="flex items-start gap-1.5 text-[11px] sm:text-xs text-slate-700 leading-snug"
+                                      >
+                                        <span className="w-1 h-1 rounded-full bg-orange-400 mt-1.5 shrink-0" />
+                                        <span className="font-medium text-slate-800">{it}</span>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2">
+                              {(summaryOverview.activities as string[]).map((item, idx) => (
+                                <div
+                                  key={idx}
+                                  className="flex items-start gap-2 px-2.5 py-1.5 sm:px-3 sm:py-2 bg-white border border-slate-200/80 rounded-lg shadow-3xs hover:border-orange-200 transition-colors text-xs"
+                                >
+                                  <span className="w-1.5 h-1.5 rounded-full bg-orange-500 mt-1.5 shrink-0" />
+                                  <span className="font-semibold text-slate-800 leading-snug text-[11px] sm:text-xs">
+                                    {item}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
                 );
