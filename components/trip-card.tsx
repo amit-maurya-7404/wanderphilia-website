@@ -281,25 +281,25 @@ export function TripCard(props: TripCardProps) {
     {
       id: 'hotels',
       label: inclusionDetails.hotels,
-      icon: <Building2 size={18} className="text-blue-500" />,
+      icon: <Building2 size={16} className="text-blue-500" />,
       color: 'text-blue-500',
     },
     {
       id: 'transfers',
       label: inclusionDetails.transfers,
-      icon: <Car size={18} className="text-orange-500" />,
+      icon: <Car size={16} className="text-orange-500" />,
       color: 'text-orange-500',
     },
     {
       id: 'experiences',
       label: inclusionDetails.experiences,
-      icon: <Camera size={18} className="text-sky-500" />,
+      icon: <Camera size={16} className="text-sky-500" />,
       color: 'text-sky-500',
     },
     {
       id: 'meals',
       label: inclusionDetails.meals,
-      icon: <Utensils size={18} className="text-amber-600" />,
+      icon: <Utensils size={16} className="text-amber-600" />,
       color: 'text-amber-600',
     },
   ]
@@ -308,7 +308,7 @@ export function TripCard(props: TripCardProps) {
     inclusions.push({
       id: 'visa',
       label: inclusionDetails.visa,
-      icon: <FileText size={18} className="text-indigo-500" />,
+      icon: <FileText size={16} className="text-indigo-500" />,
       color: 'text-indigo-500',
     })
   }
@@ -408,7 +408,7 @@ export function TripCard(props: TripCardProps) {
         </p>
 
         {/* DYNAMIC INCLUSIONS */}
-        <div className="flex items-center gap-0.5 sm:gap-1 justify-between mt-auto pt-1 border-t border-gray-100 flex-shrink-0">
+        <div className="flex items-center justify-between mt-auto pt-2 border-t border-gray-100 flex-shrink-0 gap-1">
           {inclusions.map((inc) => {
             const match = inc.label ? inc.label.match(/^(\d+)\s*(.*)$/) : null
             const count = match ? match[1] : null
@@ -417,25 +417,24 @@ export function TripCard(props: TripCardProps) {
             return (
               <div
                 key={inc.id}
-                className="relative flex items-center justify-center flex-1 min-w-0 py-0.5 gap-0.5 sm:gap-1"
+                className="flex flex-col items-center justify-center flex-1 min-w-0 py-0.5"
                 title={inc.label}
               >
-                {/* BIG NUMBER ON LEFT */}
-                {count && (
-                  <span className={`pt-5 text-[13px] sm:text-[15px] md:text-base lg:text-[20px] font-semibold ${inc.color} tracking-tighter tabular-nums leading-none flex-shrink-0`}>
-                    {count}
-                  </span>
-                )}
+                {/* FULL LABEL ON TOP */}
+                <span className="text-[9px] sm:text-[9.5px] md:text-[10px] text-gray-500 font-semibold text-center leading-none whitespace-nowrap mb-1">
+                  {text}
+                </span>
 
-                {/* RIGHT COLUMN: ICON BOX (TOP) + LABEL (BOTTOM) */}
-                <div className="flex flex-col items-center justify-center min-w-0">
-                  <span className="text-[2vw] sm:text-[7.5px] md:text-[8px] lg:text-[10px] text-gray-500 font-semibold truncate max-w-[38px] sm:max-w-[42px] text-center leading-tight">
-                    {text}
-                  </span>
-                  <div className="w-6 h-6 md:w-8 md:h-8 rounded-lg bg-gray-50 border border-gray-100 flex items-center justify-center mb-0.5 transition-transform group-hover:scale-105 flex-shrink-0 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
+                {/* BOTTOM: NUMBER + ICON */}
+                <div className="flex items-center justify-center gap-1">
+                  {count && (
+                    <span className={`text-xs sm:text-sm md:text-base font-bold ${inc.color} tracking-tight tabular-nums leading-none`}>
+                      {count}
+                    </span>
+                  )}
+                  <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-gray-50 border border-gray-100 flex items-center justify-center transition-transform group-hover:scale-105 flex-shrink-0 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
                     {inc.icon}
                   </div>
-
                 </div>
               </div>
             )

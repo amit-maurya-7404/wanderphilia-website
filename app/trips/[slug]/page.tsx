@@ -15,7 +15,7 @@ import { TripHeroCarousel } from '@/components/trip-hero-carousel'
 import { RequestCallbackDialog } from '@/components/request-callback-dialog'
 import { trips } from '@/lib/data'
 import { destinationItineraryImages } from '@/lib/section-mappings'
-import { MapPin, Calendar, Users, Star, Phone, MessageCircle, ChevronDown, Download, X, ChevronLeft, ChevronRight, Car, Hotel, Camera, Utensils, Plane, Building2, FileText, User, Share2 } from 'lucide-react'
+import { MapPin, Calendar, Users, Star, Phone, MessageCircle, ChevronDown, Download, X, ChevronLeft, ChevronRight, Car, Hotel, Camera, Utensils, Plane, Building2, FileText, User, Share2, Sparkles, Compass } from 'lucide-react'
 import { contactEmail, contactPhone, contactPhoneDisplay, instagramUrl } from '@/lib/contact'
 import { TripGallerySection } from '@/components/trip-gallery-section'
 import Image from 'next/image'
@@ -239,11 +239,11 @@ function getFirstNarrativeParagraph(description: string | string[]): string {
       lowerItem.includes('breakfast')
 
     if (!isExcluded) {
-      return item
+      return item.replace(/^(transfer|transfers|accommodation|hotels?|sightseeing(?:\s*&\s*experiences)?|activities|experiences|meals?)\s*:\s*/i, '').trim()
     }
   }
 
-  return description[0] || ''
+  return description[0] ? description[0].replace(/^(transfer|transfers|accommodation|hotels?|sightseeing(?:\s*&\s*experiences)?|activities|experiences|meals?)\s*:\s*/i, '').trim() : ''
 }
 
 
@@ -266,7 +266,7 @@ function parseDayForSummary(description: string | string[]) {
 
     if (lower.startsWith('highlights of the')) return
 
-    if (lower.includes('meals') || lower.includes('breakfast') || lower.includes('lunch') || lower.includes('dinner')) {
+    if (lower.startsWith('meals:') || lower.startsWith('meals :') || lower.includes('meals') || lower.includes('breakfast') || lower.includes('lunch') || lower.includes('dinner')) {
       const foundMeals: string[] = []
       if (lower.includes('breakfast')) foundMeals.push('Breakfast')
       if (lower.includes('lunch')) foundMeals.push('Lunch')
@@ -276,14 +276,17 @@ function parseDayForSummary(description: string | string[]) {
           if (!result.meals.includes(m)) result.meals.push(m)
         })
       } else {
-        result.meals.push(trimmed)
+        result.meals.push(trimmed.replace(/^meals\s*:\s*/i, '').trim())
       }
     } else if (
+      lower.startsWith('accommodation:') || lower.startsWith('accommodation :') || lower.startsWith('hotel:') || lower.startsWith('hotels:') ||
       lower.includes('overnight stay') || lower.includes('stay in') || lower.includes('hotel') ||
       lower.includes('resort') || lower.includes('check-in') || lower.includes('check in') ||
       lower.includes('check out') || lower.includes('check-out') || lower.includes('camp')
     ) {
       const rawName = trimmed
+        .replace(/^accommodation\s*:\s*/i, '')
+        .replace(/^hotels?\s*:\s*/i, '')
         .replace(/overnight stay near/i, '')
         .replace(/overnight stay in/i, '')
         .replace(/overnight stay at/i, '')
@@ -296,18 +299,78 @@ function parseDayForSummary(description: string | string[]) {
       const hotelName = rawName || 'Hotel'
       if (!result.hotels.includes(hotelName)) result.hotels.push(hotelName)
     } else if (
+      lower.startsWith('transfer:') || lower.startsWith('transfer :') || lower.startsWith('transfers:') ||
       lower.includes('transfer') || lower.includes('pick you up') || lower.includes('pick up') ||
       lower.includes('airport') || lower.includes('drive to') || lower.includes('travel to') ||
       lower.includes('proceed to') || lower.includes('reach') || lower.includes('railway') ||
       lower.includes('station') || lower.includes('cab')
     ) {
-      if (!result.transfers.includes(trimmed)) result.transfers.push(trimmed)
+      const clean = trimmed.replace(/^transfers?\s*:\s*/i, '').trim()
+      if (!result.transfers.includes(clean)) result.transfers.push(clean)
     } else {
-      if (!result.sightseeing.includes(trimmed)) result.sightseeing.push(trimmed)
+      const clean = trimmed.replace(/^(sightseeing(?:\s*&\s*experiences)?|activities|experiences)\s*:\s*/i, '').trim()
+      if (!result.sightseeing.includes(clean)) result.sightseeing.push(clean)
     }
   })
 
   return result
+}
+
+function getTripSummaryDetails(trip: typeof trips[0]) {
+  if (trip.summaryDetails) {
+    return {
+      accommodation: trip.summaryDetails.accommodation || [],
+      meals: trip.summaryDetails.meals || [],
+      transfers: trip.summaryDetails.transfers || [],
+      activities: trip.summaryDetails.activities || [],
+    }
+  }
+
+  // Fallback: extract unique hotels, meals, transfers, activities from itinerary
+  const hotelsList: string[] = []
+  const transfersList: string[] = []
+  const mealsList: string[] = []
+  const activitiesList: string[] = []
+
+  if (trip.itinerary && Array.isArray(trip.itinerary)) {
+    trip.itinerary.forEach((day) => {
+      const summary = parseDayForSummary(day.description)
+      summary.hotels.forEach((h) => {
+        if (!hotelsList.includes(h)) hotelsList.push(h)
+      })
+      summary.transfers.forEach((t) => {
+        if (!transfersList.includes(t)) transfersList.push(t)
+      })
+      summary.meals.forEach((m) => {
+        if (!mealsList.includes(m)) mealsList.push(m)
+      })
+      summary.sightseeing.forEach((s) => {
+        if (!activitiesList.includes(s)) activitiesList.push(s)
+      })
+    })
+  }
+
+  const accommodation = trip.stays && trip.stays.length > 0
+    ? trip.stays
+    : hotelsList.length > 0
+      ? hotelsList
+      : trip.staySummary
+        ? [trip.staySummary]
+        : [`${Math.max(1, trip.duration - 1)} Nights Hotel Accommodation`]
+
+  const meals = mealsList.length > 0
+    ? mealsList
+    : [`${Math.max(1, trip.duration - 1)} Breakfasts included as per plan`]
+
+  const transfers = transfersList.length > 0
+    ? transfersList
+    : ['Airport pick-up, drop-off and all sightseeing transfers in private vehicle']
+
+  const activities = trip.highlights && trip.highlights.length > 0
+    ? trip.highlights
+    : activitiesList
+
+  return { accommodation, meals, transfers, activities }
 }
 
 
@@ -335,12 +398,21 @@ function renderItineraryDescription(description: string | string[]) {
 
     let category: 'Transfer' | 'Hotels' | 'Sightseeing' | 'Meals' = 'Sightseeing';
 
-    if (lower.includes('meals') || lower.includes('breakfast') || lower.includes('lunch') || lower.includes('dinner')) {
+    if (lower.startsWith('transfer:') || lower.startsWith('transfer :') || lower.startsWith('transfers:')) {
+      category = 'Transfer';
+    } else if (lower.startsWith('accommodation:') || lower.startsWith('accommodation :') || lower.startsWith('hotel:') || lower.startsWith('hotels:')) {
+      category = 'Hotels';
+    } else if (lower.startsWith('sightseeing:') || lower.startsWith('sightseeing & experiences:') || lower.startsWith('sightseeing & experiences :') || lower.startsWith('activities:') || lower.startsWith('experiences:')) {
+      category = 'Sightseeing';
+    } else if (lower.startsWith('meals:') || lower.startsWith('meals :') || lower.startsWith('meal:')) {
+      category = 'Meals';
+    } else if (lower.includes('meals') || lower.includes('breakfast') || lower.includes('lunch') || lower.includes('dinner')) {
       category = 'Meals';
     } else if (
       lower.includes('overnight stay') || lower.includes('stay in') || lower.includes('hotel') ||
       lower.includes('resort') || lower.includes('check-in') || lower.includes('check in') ||
-      lower.includes('check out') || lower.includes('check-out') || lower.includes('camp')
+      lower.includes('check out') || lower.includes('check-out') || lower.includes('camp') ||
+      lower.includes('accommodation')
     ) {
       category = 'Hotels';
     } else if (
@@ -352,15 +424,19 @@ function renderItineraryDescription(description: string | string[]) {
       category = 'Transfer';
     }
 
+    const cleanText = trimmed
+      .replace(/^(transfer|transfers|accommodation|hotels?|sightseeing(?:\s*&\s*experiences)?|activities|experiences|meals?)\s*:\s*/i, '')
+      .trim();
+
     const existing = categories.find(c => c.type === category);
     if (existing) {
-      existing.content.push(trimmed);
+      existing.content.push(cleanText || trimmed);
     } else {
-      categories.push({ type: category, content: [trimmed] });
+      categories.push({ type: category, content: [cleanText || trimmed] });
     }
   });
 
-  // Show in order: Transfer → Hotels → Sightseeing → Meals
+  // Show in order: Transfer → Accommodation (Hotels) → Sightseeing & Experiences → Meals
   const order: Record<string, number> = { Transfer: 1, Hotels: 2, Sightseeing: 3, Meals: 4 };
   categories.sort((a, b) => order[a.type] - order[b.type]);
 
@@ -384,23 +460,43 @@ function renderItineraryDescription(description: string | string[]) {
             <div key={idx} className="flex gap-3 p-4 bg-white border border-slate-200 rounded-2xl shadow-2xs hover:shadow-sm transition-shadow">
               {/* Icon */}
               <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
-                <img src="/images/car-icon.png" alt="Car" className="w-12 h-12 object-contain" />
+                <img src="/images/car-icon.png" alt="Transfer" className="w-12 h-12 object-contain" />
               </div>
               {/* Content */}
               <div className="min-w-0">
                 <p className="text-[12px] font-extrabold uppercase tracking-widest text-slate-400 mb-1">Transfer</p>
-                {cat.content.map((text, i) => (
-                  <p key={i} className="text-sm text-slate-700 font-medium leading-relaxed">{text}</p>
-                ))}
+                <div className="space-y-1">
+                  {cat.content.map((text, i) => (
+                    <p key={i} className="text-sm text-slate-700 font-medium leading-relaxed">{text}</p>
+                  ))}
+                </div>
               </div>
             </div>
           );
         }
 
-        /* ── HOTELS (hidden) ─────────────────────────── */
-        if (cat.type === 'Hotels') return null;
+        /* ── ACCOMMODATION ───────────────────────────── */
+        if (cat.type === 'Hotels') {
+          return (
+            <div key={idx} className="flex gap-3 p-4 bg-white border border-slate-200 rounded-2xl shadow-2xs hover:shadow-sm transition-shadow">
+              {/* Icon */}
+              <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center">
+                <img src="/images/hotel-icon.png" alt="Accommodation" className="w-12 h-12 object-contain" />
+              </div>
+              {/* Content */}
+              <div className="min-w-0">
+                <p className="text-[12px] font-extrabold uppercase tracking-widest text-slate-400 mb-1">Accommodation</p>
+                <div className="space-y-1">
+                  {cat.content.map((text, i) => (
+                    <p key={i} className="text-sm text-slate-700 font-medium leading-relaxed">{text}</p>
+                  ))}
+                </div>
+              </div>
+            </div>
+          );
+        }
 
-        /* ── SIGHTSEEING ─────────────────────────────── */
+        /* ── SIGHTSEEING & EXPERIENCES ──────────────── */
         if (cat.type === 'Sightseeing') {
           return (
             <div key={idx} className="flex gap-3 p-4 bg-white border border-slate-200 rounded-2xl shadow-2xs hover:shadow-sm transition-shadow">
@@ -410,7 +506,7 @@ function renderItineraryDescription(description: string | string[]) {
               </div>
               {/* Content */}
               <div className="min-w-0">
-                <p className="text-[12px] font-extrabold uppercase tracking-widest text-slate-400 mb-1.5">Sightseeing</p>
+                <p className="text-[12px] font-extrabold uppercase tracking-widest text-slate-400 mb-1.5">Sightseeing & Experiences</p>
                 <div className="space-y-1">
                   {cat.content.map((text, i) => (
                     <p key={i} className="text-sm text-slate-700 leading-relaxed">{text}</p>
@@ -752,7 +848,7 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
   }
 
   const [galleryImages, setGalleryImages] = useState<string[]>([])
-  const [activeInclCat, setActiveInclCat] = useState('hotels')
+  const [activeInclCat, setActiveInclCat] = useState('inclusions')
 
   useEffect(() => {
     if (!trip) return
@@ -1166,7 +1262,7 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
                         key={tab.id}
                         data-tab-id={tab.id}
                         onClick={() => setActiveTab(tab.id)}
-                        className={`px-4 py-3 text-sm font-semibold whitespace-nowrap border-b-2 transition-all cursor-pointer ${activeTab === tab.id
+                        className={`px-4 py-3 text-md font-semibold whitespace-nowrap border-b-2 transition-all cursor-pointer ${activeTab === tab.id
                           ? 'border-primary text-primary font-bold'
                           : 'border-transparent text-slate-600 hover:text-slate-900'
                           }`}
@@ -1285,37 +1381,49 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
 
               {activeTab === 'inclusions' && (() => {
                 const inclCategories = [
+                  { id: 'inclusions', label: 'Inclusions', icon: '✓' },
                   { id: 'hotels', label: 'Hotels', icon: '🏨' },
                   { id: 'sightseeing', label: 'Sightseeing', icon: '📸' },
                   { id: 'meals', label: 'Meals', icon: '🍽️' },
                   { id: 'transfer', label: 'Transfer', icon: '🚗' },
-                  { id: 'others', label: 'Others', icon: '✦' },
                   { id: 'exclusions', label: 'Exclusions', icon: '✕' },
                   { id: 'payment', label: 'Payment Policy', icon: '💳' },
                   { id: 'cancellation', label: 'Cancellation Policy', icon: '📝' },
                 ];
 
                 function categorise(items: string[]) {
-                  const r: Record<string, string[]> = { hotels: [], sightseeing: [], meals: [], transfer: [], others: [] };
+                  const r: Record<string, string[]> = { hotels: [], sightseeing: [], meals: [], transfer: [] };
                   items.forEach(item => {
                     const l = item.toLowerCase();
-                    if (l.includes('stay') || l.includes('hotel') || l.includes('camp') || l.includes('resort') || l.includes('accommodation') || l.includes('night'))
+                    if (l.includes('stay') || l.includes('hotel') || l.includes('camp') || l.includes('resort') || l.includes('accommodation') || l.includes('night')) {
                       r.hotels.push(item);
-                    else if (l.includes('sightseeing') || l.includes('visit') || l.includes('tour') || l.includes('excursion') || l.includes('trek') || l.includes('safari') || l.includes('entry') || l.includes('permit'))
+                    }
+                    if (l.includes('sightseeing') || l.includes('visit') || l.includes('tour') || l.includes('excursion') || l.includes('trek') || l.includes('safari') || l.includes('entry') || l.includes('permit') || l.includes('guide') || l.includes('cable car') || l.includes('ride') || l.includes('bridge') || l.includes('cave') || l.includes('trail') || l.includes('shooting') || l.includes('boattrip') || l.includes('boat')) {
                       r.sightseeing.push(item);
-                    else if (l.includes('meal') || l.includes('breakfast') || l.includes('lunch') || l.includes('dinner') || l.includes('food') || l.includes('beverage'))
+                    }
+                    if (l.includes('meal') || l.includes('breakfast') || l.includes('lunch') || l.includes('dinner') || l.includes('food') || l.includes('beverage') || l.includes('water') || l.includes('tea') || l.includes('coffee')) {
                       r.meals.push(item);
-                    else if (l.includes('transfer') || l.includes('cab') || l.includes('transport') || l.includes('vehicle') || l.includes('driver') || l.includes('pick') || l.includes('drop') || l.includes('taxi') || l.includes('bus') || l.includes('flight') || l.includes('train') || l.includes('airport'))
+                    }
+                    if (l.includes('transfer') || l.includes('cab') || l.includes('transport') || l.includes('vehicle') || l.includes('driver') || l.includes('pick') || l.includes('drop') || l.includes('taxi') || l.includes('bus') || l.includes('flight') || l.includes('train') || l.includes('airport') || l.includes('minibus')) {
                       r.transfer.push(item);
-                    else
-                      r.others.push(item);
+                    }
                   });
                   return r;
                 }
 
                 const incl = categorise(trip.included);
                 const excl = categorise(trip.notIncluded);
-                const curIncl = incl[activeInclCat] || [];
+                const curIncl = (() => {
+                  const list = [...(incl[activeInclCat] || [])];
+                  if (activeInclCat === 'meals' && trip.summaryDetails?.meals && trip.summaryDetails.meals.length > 0) {
+                    trip.summaryDetails.meals.forEach((m: string) => {
+                      if (!list.some(existing => existing.toLowerCase().includes(m.toLowerCase()))) {
+                        list.unshift(m);
+                      }
+                    });
+                  }
+                  return list;
+                })();
                 const curExcl = excl[activeInclCat] || [];
                 const activeMeta = inclCategories.find(c => c.id === activeInclCat);
 
@@ -1343,7 +1451,17 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
                       <div className="block md:hidden space-y-3 w-full min-w-0">
                         {inclCategories.map(cat => {
                           const isExpanded = activeInclCat === cat.id;
-                          const curCatIncl = incl[cat.id] || [];
+                          const curCatIncl = (() => {
+                            const list = [...(incl[cat.id] || [])];
+                            if (cat.id === 'meals' && trip.summaryDetails?.meals && trip.summaryDetails.meals.length > 0) {
+                              trip.summaryDetails.meals.forEach((m: string) => {
+                                if (!list.some(existing => existing.toLowerCase().includes(m.toLowerCase()))) {
+                                  list.unshift(m);
+                                }
+                              });
+                            }
+                            return list;
+                          })();
                           return (
                             <div key={cat.id} className="border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-3xs">
                               {/* Accordion Trigger */}
@@ -1352,7 +1470,7 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
                                 className="w-full flex items-center justify-between px-5 py-4 text-left font-bold text-sm text-slate-800 bg-slate-50 hover:bg-slate-100 transition-colors"
                               >
                                 <span className="flex items-center gap-2.5">
-                                  <span className="text-base shrink-0">{cat.icon}</span>
+                                  <span className="text-base shrink-0 font-bold">{cat.icon}</span>
                                   <span>{cat.label}</span>
                                 </span>
                                 <ChevronDown size={18} className={`text-slate-400 shrink-0 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} />
@@ -1361,21 +1479,30 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
                               {/* Accordion Content */}
                               {isExpanded && (
                                 <div className="px-5 py-4 space-y-3 border-t border-slate-100 bg-white">
-                                  {/* Special Stays rendering inside Hotels */}
-                                  {cat.id === 'hotels' && trip.stays && trip.stays.length > 0 && (
-                                    <div className="mb-3 pb-3 border-b border-slate-100">
-                                      <p className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400 mb-2">Your Accommodation</p>
-                                      {trip.stays.map((stay, i) => (
-                                        <div key={i} className="flex gap-2 items-start">
-                                          <span className="text-indigo-500 shrink-0 mt-0.5">🏨</span>
-                                          <span className="text-sm font-semibold text-slate-800">{stay}</span>
+                                  {/* Special All Inclusions rendering */}
+                                  {cat.id === 'inclusions' ? (
+                                    trip.included && trip.included.length > 0 ? (
+                                      trip.included.map((item, i) => (
+                                        <div key={i} className="flex gap-3 items-start text-sm text-slate-700 leading-relaxed border-b border-slate-100 pb-3 last:border-0 last:pb-0">
+                                          <span className="text-emerald-500 font-bold shrink-0 mt-0.5">✓</span>
+                                          <span>{item}</span>
                                         </div>
-                                      ))}
-                                    </div>
-                                  )}
-
-                                  {/* Special Exclusions rendering */}
-                                  {cat.id === 'exclusions' ? (
+                                      ))
+                                    ) : (
+                                      <p className="text-sm text-slate-400 italic">No inclusions listed.</p>
+                                    )
+                                  ) : cat.id === 'hotels' ? (
+                                    trip.stays && trip.stays.length > 0 ? (
+                                      trip.stays.map((stay, i) => (
+                                        <div key={i} className="flex gap-2.5 items-start text-sm text-slate-700 leading-relaxed border-b border-slate-100 pb-3 last:border-0 last:pb-0">
+                                          <span className="text-indigo-500 shrink-0 mt-0.5">🏨</span>
+                                          <span className="font-semibold text-slate-800">{stay}</span>
+                                        </div>
+                                      ))
+                                    ) : (
+                                      <p className="text-sm text-slate-400 italic">Hotel details will be available shortly.</p>
+                                    )
+                                  ) : cat.id === 'exclusions' ? (
                                     trip.notIncluded.map((item, i) => (
                                       <div key={i} className="flex gap-3 items-start text-sm text-slate-700 leading-relaxed border-b border-slate-100 pb-3 last:border-0 last:pb-0">
                                         <span className="text-rose-400 font-bold shrink-0 mt-0.5">✕</span>
@@ -1421,26 +1548,58 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
                       {/* RIGHT — content cards (desktop only) */}
                       <div className="hidden md:block grow space-y-4 min-w-0 w-full">
 
-                        {/* Hotels/Generic card — show stays at top, then inclusions */}
-                        {activeInclCat !== 'exclusions' && activeInclCat !== 'payment' && activeInclCat !== 'cancellation' && (
+                        {/* All Inclusions card */}
+                        {activeInclCat === 'inclusions' && (
+                          <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-2xs">
+                            <div className="flex items-center gap-3 px-5 py-3.5 bg-gradient-to-r from-blue-600 to-blue-500 text-white">
+                              <span className="text-base font-bold">✓</span>
+                              <h3 className="font-bold text-sm tracking-wide">Inclusions</h3>
+                            </div>
+                            <div className="bg-white px-5 py-4 space-y-3">
+                              {trip.included && trip.included.length > 0 ? (
+                                trip.included.map((item, i) => (
+                                  <div key={i} className="flex gap-3 items-start text-sm text-slate-700 leading-relaxed border-b border-slate-100 pb-3 last:border-0 last:pb-0">
+                                    <span className="text-emerald-500 font-bold shrink-0 mt-0.5">✓</span>
+                                    <span>{item}</span>
+                                  </div>
+                                ))
+                              ) : (
+                                <p className="text-sm text-slate-400 italic">No inclusions listed.</p>
+                              )}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Hotels card — only show stays */}
+                        {activeInclCat === 'hotels' && (
+                          <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-2xs">
+                            <div className="flex items-center gap-3 px-5 py-3.5 bg-gradient-to-r from-blue-600 to-blue-500 text-white">
+                              <span className="text-base">🏨</span>
+                              <h3 className="font-bold text-sm tracking-wide">Hotels</h3>
+                            </div>
+                            <div className="bg-white px-5 py-4 space-y-3">
+                              {trip.stays && trip.stays.length > 0 ? (
+                                trip.stays.map((stay, i) => (
+                                  <div key={i} className="flex gap-3 items-start text-sm text-slate-700 leading-relaxed border-b border-slate-100 pb-3 last:border-0 last:pb-0">
+                                    <span className="text-indigo-500 shrink-0 mt-0.5">🏨</span>
+                                    <span className="font-semibold text-slate-800">{stay}</span>
+                                  </div>
+                                ))
+                              ) : (
+                                <p className="text-sm text-slate-400 italic">Hotel details will be available shortly.</p>
+                              )}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Category card (Sightseeing, Meals, Transfer) */}
+                        {activeInclCat !== 'inclusions' && activeInclCat !== 'hotels' && activeInclCat !== 'exclusions' && activeInclCat !== 'payment' && activeInclCat !== 'cancellation' && (
                           <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-2xs">
                             <div className="flex items-center gap-3 px-5 py-3.5 bg-gradient-to-r from-blue-600 to-blue-500 text-white">
                               <span className="text-base">{activeMeta?.icon}</span>
                               <h3 className="font-bold text-sm tracking-wide">{activeMeta?.label}</h3>
                             </div>
                             <div className="bg-white px-5 py-4 space-y-3">
-                              {/* Show stays/hotel names from trip.stays when Hotels tab is active */}
-                              {activeInclCat === 'hotels' && trip.stays && trip.stays.length > 0 && (
-                                <div className="mb-3 pb-3 border-b border-slate-100">
-                                  <p className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400 mb-2">Your Accommodation</p>
-                                  {trip.stays.map((stay, i) => (
-                                    <div key={i} className="flex gap-2 items-start">
-                                      <span className="text-indigo-500 shrink-0 mt-0.5">🏨</span>
-                                      <span className="text-sm font-semibold text-slate-800">{stay}</span>
-                                    </div>
-                                  ))}
-                                </div>
-                              )}
                               {curIncl.length > 0 ? curIncl.map((item, i) => (
                                 <div key={i} className="flex gap-3 items-start text-sm text-slate-700 leading-relaxed border-b border-slate-100 pb-3 last:border-0 last:pb-0">
                                   <span className="text-emerald-500 font-bold shrink-0 mt-0.5">✓</span>
@@ -1517,113 +1676,212 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
                 );
               })()}
 
-              {activeTab === 'summary' && (
-                <div className="space-y-6 animate-in fade-in duration-300">
-                  <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-2xs">
-                    {/* Blue Header Bar */}
-                    <div className="flex items-center gap-3 px-5 py-4 bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-3xs">
-                      <Calendar size={18} />
-                      <h3 className="font-extrabold text-sm uppercase tracking-wider">Day Wise Summary</h3>
-                    </div>
-
-                    <div className="bg-slate-50/50 p-4 sm:p-6">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {trip.itinerary.map((day) => {
-                          const summary = parseDayForSummary(day.description);
-                          return (
-                            <div key={day.day} className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-3xs hover:border-blue-200 transition-colors flex flex-col justify-between">
-                              <div className="space-y-3">
-                                {/* Day Tag & Title */}
-                                <div className="flex items-start gap-2.5 pb-2.5 border-b border-slate-100">
-                                  <Badge className="bg-blue-50 text-blue-600 hover:bg-blue-100 font-extrabold text-[10px] uppercase tracking-wider px-2 py-0.5 shrink-0 mt-0.5">
-                                    Day {day.day}
-                                  </Badge>
-                                  <h4 className="font-bold text-sm text-slate-800 leading-snug line-clamp-2">
-                                    {day.title}
-                                  </h4>
-                                </div>
-
-                                {/* Summary List Items */}
-                                <div className="space-y-2.5 pt-1">
-                                  {/* Hotels */}
-                                  {summary.hotels.length > 0 && (
-                                    <div className="flex gap-2 items-start text-xs sm:text-sm text-slate-700">
-                                      <span className="p-1 bg-indigo-50 text-indigo-500 rounded-md shrink-0">
-                                        <Hotel size={13} />
-                                      </span>
-                                      <span className="font-semibold">{summary.hotels.join(', ')}</span>
-                                    </div>
-                                  )}
-
-                                  {/* Transfers */}
-                                  {summary.transfers.length > 0 && (
-                                    <div className="flex gap-2 items-start text-xs sm:text-sm text-slate-700">
-                                      <span className="p-1 bg-blue-50 rounded-md shrink-0 flex items-center justify-center w-[21px] h-[21px]">
-                                        <img src="/images/car-icon.png" alt="Car" className="w-3.5 h-3.5 object-contain" />
-                                      </span>
-                                      <span className="font-medium line-clamp-2">{summary.transfers.join(', ')}</span>
-                                    </div>
-                                  )}
-
-                                  {/* Sightseeing */}
-                                  {summary.sightseeing.length > 0 && (
-                                    <div className="flex gap-2 items-start text-xs sm:text-sm text-slate-700">
-                                      <span className="p-1 bg-purple-50 rounded-md shrink-0 flex items-center justify-center w-[21px] h-[21px]">
-                                        <img src="/images/sighseeing-icon.png" alt="Sightseeing" className="w-3.5 h-3.5 object-contain" />
-                                      </span>
-                                      <span className="font-medium line-clamp-2">{summary.sightseeing.join(', ')}</span>
-                                    </div>
-                                  )}
-                                </div>
+              {activeTab === 'summary' && (() => {
+                const summaryOverview = getTripSummaryDetails(trip);
+                return (
+                  <div className="space-y-6 animate-in fade-in duration-300">
+                    {/* 1. ACCOMMODATION */}
+                    <div className="bg-white border border-slate-200/90 rounded-2xl overflow-hidden shadow-2xs hover:shadow-xs transition-all">
+                      <div className="flex items-center gap-2.5 px-5 py-3.5 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white font-extrabold text-sm uppercase tracking-wider">
+                        <Hotel size={18} />
+                        <span>Accomodation</span>
+                      </div>
+                      <div className="p-4 sm:p-5 bg-slate-50/40">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                          {summaryOverview.accommodation.map((item, idx) => {
+                            const isObj = typeof item === 'object' && item !== null;
+                            const city = isObj ? (item as any).city : '';
+                            const hotel = isObj ? (item as any).hotel : item;
+                            return (
+                              <div
+                                key={idx}
+                                className="flex flex-col justify-between gap-1.5 p-3.5 bg-white border border-slate-200/80 rounded-xl shadow-3xs hover:border-indigo-200 hover:shadow-2xs transition-all"
+                              >
+                                {city && (
+                                  <div className="flex items-center gap-1.5">
+                                    <span className="w-2 h-2 rounded-full bg-indigo-500 shrink-0" />
+                                    <span className="text-xs font-bold text-indigo-700 uppercase tracking-wide">
+                                      {city}
+                                    </span>
+                                  </div>
+                                )}
+                                <p className="text-xs sm:text-sm font-semibold text-slate-800 leading-snug">
+                                  {hotel}
+                                </p>
                               </div>
-
-                              {/* Meals at the bottom of the card */}
-                              {summary.meals.length > 0 && (
-                                <div className="mt-3 pt-2.5 border-t border-slate-100 flex gap-2 items-center text-xs sm:text-sm text-emerald-700 bg-emerald-50/50 px-2 py-1 rounded-lg w-fit">
-                                  <span className="text-emerald-500 shrink-0">
-                                    <Utensils size={12} />
-                                  </span>
-                                  <span className="font-bold text-[11px] uppercase tracking-wider">{summary.meals.join(', ')}</span>
-                                </div>
-                              )}
-                            </div>
-                          );
-                        })}
+                            );
+                          })}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              )}
 
-              {activeTab === 'highlights' && (
-                <div className="space-y-6 animate-in fade-in duration-300">
-                  <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-2xs">
-                    {/* Orange Header Bar */}
-                    <div className="flex items-center gap-3 px-5 py-4 bg-gradient-to-r from-orange-500 to-orange-400 text-white shadow-3xs">
-                      <Star size={18} className="fill-amber-300 text-amber-300" />
-                      <h3 className="font-extrabold text-sm uppercase tracking-wider">Activities & Experiences</h3>
+                    {/* 2. MEALS & 3. TRANSFERS GRID */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {/* MEALS */}
+                      <div className="bg-white border border-slate-200/90 rounded-2xl overflow-hidden shadow-2xs flex flex-col">
+                        <div className="flex items-center gap-2.5 px-5 py-3.5 bg-gradient-to-r from-emerald-600 to-emerald-500 text-white font-extrabold text-sm uppercase tracking-wider">
+                          <Utensils size={18} />
+                          <span>Meals</span>
+                        </div>
+                        <div className="p-4 sm:p-5 space-y-2.5 flex-1 bg-slate-50/40">
+                          {summaryOverview.meals.map((item, idx) => (
+                            <div
+                              key={idx}
+                              className="flex items-center gap-3 p-3 bg-white border border-emerald-100 rounded-xl shadow-3xs"
+                            >
+                              <span className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                                <Utensils size={14} />
+                              </span>
+                              <span className="text-xs sm:text-sm font-bold text-slate-800">
+                                {item}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* TRANSFERS */}
+                      <div className="bg-white border border-slate-200/90 rounded-2xl overflow-hidden shadow-2xs flex flex-col">
+                        <div className="flex items-center gap-2.5 px-5 py-3.5 bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-extrabold text-sm uppercase tracking-wider">
+                          <Car size={18} />
+                          <span>Transfers</span>
+                        </div>
+                        <div className="p-4 sm:p-5 space-y-2.5 flex-1 bg-slate-50/40">
+                          {summaryOverview.transfers.map((item, idx) => (
+                            <div
+                              key={idx}
+                              className="flex items-start gap-3 p-3 bg-white border border-blue-100 rounded-xl shadow-3xs"
+                            >
+                              <span className="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 mt-0.5">
+                                <Car size={14} />
+                              </span>
+                              <span className="text-xs sm:text-sm font-semibold text-slate-800 leading-snug">
+                                {item}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
                     </div>
 
-                    <div className="bg-slate-50/30 p-5 sm:p-6">
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {trip.highlights.map((item, idx) => (
-                          <div
-                            key={idx}
-                            className="p-4 bg-white border border-slate-200/80 rounded-2xl flex items-start gap-3 hover:border-orange-200 hover:shadow-2xs transition-all duration-300 group"
-                          >
-                            <div className="w-8 h-8 rounded-xl bg-orange-50 text-orange-500 flex items-center justify-center font-black text-xs shrink-0 group-hover:bg-orange-100 transition-colors">
-                              {idx + 1}
-                            </div>
-                            <p className="text-slate-700 text-sm font-semibold leading-relaxed pt-1">
-                              {item}
-                            </p>
+                    {/* 4. ACTIVITIES & EXPERIENCES */}
+                    <div className="bg-white border border-slate-200/90 rounded-2xl overflow-hidden shadow-2xs">
+                      <div className="flex items-center gap-2.5 px-5 py-3.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-extrabold text-sm uppercase tracking-wider">
+                        <Sparkles size={18} />
+                        <span>Activities & Experiences</span>
+                      </div>
+                      <div className="p-4 sm:p-6 bg-slate-50/40">
+                        {summaryOverview.activities.length > 0 &&
+                          typeof summaryOverview.activities[0] === 'object' &&
+                          'items' in (summaryOverview.activities[0] as any) ? (
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+                            {(summaryOverview.activities as any[]).map((group, gIdx) => (
+                              <div
+                                key={gIdx}
+                                className="bg-white border border-slate-200/80 rounded-2xl p-5 space-y-3.5 shadow-3xs hover:border-orange-200 transition-all flex flex-col"
+                              >
+                                {group.city && (
+                                  <div className="flex items-center gap-2 pb-2.5 border-b border-slate-100 text-orange-600 font-extrabold text-xs sm:text-sm uppercase tracking-wider">
+                                    <MapPin size={16} className="text-orange-500 shrink-0" />
+                                    <span>{group.city}</span>
+                                  </div>
+                                )}
+                                <ul className="space-y-2.5 flex-1">
+                                  {group.items.map((it: string, itIdx: number) => (
+                                    <li
+                                      key={itIdx}
+                                      className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-700 leading-relaxed"
+                                    >
+                                      <span className="w-1.5 h-1.5 rounded-full bg-orange-400 mt-2 shrink-0" />
+                                      <span className="font-medium text-slate-800">{it}</span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            ))}
                           </div>
-                        ))}
+                        ) : (
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+                            {(summaryOverview.activities as string[]).map((item, idx) => (
+                              <div
+                                key={idx}
+                                className="flex items-start gap-3 p-3.5 bg-white border border-slate-200/80 rounded-xl shadow-3xs hover:border-orange-200 transition-colors"
+                              >
+                                <span className="w-2 h-2 rounded-full bg-orange-500 mt-1.5 shrink-0" />
+                                <span className="text-xs sm:text-sm font-semibold text-slate-800 leading-snug">
+                                  {item}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
-                </div>
-              )}
+                );
+              })()}
+
+              {activeTab === 'highlights' && (() => {
+                const summaryOverview = getTripSummaryDetails(trip);
+                return (
+                  <div className="space-y-6 animate-in fade-in duration-300">
+                    <div className="rounded-2xl overflow-hidden border border-slate-200/90 bg-white shadow-2xs">
+                      {/* Orange Header Bar */}
+                      <div className="flex items-center gap-2.5 px-5 py-3.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-extrabold text-sm uppercase tracking-wider">
+                        <Sparkles size={18} />
+                        <span>Activities & Experiences</span>
+                      </div>
+
+                      <div className="p-4 sm:p-6 bg-slate-50/40">
+                        {summaryOverview.activities.length > 0 &&
+                          typeof summaryOverview.activities[0] === 'object' &&
+                          'items' in (summaryOverview.activities[0] as any) ? (
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+                            {(summaryOverview.activities as any[]).map((group, gIdx) => (
+                              <div
+                                key={gIdx}
+                                className="bg-white border border-slate-200/80 rounded-2xl p-5 space-y-3.5 shadow-3xs hover:border-orange-200 transition-all flex flex-col"
+                              >
+                                {group.city && (
+                                  <div className="flex items-center gap-2 pb-2.5 border-b border-slate-100 text-orange-600 font-extrabold text-xs sm:text-sm uppercase tracking-wider">
+                                    <MapPin size={16} className="text-orange-500 shrink-0" />
+                                    <span>{group.city}</span>
+                                  </div>
+                                )}
+                                <ul className="space-y-2.5 flex-1">
+                                  {group.items.map((it: string, itIdx: number) => (
+                                    <li
+                                      key={itIdx}
+                                      className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-700 leading-relaxed"
+                                    >
+                                      <span className="w-1.5 h-1.5 rounded-full bg-orange-400 mt-2 shrink-0" />
+                                      <span className="font-medium text-slate-800">{it}</span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+                            {(summaryOverview.activities as string[]).map((item, idx) => (
+                              <div
+                                key={idx}
+                                className="flex items-start gap-3 p-3.5 bg-white border border-slate-200/80 rounded-xl shadow-3xs hover:border-orange-200 transition-colors"
+                              >
+                                <span className="w-2 h-2 rounded-full bg-orange-500 mt-1.5 shrink-0" />
+                                <span className="text-xs sm:text-sm font-semibold text-slate-800 leading-snug">
+                                  {item}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
 
 
 

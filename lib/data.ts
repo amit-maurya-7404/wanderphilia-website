@@ -29,6 +29,24 @@ export interface TripInclusionCounts {
   tripGuide?: boolean | string
 }
 
+export interface TripSummaryActivityGroup {
+  city?: string
+  title?: string
+  items: string[]
+}
+
+export interface TripSummaryAccommodationItem {
+  city?: string
+  hotel: string
+}
+
+export interface TripSummaryDetails {
+  accommodation?: (string | TripSummaryAccommodationItem)[]
+  meals?: string[]
+  transfers?: string[]
+  activities?: (string | TripSummaryActivityGroup)[]
+}
+
 export interface Trip {
   id: string
   title: string
@@ -63,6 +81,7 @@ export interface Trip {
   customRoute?: string
   overviewPoints?: string[]
   stays?: string[]
+  summaryDetails?: TripSummaryDetails
   note?: string | string[]
   paymentPolicy?: string[]
   cancellationPolicy?: string[]
@@ -9570,148 +9589,171 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
       'Trip End: Ho Chi Minh',
       'Major Highlights: Hanoi Old Quarters & Cyclo Tour, Ninh Binh Trang An Boat Ride & Mua Cave, Luxury Overnight Train & Sleeper Bus, Sapa Rong May Glass Bridge & Alpine Coaster, Fansipan Peak Cable Car, Hoi An Ancient Town & Lantern Boat Ride, Ba Na Hills & Golden Bridge, Cu Chi Tunnels with AK-47 Shooting.'
     ],
+    summaryDetails: {
+      accommodation: [
+        { city: 'Hanoi', hotel: 'Babylon Grand Hotel / Similar' },
+        { city: 'Sapa', hotel: 'Sapa Relax Hotel / Similar' },
+        { city: 'Hoi An', hotel: 'Vinh Hung Old Town Hotel / Similar' },
+        { city: 'Da Nang', hotel: 'Merry Hotel / Similar' },
+        { city: 'Ho Chi Minh', hotel: 'Liberty Green Hotel / Similar' }
+      ],
+      meals: [
+        '7 Breakfast'
+      ],
+      transfers: [
+        'Airport & Sightseeing in Private Mini Bus',
+        'Hanoi - Sapa By Luxury Train',
+        'Sapa - Hanoi By Sleeper Bus'
+      ],
+      activities: [
+        {
+          city: 'Hanoi',
+          items: [
+            'Hanoi Guided City Tour Old Quarters',
+            'Nin Binh Experience - Trang An Boat Ride , Visit Mua Cave View point , Hoa Lu Ancient Capital',
+            'Experience Hanoi on Cycle ( Hanoi Cyclo Tour )',
+            'Evening Visit Train Street & Famous Beer Experience.'
+          ]
+        },
+        {
+          city: 'Sapa',
+          items: [
+            'Rong May Glass Bridge Experience with Ziplining',
+            'Rainbow Slide & Alpine Coaters Ride Experience ( Experience worth Remembering )',
+            'Cat Cat Village Trail',
+            'Fansipan Peak with Moung Hua Train & Cable Car Experience'
+          ]
+        },
+        {
+          city: 'Da Nang',
+          items: [
+            'Visit Ancient Town Hoi An',
+            'Iconic Coconut Basket Ride',
+            'Experience Hoi An Town On Bicycle',
+            'Evening Experience Lantern Boat Ride',
+            'Visit Bana Hill Cable Car, Golden Bridge, Fantasy Park & French Village.',
+            'Danang City Tour'
+          ]
+        },
+        {
+          city: 'Ho Chi Minh',
+          items: [
+            'Visit Cu Chi Tunnel & Experience - Ak 47 Shooting.',
+            'Visit Apartment Cafe Experience Best Egg Coffee at Poo Cafe',
+            'Night enjoy at Bui Vein Walking Street.'
+          ]
+        }
+      ]
+    },
     itinerary: [
       {
         day: 1,
-        title: 'Hanoi Arrival | Hanoi City Tour | Evening Visit Train Street & Beer Street',
+        title: 'Hanoi Arrival , Hanoi City Tour , Evening visit Train Street & Beer Street',
         description: [
-          'Transfer: We will pick you up at Noi Bai International Airport and transfer you to Hanoi Hotel by Private Mini Bus.',
-          'Hotels: Check-in to your hotel. Overnight stay at Babylon Grand Hotel / Similar in Hanoi.',
-          'Sightseeing: Hanoi Guided City Tour through the vibrant Old Quarters and historic French colonial quarters.',
-          'Sightseeing: Experience Hanoi on Cycle (Hanoi Cyclo Tour) exploring the bustling lanes, local markets, and Hoan Kiem Lake.',
-          'Sightseeing: Evening visit to the famous Train Street to watch trains pass through narrow residential alleys, followed by a lively beer and nightlife experience on Ta Hien Beer Street.',
-          'Meals: Welcome refreshment / Dinner at local cafe as per arrival schedule.'
+          'Transfer: We will pick you up at Noi Bai Airport and transfer you to Hanoi Hotel Private Transfers By Mini Bus.',
+          'Accommodation: Babylon Grand Hotel',
+          'Sightseeing: Hanoi Guided City Tour Old Quarters',
+          'Sightseeing: Experience Hanoi on Cycle ( Hanoi Cyclo Tour )',
+          'Sightseeing: Evening Visit Train Street & Famous Beer Experience.'
         ]
       },
       {
         day: 2,
-        title: 'Ninh Binh Day Tour | Trang An Boat Ride, Mua Cave & Hoa Lu Ancient Capital | Overnight Train to Sapa',
+        title: 'Ninh - Binh - Trang An - Mua Cave , Overnight Train to Sapa',
         description: [
-          'Meals: Wake up and enjoy a hearty breakfast at your hotel in Hanoi.',
-          'Transfer: Board your Private Mini Bus transfer heading south to the breathtaking province of Ninh Binh.',
-          'Sightseeing: Ninh Binh Experience — Embark on a serene Trang An Boat Ride gliding through emerald waterways surrounded by majestic limestone karst mountains and hidden water caves.',
-          'Sightseeing: Hike up to the spectacular Mua Cave Viewpoint for 360-degree panoramic vistas of the Ngo Dong River and rice valleys.',
-          'Sightseeing: Visit Hoa Lu Ancient Capital, the historic 10th-century seat of Vietnamese kings with ancient Dinh and Le temples.',
-          'Transfer: Return to Hanoi and board the SP3 Luxury Overnight Train to Sapa (Hanoi → Sapa SP3: 22:00–05:55 hrs).',
-          'Hotels: Overnight stay in Luxury Train (4-berth air-conditioned sleeper cabin).'
+          'Transfer: Luxury Overnight Train To Sapa  Hanoi → Sapa: SP3 Overnight Train — 22:00–05:55 hrs',
+          'Accommodation: Luxury Overnight Train (SP3 AC Sleeper Cabin)',
+          'Sightseeing: Nin Binh Experience - Trang An Boat Ride , Visit Mua Cave View point , Hoa Lu Ancient Capital'
         ]
       },
       {
         day: 3,
-        title: 'Sapa Exploration | Rong May Glass Bridge, Rainbow Slide, Alpine Coaster & Cat Cat Village',
+        title: 'Sapa Rong May Glass Bridge , Rainbow Slide , Alpine Coaster & Cat Cat Village',
         description: [
-          'Transfer: Arrive at Lao Cai station early morning and take a scenic private transfer up to Sapa mountain town.',
-          'Hotels: Check-in and freshen up at Sapa Relax Hotel / Similar in Sapa.',
-          'Sightseeing: Rong May Glass Bridge Experience with Ziplining — Step out onto the transparent skywalk hovering high over the Hoang Lien Son mountain range.',
-          'Sightseeing: Thrilling Rainbow Slide & Alpine Coaster Ride Experience through the lush mountain curves for a memorable adrenaline rush.',
-          'Sightseeing: Cat Cat Village Trail — Trek through terraced rice fields, scenic waterfalls, and traditional Black Hmong ethnic wooden stilt houses and handicraft workshops.',
-          'Meals: Breakfast and local lunch / dinner in Sapa town.',
-          'Hotels: Overnight stay at Sapa Relax Hotel / Similar in Sapa.'
+          'Accommodation: Sapa Relax Hotel',
+          'Sightseeing: Muong Hoa Glass Bridge',
+          'Sightseeing: Rainbow Slide Experience',
+          'Sightseeing: Apline Coaster',
+          'Sightseeing: Cat Cat Villlage Trail'
         ]
       },
       {
         day: 4,
-        title: 'Fansipan Peak via Muong Hoa Monorail & Cable Car | Sleeper Bus Transfer from Sapa to Hanoi',
+        title: 'Fansipan Peak with Muong Hoa Train & Cable Car , Sleeper Bus Transfer from Sapa - Hanoi',
         description: [
-          'Meals: Enjoy a delicious buffet breakfast with mountain views at your hotel.',
-          'Transfer: Private transfer to Sun World Fansipan Legend station.',
-          'Sightseeing: Ride the scenic Muong Hoa Monorail Train through the valley and ascend Indochina’s rooftop via the world’s longest three-rope Fansipan Cable Car.',
-          'Sightseeing: Explore Fansipan Peak (3,143m) summit complex, Giant Amitabha Buddha statue, and spiritual pagodas amid floating clouds.',
-          'Transfer: Board the comfortable Sleeper Bus from Sapa to Hanoi (Single Cabin) for a smooth afternoon journey.',
-          'Hotels: Check-in and overnight stay at Babylon Grand Hotel / Similar in Hanoi.',
-          'Sightseeing: Enjoy vibrant evening nightlife and shopping in Hanoi Old Quarter.',
-          'Meals: Breakfast at hotel.'
+          'Transfer: Sleeper Bus Sapa - Hanoi',
+          'Accommodation: Babylon Grand Hotel',
+          'Sightseeing: Fansipan Peak with Muong Hoa Train & Cable Car',
+          'Sightseeing: Enjoy Nightlife in Hanoi'
         ]
       },
       {
         day: 5,
-        title: 'Flight from Hanoi to Da Nang | Hoi An Ancient Town Exploration, Coconut Basket Ride & Lantern Boat',
+        title: 'Hanoi to Danang , Hoi An ancient town Exploration',
         description: [
-          'Meals: Enjoy breakfast at the hotel in Hanoi.',
-          'Transfer: Early morning private transfer to Noi Bai International Airport for your domestic flight to Da Nang.',
-          'Transfer: Arrive at Da Nang airport and board your private transfer to the historic port town of Hoi An.',
-          'Hotels: Check-in and freshen up. Overnight stay at Vinh Hung Old Town Hotel / Merry Hotel / Similar in Hoi An / Da Nang.',
-          'Sightseeing: Iconic Coconut Basket Boat Ride through the tranquil Bay Mau water coconut forest, complete with traditional boat spinning and folk performances.',
-          'Sightseeing: Scenic Bicycle Tour around the peaceful rural villages and lush countryside of Hoi An.',
-          'Sightseeing: Hoi An Ancient Town Exploration (UNESCO World Heritage Site) — Walk across the 17th-century Japanese Covered Bridge, Chinese Assembly Halls, and heritage houses.',
-          'Sightseeing: Evening Lantern Boat Ride on the Hoai River with a magical flower lantern release ceremony for good luck.',
-          'Hotels: Overnight stay at Vinh Hung Old Town Hotel / Merry Hotel / Similar in Hoi An / Da Nang.'
+          'Transfer: Early Morning Private Transnfer To Noi Bai International Airport & flight to Danang',
+          'Accommodation: Vinh Hung Old Town Hotel / Merry Hotel',
+          'Sightseeing: Hoi An Ancient Town Exploration',
+          'Sightseeing: Coconnut Bakset Ride',
+          'Sightseeing: Bicycle Tour in Hoi An Village',
+          'Sightseeing: Lattern Boat Ride Experience'
         ]
       },
       {
         day: 6,
-        title: 'Ba Na Hills & Golden Hands Bridge | French Village & Fantasy Park | Danang City Tour & Dragon Bridge',
+        title: 'Visit Bana Hill Cable Car, Golden Bridge, Fantasy Park & French Village & Visit Dragon Bridge.',
         description: [
-          'Meals: Wake up and savor breakfast at the hotel in Da Nang.',
-          'Transfer: Board your Private Mini Bus transfer to the Ba Na Hills mountain resort.',
-          'Sightseeing: Ba Na Hills Experience — Take the world-record cable car ride ascending through cloud forests to the summit.',
-          'Sightseeing: Walk along the world-famous Golden Bridge held aloft by colossal weathered stone hands with breathtaking vistas.',
-          'Sightseeing: Explore the European-style French Village, Linh Ung Pagoda, Le Jardin D\'Amour flower gardens, and thrilling indoor rides at Fantasy Park.',
-          'Transfer: Descend via cable car and return to Da Nang city by private bus.',
-          'Sightseeing: Danang City Tour — Visit the iconic Dragon Bridge, Love Bridge, Han River waterfront, and relax along My Khe Beach.',
-          'Hotels: Overnight stay at Merry Hotel / Similar in Da Nang.'
+          'Accommodation: Merry Hotel',
+          'Sightseeing: Bana Hills',
+          'Sightseeing: Golden Hands Bridge',
+          'Sightseeing: Fantasy Park',
+          'Sightseeing: French Village',
+          'Sightseeing: Evening at Beach'
         ]
       },
       {
         day: 7,
-        title: 'Flight to Ho Chi Minh City | Historic Cu Chi Tunnels with AK-47 Shooting, Apartment Cafe & Bui Vien',
+        title: 'Early Morning Flight Danang to Ho Chi Minh , Cu Chi Tunnel',
         description: [
-          'Meals: Breakfast at the hotel in Da Nang.',
-          'Transfer: Early morning private transfer to Da Nang International Airport for your flight to Ho Chi Minh City (Saigon).',
-          'Transfer: Arrive at Tan Son Nhat Airport and transfer to the city center by Private Mini Bus.',
-          'Hotels: Check-in to your hotel. Overnight stay at Liberty Green Hotel / Similar in Ho Chi Minh City.',
-          'Sightseeing: Cu Chi Tunnels Underground Network Exploration — Walk through the historic military tunnels, secret trapdoors, underground bunkers, and enjoy the AK-47 live shooting range experience.',
-          'Sightseeing: Visit the iconic 9-story Apartment Cafe on Nguyen Hue Boulevard and taste the world-famous Vietnamese Egg Coffee at Poo Cafe.',
-          'Sightseeing: Dive into the high-energy nightlife, live music, and street food at Bui Vien Walking Street.',
-          'Hotels: Overnight stay at Liberty Green Hotel / Similar in Ho Chi Minh City.'
+          'Transfer: Early Morning Private Transnfer To International Airport & flight to Ho Chi Minh',
+          'Accommodation: Liberty Green Hotel',
+          'Sightseeing: Cu Chi Tunnel with Ak 47 Shooting',
+          'Sightseeing: Visit Most Iconic Apartment Cafe',
+          'Sightseeing: Bui Vein Walking Street'
         ]
       },
       {
         day: 8,
-        title: 'Departure from Ho Chi Minh City | Unforgettable Memories of Vietnam',
+        title: 'Your amazing adventure comes to an end with unforgettable memories to take Home',
         description: [
-          'Meals: Enjoy your final Vietnamese breakfast at the hotel.',
-          'Hotels: Check-out from Liberty Green Hotel / Similar in Ho Chi Minh City.',
-          'Sightseeing: Last-minute souvenir shopping for Vietnamese coffee, silk, and handicrafts in local markets before departure.',
-          'Transfer: Board your fixed private airport transfer to Tan Son Nhat International Airport as per group departure flight schedule.',
-          'Transfer: Depart with unforgettable memories, photographs, and friendships from your 8-day Vietnam community adventure!'
+          'Transfer: Airport Transfer fixed timing as per Group Departure.'
         ]
       }
     ],
     included: [
-      'Hotels accommodation with daily Breakfast (Double & Triple Sharing): 2N Hanoi, 2N Sapa, 2N Danang, 1N Ho Chi Minh',
-      'Ground transfer by Private Mini Bus, joining Sleeper Bus & Luxury Train as mentioned in the itinerary',
-      'Hanoi to Sapa: SP3 Luxury Overnight Train Ticket (4-berth air-conditioned sleeper cabin)',
-      'Sapa to Hanoi: One-way Sleeper Bus transfer (single cabin)',
-      'Airport Pickups and Drops as per group flight schedule',
-      'Hanoi Guided City Tour & Old Quarters Cyclo Tour',
-      'Train Street & Beer Street experience in Hanoi',
-      'Ninh Binh Day Tour: Trang An boat ride, Mua Cave viewpoint & Hoa Lu ancient capital',
-      'Sapa Tour: Rong May Glass Bridge with Ziplining, Rainbow Slide & Alpine Coaster ride',
-      'Cat Cat Village cultural trail in Sapa',
-      'Fansipan Peak roundtrip Cable Car with Muong Hoa monorail train ticket',
-      'Hoi An Ancient Town tour with Bicycle ride around villages',
-      'Iconic Coconut Basket Boat ride with folk dance & show',
-      'Evening Lantern Boat ride on Hoai River with lantern release',
-      'Ba Na Hills full-day tour with Cable Car, Golden Hands Bridge, French Village & Fantasy Park',
-      'Danang City Tour: Dragon Bridge, Love Bridge & beach visit',
-      'Cu Chi Tunnels underground exploration with AK-47 Shooting experience',
-      'Iconic Apartment Cafe visit with famous Egg Coffee experience',
-      'Bui Vien Walking Street nightlife experience in Ho Chi Minh',
-      'Vietnam E-Visa assistance & approval',
-      'Wanderphilia Trip Guide plus experienced local English-speaking tour guides',
-      'Mineral water bottles provided on tour days (2 bottles per person per day)'
+      'Ground transfer by Private minibus, joining sleeping bus & luxury train as mentioned',
+      'Wanderphilia Guide plus local guide.',
+      'Guided Hanoi city tour',
+      'Hanoi Cycle Tour',
+      'Ninh Binh Trang An boattrip, Mua Cave',
+      'Rong May Glass brigde, Cat Cat village, slide Alpine Coaster in Sapa',
+      'Cable car Fansifan with roundtrip Muong hoa train',
+      'Hoi An Cocunut basket ride explore hoi by cycle evening lattern boat ride experience',
+      'Visit Bana Hill Cable Car, Golden Bridge, Fantasy Park & French Village & Visit Dragon Bridge',
+      'Cu Chi Tunnel with AK 47 Shoooting tour',
+      'Water on tours ( 2bottle/pax.day)',
+      'Hotels accommodation with Breakfast ( Double & Triple Sharing )',
+      'One way train ticket for overnight (4berth/cabin)',
+      'One way by sleeping day bus from Sapa to Hanoi ( single cabin)',
+      'Vietnam E Visa'
     ],
     notIncluded: [
-      'Domestic flights (Hanoi to Da Nang & Da Nang to Ho Chi Minh City)',
-      'International airfare and airport taxes',
-      'Meals not mentioned in the inclusions (Lunch & Dinner)',
-      'Compulsory tipping for guide & driver: $3 USD per person per day',
-      'Vietnam Visa stamping fee at airport (if applicable)',
-      'Personal expenses like laundry, telephone calls, drinks & additional activities',
-      'Government taxes, GST & TCS as applicable extra',
-      'Travel insurance and medical expenses',
-      'Any optional activities, rides, or services not explicitly mentioned in inclusions'
+      'Meals as mentioned above',
+      'Compulsory tipping for guide & driver: 3usd/pax/day',
+      'Governmnet Taxes & Charges',
+      'Domestic flight',
+      'Visa Fee',
+      'Ohters items not mentioned above'
     ],
     stays: [
       'Hanoi: Babylon Grand Hotel / Similar',
