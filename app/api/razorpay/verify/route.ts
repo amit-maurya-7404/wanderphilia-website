@@ -1,7 +1,7 @@
 import crypto from 'crypto'
 import Razorpay from 'razorpay'
 import { NextResponse } from 'next/server'
-import { sendEmail } from '@/lib/email'
+import { sendEmail, ADMIN_NOTIFICATION_EMAIL } from '@/lib/email'
 import { sendWhatsApp } from '@/lib/whatsapp'
 
 export async function POST(req: Request) {
@@ -152,7 +152,7 @@ async function triggerNotifications(params: NotificationParams) {
     endDate
   } = params
 
-  const adminEmail = 'experiences@wanderphilia.com'
+  const adminEmail = ADMIN_NOTIFICATION_EMAIL
   const formattedAmount = Number(totalAmount).toLocaleString('en-IN')
   const errors: string[] = []
   let customerEmailSuccess = false

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { submitToZohoCRM, getDestinationFromTrip } from '@/lib/zoho';
-import { sendEmail } from '@/lib/email';
+import { sendEmail, ADMIN_NOTIFICATION_EMAIL } from '@/lib/email';
 import { trips } from '@/lib/data';
 
 export const dynamic = 'force-dynamic';
@@ -217,7 +217,7 @@ export async function POST(req: Request) {
       `;
 
       await sendEmail({
-        to: 'experiences@wanderphilia.com',
+        to: ADMIN_NOTIFICATION_EMAIL,
         subject: `🔔 New Booking Inquiry: ${fullName} - ${displayTripTitle}`,
         html: adminEmailHtml,
         replyTo: email,

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { sendEmail } from '@/lib/email'
+import { sendEmail, ADMIN_NOTIFICATION_EMAIL } from '@/lib/email'
 import { submitToZohoCRM, getDestinationFromTrip } from '@/lib/zoho'
 import { trips } from '@/lib/data'
 
@@ -99,7 +99,7 @@ export async function POST(request: NextRequest) {
     `
 
     await sendEmail({
-      to: 'experiences@wanderphilia.com',
+      to: ADMIN_NOTIFICATION_EMAIL,
       subject: `New Callback Request: ${name} - ${title}`,
       html: adminEmailContent,
       replyTo: email,

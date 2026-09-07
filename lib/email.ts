@@ -40,6 +40,8 @@ function createEmailTransporter() {
   })
 }
 
+export const ADMIN_NOTIFICATION_EMAIL = process.env.ADMIN_EMAIL || 'wanderphiliaexperiences@gmail.com'
+
 export async function sendEmail({
   to,
   subject,
@@ -71,7 +73,7 @@ export async function sendEmail({
       to,
       subject,
       html,
-      replyTo: replyTo || 'experiences@wanderphilia.com',
+      replyTo: replyTo || ADMIN_NOTIFICATION_EMAIL,
     }
 
     const info = await transporter.sendMail(mailOptions)

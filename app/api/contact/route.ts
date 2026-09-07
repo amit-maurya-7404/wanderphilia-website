@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { sendEmail } from '@/lib/email'
+import { sendEmail, ADMIN_NOTIFICATION_EMAIL } from '@/lib/email'
 import { submitToZohoCRM } from '@/lib/zoho'
 
 export async function POST(request: NextRequest) {
@@ -81,7 +81,7 @@ export async function POST(request: NextRequest) {
     `
 
     await sendEmail({
-      to: 'experiences@wanderphilia.com',
+      to: ADMIN_NOTIFICATION_EMAIL,
       subject: `New Contact Form Submission: ${name}${subject ? ` - ${subject}` : ''}`,
       html: adminEmailContent,
       replyTo: email,
