@@ -2,53 +2,40 @@ import nodemailer from 'nodemailer'
 
 /**
  * Creates and returns a configured Nodemailer transporter.
- * Supports Zoho Mail, Google Workspace, Gmail, or any custom SMTP host.
+ * Specifically configured for Gmail SMTP using Gmail App Passwords.
  */
 function createEmailTransporter() {
-  const emailUser = process.env.SMTP_USER || process.env.EMAIL_USER
-  const emailPass = process.env.SMTP_PASS || process.env.EMAIL_PASS
-  const smtpHost = process.env.SMTP_HOST
-  const smtpPort = process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT, 10) : undefined
-  const smtpSecure = process.env.SMTP_SECURE !== undefined ? process.env.SMTP_SECURE === 'true' : (smtpPort === 465 || !smtpPort)
+  const emailUser = process.env.SMTP_USER || process.env.EMAIL_USER || 'wanderphiliaexperiences@gmail.com'
+  const emailPass = process.env.SMTP_PASS || process.env.EMAIL_PASS || ''
+  const cleanPass = emailPass.replace(/\s+/g, '').replace(/["']/g, '').trim()
 
-  if (!emailUser || !emailPass) {
-    console.error('Missing EMAIL_USER/SMTP_USER or EMAIL_PASS/SMTP_PASS environment variables for email sending.')
-  }
-
-  // 1. If explicit SMTP host is configured
-  if (smtpHost) {
+  // 1. If explicit custom SMTP host is configured
+  if (process.env.SMTP_HOST) {
+    const smtpPort = process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT, 10) : 465
     return nodemailer.createTransport({
-      host: smtpHost,
-      port: smtpPort || (smtpSecure ? 465 : 587),
-      secure: smtpSecure,
+      host: process.env.SMTP_HOST,
+      port: smtpPort,
+      secure: process.env.SMTP_SECURE !== undefined ? process.env.SMTP_SECURE === 'true' : smtpPort === 465,
       auth: {
         user: emailUser,
-        pass: emailPass,
+        pass: cleanPass,
       },
     })
   }
 
-  // 2. If email domain is custom/Zoho Mail (e.g. experiences@wanderphilia.com)
-  if (emailUser && !emailUser.endsWith('@gmail.com')) {
-    // Default to Zoho Mail India / Global SMTP pro for domain emails
-    const zohoDomain = process.env.ZOHO_API_DOMAIN?.includes('.com') ? 'smtppro.zoho.com' : 'smtppro.zoho.in'
-    return nodemailer.createTransport({
-      host: zohoDomain,
-      port: 465,
-      secure: true,
-      auth: {
-        user: emailUser,
-        pass: emailPass,
-      },
-    })
-  }
+  // 2. Gmail SMTP configuration using wanderphiliaexperiences@gmail.com and Gmail App Password
+  const gmailAuthUser = emailUser.includes('@gmail.com') ? emailUser : 'wanderphiliaexperiences@gmail.com'
 
-  // 3. Default fallback for standard @gmail.com accounts
   return nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
     auth: {
-      user: emailUser,
-      pass: emailPass,
+      user: gmailAuthUser,
+      pass: cleanPass,
+    },
+    tls: {
+      rejectUnauthorized: false,
     },
   })
 }
@@ -64,13 +51,15 @@ export async function sendEmail({
   html: string
   replyTo?: string
 }) {
-  const emailUser = process.env.SMTP_USER || process.env.EMAIL_USER
-  const emailPass = process.env.SMTP_PASS || process.env.EMAIL_PASS
-  const emailFrom = process.env.EMAIL_FROM || (emailUser ? `"Wanderphilia Experiences" <${emailUser}>` : '"Wanderphilia Experiences" <experiences@wanderphilia.com>')
+  const emailUser = process.env.SMTP_USER || process.env.EMAIL_USER || 'wanderphiliaexperiences@gmail.com'
+  const emailPass = process.env.SMTP_PASS || process.env.EMAIL_PASS || ''
+  const cleanPass = emailPass.replace(/\s+/g, '').replace(/["']/g, '').trim()
+  const gmailAuthUser = emailUser.includes('@gmail.com') ? emailUser : 'wanderphiliaexperiences@gmail.com'
+  const emailFrom = process.env.EMAIL_FROM || `"Wanderphilia Experiences" <${gmailAuthUser}>`
 
-  if (!emailUser || !emailPass) {
-    const error = new Error('EMAIL_USER and EMAIL_PASS must be configured in environment variables (.env.local).')
-    console.error('Email sending error:', error)
+  if (!cleanPass) {
+    const error = new Error('EMAIL_PASS (Gmail 16-character App Password) is missing in .env.local')
+    console.error('[sendEmail Error]:', error.message)
     return { success: false, error }
   }
 
@@ -83,10 +72,6 @@ export async function sendEmail({
       subject,
       html,
       replyTo: replyTo || 'experiences@wanderphilia.com',
-      headers: {
-        'Auto-Submitted': 'auto-generated',
-        'X-Auto-Response-Loop': 'true',
-      },
     }
 
     const info = await transporter.sendMail(mailOptions)
