@@ -13,9 +13,11 @@ import { Card } from '@/components/ui/card'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { TripHeroCarousel } from '@/components/trip-hero-carousel'
 import { RequestCallbackDialog } from '@/components/request-callback-dialog'
+import { DownloadTourPdfDialog } from '@/components/download-tour-pdf-dialog'
+import { RiWhatsappLine } from 'react-icons/ri'
 import { trips } from '@/lib/data'
 import { destinationItineraryImages } from '@/lib/section-mappings'
-import { MapPin, Calendar, Users, Star, Phone, MessageCircle, ChevronDown, Download, X, ChevronLeft, ChevronRight, Car, Hotel, Camera, Utensils, Plane, Building2, FileText, User, Share2, Sparkles, Compass } from 'lucide-react'
+import { MapPin, Calendar, Users, Star, Phone, MessageCircle, ChevronDown, Download, X, Check, ChevronLeft, ChevronRight, Car, Hotel, Camera, Utensils, Plane, Building2, FileText, User, Share2, Sparkles, Compass } from 'lucide-react'
 import { contactEmail, contactPhone, contactPhoneDisplay, instagramUrl } from '@/lib/contact'
 import { TripGallerySection } from '@/components/trip-gallery-section'
 import Image from 'next/image'
@@ -860,6 +862,7 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
 
   const [notification, setNotification] = useState<string | null>(null)
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false)
+  const [downloadPdfModalOpen, setDownloadPdfModalOpen] = useState(false)
 
   const showNotification = (message: string) => {
     setNotification(message)
@@ -915,7 +918,7 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
     })
   }
 
-  const handleDownloadPDF = async () => {
+  const handleDownloadPDF = async (options?: { selectedMonth?: string; dateRange?: { from: string; to: string }; language?: string }) => {
     if (isGeneratingPdf) return
     setIsGeneratingPdf(true)
     try {
@@ -929,7 +932,7 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
 
       // 2. Import the PDF generator and run it
       const { generateItineraryPDF } = await import('@/lib/pdf-generator')
-      await generateItineraryPDF(trip, jsPDFClass)
+      await generateItineraryPDF(trip, jsPDFClass, options)
       showNotification('Itinerary PDF downloaded successfully!')
     } catch (error) {
       console.error('Error generating PDF:', error)
@@ -1188,6 +1191,43 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
     <div className="min-h-screen flex flex-col bg-white">
       <Navbar forceWhiteDesktop={true} />
 
+      {/* STICKY FLOATING TOP-RIGHT ACTION BUTTONS: WHATSAPP, SHARE & DOWNLOAD PDF (MOBILE ONLY) */}
+      <div className="fixed top-22 right-3 z-50 flex md:hidden items-center gap-1.5">
+        <a
+          href={`https://wa.me/919217664099?text=${encodeURIComponent(`Hi! I am interested in ${trip.title}. Please share more details.`)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          title="Chat on WhatsApp"
+          className="w-9 h-9 rounded-full bg-white/95 backdrop-blur-md shadow-md hover:shadow-lg border border-slate-200/90 flex items-center justify-center transition-all cursor-pointer active:scale-95 hover:border-emerald-400 text-[#25D366] hover:text-emerald-600"
+        >
+          <RiWhatsappLine size={20} />
+        </a>
+        <button
+          type="button"
+          onClick={handleShare}
+          title="Share Trip"
+          className="w-9 h-9 rounded-full bg-white/95 backdrop-blur-md shadow-md hover:shadow-lg border border-slate-200/90 text-slate-700 hover:text-[#ff5d09] hover:border-orange-300 flex items-center justify-center transition-all cursor-pointer active:scale-95"
+        >
+          <Share2 size={16} />
+        </button>
+        <button
+          type="button"
+          onClick={() => setDownloadPdfModalOpen(true)}
+          disabled={isGeneratingPdf}
+          title="Download Itinerary PDF"
+          className="w-9 h-9 rounded-full bg-white/95 backdrop-blur-md shadow-md hover:shadow-lg border border-slate-200/90 text-slate-700 hover:text-[#ff5d09] hover:border-orange-300 flex items-center justify-center transition-all cursor-pointer active:scale-95 disabled:opacity-60"
+        >
+          {isGeneratingPdf ? (
+            <svg className="w-4 h-4 text-[#ff5d09] animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            </svg>
+          ) : (
+            <Download size={16} />
+          )}
+        </button>
+      </div>
+
       <main className="grow">
         {/* HERO IMAGE — single if no gallery, collage if gallery exists */}
         <div className="relative max-w-6xl mx-auto px-4 sm:px-5 md:px-6 pt-24">
@@ -1347,7 +1387,7 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
                 <div className="flex items-center justify-between w-full">
                   <div
                     ref={tabContainerRef}
-                    className="flex overflow-x-auto gap-2 sm:gap-4 py-0 scrollbar-hide"
+                    className="flex overflow-x-auto gap-2 sm:gap-4 py-0 scrollbar-hide pr-32 md:pr-0"
                   >
                     {[
                       { id: 'summary', label: 'Summary' },
@@ -1359,7 +1399,7 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
                         key={tab.id}
                         data-tab-id={tab.id}
                         onClick={() => setActiveTab(tab.id)}
-                        className={`px-4 py-3 text-base md:text-md font-semibold whitespace-nowrap border-b-2 transition-all cursor-pointer ${activeTab === tab.id
+                        className={`px-2.5 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm md:text-base font-semibold whitespace-nowrap border-b-2 transition-all cursor-pointer ${activeTab === tab.id
                           ? 'border-primary text-primary font-bold'
                           : 'border-transparent text-slate-600 hover:text-slate-900'
                           }`}
@@ -1368,7 +1408,16 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
                       </button>
                     ))}
                   </div>
-                  <div className="flex items-center gap-1 sm:gap-2 pr-2 sm:pr-4 shrink-0">
+                  <div className="hidden md:flex items-center gap-1 sm:gap-2 pr-2 sm:pr-4 shrink-0">
+                    <a
+                      href={`https://wa.me/919217664099?text=${encodeURIComponent(`Hi! I am interested in ${trip.title}. Please share more details.`)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-emerald-600 hover:text-emerald-700 font-semibold flex items-center gap-1.5 cursor-pointer text-xs sm:text-sm px-2.5 sm:px-3 py-1.5 hover:bg-emerald-50 rounded-md transition-colors"
+                    >
+                      <RiWhatsappLine size={17} className="text-[#25D366]" />
+                      <span className="hidden md:inline">WhatsApp</span>
+                    </a>
                     <Button
                       variant="ghost"
                       size="sm"
@@ -1383,7 +1432,7 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
                       size="sm"
                       disabled={isGeneratingPdf}
                       className="text-slate-600 hover:text-slate-950 font-semibold flex items-center gap-1.5 cursor-pointer text-xs sm:text-sm px-2 sm:px-3 disabled:opacity-50"
-                      onClick={handleDownloadPDF}
+                      onClick={() => setDownloadPdfModalOpen(true)}
                     >
                       {isGeneratingPdf ? (
                         <svg className="w-4 h-4 text-slate-600 animate-spin" fill="none" viewBox="0 0 24 24">
@@ -2133,190 +2182,68 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
                       </div>
                     )}
 
-                    {/* 1. ACTIVITIES & EXPERIENCES */}
-                    <div className="bg-white border-2 border-[#ff5d09] rounded-xl overflow-hidden shadow-2xs hover:shadow-xs transition-all">
-                      <button
-                        type="button"
-                        onClick={() => toggleSummarySection('activities')}
-                        className={`w-full flex items-center justify-between px-3.5 py-3 sm:px-4 sm:py-3 bg-white text-slate-800 font-extrabold text-xs sm:text-sm uppercase tracking-wider text-left cursor-pointer hover:bg-orange-50/40 transition-all ${isActOpen ? 'border-b border-orange-100' : ''}`}
-                      >
-                        <div className="flex items-center gap-2">
-                          <Sparkles size={16} className="text-[#ff5d09]" />
-                          <span className="text-slate-900">Activities & Experiences</span>
+                    {/* INCLUSIONS & EXCLUSIONS SIDE BY SIDE */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-4 items-start pt-1">
+                      {/* INCLUSIONS CARD (LEFT) */}
+                      <div className="bg-white border-2 border-emerald-500/80 rounded-xl overflow-hidden shadow-2xs hover:shadow-xs transition-all flex flex-col">
+                        <div className="flex items-center justify-between px-3.5 py-3 sm:px-4 sm:py-3 bg-emerald-50/50 border-b border-emerald-100 text-slate-800 font-extrabold text-xs sm:text-sm uppercase tracking-wider">
+                          <div className="flex items-center gap-2 text-emerald-700">
+                            <div className="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-3xs">
+                              <Check size={12} strokeWidth={3} />
+                            </div>
+                            <span>Inclusions</span>
+                          </div>
+                          <span className="text-[11px] font-bold text-emerald-700 bg-emerald-100/90 px-2 py-0.5 rounded-full">
+                            {trip.included?.length || 0} Included
+                          </span>
                         </div>
-                        <ChevronDown
-                          size={16}
-                          className={`shrink-0 text-slate-400 transition-transform duration-200 ${isActOpen ? 'rotate-180 text-[#ff5d09]' : ''}`}
-                        />
-                      </button>
-                      {isActOpen && (
-                        <div className="p-2.5 sm:p-3 bg-slate-50/40">
-                          {summaryOverview.activities.length > 0 &&
-                            typeof summaryOverview.activities[0] === 'object' &&
-                            'items' in (summaryOverview.activities[0] as any) ? (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5">
-                              {(summaryOverview.activities as any[]).map((group, gIdx) => (
-                                <div
-                                  key={gIdx}
-                                  className="bg-white border border-slate-200/80 rounded-lg p-2.5 sm:p-3 space-y-1.5 shadow-3xs hover:border-orange-200 transition-all flex flex-col"
-                                >
-                                  {group.city && (
-                                    <div className="flex items-center gap-1.5 pb-1 border-b border-slate-100 text-[#ff5d09] font-extrabold text-[11px] sm:text-xs uppercase tracking-wider">
-                                      <MapPin size={12} className="text-[#ff5d09] shrink-0" />
-                                      <span>{group.city}</span>
-                                    </div>
-                                  )}
-                                  <ul className="space-y-1 flex-1">
-                                    {group.items.map((it: string, itIdx: number) => (
-                                      <li
-                                        key={itIdx}
-                                        className="flex items-start gap-1.5 text-[11px] sm:text-xs text-slate-700 leading-snug"
-                                      >
-                                        <span className="w-1 h-1 rounded-full bg-orange-400 mt-1.5 shrink-0" />
-                                        <span className="font-medium text-slate-800">{it}</span>
-                                      </li>
-                                    ))}
-                                  </ul>
-                                </div>
-                              ))}
-                            </div>
+                        <div className="p-3 sm:p-4 space-y-2.5 flex-1 bg-white">
+                          {trip.included && trip.included.length > 0 ? (
+                            trip.included.map((item, idx) => (
+                              <div
+                                key={idx}
+                                className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-700 leading-relaxed"
+                              >
+                                <span className="w-4 h-4 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center shrink-0 mt-0.5 text-[10px] font-black">
+                                  ✓
+                                </span>
+                                <span className="font-medium text-slate-800">{item}</span>
+                              </div>
+                            ))
                           ) : (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2">
-                              {(summaryOverview.activities as string[]).map((item, idx) => (
-                                <div
-                                  key={idx}
-                                  className="flex items-start gap-2 px-2.5 py-1.5 sm:px-3 sm:py-2 bg-white border border-slate-200/80 rounded-lg shadow-3xs hover:border-orange-200 transition-colors text-xs"
-                                >
-                                  <span className="w-1.5 h-1.5 rounded-full bg-[#ff5d09] mt-1.5 shrink-0" />
-                                  <span className="font-semibold text-slate-800 leading-snug text-[11px] sm:text-xs">
-                                    {item}
-                                  </span>
-                                </div>
-                              ))}
-                            </div>
+                            <p className="text-xs text-slate-400 italic">No inclusions listed.</p>
                           )}
                         </div>
-                      )}
-                    </div>
-
-                    {/* 2. HOTELS (LEFT) & [MEALS + TRANSFERS] (RIGHT) */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 items-start">
-                      {/* ACCOMMODATION / HOTELS */}
-                      <div className="bg-white border-2 border-[#ff5d09] rounded-xl overflow-hidden shadow-2xs hover:shadow-xs transition-all flex flex-col">
-                        <button
-                          type="button"
-                          onClick={() => toggleSummarySection('accommodation')}
-                          className={`w-full flex items-center justify-between px-3.5 py-3 sm:px-4 sm:py-3 bg-white text-slate-800 font-extrabold text-xs sm:text-sm uppercase tracking-wider text-left cursor-pointer hover:bg-orange-50/40 transition-all ${isAccOpen ? 'border-b border-orange-100' : ''}`}
-                        >
-                          <div className="flex items-center gap-2">
-                            <Hotel size={16} className="text-[#ff5d09]" />
-                            <span className="text-slate-900">Hotels</span>
-                          </div>
-                          <ChevronDown
-                            size={16}
-                            className={`shrink-0 text-slate-400 transition-transform duration-200 ${isAccOpen ? 'rotate-180 text-[#ff5d09]' : ''}`}
-                          />
-                        </button>
-                        {isAccOpen && (
-                          <div className="p-2.5 sm:p-3 bg-slate-50/40 space-y-1.5 flex-1">
-                            {summaryOverview.accommodation.map((item, idx) => {
-                              const isObj = typeof item === 'object' && item !== null;
-                              const city = isObj ? (item as any).city : '';
-                              const hotel = isObj ? (item as any).hotel : item;
-                              return (
-                                <div
-                                  key={idx}
-                                  className="flex items-center justify-between gap-2 px-2.5 py-1.5 bg-white border border-slate-200/80 rounded-lg shadow-3xs hover:border-orange-200 transition-all text-xs"
-                                >
-                                  {city && (
-                                    <div className="flex items-center gap-1.5 shrink-0">
-                                      <span className="w-1.5 h-1.5 rounded-full bg-[#ff5d09] shrink-0" />
-                                      <span className="text-[11px] font-bold text-[#ff5d09] uppercase tracking-wide">
-                                        {city}
-                                      </span>
-                                    </div>
-                                  )}
-                                  <span className="font-semibold text-slate-800 text-right truncate text-[11px] sm:text-xs">
-                                    {hotel}
-                                  </span>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        )}
                       </div>
 
-                      {/* RIGHT COLUMN: MEALS & TRANSFERS */}
-                      <div className="space-y-3 sm:space-y-4 flex flex-col">
-                        {/* 3. MEALS */}
-                        <div className="bg-white border-2 border-[#ff5d09] rounded-xl overflow-hidden shadow-2xs hover:shadow-xs transition-all flex flex-col">
-                          <button
-                            type="button"
-                            onClick={() => toggleSummarySection('meals')}
-                            className={`w-full flex items-center justify-between px-3.5 py-3 sm:px-4 sm:py-3 bg-white text-slate-800 font-extrabold text-xs sm:text-sm uppercase tracking-wider text-left cursor-pointer hover:bg-orange-50/40 transition-all ${isMealsOpen ? 'border-b border-orange-100' : ''}`}
-                          >
-                            <div className="flex items-center gap-2">
-                              <Utensils size={16} className="text-[#ff5d09]" />
-                              <span className="text-slate-900">Meals</span>
+                      {/* EXCLUSIONS CARD (RIGHT) */}
+                      <div className="bg-white border-2 border-rose-400/80 rounded-xl overflow-hidden shadow-2xs hover:shadow-xs transition-all flex flex-col">
+                        <div className="flex items-center justify-between px-3.5 py-3 sm:px-4 sm:py-3 bg-rose-50/50 border-b border-rose-100 text-slate-800 font-extrabold text-xs sm:text-sm uppercase tracking-wider">
+                          <div className="flex items-center gap-2 text-rose-700">
+                            <div className="w-5 h-5 rounded-full bg-rose-500 text-white flex items-center justify-center shrink-0 shadow-3xs">
+                              <X size={12} strokeWidth={3} />
                             </div>
-                            <ChevronDown
-                              size={16}
-                              className={`shrink-0 text-slate-400 transition-transform duration-200 ${isMealsOpen ? 'rotate-180 text-[#ff5d09]' : ''}`}
-                            />
-                          </button>
-                          {isMealsOpen && (
-                            <div className="p-2.5 sm:p-3 space-y-1.5 flex-1 bg-slate-50/40">
-                              {summaryOverview.meals.map((item, idx) => (
-                                <div
-                                  key={idx}
-                                  className="flex items-center gap-2 px-2.5 py-1.5 bg-white border border-slate-200/80 rounded-lg shadow-3xs text-xs hover:border-orange-200 transition-all"
-                                >
-                                  <span className="w-5 h-5 rounded bg-orange-50 text-[#ff5d09] flex items-center justify-center shrink-0">
-                                    <Utensils size={12} />
-                                  </span>
-                                  <span className="font-semibold text-slate-800 text-[11px] sm:text-xs">
-                                    {item}
-                                  </span>
-                                </div>
-                              ))}
-                            </div>
-                          )}
+                            <span>Exclusions</span>
+                          </div>
+                          <span className="text-[11px] font-bold text-rose-700 bg-rose-100/90 px-2 py-0.5 rounded-full">
+                            {trip.notIncluded?.length || 0} Excluded
+                          </span>
                         </div>
-
-                        {/* 4. TRANSFERS */}
-                        <div className="bg-white border-2 border-[#ff5d09] rounded-xl overflow-hidden shadow-2xs hover:shadow-xs transition-all flex flex-col">
-                          <button
-                            type="button"
-                            onClick={() => toggleSummarySection('transfers')}
-                            className={`w-full flex items-center justify-between px-3.5 py-3 sm:px-4 sm:py-3 bg-white text-slate-800 font-extrabold text-xs sm:text-sm uppercase tracking-wider text-left cursor-pointer hover:bg-orange-50/40 transition-all ${isTransOpen ? 'border-b border-orange-100' : ''}`}
-                          >
-                            <div className="flex items-center gap-2">
-                              <Car size={16} className="text-[#ff5d09]" />
-                              <span className="text-slate-900">Transfers</span>
-                            </div>
-                            <ChevronDown
-                              size={16}
-                              className={`shrink-0 text-slate-400 transition-transform duration-200 ${isTransOpen ? 'rotate-180 text-[#ff5d09]' : ''}`}
-                            />
-                          </button>
-                          {isTransOpen && (
-                            <div className="p-2.5 sm:p-3 bg-slate-50/40 space-y-1.5 flex-1">
-                              <div className="space-y-1.5">
-                                {summaryOverview.transfers.map((item, idx) => (
-                                  <div
-                                    key={idx}
-                                    className="flex items-start gap-2 px-2.5 py-1.5 sm:px-3 sm:py-2 bg-white border border-slate-200/80 rounded-lg shadow-3xs text-xs hover:border-orange-200 transition-all"
-                                  >
-                                    <span className="w-5 h-5 rounded bg-orange-50 text-[#ff5d09] flex items-center justify-center shrink-0 mt-0.5">
-                                      <Car size={12} />
-                                    </span>
-                                    <span className="font-medium text-slate-800 leading-snug text-[11px] sm:text-xs">
-                                      {item}
-                                    </span>
-                                  </div>
-                                ))}
+                        <div className="p-3 sm:p-4 space-y-2.5 flex-1 bg-white">
+                          {trip.notIncluded && trip.notIncluded.length > 0 ? (
+                            trip.notIncluded.map((item, idx) => (
+                              <div
+                                key={idx}
+                                className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-700 leading-relaxed"
+                              >
+                                <span className="w-4 h-4 rounded-full bg-rose-50 text-rose-600 border border-rose-200 flex items-center justify-center shrink-0 mt-0.5 text-[10px] font-black">
+                                  ✕
+                                </span>
+                                <span className="font-medium text-slate-800">{item}</span>
                               </div>
-                            </div>
+                            ))
+                          ) : (
+                            <p className="text-xs text-slate-400 italic">No exclusions listed.</p>
                           )}
                         </div>
                       </div>
@@ -2653,6 +2580,13 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
         title={trip.title}
         price={lowestPrice}
         isQuote={trip.showGetQuoteOnly}
+      />
+
+      <DownloadTourPdfDialog
+        open={downloadPdfModalOpen}
+        onOpenChange={setDownloadPdfModalOpen}
+        trip={trip}
+        onDownload={handleDownloadPDF}
       />
 
       {/* CUSTOM FULLSCREEN IMAGE LIGHTBOX */}

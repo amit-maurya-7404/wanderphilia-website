@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { BookOpen } from 'lucide-react'
+import { RiWhatsappLine } from 'react-icons/ri'
 
 export function MobileBottomNav() {
   const pathname = usePathname()
@@ -32,7 +33,7 @@ export function MobileBottomNav() {
             rel="noopener noreferrer"
             className="flex flex-col items-center justify-center gap-1 px-2 py-2 text-[10.5px] font-semibold text-slate-600 hover:bg-slate-100"
           >
-            <img src="/images/whatsapp.png" alt="WhatsApp" className="h-5 w-5" />
+            <RiWhatsappLine className="h-5 w-5 text-[#25D366]" />
             <span className="text-[3vw]">WhatsApp</span>
           </a>
 

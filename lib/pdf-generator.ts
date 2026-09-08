@@ -59,7 +59,13 @@ const loadImage = (src: string): Promise<HTMLImageElement> => {
   })
 }
 
-export async function generateItineraryPDF(trip: Trip, jsPDFClass: any) {
+export interface PDFCustomOptions {
+  selectedMonth?: string
+  dateRange?: { from: string; to: string }
+  language?: string
+}
+
+export async function generateItineraryPDF(trip: Trip, jsPDFClass: any, options?: PDFCustomOptions) {
   const doc = new jsPDFClass({
     orientation: 'portrait',
     unit: 'mm',
@@ -142,7 +148,20 @@ export async function generateItineraryPDF(trip: Trip, jsPDFClass: any) {
   doc.setTextColor(15, 23, 42) // slate-900
   const titleLines = doc.splitTextToSize(trip.title, printWidth)
   doc.text(titleLines, leftMargin, y)
-  y += (titleLines.length * 6) + 4
+  y += (titleLines.length * 6) + 2
+
+  if (options?.selectedMonth || options?.dateRange) {
+    const datesLabel = options.selectedMonth
+      ? `Preferred Departure: ${options.selectedMonth}`
+      : `Custom Travel Dates: ${options.dateRange?.from} to ${options.dateRange?.to}`
+    doc.setFont('helvetica', 'bold')
+    doc.setFontSize(9)
+    doc.setTextColor(255, 93, 9)
+    doc.text(datesLabel, leftMargin, y)
+    y += 6
+  } else {
+    y += 2
+  }
 
   // 3. KEY TOUR SUMMARY DETAILS (Grid Card Box)
   doc.setDrawColor(226, 232, 240) // slate-200 border

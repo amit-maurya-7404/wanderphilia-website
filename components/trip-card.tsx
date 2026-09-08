@@ -5,6 +5,8 @@ import Image from 'next/image'
 import type { Trip } from '@/lib/data'
 import { getTripInclusionDetails } from '@/lib/data'
 import { gtag } from '@/lib/gtag'
+import { DownloadTourPdfDialog } from '@/components/download-tour-pdf-dialog'
+import { RiWhatsappLine } from 'react-icons/ri'
 import {
   ChevronLeft,
   ChevronRight,
@@ -17,6 +19,8 @@ import {
   FileText,
   User,
   Star,
+  Share2,
+  Download,
 } from 'lucide-react'
 
 type TripCardProps = Trip
@@ -231,8 +235,70 @@ export function TripCard(props: TripCardProps) {
     tripType,
   } = props
   const [callbackOpen, setCallbackOpen] = useState(false)
+  const [downloadPdfOpen, setDownloadPdfOpen] = useState(false)
+  const [copiedToast, setCopiedToast] = useState(false)
   const ignoreClickRef = useRef(false)
   const [imgIndex, setImgIndex] = useState(0)
+
+  const handleShare = async (e: React.MouseEvent) => {
+    e.stopPropagation()
+    const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/trips/${slug}` : ''
+    const shareText = `Check out ${title} on Wanderphilia.`
+
+    if (typeof navigator !== 'undefined' && 'share' in navigator) {
+      try {
+        await navigator.share({
+          title,
+          text: shareText,
+          url: shareUrl,
+        })
+        return
+      } catch (err) {
+        console.log('Share cancelled:', err)
+      }
+    }
+
+    if (typeof navigator !== 'undefined' && 'clipboard' in navigator) {
+      try {
+        await navigator.clipboard.writeText(shareUrl)
+        setCopiedToast(true)
+        setTimeout(() => setCopiedToast(false), 2000)
+      } catch (err) {
+        console.error('Copy failed:', err)
+      }
+    }
+  }
+
+  const loadScript = (src: string): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      if (typeof window === 'undefined') return resolve()
+      if (document.querySelector(`script[src="${src}"]`)) {
+        return resolve()
+      }
+      const script = document.createElement('script')
+      script.src = src
+      script.async = true
+      script.onload = () => resolve()
+      script.onerror = (err) => reject(err)
+      document.body.appendChild(script)
+    })
+  }
+
+  const handleDownloadPDF = async (options?: { selectedMonth?: string; dateRange?: { from: string; to: string } }) => {
+    try {
+      await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js')
+      const globalWindow = window as any
+      if (!globalWindow.jspdf || !globalWindow.jspdf.jsPDF) {
+        throw new Error('jsPDF UMD global not found')
+      }
+      const jsPDFClass = globalWindow.jspdf.jsPDF
+      const { generateItineraryPDF } = await import('@/lib/pdf-generator')
+      await generateItineraryPDF(props, jsPDFClass, options)
+    } catch (err) {
+      console.error('Error generating PDF:', err)
+      throw err
+    }
+  }
 
   const lowestPrice = costingDetails?.length
     ? costingDetails
@@ -367,9 +433,49 @@ export function TripCard(props: TripCardProps) {
         )}
 
         {/* Badge Overlay */}
-        <div className={`absolute top-3 left-3 ${badgeBg} text-white text-[10px] md:text-[11px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-sm`}>
+        <div className={`absolute top-2.5 left-2.5 ${badgeBg} text-white text-[10px] md:text-[11px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-sm z-10`}>
           {badgeIcon}
           <span>{badgeText}</span>
+        </div>
+
+        {/* Top-Right Action Buttons: WhatsApp, Share, Download PDF */}
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="absolute top-2.5 right-2.5 z-10 flex items-center gap-1.5"
+        >
+          {/* WhatsApp Button */}
+          <a
+            href={`https://wa.me/919217664099?text=${encodeURIComponent(`Hi! I am interested in ${title}. Please share more details.`)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Chat on WhatsApp"
+            className="w-7 h-7 md:w-7.5 md:h-7.5 rounded-full bg-white/95 backdrop-blur-xs shadow-md hover:shadow-lg border border-slate-200/90 flex items-center justify-center transition-all hover:scale-105 active:scale-95 cursor-pointer hover:border-emerald-400 text-[#25D366] hover:text-emerald-600"
+          >
+            <RiWhatsappLine size={15} />
+          </a>
+
+          {/* Share Button */}
+          <button
+            type="button"
+            onClick={handleShare}
+            title="Share Trip"
+            className="w-7 h-7 md:w-7.5 md:h-7.5 rounded-full bg-white/95 backdrop-blur-xs shadow-md hover:shadow-lg border border-slate-200/90 text-slate-700 hover:text-[#ff5d09] hover:border-orange-300 flex items-center justify-center transition-all hover:scale-105 active:scale-95 cursor-pointer"
+          >
+            <Share2 size={13} />
+          </button>
+
+          {/* Download PDF Button */}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation()
+              setDownloadPdfOpen(true)
+            }}
+            title="Download Itinerary PDF"
+            className="w-7 h-7 md:w-7.5 md:h-7.5 rounded-full bg-white/95 backdrop-blur-xs shadow-md hover:shadow-lg border border-slate-200/90 text-slate-700 hover:text-[#ff5d09] hover:border-orange-300 flex items-center justify-center transition-all hover:scale-105 active:scale-95 cursor-pointer"
+          >
+            <Download size={13} />
+          </button>
         </div>
       </div>
 
@@ -503,6 +609,18 @@ export function TripCard(props: TripCardProps) {
           z-index: 10;
         }
       `}} />
+      <DownloadTourPdfDialog
+        open={downloadPdfOpen}
+        onOpenChange={setDownloadPdfOpen}
+        trip={props}
+        onDownload={handleDownloadPDF}
+      />
+
+      {copiedToast && (
+        <div className="fixed bottom-6 right-6 bg-slate-900 text-white px-4 py-2.5 rounded-xl shadow-xl z-50 text-xs font-semibold animate-in fade-in">
+          Link copied to clipboard!
+        </div>
+      )}
     </div>
   )
 }

@@ -8,17 +8,21 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const name = body.name || 'Traveler'
     const phone = body.phone
-    const email = body.email
+    const cleanPhone = (phone || '').replace(/\D/g, '')
+    const email = body.email || (cleanPhone ? `${cleanPhone}@wanderphilia.com` : 'info@wanderphilia.com')
     const tripSlug = body.tripSlug || body.slug || ''
     const exactTrip = trips.find(t => t.slug === tripSlug || t.title === (body.title || body.tripTitle))
     const title = body.title || body.tripTitle || (exactTrip ? exactTrip.title : 'Wanderphilia Trip')
     const price = body.price || (exactTrip ? exactTrip.price : undefined)
     const destination = body.destination || (exactTrip ? exactTrip.destination : getDestinationFromTrip(title))
     const source = body.source || 'Website Callback Request'
+    const startDate = body.startDate || body.selectedMonth || undefined
+    const endDate = body.endDate || undefined
+    const message = body.message || `PDF/Callback request received for ${title} (${destination || 'General inquiry'})`
 
-    if (!phone || !email) {
+    if (!phone) {
       return NextResponse.json(
-        { error: 'Phone and email are required' },
+        { error: 'Phone is required' },
         { status: 400 }
       )
     }
@@ -36,7 +40,9 @@ export async function POST(request: NextRequest) {
         tripSlug: tripSlug || (exactTrip ? exactTrip.slug : undefined),
         tripPrice: price,
         destination: destination,
-        message: `Callback request received for ${title} (${destination || 'General inquiry'})`
+        startDate,
+        endDate,
+        message
       })
       if (zohoRes && 'leadId' in zohoRes && zohoRes.leadId) {
         zohoLeadId = zohoRes.leadId
