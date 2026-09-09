@@ -451,21 +451,22 @@ function getTripSummaryDetails(trip: typeof trips[0]) {
 }
 
 
-function renderItineraryDescription(description: string | string[]) {
-  if (!Array.isArray(description)) {
-    return (
-      <p className="text-sm sm:text-base text-slate-700 leading-relaxed whitespace-pre-line">
-        {description}
-      </p>
-    )
-  }
+function renderItineraryDescription(
+  description: string | string[],
+  day?: { day: number; title: string; description: string | string[]; image?: string },
+  trip?: any
+) {
+  const lines = Array.isArray(description)
+    ? description
+    : typeof description === 'string'
+      ? description.split('\n').map(s => s.trim()).filter(Boolean)
+      : [];
 
-  const categories: {
-    type: 'Transfer' | 'Hotels' | 'Sightseeing' | 'Meals';
-    content: string[];
-  }[] = [];
+  const timelinePoints: { text: string; type: 'transfer' | 'experience' | 'activity' }[] = [];
+  let accommodation: string | null = null;
+  const meals: string[] = [];
 
-  description.forEach(line => {
+  lines.forEach(line => {
     const trimmed = line.trim();
     if (!trimmed) return;
     const lower = trimmed.toLowerCase();
@@ -473,54 +474,134 @@ function renderItineraryDescription(description: string | string[]) {
     // Skip highlights section headers
     if (lower.startsWith('highlights of the')) return;
 
-    let category: 'Transfer' | 'Hotels' | 'Sightseeing' | 'Meals' = 'Sightseeing';
-
-    if (lower.startsWith('transfer:') || lower.startsWith('transfer :') || lower.startsWith('transfers:')) {
-      category = 'Transfer';
-    } else if (lower.startsWith('accommodation:') || lower.startsWith('accommodation :') || lower.startsWith('hotel:') || lower.startsWith('hotels:')) {
-      category = 'Hotels';
-    } else if (lower.startsWith('sightseeing:') || lower.startsWith('sightseeing & experiences:') || lower.startsWith('sightseeing & experiences :') || lower.startsWith('activities:') || lower.startsWith('experiences:')) {
-      category = 'Sightseeing';
-    } else if (lower.startsWith('meals:') || lower.startsWith('meals :') || lower.startsWith('meal:')) {
-      category = 'Meals';
-    } else if (lower.includes('meals') || lower.includes('breakfast') || lower.includes('lunch') || lower.includes('dinner')) {
-      category = 'Meals';
-    } else if (
-      lower.includes('overnight stay') || lower.includes('stay in') || lower.includes('hotel') ||
-      lower.includes('resort') || lower.includes('check-in') || lower.includes('check in') ||
-      lower.includes('check out') || lower.includes('check-out') || lower.includes('camp') ||
-      lower.includes('accommodation')
+    // Check if Meals
+    if (
+      lower.startsWith('meals:') || lower.startsWith('meal:') || lower.startsWith('meals :') ||
+      lower === 'meals included' || lower === 'dinner' || lower === 'breakfast'
     ) {
-      category = 'Hotels';
-    } else if (
-      lower.includes('transfer') || lower.includes('pick you up') || lower.includes('pick up') ||
-      lower.includes('airport') || lower.includes('drive to') || lower.includes('travel to') ||
-      lower.includes('proceed to') || lower.includes('reach') || lower.includes('railway') ||
-      lower.includes('station') || lower.includes('cab')
-    ) {
-      category = 'Transfer';
+      const clean = trimmed.replace(/^meals?\s*:\s*/i, '').trim();
+      if (clean) {
+        if (clean.toLowerCase().includes('breakfast') && !meals.includes('Breakfast')) meals.push('Breakfast');
+        if (clean.toLowerCase().includes('lunch') && !meals.includes('Lunch')) meals.push('Lunch');
+        if (clean.toLowerCase().includes('dinner') && !meals.includes('Dinner')) meals.push('Dinner');
+        if (meals.length === 0) meals.push(clean);
+      }
+      return;
     }
 
-    const cleanText = trimmed
+    // Check if Accommodation / Hotel
+    if (
+      lower.startsWith('accommodation:') || lower.startsWith('accommodation :') ||
+      lower.startsWith('hotel:') || lower.startsWith('hotels:') ||
+      lower.startsWith('stay:') || lower.startsWith('stay in')
+    ) {
+      const hotel = trimmed
+        .replace(/^(accommodation|hotels?|stay)\s*:\s*/i, '')
+        .replace(/^[:\s\-\.\,]+/, '')
+        .replace(/[.\s]+$/, '')
+        .trim();
+      if (hotel && !accommodation) {
+        accommodation = hotel;
+      }
+      return;
+    }
+
+    // Check if Transfer
+    if (
+      lower.startsWith('transfer:') || lower.startsWith('transfer :') || lower.startsWith('transfers:') ||
+      lower.startsWith('transfers :') || lower.startsWith('pickup:') || lower.startsWith('drop:') ||
+      lower.startsWith('flight:') || lower.startsWith('train:')
+    ) {
+      const clean = trimmed
+        .replace(/^(transfer|transfers|pickup|drop|flight|train)\s*:\s*/i, '')
+        .trim();
+      if (clean) {
+        timelinePoints.push({ text: clean, type: 'transfer' });
+      }
+      return;
+    }
+
+    // Check if Sightseeing / Experience
+    if (
+      lower.startsWith('sightseeing:') || lower.startsWith('sightseeing & experiences:') ||
+      lower.startsWith('sightseeing & experiences :') || lower.startsWith('activities:') ||
+      lower.startsWith('experiences:') || lower.startsWith('activity:') || lower.startsWith('experience:')
+    ) {
+      const clean = trimmed
+        .replace(/^(sightseeing(?:\s*&\s*experiences)?|activities|experiences|activity|experience)\s*:\s*/i, '')
+        .trim();
+      if (clean) {
+        timelinePoints.push({ text: clean, type: 'experience' });
+      }
+      return;
+    }
+
+    // Check if line is an overnight stay narrative (extract accommodation if not already set)
+    if (
+      !accommodation &&
+      (lower.startsWith('overnight stay') || lower.includes('overnight stay in') || lower.includes('overnight stay at') || lower.includes('overnight stay near'))
+    ) {
+      const match = trimmed.match(/overnight stay\s+(?:in|at|near|into)?\s+([^.]+)/i);
+      if (match && match[1]) {
+        accommodation = match[1].trim();
+      }
+    }
+
+    // Otherwise, general narrative/itinerary step
+    const clean = trimmed
       .replace(/^(transfer|transfers|accommodation|hotels?|sightseeing(?:\s*&\s*experiences)?|activities|experiences|meals?)\s*:\s*/i, '')
       .trim();
-
-    const existing = categories.find(c => c.type === category);
-    if (existing) {
-      existing.content.push(cleanText || trimmed);
-    } else {
-      categories.push({ type: category, content: [cleanText || trimmed] });
+    if (clean) {
+      const isTransferLike = lower.includes('pick you up') || lower.includes('airport transfer') || lower.includes('drive to') || lower.includes('proceed to') || lower.includes('travel to');
+      timelinePoints.push({ text: clean, type: isTransferLike ? 'transfer' : 'activity' });
     }
   });
 
-  // Show in order: Transfer → Accommodation (Hotels) → Sightseeing & Experiences → Meals
-  const order: Record<string, number> = { Transfer: 1, Hotels: 2, Sightseeing: 3, Meals: 4 };
-  categories.sort((a, b) => order[a.type] - order[b.type]);
+  // Fallback for single text paragraph
+  if (timelinePoints.length === 0 && typeof description === 'string' && description.trim()) {
+    const sentences = description.split(/(?<=[.!?])\s+/).filter(s => s.trim().length > 0);
+    sentences.forEach(s => {
+      timelinePoints.push({ text: s.trim(), type: 'activity' });
+    });
+  }
 
-  if (categories.length === 0) {
+  // Fallback for accommodation from trip.stays if available and not final departure day
+  if (!accommodation && day && trip) {
+    const dayNum = day.day || 1;
+    const duration = trip.duration || trip.itinerary?.length || 1;
+    if (dayNum < duration) {
+      if (trip.stays && Array.isArray(trip.stays) && trip.stays.length > 0) {
+        const stayIdx = Math.min(dayNum - 1, trip.stays.length - 1);
+        const stayItem = trip.stays[stayIdx];
+        if (typeof stayItem === 'string') {
+          accommodation = stayItem;
+        } else if (typeof stayItem === 'object' && stayItem !== null && (stayItem as any).hotel) {
+          accommodation = `${(stayItem as any).hotel}${(stayItem as any).city ? ` (${(stayItem as any).city})` : ''}`;
+        }
+      }
+    }
+  }
+
+  // Resolve Day Image
+  let dayImage: string | null = day?.image || null;
+  if (!dayImage && day && trip) {
+    const catId = trip?.category?.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '-') || '';
+    const customImages = destinationItineraryImages[catId];
+    if (customImages && customImages.length > 0) {
+      dayImage = customImages[(day.day - 1) % customImages.length];
+    } else if (trip?.images && trip.images.length > 0) {
+      dayImage = trip.images[(day.day - 1) % trip.images.length];
+    } else if (trip?.galleryImages && trip.galleryImages.length > 0) {
+      dayImage = trip.galleryImages[(day.day - 1) % trip.galleryImages.length]?.src;
+    } else if (trip?.image) {
+      dayImage = trip.image;
+    }
+  }
+
+  if (timelinePoints.length === 0 && !accommodation) {
     return (
       <ul className="list-disc list-inside space-y-2 text-sm sm:text-base text-slate-700 leading-relaxed pt-2">
-        {description.map((point, idx) => (
+        {lines.map((point, idx) => (
           <li key={idx}>{point}</li>
         ))}
       </ul>
@@ -528,88 +609,77 @@ function renderItineraryDescription(description: string | string[]) {
   }
 
   return (
-    <div className="space-y-3 pt-3">
-      {categories.map((cat, idx) => {
+    <div className="pt-3 pb-1 space-y-3.5">
+      {/* Top Section: Flowchart Timeline (Left) + Horizontal Day Image (Right) */}
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-5 sm:gap-6">
+        {/* Left Column: Vertical Flow Chart / Timeline */}
+        <div className="grow space-y-0 relative pl-1 sm:pl-2">
+          {timelinePoints.map((item, idx) => {
+            const isLast = idx === timelinePoints.length - 1;
+            return (
+              <div key={idx} className="relative flex items-start gap-3 sm:gap-3.5 group">
+                {/* Timeline Line & Node */}
+                <div className="flex flex-col items-center self-stretch shrink-0">
+                  {/* Dot */}
+                  <div className="w-2.5 h-2.5 rounded-full bg-slate-400 group-hover:bg-[#ff5d09] group-hover:scale-125 transition-all mt-1.5 shrink-0 ring-4 ring-slate-100 group-hover:ring-orange-100" />
+                  {/* Vertical Connecting Line (dashed) */}
+                  {!isLast && (
+                    <div className="w-0.5 grow border-l-2 border-dashed border-slate-300 my-1 group-hover:border-orange-300 transition-colors" />
+                  )}
+                </div>
 
-        /* ── TRANSFER ────────────────────────────────── */
-        if (cat.type === 'Transfer') {
-          return (
-            <div key={idx} className="flex gap-3 p-4 bg-white border border-slate-200 rounded-2xl shadow-2xs hover:shadow-sm transition-shadow">
-              {/* Icon */}
-              <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
-                <img src="/images/car-icon.png" alt="Transfer" className="w-12 h-12 object-contain" />
-              </div>
-              {/* Content */}
-              <div className="min-w-0">
-                <p className="text-[12px] font-extrabold uppercase tracking-widest text-slate-400 mb-1">Transfer</p>
-                <div className="space-y-1">
-                  {cat.content.map((text, i) => (
-                    <p key={i} className="text-sm text-slate-700 font-medium leading-relaxed">{text}</p>
-                  ))}
+                {/* Text Content */}
+                <div className={`min-w-0 ${isLast ? 'pb-1' : 'pb-3.5 sm:pb-4'}`}>
+                  <p className="text-xs sm:text-sm text-slate-700 font-medium leading-relaxed group-hover:text-slate-950 transition-colors">
+                    {item.text}
+                  </p>
                 </div>
               </div>
-            </div>
-          );
-        }
+            );
+          })}
+        </div>
 
-        /* ── ACCOMMODATION ───────────────────────────── */
-        if (cat.type === 'Hotels') {
-          return (
-            <div key={idx} className="flex gap-3 p-4 bg-white border border-slate-200 rounded-2xl shadow-2xs hover:shadow-sm transition-shadow">
-              {/* Icon */}
-              <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center">
-                <img src="/images/hotel-icon.png" alt="Accommodation" className="w-12 h-12 object-contain" />
-              </div>
-              {/* Content */}
-              <div className="min-w-0">
-                <p className="text-[12px] font-extrabold uppercase tracking-widest text-slate-400 mb-1">Accommodation</p>
-                <div className="space-y-1">
-                  {cat.content.map((text, i) => (
-                    <p key={i} className="text-sm text-slate-700 font-medium leading-relaxed">{text}</p>
-                  ))}
-                </div>
-              </div>
-            </div>
-          );
-        }
+        {/* Right Column: Horizontal Day Featured Image */}
+        {dayImage && (
+          <div className="w-full md:w-64 lg:w-72 shrink-0 aspect-[16/10] relative rounded-2xl overflow-hidden shadow-xs border border-slate-200/80 bg-slate-100 group">
+            <Image
+              src={dayImage}
+              alt={day?.title || `Day ${day?.day || 1}`}
+              fill
+              sizes="(max-width: 768px) 100vw, 300px"
+              className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/15 via-transparent to-transparent pointer-events-none" />
+          </div>
+        )}
+      </div>
 
-        /* ── SIGHTSEEING & EXPERIENCES ──────────────── */
-        if (cat.type === 'Sightseeing') {
-          return (
-            <div key={idx} className="flex gap-3 p-4 bg-white border border-slate-200 rounded-2xl shadow-2xs hover:shadow-sm transition-shadow">
-              {/* Icon */}
-              <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center">
-                <img src="/images/sighseeing-icon.png" alt="Sightseeing" className="w-12 h-12 object-contain" />
-              </div>
-              {/* Content */}
-              <div className="min-w-0">
-                <p className="text-[12px] font-extrabold uppercase tracking-widest text-slate-400 mb-1.5">Sightseeing & Experiences</p>
-                <div className="space-y-1">
-                  {cat.content.map((text, i) => (
-                    <p key={i} className="text-sm text-slate-700 leading-relaxed">{text}</p>
-                  ))}
-                </div>
-              </div>
+      {/* Bottom Section: Accommodation Card */}
+      {accommodation && (
+        <div className="bg-white border border-slate-200 rounded-2xl p-3 sm:p-3.5 shadow-2xs hover:shadow-xs transition-shadow flex items-center justify-between gap-3 flex-wrap mt-2">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-200/50 flex items-center justify-center shrink-0">
+              <img src="/images/hotel-icon.png" alt="Hotel" className="w-6 h-6 object-contain" />
             </div>
-          );
-        }
-
-        /* ── MEALS (small badge row) ──────────────────── */
-        if (cat.type === 'Meals') {
-          return (
-            <div key={idx} className="flex flex-wrap gap-2 pt-1">
-              {cat.content.map((text, i) => (
-                <span key={i} className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-100 rounded-full">
-                  <Utensils size={11} />
-                  {text.replace(/meals included|meals/i, '').replace(/^[:\s\-]+/, '').trim() || text}
-                </span>
-              ))}
+            <div className="min-w-0">
+              <span className="text-[11px] font-extrabold uppercase tracking-widest text-slate-400 block mb-0.5">
+                Accommodation
+              </span>
+              <p className="font-bold text-slate-800 text-xs sm:text-sm truncate">
+                {accommodation}
+              </p>
             </div>
-          );
-        }
+          </div>
 
-        return null;
-      })}
+          {/* Meals badge if available */}
+          {meals.length > 0 && (
+            <div className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-200/70 text-emerald-700 px-3 py-1.5 rounded-full text-xs font-bold shrink-0">
+              <Utensils size={12} className="shrink-0 text-emerald-600" />
+              <span>Meals: {meals.join(', ')}</span>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
@@ -1509,8 +1579,8 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
                             </button>
 
                             {expandedDays.includes(day.day) && (
-                              <div className="px-4 sm:px-5 pb-4 sm:pb-5 bg-slate-50/40 border-t border-slate-100">
-                                {renderItineraryDescription(day.description)}
+                              <div className="px-4 sm:px-5 pb-4 sm:pb-5 bg-white border-t border-slate-100">
+                                {renderItineraryDescription(day.description, day, trip)}
                               </div>
                             )}
                           </div>

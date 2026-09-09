@@ -8649,20 +8649,29 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
         day: 1,
         title: 'Hanoi Arrival , Hanoi City Tour , Evening visit Train Street & Beer Street',
         description: [
-          'Transfer: We will pick you up at Noi Bai Airport and transfer you to Hanoi Hotel Private Transfers By Mini Bus.',
           'Accommodation: Babylon Grand Hotel',
-          'Sightseeing: Hanoi Guided City Tour Old Quarters',
-          'Sightseeing: Experience Hanoi on Cycle ( Hanoi Cyclo Tour )',
-          'Sightseeing: Evening Visit Train Street & Famous Beer Experience.'
+          'Arrive in Hanoi',
+          'Transfer to Hotel In Central Hanoi OLD QUATER',
+          'Guided City Tour',
+          'Evening Old Quarter Cycle Tour & Train Street',
+          'Experience most lively street Of Hanoi Beer Street',
+          'Overnight in Hanoi'
         ]
       },
       {
         day: 2,
         title: 'Ninh - Binh - Trang An - Mua Cave , Overnight Train to Sapa',
         description: [
-          'Transfer: Luxury Overnight Train To Sapa  Hanoi → Sapa: SP3 Overnight Train — 22:00–05:55 hrs',
           'Accommodation: Luxury Overnight Train (SP3 AC Sleeper Cabin)',
-          'Sightseeing: Nin Binh Experience - Trang An Boat Ride , Visit Mua Cave View point , Hoa Lu Ancient Capital'
+          'Meals: Breakfast',
+          'Enjoy Early Morning Breakfast',
+          'Day Trip to Ninh Binh',
+          'Experience most iconic Boat Ride Trang An',
+          'Visit Ancient Capital Hou Lu',
+          'Evening experience sunset from Mua Cave',
+          'Later Experience Overnight Train Journey to Sapa',
+          'Hanoi → Sapa: SP3 Overnight Train — 22:00–05:55 hrs',
+          'Overnight in Train'
         ]
       },
       {
@@ -8670,32 +8679,43 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
         title: 'Sapa Rong May Glass Bridge , Rainbow Slide , Alpine Coaster & Cat Cat Village',
         description: [
           'Accommodation: Sapa Relax Hotel',
-          'Sightseeing: Muong Hoa Glass Bridge',
-          'Sightseeing: Rainbow Slide Experience',
-          'Sightseeing: Apline Coaster',
-          'Sightseeing: Cat Cat Villlage Trail'
+          'Meals: Breakfast',
+          'Arrive Early Morning around 5 am in Sapa',
+          'Early Hotel Check in Relax & Rest',
+          'After Breakfast Later in Afternoon Visit Muong Hoa Glass Bridge',
+          'Experience Most iconic Rainbow Slide Alpine Coaster',
+          'Cat Cat Village Beautiful Trail',
+          'Evening at Leisure Explore Cafe Shopping Street',
+          'Overnight in Sapa'
         ]
       },
       {
         day: 4,
         title: 'Fansipan Peak with Muong Hoa Train & Cable Car , Sleeper Bus Transfer from Sapa - Hanoi',
         description: [
-          'Transfer: Sleeper Bus Sapa - Hanoi',
           'Accommodation: Babylon Grand Hotel',
-          'Sightseeing: Fansipan Peak with Muong Hoa Train & Cable Car',
-          'Sightseeing: Enjoy Nightlife in Hanoi'
+          'Meals: Breakfast',
+          'Early Morning Breakfast',
+          'After Breakfast visit Fansipan Peak ( Roof of Indochina )',
+          'Muong Hoa Train & Cable Car',
+          'Later Board your Sleeper Bus To Hanoi',
+          'Reach Hanoi by Evening & evening at leisure enjoy nightlife in Hanoi.',
+          'Overnight in Hanoi.'
         ]
       },
       {
         day: 5,
         title: 'Hanoi to Danang , Hoi An ancient town Exploration',
         description: [
-          'Transfer: Early Morning Private Transnfer To Noi Bai International Airport & flight to Danang',
           'Accommodation: Vinh Hung Old Town Hotel / Merry Hotel',
-          'Sightseeing: Hoi An Ancient Town Exploration',
-          'Sightseeing: Coconnut Bakset Ride',
-          'Sightseeing: Bicycle Tour in Hoi An Village',
-          'Sightseeing: Lattern Boat Ride Experience'
+          'Meals: Breakfast',
+          'Early Morning Packed Breakfast',
+          'Transfer to Airport & catch flight for Danang',
+          'Arrive in Danang Board your Transfer for Hoi An ( Most Iconic Ancient Town of Vietnam )',
+          'Enjoy Coconut Basket Ride',
+          'Experience Hoi An Lantern Village Paddling on Cycle',
+          'Evening Lantern Boat Ride Experience',
+          'Overnight in Danang'
         ]
       },
       {
@@ -8703,29 +8723,35 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
         title: 'Visit Bana Hill Cable Car, Golden Bridge, Fantasy Park & French Village & Visit Dragon Bridge.',
         description: [
           'Accommodation: Merry Hotel',
-          'Sightseeing: Bana Hills',
-          'Sightseeing: Golden Hands Bridge',
-          'Sightseeing: Fantasy Park',
-          'Sightseeing: French Village',
-          'Sightseeing: Evening at Beach'
+          'Meals: Breakfast',
+          'Relaxing Morning Breakfast',
+          'Visit Bana Hills Two Way Cable Car',
+          'Golden Hands Bridge',
+          'Fantasy Park',
+          'Visit French Village',
+          'Relaxing Evening on the beach Explore Cafes & Nightlife',
+          'Overnight in Danang.'
         ]
       },
       {
         day: 7,
         title: 'Early Morning Flight Danang to Ho Chi Minh , Cu Chi Tunnel',
         description: [
-          'Transfer: Early Morning Private Transnfer To International Airport & flight to Ho Chi Minh',
           'Accommodation: Liberty Green Hotel',
-          'Sightseeing: Cu Chi Tunnel with Ak 47 Shooting',
-          'Sightseeing: Visit Most Iconic Apartment Cafe',
-          'Sightseeing: Bui Vein Walking Street'
+          'Meals: Breakfast',
+          'After Breakfast Transfer To Airport',
+          'Arrive in Ho Chi Minh',
+          'Visit Cu Chi Tunnel Experience Riffle Shooting',
+          'Cafe Hopping visit Apartment Cafe',
+          'Evening at Leisure at Bui Vien Street',
+          'Overnight in Ho Chi Minh'
         ]
       },
       {
         day: 8,
         title: 'Your amazing adventure comes to an end with unforgettable memories to take Home',
         description: [
-          'Transfer: Airport Transfer fixed timing as per Group Departure.'
+          'Airport Transfer fixed timing as per Group Departure.'
         ]
       }
     ],
