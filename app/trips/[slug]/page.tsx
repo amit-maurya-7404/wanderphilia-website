@@ -1875,310 +1875,292 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
 
                 return (
                   <div className="space-y-3 sm:space-y-4 animate-in fade-in duration-300">
-                    {/* 1. TRIP SUMMARY */}
+                    {/* TRIP SUMMARY CONTENT */}
                     {trip.itinerary && trip.itinerary.length > 0 && (
                       <div className="space-y-2.5">
-                        <button
-                          type="button"
-                          onClick={() => toggleSummarySection('itinerary')}
-                          className="w-full flex items-center justify-between px-3.5 py-3 sm:px-4 sm:py-3 bg-white border-1 border-[#ff5d09] rounded-xl text-slate-800 font-extrabold text-xs sm:text-sm uppercase tracking-wider text-left cursor-pointer hover:bg-orange-50/40 shadow-2xs transition-all"
-                        >
-                          <div className="flex items-center gap-2">
-                            <Compass size={16} className="text-[#ff5d09]" />
-                            <span className="text-slate-900">Trip Summary</span>
-                          </div>
-                          <ChevronDown
-                            size={16}
-                            className={`shrink-0 text-slate-400 transition-transform duration-200 ${isItinOpen ? 'rotate-180 text-[#ff5d09]' : ''}`}
-                          />
-                        </button>
-                        {isItinOpen && (
-                          <div className="space-y-2.5 pt-1">
-                            {/* 4 QUICK COUNT BUTTONS WITH NUMBERS */}
-                            <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 sm:gap-2.5 pb-2 border-b border-slate-200/70">
-                              {/* Activities Button */}
-                              <button
-                                type="button"
-                                onClick={() => setActiveSummaryDropdown(prev => prev === 'activities' ? null : 'activities')}
-                                className={`w-full sm:w-auto flex items-center justify-between sm:justify-start gap-1.5 px-2.5 sm:px-3 py-2 rounded-md text-xs font-semibold transition-all cursor-pointer shadow-3xs ${activeSummaryDropdown === 'activities'
-                                  ? 'bg-[#ff5d09] text-white border border-[#ff5d09]'
-                                  : 'bg-slate-200 text-black border border-slate-200/90 hover:border-orange-300 hover:text-[#ff5d09]'
-                                  }`}
-                              >
-                                <div className="flex items-center gap-1.5 min-w-0">
-                                  <Sparkles size={13} className={`shrink-0 ${activeSummaryDropdown === 'activities' ? 'text-white' : 'text-[#ff5d09]'}`} />
-                                  <span className="truncate">{activitiesCount} Activities</span>
-                                </div>
-                                <ChevronDown size={11} className={`shrink-0 transition-transform duration-200 ${activeSummaryDropdown === 'activities' ? 'rotate-180' : ''}`} />
-                              </button>
+                        {/* 4 QUICK COUNT BUTTONS WITH NUMBERS */}
+                        <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 sm:gap-2.5 pb-2 border-b border-slate-200/70">
+                          {/* Activities Button */}
+                          <button
+                            type="button"
+                            onClick={() => setActiveSummaryDropdown(prev => prev === 'activities' ? null : 'activities')}
+                            className={`w-full sm:w-auto flex items-center justify-between sm:justify-start gap-1.5 px-2.5 sm:px-3 py-2 rounded-md text-xs font-semibold transition-all cursor-pointer shadow-3xs ${activeSummaryDropdown === 'activities'
+                              ? 'bg-[#ff5d09] text-white border border-[#ff5d09]'
+                              : 'bg-slate-200 text-black border border-slate-200/90 hover:border-orange-300 hover:text-[#ff5d09]'
+                              }`}
+                          >
+                            <div className="flex items-center gap-1.5 min-w-0">
+                              <Sparkles size={13} className={`shrink-0 ${activeSummaryDropdown === 'activities' ? 'text-white' : 'text-[#ff5d09]'}`} />
+                              <span className="truncate">{activitiesCount} Activities</span>
+                            </div>
+                            <ChevronDown size={11} className={`shrink-0 transition-transform duration-200 ${activeSummaryDropdown === 'activities' ? 'rotate-180' : ''}`} />
+                          </button>
 
-                              {/* Transfers Button */}
-                              <button
-                                type="button"
-                                onClick={() => setActiveSummaryDropdown(prev => prev === 'transfers' ? null : 'transfers')}
-                                className={`w-full sm:w-auto flex items-center justify-between sm:justify-start gap-1.5 px-2.5 sm:px-3 py-2 rounded-md text-xs font-bold transition-all cursor-pointer shadow-3xs ${activeSummaryDropdown === 'transfers'
-                                  ? 'bg-blue-600 text-white border border-blue-600'
-                                  : 'bg-slate-200 text-black border border-slate-200/90 hover:border-blue-300 hover:text-blue-600'
-                                  }`}
-                              >
-                                <div className="flex items-center gap-1.5 min-w-0">
-                                  <Car size={13} className={`shrink-0 ${activeSummaryDropdown === 'transfers' ? 'text-white' : 'text-blue-500'}`} />
-                                  <span className="truncate">{transfersCount} Transfers</span>
-                                </div>
-                                <ChevronDown size={11} className={`shrink-0 transition-transform duration-200 ${activeSummaryDropdown === 'transfers' ? 'rotate-180' : ''}`} />
-                              </button>
+                          {/* Transfers Button */}
+                          <button
+                            type="button"
+                            onClick={() => setActiveSummaryDropdown(prev => prev === 'transfers' ? null : 'transfers')}
+                            className={`w-full sm:w-auto flex items-center justify-between sm:justify-start gap-1.5 px-2.5 sm:px-3 py-2 rounded-md text-xs font-bold transition-all cursor-pointer shadow-3xs ${activeSummaryDropdown === 'transfers'
+                              ? 'bg-blue-600 text-white border border-blue-600'
+                              : 'bg-slate-200 text-black border border-slate-200/90 hover:border-blue-300 hover:text-blue-600'
+                              }`}
+                          >
+                            <div className="flex items-center gap-1.5 min-w-0">
+                              <Car size={13} className={`shrink-0 ${activeSummaryDropdown === 'transfers' ? 'text-white' : 'text-blue-500'}`} />
+                              <span className="truncate">{transfersCount} Transfers</span>
+                            </div>
+                            <ChevronDown size={11} className={`shrink-0 transition-transform duration-200 ${activeSummaryDropdown === 'transfers' ? 'rotate-180' : ''}`} />
+                          </button>
 
-                              {/* Meals Button */}
-                              <button
-                                type="button"
-                                onClick={() => setActiveSummaryDropdown(prev => prev === 'meals' ? null : 'meals')}
-                                className={`w-full sm:w-auto flex items-center justify-between sm:justify-start gap-1.5 px-2.5 sm:px-3 py-2 rounded-md text-xs font-bold transition-all cursor-pointer shadow-3xs ${activeSummaryDropdown === 'meals'
-                                  ? 'bg-emerald-600 text-white border border-emerald-600'
-                                  : 'bg-slate-200 text-black border border-slate-200/90 hover:border-emerald-300 hover:text-emerald-600'
-                                  }`}
-                              >
-                                <div className="flex items-center gap-1.5 min-w-0">
-                                  <Utensils size={13} className={`shrink-0 ${activeSummaryDropdown === 'meals' ? 'text-white' : 'text-emerald-500'}`} />
-                                  <span className="truncate">{mealsCount} Meals</span>
-                                </div>
-                                <ChevronDown size={11} className={`shrink-0 transition-transform duration-200 ${activeSummaryDropdown === 'meals' ? 'rotate-180' : ''}`} />
-                              </button>
+                          {/* Meals Button */}
+                          <button
+                            type="button"
+                            onClick={() => setActiveSummaryDropdown(prev => prev === 'meals' ? null : 'meals')}
+                            className={`w-full sm:w-auto flex items-center justify-between sm:justify-start gap-1.5 px-2.5 sm:px-3 py-2 rounded-md text-xs font-bold transition-all cursor-pointer shadow-3xs ${activeSummaryDropdown === 'meals'
+                              ? 'bg-emerald-600 text-white border border-emerald-600'
+                              : 'bg-slate-200 text-black border border-slate-200/90 hover:border-emerald-300 hover:text-emerald-600'
+                              }`}
+                          >
+                            <div className="flex items-center gap-1.5 min-w-0">
+                              <Utensils size={13} className={`shrink-0 ${activeSummaryDropdown === 'meals' ? 'text-white' : 'text-emerald-500'}`} />
+                              <span className="truncate">{mealsCount} Meals</span>
+                            </div>
+                            <ChevronDown size={11} className={`shrink-0 transition-transform duration-200 ${activeSummaryDropdown === 'meals' ? 'rotate-180' : ''}`} />
+                          </button>
 
-                              {/* Hotels Button */}
+                          {/* Hotels Button */}
+                          <button
+                            type="button"
+                            onClick={() => setActiveSummaryDropdown(prev => prev === 'hotels' ? null : 'hotels')}
+                            className={`w-full sm:w-auto flex items-center justify-between sm:justify-start gap-1.5 px-2.5 sm:px-3 py-2 rounded-md text-xs font-bold transition-all cursor-pointer shadow-3xs ${activeSummaryDropdown === 'hotels'
+                              ? 'bg-indigo-600 text-white border border-indigo-600'
+                              : 'bg-slate-200 text-black border border-slate-200/90 hover:border-indigo-300 hover:text-indigo-600'
+                              }`}
+                          >
+                            <div className="flex items-center gap-1.5 min-w-0">
+                              <Hotel size={13} className={`shrink-0 ${activeSummaryDropdown === 'hotels' ? 'text-white' : 'text-indigo-500'}`} />
+                              <span className="truncate">{hotelsCount} Hotels</span>
+                            </div>
+                            <ChevronDown size={11} className={`shrink-0 transition-transform duration-200 ${activeSummaryDropdown === 'hotels' ? 'rotate-180' : ''}`} />
+                          </button>
+                        </div>
+
+                        {/* DROPDOWN POPUP PANEL */}
+                        {activeSummaryDropdown && (
+                          <div className="bg-white rounded-xl border border-slate-200 p-3 sm:p-3.5 shadow-sm space-y-2.5 animate-in fade-in slide-in-from-top-1 duration-200">
+                            <div className="flex items-center justify-between pb-1.5 border-b border-slate-100">
+                              <div className="flex items-center gap-2">
+                                {activeSummaryDropdown === 'activities' && (
+                                  <>
+                                    <Sparkles size={15} className="text-[#ff5d09]" />
+                                    <h4 className="font-extrabold text-xs sm:text-sm text-slate-900 uppercase tracking-wide">
+                                      Activities & Experiences ({activitiesCount})
+                                    </h4>
+                                  </>
+                                )}
+                                {activeSummaryDropdown === 'transfers' && (
+                                  <>
+                                    <Car size={15} className="text-blue-600" />
+                                    <h4 className="font-extrabold text-xs sm:text-sm text-slate-900 uppercase tracking-wide">
+                                      Transfers & Transit ({transfersCount})
+                                    </h4>
+                                  </>
+                                )}
+                                {activeSummaryDropdown === 'meals' && (
+                                  <>
+                                    <Utensils size={15} className="text-emerald-600" />
+                                    <h4 className="font-extrabold text-xs sm:text-sm text-slate-900 uppercase tracking-wide">
+                                      Meal Inclusions ({mealsCount})
+                                    </h4>
+                                  </>
+                                )}
+                                {activeSummaryDropdown === 'hotels' && (
+                                  <>
+                                    <Hotel size={15} className="text-indigo-600" />
+                                    <h4 className="font-extrabold text-xs sm:text-sm text-slate-900 uppercase tracking-wide">
+                                      Hotel Accommodations ({hotelsCount})
+                                    </h4>
+                                  </>
+                                )}
+                              </div>
                               <button
                                 type="button"
-                                onClick={() => setActiveSummaryDropdown(prev => prev === 'hotels' ? null : 'hotels')}
-                                className={`w-full sm:w-auto flex items-center justify-between sm:justify-start gap-1.5 px-2.5 sm:px-3 py-2 rounded-md text-xs font-bold transition-all cursor-pointer shadow-3xs ${activeSummaryDropdown === 'hotels'
-                                  ? 'bg-indigo-600 text-white border border-indigo-600'
-                                  : 'bg-slate-200 text-black border border-slate-200/90 hover:border-indigo-300 hover:text-indigo-600'
-                                  }`}
+                                onClick={() => setActiveSummaryDropdown(null)}
+                                className="p-1 rounded-md text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
                               >
-                                <div className="flex items-center gap-1.5 min-w-0">
-                                  <Hotel size={13} className={`shrink-0 ${activeSummaryDropdown === 'hotels' ? 'text-white' : 'text-indigo-500'}`} />
-                                  <span className="truncate">{hotelsCount} Hotels</span>
-                                </div>
-                                <ChevronDown size={11} className={`shrink-0 transition-transform duration-200 ${activeSummaryDropdown === 'hotels' ? 'rotate-180' : ''}`} />
+                                <X size={15} />
                               </button>
                             </div>
 
-                            {/* DROPDOWN POPUP PANEL */}
-                            {activeSummaryDropdown && (
-                              <div className="bg-white rounded-xl border border-slate-200 p-3 sm:p-3.5 shadow-sm space-y-2.5 animate-in fade-in slide-in-from-top-1 duration-200">
-                                <div className="flex items-center justify-between pb-1.5 border-b border-slate-100">
-                                  <div className="flex items-center gap-2">
-                                    {activeSummaryDropdown === 'activities' && (
-                                      <>
-                                        <Sparkles size={15} className="text-[#ff5d09]" />
-                                        <h4 className="font-extrabold text-xs sm:text-sm text-slate-900 uppercase tracking-wide">
-                                          Activities & Experiences ({activitiesCount})
-                                        </h4>
-                                      </>
-                                    )}
-                                    {activeSummaryDropdown === 'transfers' && (
-                                      <>
-                                        <Car size={15} className="text-blue-600" />
-                                        <h4 className="font-extrabold text-xs sm:text-sm text-slate-900 uppercase tracking-wide">
-                                          Transfers & Transit ({transfersCount})
-                                        </h4>
-                                      </>
-                                    )}
-                                    {activeSummaryDropdown === 'meals' && (
-                                      <>
-                                        <Utensils size={15} className="text-emerald-600" />
-                                        <h4 className="font-extrabold text-xs sm:text-sm text-slate-900 uppercase tracking-wide">
-                                          Meal Inclusions ({mealsCount})
-                                        </h4>
-                                      </>
-                                    )}
-                                    {activeSummaryDropdown === 'hotels' && (
-                                      <>
-                                        <Hotel size={15} className="text-indigo-600" />
-                                        <h4 className="font-extrabold text-xs sm:text-sm text-slate-900 uppercase tracking-wide">
-                                          Hotel Accommodations ({hotelsCount})
-                                        </h4>
-                                      </>
-                                    )}
-                                  </div>
-                                  <button
-                                    type="button"
-                                    onClick={() => setActiveSummaryDropdown(null)}
-                                    className="p-1 rounded-md text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
-                                  >
-                                    <X size={15} />
-                                  </button>
-                                </div>
-
-                                {/* Dropdown Content: Activities */}
-                                {activeSummaryDropdown === 'activities' && (
-                                  <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
-                                    {summaryOverview.activities.length > 0 &&
-                                      typeof summaryOverview.activities[0] === 'object' &&
-                                      'items' in (summaryOverview.activities[0] as any) ? (
-                                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                                        {(summaryOverview.activities as any[]).map((group, gIdx) => (
-                                          <div key={gIdx} className="bg-orange-50/20 border border-orange-100/70 rounded-lg p-2.5 space-y-1">
-                                            {group.city && (
-                                              <div className="flex items-center gap-1.5 text-[#ff5d09] font-extrabold text-[11px] uppercase tracking-wider pb-1 border-b border-orange-100/50">
-                                                <MapPin size={11} />
-                                                <span>{group.city}</span>
-                                              </div>
-                                            )}
-                                            <ul className="space-y-1">
-                                              {group.items.map((it: string, itIdx: number) => (
-                                                <li key={itIdx} className="flex items-start gap-1.5 text-xs text-slate-700">
-                                                  <span className="w-1.5 h-1.5 rounded-full bg-[#ff5d09] mt-1.5 shrink-0" />
-                                                  <span>{it}</span>
-                                                </li>
-                                              ))}
-                                            </ul>
+                            {/* Dropdown Content: Activities */}
+                            {activeSummaryDropdown === 'activities' && (
+                              <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
+                                {summaryOverview.activities.length > 0 &&
+                                  typeof summaryOverview.activities[0] === 'object' &&
+                                  'items' in (summaryOverview.activities[0] as any) ? (
+                                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                    {(summaryOverview.activities as any[]).map((group, gIdx) => (
+                                      <div key={gIdx} className="bg-orange-50/20 border border-orange-100/70 rounded-lg p-2.5 space-y-1">
+                                        {group.city && (
+                                          <div className="flex items-center gap-1.5 text-[#ff5d09] font-extrabold text-[11px] uppercase tracking-wider pb-1 border-b border-orange-100/50">
+                                            <MapPin size={11} />
+                                            <span>{group.city}</span>
                                           </div>
-                                        ))}
-                                      </div>
-                                    ) : (
-                                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
-                                        {(summaryOverview.activities as string[]).map((item, idx) => (
-                                          <div key={idx} className="flex items-start gap-2 p-2 bg-orange-50/20 border border-orange-100/60 rounded-md text-xs text-slate-700">
-                                            <span className="w-1.5 h-1.5 rounded-full bg-[#ff5d09] mt-1.5 shrink-0" />
-                                            <span>{item}</span>
-                                          </div>
-                                        ))}
-                                      </div>
-                                    )}
-                                  </div>
-                                )}
-
-                                {/* Dropdown Content: Transfers */}
-                                {activeSummaryDropdown === 'transfers' && (
-                                  <div className="space-y-1.5 max-h-64 overflow-y-auto pr-1">
-                                    {summaryOverview.transfers.map((item, idx) => (
-                                      <div key={idx} className="flex items-start gap-2 p-2 bg-blue-50/30 border border-blue-100/60 rounded-md text-xs text-slate-800">
-                                        <Car size={13} className="text-blue-500 shrink-0 mt-0.5" />
-                                        <span>{item}</span>
+                                        )}
+                                        <ul className="space-y-1">
+                                          {group.items.map((it: string, itIdx: number) => (
+                                            <li key={itIdx} className="flex items-start gap-1.5 text-xs text-slate-700">
+                                              <span className="w-1.5 h-1.5 rounded-full bg-[#ff5d09] mt-1.5 shrink-0" />
+                                              <span>{it}</span>
+                                            </li>
+                                          ))}
+                                        </ul>
                                       </div>
                                     ))}
                                   </div>
-                                )}
-
-                                {/* Dropdown Content: Meals */}
-                                {activeSummaryDropdown === 'meals' && (
-                                  <div className="space-y-1.5 max-h-64 overflow-y-auto pr-1">
-                                    {summaryOverview.meals.map((item, idx) => (
-                                      <div key={idx} className="flex items-center gap-2 p-2 bg-emerald-50/30 border border-emerald-100/60 rounded-md text-xs text-slate-800">
-                                        <Utensils size={13} className="text-emerald-500 shrink-0" />
+                                ) : (
+                                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                                    {(summaryOverview.activities as string[]).map((item, idx) => (
+                                      <div key={idx} className="flex items-start gap-2 p-2 bg-orange-50/20 border border-orange-100/60 rounded-md text-xs text-slate-700">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-[#ff5d09] mt-1.5 shrink-0" />
                                         <span>{item}</span>
                                       </div>
                                     ))}
-                                  </div>
-                                )}
-
-                                {/* Dropdown Content: Hotels */}
-                                {activeSummaryDropdown === 'hotels' && (
-                                  <div className="space-y-1.5 max-h-64 overflow-y-auto pr-1">
-                                    {summaryOverview.accommodation.map((item, idx) => {
-                                      const isObj = typeof item === 'object' && item !== null;
-                                      const city = isObj ? (item as any).city : '';
-                                      const hotel = isObj ? (item as any).hotel : item;
-                                      return (
-                                        <div key={idx} className="flex items-center justify-between gap-2 p-2 bg-indigo-50/30 border border-indigo-100/60 rounded-md text-xs text-slate-800">
-                                          <div className="flex items-center gap-2 min-w-0">
-                                            <Hotel size={13} className="text-indigo-500 shrink-0" />
-                                            {city && (
-                                              <span className="font-extrabold text-[#ff5d09] uppercase text-[10px] bg-orange-50 px-1.5 py-0.5 rounded border border-orange-100 shrink-0">
-                                                {city}
-                                              </span>
-                                            )}
-                                            <span className="font-semibold text-slate-800 truncate">{hotel}</span>
-                                          </div>
-                                        </div>
-                                      );
-                                    })}
                                   </div>
                                 )}
                               </div>
                             )}
-                            {trip.itinerary.map((day) => {
-                              const dayData = parseDayItinerarySummary(day);
-                              const isDayOpen = expandedSummaryDays.includes(day.day);
-                              return (
-                                <div
-                                  key={day.day}
-                                  className="bg-white border border-slate-200/90 rounded-lg overflow-hidden shadow-3xs transition-all"
-                                >
-                                  {/* Day Accordion Trigger with Light Gray Background */}
-                                  <button
-                                    type="button"
-                                    onClick={() => toggleSummaryDay(day.day)}
-                                    className="w-full flex items-center justify-between gap-2.5 px-3 py-2.5 sm:px-3.5 sm:py-2.5 bg-slate-100/90 hover:bg-slate-200/70 transition-colors text-left cursor-pointer"
-                                  >
-                                    <div className="flex items-center gap-2 min-w-0">
-                                      <span className="shrink-0 px-2 py-0.5 rounded bg-[#ff5d09] text-white font-extrabold text-[10px] sm:text-[11px] uppercase tracking-wider">
-                                        Day {day.day}
-                                      </span>
-                                      <span className="font-bold text-slate-800 text-xs sm:text-sm leading-snug truncate">
-                                        {day.title}
-                                      </span>
+
+                            {/* Dropdown Content: Transfers */}
+                            {activeSummaryDropdown === 'transfers' && (
+                              <div className="space-y-1.5 max-h-64 overflow-y-auto pr-1">
+                                {summaryOverview.transfers.map((item, idx) => (
+                                  <div key={idx} className="flex items-start gap-2 p-2 bg-blue-50/30 border border-blue-100/60 rounded-md text-xs text-slate-800">
+                                    <Car size={13} className="text-blue-500 shrink-0 mt-0.5" />
+                                    <span>{item}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+
+                            {/* Dropdown Content: Meals */}
+                            {activeSummaryDropdown === 'meals' && (
+                              <div className="space-y-1.5 max-h-64 overflow-y-auto pr-1">
+                                {summaryOverview.meals.map((item, idx) => (
+                                  <div key={idx} className="flex items-center gap-2 p-2 bg-emerald-50/30 border border-emerald-100/60 rounded-md text-xs text-slate-800">
+                                    <Utensils size={13} className="text-emerald-500 shrink-0" />
+                                    <span>{item}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+
+                            {/* Dropdown Content: Hotels */}
+                            {activeSummaryDropdown === 'hotels' && (
+                              <div className="space-y-1.5 max-h-64 overflow-y-auto pr-1">
+                                {summaryOverview.accommodation.map((item, idx) => {
+                                  const isObj = typeof item === 'object' && item !== null;
+                                  const city = isObj ? (item as any).city : '';
+                                  const hotel = isObj ? (item as any).hotel : item;
+                                  return (
+                                    <div key={idx} className="flex items-center justify-between gap-2 p-2 bg-indigo-50/30 border border-indigo-100/60 rounded-md text-xs text-slate-800">
+                                      <div className="flex items-center gap-2 min-w-0">
+                                        <Hotel size={13} className="text-indigo-500 shrink-0" />
+                                        {city && (
+                                          <span className="font-extrabold text-[#ff5d09] uppercase text-[10px] bg-orange-50 px-1.5 py-0.5 rounded border border-orange-100 shrink-0">
+                                            {city}
+                                          </span>
+                                        )}
+                                        <span className="font-semibold text-slate-800 truncate">{hotel}</span>
+                                      </div>
                                     </div>
-                                    <ChevronDown
-                                      size={15}
-                                      className={`shrink-0 text-slate-500 transition-transform duration-200 ${isDayOpen ? 'rotate-180 text-[#ff5d09]' : ''}`}
-                                    />
-                                  </button>
-
-                                  {/* Day Accordion Content */}
-                                  {isDayOpen && (
-                                    <div className="p-3 bg-white space-y-2.5 border-t border-slate-200/60">
-                                      {/* Transfers Section */}
-                                      {dayData.transfers.length > 0 && (
-                                        <div className="space-y-1">
-                                          <div className="flex items-center gap-1.5 text-blue-600 font-extrabold text-[11px] uppercase tracking-wider">
-                                            <Car size={13} className="text-blue-500 shrink-0" />
-                                            <span>Transfers</span>
-                                          </div>
-                                          <div className="bg-blue-50/40 rounded-lg p-2.5 sm:p-2 border border-blue-100/60 space-y-1.5">
-                                            {dayData.transfers.map((t, tIdx) => (
-                                              <div
-                                                key={tIdx}
-                                                className="flex items-start gap-2 text-xs text-slate-700 leading-relaxed"
-                                              >
-                                                <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 shrink-0" />
-                                                <span className="font-medium text-slate-800">{t}</span>
-                                              </div>
-                                            ))}
-                                          </div>
-                                        </div>
-                                      )}
-
-                                      {/* Sightseeing & Experiences Section */}
-                                      {dayData.experiences.length > 0 && (
-                                        <div className="space-y-1">
-                                          <div className="flex items-center gap-1.5 text-[#ff5d09] font-extrabold text-[11px] uppercase tracking-wider">
-                                            <Sparkles size={13} className="text-[#ff5d09] shrink-0" />
-                                            <span>Sightseeing & Experiences</span>
-                                          </div>
-                                          <div className="bg-orange-50/30 rounded-lg p-2.5 sm:p-3 border border-orange-100/60 space-y-1.5">
-                                            {dayData.experiences.map((exp, eIdx) => (
-                                              <div
-                                                key={eIdx}
-                                                className="flex items-start gap-2 text-xs text-slate-700 leading-relaxed"
-                                              >
-                                                <span className="w-1.5 h-1.5 rounded-full bg-[#ff5d09] mt-1.5 shrink-0" />
-                                                <span className="font-medium text-slate-800">{exp}</span>
-                                              </div>
-                                            ))}
-                                          </div>
-                                        </div>
-                                      )}
-
-                                      {dayData.transfers.length === 0 && dayData.experiences.length === 0 && (
-                                        <p className="text-xs text-slate-400 italic">No specific transfers or sightseeing listed for this day.</p>
-                                      )}
-                                    </div>
-                                  )}
-                                </div>
-                              );
-                            })}
+                                  );
+                                })}
+                              </div>
+                            )}
                           </div>
                         )}
+                        {trip.itinerary.map((day) => {
+                          const dayData = parseDayItinerarySummary(day);
+                          const isDayOpen = expandedSummaryDays.includes(day.day);
+                          return (
+                            <div
+                              key={day.day}
+                              className="bg-white border border-slate-200/90 rounded-lg overflow-hidden shadow-3xs transition-all"
+                            >
+                              {/* Day Accordion Trigger with Light Gray Background */}
+                              <button
+                                type="button"
+                                onClick={() => toggleSummaryDay(day.day)}
+                                className="w-full flex items-center justify-between gap-2.5 px-3 py-2.5 sm:px-3.5 sm:py-2.5 bg-slate-100/90 hover:bg-slate-200/70 transition-colors text-left cursor-pointer"
+                              >
+                                <div className="flex items-center gap-2 min-w-0">
+                                  <span className="shrink-0 px-2 py-0.5 rounded bg-[#ff5d09] text-white font-extrabold text-[10px] sm:text-[11px] uppercase tracking-wider">
+                                    Day {day.day}
+                                  </span>
+                                  <span className="font-bold text-slate-800 text-xs sm:text-sm leading-snug truncate">
+                                    {day.title}
+                                  </span>
+                                </div>
+                                <ChevronDown
+                                  size={15}
+                                  className={`shrink-0 text-slate-500 transition-transform duration-200 ${isDayOpen ? 'rotate-180 text-[#ff5d09]' : ''}`}
+                                />
+                              </button>
+
+                              {/* Day Accordion Content */}
+                              {isDayOpen && (
+                                <div className="p-3 bg-white space-y-2.5 border-t border-slate-200/60">
+                                  {/* Transfers Section */}
+                                  {dayData.transfers.length > 0 && (
+                                    <div className="space-y-1">
+                                      <div className="flex items-center gap-1.5 text-blue-600 font-extrabold text-[11px] uppercase tracking-wider">
+                                        <Car size={13} className="text-blue-500 shrink-0" />
+                                        <span>Transfers</span>
+                                      </div>
+                                      <div className="bg-blue-50/40 rounded-lg p-2.5 sm:p-2 border border-blue-100/60 space-y-1.5">
+                                        {dayData.transfers.map((t, tIdx) => (
+                                          <div
+                                            key={tIdx}
+                                            className="flex items-start gap-2 text-xs text-slate-700 leading-relaxed"
+                                          >
+                                            <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 shrink-0" />
+                                            <span className="font-medium text-slate-800">{t}</span>
+                                          </div>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  )}
+
+                                  {/* Sightseeing & Experiences Section */}
+                                  {dayData.experiences.length > 0 && (
+                                    <div className="space-y-1">
+                                      <div className="flex items-center gap-1.5 text-[#ff5d09] font-extrabold text-[11px] uppercase tracking-wider">
+                                        <Sparkles size={13} className="text-[#ff5d09] shrink-0" />
+                                        <span>Sightseeing & Experiences</span>
+                                      </div>
+                                      <div className="bg-orange-50/30 rounded-lg p-2.5 sm:p-3 border border-orange-100/60 space-y-1.5">
+                                        {dayData.experiences.map((exp, eIdx) => (
+                                          <div
+                                            key={eIdx}
+                                            className="flex items-start gap-2 text-xs text-slate-700 leading-relaxed"
+                                          >
+                                            <span className="w-1.5 h-1.5 rounded-full bg-[#ff5d09] mt-1.5 shrink-0" />
+                                            <span className="font-medium text-slate-800">{exp}</span>
+                                          </div>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  )}
+
+                                  {dayData.transfers.length === 0 && dayData.experiences.length === 0 && (
+                                    <p className="text-xs text-slate-400 italic">No specific transfers or sightseeing listed for this day.</p>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
                       </div>
                     )}
 
