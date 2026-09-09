@@ -2183,42 +2183,60 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
                                 <div className="p-3 bg-white space-y-2.5 border-t border-slate-200/60">
                                   {/* Transfers Section */}
                                   {dayData.transfers.length > 0 && (
-                                    <div className="space-y-1">
+                                    <div className="space-y-1.5">
                                       <div className="flex items-center gap-1.5 text-blue-600 font-extrabold text-[11px] uppercase tracking-wider">
                                         <Car size={13} className="text-blue-500 shrink-0" />
                                         <span>Transfers</span>
                                       </div>
-                                      <div className="bg-blue-50/40 rounded-lg p-2.5 sm:p-2 border border-blue-100/60 space-y-1.5">
-                                        {dayData.transfers.map((t, tIdx) => (
-                                          <div
-                                            key={tIdx}
-                                            className="flex items-start gap-2 text-xs text-slate-700 leading-relaxed"
-                                          >
-                                            <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 shrink-0" />
-                                            <span className="font-medium text-slate-800">{t}</span>
-                                          </div>
-                                        ))}
+                                      <div className="bg-blue-50/40 rounded-xl p-3 border border-blue-100/60 space-y-0 relative pl-2.5">
+                                        {dayData.transfers.map((t, tIdx) => {
+                                          const isLast = tIdx === dayData.transfers.length - 1;
+                                          return (
+                                            <div key={tIdx} className="relative flex items-start gap-2.5 group">
+                                              {/* Timeline Line & Node */}
+                                              <div className="flex flex-col items-center self-stretch shrink-0">
+                                                <div className="w-2 h-2 rounded-full bg-blue-500 mt-1 shrink-0 ring-2 ring-blue-100 group-hover:scale-125 transition-transform" />
+                                                {!isLast && (
+                                                  <div className="w-0.5 grow border-l border-dashed border-blue-300/80 my-0.5" />
+                                                )}
+                                              </div>
+                                              {/* Text */}
+                                              <div className={`min-w-0 flex-1 ${isLast ? 'pb-0' : 'pb-2.5'}`}>
+                                                <p className="text-xs text-slate-700 font-medium leading-relaxed break-words">{t}</p>
+                                              </div>
+                                            </div>
+                                          );
+                                        })}
                                       </div>
                                     </div>
                                   )}
 
                                   {/* Sightseeing & Experiences Section */}
                                   {dayData.experiences.length > 0 && (
-                                    <div className="space-y-1">
+                                    <div className="space-y-1.5">
                                       <div className="flex items-center gap-1.5 text-[#ff5d09] font-extrabold text-[11px] uppercase tracking-wider">
                                         <Sparkles size={13} className="text-[#ff5d09] shrink-0" />
                                         <span>Sightseeing & Experiences</span>
                                       </div>
-                                      <div className="bg-orange-50/30 rounded-lg p-2.5 sm:p-3 border border-orange-100/60 space-y-1.5">
-                                        {dayData.experiences.map((exp, eIdx) => (
-                                          <div
-                                            key={eIdx}
-                                            className="flex items-start gap-2 text-xs text-slate-700 leading-relaxed"
-                                          >
-                                            <span className="w-1.5 h-1.5 rounded-full bg-[#ff5d09] mt-1.5 shrink-0" />
-                                            <span className="font-medium text-slate-800">{exp}</span>
-                                          </div>
-                                        ))}
+                                      <div className="bg-orange-50/30 rounded-xl p-3 border border-orange-100/60 space-y-0 relative pl-2.5">
+                                        {dayData.experiences.map((exp, eIdx) => {
+                                          const isLast = eIdx === dayData.experiences.length - 1;
+                                          return (
+                                            <div key={eIdx} className="relative flex items-start gap-2.5 group">
+                                              {/* Timeline Line & Node */}
+                                              <div className="flex flex-col items-center self-stretch shrink-0">
+                                                <div className="w-2 h-2 rounded-full bg-[#ff5d09] mt-1 shrink-0 ring-2 ring-orange-100 group-hover:scale-125 transition-transform" />
+                                                {!isLast && (
+                                                  <div className="w-0.5 grow border-l border-dashed border-orange-300/80 my-0.5" />
+                                                )}
+                                              </div>
+                                              {/* Text */}
+                                              <div className={`min-w-0 flex-1 ${isLast ? 'pb-0' : 'pb-2.5'}`}>
+                                                <p className="text-xs text-slate-700 font-medium leading-relaxed break-words">{exp}</p>
+                                              </div>
+                                            </div>
+                                          );
+                                        })}
                                       </div>
                                     </div>
                                   )}
