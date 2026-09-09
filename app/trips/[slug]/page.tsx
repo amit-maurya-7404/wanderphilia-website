@@ -609,15 +609,15 @@ function renderItineraryDescription(
   }
 
   return (
-    <div className="pt-3 pb-1 space-y-3.5">
+    <div className="w-full min-w-0 max-w-full overflow-hidden pt-3 pb-1 space-y-3.5">
       {/* Top Section: Flowchart Timeline (Left) + Horizontal Day Image (Right) */}
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-5 sm:gap-6">
+      <div className="w-full min-w-0 max-w-full flex flex-col md:flex-row items-start md:items-center justify-between gap-4 sm:gap-6">
         {/* Left Column: Vertical Flow Chart / Timeline */}
-        <div className="grow space-y-0 relative pl-1 sm:pl-2">
+        <div className="w-full min-w-0 max-w-full space-y-0 relative pl-1 sm:pl-2">
           {timelinePoints.map((item, idx) => {
             const isLast = idx === timelinePoints.length - 1;
             return (
-              <div key={idx} className="relative flex items-start gap-3 sm:gap-3.5 group">
+              <div key={idx} className="relative flex items-start gap-2.5 sm:gap-3.5 group min-w-0 w-full max-w-full">
                 {/* Timeline Line & Node */}
                 <div className="flex flex-col items-center self-stretch shrink-0">
                   {/* Dot */}
@@ -629,8 +629,8 @@ function renderItineraryDescription(
                 </div>
 
                 {/* Text Content */}
-                <div className={`min-w-0 ${isLast ? 'pb-1' : 'pb-3.5 sm:pb-4'}`}>
-                  <p className="text-xs sm:text-sm text-slate-700 font-medium leading-relaxed group-hover:text-slate-950 transition-colors">
+                <div className={`min-w-0 flex-1 max-w-full ${isLast ? 'pb-1' : 'pb-3.5 sm:pb-4'}`}>
+                  <p className="text-xs sm:text-sm text-slate-700 font-medium leading-relaxed group-hover:text-slate-950 transition-colors break-words">
                     {item.text}
                   </p>
                 </div>
@@ -641,7 +641,7 @@ function renderItineraryDescription(
 
         {/* Right Column: Horizontal Day Featured Image */}
         {dayImage && (
-          <div className="w-full md:w-64 lg:w-72 shrink-0 aspect-[16/10] relative rounded-2xl overflow-hidden shadow-xs border border-slate-200/80 bg-slate-100 group">
+          <div className="w-full md:w-64 lg:w-72 shrink-0 aspect-[16/10] relative rounded-2xl overflow-hidden shadow-xs border border-slate-200/80 bg-slate-100 group max-w-full">
             <Image
               src={dayImage}
               alt={day?.title || `Day ${day?.day || 1}`}
@@ -656,16 +656,16 @@ function renderItineraryDescription(
 
       {/* Bottom Section: Accommodation Card */}
       {accommodation && (
-        <div className="bg-white border border-slate-200 rounded-2xl p-3 sm:p-3.5 shadow-2xs hover:shadow-xs transition-shadow flex items-center justify-between gap-3 flex-wrap mt-2">
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-200/50 flex items-center justify-center shrink-0">
-              <img src="/images/hotel-icon.png" alt="Hotel" className="w-6 h-6 object-contain" />
+        <div className="w-full min-w-0 max-w-full bg-white border border-slate-200 rounded-2xl p-3 sm:p-3.5 shadow-2xs hover:shadow-xs transition-shadow flex items-center justify-between gap-2.5 sm:gap-3 flex-wrap mt-2">
+          <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1 max-w-full">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-amber-500/10 border border-amber-200/50 flex items-center justify-center shrink-0">
+              <img src="/images/hotel-icon.png" alt="Hotel" className="w-5 h-5 sm:w-6 sm:h-6 object-contain" />
             </div>
-            <div className="min-w-0">
-              <span className="text-[11px] font-extrabold uppercase tracking-widest text-slate-400 block mb-0.5">
+            <div className="min-w-0 flex-1">
+              <span className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-widest text-slate-400 block mb-0.5">
                 Accommodation
               </span>
-              <p className="font-bold text-slate-800 text-xs sm:text-sm truncate">
+              <p className="font-bold text-slate-800 text-xs sm:text-sm truncate break-words">
                 {accommodation}
               </p>
             </div>
@@ -673,7 +673,7 @@ function renderItineraryDescription(
 
           {/* Meals badge if available */}
           {meals.length > 0 && (
-            <div className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-200/70 text-emerald-700 px-3 py-1.5 rounded-full text-xs font-bold shrink-0">
+            <div className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-200/70 text-emerald-700 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-bold shrink-0">
               <Utensils size={12} className="shrink-0 text-emerald-600" />
               <span>Meals: {meals.join(', ')}</span>
             </div>
@@ -1542,27 +1542,27 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
                     </div>
 
                     {/* Right Scrollable Accordion Cards */}
-                    <div className="grow space-y-3.5 relative pl-0 border-l border-slate-200/70 border-dashed md:border-0 md:pl-0">
+                    <div className="grow min-w-0 w-full max-w-full space-y-3.5 relative pl-0 border-l border-slate-200/70 border-dashed md:border-0 md:pl-0 overflow-hidden">
                       {Array.isArray(trip.itinerary) && trip.itinerary.length > 0 ? (
                         trip.itinerary.map((day) => (
                           <div
                             key={day.day}
                             id={`itinerary-day-${day.day}`}
-                            className={`border rounded-2xl overflow-hidden hover:shadow-xs transition-all duration-300 bg-white ${activeDay === day.day ? 'border-primary/50 shadow-xs' : 'border-slate-200'
+                            className={`border rounded-2xl overflow-hidden hover:shadow-xs transition-all duration-300 bg-white min-w-0 w-full max-w-full ${activeDay === day.day ? 'border-primary/50 shadow-xs' : 'border-slate-200'
                               }`}
                           >
                             <button
                               onClick={() => toggleDay(day.day)}
-                              className="w-full flex items-start justify-between p-4 sm:p-5 bg-white hover:bg-slate-50/50 transition-colors text-left"
+                              className="w-full flex items-start justify-between p-3.5 sm:p-5 bg-white hover:bg-slate-50/50 transition-colors text-left"
                             >
-                              <div className="flex items-start gap-3.5 grow">
+                              <div className="flex items-start gap-2.5 sm:gap-3.5 grow min-w-0">
                                 <div className="shrink-0 mt-0.5">
                                   <Badge className="bg-primary/10 text-primary hover:bg-primary/15 text-[10px] font-bold px-2 py-0.5">
                                     Day {day.day}
                                   </Badge>
                                 </div>
-                                <div className="min-w-0">
-                                  <h3 className="font-bold text-sm sm:text-base text-slate-955">
+                                <div className="min-w-0 flex-1">
+                                  <h3 className="font-bold text-sm sm:text-base text-slate-900 break-words">
                                     {day.title}
                                   </h3>
                                   {!expandedDays.includes(day.day) && (
@@ -1579,7 +1579,7 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
                             </button>
 
                             {expandedDays.includes(day.day) && (
-                              <div className="px-4 sm:px-5 pb-4 sm:pb-5 bg-white border-t border-slate-100">
+                              <div className="px-3 sm:px-5 pb-3.5 sm:pb-5 bg-white border-t border-slate-100 min-w-0 w-full max-w-full overflow-hidden">
                                 {renderItineraryDescription(day.description, day, trip)}
                               </div>
                             )}
