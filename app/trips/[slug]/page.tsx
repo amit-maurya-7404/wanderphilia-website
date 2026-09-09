@@ -1192,7 +1192,7 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
       <Navbar forceWhiteDesktop={true} />
 
       {/* STICKY FLOATING TOP-RIGHT ACTION BUTTONS: WHATSAPP, SHARE & DOWNLOAD PDF (MOBILE ONLY) */}
-      <div className="fixed top-22 right-3 z-50 flex md:hidden items-center gap-1.5">
+      <div className="fixed top-25 right-6 z-50 flex md:hidden items-center gap-1.5">
         <a
           href={`https://wa.me/919217664099?text=${encodeURIComponent(`Hi! I am interested in ${trip.title}. Please share more details.`)}`}
           target="_blank"
