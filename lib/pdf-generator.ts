@@ -150,10 +150,17 @@ export async function generateItineraryPDF(trip: Trip, jsPDFClass: any, options?
   doc.text(titleLines, leftMargin, y)
   y += (titleLines.length * 6) + 2
 
-  if (options?.selectedMonth || options?.dateRange) {
+  if (options?.dateRange?.from && options?.dateRange?.to) {
     const datesLabel = options.selectedMonth
-      ? `Preferred Departure: ${options.selectedMonth}`
-      : `Custom Travel Dates: ${options.dateRange?.from} to ${options.dateRange?.to}`
+      ? `Travel Dates: ${options.dateRange.from} to ${options.dateRange.to} (${options.selectedMonth})`
+      : `Travel Dates: ${options.dateRange.from} to ${options.dateRange.to}`
+    doc.setFont('helvetica', 'bold')
+    doc.setFontSize(9)
+    doc.setTextColor(255, 93, 9)
+    doc.text(datesLabel, leftMargin, y)
+    y += 6
+  } else if (options?.selectedMonth) {
+    const datesLabel = `Preferred Departure: ${options.selectedMonth}`
     doc.setFont('helvetica', 'bold')
     doc.setFontSize(9)
     doc.setTextColor(255, 93, 9)

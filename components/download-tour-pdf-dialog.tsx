@@ -17,7 +17,6 @@ export function DownloadTourPdfDialog({
   trip,
   onDownload,
 }: DownloadTourPdfDialogProps) {
-  const [pdfType, setPdfType] = useState<'predefined' | 'customize'>('predefined')
   const [name, setName] = useState('')
   const [selectedMonth, setSelectedMonth] = useState('')
   const [fromDate, setFromDate] = useState('')
@@ -27,17 +26,26 @@ export function DownloadTourPdfDialog({
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
 
-  // Generate dynamic upcoming 10 months list for pre-defined option
+  // Generate dynamic upcoming months list including trip batch dates if available
   const monthOptions = useMemo(() => {
     const list: string[] = []
+    if (trip?.batchDates && Array.isArray(trip.batchDates) && trip.batchDates.length > 0) {
+      trip.batchDates.forEach((b: any) => {
+        if (b.month && !list.includes(b.month)) {
+          list.push(b.month)
+        }
+      })
+    }
     const now = new Date()
     for (let i = 0; i < 10; i++) {
       const d = new Date(now.getFullYear(), now.getMonth() + i, 1)
       const monthName = d.toLocaleString('en-US', { month: 'long', year: 'numeric' })
-      list.push(monthName)
+      if (!list.some(m => m.toLowerCase().includes(monthName.toLowerCase().split(' ')[0]))) {
+        list.push(monthName)
+      }
     }
     return list
-  }, [])
+  }, [trip])
 
   const handleClose = () => {
     setErrors({})
@@ -60,18 +68,9 @@ export function DownloadTourPdfDialog({
       newErrors.phone = 'Please enter a valid 10-digit mobile number'
     }
 
-    // 3. Pre Defined validation
-    if (pdfType === 'predefined') {
-      if (!selectedMonth) {
-        newErrors.month = 'Please select a PDF / month'
-      }
-    }
-
-    // 4. Customize validation
-    if (pdfType === 'customize') {
-      if (!fromDate || !toDate) {
-        newErrors.dateRange = 'Please select travel start and end dates'
-      }
+    // 3. Date range validation if partially filled
+    if ((fromDate && !toDate) || (!fromDate && toDate)) {
+      newErrors.dateRange = 'Please select both start and end dates'
     }
 
     setErrors(newErrors)
@@ -95,10 +94,10 @@ export function DownloadTourPdfDialog({
         tripSlug: trip?.slug || '',
         price: trip?.price,
         destination: trip?.destination || '',
-        startDate: pdfType === 'predefined' ? selectedMonth : fromDate,
-        endDate: pdfType === 'customize' ? toDate : undefined,
-        source: `PDF Download (${pdfType === 'predefined' ? `Pre Defined: ${selectedMonth}` : `Customize: ${fromDate} to ${toDate}`})`,
-        message: `Itinerary PDF Download Request.\nTraveler Name: ${name.trim()}\nMobile: ${cleanPhone}\nType: ${pdfType === 'predefined' ? `Pre Defined Month (${selectedMonth})` : `Customize Travel Dates (${fromDate} to ${toDate})`}`,
+        startDate: fromDate || selectedMonth || '',
+        endDate: toDate || '',
+        source: `PDF Download${selectedMonth ? ` (Month: ${selectedMonth})` : ''}${fromDate && toDate ? ` (Dates: ${fromDate} to ${toDate})` : ''}`,
+        message: `Itinerary PDF Download Request.\nTraveler Name: ${name.trim()}\nMobile: ${cleanPhone}\nSelected Month: ${selectedMonth || 'Not selected'}\nTravel Dates: ${fromDate && toDate ? `${fromDate} to ${toDate}` : 'Not selected'}`,
       }
 
       fetch('/api/callback', {
@@ -109,8 +108,8 @@ export function DownloadTourPdfDialog({
 
       // 2. Trigger the PDF generation
       await onDownload({
-        selectedMonth: pdfType === 'predefined' ? selectedMonth : undefined,
-        dateRange: pdfType === 'customize' && fromDate && toDate ? { from: fromDate, to: toDate } : undefined,
+        selectedMonth: selectedMonth || undefined,
+        dateRange: fromDate && toDate ? { from: fromDate, to: toDate } : undefined,
       })
 
       setIsSuccess(true)
@@ -177,127 +176,78 @@ export function DownloadTourPdfDialog({
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-3.5">
-              {/* 1. SELECT PDF TYPE (RADIO OPTIONS) */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-slate-700 block">
-                  Select PDF Type:
+              {/* 1. SELECT A MONTH */}
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-slate-700 flex items-center justify-between">
+                  <span>Select Month:</span>
+                  <span className="text-[10px] text-slate-400 font-normal">Optional</span>
                 </label>
-                <div className="flex items-center gap-5 pt-0.5">
-                  <label className="flex items-center gap-2 text-xs sm:text-sm font-medium text-slate-800 cursor-pointer select-none">
-                    <input
-                      type="radio"
-                      name="pdfType"
-                      value="predefined"
-                      checked={pdfType === 'predefined'}
-                      onChange={() => {
-                        setPdfType('predefined')
-                        setErrors({})
-                      }}
-                      className="w-4 h-4 text-[#ff5d09] border-slate-300 focus:ring-[#ff5d09] cursor-pointer accent-[#ff5d09]"
-                    />
-                    <span>Pre Defined</span>
-                  </label>
-
-                  <label className="flex items-center gap-2 text-xs sm:text-sm font-medium text-slate-800 cursor-pointer select-none">
-                    <input
-                      type="radio"
-                      name="pdfType"
-                      value="customize"
-                      checked={pdfType === 'customize'}
-                      onChange={() => {
-                        setPdfType('customize')
-                        setErrors({})
-                      }}
-                      className="w-4 h-4 text-[#ff5d09] border-slate-300 focus:ring-[#ff5d09] cursor-pointer accent-[#ff5d09]"
-                    />
-                    <span>Customize</span>
-                  </label>
-                </div>
-              </div>
-
-              {/* 2A. PRE-DEFINED: SELECT A MONTH */}
-              {pdfType === 'predefined' && (
-                <div className="space-y-1 animate-in fade-in duration-200">
-                  <label className="text-xs font-semibold text-slate-700 block">
-                    Select a month:
-                  </label>
+                <div className="relative">
                   <select
                     value={selectedMonth}
                     onChange={(e) => {
                       setSelectedMonth(e.target.value)
                       if (errors.month) setErrors(prev => ({ ...prev, month: undefined }))
                     }}
-                    className={`w-full px-3 py-2 rounded-lg border text-xs sm:text-sm bg-white font-medium transition-all focus:outline-none cursor-pointer ${
-                      errors.month
-                        ? 'border-rose-400 focus:border-rose-500 focus:ring-1 focus:ring-rose-200 text-rose-800'
-                        : 'border-slate-300 focus:border-[#ff5d09] focus:ring-1 focus:ring-[#ff5d09]/20 text-slate-800'
-                    }`}
+                    className="w-full px-3 py-2 rounded-lg border border-slate-300 focus:border-[#ff5d09] focus:ring-1 focus:ring-[#ff5d09]/20 text-xs sm:text-sm bg-white font-medium text-slate-800 transition-all focus:outline-none cursor-pointer"
                   >
-                    <option value="">-- Choose a PDF / Month --</option>
+                    <option value="">-- Choose a Month --</option>
                     {monthOptions.map((m, idx) => (
                       <option key={idx} value={m}>
-                        {m} Departures
+                        {m.includes('Departures') ? m : `${m} Departures`}
                       </option>
                     ))}
                   </select>
-                  {errors.month && (
-                    <p className="text-[11px] font-medium text-rose-500 pt-0.5">
-                      {errors.month}
-                    </p>
-                  )}
                 </div>
-              )}
+              </div>
 
-              {/* 2B. CUSTOMIZE: DATE RANGE */}
-              {pdfType === 'customize' && (
-                <div className="space-y-2 animate-in fade-in duration-200">
-                  <div className="space-y-1">
-                    <label className="text-xs font-semibold text-slate-700 block">
-                      Select Date Range:
-                    </label>
-                    <div className="grid grid-cols-2 gap-2">
-                      <div>
-                        <span className="text-[10px] text-slate-400 font-medium block pb-0.5">From Date:</span>
-                        <input
-                          type="date"
-                          value={fromDate}
-                          onChange={(e) => {
-                            setFromDate(e.target.value)
-                            if (errors.dateRange) setErrors(prev => ({ ...prev, dateRange: undefined }))
-                          }}
-                          className={`w-full px-2.5 py-1.5 rounded-lg border text-xs bg-white text-slate-800 focus:outline-none transition-all ${
-                            errors.dateRange
-                              ? 'border-rose-400 focus:border-rose-500 focus:ring-1 focus:ring-rose-200'
-                              : 'border-slate-300 focus:border-[#ff5d09] focus:ring-1 focus:ring-[#ff5d09]/20'
-                          }`}
-                        />
-                      </div>
-                      <div>
-                        <span className="text-[10px] text-slate-400 font-medium block pb-0.5">To Date:</span>
-                        <input
-                          type="date"
-                          value={toDate}
-                          min={fromDate || undefined}
-                          onChange={(e) => {
-                            setToDate(e.target.value)
-                            if (errors.dateRange) setErrors(prev => ({ ...prev, dateRange: undefined }))
-                          }}
-                          className={`w-full px-2.5 py-1.5 rounded-lg border text-xs bg-white text-slate-800 focus:outline-none transition-all ${
-                            errors.dateRange
-                              ? 'border-rose-400 focus:border-rose-500 focus:ring-1 focus:ring-rose-200'
-                              : 'border-slate-300 focus:border-[#ff5d09] focus:ring-1 focus:ring-[#ff5d09]/20'
-                          }`}
-                        />
-                      </div>
-                    </div>
-                    {errors.dateRange && (
-                      <p className="text-[11px] font-medium text-rose-500 pt-0.5">
-                        {errors.dateRange}
-                      </p>
-                    )}
+              {/* 2. SELECT START & END DATES */}
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-slate-700 flex items-center justify-between">
+                  <span>Select Travel Dates:</span>
+                  <span className="text-[10px] text-slate-400 font-normal">Start & End Date (Optional)</span>
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <span className="text-[10px] text-slate-500 font-medium block pb-0.5">Start Date:</span>
+                    <input
+                      type="date"
+                      value={fromDate}
+                      onChange={(e) => {
+                        setFromDate(e.target.value)
+                        if (errors.dateRange) setErrors(prev => ({ ...prev, dateRange: undefined }))
+                      }}
+                      className={`w-full px-2.5 py-1.5 rounded-lg border text-xs bg-white text-slate-800 focus:outline-none transition-all ${
+                        errors.dateRange
+                          ? 'border-rose-400 focus:border-rose-500 focus:ring-1 focus:ring-rose-200'
+                          : 'border-slate-300 focus:border-[#ff5d09] focus:ring-1 focus:ring-[#ff5d09]/20'
+                      }`}
+                    />
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-slate-500 font-medium block pb-0.5">End Date:</span>
+                    <input
+                      type="date"
+                      value={toDate}
+                      min={fromDate || undefined}
+                      onChange={(e) => {
+                        setToDate(e.target.value)
+                        if (errors.dateRange) setErrors(prev => ({ ...prev, dateRange: undefined }))
+                      }}
+                      className={`w-full px-2.5 py-1.5 rounded-lg border text-xs bg-white text-slate-800 focus:outline-none transition-all ${
+                        errors.dateRange
+                          ? 'border-rose-400 focus:border-rose-500 focus:ring-1 focus:ring-rose-200'
+                          : 'border-slate-300 focus:border-[#ff5d09] focus:ring-1 focus:ring-[#ff5d09]/20'
+                      }`}
+                    />
                   </div>
                 </div>
-              )}
+                {errors.dateRange && (
+                  <p className="text-[11px] font-medium text-rose-500 pt-0.5">
+                    {errors.dateRange}
+                  </p>
+                )}
+              </div>
 
               {/* 3. FULL NAME (REQUIRED) */}
               <div className="space-y-1">

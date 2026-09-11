@@ -989,7 +989,7 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
   }
 
   const handleDownloadPDF = async (options?: { selectedMonth?: string; dateRange?: { from: string; to: string }; language?: string }) => {
-    if (isGeneratingPdf) return
+    if (isGeneratingPdf || !trip) return
     setIsGeneratingPdf(true)
     try {
       // 1. Dynamically load jsPDF from CDN
@@ -2580,7 +2580,7 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
                   variant="outline"
                   className="w-full font-bold text-xs justify-center cursor-pointer"
                   disabled={isGeneratingPdf}
-                  onClick={handleDownloadPDF}
+                  onClick={() => setDownloadPdfModalOpen(true)}
                 >
                   {isGeneratingPdf ? (
                     <svg className="w-4 h-4 mr-2 animate-spin text-slate-500" fill="none" viewBox="0 0 24 24">
