@@ -17,7 +17,7 @@ interface Trip {
   nights?: number
   duration: number
   difficulty: string
-  groupSize: string
+  groupSize?: string | number
   rating: number
   stays?: string[]
   itinerary: ItineraryDay[]

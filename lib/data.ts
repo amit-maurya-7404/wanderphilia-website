@@ -408,59 +408,81 @@ export const trips: Trip[] = [
         day: 1,
         title: 'Arrival in Leh & Acclimatization Day',
         description: [
-          'Transfer: Airport pickup at Kushok Bakula Rimpochee Airport & hotel transfer',
-          'Accommodation: Hotel in Leh',
-          'Sightseeing: Mandatory rest & acclimatization walk around Leh town',
-          'Sightseeing: Evening trip briefing & orientation by Trip Captain'
+          'Fly to Leh & arrive at Kushok Bakula Rimpochee Airport with scenic Himalayan aerial views',
+          'Meet Wanderphilia representative & private transfer to hotel in Leh',
+          'Hotel check-in, rest & mandatory high-altitude acclimatization',
+          'Evening gentle acclimatization walk around Leh local market & cafes',
+          'Trip briefing & route orientation by Trip Captain',
+          'Overnight in Leh',
+          'Meals: Dinner'
         ]
       },
       {
         day: 2,
-        title: 'Leh Local Sightseeing & Cultural Tour',
+        title: 'Leh Local Sightseeing: Magnetic Hill, Pathar Sahib, Sangam & Shanti Stupa',
         description: [
-          'Accommodation: Hotel in Leh',
-          'Sightseeing: Iconic Shanti Stupa with panoramic views of Leh Valley',
-          'Sightseeing: Historic Gurudwara Pathar Sahib & Magnetic Hill gravity-defying phenomenon',
-          'Sightseeing: Indus & Zanskar River Confluence (Sangam Point)',
-          'Sightseeing: Ladakh Hall of Fame War Memorial & Leh Market cafe hopping'
+          'Enjoy morning breakfast at hotel',
+          'Visit Hall of Fame Museum commemorating brave Indian soldiers',
+          'Experience gravity-defying phenomenon at Magnetic Hill',
+          'Seek blessings at sacred Gurudwara Pathar Sahib',
+          'Witness magnificent confluence of Indus & Zanskar rivers at Sangam Point',
+          'Catch breathtaking panoramic sunset over Leh Valley from iconic Shanti Stupa',
+          'Evening at leisure to explore vibrant Leh Bazaar',
+          'Overnight in Leh',
+          'Meals: Breakfast & Dinner'
         ]
       },
       {
         day: 3,
-        title: 'Leh to Nubra Valley via Khardung La Pass (17,982 ft)',
+        title: 'Leh to Nubra Valley via Khardung La Pass (5,359 m) — 130 km, 5-6 hrs',
         description: [
-          'Transfer: Scenic 130 km ride/drive crossing the iconic Khardung La Pass (17,982 ft)',
-          'Accommodation: Hotel / Camp in Nubra Valley',
-          'Sightseeing: Diskit Monastery & 106-ft Maitreya Buddha Statue',
-          'Sightseeing: Hunder Sand Dunes with double-humped Bactrian camel safari & ATV rides'
+          'Early morning breakfast & start thrilling drive towards Nubra Valley',
+          'Ascend and cross Khardung La Pass (17,582 ft / 5,359 m) — one of the highest motorable roads in the world',
+          'Descend into the scenic valley of flowers along Shyok River',
+          'Visit Diskit Monastery & marvel at the giant 106 ft Maitreya Buddha Statue',
+          'Experience double-humped Bactrian camel safari & ATV rides on Hunder Sand Dunes',
+          'Evening check-in at Nubra deluxe camp / hotel with bonfire',
+          'Overnight in Nubra Valley',
+          'Meals: Breakfast & Dinner'
         ]
       },
       {
         day: 4,
-        title: 'Nubra Valley to Pangong Tso via Shyok River',
+        title: 'Nubra Valley to Pangong Lake via Shyok River Route — 180 km, 5-6 hrs',
         description: [
-          'Transfer: 180 km off-road ride/drive through scenic Agam & Shyok river route',
-          'Accommodation: Campsite near Pangong Lake',
-          'Sightseeing: Majestic color-changing Pangong Lake at 14,270 ft',
-          'Sightseeing: Famous 3 Idiots shooting point & lakeside sunset'
+          'Morning breakfast amidst peaceful Nubra desert landscape',
+          'Drive along the scenic and rugged Shyok River valley route',
+          'Pass through picturesque remote villages of Agam and Durbuk',
+          'First glimpse of the mesmerizing blue waters of Pangong Tso (14,270 ft / 4,350 m)',
+          'Spend afternoon admiring color-changing hues of the lake & click photos at famous 3-Idiots point',
+          'Witness magical sunset over high-altitude lake surrounded by barren peaks',
+          'Stargazing experience under crystal clear Himalayan skies',
+          'Overnight in Pangong Lake Camps',
+          'Meals: Breakfast & Dinner'
         ]
       },
       {
         day: 5,
-        title: 'Pangong Lake to Leh via Chang La Pass (17,590 ft)',
+        title: 'Pangong Lake to Leh via Chang La Pass (5,360 m) — 140 km, 5-6 hrs',
         description: [
-          'Transfer: 140 km return ride/drive crossing Chang La Pass (17,590 ft) to Leh',
-          'Accommodation: Hotel in Leh',
-          'Sightseeing: Sunrise by Pangong Lake & scenic passes of Karu, Thiksey and Shey',
-          'Sightseeing: Evening leisure for souvenir shopping in Leh Main Bazaar'
+          'Wake up early to witness breathtaking golden sunrise over Pangong Lake',
+          'Enjoy warm lakeside breakfast before departure',
+          'Ascend and cross mighty Chang La Pass (17,586 ft / 5,360 m)',
+          'En route visit the iconic Thiksey Monastery & Rancho School (Druk Padma Karpo)',
+          'Arrive back in Leh by evening & hotel check-in',
+          'Free time for souvenir shopping in Leh Main Bazaar & farewell cafe evening',
+          'Overnight in Leh',
+          'Meals: Breakfast & Dinner'
         ]
       },
       {
         day: 6,
-        title: 'Leh Departure',
+        title: 'Departure from Leh — Fly Home with Unforgettable Ladakh Memories',
         description: [
-          'Transfer: Hotel checkout & transfer to Leh Airport for onward journey',
-          'Sightseeing: Departure with unforgettable Himalayan memories'
+          'Enjoy final breakfast in Leh',
+          'Hotel check-out and private transfer to Leh Airport as per flight schedule',
+          'Board flight with aerial Himalayan views & unforgettable Ladakh memories',
+          'Meals: Breakfast'
         ]
       }
     ],
@@ -665,68 +687,93 @@ export const trips: Trip[] = [
         day: 1,
         title: 'Arrival in Leh & Acclimatization Day',
         description: [
-          'Transfer: Airport pickup at Leh Airport & hotel transfer',
-          'Accommodation: Hotel in Leh',
-          'Sightseeing: Mandatory rest & acclimatization walk around Leh town'
+          'Arrive at Leh Airport with stunning aerial views of snow-clad Himalayan ranges',
+          'Warm welcome & private transfer to hotel in Leh',
+          'Check-in and mandatory rest for high-altitude acclimatization',
+          'Evening gentle walk to Leh Market & Leh Palace area',
+          'Trip briefing & itinerary orientation by Trip Captain',
+          'Overnight in Leh',
+          'Meals: Dinner'
         ]
       },
       {
         day: 2,
-        title: 'Leh Local Sightseeing & Sham Valley Tour',
+        title: 'Leh Cultural Sightseeing: Sangam, Magnetic Hill, Pathar Sahib & Shanti Stupa',
         description: [
-          'Accommodation: Hotel in Leh',
-          'Sightseeing: Iconic Shanti Stupa with panoramic city views',
-          'Sightseeing: Sangam Point (Indus & Zanskar River Confluence)',
-          'Sightseeing: Magnetic Hill & historic Gurudwara Pathar Sahib',
-          'Sightseeing: Hall of Fame War Memorial & evening at Leh Market cafes'
+          'Morning breakfast at hotel',
+          'Explore Hall of Fame war museum & pay tribute to Indian heroes',
+          'Experience Magnetic Hill phenomenon & drive along scenic Indus Valley',
+          'Visit Gurudwara Pathar Sahib & Sangam confluence (Indus & Zanskar rivers)',
+          'Visit Shanti Stupa for panoramic 360-degree sunset view of Leh town',
+          'Evening cafe hopping and shopping in Leh market',
+          'Overnight in Leh',
+          'Meals: Breakfast & Dinner'
         ]
       },
       {
         day: 3,
-        title: 'Leh to Nubra Valley via Khardung La Pass (17,982 ft)',
+        title: 'Leh to Nubra Valley via Khardung La Pass (5,359 m) — 125 km, 5-6 hrs',
         description: [
-          'Transfer: 125 km scenic ride/drive crossing Khardung La Pass (5,359 m)',
-          'Accommodation: Hotel / Camp in Nubra Valley',
-          'Sightseeing: Diskit Monastery & 106-ft Maitreya Buddha Statue',
-          'Sightseeing: Hunder Sand Dunes cold desert, double-humped camel safari & ATV rides'
+          'Early morning breakfast & start adventurous ride towards Nubra Valley',
+          'Summit the legendary Khardung La Pass (17,582 ft / 5,359 m) — world’s premier motorable pass',
+          'Scenic descent into Nubra Valley along Shyok River',
+          'Visit historic Diskit Monastery & 106 ft Maitreya Buddha Statue overlooking the valley',
+          'Explore Hunder White Sand Dunes with double-humped Bactrian camel ride',
+          'Camp / hotel check-in with evening bonfire & dinner',
+          'Overnight in Nubra Valley',
+          'Meals: Breakfast & Dinner'
         ]
       },
       {
         day: 4,
-        title: 'Nubra Valley to Turtuk Day Excursion (Balti Village)',
+        title: 'Excursion to Turtuk Village & Tyakshi (Indo-Pak Border) — 200 km, 7-8 hrs',
         description: [
-          'Transfer: 200 km round-trip excursion along the Shyok River',
-          'Accommodation: Hotel / Camp in Nubra Valley',
-          'Sightseeing: Historic Turtuk Village (India-Pakistan border area) & apricot orchards',
-          'Sightseeing: Unique Balti culture exploration & Shyok War Memorial'
+          'Morning breakfast and drive along the scenic Shyok River towards Baltistan border',
+          'Enter Turtuk Village — India’s northernmost village opened to tourists in 2010',
+          'Explore unique Balti cultural heritage, ancient wooden houses & lush apricot orchards',
+          'Visit Tyakshi Village — the last point accessible before the Indo-Pakistan Line of Control (LOC)',
+          'Interact with warm locals and try traditional Balti cuisine / apricot juice',
+          'Return drive to Hunder by evening & relax',
+          'Overnight in Nubra Valley',
+          'Meals: Breakfast & Dinner'
         ]
       },
       {
         day: 5,
-        title: 'Nubra Valley to Pangong Tso via Shyok Route',
+        title: 'Nubra Valley to Pangong Lake via Shyok Route — 160 km, 5-6 hrs',
         description: [
-          'Transfer: 160 km ride/drive through scenic Agam & Shyok river valley',
-          'Accommodation: Campsite near Pangong Lake',
-          'Sightseeing: World-famous high-altitude Pangong Lake at 14,270 ft',
-          'Sightseeing: 3 Idiots point & picturesque lakeside sunset'
+          'Breakfast with scenic morning desert views in Nubra',
+          'Ride along the rugged Shyok River gorges and scenic river crossings',
+          'Pass picturesque remote hamlets of Agam, Shyok & Durbuk',
+          'Arrive at world-famous Pangong Tso (14,270 ft / 4,350 m) — highest saltwater lake',
+          'Witness enchanting colour changes of lake from turquoise to deep royal blue',
+          'Photography at 3-Idiots point & magical evening sunset by the shore',
+          'Overnight in Pangong Lake Camps',
+          'Meals: Breakfast & Dinner'
         ]
       },
       {
         day: 6,
-        title: 'Pangong Lake to Leh via Chang La Pass (17,590 ft)',
+        title: 'Pangong Lake to Leh via Chang La Pass (5,360 m) — 140 km, 5-6 hrs',
         description: [
-          'Transfer: 140 km return ride/drive crossing Chang La Pass (5,360 m) to Leh',
-          'Accommodation: Hotel in Leh',
-          'Sightseeing: Sunrise at Pangong Lake, Karu, Thiksey & Shey monastery views',
-          'Sightseeing: Evening leisure for shopping at Leh Main Bazaar'
+          'Sunrise photography session over tranquil waters of Pangong Lake',
+          'Lakeside breakfast & start return drive to Leh',
+          'Cross mighty Chang La Pass (17,586 ft / 5,360 m) — 3rd highest motorable pass in the world',
+          'En route stop at famous Thiksey Monastery & Sindhu Ghat',
+          'Arrive in Leh by evening, check into hotel & rest',
+          'Celebratory farewell group dinner in Leh',
+          'Overnight in Leh',
+          'Meals: Breakfast & Dinner'
         ]
       },
       {
         day: 7,
-        title: 'Leh Departure',
+        title: 'Departure from Leh — Return Home with Lifetime Memories',
         description: [
-          'Transfer: Hotel checkout & transfer to Leh Airport for departure',
-          'Sightseeing: Departure with cherished memories of Ladakh'
+          'Morning breakfast at hotel',
+          'Assisted transfer to Leh Airport as per flight schedule',
+          'Fly back home carrying cherishable Ladakh expedition memories',
+          'Meals: Breakfast'
         ]
       }
     ],
@@ -927,69 +974,91 @@ export const trips: Trip[] = [
         day: 1,
         title: 'Arrival in Leh & Acclimatization Day',
         description: [
-          'Transfer: Airport pickup at Leh Airport & hotel transfer',
-          'Accommodation: Hotel in Leh',
-          'Sightseeing: Mandatory rest & acclimatization walk around Leh town',
-          'Sightseeing: Evening trip briefing & orientation by Trip Captain'
+          'Arrive at Leh Airport with breathtaking Himalayan aerial vistas',
+          'Warm welcome & transfer to hotel in Leh',
+          'Mandatory complete rest day for high-altitude acclimatization',
+          'Evening gentle walk around Leh Main Market',
+          'Tour briefing & bike allocation by Trip Captain & mechanic',
+          'Overnight in Leh',
+          'Meals: Dinner'
         ]
       },
       {
         day: 2,
-        title: 'Leh Local Sightseeing & Sham Valley Tour',
+        title: 'Leh Sightseeing & Acclimatization Ride: Sangam, Magnetic Hill & Shanti Stupa',
         description: [
-          'Accommodation: Hotel in Leh',
-          'Sightseeing: Iconic Shanti Stupa with panoramic city views',
-          'Sightseeing: Historic Gurudwara Pathar Sahib & Magnetic Hill phenomenon',
-          'Sightseeing: Indus & Zanskar River Confluence (Sangam Point)',
-          'Sightseeing: Ladakh Hall of Fame War Memorial & Leh Market cafe hopping'
+          'Breakfast followed by orientation ride along the scenic Leh-Srinagar Highway',
+          'Visit Hall of Fame Museum, Magnetic Hill & Gurudwara Pathar Sahib',
+          'Witness the scenic confluence of Indus & Zanskar rivers at Sangam Point',
+          'Evening visit to Shanti Stupa for panoramic sunset over Leh Valley',
+          'Final bike checks and gear fitting for upcoming high-altitude circuit',
+          'Overnight in Leh',
+          'Meals: Breakfast & Dinner'
         ]
       },
       {
         day: 3,
-        title: 'Leh to Nubra Valley via Khardung La Pass (17,982 ft)',
+        title: 'Leh to Nubra Valley via Khardung La Pass (5,359 m) — 130 km, 5-6 hrs',
         description: [
-          'Transfer: 130 km ride/drive crossing Khardung La Pass (5,359 m)',
-          'Accommodation: Hotel / Camp in Nubra Valley',
-          'Sightseeing: Diskit Monastery & 106-ft Maitreya Buddha Statue',
-          'Sightseeing: Hunder Sand Dunes cold desert, double-humped camel safari & ATV rides'
+          'Early morning ride flag-off towards Khardung La',
+          'Scale Khardung La Pass (17,582 ft / 5,359 m) — iconic high mountain pass',
+          'Descend into the vast white desert valley of Nubra',
+          'Visit Diskit Monastery and the gigantic 106 ft Maitreya Buddha Statue',
+          'Double-humped Bactrian camel safari & ATV rides on Hunder Sand Dunes',
+          'Overnight in Nubra Valley Camps / Hotel',
+          'Meals: Breakfast & Dinner'
         ]
       },
       {
         day: 4,
-        title: 'Nubra Valley to Pangong Tso via Shyok River',
+        title: 'Nubra Valley to Pangong Lake via Shyok Route — 180 km, 5-6 hrs',
         description: [
-          'Transfer: 180 km off-road ride/drive through scenic Agam & Shyok river route',
-          'Accommodation: Campsite near Pangong Lake',
-          'Sightseeing: High-altitude color-changing Pangong Lake at 14,270 ft',
-          'Sightseeing: 3 Idiots shooting point & lakeside sunset'
+          'Morning breakfast in Nubra and start off-road trail along Shyok River',
+          'Cross scenic riverbeds, rocky terrain and picturesque Ladakhi hamlets',
+          'First breathtaking look of azure Pangong Lake (14,270 ft)',
+          'Ride along the iconic shores & photoshoot at 3-Idiots point',
+          'Sunset reflections and stargazing by lakeside camps',
+          'Overnight in Pangong Lake Camps',
+          'Meals: Breakfast & Dinner'
         ]
       },
       {
         day: 5,
-        title: 'Pangong Lake to Hanle via Rezang La War Memorial',
+        title: 'Pangong Lake to Hanle via Chushul, Rezang La & Tsaga La — 165 km, 7-8 hrs',
         description: [
-          'Transfer: 165 km rugged ride/drive through Chushul, Tsaga La & Loma Bridge',
-          'Accommodation: Homestay in Hanle (Dark Sky Reserve)',
-          'Sightseeing: Historic Rezang La 1962 War Memorial tribute',
-          'Sightseeing: Remote Changthang wilderness & stargazing in Hanle Dark Sky Reserve'
+          'Sunrise breakfast by Pangong Lake',
+          'Ride through remote Changthang plateau towards Indo-China border region',
+          'Pay tribute to 1962 war heroes at the historic Rezang La War Memorial',
+          'Cross scenic Tsaga La Pass and Loma Bend checkpoint',
+          'Arrive in remote astronomy village of Hanle (14,760 ft)',
+          'Visit Hanle Monastery & world-famous Indian Astronomical Observatory',
+          'Incredible Dark Sky Sanctuary stargazing & Milky Way photography',
+          'Overnight in Hanle Homestay / Guesthouse',
+          'Meals: Breakfast & Dinner'
         ]
       },
       {
         day: 6,
-        title: 'Hanle to Leh via Tso Moriri Lake Excursion',
+        title: 'Hanle to Leh via Chumathang Hot Springs & Indus Valley — 260 km, 7-8 hrs',
         description: [
-          'Transfer: 289 km scenic journey via Mahe, Chumathang, Upshi & Karu to Leh',
-          'Accommodation: Hotel in Leh',
-          'Sightseeing: Pristine blue Tso Moriri Lake at 14,836 ft with migratory birds',
-          'Sightseeing: Evening leisure for shopping at Leh Main Bazaar'
+          'Morning breakfast in remote Hanle village',
+          'Ride along the surreal Changthang landscapes and wild Kiang (Tibetan wild ass) sightings',
+          'Stop at Chumathang Hot Springs known for natural mineral waters',
+          'Cruise along smooth tarmac of Indus Valley highway passing Upshi and Karu',
+          'Reach Leh by evening & return bikes to base',
+          'Celebratory dinner in Leh market',
+          'Overnight in Leh',
+          'Meals: Breakfast & Dinner'
         ]
       },
       {
         day: 7,
-        title: 'Leh Departure',
+        title: 'Departure from Leh — End of Epic Ladakh Expedition',
         description: [
-          'Transfer: Hotel checkout & transfer to Leh Airport for onward journey',
-          'Sightseeing: Departure with unforgettable Himalayan memories'
+          'Morning breakfast at hotel',
+          'Transfer to Leh Airport for return flight',
+          'Depart with unforgettable memories of Khardung La, Pangong & Hanle',
+          'Meals: Breakfast'
         ]
       }
     ],
@@ -1195,78 +1264,96 @@ This tour gives you the real feel of Ladakh’s nature and open roads, without e
         day: 1,
         title: 'Arrival in Leh & Acclimatization Day',
         description: [
-          'Transfer: Airport pickup at Leh Airport & hotel transfer',
-          'Accommodation: Hotel in Leh',
-          'Sightseeing: Mandatory rest & acclimatization walk around Leh town'
+          'Arrive at Leh Airport with stunning snow-capped mountain views',
+          'Airport reception & transfer to hotel in Leh',
+          'Mandatory day of rest for oxygen acclimatization',
+          'Evening gentle stroll in Leh Market & briefing with Trip Leader',
+          'Overnight in Leh',
+          'Meals: Dinner'
         ]
       },
       {
         day: 2,
-        title: 'Leh Local Sightseeing & Sham Valley Tour',
+        title: 'Leh Sightseeing: Sangam, Magnetic Hill, Pathar Sahib & Shanti Stupa',
         description: [
-          'Accommodation: Hotel in Leh',
-          'Sightseeing: Iconic Shanti Stupa with panoramic views of Leh Valley',
-          'Sightseeing: Sangam Point (Indus & Zanskar River Confluence)',
-          'Sightseeing: Magnetic Hill & historic Gurudwara Pathar Sahib',
-          'Sightseeing: Hall of Fame War Memorial & evening at Leh Market cafes'
+          'Breakfast followed by test ride & bike allocation',
+          'Visit Hall of Fame Museum, Magnetic Hill & Gurudwara Pathar Sahib',
+          'Scenic stop at Indus-Zanskar Sangam confluence',
+          'Sunset views from Shanti Stupa overlooking Leh city',
+          'Overnight in Leh',
+          'Meals: Breakfast & Dinner'
         ]
       },
       {
         day: 3,
-        title: 'Leh to Nubra Valley via Khardung La Pass (17,982 ft)',
+        title: 'Leh to Nubra Valley via Khardung La (5,359 m) — 125 km, 5-6 hrs',
         description: [
-          'Transfer: 125 km scenic ride/drive crossing Khardung La Pass (5,359 m)',
-          'Accommodation: Hotel / Camp in Nubra Valley',
-          'Sightseeing: Diskit Monastery & 106-ft Maitreya Buddha Statue',
-          'Sightseeing: Hunder Sand Dunes cold desert, double-humped camel safari & ATV rides'
+          'Breakfast & thrilling ride up to Khardung La (17,582 ft / 5,359 m)',
+          'Celebrate summiting world’s most iconic motorable pass',
+          'Descend into picturesque Nubra Valley along Shyok River',
+          'Visit Diskit Monastery & 106 ft Maitreya Buddha Statue',
+          'Camel safari on Hunder Sand Dunes amidst mountain backdrop',
+          'Overnight in Nubra Valley',
+          'Meals: Breakfast & Dinner'
         ]
       },
       {
         day: 4,
-        title: 'Nubra Valley to Pangong Tso via Shyok River',
+        title: 'Nubra Valley to Pangong Lake via Shyok Route — 160 km, 5-6 hrs',
         description: [
-          'Transfer: 160 km ride/drive through scenic Agam & Shyok river valley',
-          'Accommodation: Campsite near Pangong Lake',
-          'Sightseeing: High-altitude color-changing Pangong Lake at 14,270 ft',
-          'Sightseeing: 3 Idiots shooting point & lakeside sunset'
+          'Morning breakfast & off-road adventure along Shyok River valley',
+          'Arrive at Pangong Tso (14,270 ft) & marvel at its multi-shade blue waters',
+          'Lakeside photography at 3-Idiots point & sunset walk',
+          'Stargazing under unpolluted high-altitude night skies',
+          'Overnight in Pangong Lake Camps',
+          'Meals: Breakfast & Dinner'
         ]
       },
       {
         day: 5,
-        title: 'Pangong Lake to Hanle via Rezang La War Memorial',
+        title: 'Pangong Lake to Hanle via Rezang La War Memorial — 165 km, 7-8 hrs',
         description: [
-          'Transfer: 165 km rugged ride/drive through Chushul, Tsaga La & Loma Bridge',
-          'Accommodation: Homestay in Hanle (Dark Sky Reserve)',
-          'Sightseeing: Historic Rezang La 1962 War Memorial tribute',
-          'Sightseeing: Remote Changthang wilderness & stargazing in Hanle Dark Sky Reserve'
+          'Lakeside sunrise breakfast & departure towards Changthang border region',
+          'Visit the iconic Rezang La War Memorial & pay homage to Charlie Company heroes',
+          'Cross Tsaga La Pass and drive along raw Tibetan plateau wilderness',
+          'Arrive in Hanle — India’s first designated Dark Sky Sanctuary (14,760 ft)',
+          'Visit Hanle Monastery & world’s highest telescope observatory',
+          'Overnight in Hanle',
+          'Meals: Breakfast & Dinner'
         ]
       },
       {
         day: 6,
-        title: 'Hanle to Umling La Pass (19,024 ft) & Demchok Border Excursion',
+        title: 'Excursion to Umling La Pass (19,024 ft) — World’s Highest Motorable Pass',
         description: [
-          'Transfer: 200 km round-trip excursion over Photi La (18,124 ft) to Umling La',
-          'Accommodation: Homestay in Hanle',
-          'Sightseeing: World’s highest motorable pass - Umling La Pass (19,024 ft / 5,640 m)',
-          'Sightseeing: Demchok Indo-China border village & optional Indian Astronomical Observatory'
+          'Early morning breakfast & prepare for the pinnacle ride of the expedition',
+          'Ascend through high-altitude desert terrain to conquer Umling La Pass (19,024 ft / 5,798 m)',
+          'Stand atop the Highest Motorable Road on Planet Earth — a world record achievement',
+          'Photography at the world record milestone board overlooking Indo-China borderlands',
+          'Visit Demchok border area & return to Hanle for warm evening celebration',
+          'Overnight in Hanle',
+          'Meals: Breakfast & Dinner'
         ]
       },
       {
         day: 7,
-        title: 'Hanle to Leh via Tso Moriri Lake Excursion',
+        title: 'Hanle to Leh via Tso Moriri, Kyagar Tso, Puga & Chumathang — 289 km, 8-9 hrs',
         description: [
-          'Transfer: 289 km scenic journey via Mahe, Chumathang, Upshi & Karu to Leh',
-          'Accommodation: Hotel in Leh',
-          'Sightseeing: Pristine blue Tso Moriri Lake at 14,836 ft with migratory birds',
-          'Sightseeing: Evening leisure for shopping at Leh Main Bazaar'
+          'Early breakfast & start long scenic expedition across southern Ladakh',
+          'Visit pristine high-altitude lake of Tso Moriri & Kyagar Tso',
+          'Witness bubbling geothermal sulphur vents in surreal Puga Valley',
+          'Pass Chumathang Hot Springs and cruise back into Leh along Indus River',
+          'Overnight in Leh',
+          'Meals: Breakfast & Dinner'
         ]
       },
       {
         day: 8,
-        title: 'Leh Departure',
+        title: 'Departure from Leh — Fly Home with World Record Memories',
         description: [
-          'Transfer: Hotel checkout & transfer to Leh Airport for onward flight',
-          'Sightseeing: Departure with thrilling Himalayan memories'
+          'Morning breakfast at hotel',
+          'Transfer to Leh Airport for onward journey',
+          'Meals: Breakfast'
         ]
       }
     ],
@@ -1466,78 +1553,88 @@ As the trip concludes, you’ll fly back home with a heart full of happiness and
         day: 1,
         title: 'Arrival in Leh & Acclimatization Day',
         description: [
-          'Transfer: Airport pickup at Leh Airport & hotel transfer',
-          'Accommodation: Hotel in Leh',
-          'Sightseeing: Mandatory rest & acclimatization walk around Leh town'
+          'Arrive at Leh Airport & transfer to hotel',
+          'Complete rest day for high-altitude acclimatization',
+          'Evening stroll in Leh Bazaar & tour briefing',
+          'Overnight in Leh',
+          'Meals: Dinner'
         ]
       },
       {
         day: 2,
-        title: 'Leh Local Sightseeing & Sham Valley Tour',
+        title: 'Leh Local Sightseeing: Magnetic Hill, Pathar Sahib & Shanti Stupa',
         description: [
-          'Accommodation: Hotel in Leh',
-          'Sightseeing: Iconic Shanti Stupa with panoramic city views',
-          'Sightseeing: Sangam Point (Indus & Zanskar River Confluence)',
-          'Sightseeing: Magnetic Hill & historic Gurudwara Pathar Sahib',
-          'Sightseeing: Hall of Fame War Memorial & evening at Leh Market cafes'
+          'Breakfast & test ride along Indus Valley',
+          'Visit Hall of Fame, Magnetic Hill, Gurudwara Pathar Sahib & Sangam confluence',
+          'Sunset views from Shanti Stupa overlooking Leh city',
+          'Overnight in Leh',
+          'Meals: Breakfast & Dinner'
         ]
       },
       {
         day: 3,
-        title: 'Leh to Nubra Valley via Khardung La Pass (17,982 ft)',
+        title: 'Leh to Nubra Valley via Khardung La Pass (5,359 m) — 125 km, 5-6 hrs',
         description: [
-          'Transfer: 125 km scenic ride/drive crossing Khardung La Pass (5,359 m)',
-          'Accommodation: Hotel / Camp in Nubra Valley',
-          'Sightseeing: Diskit Monastery & 106-ft Maitreya Buddha Statue',
-          'Sightseeing: Hunder Sand Dunes cold desert, double-humped camel safari & ATV rides'
+          'Ride over legendary Khardung La Pass (17,582 ft / 5,359 m)',
+          'Descend into Nubra Valley & visit Diskit Monastery (106 ft Buddha Statue)',
+          'Double-humped camel safari on Hunder Sand Dunes',
+          'Overnight in Nubra Valley',
+          'Meals: Breakfast & Dinner'
         ]
       },
       {
         day: 4,
-        title: 'Nubra Valley to Turtuk Day Excursion (Balti Village)',
+        title: 'Excursion to Turtuk Village & Tyakshi (Indo-Pak Border) — 200 km, 7-8 hrs',
         description: [
-          'Transfer: 200 km round-trip excursion along the Shyok River',
-          'Accommodation: Hotel / Camp in Nubra Valley',
-          'Sightseeing: Historic Turtuk Village (India-Pakistan border area) & apricot orchards',
-          'Sightseeing: Unique Balti culture exploration & Shyok War Memorial'
+          'Scenic drive along Shyok River to Indo-Pakistan border region',
+          'Explore traditional Balti village of Turtuk, apricot orchards & heritage museum',
+          'Visit Tyakshi border village before returning to Hunder',
+          'Overnight in Nubra Valley',
+          'Meals: Breakfast & Dinner'
         ]
       },
       {
         day: 5,
-        title: 'Nubra Valley to Pangong Tso via Shyok River',
+        title: 'Nubra Valley to Pangong Lake via Shyok Route — 160 km, 5-6 hrs',
         description: [
-          'Transfer: 160 km ride/drive through scenic Agam & Shyok river valley',
-          'Accommodation: Campsite near Pangong Lake',
-          'Sightseeing: High-altitude color-changing Pangong Lake at 14,270 ft',
-          'Sightseeing: 3 Idiots shooting point & lakeside sunset'
+          'Ride through rugged Shyok River gorges and rocky water crossings',
+          'Arrive at magnificent Pangong Tso (14,270 ft) & enjoy colour-changing views',
+          'Photoshoot at 3-Idiots point & lakeside stargazing',
+          'Overnight in Pangong Lake Camps',
+          'Meals: Breakfast & Dinner'
         ]
       },
       {
         day: 6,
-        title: 'Pangong Tso to Tso Moriri via Kaksang La Pass (17,851 ft)',
+        title: 'Pangong Tso to Tso Moriri via Chushul, Tsaga La & Loma — 175 km, 8-9 hrs',
         description: [
-          'Transfer: 175 km off-road journey crossing Chushul, Kaksang La, Yaye Tso & Kyagar Tso',
-          'Accommodation: Stay / Camp near Tso Moriri Lake',
-          'Sightseeing: Spectacular Mirpal Tso, Kyagar Tso & high-altitude Kaksang La Pass',
-          'Sightseeing: Pristine blue Tso Moriri Lake with migratory birds and wildlife'
+          'Sunrise breakfast & ride along untouched Changthang landscapes',
+          'Pay homage at Rezang La War Memorial & cross scenic Tsaga La Pass',
+          'Pass Loma and Mahe Bridge to reach breathtaking Tso Moriri Lake (Korzok - 14,836 ft)',
+          'Explore Korzok Monastery & witness sunset over the blue sapphire lake',
+          'Overnight in Tso Moriri (Korzok)',
+          'Meals: Breakfast & Dinner'
         ]
       },
       {
         day: 7,
-        title: 'Tso Moriri to Leh via Puga Valley Geothermal Springs',
+        title: 'Tso Moriri to Leh via Puga Geothermal Valley, Tsokar & Tanglang La — 220 km, 7-8 hrs',
         description: [
-          'Transfer: 154 km scenic drive via Chumathang, Upshi & Karu to Leh',
-          'Accommodation: Hotel in Leh',
-          'Sightseeing: Puga Valley geothermal mud pools & Chumathang hot sulphur springs',
-          'Sightseeing: Evening leisure for shopping at Leh Main Bazaar'
+          'Morning walk along Tso Moriri shores & breakfast',
+          'Explore steaming sulphur springs in Puga Valley & salt-encrusted Tsokar Lake',
+          'Cross mighty Tanglang La Pass (17,480 ft / 5,328 m) — 2nd highest pass in Ladakh',
+          'Descend into Indus Valley and arrive back in Leh for farewell celebration',
+          'Overnight in Leh',
+          'Meals: Breakfast & Dinner'
         ]
       },
       {
         day: 8,
-        title: 'Leh Departure',
+        title: 'Departure from Leh — Fly Home',
         description: [
-          'Transfer: Hotel checkout & transfer to Leh Airport for onward journey',
-          'Sightseeing: Departure with cherished Himalayan memories'
+          'Breakfast at hotel',
+          'Transfer to Leh Airport with extraordinary memories of Ladakh circuit',
+          'Meals: Breakfast'
         ]
       }
     ],
@@ -1731,87 +1828,101 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
         day: 1,
         title: 'Arrival in Leh & Acclimatization Day',
         description: [
-          'Transfer: Airport pickup at Leh Airport & hotel transfer',
-          'Accommodation: Hotel in Leh',
-          'Sightseeing: Mandatory rest & acclimatization walk around Leh town'
+          'Arrive at Leh Airport with aerial views of snow peaks & transfer to hotel',
+          'Mandatory day of rest for oxygen acclimatization',
+          'Evening walk to Leh market & briefing by Trip Captain',
+          'Overnight in Leh',
+          'Meals: Dinner'
         ]
       },
       {
         day: 2,
-        title: 'Leh Local Sightseeing & Sham Valley Tour',
+        title: 'Leh Sightseeing: Sangam, Magnetic Hill, Pathar Sahib & Shanti Stupa',
         description: [
-          'Accommodation: Hotel in Leh',
-          'Sightseeing: Iconic Shanti Stupa with panoramic views of Leh Valley',
-          'Sightseeing: Sangam Point (Indus & Zanskar River Confluence)',
-          'Sightseeing: Magnetic Hill & historic Gurudwara Pathar Sahib',
-          'Sightseeing: Hall of Fame War Memorial & evening at Leh Market cafes'
+          'Breakfast and acclimatization ride along Indus River',
+          'Visit Hall of Fame Museum, Magnetic Hill, Gurudwara Pathar Sahib & Sangam confluence',
+          'Catch golden sunset over Leh from Shanti Stupa',
+          'Overnight in Leh',
+          'Meals: Breakfast & Dinner'
         ]
       },
       {
         day: 3,
-        title: 'Leh to Nubra Valley via Khardung La Pass (17,982 ft)',
+        title: 'Leh to Nubra Valley via Khardung La Pass (5,359 m) — 130 km, 5-6 hrs',
         description: [
-          'Transfer: 125 km scenic ride/drive crossing Khardung La Pass (5,359 m)',
-          'Accommodation: Hotel / Camp in Nubra Valley',
-          'Sightseeing: Diskit Monastery & 106-ft Maitreya Buddha Statue',
-          'Sightseeing: Hunder Sand Dunes cold desert, double-humped camel safari & ATV rides'
+          'Ascend and cross legendary Khardung La Pass (17,582 ft / 5,359 m)',
+          'Visit Diskit Monastery & 106 ft Maitreya Buddha Statue',
+          'Camel ride and ATV adventures on Hunder Sand Dunes',
+          'Overnight in Nubra Valley',
+          'Meals: Breakfast & Dinner'
         ]
       },
       {
         day: 4,
-        title: 'Nubra Valley to Pangong Tso via Shyok River',
+        title: 'Nubra Valley to Pangong Lake via Shyok Route — 160 km, 5-6 hrs',
         description: [
-          'Transfer: 160 km ride/drive through scenic Agam & Shyok river valley',
-          'Accommodation: Campsite near Pangong Lake',
-          'Sightseeing: High-altitude color-changing Pangong Lake at 14,270 ft',
-          'Sightseeing: 3 Idiots shooting point & lakeside sunset'
+          'Ride along rugged Shyok River gorges and scenic river crossings',
+          'Reach azure Pangong Tso (14,270 ft) & witness colour changes across the lake',
+          'Lakeside photoshoot at 3-Idiots point & magical evening bonfire',
+          'Overnight in Pangong Lake Camps',
+          'Meals: Breakfast & Dinner'
         ]
       },
       {
         day: 5,
-        title: 'Pangong Lake to Hanle via Rezang La War Memorial',
+        title: 'Pangong Lake to Hanle via Rezang La War Memorial — 165 km, 7-8 hrs',
         description: [
-          'Transfer: 165 km rugged ride/drive through Chushul, Tsaga La & Loma Bridge',
-          'Accommodation: Homestay in Hanle (Dark Sky Reserve)',
-          'Sightseeing: Historic Rezang La 1962 War Memorial tribute',
-          'Sightseeing: Remote Changthang wilderness & stargazing in Hanle Dark Sky Reserve'
+          'Sunrise breakfast by Pangong Lake',
+          'Ride through remote Changthang plateau towards Indo-China border',
+          'Pay tribute to 1962 heroes at Rezang La War Memorial',
+          'Cross Tsaga La Pass and Loma Checkpoint to reach Hanle (14,760 ft)',
+          'Stargazing at Hanle Dark Sky Reserve',
+          'Overnight in Hanle',
+          'Meals: Breakfast & Dinner'
         ]
       },
       {
         day: 6,
-        title: 'Hanle to Umling La Pass (19,024 ft) & Demchok Border Excursion',
+        title: 'Hanle to Umling La Pass (19,024 ft) — World’s Highest Motorable Pass',
         description: [
-          'Transfer: 200 km round-trip excursion over Photi La (18,124 ft) to Umling La',
-          'Accommodation: Homestay in Hanle',
-          'Sightseeing: World’s highest motorable pass - Umling La Pass (19,024 ft / 5,640 m)',
-          'Sightseeing: Demchok Indo-China border village & optional Indian Astronomical Observatory'
+          'Early breakfast and ride to conquer Umling La Pass (19,024 ft / 5,798 m)',
+          'Stand on the world’s highest motorable road & photo milestone session',
+          'Visit Demchok village & return to Hanle for evening celebration',
+          'Overnight in Hanle',
+          'Meals: Breakfast & Dinner'
         ]
       },
       {
         day: 7,
-        title: 'Hanle to Tso Moriri Lake',
+        title: 'Hanle to Tso Moriri (Korzok) via Mahe Bridge & Kyagar Tso — 160 km, 6-7 hrs',
         description: [
-          'Transfer: 289 km scenic journey across Loma Bridge, Mahe & Nyoma to Tso Moriri',
-          'Accommodation: Stay / Camp near Tso Moriri Lake',
-          'Sightseeing: Pristine high-altitude blue waters of Tso Moriri at 14,836 ft & migratory bird watching'
+          'Morning breakfast in Hanle and ride across raw Changthang wilderness',
+          'Spot wildlife including Tibetan Wild Ass (Kiang), Black-Necked Cranes and Marmots',
+          'Arrive at stunning high-altitude lake of Tso Moriri (Korzok - 14,836 ft)',
+          'Sunset reflections along the pristine mountain-fringed lake',
+          'Overnight in Tso Moriri',
+          'Meals: Breakfast & Dinner'
         ]
       },
       {
         day: 8,
-        title: 'Tso Moriri to Leh via Puga Valley Geothermal Springs',
+        title: 'Tso Moriri to Leh via Puga Geothermal Valley, Tsokar & Tanglang La — 220 km, 7-8 hrs',
         description: [
-          'Transfer: 154 km scenic drive via Chumathang, Upshi & Karu to Leh',
-          'Accommodation: Hotel in Leh',
-          'Sightseeing: Puga Valley geothermal mud pools & Chumathang hot sulphur springs',
-          'Sightseeing: Evening leisure for shopping at Leh Main Bazaar'
+          'Breakfast with panoramic views of Tso Moriri',
+          'Explore steaming geothermal sulphur springs in Puga Valley & salt lake Tsokar',
+          'Cross mighty Tanglang La Pass (17,480 ft / 5,328 m)',
+          'Scenic descent to Leh via Upshi & Karu for farewell dinner',
+          'Overnight in Leh',
+          'Meals: Breakfast & Dinner'
         ]
       },
       {
         day: 9,
-        title: 'Leh Departure',
+        title: 'Departure from Leh — Fly Home',
         description: [
-          'Transfer: Hotel checkout & transfer to Leh Airport for onward journey',
-          'Sightseeing: Departure with thrilling Himalayan memories'
+          'Breakfast at hotel',
+          'Transfer to Leh Airport with a heart full of high-altitude adventures',
+          'Meals: Breakfast'
         ]
       }
     ],
@@ -2011,126 +2122,180 @@ This journey is not just about the road—it's about the adventure, the stories,
     itinerary: [
       {
         day: 0,
-        title: 'Delhi / Chandigarh to Manali Overnight Journey',
+        title: 'Departure From Delhi / Chandigarh to Manali',
         description: [
-          'Transfer: Overnight AC Volvo / vehicle transfer from Delhi / Chandigarh to Manali',
-          'Accommodation: Overnight in transit Volvo'
+          'Report at Delhi / Chandigarh pickup point in the evening.',
+          'Board the comfortable AC Volvo coach for Manali.',
+          'Overnight semi-sleeper Volvo journey through the Himalayas.'
         ]
       },
       {
         day: 1,
-        title: 'Arrival in Manali & Local Exploration',
+        title: 'Arrival in Manali | Acclimatization & Local Exploration',
         description: [
-          'Transfer: Morning arrival at Manali & hotel transfer',
-          'Accommodation: Hotel in Manali',
-          'Sightseeing: Check-in, relax & visit Hidimba Devi Temple and Vashisht Hot Springs',
-          'Sightseeing: Jogini Waterfall short hike, Mall Road stroll & evening trip briefing'
+          'Arrive in Manali (Valley of Gods) in the morning and transfer to your hotel.',
+          'Check-in, relax, and freshen up after the overnight journey.',
+          'Visit the historic Hadimba Devi Temple amidst towering deodar forests.',
+          'Take a scenic hike to the breathtaking Jogini Waterfalls.',
+          'Visit Vashisht Village to experience the natural healing sulphur hot springs.',
+          'Stroll through Mall Road & Old Manali for local cafe hopping and shopping.',
+          'Evening trip briefing, safety orientation, and riding gear allocation.',
+          'Overnight in Manali.',
+          'Meals: Dinner.'
         ]
       },
       {
         day: 2,
-        title: 'Manali to Sarchu via Atal Tunnel & Baralacha La (16,040 ft)',
+        title: 'Manali to Sarchu via Atal Tunnel & Baralacha La [175 km / 7-8 hrs]',
         description: [
-          'Transfer: 175 km ride/drive via Atal Tunnel, Lahaul Valley, Keylong & Darcha',
-          'Accommodation: Campsite in Sarchu',
-          'Sightseeing: Scenic drive through Atal Tunnel, Suraj Tal Lake & Baralacha La Pass (4,892 m)'
+          'Early morning departure from Manali towards Sarchu via the Leh-Manali Highway.',
+          'Drive through the engineering marvel, Atal Tunnel (9.02 km), entering Lahaul Valley.',
+          'Cruise along the scenic Chandra River passing Keylong, Darcha, Patsio, and Zingzing Bar.',
+          'Witness the emerald-green high altitude Suraj Tal Lake (source of the Bhaga River).',
+          'Scale the challenging Baralacha La Pass (4,890 m / 16,043 ft).',
+          'Arrive at the high-altitude windswept plains of Sarchu (4,290 m).',
+          'Check-in to your deluxe Swiss camps and acclimatize under a starlit Himalayan sky.',
+          'Overnight in Sarchu.',
+          'Meals: Dinner.'
         ]
       },
       {
         day: 3,
-        title: 'Sarchu to Leh via Gata Loops, Nakee La, Lachung La & Moore Plains',
+        title: 'Sarchu to Leh via Gata Loops, Moore Plains & Tanglang La [260 km / 7-8 hrs]',
         description: [
-          'Transfer: 260 km high-altitude highway journey to Leh crossing Tanglang La (17,480 ft)',
-          'Accommodation: Hotel in Leh',
-          'Sightseeing: Conquering 21 hairpin bends of Gata Loops, Nakee La (4,738 m) & Lachung La (5,065 m)',
-          'Sightseeing: Cruising the 50-km flat Moore Plains with wildlife spotting & Tanglang La Pass'
+          'Post-breakfast ride from Sarchu to Leh crossing the high-altitude border.',
+          'Conquer the legendary 21 hairpin bends of Gata Loops (4,669 m).',
+          'Cross the high mountain passes: Nakee La (4,738 m) and Lachung La (5,065 m).',
+          'Stop for a hot lunch at the rugged settlement of Pang.',
+          'Cruise through the picturesque Moore Plains – a 50 km straight plateau at 4,000+ m.',
+          'Scale the second-highest pass on the highway, Tanglang La (5,328 m / 17,480 ft).',
+          'Descend through Upshi and Karu along the Indus River valley to reach Leh.',
+          'Check-in to your hotel in Leh, relax, and enjoy a warm dinner.',
+          'Overnight in Leh.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 4,
-        title: 'Leh to Nubra Valley via Khardung La Pass (17,982 ft)',
+        title: 'Leh to Nubra Valley via Khardung La & Diskit Monastery [125 km / 5-6 hrs]',
         description: [
-          'Transfer: 125 km ride/drive crossing Khardung La Pass (5,359 m)',
-          'Accommodation: Hotel / Camp in Nubra Valley',
-          'Sightseeing: Shanti Stupa, Diskit Monastery & 106-ft Maitreya Buddha Statue',
-          'Sightseeing: Hunder Sand Dunes cold desert, double-humped camel safari & ATV rides'
+          'Morning visit to Shanti Stupa for panoramic 360-degree views of Leh town and the Stok range.',
+          'Embark on a thrilling ride north towards Nubra Valley via Khardung La.',
+          'Summit the world-renowned Khardung La Pass (5,359 m / 17,582 ft).',
+          'Descend into the scenic Shyok Valley and reach Diskit.',
+          'Visit the historic 14th-century Diskit Monastery and the towering 106-foot Maitreya Buddha.',
+          'Ride to the white sand dunes of Hunder.',
+          'Experience a double-humped Bactrian camel safari and desert ATV rides across the dunes.',
+          'Check-in to your hotel/campsite in Nubra Valley for a cozy evening.',
+          'Overnight in Nubra Valley.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 5,
-        title: 'Nubra Valley to Turtuk Day Excursion (Balti Village)',
+        title: 'Nubra Valley to Turtuk Village Excursion [200 km / 7-8 hrs]',
         description: [
-          'Transfer: 200 km round-trip excursion along the Shyok River',
-          'Accommodation: Hotel / Camp in Nubra Valley',
-          'Sightseeing: Historic Turtuk Village (India-Pakistan border area) & apricot orchards',
-          'Sightseeing: Unique Balti culture exploration & Shyok War Memorial'
+          'Morning drive towards Turtuk – India’s northernmost frontier village opened to tourists in 2010.',
+          'Ride along the raging Shyok River through dramatic gorge landscapes.',
+          'Explore Turtuk village, steeped in unique Balti heritage, apricot orchards, and wooden houses.',
+          'Visit the historic Turtuk Yabgo Royal Palace and the Shyok War Memorial.',
+          'Interact with friendly local villagers and taste organic fresh apricots and walnuts.',
+          'Return to Nubra Valley by late afternoon.',
+          'Overnight in Nubra Valley.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 6,
-        title: 'Nubra Valley to Pangong Tso via Shyok River',
+        title: 'Nubra Valley to Pangong Tso via Shyok River Route [160 km / 5-6 hrs]',
         description: [
-          'Transfer: 160 km ride/drive through scenic Agam & Shyok river valley',
-          'Accommodation: Campsite near Pangong Lake',
-          'Sightseeing: High-altitude color-changing Pangong Lake at 14,270 ft',
-          'Sightseeing: 3 Idiots shooting point & lakeside sunset'
+          'Morning departure from Nubra Valley towards the iconic Pangong Tso.',
+          'Ride along the scenic Shyok River route through Agham and Shyok villages.',
+          'First glimpse of the mesmerizing, color-changing turquoise waters of Pangong Lake (4,350 m / 14,270 ft).',
+          'Stroll along the world’s highest saltwater lake and snap photos at the famous 3-Idiots movie point.',
+          'Witness a magical Himalayan sunset painting the lake in shades of sapphire and amber.',
+          'Check-in to lake-view deluxe cottages/camps for a serene bonfire evening.',
+          'Overnight near Pangong Lake.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 7,
-        title: 'Pangong Lake to Hanle via Rezang La War Memorial',
+        title: 'Pangong Tso to Hanle via Rezang La War Memorial [165 km / 8-9 hrs]',
         description: [
-          'Transfer: 165 km rugged ride/drive through Chushul, Tsaga La & Loma Bridge',
-          'Accommodation: Homestay in Hanle (Dark Sky Reserve)',
-          'Sightseeing: Historic Rezang La 1962 War Memorial tribute',
-          'Sightseeing: Remote Changthang wilderness & stargazing in Hanle Dark Sky Reserve'
+          'Witness an unforgettable sunrise over the crystalline blue waters of Pangong Lake.',
+          'Post-breakfast journey towards the remote astronomical paradise of Hanle.',
+          'Ride past Chushul village and visit the legendary Rezang La War Memorial.',
+          'Pay homage to the 114 brave soldiers of Charlie Company (1962 Sino-Indian War).',
+          'Cross the Indus River via Loma Bridge and ride through the pristine Changthang Wildlife Sanctuary.',
+          'Arrive in Hanle village, one of the world’s highest inhabited plateaus.',
+          'Check-in to your traditional homestay and stargaze under India’s premier Dark Sky Reserve.',
+          'Overnight in Hanle.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 8,
-        title: 'Hanle to Umling La Pass (19,024 ft) & Demchok Border Excursion',
+        title: 'Hanle to Umling La Pass (19,024 ft) & Demchok Frontier Excursion [200 km / 7-8 hrs]',
         description: [
-          'Transfer: 200 km round-trip excursion over Photi La (18,124 ft) to Umling La',
-          'Accommodation: Homestay in Hanle',
-          'Sightseeing: World’s highest motorable pass - Umling La Pass (19,024 ft / 5,640 m)',
-          'Sightseeing: Demchok Indo-China border village & optional Indian Astronomical Observatory'
+          'Post-breakfast adventure to conquer the highest motorable road on the planet.',
+          'Ascend through Photi La Pass (5,524 m) across raw, lunar-like mountain terrain.',
+          'Summit Umling La Pass at a record-shattering 19,024 ft (5,640 m) – higher than Everest Base Camp.',
+          'Celebrate your achievement and click iconic milestone photos with your bike/group.',
+          'Ride down towards Demchok, the last Indian border outpost on the Indo-China frontier.',
+          'Visit the historic 17th-century Hanle Monastery and view the Indian Astronomical Observatory.',
+          'Return to your Hanle homestay for a hearty local dinner.',
+          'Overnight in Hanle.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 9,
-        title: 'Hanle to Leh via Tso Moriri Lake Excursion',
+        title: 'Hanle to Leh via Tso Moriri Lake [289 km / 7-8 hrs]',
         description: [
-          'Transfer: 289 km scenic journey across Loma Bridge, Mahe, Chumathang, Upshi & Karu to Leh',
-          'Accommodation: Hotel in Leh',
-          'Sightseeing: Pristine blue Tso Moriri Lake at 14,836 ft with migratory birds',
-          'Sightseeing: Evening leisure for shopping at Leh Main Bazaar'
+          'Morning departure from Hanle towards the pristine Tso Moriri Lake.',
+          'Ride via Loma Bridge and Mahe along the turquoise Indus and Chumathang hot springs.',
+          'Arrive at the majestic Tso Moriri (4,522 m / 14,836 ft), India’s largest and highest high-altitude wetland lake.',
+          'Spot rare Himalayan migratory birds including the Black-necked Crane and Bar-headed Goose.',
+          'Continue the scenic drive past Upshi, Karu, and Thiksey to arrive back in Leh.',
+          'Check-in to your hotel in Leh, relax, and explore Leh Main Bazaar for souvenirs and cafes.',
+          'Overnight in Leh.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 10,
-        title: 'Leh to Jispa via Tanglang La, Moore Plains & Baralacha La',
+        title: 'Leh to Jispa via Tanglang La, Moore Plains & Baralacha La [260 km / 8-9 hrs]',
         description: [
-          'Transfer: 260 km scenic return drive crossing Tanglang La, Lachung La, Nakee La & Sarchu',
-          'Accommodation: Hotel / Camp in Jispa',
-          'Sightseeing: Moore Plains, Gata Loops, Baralacha La, Deepak Tal & Suraj Tal lakes'
+          'Morning departure from Leh on the return leg towards Jispa.',
+          'Cross Tanglang La Pass (5,328 m) and cruise the vast 50 km stretch of Moore Plains.',
+          'Traverse Lachung La (5,065 m) and Nakee La (4,738 m).',
+          'Descend the hairpin turns of Gata Loops to Sarchu and continue towards Baralacha La (4,890 m).',
+          'Pass the serene Deepak Tal and Suraj Tal lakes before descending through Darcha into Jispa.',
+          'Check-in to your riverside campsite/hotel in Jispa along the Bhaga River.',
+          'Overnight in Jispa.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 11,
-        title: 'Jispa to Manali via Atal Tunnel & Overnight Volvo to Delhi',
+        title: 'Jispa to Manali via Atal Tunnel | Departure to Delhi [135 km / 4-5 hrs]',
         description: [
-          'Transfer: 135 km drive via Keylong, Sissu, Atal Tunnel & Solang Valley to Manali',
-          'Transfer: Evening overnight Volvo bus transfer from Manali to Delhi',
-          'Accommodation: Overnight in Volvo bus',
-          'Sightseeing: Sissu waterfall & Solang Valley views'
+          'Post-breakfast scenic ride from Jispa towards Manali.',
+          'Drive through Keylong, Sissu waterfalls, and cross the engineering marvel of Atal Tunnel.',
+          'Pass through Solang Valley and arrive in Manali by afternoon.',
+          'Free time in Manali for last-minute shopping or relaxing at Old Manali cafes.',
+          'Board the evening overnight Volvo coach back to Delhi.',
+          'Overnight journey in Volvo.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 12,
-        title: 'Arrival in Delhi',
+        title: 'Arrival in Delhi | Trip Concludes',
         description: [
-          'Transfer: Morning arrival at Delhi',
-          'Sightseeing: Tour concludes with cherished Himalayan memories'
+          'Arrive in Delhi in the morning.',
+          'Trip concludes with lifelong memories of the ultimate Leh-Ladakh, Umling La & Changthang expedition.'
         ]
       }
     ],
@@ -2336,126 +2501,186 @@ Long scenic drives, simple mountain stays, and raw landscapes make this journey 
     itinerary: [
       {
         day: 0,
-        title: 'Delhi / Chandigarh to Manali Overnight Journey',
+        title: 'Departure From Delhi / Chandigarh to Manali',
         description: [
-          'Transfer: Overnight AC Volvo / vehicle transfer from Delhi / Chandigarh to Manali',
-          'Accommodation: Overnight in transit Volvo'
+          'Report at Delhi / Chandigarh pickup point in the evening.',
+          'Board the comfortable AC Volvo coach for Manali.',
+          'Overnight semi-sleeper Volvo journey through the Himalayas.'
         ]
       },
       {
         day: 1,
-        title: 'Arrival in Manali & Local Exploration',
+        title: 'Arrival in Manali | Acclimatization & Local Exploration',
         description: [
-          'Transfer: Morning arrival at Manali & hotel transfer',
-          'Accommodation: Hotel in Manali',
-          'Sightseeing: Check-in, relax & visit Hidimba Devi Temple and Vashisht Hot Springs',
-          'Sightseeing: Jogini Waterfall short hike, Mall Road stroll & evening trip briefing'
+          'Arrive in Manali (Valley of Gods) in the morning and transfer to your hotel.',
+          'Check-in, relax, and freshen up after the overnight journey.',
+          'Visit the historic Hadimba Devi Temple amidst towering deodar forests.',
+          'Take a scenic hike to the breathtaking Jogini Waterfalls.',
+          'Visit Vashisht Village to experience the natural healing sulphur hot springs.',
+          'Stroll through Mall Road & Old Manali for local cafe hopping and shopping.',
+          'Evening trip briefing, safety orientation, and riding gear allocation.',
+          'Overnight in Manali.',
+          'Meals: Dinner.'
         ]
       },
       {
         day: 2,
-        title: 'Manali to Sarchu via Atal Tunnel & Baralacha La (16,040 ft)',
+        title: 'Manali to Sarchu via Atal Tunnel & Baralacha La [175 km / 7-8 hrs]',
         description: [
-          'Transfer: 175 km ride/drive via Atal Tunnel, Lahaul Valley, Keylong & Darcha',
-          'Accommodation: Campsite in Sarchu',
-          'Sightseeing: Scenic drive through Atal Tunnel, Suraj Tal Lake & Baralacha La Pass (4,892 m)'
+          'Early morning departure from Manali towards Sarchu via the Leh-Manali Highway.',
+          'Drive through the engineering marvel, Atal Tunnel (9.02 km), entering Lahaul Valley.',
+          'Cruise along the scenic Chandra River passing Keylong, Darcha, Patsio, and Zingzing Bar.',
+          'Witness the emerald-green high altitude Suraj Tal Lake (source of the Bhaga River).',
+          'Scale the challenging Baralacha La Pass (4,890 m / 16,043 ft).',
+          'Arrive at the high-altitude windswept plains of Sarchu (4,290 m).',
+          'Check-in to your deluxe Swiss camps and acclimatize under a starlit Himalayan sky.',
+          'Overnight in Sarchu.',
+          'Meals: Dinner.'
         ]
       },
       {
         day: 3,
-        title: 'Sarchu to Leh via Gata Loops, Nakee La, Lachung La & Moore Plains',
+        title: 'Sarchu to Leh via Gata Loops, Moore Plains & Tanglang La [260 km / 7-8 hrs]',
         description: [
-          'Transfer: 260 km high-altitude highway journey to Leh crossing Tanglang La (17,480 ft)',
-          'Accommodation: Hotel in Leh',
-          'Sightseeing: Conquering 21 hairpin bends of Gata Loops, Nakee La (4,738 m) & Lachung La (5,065 m)',
-          'Sightseeing: Cruising the 50-km flat Moore Plains with wildlife spotting & Tanglang La Pass'
+          'Post-breakfast ride from Sarchu to Leh crossing the high-altitude border.',
+          'Conquer the legendary 21 hairpin bends of Gata Loops (4,669 m).',
+          'Cross the high mountain passes: Nakee La (4,738 m) and Lachung La (5,065 m).',
+          'Stop for a hot lunch at the rugged settlement of Pang.',
+          'Cruise through the picturesque Moore Plains – a 50 km straight plateau at 4,000+ m.',
+          'Scale the second-highest pass on the highway, Tanglang La (5,328 m / 17,480 ft).',
+          'Descend through Upshi and Karu along the Indus River valley to reach Leh.',
+          'Check-in to your hotel in Leh, relax, and enjoy a warm dinner.',
+          'Overnight in Leh.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 4,
-        title: 'Leh to Nubra Valley via Khardung La Pass (17,982 ft)',
+        title: 'Leh to Nubra Valley via Khardung La & Diskit Monastery [125 km / 5-6 hrs]',
         description: [
-          'Transfer: 125 km ride/drive crossing Khardung La Pass (5,359 m)',
-          'Accommodation: Hotel / Camp in Nubra Valley',
-          'Sightseeing: Shanti Stupa, Diskit Monastery & 106-ft Maitreya Buddha Statue',
-          'Sightseeing: Hunder Sand Dunes cold desert, double-humped camel safari & ATV rides'
+          'Morning visit to Shanti Stupa for panoramic 360-degree views of Leh town and the Stok range.',
+          'Embark on a thrilling ride north towards Nubra Valley via Khardung La.',
+          'Summit the world-renowned Khardung La Pass (5,359 m / 17,582 ft).',
+          'Descend into the scenic Shyok Valley and reach Diskit.',
+          'Visit the historic 14th-century Diskit Monastery and the towering 106-foot Maitreya Buddha.',
+          'Ride to the white sand dunes of Hunder.',
+          'Experience a double-humped Bactrian camel safari and desert ATV rides across the dunes.',
+          'Check-in to your hotel/campsite in Nubra Valley for a cozy evening.',
+          'Overnight in Nubra Valley.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 5,
-        title: 'Nubra Valley to Turtuk Day Excursion (Balti Village)',
+        title: 'Nubra Valley to Turtuk Village Excursion [200 km / 7-8 hrs]',
         description: [
-          'Transfer: 200 km round-trip excursion along the Shyok River',
-          'Accommodation: Hotel / Camp in Nubra Valley',
-          'Sightseeing: Historic Turtuk Village (India-Pakistan border area) & apricot orchards',
-          'Sightseeing: Unique Balti culture exploration & Shyok War Memorial'
+          'Morning drive towards Turtuk – India’s northernmost frontier village opened to tourists in 2010.',
+          'Ride along the raging Shyok River through dramatic gorge landscapes.',
+          'Explore Turtuk village, steeped in unique Balti heritage, apricot orchards, and wooden houses.',
+          'Visit the historic Turtuk Yabgo Royal Palace and the Shyok War Memorial.',
+          'Interact with friendly local villagers and taste organic fresh apricots and walnuts.',
+          'Return to Nubra Valley by late afternoon.',
+          'Overnight in Nubra Valley.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 6,
-        title: 'Nubra Valley to Pangong Tso via Shyok River',
+        title: 'Nubra Valley to Pangong Tso via Shyok River Route [160 km / 5-6 hrs]',
         description: [
-          'Transfer: 160 km ride/drive through scenic Agam & Shyok river valley',
-          'Accommodation: Campsite near Pangong Lake',
-          'Sightseeing: High-altitude color-changing Pangong Lake at 14,270 ft',
-          'Sightseeing: 3 Idiots shooting point & lakeside sunset'
+          'Morning departure from Nubra Valley towards the iconic Pangong Tso.',
+          'Ride along the scenic Shyok River route through Agham and Shyok villages.',
+          'First glimpse of the mesmerizing, color-changing turquoise waters of Pangong Lake (4,350 m / 14,270 ft).',
+          'Stroll along the world’s highest saltwater lake and snap photos at the famous 3-Idiots movie point.',
+          'Witness a magical Himalayan sunset painting the lake in shades of sapphire and amber.',
+          'Check-in to lake-view deluxe cottages/camps for a serene bonfire evening.',
+          'Overnight near Pangong Lake.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 7,
-        title: 'Pangong Lake to Hanle via Rezang La War Memorial',
+        title: 'Pangong Tso to Hanle via Rezang La War Memorial [165 km / 8-9 hrs]',
         description: [
-          'Transfer: 165 km rugged ride/drive through Chushul, Tsaga La & Loma Bridge',
-          'Accommodation: Homestay in Hanle (Dark Sky Reserve)',
-          'Sightseeing: Historic Rezang La 1962 War Memorial tribute',
-          'Sightseeing: Remote Changthang wilderness & stargazing in Hanle Dark Sky Reserve'
+          'Witness an unforgettable sunrise over the crystalline blue waters of Pangong Lake.',
+          'Post-breakfast journey towards the remote astronomical paradise of Hanle.',
+          'Ride past Chushul village and visit the legendary Rezang La War Memorial.',
+          'Pay homage to the 114 brave soldiers of Charlie Company (1962 Sino-Indian War).',
+          'Cross the Indus River via Loma Bridge and ride through the pristine Changthang Wildlife Sanctuary.',
+          'Arrive in Hanle village, one of the world’s highest inhabited plateaus.',
+          'Check-in to your traditional homestay and stargaze under India’s premier Dark Sky Reserve.',
+          'Overnight in Hanle.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 8,
-        title: 'Hanle to Umling La Pass (19,024 ft) & Demchok Border Excursion',
+        title: 'Hanle to Umling La Pass (19,024 ft) & Demchok Frontier Excursion [200 km / 7-8 hrs]',
         description: [
-          'Transfer: 200 km round-trip excursion over Photi La (18,124 ft) to Umling La',
-          'Accommodation: Homestay in Hanle',
-          'Sightseeing: World’s highest motorable pass - Umling La Pass (19,024 ft / 5,640 m)',
-          'Sightseeing: Demchok Indo-China border village & optional Indian Astronomical Observatory'
+          'Post-breakfast adventure to conquer the highest motorable road on the planet.',
+          'Ascend through Photi La Pass (5,524 m) across raw, lunar-like mountain terrain.',
+          'Summit Umling La Pass at a record-shattering 19,024 ft (5,640 m) – higher than Everest Base Camp.',
+          'Celebrate your achievement and click iconic milestone photos with your bike/group.',
+          'Ride down towards Demchok, the last Indian border outpost on the Indo-China frontier.',
+          'Visit the historic 17th-century Hanle Monastery and view the Indian Astronomical Observatory.',
+          'Return to your Hanle homestay for a hearty local dinner.',
+          'Overnight in Hanle.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 9,
-        title: 'Hanle to Leh via Tso Moriri Lake Excursion',
+        title: 'Hanle to Leh via Tso Moriri Lake [289 km / 7-8 hrs]',
         description: [
-          'Transfer: 289 km scenic journey across Loma Bridge, Mahe, Chumathang, Upshi & Karu to Leh',
-          'Accommodation: Hotel in Leh',
-          'Sightseeing: Pristine blue Tso Moriri Lake at 14,836 ft with migratory birds',
-          'Sightseeing: Evening leisure for shopping at Leh Main Bazaar'
+          'Morning departure from Hanle towards the pristine Tso Moriri Lake.',
+          'Ride via Loma Bridge and Mahe along the turquoise Indus and Chumathang hot springs.',
+          'Arrive at the majestic Tso Moriri (4,522 m / 14,836 ft), India’s largest and highest high-altitude wetland lake.',
+          'Spot rare Himalayan migratory birds including the Black-necked Crane and Bar-headed Goose.',
+          'Continue the scenic drive past Upshi, Karu, and Thiksey to arrive back in Leh.',
+          'Check-in to your hotel in Leh, relax, and explore Leh Main Bazaar for souvenirs and cafes.',
+          'Overnight in Leh.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 10,
-        title: 'Leh to Kargil via Magnetic Hill, Sangam Point & Lamayuru',
+        title: 'Leh to Kargil via Hall of Fame, Magnetic Hill & Lamayuru [230 km / 7-8 hrs]',
         description: [
-          'Transfer: 230 km highway ride/drive crossing Fotu La (4,108 m) & Namika La (3,700 m)',
-          'Accommodation: Hotel in Kargil',
-          'Sightseeing: Hall of Fame, Gurudwara Pathar Sahib, Magnetic Hill & Sangam confluence',
-          'Sightseeing: Ancient Lamayuru Moonland monastery & Mulbekh giant rock Buddha'
+          'Post-breakfast departure from Leh towards Kargil via the Leh-Srinagar Highway.',
+          'Visit the Hall of Fame Museum, honoring the heroic soldiers of Ladakh.',
+          'Seek blessings at Gurudwara Pathar Sahib, maintained by the Indian Army.',
+          'Experience the gravity-defying phenomenon at Magnetic Hill.',
+          'Marvel at Sangam – the dramatic confluence of the Indus and Zanskar rivers.',
+          'Ride through the ancient moonscapes of Lamayuru and visit the historic Lamayuru Monastery.',
+          'Scale Fotu La (4,108 m) and Namika La (3,700 m) passes to reach Kargil.',
+          'Check-in to your hotel in Kargil for a relaxed evening.',
+          'Overnight in Kargil.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 11,
-        title: 'Kargil to Srinagar via Dras, Zoji La Pass & Sonamarg',
+        title: 'Kargil to Srinagar via Drass, Kargil War Memorial & Zoji La Pass [200 km / 8-9 hrs]',
         description: [
-          'Transfer: 200 km breathtaking mountain drive crossing the iconic Zoji La Pass (11,575 ft)',
-          'Accommodation: Hotel in Srinagar',
-          'Sightseeing: Dras War Memorial (Kargil War tribute), Tiger Hill views & Sonamarg golden meadows'
+          'Early morning departure from Kargil towards Srinagar.',
+          'Stop at Drass – the second coldest inhabited place in the world and visit the Kargil War Memorial.',
+          'Conquer the legendary, thrilling hairpin switchbacks of Zoji La Pass (3,528 m).',
+          'Descend into Kashmir valley and admire the lush alpine meadows and glaciers of Sonamarg.',
+          'Ride along the Sindh River valley and arrive in Srinagar by evening.',
+          'Check-in to your hotel/houseboat in Srinagar and enjoy a traditional Kashmiri dinner.',
+          'Overnight in Srinagar.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 12,
-        title: 'Srinagar Departure',
+        title: 'Departure from Srinagar | Trip Concludes',
         description: [
-          'Transfer: Hotel checkout & transfer to Srinagar Airport for onward journey',
-          'Sightseeing: Departure with cherished memories of the great Himalayan expedition'
+          'Post-breakfast check-out from your Srinagar hotel.',
+          'Optional morning Shikara ride on the tranquil Dal Lake.',
+          'Transfer to Srinagar Airport for your return flight.',
+          'Trip concludes with unforgettable memories of the complete Manali-Leh-Srinagar grand expedition.',
+          'Meals: Breakfast.'
         ]
       }
     ],
@@ -2646,121 +2871,160 @@ Long scenic drives, simple mountain stays, and raw landscapes make this journey 
     itinerary: [
       {
         day: 1,
-        title: 'Arrival in Srinagar & Leisure Day',
+        title: 'Arrival in Srinagar | Acclimatization & Dal Lake Exploration',
         description: [
-          'Transfer: Arrival at Srinagar Airport & transfer to hotel',
-          'Accommodation: Hotel in Srinagar',
-          'Sightseeing: Leisure evening walk around Srinagar Market & Dal Lake boulevard',
-          'Sightseeing: Trip briefing & orientation session with Team Captain'
+          'Arrive at Srinagar Airport and transfer to your hotel/houseboat.',
+          'Check-in, relax, and unpack amidst the scenic Kashmir valley.',
+          'Optional serene Shikara ride on Dal Lake and stroll through local markets.',
+          'Evening trip briefing, bike inspection/handover, and safety orientation.',
+          'Overnight in Srinagar.',
+          'Meals: Dinner.'
         ]
       },
       {
         day: 2,
-        title: 'Srinagar to Kargil via Sonamarg, Zoji La Pass & Drass',
+        title: 'Srinagar to Kargil via Sonamarg, Zoji La Pass & Drass [200 km / 8-9 hrs]',
         description: [
-          'Transfer: 200 km scenic drive/ride along the ancient Silk Route via Zoji La Pass (3,528 m)',
-          'Accommodation: Hotel in Kargil',
-          'Sightseeing: Golden meadows of Sonamarg & Drass Village (Gateway to Ladakh)',
-          'Sightseeing: Drass War Memorial & Kargil historic viewpoints'
+          'Morning departure from Srinagar towards Kargil.',
+          'Ride through the lush green Sindh Valley and picturesque meadows of Sonamarg.',
+          'Ascend and conquer the legendary Zoji La Pass (3,528 m).',
+          'Stop at Drass – the world’s second coldest inhabited place, and visit the Kargil War Memorial.',
+          'Pay homage to the heroes of Operation Vijay.',
+          'Arrive in Kargil by evening and check-in to your hotel.',
+          'Overnight in Kargil.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 3,
-        title: 'Kargil to Leh via Lamayuru Moonland & Sham Valley',
+        title: 'Kargil to Leh via Lamayuru, Fotu La, Magnetic Hill & Sangam [230 km / 7-8 hrs]',
         description: [
-          'Transfer: 230 km ride/drive crossing Namika La (3,700 m) & Fotu La (4,108 m)',
-          'Accommodation: Hotel in Leh',
-          'Sightseeing: Spectacular lunar landscapes of Lamayuru Monastery',
-          'Sightseeing: Sangam Point (Indus & Zanskar River Confluence), Magnetic Hill & Gurudwara Pathar Sahib'
+          'Post-breakfast ride from Kargil to Leh via NH1.',
+          'Cross the high-altitude passes: Fotu La (4,108 m) and Namika La (3,700 m).',
+          'Marvel at the lunar-like landscapes of Lamayuru and visit Lamayuru Monastery.',
+          'Witness the Sangam – confluence of Indus & Zanskar rivers.',
+          'Experience the gravity-defying Magnetic Hill and visit Gurudwara Pathar Sahib.',
+          'Visit the Hall of Fame War Memorial before arriving in Leh.',
+          'Check-in to your Leh hotel for a cozy dinner.',
+          'Overnight in Leh.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 4,
-        title: 'Leh to Nubra Valley via Khardung La Pass (17,982 ft)',
+        title: 'Leh to Nubra Valley via Khardung La & Diskit Monastery [125 km / 5-6 hrs]',
         description: [
-          'Transfer: 125 km thrilling ride/drive crossing Khardung La Pass (5,359 m)',
-          'Accommodation: Hotel / Camp in Nubra Valley',
-          'Sightseeing: Panoramic Leh Valley view from Shanti Stupa',
-          'Sightseeing: Diskit Monastery & 106-ft Maitreya Buddha Statue',
-          'Sightseeing: Hunder Sand Dunes with double-humped Bactrian camel safari & ATV rides'
+          'Morning visit to Shanti Stupa for sweeping panoramic views of Leh town.',
+          'Ride north to Nubra Valley via the world-renowned Khardung La Pass (5,359 m / 17,582 ft).',
+          'Descend into Shyok Valley and visit the 14th-century Diskit Monastery with its 106 ft Maitreya Buddha.',
+          'Ride to the cold desert dunes of Hunder.',
+          'Enjoy double-humped Bactrian camel safaris and ATV rides amidst the dunes.',
+          'Check-in to your deluxe campsite/hotel in Nubra Valley.',
+          'Overnight in Nubra Valley.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 5,
-        title: 'Nubra Valley to Pangong Tso via Shyok River',
+        title: 'Nubra Valley to Pangong Tso via Shyok River Route [160 km / 5-6 hrs]',
         description: [
-          'Transfer: 160 km off-road journey through Agam & Shyok river valley',
-          'Accommodation: Campsite near Pangong Lake',
-          'Sightseeing: World\'s highest saltwater Pangong Lake (4,300 m)',
-          'Sightseeing: 3 Idiots shooting point & lakeside sunset photography'
+          'Morning departure from Nubra Valley towards Pangong Tso.',
+          'Ride along the rugged Shyok River route via Agham and Shyok villages.',
+          'First glimpse of the magnificent, multi-hued Pangong Lake (4,350 m / 14,270 ft).',
+          'Spend time walking along the lake shores and click photos at the famous 3-Idiots point.',
+          'Witness a breathtaking Himalayan sunset over the turquoise waters.',
+          'Check-in to your lake-view cottages/camps.',
+          'Overnight near Pangong Lake.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 6,
-        title: 'Pangong Tso to Hanle via Rezang La War Memorial',
+        title: 'Pangong Tso to Hanle via Rezang La War Memorial [165 km / 8-9 hrs]',
         description: [
-          'Transfer: 165 km ride/drive through Chushul & Loma Bridge across the Indus River',
-          'Accommodation: Homestay in Hanle',
-          'Sightseeing: Rezang La War Memorial tribute to the martyrs of 1962 War',
-          'Sightseeing: Dark sky stargazing in the tranquil high-altitude village of Hanle'
+          'Witness an unforgettable sunrise over the crystalline blue waters of Pangong Lake.',
+          'Post-breakfast journey towards the remote astronomical wonderland of Hanle.',
+          'Pass Chushul village and pay homage at the Rezang La War Memorial.',
+          'Cross the Loma Bridge over the Indus River into the pristine Changthang sanctuary.',
+          'Arrive in Hanle village, check-in to your cozy homestay, and stargaze under India’s premier Dark Sky Reserve.',
+          'Overnight in Hanle.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 7,
-        title: 'Hanle to Umling La Pass (19,024 ft) & Demchok Excursion',
+        title: 'Hanle to Umling La Pass (19,024 ft) & Demchok Frontier Excursion [200 km / 7-8 hrs]',
         description: [
-          'Transfer: 200 km round-trip ride/drive crossing Photi La (5,524 m)',
-          'Accommodation: Homestay in Hanle',
-          'Sightseeing: Conquer Umling La (5,640 m) — the highest motorable road in the world',
-          'Sightseeing: Demchok border village (Indo-China border) & Indian Astronomical Observatory'
+          'Post-breakfast adventure to summit the world’s highest motorable pass.',
+          'Ascend through Photi La Pass (5,524 m) across lunar mountain terrains.',
+          'Summit Umling La Pass at a record-shattering 19,024 ft (5,640 m).',
+          'Celebrate the milestone and take victory photographs at the summit marker.',
+          'Ride down towards Demchok, the last Indian border outpost on the Indo-China frontier.',
+          'Visit the historic 17th-century Hanle Monastery and view the Indian Astronomical Observatory.',
+          'Return to your Hanle homestay for dinner.',
+          'Overnight in Hanle.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 8,
-        title: 'Hanle to Leh via Tso Moriri Lake & Chumathang',
+        title: 'Hanle to Leh via Tso Moriri Lake [289 km / 7-8 hrs]',
         description: [
-          'Transfer: 289 km scenic journey to Leh via Mahe, Chumathang & Upshi',
-          'Accommodation: Hotel in Leh',
-          'Sightseeing: Breathtaking deep blue waters of Tso Moriri Lake (4,522 m)',
-          'Sightseeing: Chumathang hot springs & evening shopping at Leh Main Bazaar'
+          'Morning departure from Hanle towards the pristine Tso Moriri Lake.',
+          'Ride via Loma Bridge and Mahe along the turquoise Indus and Chumathang hot springs.',
+          'Arrive at the majestic Tso Moriri (4,522 m / 14,836 ft), India’s highest and largest saltwater lake.',
+          'Spot rare Himalayan migratory birds including the Black-necked Crane and Bar-headed Goose.',
+          'Continue the scenic drive past Upshi, Karu, and Thiksey to arrive back in Leh.',
+          'Check-in to your hotel in Leh, relax, and explore Leh Main Bazaar for souvenirs and cafes.',
+          'Overnight in Leh.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 9,
-        title: 'Leh to Jispa via Moore Plains, Gata Loops & Baralacha La',
+        title: 'Leh to Jispa via Tanglang La, Moore Plains & Baralacha La [260 km / 8-9 hrs]',
         description: [
-          'Transfer: 260 km highway ride/drive crossing Tanglang La (5,328 m), Lachung La (5,065 m) & Nakee La (4,738 m)',
-          'Accommodation: Hotel / Camps in Jispa',
-          'Sightseeing: 50 km straight stretch of Moore Plains & 21 hairpin bends of Gata Loops',
-          'Sightseeing: Baralacha La Pass (4,850 m), Suraj Taal & Deepak Taal lakes'
+          'Morning departure from Leh on the return leg towards Jispa.',
+          'Cross Tanglang La Pass (5,328 m) and cruise the vast 50 km stretch of Moore Plains.',
+          'Traverse Lachung La (5,065 m) and Nakee La (4,738 m).',
+          'Descend the hairpin turns of Gata Loops to Sarchu and continue towards Baralacha La (4,890 m).',
+          'Pass the serene Deepak Tal and Suraj Tal lakes before descending through Darcha into Jispa.',
+          'Check-in to your riverside campsite/hotel in Jispa along the Bhaga River.',
+          'Overnight in Jispa.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 10,
-        title: 'Jispa to Manali via Atal Tunnel',
+        title: 'Jispa to Manali via Atal Tunnel & Solang Valley [135 km / 4-5 hrs]',
         description: [
-          'Transfer: 135 km drive/ride through Lahaul Valley and Atal Tunnel',
-          'Accommodation: Hotel in Manali',
-          'Sightseeing: Scenic mountain towns of Keylong, Sissu & Solang Valley',
-          'Sightseeing: Evening leisure stroll & cafe hopping at Manali Mall Road'
+          'Post-breakfast scenic ride from Jispa towards Manali.',
+          'Drive through Keylong, Sissu waterfalls, and cross the engineering marvel of Atal Tunnel.',
+          'Pass through Solang Valley and arrive in Manali by afternoon.',
+          'Check-in to your hotel in Manali and relax.',
+          'Evening at leisure to explore Old Manali cafes and Mall Road.',
+          'Overnight in Manali.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 11,
-        title: 'Manali Local Sightseeing & Overnight Volvo to Delhi',
+        title: 'Manali Local Exploration | Overnight Volvo to Delhi',
         description: [
-          'Transfer: Evening overnight Volvo bus transfer from Manali to Delhi',
-          'Accommodation: Overnight Volvo Bus Journey',
-          'Sightseeing: Historic Hidimba Devi Temple & Vashisht Temple hot water springs',
-          'Sightseeing: Old Manali cafes & shopping along the Mall Road'
+          'Morning at leisure in Manali.',
+          'Explore Hadimba Devi Temple, Jogini Waterfalls, or Vashisht hot springs on your own.',
+          'Stroll through Mall Road for last-minute souvenir shopping and dining.',
+          'Evening reporting at Manali bus stand to board the overnight AC Volvo coach to Delhi.',
+          'Overnight semi-sleeper Volvo journey.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 12,
-        title: 'Arrival in Delhi & Tour Conclusion',
+        title: 'Arrival in Delhi | Trip Concludes',
         description: [
-          'Transfer: Morning arrival at Delhi ISBT / Majnu Ka Tilla',
-          'Sightseeing: Departure with unforgettable high-altitude Himalayan memories'
+          'Arrive in Delhi in the morning.',
+          'Trip concludes with lifelong memories of the Srinagar-Ladakh-Manali Grand Himalayan Expedition.'
         ]
       }
     ],
@@ -2977,88 +3241,112 @@ The approaches to Spiti remain among the most rugged and scenically spectacular 
     itinerary: [
       {
         day: 0,
-        title: 'Departure from Delhi to Shimla | Overnight Volvo Bus',
+        title: 'Departure from Delhi to Shimla | Overnight Volvo Journey',
         description: [
-          'Transfer: Overnight AC Volvo transfer from Delhi (Majnu Ka Tilla / ISBT) to Shimla'
+          'Report at Delhi pickup point in the evening.',
+          'Board the comfortable AC Volvo coach for Shimla.',
+          'Overnight semi-sleeper Volvo journey through Himachal foothills.'
         ]
       },
       {
         day: 1,
-        title: 'Shimla to Chitkul / Sangla via Kinnaur Gate',
+        title: 'Shimla to Sangla / Chitkul via Kinnaur Gate [220 km / 9-10 hrs]',
         description: [
-          'Transfer: 220 km scenic drive from Shimla to Chitkul / Sangla via Kufri & Narkanda',
-          'Accommodation: Hotel / Homestay in Sangla / Chitkul',
-          'Sightseeing: Drive along Hindustan-Tibet Highway and Satluj River valley',
-          'Sightseeing: Historic Kinnaur Gate rock-cut tunnel (Gateway of Kinnaur)'
+          'Arrive in Shimla in the morning, freshen up, and have breakfast.',
+          'Board private shared transfers and drive along the historic Hindustan-Tibet Highway.',
+          'Pass scenic Apple country towns: Kufri, Narkanda, and Rampur Bushahr.',
+          'Enter Kinnaur Valley crossing the iconic rock-cut "Kinnaur Gate" tunnel.',
+          'Drive along the roaring Baspa River to reach the fairy-tale village of Sangla / Chitkul.',
+          'Check-in to your cozy hotel/homestay for a traditional Kinnauri dinner.',
+          'Overnight in Sangla / Chitkul.',
+          'Meals: Dinner.'
         ]
       },
       {
         day: 2,
-        title: 'Chitkul Village Exploration & Transfer to Kalpa',
+        title: 'Chitkul Excursion & Transfer to Kalpa | Kinner Kailash Views [70 km / 3-4 hrs]',
         description: [
-          'Transfer: 70 km drive from Chitkul to Kalpa via Reckong Peo',
-          'Accommodation: Hotel / Homestay in Kalpa',
-          'Sightseeing: Explore Chitkul — India\'s last inhabited village near the Indo-Tibetan border',
-          'Sightseeing: Roghi Village Cliff Point & panoramic views of Kinner Kailash peak'
+          'Morning excursion to Chitkul – the last inhabited Indian village near the Indo-Tibet border.',
+          'Walk along the crystalline Baspa River and visit the iconic "Hindustan Ka Aakhri Dhaba".',
+          'Drive to Kalpa with jaw-dropping views of the sacred Kinner Kailash peak (6,050 m).',
+          'Visit the dramatic cliff edge at Roghi Suicide Point.',
+          'Explore Reckong Peo local market and taste fresh Kinnauri apples.',
+          'Check-in to your hotel in Kalpa for a scenic sunset over Kinner Kailash.',
+          'Overnight in Kalpa.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 3,
-        title: 'Kalpa to Tabo via Nako Village & Ka Loops',
+        title: 'Kalpa to Tabo via Nako Lake & Gue Mummy [168 km / 7-8 hrs]',
         description: [
-          'Transfer: 168 km drive to Tabo crossing Ka Loops & Sumdo Border checkpoint',
-          'Accommodation: Homestay in Tabo',
-          'Sightseeing: Confluence of Spiti and Satluj rivers at Khab Sangam & pristine Nako Lake',
-          'Sightseeing: 1,000-year-old historic Tabo Monastery (Ajanta of the Himalayas)'
+          'Post-breakfast drive deeper into the Trans-Himalayas towards Spiti Valley.',
+          'Navigate the thrilling Ka Loops and arrive at the serene high-altitude Nako Lake & village.',
+          'Cross the border check-post at Sumdo to officially enter Spiti Valley.',
+          'Witness the sacred 500-year-old preserved natural mummy at Gue Village.',
+          'Arrive at Tabo and explore the UNESCO World Heritage Tabo Monastery (founded in 996 AD).',
+          'Check-in to your homestay/hotel in Tabo.',
+          'Overnight in Tabo.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 4,
-        title: 'Tabo to Kaza via Dhankar Monastery, Key Gompa & Chicham Bridge',
+        title: 'Tabo to Kaza via Dhankar Monastery, Key Monastery & Chicham Bridge [125 km / 6-7 hrs]',
         description: [
-          'Transfer: 125 km drive to Kaza exploring high-altitude monasteries and gorges',
-          'Accommodation: Homestay in Kaza',
-          'Sightseeing: Cliff-hanging Dhankar Monastery overlooking Spiti & Pin river confluence',
-          'Sightseeing: Iconic 1,000-year-old Key Monastery perched at 13,668 ft',
-          'Sightseeing: Chicham Bridge — Asia\'s highest suspension bridge at 13,596 ft'
+          'Morning departure from Tabo towards Kaza.',
+          'Visit the cliff-hanging Dhankar Monastery perched dramatically over the confluence of Spiti & Pin rivers.',
+          'Drive to the iconic 1,000-year-old Key Monastery – Spiti’s largest fortified Buddhist monastery.',
+          'Interact with the lamas and savor a warm cup of herbal tea inside the monastery.',
+          'Drive across the engineering marvel, Chicham Bridge – Asia’s highest suspension bridge over a 1,000 ft deep gorge.',
+          'Arrive in Kaza, check-in to your hotel/homestay, and relax.',
+          'Overnight in Kaza.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 5,
-        title: 'Kaza High-Altitude Village Circuit | Hikkim, Komik & Langza',
+        title: 'Kaza High-Altitude Village Circuit | Hikkim, Komic & Langza [80 km / 6-7 hrs]',
         description: [
-          'Transfer: 80 km circuit drive across the highest motorable villages in Spiti',
-          'Accommodation: Homestay in Kaza',
-          'Sightseeing: Hikkim — post a letter from the World\'s Highest Post Office (14,567 ft)',
-          'Sightseeing: Komik — highest motorable village in the world (15,027 ft)',
-          'Sightseeing: Langza — giant golden Buddha statue overlooking the valley & marine fossil hunting'
+          'Full-day high-altitude village exploration around Kaza.',
+          'Visit Langza – the "Fossil Village" guarded by the majestic giant golden Buddha statue.',
+          'Drive to Komic (4,587 m) – among the world’s highest motorable villages with a monastery.',
+          'Visit Hikkim (4,400 m) and post a handwritten postcard to loved ones from the World’s Highest Post Office.',
+          'Return to Kaza by late afternoon and explore Kaza Main Market and local cafes.',
+          'Overnight in Kaza.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 6,
-        title: 'Kaza to Kalpa via Spiti Valley Highway',
+        title: 'Kaza to Kalpa Return Drive [215 km / 7-8 hrs]',
         description: [
-          'Transfer: 215 km scenic return drive from Kaza to Kalpa',
-          'Accommodation: Hotel / Homestay in Kalpa',
-          'Sightseeing: Panoramic landscapes along the rugged Spiti & Satluj river gorges',
-          'Sightseeing: Evening leisure stroll with sunset views over Kinner Kailash'
+          'Early morning departure from Kaza beginning the return journey towards Kalpa.',
+          'Drive along the turquoise Spiti River capturing stunning winter panoramic views.',
+          'Pass through Sumdo, Nako, and Pooh along the rugged Hindustan-Tibet Highway.',
+          'Arrive back in the peaceful hamlet of Kalpa by evening.',
+          'Check-in to your hotel and unwind with a warm bonfire and dinner.',
+          'Overnight in Kalpa.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 7,
-        title: 'Kalpa to Shimla & Overnight Volvo to Delhi',
+        title: 'Kalpa to Shimla | Overnight Volvo to Delhi [210 km / 8-9 hrs]',
         description: [
-          'Transfer: 210 km drive from Kalpa to Shimla; evening overnight Volvo bus to Delhi',
-          'Accommodation: Overnight Volvo Bus Journey',
-          'Sightseeing: Scenic mountain route through Kinnaur & apple orchards of Shimla hills'
+          'Post-breakfast scenic drive from Kalpa to Shimla.',
+          'Descend through Rampur and Narkanda, arriving at Shimla by evening.',
+          'Board the overnight AC Volvo coach back to Delhi.',
+          'Overnight Volvo journey.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 8,
-        title: 'Arrival in Delhi & Tour Conclusion',
+        title: 'Arrival in Delhi | Trip Concludes',
         description: [
-          'Transfer: Morning arrival in Delhi (around 09:00 AM)',
-          'Sightseeing: Departure with unforgettable memories of Winter Spiti Valley'
+          'Arrive in Delhi in the morning (around 09:00 AM).',
+          'Trip concludes with unforgettable memories of the winter wonderland in Spiti Valley.'
         ]
       }
     ],
@@ -3153,98 +3441,122 @@ As you leave behind the chaos of cities, Spiti Valley will happily embrace you i
     itinerary: [
       {
         day: 0,
-        title: 'Departure from Delhi to Shimla | Overnight Volvo Bus',
+        title: 'Departure from Delhi to Shimla | Overnight Volvo Journey',
         description: [
-          'Transfer: Overnight AC Volvo transfer from Delhi (Majnu Ka Tilla / ISBT) to Shimla'
+          'Report at Delhi pickup point in the evening.',
+          'Board the comfortable AC Volvo coach for Shimla.',
+          'Overnight semi-sleeper Volvo journey through Himachal foothills.'
         ]
       },
       {
         day: 1,
-        title: 'Shimla to Chitkul / Sangla via Kinnaur Valley',
+        title: 'Shimla to Chitkul / Sangla via Kinnaur Gate [220 km / 9-10 hrs]',
         description: [
-          'Transfer: 220 km scenic drive from Shimla to Chitkul / Sangla via Narkanda & Rampur',
-          'Accommodation: Hotel / Homestay in Sangla / Chitkul',
-          'Sightseeing: Spectacular drive along the Hindustan-Tibet Highway and Satluj River',
-          'Sightseeing: Rock-cut Kinnaur Gate tunnel & evening walk along Baspa River'
+          'Arrive in Shimla in the morning, freshen up, and enjoy breakfast at Narkanda.',
+          'Drive along the Satluj River and the historic Hindustan-Tibet Highway.',
+          'Pass through the majestic Kinnaur Gate rock tunnel into the Baspa Valley.',
+          'Arrive in Chitkul / Sangla by evening and check-in to your riverside hotel/homestay.',
+          'Overnight in Chitkul / Sangla.',
+          'Meals: Dinner.'
         ]
       },
       {
         day: 2,
-        title: 'Chitkul Exploration & Transfer to Kalpa',
+        title: 'Chitkul Exploration & Transfer to Kalpa | Kinner Kailash Views [80 km / 3-4 hrs]',
         description: [
-          'Transfer: 80 km scenic drive from Chitkul to Kalpa via Reckong Peo',
-          'Accommodation: Hotel / Homestay in Kalpa',
-          'Sightseeing: Explore Chitkul — India\'s last inhabited village near the Tibet border',
-          'Sightseeing: Roghi Village Cliff Point & golden sunset over the sacred Kinner Kailash range'
+          'Witness a stunning sunrise over the snow-capped Kinnauri peaks.',
+          'Explore Chitkul – India’s last inhabited village before the Indo-Tibet frontier.',
+          'Stroll along the pristine Baspa River and visit the iconic Last Dhaba of India.',
+          'Drive to Kalpa with panoramic views of the sacred Kinner Kailash peak.',
+          'Visit the dramatic Roghi Cliff Suicide Point and Reckong Peo market.',
+          'Check-in to your hotel in Kalpa for sunset views.',
+          'Overnight in Kalpa.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 3,
-        title: 'Kalpa to Tabo via Nako Village & Ka Loops',
+        title: 'Kalpa to Tabo via Nako Lake & Gue Mummy [168 km / 7-8 hrs]',
         description: [
-          'Transfer: 168 km drive to Tabo crossing Khab Sangam, Ka Loops & Sumdo Border checkpoint',
-          'Accommodation: Homestay in Tabo',
-          'Sightseeing: Confluence of Spiti & Satluj rivers at Khab & pristine Nako Lake',
-          'Sightseeing: 1,000-year-old historic Tabo Monastery (Ajanta of the Himalayas)'
+          'Post-breakfast journey from Kalpa towards the Trans-Himalayan Spiti Valley.',
+          'Navigate the winding Ka Loops and stop at the holy Nako Lake & village.',
+          'Cross the border check-post at Sumdo and visit the 500-year-old preserved mummy at Gue.',
+          'Arrive at Tabo and explore the ancient 1,000-year-old UNESCO Tabo Monastery.',
+          'Check-in to your homestay/hotel in Tabo.',
+          'Overnight in Tabo.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 4,
-        title: 'Tabo to Kaza via Dhankar Monastery, Key Gompa & Chicham Bridge',
+        title: 'Tabo to Kaza via Dhankar Monastery, Key Monastery & Chicham Bridge [125 km / 6-7 hrs]',
         description: [
-          'Transfer: 125 km drive to Kaza visiting iconic Spitian monasteries and gorges',
-          'Accommodation: Homestay in Kaza',
-          'Sightseeing: Cliff-top Dhankar Monastery overlooking Spiti & Pin river confluence',
-          'Sightseeing: Magnificent 1,000-year-old Key Monastery perched at 13,668 ft',
-          'Sightseeing: Chicham Bridge — Asia\'s highest suspension bridge at 13,596 ft'
+          'Morning drive from Tabo towards Kaza.',
+          'Explore Dhankar Monastery perched precariously on a jagged cliff overlooking the river confluence.',
+          'Visit the iconic 11th-century Key Monastery – Spiti’s spiritual heart and largest monastery.',
+          'Enjoy warm herbal butter tea with the resident Buddhist monks.',
+          'Drive across Chicham Bridge – Asia’s highest suspension bridge spanning a 1,000 ft canyon.',
+          'Arrive in Kaza and check-in to your hotel/homestay.',
+          'Overnight in Kaza.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 5,
-        title: 'Kaza High-Altitude Village Circuit | Hikkim, Komik & Langza',
+        title: 'Kaza High-Altitude Village Circuit | Hikkim, Komic & Langza [80 km / 6-7 hrs]',
         description: [
-          'Transfer: 80 km circuit drive across the highest inhabited villages of Spiti',
-          'Accommodation: Homestay in Kaza',
-          'Sightseeing: Hikkim — post a letter from the World\'s Highest Post Office (14,567 ft)',
-          'Sightseeing: Komik — highest motorable village in the world (15,027 ft)',
-          'Sightseeing: Langza — giant Buddha statue facing snow-clad peaks & marine fossil hunting'
+          'Full-day high-altitude exploration around Kaza’s highest villages.',
+          'Visit Langza – the "Fossil Village" under the gaze of the majestic golden Buddha statue.',
+          'Drive up to Komic (4,587 m) – among the world’s highest motorable villages.',
+          'Visit Hikkim (4,400 m) and send postcards from the World’s Highest Post Office.',
+          'Return to Kaza by evening to explore the local market and enjoy cafe hopping.',
+          'Overnight in Kaza.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 6,
-        title: 'Kaza to Chandratal Lake via Kunzum La Pass (14,931 ft)',
+        title: 'Kaza to Chandratal Lake via Kunzum La Pass [95 km / 5-6 hrs]',
         description: [
-          'Transfer: 95 km off-road drive from Kaza to Chandratal via Losar & Kunzum Pass (4,551 m)',
-          'Accommodation: Swiss Campsite near Chandratal Lake',
-          'Sightseeing: Turquoise blue crescent-shaped Chandratal Lake (Moon Lake) at 14,100 ft',
-          'Sightseeing: Stargazing under the Milky Way Galaxy & campsite bonfire'
+          'Morning departure from Kaza towards the crescent-shaped Chandratal Lake.',
+          'Drive past Losar – the last village of Spiti Valley, and cross the majestic Kunzum La Pass (4,551 m / 14,931 ft).',
+          'Pay respects at Kunzum Mata Temple before descending towards Chandratal.',
+          'Trek 1.5 km to the pristine turquoise waters of Chandratal (Moon Lake) reflecting Himalayan giants.',
+          'Check-in to your deluxe alpine tents and stargaze under the brilliant Milky Way galaxy.',
+          'Overnight in Chandratal Camps.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 7,
-        title: 'Chandratal Lake to Manali via Atal Tunnel',
+        title: 'Chandratal to Manali via Batal, Chhatru & Atal Tunnel [95 km / 5-6 hrs]',
         description: [
-          'Transfer: 95 km rugged mountain drive via Batal, Gramphu and Atal Tunnel to Manali',
-          'Accommodation: Hotel in Manali',
-          'Sightseeing: Chandra River valley landscapes and Pir Panjal mountain views',
-          'Sightseeing: Evening leisure stroll & cafe crawl in Old Manali'
+          'Post-breakfast off-roading adventure from Chandratal to Manali.',
+          'Navigate the rugged water crossings of Batal, Chhatru, and Gramphu along the Chandra River.',
+          'Cross the engineering marvel, Atal Tunnel (9.02 km), entering the lush Kullu Valley.',
+          'Arrive in Manali by afternoon and check-in to your hotel.',
+          'Evening cafe crawl and live music experience in Old Manali.',
+          'Overnight in Manali.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 8,
-        title: 'Manali Local Sightseeing & Overnight Volvo to Delhi',
+        title: 'Manali Local Exploration | Overnight Volvo to Delhi',
         description: [
-          'Transfer: Evening overnight AC Volvo transfer from Manali to Delhi',
-          'Accommodation: Overnight Volvo Bus Journey',
-          'Sightseeing: Self-exploration of Manali visiting Hadimba Devi Temple, Vashisht & Mall Road'
+          'Morning at leisure in Manali.',
+          'Visit Hadimba Devi Temple, Vashisht hot springs, and stroll through Mall Road.',
+          'Evening reporting at Manali bus stand to board the overnight AC Volvo coach to Delhi.',
+          'Overnight Volvo journey.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 9,
-        title: 'Arrival in Delhi & Tour Conclusion',
+        title: 'Arrival in Delhi | Trip Concludes [510 km / 10-11 hrs]',
         description: [
-          'Transfer: Morning arrival in Delhi (around 08:00 - 09:00 AM)',
-          'Sightseeing: Departure with cherished memories of the complete Spiti Valley road trip'
+          'Arrive in Delhi in the morning (around 09:00 AM).',
+          'Trip concludes with lifelong memories of the complete Spiti-Kinnaur-Chandratal Grand Circuit.'
         ]
       }
     ],
@@ -3352,89 +3664,109 @@ As you leave behind the chaos of cities, Spiti Valley will happily embrace you i
     itinerary: [
       {
         day: 0,
-        title: 'Departure from Delhi to Shimla | Overnight Volvo Bus',
+        title: 'Departure from Delhi to Shimla | Overnight Volvo Journey',
         description: [
-          'Transfer: Overnight AC Volvo transfer from Delhi (Majnu Ka Tilla / ISBT) to Shimla'
+          'Report at Delhi pickup point in the evening.',
+          'Board the comfortable AC Volvo coach for Shimla.',
+          'Overnight semi-sleeper Volvo journey through Himachal foothills.'
         ]
       },
       {
         day: 1,
-        title: 'Shimla to Chitkul / Sangla via Kinnaur Valley',
+        title: 'Shimla to Chitkul / Sangla via Kinnaur Gate [220 km / 9-10 hrs]',
         description: [
-          'Transfer: 220 km scenic drive from Shimla to Chitkul / Sangla via Narkanda & Rampur',
-          'Accommodation: Hotel / Homestay in Sangla / Chitkul',
-          'Sightseeing: Spectacular drive along the Hindustan-Tibet Highway and Satluj River',
-          'Sightseeing: Rock-cut Kinnaur Gate tunnel & evening walk along Baspa River'
+          'Arrive in Shimla in the morning, freshen up, and enjoy breakfast at Narkanda.',
+          'Drive along the Satluj River and the historic Hindustan-Tibet Highway.',
+          'Pass through the majestic Kinnaur Gate rock tunnel into the Baspa Valley.',
+          'Arrive in Chitkul / Sangla by evening and check-in to your riverside hotel/homestay.',
+          'Overnight in Chitkul / Sangla.',
+          'Meals: Dinner.'
         ]
       },
       {
         day: 2,
-        title: 'Chitkul Exploration & Transfer to Kalpa',
+        title: 'Chitkul Exploration & Transfer to Kalpa | Kinner Kailash Views [80 km / 3-4 hrs]',
         description: [
-          'Transfer: 80 km scenic drive from Chitkul to Kalpa via Reckong Peo',
-          'Accommodation: Hotel / Homestay in Kalpa',
-          'Sightseeing: Explore Chitkul — India\'s last inhabited village near the Tibet border',
-          'Sightseeing: Roghi Village Cliff Point & golden sunset over the sacred Kinner Kailash range'
+          'Witness a stunning sunrise over the snow-capped Kinnauri peaks.',
+          'Explore Chitkul – India’s last inhabited village before the Indo-Tibet frontier.',
+          'Stroll along the pristine Baspa River and visit the iconic Last Dhaba of India.',
+          'Drive to Kalpa with panoramic views of the sacred Kinner Kailash peak.',
+          'Visit the dramatic Roghi Cliff Suicide Point and Reckong Peo market.',
+          'Check-in to your hotel in Kalpa for sunset views.',
+          'Overnight in Kalpa.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 3,
-        title: 'Kalpa to Tabo via Nako Village & Ka Loops',
+        title: 'Kalpa to Tabo via Nako Lake & Gue Mummy [168 km / 7-8 hrs]',
         description: [
-          'Transfer: 168 km drive to Tabo crossing Khab Sangam, Ka Loops & Sumdo Border checkpoint',
-          'Accommodation: Homestay in Tabo',
-          'Sightseeing: Confluence of Spiti & Satluj rivers at Khab & pristine Nako Lake',
-          'Sightseeing: 1,000-year-old historic Tabo Monastery (Ajanta of the Himalayas)'
+          'Post-breakfast journey from Kalpa towards the Trans-Himalayan Spiti Valley.',
+          'Navigate the winding Ka Loops and stop at the holy Nako Lake & village.',
+          'Cross the border check-post at Sumdo and visit the 500-year-old preserved mummy at Gue.',
+          'Arrive at Tabo and explore the ancient 1,000-year-old UNESCO Tabo Monastery.',
+          'Check-in to your homestay/hotel in Tabo.',
+          'Overnight in Tabo.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 4,
-        title: 'Tabo to Kaza via Dhankar Monastery, Key Gompa & Chicham Bridge',
+        title: 'Tabo to Kaza via Dhankar Monastery, Key Monastery & Chicham Bridge [125 km / 6-7 hrs]',
         description: [
-          'Transfer: 125 km drive to Kaza visiting iconic Spitian monasteries and gorges',
-          'Accommodation: Homestay in Kaza',
-          'Sightseeing: Cliff-top Dhankar Monastery overlooking Spiti & Pin river confluence',
-          'Sightseeing: Magnificent 1,000-year-old Key Monastery perched at 13,668 ft',
-          'Sightseeing: Chicham Bridge — Asia\'s highest suspension bridge at 13,596 ft'
+          'Morning drive from Tabo towards Kaza.',
+          'Explore Dhankar Monastery perched precariously on a jagged cliff overlooking the river confluence.',
+          'Visit the iconic 11th-century Key Monastery – Spiti’s spiritual heart and largest monastery.',
+          'Enjoy warm herbal butter tea with the resident Buddhist monks.',
+          'Drive across Chicham Bridge – Asia’s highest suspension bridge spanning a 1,000 ft canyon.',
+          'Arrive in Kaza and check-in to your hotel/homestay.',
+          'Overnight in Kaza.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 5,
-        title: 'Kaza High-Altitude Village Circuit | Hikkim, Komik & Langza',
+        title: 'Kaza High-Altitude Village Circuit | Hikkim, Komic & Langza [80 km / 6-7 hrs]',
         description: [
-          'Transfer: 80 km circuit drive across the highest inhabited villages of Spiti',
-          'Accommodation: Homestay in Kaza',
-          'Sightseeing: Hikkim — post a letter from the World\'s Highest Post Office (14,567 ft)',
-          'Sightseeing: Komik — highest motorable village in the world (15,027 ft)',
-          'Sightseeing: Langza — giant Buddha statue facing snow-clad peaks & marine fossil hunting'
+          'Full-day high-altitude exploration around Kaza’s highest villages.',
+          'Visit Langza – the "Fossil Village" under the gaze of the majestic golden Buddha statue.',
+          'Drive up to Komic (4,587 m) – among the world’s highest motorable villages.',
+          'Visit Hikkim (4,400 m) and send postcards from the World’s Highest Post Office.',
+          'Return to Kaza by evening to explore the local market and enjoy cafe hopping.',
+          'Overnight in Kaza.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 6,
-        title: 'Kaza to Chandratal Lake via Kunzum La Pass (14,931 ft)',
+        title: 'Kaza to Chandratal Lake via Kunzum La Pass [95 km / 5-6 hrs]',
         description: [
-          'Transfer: 95 km off-road drive from Kaza to Chandratal via Losar & Kunzum Pass (4,551 m)',
-          'Accommodation: Swiss Campsite near Chandratal Lake',
-          'Sightseeing: Turquoise blue crescent-shaped Chandratal Lake (Moon Lake) at 14,100 ft',
-          'Sightseeing: Stargazing under the Milky Way Galaxy & campsite bonfire'
+          'Morning departure from Kaza towards the crescent-shaped Chandratal Lake.',
+          'Drive past Losar – the last village of Spiti Valley, and cross the majestic Kunzum La Pass (4,551 m / 14,931 ft).',
+          'Pay respects at Kunzum Mata Temple before descending towards Chandratal.',
+          'Trek 1.5 km to the pristine turquoise waters of Chandratal (Moon Lake) reflecting Himalayan giants.',
+          'Check-in to your deluxe alpine tents and stargaze under the brilliant Milky Way galaxy.',
+          'Overnight in Chandratal Camps.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 7,
-        title: 'Chandratal Lake to Manali & Overnight Volvo to Delhi',
+        title: 'Chandratal to Manali via Atal Tunnel | Departure to Delhi [95 km / 5-6 hrs]',
         description: [
-          'Transfer: 95 km drive via Batal, Gramphu and Atal Tunnel to Manali; evening Volvo to Delhi',
-          'Accommodation: Overnight Volvo Bus Journey',
-          'Sightseeing: Majestic Lahaul Valley views & Atal Tunnel engineering marvel',
-          'Sightseeing: Evening leisure stroll at Manali Mall Road before departure'
+          'Post-breakfast off-roading adventure from Chandratal to Manali via Batal & Atal Tunnel.',
+          'Arrive in Manali by afternoon for brief exploration of Mall Road and cafes.',
+          'Board the evening overnight AC Volvo coach back to Delhi.',
+          'Overnight Volvo journey.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 8,
-        title: 'Arrival in Delhi & Tour Conclusion',
+        title: 'Arrival in Delhi | Trip Concludes [510 km / 10-11 hrs]',
         description: [
-          'Transfer: Morning arrival in Delhi (around 08:00 - 09:00 AM)',
-          'Sightseeing: Tour concludes with thrilling high-altitude Spiti memories'
+          'Arrive in Delhi in the morning (around 09:00 AM).',
+          'Trip concludes with unforgettable memories of the Super Saver Spiti Valley & Chandratal road trip.'
         ]
       }
     ],
@@ -3546,69 +3878,86 @@ So now that you know what to expect on this voyage to the high altitude desert, 
     itinerary: [
       {
         day: 0,
-        title: 'Departure from Delhi to Manali | Overnight Volvo Bus',
+        title: 'Departure from Delhi to Manali | Overnight Volvo Journey',
         description: [
-          'Transfer: Overnight AC Volvo transfer from Delhi (Majnu Ka Tilla / ISBT) to Manali'
+          'Report at Delhi pickup point in the evening.',
+          'Board the comfortable AC semi-sleeper Volvo coach for Manali.',
+          'Overnight Volvo journey through the Himalayas.'
         ]
       },
       {
         day: 1,
-        title: 'Arrival in Manali & Local Self-Exploration',
+        title: 'Arrival in Manali | Acclimatization & Local Exploration',
         description: [
-          'Transfer: Morning arrival in Manali & hotel transfer',
-          'Accommodation: Hotel in Manali',
-          'Sightseeing: Historic Hadimba Devi Temple, Vashisht Hot Water Springs & Old Manali cafes',
-          'Sightseeing: Evening orientation & trip briefing session with Team Captain'
+          'Arrive in Manali in the morning and transfer to your hotel.',
+          'Check-in, freshen up, and acclimatize to the mountain elevation.',
+          'Explore Hadimba Devi Temple amidst tall deodar woods, Vashisht hot springs, and Mall Road.',
+          'Evening trip briefing and safety orientation with your trek captain.',
+          'Overnight in Manali.',
+          'Meals: Dinner.'
         ]
       },
       {
         day: 2,
-        title: 'Manali to Kaza via Atal Tunnel, Kunzum Pass & Chicham Bridge',
+        title: 'Manali to Kaza via Atal Tunnel, Kunzum La & Chicham Bridge [185 km / 6-7 hrs]',
         description: [
-          'Transfer: 185 km high-altitude drive crossing Atal Tunnel and Kunzum La Pass (14,931 ft)',
-          'Accommodation: Homestay in Kaza',
-          'Sightseeing: Transition from lush green Kullu Valley to dramatic arid mountains of Spiti',
-          'Sightseeing: Asia\'s highest suspension bridge — Chicham Bridge at 13,596 ft'
+          'Early morning departure from Manali towards Kaza.',
+          'Cross the engineering marvel, Atal Tunnel (9.02 km), entering the Lahaul Valley.',
+          'Navigate the rugged mountain roads of Gramphu, Chhatru, and Batal.',
+          'Ascend the mighty Kunzum La Pass (4,551 m / 14,931 ft) and pay homage at Kunzum Mata Temple.',
+          'Drive across Chicham Bridge – Asia’s highest suspension bridge over a 1,000 ft deep gorge.',
+          'Arrive in Kaza by evening and check-in to your hotel/homestay.',
+          'Overnight in Kaza.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 3,
-        title: 'Kaza Village Circuit | Key Monastery, Hikkim, Komik & Langza',
+        title: 'Kaza High-Altitude Circuit | Key Monastery, Hikkim, Komic & Langza [80 km / 6-7 hrs]',
         description: [
-          'Transfer: 80 km circuit drive across the highest inhabited villages in the world',
-          'Accommodation: Homestay in Kaza',
-          'Sightseeing: Majestic 1,000-year-old Key Gompa Monastery perched at 13,668 ft',
-          'Sightseeing: Komik — highest motorable village in the world (15,027 ft)',
-          'Sightseeing: Hikkim — post a letter from the World\'s Highest Post Office (14,567 ft)',
-          'Sightseeing: Langza — giant Buddha statue facing snow-capped peaks & prehistoric fossil hunting'
+          'Full-day exploration of Spiti’s highest iconic villages and monasteries.',
+          'Visit the 1,000-year-old Key Monastery perched atop a scenic mountain ridge.',
+          'Enjoy warm herbal tea and interact with resident Buddhist monks.',
+          'Visit Langza – the "Fossil Village" under the gaze of the giant golden Buddha statue.',
+          'Drive to Komic (4,587 m) – one of the highest motorable villages in the world.',
+          'Visit Hikkim (4,400 m) and post a handwritten letter from the World’s Highest Post Office.',
+          'Return to Kaza by evening for local market shopping and cafe hopping.',
+          'Overnight in Kaza.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 4,
-        title: 'Kaza to Chandratal Lake via Losar & Kunzum Pass',
+        title: 'Kaza to Chandratal Lake via Kunzum La Pass [95 km / 5-6 hrs]',
         description: [
-          'Transfer: 95 km off-road drive from Kaza to Chandratal via Losar & Kunzum Pass (4,551 m)',
-          'Accommodation: Swiss Campsite near Chandratal Lake',
-          'Sightseeing: Turquoise blue crescent-shaped Chandratal Lake (Moon Lake) at 14,100 ft',
-          'Sightseeing: Spectacular sunset over the Chandra Bhaga range & Milky Way stargazing'
+          'Morning departure from Kaza towards the magical Chandratal Lake.',
+          'Drive past Losar village and traverse the high Kunzum La Pass.',
+          'Trek 1.5 km to the pristine crescent-shaped Chandratal (Moon Lake) at 14,000 ft.',
+          'Witness the crystalline waters changing shades of sapphire, green, and turquoise.',
+          'Check-in to your deluxe alpine campsite near the lake.',
+          'Unwind under a brilliant canopy of a million stars and the Milky Way galaxy.',
+          'Overnight in Chandratal Camps.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 5,
-        title: 'Chandratal to Manali & Overnight Volvo to Delhi',
+        title: 'Chandratal to Manali via Atal Tunnel | Departure to Delhi [95 km / 5-6 hrs]',
         description: [
-          'Transfer: 95 km rugged mountain drive via Batal, Gramphu & Atal Tunnel to Manali; evening Volvo to Delhi',
-          'Accommodation: Overnight Volvo Bus Journey',
-          'Sightseeing: Dramatic riverbeds of Chandra River & Atal Tunnel engineering marvel',
-          'Sightseeing: Evening leisure stroll & cafe hopping at Manali Mall Road'
+          'Post-breakfast scenic off-road drive from Chandratal back to Manali.',
+          'Cross Batal, Chhatru, and re-enter Kullu Valley via Atal Tunnel.',
+          'Arrive in Manali by afternoon with time for last-minute souvenir shopping.',
+          'Board the evening overnight AC Volvo coach back to Delhi.',
+          'Overnight Volvo journey.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 6,
-        title: 'Arrival in Delhi & Tour Conclusion',
+        title: 'Arrival in Delhi | Trip Concludes',
         description: [
-          'Transfer: Morning arrival in Delhi (around 08:00 - 09:00 AM)',
-          'Sightseeing: Departure with unforgettable memories of the Spiti Short Circuit'
+          'Arrive in Delhi in the morning (around 09:00 AM).',
+          'Trip concludes with unforgettable memories of the Spiti Valley Short Circuit adventure.'
         ]
       }
     ],
@@ -3722,97 +4071,124 @@ Our Bikes are already vrooming and we are all set to take you to this less explo
     itinerary: [
       {
         day: 0,
-        title: 'Departure from Delhi to Aut (Tirthan Valley) | Overnight Volvo Bus',
+        title: 'Departure from Delhi to Tirthan Valley | Overnight Volvo Journey',
         description: [
-          'Transfer: Overnight AC Volvo transfer from Delhi (Majnu Ka Tilla / ISBT) to Aut'
+          'Report at Delhi pickup point in the evening.',
+          'Board the comfortable AC Volvo coach for Aut / Tirthan Valley.',
+          'Overnight semi-sleeper Volvo journey through Himachal valleys.'
         ]
       },
       {
         day: 1,
-        title: 'Arrival in Aut & Transfer to Jibhi / Gushaini',
+        title: 'Arrival in Aut | Transfer to Jibhi & Bike Handover',
         description: [
-          'Transfer: Transfer from Aut to Jibhi / Gushaini (Bikers collect bikes in Manali & ride to Jibhi)',
-          'Accommodation: Hotel / Resort in Jibhi / Gushaini',
-          'Sightseeing: Relaxing nature walk through pine forests & trek to Jibhi / Choie Waterfall',
-          'Sightseeing: Bike test ride, riding gear allotment & expedition briefing'
+          'Arrive at Aut in the morning and transfer to Jibhi / Gushaini in Tirthan Valley.',
+          'Bikers collect their Royal Enfield motorcycles in Manali / Aut for bike allotment and test ride.',
+          'Check-in to your riverside resort/wooden cottage in Jibhi.',
+          'Short nature hike to the serene Jibhi Waterfall and explore pine-forested trails.',
+          'Evening rider briefing, route orientation, and safety guidelines.',
+          'Overnight in Jibhi / Tirthan Valley.',
+          'Meals: Dinner.'
         ]
       },
       {
         day: 2,
-        title: 'Jibhi to Chitkul via Jalori Pass & Kinnaur Valley',
+        title: 'Jibhi to Chitkul via Kinnaur Gate [230 km / 10-11 hrs]',
         description: [
-          'Transfer: 230 km scenic mountain ride along the Satluj & Baspa river valleys',
-          'Accommodation: Campsite / Homestay in Chitkul',
-          'Sightseeing: Dramatic Hindustan-Tibet Highway drive through rock-cut Kinnaur Gate',
-          'Sightseeing: Arrive in Chitkul — India\'s last inhabited village near the Indo-Tibetan border'
+          'Early morning departure from Jibhi towards Chitkul via Rampur.',
+          'Ride along the raging Satluj River entering the majestic Kinnaur Valley.',
+          'Pass the iconic rock-cut Kinnaur Gate and ascend into the lush green Baspa Valley.',
+          'Arrive at Chitkul – the last inhabited Indian village near the Indo-Tibet border.',
+          'Check-in to your riverside campsite/hotel in Chitkul.',
+          'Overnight in Chitkul.',
+          'Meals: Dinner.'
         ]
       },
       {
         day: 3,
-        title: 'Chitkul to Nako via Kalpa & Khab Sangam',
+        title: 'Chitkul to Nako via Khab Sangam & Kalpa [80 km / 6-7 hrs]',
         description: [
-          'Transfer: 80 km scenic ride to Nako via Reckong Peo & Khab Sangam',
-          'Accommodation: Hotel / Homestay in Nako',
-          'Sightseeing: Morning walk in Chitkul village & panoramic Kinner Kailash peak views',
-          'Sightseeing: Khab Sangam (Spiti & Satluj river confluence) & high-altitude Nako Lake'
+          'Witness a glorious sunrise over the snow-capped Kinnauri peaks.',
+          'Stroll along the crystal-clear Baspa River and visit the iconic Last Dhaba of India.',
+          'Ride from Chitkul to Nako via Kalpa.',
+          'Stop at Khab Sangam – the scenic confluence of the Spiti and Satluj rivers.',
+          'Arrive in the picturesque high-altitude village of Nako and visit Nako Lake.',
+          'Check-in to your hotel in Nako.',
+          'Overnight in Nako.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 4,
-        title: 'Nako to Kaza via Ka Loops & Tabo Monastery',
+        title: 'Nako to Kaza via Tabo Monastery & Ka Loops [220 km / 8-9 hrs]',
         description: [
-          'Transfer: 220 km ride to Kaza crossing Sumdo Border checkpoint & Ka Loops',
-          'Accommodation: Homestay in Kaza',
-          'Sightseeing: Negotiating the steep hairpin bends of Ka Loops',
-          'Sightseeing: Historic 1,000-year-old Tabo Monastery (Ajanta of the Himalayas)'
+          'Post-breakfast ride from Nako to Kaza via Tabo.',
+          'Cross the border post at Sumdo to enter the Spiti Valley.',
+          'Navigate the winding Ka Loops and stop at the 1,000-year-old UNESCO World Heritage Tabo Monastery.',
+          'Visit the cliff-hanging Dhankar Monastery overlooking the Spiti-Pin river confluence.',
+          'Arrive in Kaza by evening and check-in to your hotel/homestay.',
+          'Overnight in Kaza.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 5,
-        title: 'Kaza High-Altitude Circuit | Key Monastery, Chicham, Hikkim & Langza',
+        title: 'Kaza High-Altitude Circuit | Key Monastery, Chicham Bridge, Hikkim, Komic & Langza [80 km / 6-7 hrs]',
         description: [
-          'Transfer: 80 km circuit ride across the world\'s highest motorable villages',
-          'Accommodation: Homestay in Kaza',
-          'Sightseeing: Perched 1,000-year-old Key Gompa Monastery (13,668 ft)',
-          'Sightseeing: Chicham Bridge — Asia\'s highest suspension bridge (13,596 ft)',
-          'Sightseeing: Komik (15,027 ft), Hikkim post office (14,567 ft) & Langza golden Buddha'
+          'Full-day high-altitude village circuit on your bikes around Kaza.',
+          'Visit the iconic 1,000-year-old Key Monastery perched high on a hill cone.',
+          'Drive across Chicham Bridge – Asia’s highest suspension bridge spanning a 1,000 ft canyon.',
+          'Ride to Langza (Fossil Village) with its majestic golden Buddha statue.',
+          'Scale the heights to Komic (4,587 m) – one of the highest motorable villages in the world.',
+          'Visit Hikkim (4,400 m) to post letters from the World’s Highest Post Office.',
+          'Return to Kaza by evening for local cafe hopping.',
+          'Overnight in Kaza.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 6,
-        title: 'Kaza to Chandratal Lake via Kunzum La Pass (14,931 ft)',
+        title: 'Kaza to Chandratal Lake via Kunzum La Pass [95 km / 5-6 hrs]',
         description: [
-          'Transfer: 95 km off-road ride from Kaza to Chandratal via Losar & Kunzum Pass (4,551 m)',
-          'Accommodation: Swiss Campsite near Chandratal Lake',
-          'Sightseeing: Conquer the majestic high-altitude Kunzum La Pass',
-          'Sightseeing: Crescent-shaped Chandratal Lake (Moon Lake) at 14,100 ft & Milky Way stargazing'
+          'Morning departure from Kaza towards Chandratal Lake.',
+          'Ride past Losar and conquer the rugged Kunzum La Pass (4,551 m / 14,931 ft).',
+          'Pay homage at Kunzum Mata Temple before descending to the Moon Lake.',
+          'Trek 1.5 km to the pristine crescent-shaped turquoise waters of Chandratal Lake.',
+          'Check-in to your deluxe alpine campsite and stargaze under the brilliant Milky Way galaxy.',
+          'Overnight in Chandratal Camps.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 7,
-        title: 'Chandratal Lake to Manali via Atal Tunnel',
+        title: 'Chandratal to Manali via Batal, Chhatru & Atal Tunnel [111 km / 6-7 hrs]',
         description: [
-          'Transfer: 111 km adventurous off-road ride via Batal, Gramphu & Atal Tunnel to Manali',
-          'Accommodation: Hotel in Manali',
-          'Sightseeing: Crossing rugged water crossings (pagal nalas) along the Chandra River',
-          'Sightseeing: Evening cafe crawl & farewell celebration in Old Manali'
+          'Post-breakfast off-roading adventure from Chandratal to Manali.',
+          'Conquer raw Himalayan water crossings at Batal, Chhatru, and Gramphu along the Chandra River.',
+          'Ride through the engineering marvel, Atal Tunnel (9.02 km), entering the lush Kullu Valley.',
+          'Arrive in Manali, handover your bikes, and check-in to your hotel.',
+          'Evening cafe crawl and celebration dinner in Old Manali.',
+          'Overnight in Manali.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 8,
-        title: 'Manali Self-Exploration & Overnight Volvo to Delhi',
+        title: 'Manali Local Exploration | Overnight Volvo to Delhi',
         description: [
-          'Transfer: Evening overnight AC Volvo transfer from Manali to Delhi',
-          'Accommodation: Overnight Volvo Bus Journey',
-          'Sightseeing: Self-exploration of Manali visiting Hadimba Devi Temple, Vashisht & Mall Road'
+          'Morning at leisure in Manali.',
+          'Explore Hadimba Temple, Vashisht hot springs, and stroll through Mall Road for souvenirs.',
+          'Evening reporting at Manali bus stand to board the overnight AC Volvo coach to Delhi.',
+          'Overnight Volvo journey.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 9,
-        title: 'Arrival in Delhi & Tour Conclusion',
+        title: 'Arrival in Delhi | Trip Concludes [510 km / 10-11 hrs]',
         description: [
-          'Transfer: Morning arrival in Delhi (around 08:00 - 09:00 AM)',
-          'Sightseeing: Tour concludes with epic memories of the Spiti Valley Bike Expedition'
+          'Arrive in Delhi in the morning (around 09:00 AM).',
+          'Trip concludes with unforgettable memories of the ultimate Spiti Valley & Chandratal Bike Expedition.'
         ]
       }
     ],
@@ -3921,73 +4297,93 @@ Our Bikes are already vrooming and we are all set to take you to this less explo
     itinerary: [
       {
         day: 1,
-        title: 'Arrival in Bagdogra & Transfer to Phuentsholing',
+        title: 'Arrival in Bagdogra | Transfer to Phuentsholing',
         description: [
-          'Transfer: Airport pickup at Bagdogra Airport (IXB) & drive to Phuentsholing via Jaigaon border',
-          'Accommodation: Hotel in Phuentsholing',
-          'Sightseeing: Cross the iconic Indo-Bhutan border gate into the Land of the Thunder Dragon',
-          'Sightseeing: Evening leisure walk around Phuentsholing town and local market'
+          'Arrive at Bagdogra Airport (IXB) / Hasimara Railway Station.',
+          'Meet our representative and board your scenic transfer to the border town of Jaigaon.',
+          'Complete immigration entry formalities and cross the grand Bhutan Gate into Phuentsholing.',
+          'Check-in to your hotel in Phuentsholing and relax after your journey.',
+          'Evening stroll around the clean streets and local markets of Phuentsholing.',
+          'Overnight in Phuentsholing.',
+          'Meals: Dinner.'
         ]
       },
       {
         day: 2,
-        title: 'Phuentsholing to Thimphu via Chuzom Bridge',
+        title: 'Phuentsholing to Thimphu via Chuzom River Confluence [165 km / 5-6 hrs]',
         description: [
-          'Transfer: 170 km scenic mountain drive from Phuentsholing to Thimphu via Gedu & Chapcha',
-          'Accommodation: Hotel in Thimphu',
-          'Sightseeing: Complete immigration and entry permit formalities at Jaigaon / Phuentsholing',
-          'Sightseeing: Chuzom Bridge confluence of Paro & Thimphu rivers with King & Queen portrait',
-          'Sightseeing: Evening exploration of Thimphu — the world\'s only capital city without traffic lights'
+          'Post-breakfast scenic road journey from Phuentsholing to Thimphu – capital city of Bhutan.',
+          'Wind through mist-covered emerald hills, lush subtropical forests, and pristine waterfalls.',
+          'Stop at the picturesque Chuzom Bridge – confluence of the Paro Chhu and Wang Chhu rivers.',
+          'Admire the grand royal welcome portrait of the King and Queen of Bhutan.',
+          'Arrive in Thimphu, the world’s only capital city without a single traffic light.',
+          'Check-in to your hotel, followed by an evening walk through Norzin Lam and Clock Tower Square.',
+          'Overnight in Thimphu.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 3,
-        title: 'Excursion to Punakha via Dochu La Pass (3,100 m)',
+        title: 'Thimphu to Punakha Excursion | Dochula Pass, Chimi Lhakhang & Punakha Dzong [75 km / 3-4 hrs]',
         description: [
-          'Transfer: 75 km excursion drive from Thimphu to Punakha and return',
-          'Accommodation: Hotel in Thimphu',
-          'Sightseeing: Spectacular Dochu La Pass with 108 Druk Wangyal Chortens and Himalayan vistas',
-          'Sightseeing: Hike to Chimi Lhakhang (Fertility Temple of Divine Madman Drukpa Kuenley)',
-          'Sightseeing: Scenic drive along the lush Pho Chhu and Mo Chhu river valleys'
+          'Morning drive from Thimphu towards the historic valley of Punakha.',
+          'Ascend Dochula Pass (3,100 m) featuring 108 Druk Wangyal Chortens and panoramic Himalayan snow peaks.',
+          'Sip hot butter tea at Dochula mountain cafe taking in the crisp mountain breeze.',
+          'Embark on a pleasant nature hike through paddy fields to Chimi Lhakhang (Fertility Temple).',
+          'Explore the majestic Punakha Dzong at the confluence of Pho Chhu and Mo Chhu rivers.',
+          'Walk across the thrilling 160-meter Punakha Suspension Bridge hung over the azure river.',
+          'Experience exciting river rafting on the gentle rapids of the Mo Chhu River.',
+          'Return to Thimphu by evening.',
+          'Overnight in Thimphu.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 4,
-        title: 'Thimphu Sightseeing & Transfer to Paro',
+        title: 'Thimphu Sightseeing to Paro | Buddha Point, Simply Bhutan & Hot Stone Bath [50 km / 1.5 hrs]',
         description: [
-          'Transfer: Scenic transfer from Thimphu to Paro Valley',
-          'Accommodation: Hotel / Resort in Paro',
-          'Sightseeing: Buddha Dordenma (Giant Golden Buddha) offering panoramic Thimphu Valley views',
-          'Sightseeing: Simply Bhutan living cultural museum, traditional archery & costume showcase',
-          'Sightseeing: Evening arrival in Paro & traditional hot stone bath relaxation'
+          'Morning visit to the magnificent Buddha Dordenma – a 169 ft bronze Buddha statue overlooking Thimphu.',
+          'Experience living Bhutanese heritage, archery, and traditional folk dances at Simply Bhutan Living Museum.',
+          'Scenic afternoon drive along the river valley to the historic valley town of Paro.',
+          'Visit the ancient Rinpung Dzong (Paro Dzong) and take photos across the traditional wooden bridge.',
+          'Check-in to your hotel/resort in Paro and enjoy a traditional hot stone herbal bath.',
+          'Overnight in Paro.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 5,
-        title: 'Paro Sightseeing & Hike to Tiger\'s Nest Monastery',
+        title: 'Paro | Hike to the Iconic Taktsang (Tiger\'s Nest Monastery)',
         description: [
-          'Transfer: Short transfer to Taktsang base trailhead',
-          'Accommodation: Hotel / Resort in Paro',
-          'Sightseeing: Pilgrimage hike to iconic Paro Taktsang (Tiger\'s Nest) clinging to a 900m sheer cliff',
-          'Sightseeing: Ancient meditation caves, prayer wheel chambers & panoramic valley vistas'
+          'Early morning pilgrimage hike to the world-famous Paro Taktsang (Tiger’s Nest Monastery).',
+          'Trek through aromatic blue pine forests draped in Spanish moss and colorful prayer flags.',
+          'Climb 900 meters above the valley floor to the miraculous monastery clinging to a sheer cliff face.',
+          'Explore sacred prayer caves, marvel at the sacred relics, and soak in profound spiritual tranquility.',
+          'Descend back to the base and explore Paro Town for authentic handicraft shopping and souvenir cafes.',
+          'Overnight in Paro.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 6,
-        title: 'Paro to Phuentsholing via Countryside Valleys',
+        title: 'Paro to Phuentsholing Return Scenic Drive [140 km / 4-5 hrs]',
         description: [
-          'Transfer: Scenic mountain drive from Paro descending to Phuentsholing border',
-          'Accommodation: Hotel in Phuentsholing',
-          'Sightseeing: Scenic mountain route through waterfalls, pine forests & Bhutanese villages',
-          'Sightseeing: Evening souvenir shopping and farewell dinner in Phuentsholing'
+          'Post-breakfast scenic drive from Paro back towards the border town of Phuentsholing.',
+          'Enjoy breathtaking views of cascading waterfalls, deep gorges, and traditional Bhutanese farmhouses.',
+          'Arrive in Phuentsholing by evening, complete exit biometric stamps, and check-in to your hotel.',
+          'Celebrate your memorable Bhutan expedition with a farewell group dinner.',
+          'Overnight in Phuentsholing.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 7,
-        title: 'Phuentsholing to Bagdogra Airport & Tour Conclusion',
+        title: 'Phuentsholing to Bagdogra Airport | Departure',
         description: [
-          'Transfer: Morning drive from Phuentsholing across the border to Bagdogra Airport (IXB)',
-          'Sightseeing: Departure with treasured memories of the Bhutan Kingdom'
+          'Post-breakfast check-out from your hotel.',
+          'Transfer from Phuentsholing / Jaigaon to Bagdogra Airport (IXB).',
+          'Trip concludes with cherished memories of the Land of the Thunder Dragon.',
+          'Meals: Breakfast.'
         ]
       }
     ],
@@ -4122,81 +4518,105 @@ Our Bikes are already vrooming and we are all set to take you to this less explo
     itinerary: [
       {
         day: 1,
-        title: 'Arrival in Bagdogra & Transfer to Phuentsholing',
+        title: 'Arrival in Bagdogra | Transfer to Phuentsholing',
         description: [
-          'Transfer: Airport pickup at Bagdogra Airport (IXB) & drive to Phuentsholing via Jaigaon border',
-          'Accommodation: Hotel in Phuentsholing',
-          'Sightseeing: Cross the iconic Indo-Bhutan border gate into the Himalayan Kingdom',
-          'Sightseeing: Evening leisure walk around Phuentsholing town'
+          'Arrive at Bagdogra Airport (IXB) / Hasimara Railway Station.',
+          'Meet our representative and board your scenic transfer to Jaigaon on the Indo-Bhutan border.',
+          'Complete immigration entry formalities and step through the ornate Bhutan Gate into Phuentsholing.',
+          'Check-in to your hotel in Phuentsholing and relax.',
+          'Evening stroll around the peaceful border town.',
+          'Overnight in Phuentsholing.',
+          'Meals: Dinner.'
         ]
       },
       {
         day: 2,
-        title: 'Phuentsholing to Thimphu via Chuzom Bridge',
+        title: 'Phuentsholing to Thimphu via Chuzom Confluence [165 km / 5-6 hrs]',
         description: [
-          'Transfer: 170 km scenic mountain drive from Phuentsholing to Thimphu via Gedu',
-          'Accommodation: Hotel in Thimphu',
-          'Sightseeing: Complete immigration permit formalities & drive through cascading mountain valleys',
-          'Sightseeing: Chuzom Bridge river confluence & evening stroll in Thimphu town'
+          'Post-breakfast scenic road journey from Phuentsholing to Thimphu.',
+          'Ascend winding Himalayan roads through subtropical forests, misty valleys, and roadside waterfalls.',
+          'Stop at the Chuzom River confluence (Paro Chhu & Wang Chhu) and view the welcoming portrait of the Bhutanese Monarchs.',
+          'Arrive in Thimphu, the culturally rich capital of Bhutan.',
+          'Check-in to your hotel and enjoy an evening stroll around Clock Tower Square and local handicraft bazaars.',
+          'Overnight in Thimphu.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 3,
-        title: 'Thimphu to Punakha via Dochu La Pass (3,100 m) & River Rafting',
+        title: 'Thimphu to Punakha via Buddha Point, Dochula Pass & Punakha Dzong [75 km / 3-4 hrs]',
         description: [
-          'Transfer: 75 km drive from Thimphu to Punakha via Dochu La Pass',
-          'Accommodation: Hotel / Resort in Punakha',
-          'Sightseeing: Buddha Dordenma (Giant Golden Buddha) with panoramic valley views',
-          'Sightseeing: Dochu La Pass with 108 memorial chortens & snow-clad Himalayan views',
-          'Sightseeing: Majestic Punakha Dzong & Pho Chhu suspension bridge walk',
-          'Sightseeing: Thrilling white-water river rafting in Punakha (Mo Chhu / Pho Chhu)'
+          'Morning visit to the magnificent Buddha Dordenma (Buddha Point) for panoramic views of Thimphu valley.',
+          'Scenic drive over Dochula Pass (3,100 m) featuring 108 Druk Wangyal Chortens and panoramic Himalayan vistas.',
+          'Sip hot butter tea at Dochula pass cafe and capture memorable photographs.',
+          'Descend into the subtropical valley of Punakha.',
+          'Explore the majestic Punakha Dzong (Palace of Great Happiness) nestled between two rivers.',
+          'Walk across the 160 m Punakha Suspension Bridge and experience thrilling river rafting on the Mo Chhu River.',
+          'Check-in to your hotel/resort in Punakha.',
+          'Overnight in Punakha.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 4,
-        title: 'Day Excursion to Phobjikha Valley (Gangtey)',
+        title: 'Day Excursion to Phobjikha Valley | Gangtey Monastery & Nature Trail [80 km / 3 hrs]',
         description: [
-          'Transfer: Scenic day excursion drive from Punakha to Phobjikha Valley and return',
-          'Accommodation: Hotel / Resort in Punakha',
-          'Sightseeing: Pristine glacial Phobjikha Valley (winter habitat of Black-Necked Cranes)',
-          'Sightseeing: 17th-century Gangtey Monastery on a hilltop & Gangtey nature trail walk'
+          'Full-day scenic excursion to the pristine Phobjikha Valley (Gangtey Valley).',
+          'Drive through dense oak and rhododendron forests to one of Bhutan’s most stunning glacial valleys.',
+          'Visit the historic 17th-century Gangtey Monastery perched on a hilltop ridge.',
+          'Take a scenic Gangtey Nature Trail hike across open alpine meadows and pine forests.',
+          'Spot the rare and sacred Black-Necked Cranes (seasonal) at the conservation center.',
+          'Return to Punakha by evening.',
+          'Overnight in Punakha.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 5,
-        title: 'Punakha to Paro via Chimi Lhakhang & Hot Stone Bath',
+        title: 'Punakha to Paro via Chimi Lhakhang & Rinpung Dzong [125 km / 3.5 hrs]',
         description: [
-          'Transfer: Scenic mountain drive from Punakha to Paro Valley via Lobesa',
-          'Accommodation: Hotel / Resort in Paro',
-          'Sightseeing: Short hike to Chimi Lhakhang (Fertility Temple) in Lobesa',
-          'Sightseeing: Traditional Bhutanese Hot Stone Bath relaxation in Paro'
+          'Post-breakfast departure from Punakha towards Paro.',
+          'Hike through picturesque terraced paddy fields to visit Chimi Lhakhang (Fertility Temple).',
+          'Continue scenic mountain drive along the river towards Paro.',
+          'Visit the historic Rinpung Dzong (Paro Dzong) and the National Museum (Ta Dzong).',
+          'Check-in to your Paro resort and rejuvenate with a traditional Bhutanese hot stone herbal bath.',
+          'Overnight in Paro.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 6,
-        title: 'Hike to Iconic Paro Taktsang (Tiger\'s Nest Monastery)',
+        title: 'Paro | Hike to the Iconic Taktsang (Tiger\'s Nest Monastery)',
         description: [
-          'Transfer: Short transfer to Taktsang base trailhead',
-          'Accommodation: Hotel / Resort in Paro',
-          'Sightseeing: Epic hike to sacred Paro Taktsang (Tiger\'s Nest) clinging to a 900m sheer cliff',
-          'Sightseeing: Ancient prayer chambers, butter lamps & panoramic Paro valley views'
+          'Early morning pilgrimage hike to the legendary Paro Taktsang (Tiger’s Nest Monastery).',
+          'Trek through aromatic blue pine forests adorned with fluttering prayer flags.',
+          'Climb 900 meters above the valley floor to the sacred cliffside sanctuary.',
+          'Explore ancient prayer caves and soak in profound spiritual serenity.',
+          'Descend to the base and spend the evening shopping for souvenirs and cafe hopping in Paro Town.',
+          'Overnight in Paro.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 7,
-        title: 'Paro to Phuentsholing / Siliguri',
+        title: 'Paro to Siliguri via Phuentsholing [300 km / 8-9 hrs]',
         description: [
-          'Transfer: 300 km scenic return drive from Paro via Phuentsholing to Siliguri',
-          'Accommodation: Hotel in Siliguri',
-          'Sightseeing: Scenic descent across the Bhutanese border back into India'
+          'Post-breakfast return road journey from Paro through Phuentsholing to Siliguri.',
+          'Enjoy breathtaking downhill Himalayan scenery and waterfall vistas.',
+          'Cross the border back into India and arrive in Siliguri by evening.',
+          'Check-in to your hotel in Siliguri and celebrate the journey with a farewell dinner.',
+          'Overnight in Siliguri.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 8,
-        title: 'Siliguri to Bagdogra Airport & Tour Conclusion',
+        title: 'Siliguri to Bagdogra Airport | Departure',
         description: [
-          'Transfer: Morning hotel checkout & transfer to Bagdogra Airport (IXB)',
-          'Sightseeing: Departure with magical memories of the Bhutan Kingdom'
+          'Post-breakfast check-out from your Siliguri hotel.',
+          'Transfer to Bagdogra Airport (IXB) for your return flight.',
+          'Trip concludes with lifelong memories of the mystical kingdom of Bhutan.',
+          'Meals: Breakfast.'
         ]
       }
     ],
@@ -4297,81 +4717,105 @@ Our Bikes are already vrooming and we are all set to take you to this less explo
     itinerary: [
       {
         day: 1,
-        title: 'Arrival in Bagdogra & Transfer to Phuentsholing',
+        title: 'Arrival in Bagdogra | Transfer to Phuentsholing',
         description: [
-          'Transfer: Airport pickup at Bagdogra Airport (IXB) & drive to Phuentsholing via Jaigaon border',
-          'Accommodation: Hotel in Phuentsholing',
-          'Sightseeing: Cross the iconic Indo-Bhutan border gate into the Himalayan Kingdom',
-          'Sightseeing: Evening leisure walk around Phuentsholing town'
+          'Arrive at Bagdogra Airport (IXB) / Hasimara Railway Station.',
+          'Meet our representative and board your scenic transfer to Jaigaon on the Indo-Bhutan border.',
+          'Complete immigration entry formalities and step through the ornate Bhutan Gate into Phuentsholing.',
+          'Check-in to your hotel in Phuentsholing and relax.',
+          'Evening stroll around the peaceful border town.',
+          'Overnight in Phuentsholing.',
+          'Meals: Dinner.'
         ]
       },
       {
         day: 2,
-        title: 'Phuentsholing to Thimphu via Chuzom Bridge',
+        title: 'Phuentsholing to Thimphu via Chuzom Confluence [165 km / 5-6 hrs]',
         description: [
-          'Transfer: 170 km scenic mountain drive from Phuentsholing to Thimphu via Gedu',
-          'Accommodation: Hotel in Thimphu',
-          'Sightseeing: Complete immigration permit formalities & drive through cascading mountain valleys',
-          'Sightseeing: Chuzom Bridge river confluence & evening stroll in Thimphu town'
+          'Post-breakfast scenic road journey from Phuentsholing to Thimphu.',
+          'Ascend winding Himalayan roads through subtropical forests, misty valleys, and roadside waterfalls.',
+          'Stop at the Chuzom River confluence (Paro Chhu & Wang Chhu) and view the welcoming portrait of the Bhutanese Monarchs.',
+          'Arrive in Thimphu, the culturally rich capital of Bhutan.',
+          'Check-in to your hotel and enjoy an evening stroll around Clock Tower Square and local handicraft bazaars.',
+          'Overnight in Thimphu.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 3,
-        title: 'Thimphu to Punakha via Dochu La Pass (3,100 m) & River Rafting',
+        title: 'Thimphu to Punakha via Buddha Point, Dochula Pass & Punakha Dzong [75 km / 3-4 hrs]',
         description: [
-          'Transfer: 75 km drive from Thimphu to Punakha via Dochu La Pass',
-          'Accommodation: Hotel / Resort in Punakha',
-          'Sightseeing: Buddha Dordenma (Giant Golden Buddha) with panoramic valley views',
-          'Sightseeing: Dochu La Pass with 108 memorial chortens & snow-clad Himalayan views',
-          'Sightseeing: Majestic Punakha Dzong & Pho Chhu suspension bridge walk',
-          'Sightseeing: Thrilling white-water river rafting in Punakha (Mo Chhu / Pho Chhu)'
+          'Morning visit to the magnificent Buddha Dordenma (Buddha Point) for panoramic views of Thimphu valley.',
+          'Scenic drive over Dochula Pass (3,100 m) featuring 108 Druk Wangyal Chortens and panoramic Himalayan vistas.',
+          'Sip hot butter tea at Dochula pass cafe and capture memorable photographs.',
+          'Descend into the subtropical valley of Punakha.',
+          'Explore the majestic Punakha Dzong (Palace of Great Happiness) nestled between two rivers.',
+          'Walk across the 160 m Punakha Suspension Bridge and experience thrilling river rafting on the Mo Chhu River.',
+          'Check-in to your hotel/resort in Punakha.',
+          'Overnight in Punakha.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 4,
-        title: 'Day Excursion to Phobjikha Valley (Gangtey)',
+        title: 'Day Excursion to Phobjikha Valley | Gangtey Monastery & Nature Trail [80 km / 3 hrs]',
         description: [
-          'Transfer: Scenic day excursion drive from Punakha to Phobjikha Valley and return',
-          'Accommodation: Hotel / Resort in Punakha',
-          'Sightseeing: Pristine glacial Phobjikha Valley (winter habitat of Black-Necked Cranes)',
-          'Sightseeing: 17th-century Gangtey Monastery on a hilltop & Gangtey nature trail walk'
+          'Full-day scenic excursion to the pristine Phobjikha Valley (Gangtey Valley).',
+          'Drive through dense oak and rhododendron forests to one of Bhutan’s most stunning glacial valleys.',
+          'Visit the historic 17th-century Gangtey Monastery perched on a hilltop ridge.',
+          'Take a scenic Gangtey Nature Trail hike across open alpine meadows and pine forests.',
+          'Spot the rare and sacred Black-Necked Cranes (seasonal) at the conservation center.',
+          'Return to Punakha by evening.',
+          'Overnight in Punakha.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 5,
-        title: 'Punakha to Paro via Chimi Lhakhang & Hot Stone Bath',
+        title: 'Punakha to Paro via Chimi Lhakhang & Rinpung Dzong [125 km / 3.5 hrs]',
         description: [
-          'Transfer: Scenic mountain drive from Punakha to Paro Valley via Lobesa',
-          'Accommodation: Hotel / Resort in Paro',
-          'Sightseeing: Short hike to Chimi Lhakhang (Fertility Temple) in Lobesa',
-          'Sightseeing: Traditional Bhutanese Hot Stone Bath relaxation in Paro'
+          'Post-breakfast departure from Punakha towards Paro.',
+          'Hike through picturesque terraced paddy fields to visit Chimi Lhakhang (Fertility Temple).',
+          'Continue scenic mountain drive along the river towards Paro.',
+          'Visit the historic Rinpung Dzong (Paro Dzong) and the National Museum (Ta Dzong).',
+          'Check-in to your Paro resort and rejuvenate with a traditional Bhutanese hot stone herbal bath.',
+          'Overnight in Paro.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 6,
-        title: 'Hike to Iconic Paro Taktsang (Tiger\'s Nest Monastery)',
+        title: 'Paro | Hike to the Iconic Taktsang (Tiger\'s Nest Monastery)',
         description: [
-          'Transfer: Short transfer to Taktsang base trailhead',
-          'Accommodation: Hotel / Resort in Paro',
-          'Sightseeing: Epic hike to sacred Paro Taktsang (Tiger\'s Nest) clinging to a 900m sheer cliff',
-          'Sightseeing: Ancient prayer chambers, butter lamps & panoramic Paro valley views'
+          'Early morning pilgrimage hike to the legendary Paro Taktsang (Tiger’s Nest Monastery).',
+          'Trek through aromatic blue pine forests adorned with fluttering prayer flags.',
+          'Climb 900 meters above the valley floor to the sacred cliffside sanctuary.',
+          'Explore ancient prayer caves and soak in profound spiritual serenity.',
+          'Descend to the base and spend the evening shopping for souvenirs and cafe hopping in Paro Town.',
+          'Overnight in Paro.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 7,
-        title: 'Paro to Phuentsholing / Siliguri',
+        title: 'Paro to Siliguri via Phuentsholing [300 km / 8-9 hrs]',
         description: [
-          'Transfer: 300 km scenic return drive from Paro via Phuentsholing to Siliguri',
-          'Accommodation: Hotel in Siliguri',
-          'Sightseeing: Scenic descent across the Bhutanese border back into India'
+          'Post-breakfast return road journey from Paro through Phuentsholing to Siliguri.',
+          'Enjoy breathtaking downhill Himalayan scenery and waterfall vistas.',
+          'Cross the border back into India and arrive in Siliguri by evening.',
+          'Check-in to your hotel in Siliguri and celebrate the journey with a farewell dinner.',
+          'Overnight in Siliguri.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 8,
-        title: 'Siliguri to Bagdogra Airport & Tour Conclusion',
+        title: 'Siliguri to Bagdogra Airport | Departure',
         description: [
-          'Transfer: Morning hotel checkout & transfer to Bagdogra Airport (IXB)',
-          'Sightseeing: Departure with magical memories of the Bhutan Kingdom'
+          'Post-breakfast check-out from your Siliguri hotel.',
+          'Transfer to Bagdogra Airport (IXB) for your return flight.',
+          'Trip concludes with lifelong memories of the mystical kingdom of Bhutan.',
+          'Meals: Breakfast.'
         ]
       }
     ],
@@ -4489,73 +4933,90 @@ Our Bikes are already vrooming and we are all set to take you to this less explo
     itinerary: [
       {
         day: 1,
-        title: 'Arrival in Bagdogra & Transfer to Phuentsholing',
+        title: 'Arrival in Bagdogra | Transfer to Phuentsholing',
         description: [
-          'Transfer: Airport pickup at Bagdogra Airport (IXB) & drive to Phuentsholing via Jaigaon border',
-          'Accommodation: Hotel in Phuentsholing',
-          'Sightseeing: Cross the iconic Indo-Bhutan border gate into the Land of the Thunder Dragon',
-          'Sightseeing: Evening leisure walk around Phuentsholing town and local market'
+          'Meet our representative upon arrival at Bagdogra Airport (IXB).',
+          'Board your transfer and drive towards the Indo-Bhutan border town of Jaigaon.',
+          'Cross the border gate to enter Phuentsholing, Bhutan.',
+          'Check in to your hotel and unwind after your journey.',
+          'Spend the evening at leisure exploring the local Bhutanese border town.',
+          'Overnight stay in Phuentsholing.',
+          'Meals: Dinner.'
         ]
       },
       {
         day: 2,
-        title: 'Phuentsholing to Thimphu via Chuzom Bridge',
+        title: 'Phuentsholing to Thimphu | Scenic Himalayan Drive',
         description: [
-          'Transfer: 170 km scenic mountain drive from Phuentsholing to Thimphu via Gedu & Chapcha',
-          'Accommodation: Hotel in Thimphu',
-          'Sightseeing: Complete immigration and entry permit formalities at Jaigaon / Phuentsholing',
-          'Sightseeing: Chuzom Bridge confluence of Paro & Thimphu rivers with King & Queen portrait',
-          'Sightseeing: Evening exploration of Thimphu — the world\'s only capital city without traffic lights'
+          'Enjoy breakfast and complete the immigration permit formalities at the border.',
+          'Embark on a scenic drive to Thimphu, passing winding mountain roads, broad-leaved forests, waterfalls, and quaint villages.',
+          'Stop at the Chuzom Bridge to witness the confluence of the Paro and Thimphu rivers and the King & Queen portrait.',
+          'Arrive in Thimphu by late afternoon and check in to your hotel.',
+          'Spend the evening exploring the local Thimphu markets, handicraft emporiums, and clock tower square.',
+          'Overnight stay in Thimphu.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 3,
-        title: 'Excursion to Punakha via Dochu La Pass (3,100 m)',
+        title: 'Excursion to Punakha via Dochula Pass (3,100 m)',
         description: [
-          'Transfer: 75 km excursion drive from Thimphu to Punakha and return',
-          'Accommodation: Hotel in Thimphu',
-          'Sightseeing: Spectacular Dochu La Pass with 108 Druk Wangyal Chortens and Himalayan vistas',
-          'Sightseeing: Hike to Chimi Lhakhang (Fertility Temple of Divine Madman Drukpa Kuenley)',
-          'Sightseeing: Scenic drive along the lush Pho Chhu and Mo Chhu river valleys'
+          'Relish breakfast and begin your day excursion towards the sub-tropical Punakha Valley (75 km).',
+          'Ascend Dochula Pass (3,100 m) for panoramic Himalayan vistas and visit the 108 Druk Wangyal Chortens.',
+          'Enjoy a warm cup of tea or coffee at the pass while admiring snow-peaked vistas.',
+          'Descend into Punakha valley and embark on a short scenic walk through paddy fields to Chimi Lhakhang (the Fertility Temple).',
+          'Return to Thimphu in the evening and relax at your hotel.',
+          'Overnight stay in Thimphu.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 4,
-        title: 'Thimphu Sightseeing & Transfer to Paro',
+        title: 'Thimphu Sightseeing | Transfer to Paro',
         description: [
-          'Transfer: Scenic transfer from Thimphu to Paro Valley',
-          'Accommodation: Hotel / Resort in Paro',
-          'Sightseeing: Buddha Dordenma (Giant Golden Buddha) offering panoramic Thimphu Valley views',
-          'Sightseeing: Simply Bhutan living cultural museum, traditional archery & costume showcase',
-          'Sightseeing: Evening arrival in Paro & traditional hot stone bath relaxation'
+          'Wake up and enjoy a hearty breakfast at the hotel.',
+          'Visit the colossal Buddha Dordenma (Buddha Point) for sweeping views of Thimphu Valley.',
+          'Experience Bhutanese culture and living traditions at the Simply Bhutan living museum.',
+          'Board your vehicle and proceed on a picturesque drive to Paro.',
+          'Arrive in Paro, check in to your hotel, and spend a relaxing evening by the riverside.',
+          'Overnight stay in Paro.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 5,
-        title: 'Paro Sightseeing & Hike to Tiger\'s Nest Monastery',
+        title: 'Paro Sightseeing | Hike to Tiger’s Nest (Taktsang)',
         description: [
-          'Transfer: Short transfer to Taktsang base trailhead',
-          'Accommodation: Hotel / Resort in Paro',
-          'Sightseeing: Pilgrimage hike to iconic Paro Taktsang (Tiger\'s Nest) clinging to a 900m sheer cliff',
-          'Sightseeing: Ancient meditation caves, prayer wheel chambers & panoramic valley vistas'
+          'Fuel up with breakfast and head to the trailhead for the iconic Taktsang Monastery (Tiger’s Nest).',
+          'Trek 2–4 hours through fragrant pine forests and fluttering prayer flags up to the cliffside monastery (900 m above the valley floor).',
+          'Explore the sacred caves, shrines, and breathtaking valley viewpoints.',
+          'Hike down and return to Paro town for a traditional Bhutanese Hot Stone Bath experience.',
+          'Spend your evening strolling through Paro’s quaint heritage street and souvenir shops.',
+          'Overnight stay in Paro.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 6,
-        title: 'Paro to Phuentsholing via Countryside Valleys',
+        title: 'Paro to Phuentsholing | Scenic Return Descent',
         description: [
-          'Transfer: Scenic mountain drive from Paro descending to Phuentsholing border',
-          'Accommodation: Hotel in Phuentsholing',
-          'Sightseeing: Scenic mountain route through waterfalls, pine forests & Bhutanese villages',
-          'Sightseeing: Evening souvenir shopping and farewell dinner in Phuentsholing'
+          'Savor breakfast with scenic mountain views and check out from your hotel.',
+          'Board your transfer and enjoy a scenic descent back to Phuentsholing.',
+          'Enjoy stopovers along the winding highway for photos and mountain vistas.',
+          'Check in to your hotel upon reaching Phuentsholing.',
+          'Spend your farewell evening exploring the border town markets and café hopping.',
+          'Overnight stay in Phuentsholing.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 7,
-        title: 'Phuentsholing to Bagdogra Airport & Tour Conclusion',
+        title: 'Phuentsholing to Bagdogra Airport | Departure',
         description: [
-          'Transfer: Morning drive from Phuentsholing across the border to Bagdogra Airport (IXB)',
-          'Sightseeing: Departure with treasured memories of the Bhutan Kingdom'
+          'Enjoy breakfast at the hotel and complete check-out formalities.',
+          'Board your transfer back to Bagdogra Airport (IXB) for your onward flight.',
+          'Conclude your memorable Bhutan journey with unforgettable Himalayan memories.',
+          'Meals: Breakfast.'
         ]
       }
     ],
@@ -4667,79 +5128,98 @@ This trip promises lifelong experiences, whether you're an action seeker, a natu
     itinerary: [
       {
         day: 0,
-        title: 'Delhi to Manali | Overnight Volvo Bus Journey',
+        title: 'Delhi to Manali | Overnight Volvo Journey',
         description: [
-          'Transfer: Evening overnight AC Volvo bus transfer from Delhi (Majnu Ka Tilla / ISBT) to Manali'
+          'Assemble at the designated pickup point in Delhi by evening.',
+          'Meet your trip captain and fellow travelers for a brief trip orientation.',
+          'Board your comfortable AC Volvo bus and begin the overnight journey to Himachal Pradesh.',
+          'Enjoy the scenic drive as you transition from city lights to Himalayan foothills.',
+          'Overnight journey in Volvo bus.'
         ]
       },
       {
         day: 1,
-        title: 'Arrival in Manali, Jogni Waterfall Trek & Old Manali',
+        title: 'Arrival in Manali | Jogini Waterfall & Old Manali Exploration',
         description: [
-          'Transfer: Morning arrival in Manali & hotel check-in',
-          'Accommodation: Hotel in Manali',
-          'Sightseeing: Scenic nature trek through apple orchards & pine forests to Jogini Waterfall',
-          'Sightseeing: 16th-century wooden pagoda Hadimba Devi Temple & cafe hopping in Old Manali'
+          'Arrive in Manali in the morning and transfer to your hotel for check-in and relaxation.',
+          'Drive towards Vashisht village and embark on an easy 1.5–2 hour trek to Jogini Waterfall.',
+          'Admire the cascading waterfall surrounded by lush pine forests, apple orchards, and valley views.',
+          'Visit the historic 16th-century wooden Hadimba Devi Temple set amidst tall deodars.',
+          'Stroll through Old Manali’s vibrant lanes, exploring quirky cafés, live music spots, and local markets.',
+          'Overnight stay in Manali.',
+          'Meals: Dinner.'
         ]
       },
       {
         day: 2,
-        title: 'Atal Tunnel, Sissu (Lahaul Valley) & Solang Valley',
+        title: 'Manali – Atal Tunnel – Sissu Valley – Solang Valley',
         description: [
-          'Transfer: 110 km high-altitude drive through Atal Tunnel to Lahaul Valley and return',
-          'Accommodation: Hotel in Manali',
-          'Sightseeing: Drive through Atal Tunnel engineering marvel (above 10,000 ft)',
-          'Sightseeing: Sissu waterfall & glacier viewpoints in snowy Lahaul Valley',
-          'Sightseeing: Solang Valley adventure sports and snow activities'
+          'Enjoy breakfast and set out for a scenic high-altitude mountain expedition.',
+          'Drive through the iconic Atal Tunnel (10,000+ ft) into the dramatic Lahaul Valley.',
+          'Explore the postcard-perfect village of Sissu, marveling at the cascading Sissu Waterfall and glaciers.',
+          'Stop at Solang Valley on your return for thrilling adventure activities like paragliding, zorbing, and quad biking.',
+          'Return to Manali by evening and unwind with your group.',
+          'Overnight stay in Manali.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 3,
-        title: 'Manali to Kasol via River Rafting & Manikaran Sahib',
+        title: 'Manali to Kasol en route Beas River Rafting & Manikaran',
         description: [
-          'Transfer: 85 km scenic mountain drive from Manali to Kasol along Parvati River',
-          'Accommodation: Hotel / Resort in Kasol',
-          'Sightseeing: Thrilling white-water river rafting on the Beas River in Kullu',
-          'Sightseeing: Spiritual visit to Manikaran Sahib Gurudwara & natural hot springs',
-          'Sightseeing: Bohemian cafes and riverside walk along the Parvati River in Kasol'
+          'Have breakfast and check out from Manali to begin your journey to Parvati Valley.',
+          'Experience thrilling white-water river rafting on the gushing Beas River (optional/direct pay).',
+          'Visit the revered Manikaran Sahib Gurudwara and witness the natural hot sulfur springs.',
+          'Drive into Kasol, check in to your stay, and soak in the vibrant backpacker culture.',
+          'Spend the evening café hopping, shopping at local flea markets, and chilling beside the Parvati River.',
+          'Overnight stay in Kasol.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 4,
-        title: 'Parvati Valley Hamlets | Tosh, Kalga, Pulga & Chalal',
+        title: 'Parvati Valley Exploration | Tosh, Kalga & Chalal',
         description: [
-          'Transfer: Day excursion drive from Kasol to Barshaini village trailhead and return',
-          'Accommodation: Hotel / Resort in Kasol',
-          'Sightseeing: Discover picturesque mountain hamlets of Tosh, Kalga & Pulga',
-          'Sightseeing: Riverside pine forest trek to Chalal village & evening market exploration'
+          'Wake up to the sounds of the rushing Parvati River and enjoy breakfast.',
+          'Drive to Barshaini, the gateway to Parvati Valley’s traditional mountain hamlets.',
+          'Hike up to the picturesque village of Tosh for stunning snow-capped mountain views and wooden house architecture.',
+          'Explore the serene pine-shaded trails of Kalga and Pulga (Fairy Forest).',
+          'Take a leisurely evening walk to Chalal village before returning to Kasol for dinner.',
+          'Overnight stay in Kasol.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 5,
-        title: 'Kasol to Jibhi | Jibhi Waterfall & Mini Thailand',
+        title: 'Kasol to Jibhi via Banjar Valley | Jibhi Waterfall & Mini Thailand',
         description: [
-          'Transfer: 80 km scenic drive from Kasol to Jibhi via Aut & Banjar Valley',
-          'Accommodation: Hotel / Resort in Jibhi',
-          'Sightseeing: Jibhi Waterfall surrounded by dense cedar forests & wooden bridges',
-          'Sightseeing: Mini Thailand secret natural rock pool & cozy riverside cafes'
+          'Savor breakfast, check out from Kasol, and drive through the Aut tunnel towards Banjar Valley.',
+          'Arrive in the peaceful hamlet of Jibhi and check in to your traditional wooden stay.',
+          'Take an easy stroll to the serene Jibhi Waterfall nestled among pine woods and wooden footbridges.',
+          'Trek down through the forest trail to the picturesque freshwater rock pools of Mini Thailand.',
+          'Spend the evening relaxing at cozy local cafes and enjoying peaceful riverside vibes.',
+          'Overnight stay in Jibhi.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 6,
         title: 'Jalori Pass & Serolsar Lake Trek | Overnight Volvo to Delhi',
         description: [
-          'Transfer: Drive to Jalori Pass; evening return to Aut for overnight Volvo to Delhi',
-          'Accommodation: Overnight Volvo Bus Journey',
-          'Sightseeing: High-altitude trek (5 km) from Jalori Pass to sacred Serolsar Lake',
-          'Sightseeing: 360-degree panoramic Himalayan viewpoint & Budhi Nagin Temple'
+          'Enjoy an early breakfast and check out from your stay in Jibhi.',
+          'Drive up to Jalori Pass (10,800 ft) for sweeping 360-degree views of the Himalayas.',
+          'Embark on an easy 5–6 km scenic forest trek through oak and pine woods to mystical Serolsar Lake.',
+          'Spend tranquil moments at the sacred lake and visit the revered Budhi Nagin Temple.',
+          'Trek back to Jalori Pass, board your transfer to Aut, and catch your overnight AC Volvo bus to Delhi.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 7,
-        title: 'Arrival in Delhi & Tour Conclusion',
+        title: 'Arrival in Delhi | Trip Concludes',
         description: [
-          'Transfer: Morning arrival in Delhi (around 08:00 - 09:00 AM)',
-          'Sightseeing: Departure with unforgettable memories of Himachal Pradesh'
+          'Arrive back in Delhi early in the morning.',
+          'Bid farewell to your travel companions and take home memories of your unforgettable Himachal adventure.'
         ]
       }
     ],
@@ -4841,71 +5321,77 @@ This trip promises lifelong experiences, whether you're an action seeker, a natu
     itinerary: [
       {
         day: 0,
-        title: 'Delhi to Aut – Overnight Himalayan Escape Begins',
+        title: 'Delhi to Aut | Overnight Himalayan Escape',
         description: [
-          'Transfer: Assemble at Delhi boarding point and board comfortable overnight Volvo bus to Himachal Pradesh (approx. 500-520 km / 10-12 hrs).',
-          'Enjoy the scenic overnight drive as cityscapes give way to peaceful mountain valleys.',
-          'Meet and interact with fellow travellers along the way.'
+          'Assemble at the designated pickup point in Delhi by evening.',
+          'Meet your trip captain and fellow travelers for a brief trip briefing.',
+          'Board your comfortable AC Volvo bus and begin your overnight journey to Himachal Pradesh.',
+          'Enjoy the scenic drive transitioning from urban lights to the tranquil Himalayan foothills.',
+          'Overnight journey in Volvo bus.'
         ]
       },
       {
         day: 1,
-        title: 'Arrival at Aut – Transfer to Jibhi & Local Exploration',
+        title: 'Arrival at Aut | Transfer to Jibhi & Local Exploration',
         description: [
-          'Transfer: Morning arrival at Aut; meet representative and transfer to the peaceful mountain hamlet of Jibhi.',
-          'Accommodation: Check-in and relax at hotel / wooden cottage stay in Jibhi.',
-          'Sightseeing: Visit the hidden Jibhi Waterfall surrounded by lush pine and cedar forests.',
-          'Sightseeing: Explore Mini Thailand, famous for natural rock formations and crystal-clear mountain streams.',
-          'Sightseeing: Evening leisure for riverside walks and exploring cozy local mountain cafes.',
-          'Meals Included: Breakfast & Dinner.'
+          'Arrive at Aut in the morning and board your transfer towards the scenic Banjar Valley.',
+          'Check in to your cozy wooden cottage/stay in Jibhi and freshen up.',
+          'Take a relaxing nature walk to the picturesque Jibhi Waterfall surrounded by wooden bridges and lush pine forest.',
+          'Trek to the natural rock pool formation at Mini Thailand for crystal-clear waters and photography.',
+          'Spend the evening café hopping, exploring local handicrafts, and relaxing amidst quiet riverside vibes.',
+          'Overnight stay in Jibhi.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 2,
         title: 'Trek to Serolsar Lake & 360-Degree Himalayan Viewpoint',
         description: [
-          'Transfer: Morning scenic drive from Jibhi to Jalori Pass.',
-          'Sightseeing: Begin scenic 5-6 km trek through dense oak and cedar forest trails to sacred Serolsar Lake.',
-          'Sightseeing: Hike to the 360-degree viewpoint near the lake for panoramic vistas of snow-capped Himalayan ranges.',
-          'Sightseeing: Return to Jibhi for evening cafe hopping and a cozy bonfire session (weather permitting).',
-          'Accommodation: Overnight stay in Jibhi.',
-          'Meals Included: Breakfast & Dinner.'
+          'Wake up to crisp mountain air and enjoy breakfast.',
+          'Drive up to Jalori Pass (10,800 ft), admiring sweeping views of cedar-covered slopes and snow-capped peaks.',
+          'Embark on an easy-to-moderate 5–6 km trek through dense oak and rhododendron forest to Serolsar Lake.',
+          'Visit the holy Budhi Nagin Temple beside the pristine lake and hike to the 360° viewpoint for panoramic vistas.',
+          'Trek back to Jalori Pass and return to Jibhi for a cozy evening around a bonfire.',
+          'Overnight stay in Jibhi.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 3,
-        title: 'Jibhi to Manali via Kullu Valley & Naggar',
+        title: 'Jibhi to Manali via Kullu Valley | Hadimba Temple & Old Manali',
         description: [
-          'Transfer: Scenic drive from Jibhi to Manali through Kullu Valley and apple orchards (approx. 95-110 km / 4-5 hrs).',
-          'Sightseeing: Optional thrilling Beas River white water rafting in Kullu (at extra cost).',
-          'Sightseeing: Visit ancient Hadimba Devi Temple set amidst tall deodar cedar groves.',
-          'Sightseeing: Explore lively Old Manali cafes, local bakeries, and vibrant Mall Road for souvenirs.',
-          'Accommodation: Check-in & overnight stay at hotel in Manali.',
-          'Meals Included: Breakfast & Dinner.'
+          'Savor breakfast, check out from Jibhi, and embark on a scenic drive to Manali along the Beas River.',
+          'Stop in Kullu Valley for an exhilarating white-water river rafting session on the Beas River (optional/direct pay).',
+          'Reach Manali and check in to your hotel to freshen up.',
+          'Visit the iconic Hadimba Devi Temple nestled in ancient deodar woods.',
+          'Spend your evening café hopping in Old Manali, enjoying live music, and strolling along Mall Road.',
+          'Overnight stay in Manali.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 4,
-        title: 'Atal Tunnel, Sissu Valley Exploration & Transfer to Kasol',
+        title: 'Manali – Atal Tunnel – Sissu Valley – Kasol',
         description: [
-          'Transfer: Morning scenic drive through the engineering marvel Atal Tunnel into Lahaul Valley.',
-          'Sightseeing: Explore picturesque Sissu village, majestic waterfalls, and snow-capped glacier viewpoints.',
-          'Sightseeing: Optional snow activities at Solang Valley (if time permits).',
-          'Transfer: Scenic drive to Kasol nestled along the roaring Parvati River.',
-          'Sightseeing: Evening leisure for cafe hopping and soaking in the bohemian vibes of Parvati Valley.',
-          'Accommodation: Check-in & overnight stay in Kasol.',
-          'Meals Included: Breakfast & Dinner.'
+          'Enjoy breakfast and get ready for a spectacular high-altitude road adventure.',
+          'Pass through the engineering wonder Atal Tunnel into the dramatic landscapes of Lahaul Valley.',
+          'Explore the enchanting Himalayan hamlet of Sissu, taking in the roaring waterfall and glacier views.',
+          'Drive towards the Parvati Valley and reach Kasol by late afternoon.',
+          'Check in to your riverside stay and spend the evening exploring Kasol’s bohemian cafes, German bakeries, and flea markets.',
+          'Overnight stay in Kasol.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 5,
-        title: 'Kasol Local Exploration, Manikaran Sahib & Overnight Departure to Delhi',
+        title: 'Manikaran Sahib & Chalal Trek | Overnight Volvo to Delhi',
         description: [
-          'Sightseeing: Visit holy Manikaran Sahib Gurudwara and natural thermal hot water springs.',
-          'Sightseeing: Scenic nature trek to Chalal Village along pine forests and riverside trails.',
-          'Sightseeing: Explore Kasol flea markets and cafes for handicrafts and Israeli cuisine.',
-          'Transfer: Board evening overnight Volvo bus back to Delhi with unforgettable Himalayan memories.',
-          'Meals Included: Breakfast.'
+          'Have breakfast and check out from your hotel.',
+          'Visit the sacred Manikaran Sahib Gurudwara and experience the natural hot sulfur springs.',
+          'Embark on a scenic pine-forest walk along the Parvati River to the peaceful hamlet of Chalal.',
+          'Spend your last hours shopping for souvenirs and chilling by the river in Kasol.',
+          'Board your evening AC Volvo bus back to Delhi with unforgettable mountain memories.',
+          'Meals: Breakfast.'
         ]
       }
     ],
@@ -5018,76 +5504,85 @@ This trip promises lifelong experiences, whether you're an action seeker, a natu
     itinerary: [
       {
         day: 1,
-        title: 'Arrival in Amritsar | Golden Temple & Wagah Border',
+        title: 'Arrival in Amritsar | Golden Temple & Wagah Border Ceremony',
         description: [
-          'Transfer: Pick-up on arrival at Amritsar Airport / Railway Station and transfer to hotel.',
-          'Accommodation: Check-in & relaxation at hotel in Amritsar.',
-          'Sightseeing: Visit the serene and spiritual Golden Temple (Harmandir Sahib).',
-          'Sightseeing: Witness the electrifying Beating Retreat Ceremony at the Wagah Border.',
-          'Accommodation: Comfortable overnight stay in Amritsar.',
-          'Meals Included: Dinner.'
+          'Meet our representative upon arrival at Amritsar Airport or Railway Station and transfer to your hotel.',
+          'Check in, freshen up, and prepare for an enriching cultural and spiritual tour.',
+          'Visit the peaceful and radiant Golden Temple (Harmandir Sahib), the spiritual center of Sikhism.',
+          'Drive to the Attari-Wagah Border in the afternoon to witness the patriotic Beating Retreat Ceremony.',
+          'Return to Amritsar city in the evening for dinner and overnight rest.',
+          'Overnight stay in Amritsar.',
+          'Meals: Dinner.'
         ]
       },
       {
         day: 2,
-        title: 'Amritsar to Dalhousie',
+        title: 'Amritsar to Dalhousie (200 km / 5–6 hrs)',
         description: [
-          'Transfer: Scenic drive from Amritsar to Dalhousie through rolling hills and pine forests (approx. 200 km / 5-6 hrs).',
-          'Accommodation: Check-in & relaxation at hotel in Dalhousie.',
-          'Sightseeing: Spend a quiet evening enjoying the tranquil Himalayan surroundings and valley views.',
-          'Meals Included: Breakfast & Dinner.'
+          'Savor breakfast at the hotel and complete check-out formalities.',
+          'Embark on a scenic uphill road journey towards the colonial hill retreat of Dalhousie.',
+          'Arrive in Dalhousie, surrounded by towering pine trees and Dhauladhar views, and check in to your hotel.',
+          'Spend a leisurely evening relaxing in the cool mountain climate.',
+          'Overnight stay in Dalhousie.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 3,
-        title: 'Dalhousie Sightseeing & Khajjiar Excursion',
+        title: 'Dalhousie Sightseeing & Khajjiar (Mini Switzerland) Excursion',
         description: [
-          'Sightseeing: Full-day excursion to Khajjiar ("Mini Switzerland of India"), scenic meadows, and pine-fringed lake.',
-          'Sightseeing: Enjoy optional adventure activities at Khajjiar like zorbing, horseback riding, and nature trails.',
-          'Sightseeing: Visit Panchpula Waterfalls, Subhash Baoli, St. John\'s Church, and Gandhi Chowk / Mall Road.',
-          'Accommodation: Overnight stay in Dalhousie.',
-          'Meals Included: Breakfast & Dinner.'
+          'Enjoy breakfast and head out for a full-day excursion to the picturesque Khajjiar meadows.',
+          'Stroll around Khajjiar lake, surrounded by dense deodars, and enjoy optional activities like zorbing and horse riding.',
+          'Visit Panchpula Waterfalls, Subhash Baoli, and the historic St. John’s Church.',
+          'Spend the evening browsing local handicraft stalls and street cafes along Gandhi Chowk and Mall Road.',
+          'Overnight stay in Dalhousie.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 4,
-        title: 'Dalhousie to Dharamshala',
+        title: 'Dalhousie to Dharamshala (120 km / 4–5 hrs)',
         description: [
-          'Transfer: Scenic mountain drive from Dalhousie to Dharamshala / McLeod Ganj (approx. 120 km / 4-5 hrs).',
-          'Accommodation: Check-in & relaxation at hotel in Dharamshala.',
-          'Sightseeing: Evening at leisure to soak in the peaceful Tibetan ambiance and Dhauladhar views.',
-          'Meals Included: Breakfast & Dinner.'
+          'Relish breakfast, check out from the hotel, and start your scenic drive to Dharamshala.',
+          'Enjoy sweeping valley panoramas as you approach the hillside sanctuary in the Kangra Valley.',
+          'Arrive in Dharamshala, check in to your hotel, and relax amid tranquil pine forests.',
+          'Spend the evening at leisure exploring quaint mountain cafes and local markets.',
+          'Overnight stay in Dharamshala.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 5,
-        title: 'Dharamshala & McLeod Ganj Sightseeing',
+        title: 'Dharamshala & McLeod Ganj Full-Day Sightseeing',
         description: [
-          'Sightseeing: Visit Tsuglagkhang Complex (Dalai Lama Temple) and Namgyal Monastery.',
-          'Sightseeing: Explore Bhagsunag Temple and the cascading Bhagsunag Waterfall.',
-          'Sightseeing: Visit St. John in the Wilderness Church, Tibetan Craft Market, and Naddi View Point overlooking Dhauladhar ranges.',
-          'Sightseeing: Visit serene Dal Lake and HPCA International Cricket Stadium Dharamshala (subject to accessibility).',
-          'Accommodation: Overnight stay in Dharamshala.',
-          'Meals Included: Breakfast & Dinner.'
+          'Enjoy a wholesome breakfast and set out for full-day sightseeing across Dharamshala and McLeod Ganj.',
+          'Visit the sacred Tsuglagkhang Complex (Dalai Lama Temple) and Namgyal Monastery.',
+          'Explore Bhagsunag Temple and hike to the cascading Bhagsunag Waterfall.',
+          'Visit St. John in the Wilderness Church, scenic Dal Lake, and Naddi Viewpoint for sunset over Dhauladhar peaks.',
+          'Stop for photos outside the picturesque HPCA Dharamshala Cricket Stadium (subject to accessibility).',
+          'Overnight stay in Dharamshala.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 6,
-        title: 'Dharamshala to Amritsar',
+        title: 'Dharamshala to Amritsar (200 km / 5–6 hrs)',
         description: [
-          'Transfer: Scenic drive from Dharamshala back to Amritsar (approx. 200 km / 5-6 hrs).',
-          'Accommodation: Check-in at hotel in Amritsar.',
-          'Sightseeing: Evening at leisure for local market shopping and authentic Punjabi culinary delights.',
-          'Accommodation: Overnight stay in Amritsar.',
-          'Meals Included: Breakfast & Dinner.'
+          'Check out after breakfast and embark on the return drive to Amritsar.',
+          'Arrive in Amritsar by late afternoon and check in to your hotel.',
+          'Spend your evening exploring local Punjabi street food, shopping for phulkari work, or taking an evening stroll near the illuminated Golden Temple.',
+          'Overnight stay in Amritsar.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 7,
-        title: 'Departure from Amritsar',
+        title: 'Amritsar Departure | Tour Concludes',
         description: [
-          'Transfer: Check-out and private transfer to Amritsar Airport / Railway Station for onward journey.',
-          'Meals Included: Breakfast.'
+          'Enjoy breakfast at the hotel and complete check-out formalities.',
+          'Transfer to Amritsar Airport or Railway Station for your onward journey.',
+          'Depart with fond memories of a spiritually enriching and scenic Himalayan family holiday.',
+          'Meals: Breakfast.'
         ]
       }
     ],
@@ -5182,68 +5677,78 @@ This trip promises lifelong experiences, whether you're an action seeker, a natu
     itinerary: [
       {
         day: 1,
-        title: 'Arrival in Srinagar | Dal Lake, Mughal Gardens & Shikara Ride',
+        title: 'Arrival in Srinagar | Dal Lake, Mughal Gardens & Sunset Shikara Ride',
         description: [
-          'Transfer: Pick-up from Srinagar Airport and transfer to hotel in Srinagar.',
-          'Accommodation: Check-in & relaxation at hotel in Srinagar.',
-          'Sightseeing: Explore historic Mughal Gardens — Shalimar Bagh, Nishat Bagh, and Chashme Shahi overlooking Dal Lake.',
-          'Sightseeing: Enjoy a 1-hour sunset Shikara ride on Dal Lake passing floating markets and Pir Panjal mountain backdrops.',
-          'Accommodation: Overnight stay in Srinagar.',
-          'Meals Included: Dinner.'
+          'Meet our representative upon arrival at Srinagar Airport (SXR) and transfer to your hotel.',
+          'Check in, freshen up, and take in the serene mountain surroundings.',
+          'Explore the historic Mughal Gardens: Shalimar Bagh, Nishat Bagh, and Chashme Shahi overlooking Dal Lake.',
+          'Enjoy an enchanting 1-hour sunset Shikara ride across the tranquil waters of Dal Lake.',
+          'Glide past floating markets and ornate houseboats with the Pir Panjal mountain range in the backdrop.',
+          'Return to your hotel for dinner and overnight rest.',
+          'Overnight stay in Srinagar.',
+          'Meals: Dinner.'
         ]
       },
       {
         day: 2,
-        title: 'Srinagar to Gulmarg | Gondola Ride & Leisure Exploration',
+        title: 'Srinagar to Gulmarg via Tangmarg | Gondola Cable Car Ride',
         description: [
-          'Transfer: Scenic drive to Gulmarg via Tangmarg pine forests (approx. 55-60 km / 2-2.5 hrs).',
-          'Sightseeing: Experience Asia\'s highest cable car — Gulmarg Gondola Ride (Phase 1 included).',
-          'Sightseeing: Panoramic snow views across Kashmir Valley and optional pony ride to Khilanmarg.',
-          'Sightseeing: Explore Gulmarg golf course, local markets, and cafes at leisure.',
-          'Accommodation: Check-in & overnight stay at hotel in Gulmarg.',
-          'Meals Included: Breakfast & Dinner.'
+          'Enjoy breakfast, check out from Srinagar, and drive to the alpine wonderland of Gulmarg (55 km / 2 hrs).',
+          'Ascend via the world-famous Gulmarg Gondola Cable Car (Phase 1) for panoramic views of snow-capped peaks.',
+          'Check in to your hotel in Gulmarg and relax amidst the meadows.',
+          'Spend your afternoon exploring Khilanmarg (optional pony ride) or strolling through pine-fringed cafes.',
+          'Return to your hotel in the evening for dinner.',
+          'Overnight stay in Gulmarg.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 3,
-        title: 'Gulmarg to Pahalgam via Avantipur Ruins',
+        title: 'Gulmarg to Pahalgam via Avantipur Ruins (140 km / 4 hrs)',
         description: [
-          'Transfer: Scenic 4-hour drive to Pahalgam through saffron fields and Lidder Valley (approx. 140-155 km).',
-          'Sightseeing: En-route visit to ancient 9th-century Avantipur Temple Ruins in Pulwama.',
-          'Sightseeing: Optional river rafting or angling in the crystal-clear Lidder River.',
-          'Accommodation: Check-in & overnight stay at hotel in Pahalgam.',
-          'Meals Included: Breakfast & Dinner.'
+          'Savor breakfast, check out from Gulmarg, and proceed on a scenic drive to Pahalgam (Valley of Shepherds).',
+          'En route, explore the 9th-century Avantipur Ruins dedicated to Lord Vishnu and Lord Shiva.',
+          'Drive along the sparkling Lidder River and check in to your hotel in Pahalgam.',
+          'Spend the evening at leisure exploring Pahalgam’s pine forests, local saffron markets, and riverside trails.',
+          'Overnight stay in Pahalgam.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 4,
-        title: 'Pahalgam Valleys Tour (Aru, Betaab, Chandanwari) to Srinagar',
+        title: 'Pahalgam Valleys Excursion (Aru, Betaab & Chandanwari) | Transfer to Srinagar',
         description: [
-          'Sightseeing: Excursion to scenic Aru Valley with lush meadows and mountain streams.',
-          'Sightseeing: Visit picturesque Betaab Valley, famed for its Bollywood film backdrops.',
-          'Sightseeing: Explore Chandanwari, the starting point of the holy Amarnath Yatra.',
-          'Transfer: Drive back to Srinagar (approx. 90-100 km / 3 hrs).',
-          'Accommodation: Check-in & overnight stay at hotel in Srinagar.',
-          'Meals Included: Breakfast & Dinner.'
+          'Wake up to mountain views and enjoy breakfast.',
+          'Board local union vehicles to explore the scenic trio: Aru Valley, Betaab Valley, and Chandanwari.',
+          'Walk through pristine meadows at Aru Valley, explore the Bollywood famous Betaab Valley, and witness glacier viewpoints at Chandanwari.',
+          'Complete your sightseeing and drive back towards Srinagar (90 km / 3 hrs).',
+          'Check in to your hotel in Srinagar and unwind.',
+          'Overnight stay in Srinagar.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 5,
         title: 'Excursion to Sonmarg & Thajiwas Glacier | Traditional Houseboat Stay',
         description: [
-          'Transfer: Scenic 3-hour morning drive to Sonmarg ("Meadow of Gold") along the Sindh River.',
-          'Sightseeing: Explore Sonmarg alpine meadows and take an optional pony ride to Thajiwas Glacier.',
-          'Transfer: Return drive to Srinagar in the evening.',
-          'Accommodation: Check-in & traditional overnight stay in a luxury Houseboat on Dal Lake.',
-          'Meals Included: Breakfast & Dinner.'
+          'Enjoy a hearty breakfast and depart on a scenic day excursion to Sonmarg (Meadow of Gold).',
+          'Drive along the cascading Sindh River flanked by towering Himalayan mountains.',
+          'Arrive in Sonmarg and take an optional pony trek or walk to the foot of Thajiwas Glacier.',
+          'Spend time playing in the snow and taking in dramatic mountain landscapes.',
+          'Drive back to Srinagar in the evening and check in to a traditional Kashmiri Houseboat on Dal Lake.',
+          'Enjoy a special Kashmiri dinner on board the houseboat.',
+          'Overnight stay in Srinagar Houseboat.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 6,
-        title: 'Departure from Srinagar',
+        title: 'Srinagar Departure | Valley Farewell',
         description: [
-          'Transfer: Check-out and private transfer to Srinagar Airport for onward journey.',
-          'Meals Included: Breakfast.'
+          'Relish breakfast on the houseboat deck and complete check-out formalities.',
+          'Board your transfer to Srinagar Airport (SXR) for your return flight.',
+          'Conclude your heavenly Kashmir holiday with memories to cherish for a lifetime.',
+          'Meals: Breakfast.'
         ]
       }
     ],
@@ -5336,78 +5841,90 @@ This trip promises lifelong experiences, whether you're an action seeker, a natu
     itinerary: [
       {
         day: 1,
-        title: 'Welcome to Singapore | Gardens by the Bay',
+        title: 'Welcome to Singapore | Gardens by the Bay (Flower Dome & Cloud Forest)',
         description: [
-          'Transfer: Private airport transfer from Singapore Changi Airport to Hotel Mi Rochor.',
-          'Accommodation: Check-in & relaxation at Hotel Mi Rochor.',
-          'Sightseeing: Visit Gardens by the Bay — explore the Flower Dome, Cloud Forest, and Jurassic World exhibit.',
-          'Accommodation: Overnight stay in Singapore.'
+          'Arrive at Singapore Changi Airport (SIN) and meet our representative for your private transfer.',
+          'Check in to Hotel Mi Rochor and relax comfortably after your flight.',
+          'Head out in the evening to visit the world-renowned Gardens by the Bay.',
+          'Explore the climate-controlled Flower Dome and witness the dramatic indoor waterfall inside Cloud Forest.',
+          'Experience the mesmerizing Garden Rhapsody light and sound show at the Supertree Grove.',
+          'Overnight stay in Singapore.'
         ]
       },
       {
         day: 2,
-        title: 'Singapore City Tour, Singapore Flyer & Marina Bay Sands',
+        title: 'Guided Singapore City Tour | Singapore Flyer & Marina Bay Sands',
         description: [
-          'Sightseeing: Half-day guided city tour covering Merlion Park, Civic District, Marina Bay, Esplanade, and Singapore River.',
-          'Sightseeing: Soar above the skyline aboard the giant observation wheel, the Singapore Flyer.',
-          'Sightseeing: Visit Marina Bay Sands Skypark observation deck for panoramic evening skyline views.',
-          'Accommodation: Overnight stay in Singapore.',
-          'Meals Included: Breakfast.'
+          'Enjoy a lavish breakfast at the hotel.',
+          'Embark on a guided half-day city tour visiting Merlion Park, Civic District, Esplanade, and Singapore River.',
+          'Soar above the city aboard the iconic Singapore Flyer for 360-degree panoramic skyline views.',
+          'Visit the Marina Bay Sands SkyPark Observation Deck for breathtaking views over Marina Bay.',
+          'Stroll along the waterfront promenade and watch the Spectra Light & Water Show.',
+          'Overnight stay in Singapore.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 3,
-        title: 'Universal Studios Singapore – Full Day of Thrills',
+        title: 'Universal Studios Singapore | Full-Day Theme Park Adventure',
         description: [
-          'Transfer: Morning private transfer to Resorts World Sentosa.',
-          'Sightseeing: Full-day adventure at Universal Studios Singapore.',
-          'Sightseeing: Experience Hollywood Boulevard, Minion Land, Transformers 3D, Jurassic Park Rapids Adventure, and WaterWorld stunt show.',
-          'Transfer: Evening private return transfer to hotel.',
-          'Accommodation: Overnight stay in Singapore.',
-          'Meals Included: Breakfast.'
+          'Fuel up with breakfast and take your private transfer to Resorts World Sentosa.',
+          'Spend an action-packed full day exploring the 6 themed zones of Universal Studios Singapore.',
+          'Enjoy thrilling rides including Battlestar Galactica, Transformers The Ride 3D, and Jurassic Park Rapids Adventure.',
+          'Experience live street performances and character meet-and-greets across Hollywood Boulevard and Minion Land.',
+          'Board your private transfer back to the hotel in the evening.',
+          'Overnight stay in Singapore.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 4,
-        title: 'Sentosa Island | Cable Car, S.E.A. Aquarium & Wings of Time',
+        title: 'Sentosa Island Discovery | Cable Car, S.E.A. Aquarium & Wings of Time',
         description: [
-          'Transfer: Private transfer to Mount Faber / HarbourFront for Sentosa Cable Car.',
-          'Sightseeing: Scenic Singapore Cable Car ride offering panoramic views over the harbor and city.',
-          'Sightseeing: Explore S.E.A. Aquarium, home to over 100,000 marine animals across diverse habitats.',
-          'Sightseeing: Experience Harry Potter: Visions of Magic interactive exhibition.',
-          'Sightseeing: Watch the award-winning Wings of Time multi-sensory night laser and water show on Siloso Beach.',
-          'Accommodation: Overnight stay in Singapore.',
-          'Meals Included: Breakfast.'
+          'Relish breakfast and board the scenic Mount Faber Cable Car to Sentosa Island.',
+          'Explore the deep blue at S.E.A. Aquarium, home to over 100,000 marine animals and majestic manta rays.',
+          'Experience the spellbinding Harry Potter: Visions of Magic interactive exhibition.',
+          'Spend the afternoon relaxing along the sandy shores of Siloso and Palawan beaches.',
+          'Watch the spectacular Wings of Time multi-sensory night show featuring laser displays, fountains, and pyrotechnics.',
+          'Overnight stay in Singapore.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 5,
         title: 'Mandai Wildlife Reserve | River Wonders & Night Safari',
         description: [
-          'Sightseeing: Visit River Wonders — explore Giant Panda Forest (Kai Kai & Jia Jia), Red Pandas, and Amazon River Quest.',
-          'Sightseeing: Experience world-famous Night Safari — guided tram ride through nocturnal rainforest habitats.',
-          'Sightseeing: Watch the Creatures of the Night animal presentation and walk along Leopard and Fishing Cat trails.',
-          'Accommodation: Overnight stay in Singapore.',
-          'Meals Included: Breakfast.'
+          'Savor breakfast and enjoy a relaxed morning at the hotel.',
+          'Head to Mandai Wildlife Reserve in the afternoon to visit River Wonders.',
+          'Walk through the Giant Panda Forest to see Kai Kai & Jia Jia, and ride the Amazon River Quest boat.',
+          'As darkness falls, embark on the world-famous Night Safari tram journey through nocturnal wildlife habitats.',
+          'Watch the Creatures of the Night presentation and walk along the illuminated Leopard Trail.',
+          'Overnight stay in Singapore.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 6,
-        title: 'Day at Leisure | Shopping, Little India & Chinatown',
+        title: 'Leisure Day | Shopping, Cultural Heritage & Local Flavours',
         description: [
-          'Sightseeing: Day at leisure for shopping along Orchard Road and exploring cultural enclaves like Chinatown and Little India.',
-          'Sightseeing: Stroll through UNESCO-listed Singapore Botanic Gardens or relax along Marina Bay waterfront.',
-          'Sightseeing: Savor iconic culinary delights at famous Singapore hawker centres (Lau Pa Sat, Maxwell, Old Airport Road).',
-          'Accommodation: Overnight stay in Singapore.',
-          'Meals Included: Breakfast.'
+          'Enjoy breakfast at your own pace.',
+          'Spend the day exploring vibrant heritage quarters: Chinatown, Little India, and Arab Street (Haji Lane).',
+          'Indulge in premier retail shopping along Orchard Road and Bugis Street.',
+          'Taste authentic Singaporean delicacies like Hainanese Chicken Rice, Laksa, and Chili Crab at iconic hawker centres.',
+          'Visit the lush UNESCO World Heritage Singapore Botanic Gardens for a peaceful evening walk.',
+          'Overnight stay in Singapore.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 7,
-        title: 'Departure from Singapore',
+        title: 'Jewel Changi & Departure | Farewell Singapore',
         description: [
-          'Transfer: Morning at leisure, followed by private transfer to Changi Airport for onward flight.',
-          'Meals Included: Breakfast.'
+          'Enjoy breakfast at the hotel and complete check-out formalities.',
+          'Board your private transfer to Singapore Changi Airport.',
+          'Visit Jewel Changi to witness the world’s tallest indoor waterfall (HSBC Rain Vortex) and lush canopy park.',
+          'Board your return flight home carrying unforgettable Singapore memories.',
+          'Meals: Breakfast.'
         ]
       }
     ],
@@ -5485,77 +6002,88 @@ This trip promises lifelong experiences, whether you're an action seeker, a natu
     itinerary: [
       {
         day: 1,
-        title: 'Arrival at Bagdogra/NJP | Transfer to Gangtok',
+        title: 'Arrival at Bagdogra / NJP | Transfer to Gangtok (125 km / 5 hrs)',
         description: [
-          'Transfer: Pick-up from Bagdogra Airport (IXB) / NJP Railway Station and scenic mountain drive to Gangtok (approx. 125-130 km / 4.5-5.5 hrs).',
-          'Sightseeing: Enjoy panoramic views of the Teesta River and hillside tea gardens en route.',
-          'Accommodation: Check-in & overnight stay at hotel in Gangtok.'
+          'Meet our representative upon arrival at Bagdogra Airport (IXB) or NJP Railway Station.',
+          'Board your transfer and embark on a scenic drive along the Teesta River flanked by tea gardens and lush hills.',
+          'Reach Gangtok by afternoon and complete hotel check-in formalities.',
+          'Spend the evening strolling through MG Marg for local momos, tea, and souvenirs.',
+          'Overnight stay in Gangtok.',
+          'Meals: Dinner.'
         ]
       },
       {
         day: 2,
         title: 'Excursion to Tsomgo Lake & Baba Mandir | Optional Nathula Pass',
         description: [
-          'Transfer: Early morning mountain drive to high-altitude East Sikkim (approx. 120 km round trip / 8 hrs).',
-          'Sightseeing: Visit sacred glacial Tsomgo Lake (12,313 ft) with changing lake colors and optional yak ride.',
-          'Sightseeing: Visit Baba Harbhajan Singh Mandir, dedicated to the legendary Indian Army soldier.',
-          'Sightseeing: Optional excursion to Indo-China border at Nathula Pass (14,140 ft, subject to permits and weather; closed on Mondays).',
-          'Accommodation: Overnight stay in Gangtok.',
-          'Meals Included: Breakfast & Dinner.'
+          'Relish an early breakfast and drive towards the high-altitude glacial Tsomgo Lake (12,313 ft).',
+          'Admire the serene lake with its changing hues, snow-covered mountains, and optional yak rides.',
+          'Proceed further up to the revered Baba Harbhajan Singh Mandir (13,200 ft).',
+          'Optionally visit the Indo-China border at Nathula Pass (14,140 ft, subject to permit & availability).',
+          'Drive back to Gangtok in the late afternoon and unwind at your hotel.',
+          'Overnight stay in Gangtok.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 3,
-        title: 'Gangtok to Pelling via Namchi & Ravangla',
+        title: 'Gangtok to Pelling via Namchi Char Dham & Ravangla Buddha Park',
         description: [
-          'Transfer: Scenic mountain drive from Gangtok to Pelling (approx. 130 km / 6 hrs).',
-          'Sightseeing: Visit historic 200-year-old Enchey Monastery for traditional monk blessings.',
-          'Sightseeing: En-route visit to Siddheshwar Dham (Chardham) in Namchi and Buddha Park in Ravangla.',
-          'Accommodation: Check-in & overnight stay at hotel in Pelling.',
-          'Meals Included: Breakfast & Dinner.'
+          'Enjoy breakfast, check out from Gangtok, and visit the peaceful hilltop Enchey Monastery.',
+          'Receive blessings from the monks before beginning your scenic drive into West Sikkim.',
+          'En route, visit the Siddheshwar Dham (Char Dham) in Namchi and the monumental Buddha Park in Ravangla.',
+          'Arrive in Pelling by late afternoon and check in to your resort.',
+          'Spend a quiet evening enjoying panoramic views of Mount Kanchenjunga.',
+          'Overnight stay in Pelling.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 4,
-        title: 'Full Day Pelling Sightseeing & Skywalk Experience',
+        title: 'Pelling Sightseeing & Skywalk Experience | Rabdentse Ruins',
         description: [
-          'Sightseeing: Visit sacred Khecheopalri Lake, known as the wish-fulfilling lake in dense forest.',
-          'Sightseeing: Explore Rimbi Waterfalls, Rimbi Orange Garden (seasonal), and cascading Kanchenjunga Falls.',
-          'Sightseeing: Walk India\'s first glass Skywalk at 7,000 ft beneath the towering Chenrezig Statue.',
-          'Sightseeing: Visit 17th-century Pemayangtse Monastery and take a short forest trail to historical Rabdentse Ruins.',
-          'Accommodation: Overnight stay in Pelling.',
-          'Meals Included: Breakfast & Dinner.'
+          'Fuel up with breakfast and set out for full-day sightseeing across Pelling.',
+          'Walk on India’s first Glass Skywalk at 7,000 ft beneath the towering Chenrezig Statue.',
+          'Visit the 17th-century Pemayangtse Monastery and take a peaceful 15-minute forest walk to ancient Rabdentse Ruins.',
+          'Visit the sacred Khecheopalri Lake, Rimbi Waterfalls, Orange Gardens, and Kanchenjunga Falls.',
+          'Return to your hotel in the evening and relax amidst mountain tranquility.',
+          'Overnight stay in Pelling.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 5,
-        title: 'Pelling to Darjeeling – Queen of the Hills',
+        title: 'Pelling to Darjeeling | The Queen of Hills (100 km / 4 hrs)',
         description: [
-          'Transfer: Drive from Pelling to Darjeeling through tea gardens and hill ranges (approx. 100 km / 4 hrs).',
-          'Accommodation: Check-in & relaxation at hotel in Darjeeling.',
-          'Sightseeing: Evening at leisure to stroll along Chowrasta Mall Road and enjoy fresh Darjeeling tea at heritage cafes.',
-          'Accommodation: Overnight stay in Darjeeling.',
-          'Meals Included: Breakfast & Dinner.'
+          'Savor breakfast, check out from Pelling, and begin your scenic drive into West Bengal\'s Queen of Hills.',
+          'Wind through tea estates like Happy Valley and lush green mountain slopes.',
+          'Arrive in Darjeeling by afternoon and check in to your hillside hotel.',
+          'Spend the evening walking around Mall Road and Chowrasta, sipping world-famous Darjeeling tea.',
+          'Overnight stay in Darjeeling.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 6,
-        title: 'Full Day Darjeeling Sightseeing & Sunrise at Tiger Hill',
+        title: 'Darjeeling Sunrise at Tiger Hill & Full-Day Local Sightseeing',
         description: [
-          'Sightseeing: Early morning drive (4:00 AM) to Tiger Hill for spectacular sunrise over Mt. Kanchenjunga and Himalayan peaks.',
-          'Sightseeing: Visit Batasia Loop spiral railway and Gorkha War Memorial with mountain vistas.',
-          'Sightseeing: Visit Himalayan Mountaineering Institute (HMI), Padmaja Naidu Himalayan Zoo (Red Pandas, Snow Leopards), and Tenzing Rock.',
-          'Sightseeing: Visit Japanese Peace Pagoda, Buddhist Temple, and optional iconic Darjeeling Himalayan Toy Train joyride.',
-          'Accommodation: Overnight stay in Darjeeling.',
-          'Meals Included: Breakfast & Dinner.'
+          'Depart early around 4:00 AM for Tiger Hill to witness the golden sunrise over Mt. Kanchenjunga and Mt. Everest.',
+          'Stop on the return drive at Batasia Loop to view the spiral toy train track and the Gorkha War Memorial.',
+          'Return to the hotel for breakfast, followed by visits to the Himalayan Mountaineering Institute (HMI), Padmaja Naidu Zoo, and Tenzing Rock.',
+          'Visit the Japanese Peace Pagoda and Tibetan Refugee Self-Help Centre.',
+          'Enjoy an optional heritage Toy Train joy ride in the afternoon.',
+          'Overnight stay in Darjeeling.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 7,
-        title: 'Departure from Darjeeling to Bagdogra/NJP',
+        title: 'Darjeeling to Bagdogra / NJP | Departure',
         description: [
-          'Transfer: Check-out and transfer to Bagdogra Airport (IXB) / NJP Railway Station (approx. 70 km / 3 hrs) for onward flight/train.',
-          'Meals Included: Breakfast.'
+          'Enjoy a leisurely breakfast overlooking the misty hills and check out from your hotel.',
+          'Board your transfer back to Bagdogra Airport (IXB) or NJP Railway Station.',
+          'Depart with unforgettable memories of the Eastern Himalayas.',
+          'Meals: Breakfast.'
         ]
       }
     ],
@@ -5627,54 +6155,62 @@ This trip promises lifelong experiences, whether you're an action seeker, a natu
     itinerary: [
       {
         day: 1,
-        title: 'Arrival at Bagdogra/NJP | Transfer to Gangtok',
+        title: 'Arrival at Bagdogra / NJP | Transfer to Gangtok (125 km / 5 hrs)',
         description: [
-          'Transfer: Pick-up from Bagdogra Airport / NJP Railway Station and private scenic drive to Gangtok (approx. 125-130 km / 4.5-5.5 hrs).',
-          'Sightseeing: Scenic drive passing Teesta River valley and lush tea terraces.',
-          'Accommodation: Check-in & overnight stay at hotel in Gangtok.'
+          'Meet our representative upon arrival at Bagdogra Airport (IXB) or NJP Railway Station.',
+          'Embark on a scenic drive along the winding Teesta River and lush green Himalayan foothills.',
+          'Arrive in Gangtok by afternoon and complete hotel check-in formalities.',
+          'Spend a cozy evening taking a leisurely stroll hand-in-hand along the pedestrianized MG Marg.',
+          'Overnight stay in Gangtok.',
+          'Meals: Dinner.'
         ]
       },
       {
         day: 2,
         title: 'Excursion to Tsomgo Lake & Baba Mandir | Optional Nathula Pass',
         description: [
-          'Transfer: Early morning drive to high-altitude East Sikkim (approx. 120 km round trip).',
-          'Sightseeing: Visit sacred glacial Tsomgo Lake (12,313 ft) with snow-capped mountain backdrops and optional yak ride.',
-          'Sightseeing: Visit Baba Harbhajan Singh Mandir shrine.',
-          'Sightseeing: Optional excursion to Nathula Pass on the Indo-China border (subject to permits and weather; closed on Mondays).',
-          'Accommodation: Overnight stay in Gangtok.',
-          'Meals Included: Breakfast & Dinner.'
+          'Savor an early breakfast and set out towards the high-altitude glacial Tsomgo Lake (12,313 ft).',
+          'Admire panoramic snow-capped mountain views and enjoy a romantic walk along the lake perimeter.',
+          'Visit the revered Baba Harbhajan Singh Mandir (13,200 ft).',
+          'Optionally visit Nathula Pass at the Indo-China border (14,140 ft, subject to permit & availability).',
+          'Return to Gangtok by evening for dinner and relaxation.',
+          'Overnight stay in Gangtok.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 3,
-        title: 'Gangtok to Darjeeling – The Queen of Hills',
+        title: 'Gangtok to Darjeeling | The Queen of Hills (100 km / 4 hrs)',
         description: [
-          'Transfer: Scenic drive from Gangtok to Darjeeling (approx. 100 km / 4 hrs) through emerald tea plantations.',
-          'Accommodation: Check-in & relaxation at hotel in Darjeeling.',
-          'Sightseeing: Romantic evening walk along Chowrasta Mall Road, shopping for local crafts, and enjoying fresh Darjeeling tea.',
-          'Accommodation: Overnight stay in Darjeeling.',
-          'Meals Included: Breakfast & Dinner.'
+          'Relish breakfast, check out from Gangtok, and journey towards the romantic hill town of Darjeeling.',
+          'Drive past sprawling emerald tea estates like Happy Valley and mist-shrouded valleys.',
+          'Arrive in Darjeeling, check in to your hotel, and relax with panoramic valley views.',
+          'Spend your evening exploring Chowrasta Mall Road and sampling fresh Darjeeling tea at cozy heritage cafes.',
+          'Overnight stay in Darjeeling.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 4,
-        title: 'Full Day Darjeeling Sightseeing & Tiger Hill Sunrise',
+        title: 'Tiger Hill Sunrise & Full-Day Darjeeling Sightseeing',
         description: [
-          'Sightseeing: Early morning excursion (4:00 AM) to Tiger Hill for golden sunrise views over Mt. Kanchenjunga.',
-          'Sightseeing: Visit Batasia Loop and Gorkha War Memorial with panoramic Himalayan backdrops.',
-          'Sightseeing: Visit Himalayan Mountaineering Institute, Padmaja Naidu Himalayan Zoo, and Tenzing Rock.',
-          'Sightseeing: Visit Japanese Peace Pagoda and enjoy an optional romantic Toy Train joyride.',
-          'Accommodation: Overnight stay in Darjeeling.',
-          'Meals Included: Breakfast & Dinner.'
+          'Wake up early around 4:00 AM for a sunrise drive to Tiger Hill, watching dawn illuminate Mt. Kanchenjunga in gold.',
+          'Stop at Batasia Loop to view the spiral heritage track and the Gorkha War Memorial.',
+          'Return for breakfast, then visit Himalayan Mountaineering Institute, Padmaja Naidu Zoo, and Japanese Peace Pagoda.',
+          'Optionally board the iconic Darjeeling Himalayan Toy Train for a romantic joy ride.',
+          'Spend your farewell evening soaking in sunset views over the tea plantations.',
+          'Overnight stay in Darjeeling.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 5,
-        title: 'Departure from Darjeeling to Bagdogra/NJP',
+        title: 'Darjeeling to Bagdogra / NJP | Departure',
         description: [
-          'Transfer: Check-out and transfer to Bagdogra Airport / NJP Railway Station (approx. 70 km / 3 hrs) for onward journey.',
-          'Meals Included: Breakfast.'
+          'Savor breakfast with mountain views and complete check-out formalities.',
+          'Board your private transfer back to Bagdogra Airport (IXB) or NJP Railway Station.',
+          'Conclude your romantic Himalayan vacation with memories to cherish forever.',
+          'Meals: Breakfast.'
         ]
       }
     ],
@@ -5749,80 +6285,88 @@ This trip promises lifelong experiences, whether you're an action seeker, a natu
     itinerary: [
       {
         day: 1,
-        title: 'Arrival at Bagdogra/NJP | Transfer to Gangtok',
+        title: 'Arrival at Bagdogra / NJP | Transfer to Gangtok (125 km / 5 hrs)',
         description: [
-          'Transfer: Pick-up from Bagdogra Airport / NJP Railway Station and transfer to Gangtok (approx. 125-130 km / 4.5-5.5 hrs).',
-          'Accommodation: Check-in & relaxation at hotel in Gangtok.',
-          'Sightseeing: Evening at leisure to stroll along MG Marg.',
-          'Accommodation: Overnight stay in Gangtok.'
+          'Meet our representative upon arrival at Bagdogra Airport (IXB) or NJP Railway Station.',
+          'Embark on a scenic drive along the Teesta River towards Gangtok.',
+          'Reach Gangtok by afternoon and complete hotel check-in formalities.',
+          'Spend the evening at leisure exploring MG Marg, savoring hot momos, and enjoying local markets.',
+          'Overnight stay in Gangtok.',
+          'Meals: Dinner.'
         ]
       },
       {
         day: 2,
         title: 'Excursion to Tsomgo Lake & Baba Mandir | Optional Nathula Pass',
         description: [
-          'Transfer: Morning drive to high-altitude East Sikkim (approx. 120 km round trip).',
-          'Sightseeing: Visit holy glacial Tsomgo Lake (12,313 ft) and enjoy scenic lakeside views.',
-          'Sightseeing: Visit Baba Harbhajan Singh Mandir.',
-          'Sightseeing: Optional visit to Indo-China border at Nathula Pass (subject to permits; closed on Mondays).',
-          'Accommodation: Overnight stay in Gangtok.',
-          'Meals Included: Breakfast & Dinner.'
+          'Fuel up with breakfast and head towards the sacred high-altitude glacial Tsomgo Lake (12,313 ft).',
+          'Admire the sparkling alpine lake surrounded by steep snow-clad peaks.',
+          'Visit the revered Baba Harbhajan Singh Mandir (13,200 ft).',
+          'Optionally visit the Indo-China border at Nathula Pass (14,140 ft, subject to permit & availability).',
+          'Return to Gangtok in the late afternoon for dinner and rest.',
+          'Overnight stay in Gangtok.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 3,
-        title: 'Gangtok to Pelling via Ravangla & Namchi',
+        title: 'Gangtok to Pelling via Namchi Char Dham & Ravangla Buddha Park',
         description: [
-          'Transfer: Scenic drive from Gangtok to Pelling (approx. 130 km / 6 hrs).',
-          'Sightseeing: Visit historic Enchey Monastery for traditional monk blessings.',
-          'Sightseeing: En-route visit to Siddheshwar Dham (Chardham Namchi) and Buddha Park in Ravangla.',
-          'Accommodation: Check-in & overnight stay at hotel in Pelling.',
-          'Meals Included: Breakfast & Dinner.'
+          'Enjoy breakfast, check out from Gangtok, and visit Enchey Monastery for monk blessings.',
+          'Drive into West Sikkim with stops at Namchi Siddheshwar Dham (Char Dham) and Ravangla Buddha Park.',
+          'Arrive in Pelling by late afternoon and check in to your hotel.',
+          'Spend a peaceful evening enjoying spectacular views of Mt. Kanchenjunga.',
+          'Overnight stay in Pelling.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 4,
-        title: 'Pelling Sightseeing with Skywalk & Transfer to Darjeeling',
+        title: 'Pelling Sightseeing & Skywalk | Transfer to Darjeeling (100 km / 4 hrs)',
         description: [
-          'Sightseeing: Visit Rimbi Waterfalls, Orange Garden, and Kanchenjunga Waterfalls.',
-          'Sightseeing: Walk India\'s first glass Skywalk at 7,000 ft and visit the colossal Chenrezig Statue.',
-          'Sightseeing: Visit 17th-century Pemayangtse Monastery and historic Rabdentse Ruins.',
-          'Transfer: Afternoon drive from Pelling to Darjeeling (approx. 100 km / 4 hrs).',
-          'Accommodation: Check-in & overnight stay in Darjeeling.',
-          'Meals Included: Breakfast & Dinner.'
+          'Enjoy breakfast and head out to explore Pelling’s top attractions.',
+          'Experience walking across India’s first Glass Skywalk at 7,000 ft beneath the Chenrezig Statue.',
+          'Visit the 17th-century Pemayangtse Monastery and take a short forest trail walk to Rabdentse Ruins.',
+          'Visit Khecheopalri Lake, Rimbi Falls, and Orange Gardens before driving towards Darjeeling.',
+          'Reach Darjeeling by evening and check in to your hotel.',
+          'Overnight stay in Darjeeling.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 5,
-        title: 'Excursion to Mirik Lake & Tea Gardens',
+        title: 'Day Excursion to Mirik Lake & Tea Gardens',
         description: [
-          'Transfer: Scenic 2-hour day trip to the peaceful hill town of Mirik.',
-          'Sightseeing: Visit Sumendu Lake (Mirik Lake) surrounded by dense pine forests and crossed by an arched footbridge.',
-          'Sightseeing: Enjoy lakeside boating, horseback riding, or relaxing walks along tea gardens.',
-          'Transfer: Return drive to Darjeeling by evening.',
-          'Sightseeing: Evening leisure along Chowrasta Mall Road and heritage cafes.',
-          'Accommodation: Overnight stay in Darjeeling.',
-          'Meals Included: Breakfast & Dinner.'
+          'Relish breakfast and proceed on a picturesque 2-hour day excursion to the tranquil lake town of Mirik.',
+          'Stroll around Sumendu (Mirik) Lake and cross the arched footbridge surrounded by pine groves.',
+          'Enjoy an optional boating experience on the lake or relax at lakeside cafes.',
+          'Visit sprawling tea estates stretching across emerald rolling hills.',
+          'Drive back to Darjeeling in the late afternoon and spend the evening exploring Chowrasta.',
+          'Overnight stay in Darjeeling.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 6,
-        title: 'Full Day Darjeeling Sightseeing & Tiger Hill Sunrise',
+        title: 'Tiger Hill Sunrise & Full-Day Darjeeling Sightseeing',
         description: [
-          'Sightseeing: Early morning trip (4:00 AM) to Tiger Hill for iconic sunrise views over Mt. Kanchenjunga.',
-          'Sightseeing: Visit Batasia Loop spiral railway and Gorkha War Memorial.',
-          'Sightseeing: Visit Himalayan Mountaineering Institute (HMI), Padmaja Naidu Himalayan Zoo, and Tenzing Rock.',
-          'Sightseeing: Visit Japanese Peace Pagoda and enjoy optional Darjeeling Himalayan Toy Train joyride.',
-          'Accommodation: Overnight stay in Darjeeling.',
-          'Meals Included: Breakfast & Dinner.'
+          'Depart early around 4:00 AM for Tiger Hill to watch the golden sunrise over Mt. Kanchenjunga.',
+          'Stop at Batasia Loop and the Gorkha War Memorial on your scenic return drive.',
+          'Return for breakfast, then visit the Himalayan Mountaineering Institute, Zoo, and Japanese Peace Pagoda.',
+          'Optionally ride the world-renowned Darjeeling Himalayan Toy Train.',
+          'Spend your final evening shopping for tea and souvenirs along Mall Road.',
+          'Overnight stay in Darjeeling.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 7,
-        title: 'Departure from Darjeeling to Bagdogra/NJP',
+        title: 'Darjeeling to Bagdogra / NJP | Departure',
         description: [
-          'Transfer: Check-out and transfer to Bagdogra Airport / NJP Railway Station for onward journey.',
-          'Meals Included: Breakfast.'
+          'Enjoy breakfast with mountain views and complete check-out formalities.',
+          'Board your transfer back to Bagdogra Airport (IXB) or NJP Railway Station.',
+          'Conclude your wonderful Sikkim, Darjeeling, and Mirik tour.',
+          'Meals: Breakfast.'
         ]
       }
     ],
@@ -5897,120 +6441,135 @@ This trip promises lifelong experiences, whether you're an action seeker, a natu
     itinerary: [
       {
         day: 1,
-        title: 'Arrival at Bagdogra/NJP | Transfer to Gangtok',
+        title: 'Arrival at Bagdogra / NJP | Transfer to Gangtok (125 km / 5 hrs)',
         description: [
-          'Transfer: Pick-up from Bagdogra Airport / NJP Railway Station and transfer to Gangtok (approx. 125-130 km / 4.5-5.5 hrs).',
-          'Accommodation: Check-in & overnight stay at hotel in Gangtok.',
-          'Sightseeing: Evening at leisure to explore MG Marg.'
+          'Meet our representative upon arrival at Bagdogra Airport (IXB) or NJP Railway Station.',
+          'Embark on a scenic drive along the Teesta River towards Gangtok.',
+          'Reach Gangtok by late afternoon and check in to your hotel.',
+          'Spend the evening at leisure exploring MG Marg, savoring local snacks and tea.',
+          'Overnight stay in Gangtok.',
+          'Meals: Dinner.'
         ]
       },
       {
         day: 2,
         title: 'Excursion to Tsomgo Lake & Baba Mandir | Optional Nathula Pass',
         description: [
-          'Transfer: Mountain excursion to Tsomgo Lake and Baba Mandir (approx. 120 km round trip).',
-          'Sightseeing: Visit glacial Tsomgo Lake (12,313 ft) and Baba Harbhajan Singh Mandir.',
-          'Sightseeing: Optional visit to Nathula Pass on the Indo-China border (subject to permits).',
-          'Accommodation: Overnight stay in Gangtok.',
-          'Meals Included: Breakfast & Dinner.'
+          'Savor an early breakfast and drive towards the high-altitude glacial Tsomgo Lake (12,313 ft).',
+          'Admire the serene lake with its changing hues, snow-covered mountains, and optional yak rides.',
+          'Proceed further up to the revered Baba Harbhajan Singh Mandir (13,200 ft).',
+          'Optionally visit the Indo-China border at Nathula Pass (14,140 ft, subject to permit & availability).',
+          'Drive back to Gangtok by evening and relax at your hotel.',
+          'Overnight stay in Gangtok.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 3,
-        title: 'Gangtok to Lachen via Mangan & Chungthang',
+        title: 'Gangtok to Lachen | Gateway to North Sikkim (120 km / 6 hrs)',
         description: [
-          'Transfer: Scenic mountain drive to North Sikkim (approx. 110-120 km / 5-6 hrs).',
-          'Sightseeing: En-route stop at Kabi Lungchok historical site, Seven Sisters Waterfall, and Naga Waterfall.',
-          'Sightseeing: Stop at Singhik Viewpoint for panoramic vistas of Mt. Kanchenjunga and Teesta Valley.',
-          'Sightseeing: Drive through Chungthang, the confluence of Lachen Chu and Lachung Chu rivers.',
-          'Accommodation: Check-in & overnight stay at hotel in Lachen.',
-          'Meals Included: Breakfast & Dinner.'
+          'Enjoy breakfast, check out from Gangtok, and start your scenic drive into North Sikkim.',
+          'Pass scenic landmarks including Seven Sisters Waterfalls, Naga Falls, and Singhik Viewpoint.',
+          'Stop at Chungthang, the confluence of Lachen Chu and Lachung Chu rivers.',
+          'Arrive in the remote alpine village of Lachen (8,838 ft) by evening and check in to your hotel.',
+          'Overnight stay in Lachen.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 4,
-        title: 'Lachen to Gurudongmar Lake Excursion & Transfer to Lachung',
+        title: 'Lachen to Gurudongmar Lake (17,800 ft) | Transfer to Lachung',
         description: [
-          'Transfer: Early morning high-altitude drive passing Thangu Village (13,450 ft) to Gurudongmar Lake (approx. 55-60 km / 3-4 hrs).',
-          'Sightseeing: Visit holy Gurudongmar Lake at 17,800 ft, one of the highest lakes in the world with turquoise glacial waters.',
-          'Transfer: Return drive through Chungthang to Lachung valley.',
-          'Accommodation: Check-in & overnight stay at hotel in Lachung.',
-          'Meals Included: Breakfast & Dinner.'
+          'Wake up early around 4:00 AM and embark on an exhilarating drive towards sacred Gurudongmar Lake.',
+          'Pass through the cold desert landscape of Thangu Valley and Chopta Valley.',
+          'Witness the breathtaking turquoise waters of Gurudongmar Lake, surrounded by snow-capped peaks.',
+          'Return to Lachen for lunch, check out, and drive towards the picturesque village of Lachung (8,610 ft).',
+          'Check in to your hotel in Lachung and enjoy a peaceful evening by the river.',
+          'Overnight stay in Lachung.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 5,
-        title: 'Excursion to Yumthang Valley & Optional Zero Point',
+        title: 'Excursion to Yumthang Valley (Valley of Flowers) | Optional Zero Point',
         description: [
-          'Transfer: Morning drive to Yumthang Valley (approx. 25 km / 1-1.5 hrs).',
-          'Sightseeing: Explore the picturesque "Valley of Flowers" with alpine meadows, hot springs, and river streams.',
-          'Sightseeing: Optional excursion to Zero Point (Yumesamdong) near the international border for snow landscapes.',
-          'Accommodation: Overnight stay at hotel in Lachung.',
-          'Meals Included: Breakfast & Dinner.'
+          'Relish breakfast and head out to explore the stunning Yumthang Valley (11,800 ft).',
+          'Walk across colorful rhododendron sanctuaries, alpine meadows, and hot sulfur springs.',
+          'Optionally drive further up to Zero Point (Yumesamdong, 15,300 ft) where the road ends near snowfields.',
+          'Return to Lachung by afternoon and spend the evening relaxing.',
+          'Overnight stay in Lachung.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 6,
-        title: 'Transfer from Lachung to Gangtok',
+        title: 'Lachung to Gangtok (120 km / 6 hrs)',
         description: [
-          'Transfer: Drive back from Lachung to Gangtok along the Teesta River (approx. 115-120 km / 5-6 hrs).',
-          'Accommodation: Check-in & relaxation at hotel in Gangtok.',
-          'Sightseeing: Evening at leisure to stroll MG Marg, enjoy hot momos, and shop for local handicrafts.',
-          'Accommodation: Overnight stay in Gangtok.',
-          'Meals Included: Breakfast & Dinner.'
+          'Have breakfast, check out from Lachung, and begin your return drive down to Gangtok.',
+          'Enjoy picturesque waterfall stops along the Teesta River valley.',
+          'Arrive in Gangtok by late afternoon and check in to your hotel.',
+          'Spend the evening relaxing or shopping for local Sikkimese handicrafts along MG Marg.',
+          'Overnight stay in Gangtok.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 7,
-        title: 'Gangtok to Zuluk along the Old Silk Route',
+        title: 'Gangtok to Zuluk via Old Silk Route (90 km / 4 hrs)',
         description: [
-          'Transfer: Scenic mountain drive to Zuluk along the historic Old Silk Route via Rongli (approx. 90-100 km / 4-5 hrs).',
-          'Sightseeing: Drive through pine forests and picturesque hamlet of Padamchen.',
-          'Sightseeing: Witness sunset over drifting valley clouds along the legendary trade route.',
-          'Accommodation: Check-in & overnight stay in Zuluk.',
-          'Meals Included: Breakfast & Dinner.'
+          'Enjoy breakfast, check out, and drive towards the historic Old Silk Route.',
+          'Pass through Rongli permit checkpoint and drive through the dense pine forests of Padamchen.',
+          'Arrive in the remote mountain hamlet of Zuluk (9,400 ft) and check in to your homestay.',
+          'Witness the sunset over winding Himalayan valleys and experience the profound stillness of the mountains.',
+          'Overnight stay in Zuluk.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 8,
-        title: 'Zuluk to Pelling via Thambi Viewpoint & Nathang Valley',
+        title: 'Zuluk to Pelling via Thambi Viewpoint & Lungthung (160 km / 7 hrs)',
         description: [
-          'Sightseeing: Pre-dawn drive to Thambi Viewpoint (11,200 ft) for 32-hairpin zig-zag road vistas and sunrise over Kanchenjunga range.',
-          'Sightseeing: Explore high-altitude Nathang Valley (13,500 ft) and Lungthung Viewpoint.',
-          'Transfer: Drive to Pelling in West Sikkim via Ravangla region (approx. 150-170 km / 6-8 hrs).',
-          'Accommodation: Check-in & overnight stay in Pelling.',
-          'Meals Included: Breakfast & Dinner.'
+          'Wake up early for sunrise at Thambi Viewpoint (11,200 ft), witnessing the 32 hairpin loops and Mt. Kanchenjunga in gold.',
+          'Drive past Lungthung and descend into West Sikkim through Ravangla.',
+          'Arrive in Pelling by late afternoon and check in to your resort.',
+          'Spend a quiet evening taking in panoramic views of the Kanchenjunga range.',
+          'Overnight stay in Pelling.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 9,
-        title: 'Pelling Sightseeing & Skywalk | Transfer to Darjeeling',
+        title: 'Pelling Sightseeing & Skywalk | Transfer to Darjeeling (100 km / 4 hrs)',
         description: [
-          'Sightseeing: Walk India\'s first glass Skywalk at 7,000 ft and visit the colossal Chenrezig Statue.',
-          'Sightseeing: Visit 17th-century Pemayangtse Monastery and forest walk to Rabdentse Ruins.',
-          'Transfer: Afternoon drive from Pelling to Darjeeling (approx. 100 km / 4 hrs).',
-          'Accommodation: Check-in & overnight stay in Darjeeling.',
-          'Meals Included: Breakfast & Dinner.'
+          'Enjoy breakfast and visit the Glass Skywalk at 7,000 ft beneath the monumental Chenrezig Statue.',
+          'Visit the 17th-century Pemayangtse Monastery and take a short forest walk to Rabdentse Ruins.',
+          'Drive towards Darjeeling through rolling tea estates like Happy Valley.',
+          'Reach Darjeeling by evening, check in to your hotel, and stroll through Chowrasta.',
+          'Overnight stay in Darjeeling.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 10,
-        title: 'Full Day Darjeeling Sightseeing & Tiger Hill Sunrise',
+        title: 'Tiger Hill Sunrise & Full-Day Darjeeling Sightseeing',
         description: [
-          'Sightseeing: Early morning trip (4:00 AM) to Tiger Hill for world-famous sunrise over Mt. Kanchenjunga.',
-          'Sightseeing: Visit Batasia Loop, Gorkha War Memorial, and Japanese Peace Pagoda.',
-          'Sightseeing: Explore Himalayan Mountaineering Institute, Padmaja Naidu Himalayan Zoo, and Tenzing Rock.',
-          'Sightseeing: Optional Darjeeling Himalayan Toy Train joyride.',
-          'Accommodation: Overnight stay in Darjeeling.',
-          'Meals Included: Breakfast & Dinner.'
+          'Depart early at 4:00 AM for Tiger Hill to watch the golden sunrise over Mt. Kanchenjunga and Mt. Everest.',
+          'Stop at Batasia Loop and the Gorkha War Memorial on your return drive.',
+          'Return for breakfast, then visit Himalayan Mountaineering Institute, Zoo, and Japanese Peace Pagoda.',
+          'Optionally ride the historic Darjeeling Himalayan Toy Train.',
+          'Spend your final evening enjoying local tea and cafe hopping along Mall Road.',
+          'Overnight stay in Darjeeling.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 11,
-        title: 'Departure from Darjeeling to Bagdogra/NJP',
+        title: 'Darjeeling to Bagdogra / NJP | Departure',
         description: [
-          'Transfer: Check-out and transfer to Bagdogra Airport / NJP Railway Station for onward journey.',
-          'Meals Included: Breakfast.'
+          'Savor breakfast overlooking misty hills and complete check-out formalities.',
+          'Board your transfer back to Bagdogra Airport (IXB) or NJP Railway Station.',
+          'Conclude your grand 11-day Sikkim, North Sikkim, Silk Route & Darjeeling expedition.',
+          'Meals: Breakfast.'
         ]
       }
     ],
@@ -6088,87 +6647,100 @@ This trip promises lifelong experiences, whether you're an action seeker, a natu
     itinerary: [
       {
         day: 1,
-        title: 'Arrival at Bagdogra/NJP | Transfer to Gangtok',
+        title: 'Arrival at Bagdogra / NJP | Transfer to Gangtok (125 km / 5 hrs)',
         description: [
-          'Transfer: Pick-up from Bagdogra Airport / NJP Railway Station and transfer to Gangtok (approx. 125-130 km / 4.5-5.5 hrs).',
-          'Accommodation: Check-in & relaxation at hotel in Gangtok.',
-          'Sightseeing: Evening at leisure to explore MG Marg.',
-          'Accommodation: Overnight stay in Gangtok.'
+          'Meet our representative upon arrival at Bagdogra Airport (IXB) or NJP Railway Station.',
+          'Embark on a scenic drive along the Teesta River towards Gangtok.',
+          'Reach Gangtok by late afternoon and complete hotel check-in formalities.',
+          'Spend the evening at leisure exploring MG Marg, sampling local street food and tea.',
+          'Overnight stay in Gangtok.',
+          'Meals: Dinner.'
         ]
       },
       {
         day: 2,
         title: 'Excursion to Tsomgo Lake & Baba Mandir | Optional Nathula Pass',
         description: [
-          'Transfer: High-altitude mountain drive to East Sikkim (approx. 120 km round trip).',
-          'Sightseeing: Visit holy glacial Tsomgo Lake (12,313 ft) and Baba Harbhajan Singh Mandir.',
-          'Sightseeing: Optional visit to Indo-China border at Nathula Pass (subject to permits).',
-          'Accommodation: Overnight stay in Gangtok.',
-          'Meals Included: Breakfast & Dinner.'
+          'Savor an early breakfast and head towards the sacred high-altitude glacial Tsomgo Lake (12,313 ft).',
+          'Admire the serene lake with its changing hues, snow-covered mountains, and optional yak rides.',
+          'Proceed further up to the revered Baba Harbhajan Singh Mandir (13,200 ft).',
+          'Optionally visit the Indo-China border at Nathula Pass (14,140 ft, subject to permit & availability).',
+          'Drive back to Gangtok by evening and relax at your hotel.',
+          'Overnight stay in Gangtok.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 3,
-        title: 'Gangtok to Zuluk along the Old Silk Route',
+        title: 'Gangtok to Zuluk via Old Silk Route (90 km / 4 hrs)',
         description: [
-          'Transfer: Scenic drive towards Zuluk via Rongli checkpoint (approx. 90-100 km / 4-5 hrs).',
-          'Sightseeing: Pass through dense pine forests, historic trade checkpoints, and mountain village of Padamchen.',
-          'Sightseeing: Evening sunset and drifting clouds over the Old Silk Route valleys.',
-          'Accommodation: Check-in & overnight stay in Zuluk.',
-          'Meals Included: Breakfast & Dinner.'
+          'Enjoy breakfast, check out, and drive towards the historic Old Silk Route.',
+          'Pass through Rongli permit checkpoint and drive through the dense pine forests of Padamchen.',
+          'Arrive in the remote mountain hamlet of Zuluk (9,400 ft) and check in to your homestay.',
+          'Witness the sunset over winding Himalayan valleys and experience the profound stillness of the mountains.',
+          'Overnight stay in Zuluk.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 4,
-        title: 'Zuluk to Aritar via Thambi Viewpoint & Nathang Valley',
+        title: 'Zuluk to Aritar via Thambi Viewpoint & Nathang Valley (45 km / 2 hrs)',
         description: [
-          'Sightseeing: Early morning drive to Thambi Viewpoint (11,200 ft) for golden sunrise views over Kanchenjunga and hairpin loops.',
-          'Sightseeing: Drive through rugged Nathang Valley (13,500 ft), Lungthung, and Eagle\'s Nest Bunker.',
-          'Transfer: Descend to the peaceful village of Aritar (approx. 35-45 km / 2 hrs).',
-          'Accommodation: Check-in & overnight stay at eco-resort in Aritar.',
-          'Meals Included: Breakfast & Dinner.'
+          'Wake up before dawn and drive up to Thambi View Point (11,200 ft) for a golden sunrise over Mt. Kanchenjunga.',
+          'Admire the famous 32 hairpin turns of the Silk Route snaking through the valley.',
+          'Drive through Nathang Valley (13,500 ft), known as the "Ladakh of the East," and pass Lungthung and Eagle\'s Nest Bunker.',
+          'Descend into the tranquil lakeside village of Aritar and check in to your stay.',
+          'Spend a quiet evening taking in the village charm.',
+          'Overnight stay in Aritar.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 5,
-        title: 'Aritar to Rishikhola Riverside Retreat',
+        title: 'Aritar to Rishikhola | Riverside Retreat (20 km / 1 hr)',
         description: [
-          'Sightseeing: Visit Lampokhari Lake (emerald boot-shaped lake) and ancient Aritar Monastery.',
-          'Transfer: Short scenic drive down to Rishikhola river hamlet on the Sikkim-Bengal border (approx. 15-20 km / 1 hr).',
-          'Sightseeing: Riverside walks, dipping feet in crystal-clear mountain waters, bird watching, and peaceful bonfire evening.',
-          'Accommodation: Check-in & overnight stay in riverside eco-cottages in Rishikhola.',
-          'Meals Included: Breakfast & Dinner.'
+          'Enjoy breakfast and visit Lampokhari Lake (emerald boot-shaped lake) surrounded by pine trees.',
+          'Visit the historic Aritar Monastery before checking out and driving towards Rishikhola.',
+          'Descend into the secluded riverside valley of Rishikhola along the Sikkim-Bengal border.',
+          'Check in to your eco-cottage right beside the rushing Rishi River.',
+          'Spend the afternoon dipping your feet in the river, birdwatching, and relaxing in nature.',
+          'Overnight stay in Rishikhola.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 6,
-        title: 'Rishikhola to Darjeeling – Queen of the Hills',
+        title: 'Rishikhola to Darjeeling | The Queen of Hills (80 km / 4 hrs)',
         description: [
-          'Transfer: Scenic drive from Rishikhola to Darjeeling through tea estates (approx. 70-80 km / 4-5 hrs).',
-          'Accommodation: Check-in & relaxation at hotel in Darjeeling.',
-          'Sightseeing: Evening at leisure around Chowrasta Mall Road and heritage tea cafes.',
-          'Accommodation: Overnight stay in Darjeeling.',
-          'Meals Included: Breakfast & Dinner.'
+          'Wake up to the soothing sounds of the river and enjoy a fresh riverside breakfast.',
+          'Check out and begin your ascent towards Darjeeling through rolling tea gardens.',
+          'Arrive in Darjeeling by afternoon and check in to your hotel.',
+          'Spend the evening exploring Chowrasta, Mall Road, and local handicraft shops.',
+          'Overnight stay in Darjeeling.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 7,
-        title: 'Full Day Darjeeling Sightseeing & Tiger Hill Sunrise',
+        title: 'Tiger Hill Sunrise & Full-Day Darjeeling Sightseeing',
         description: [
-          'Sightseeing: Early morning trip (4:00 AM) to Tiger Hill for panoramic sunrise over Mt. Kanchenjunga.',
-          'Sightseeing: Visit Batasia Loop spiral railway, Gorkha War Memorial, and Japanese Peace Pagoda.',
-          'Sightseeing: Visit Himalayan Mountaineering Institute, Padmaja Naidu Himalayan Zoo, and Tenzing Rock.',
-          'Sightseeing: Optional heritage Darjeeling Toy Train ride.',
-          'Accommodation: Overnight stay in Darjeeling.',
-          'Meals Included: Breakfast & Dinner.'
+          'Depart early at 4:00 AM for Tiger Hill to watch the golden sunrise over Mt. Kanchenjunga and Mt. Everest.',
+          'Stop at Batasia Loop and the Gorkha War Memorial on your return drive.',
+          'Return for breakfast, then visit Himalayan Mountaineering Institute, Zoo, and Japanese Peace Pagoda.',
+          'Optionally ride the historic Darjeeling Himalayan Toy Train.',
+          'Spend your final evening enjoying local tea and cafe hopping along Mall Road.',
+          'Overnight stay in Darjeeling.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 8,
-        title: 'Departure from Darjeeling to Bagdogra/NJP',
+        title: 'Darjeeling to Bagdogra / NJP | Departure',
         description: [
-          'Transfer: Check-out and transfer to Bagdogra Airport / NJP Railway Station for onward journey.',
-          'Meals Included: Breakfast.'
+          'Savor breakfast with mountain views and complete check-out formalities.',
+          'Board your transfer back to Bagdogra Airport (IXB) or NJP Railway Station.',
+          'Conclude your offbeat Silk Route, Aritar, Rishikhola & Darjeeling vacation.',
+          'Meals: Breakfast.'
         ]
       }
     ],
@@ -6249,101 +6821,140 @@ Throughout these 10 days, you will travel on thrilling roads, stay in simple and
     itinerary: [
       {
         day: 1,
-        title: 'Arrival in Leh & Acclimatization Day',
+        title: 'Arrival in Leh | Acclimatization & Evening Market Walk',
         description: [
-          'Transfer: Airport pickup at Kushok Bakula Rimpochee Airport & hotel transfer',
-          'Accommodation: Hotel in Leh',
-          'Sightseeing: Mandatory rest & acclimatization walk around Leh town',
-          'Sightseeing: Evening trip briefing & orientation session with Trip Captain'
+          'Arrive at Kushok Bakula Rimpochee Airport (Leh) with spectacular views over the snow-clad Himalayas.',
+          'Meet our representative and transfer to your hotel in Leh.',
+          'Check-in and rest for complete acclimatization to high altitude (3,500 m).',
+          'Take a light evening stroll around Leh Main Bazaar and Tibetan market.',
+          'Trip briefing and orientation session with your tour leader.',
+          'Overnight in Leh.',
+          'Meals: Dinner.'
         ]
       },
       {
         day: 2,
-        title: 'Leh Local Sightseeing & Sham Valley Tour',
+        title: 'Leh to Sham Valley Excursion | Sangam, Magnetic Hill & Hall of Fame',
         description: [
-          'Accommodation: Hotel in Leh',
-          'Sightseeing: Iconic Shanti Stupa with panoramic views of Leh city',
-          'Sightseeing: Sangam Point (Indus & Zanskar River Confluence)',
-          'Sightseeing: Magnetic Hill optical illusion & historic Gurudwara Pathar Sahib',
-          'Sightseeing: Ladakh Hall of Fame War Memorial & evening cafe hopping at Leh Market'
+          'Morning drive towards Sham Valley for local sightseeing along the Indus River.',
+          'Visit the peaceful Shanti Stupa for panoramic 360-degree views of Leh valley.',
+          'Witness the dramatic Sangam – confluence of the emerald Indus and muddy Zanskar rivers.',
+          'Experience the gravity-defying phenomenon at Magnetic Hill.',
+          'Seek blessings at Gurudwara Pathar Sahib, dedicated to Guru Nanak Dev Ji.',
+          'Visit the Hall of Fame War Memorial museum honoring brave Indian Army soldiers.',
+          'Evening at leisure for cafe hopping and shopping in Leh market.',
+          'Overnight in Leh.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 3,
-        title: 'Leh to Nubra Valley via Khardung La Pass (17,982 ft)',
+        title: 'Leh to Nubra Valley via Khardung La & Diskit Monastery [125 km / 5-6 hrs]',
         description: [
-          'Transfer: 125 km scenic ride/drive crossing Khardung La Pass (5,359 m)',
-          'Accommodation: Hotel / Camp in Nubra Valley',
-          'Sightseeing: Diskit Monastery & 106-ft Maitreya Buddha Statue',
-          'Sightseeing: Hunder Sand Dunes cold desert with double-humped camel safari & ATV rides'
+          'Morning departure from Leh towards the stunning Nubra Valley.',
+          'Scale the legendary Khardung La Pass (5,359 m / 17,582 ft) – among the world’s highest motorable roads.',
+          'Descend into the scenic Shyok Valley to arrive at Diskit.',
+          'Visit the 14th-century Diskit Monastery and marvel at the 106-foot Maitreya Buddha statue.',
+          'Explore the cold desert sand dunes of Hunder.',
+          'Enjoy double-humped Bactrian camel safaris and optional ATV rides across the white dunes.',
+          'Check-in to your deluxe campsite/hotel in Nubra Valley.',
+          'Overnight in Nubra Valley.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 4,
-        title: 'Day Excursion to Turtuk Village (Indo-Pak Border)',
+        title: 'Nubra Valley to Turtuk Village Excursion [200 km / 7-8 hrs]',
         description: [
-          'Transfer: 160 km round-trip excursion along Shyok River to Turtuk',
-          'Accommodation: Hotel / Camp in Nubra Valley',
-          'Sightseeing: Explore remote border village of Turtuk & unique Balti culture',
-          'Sightseeing: Apricot and walnut orchards & Shyok War Memorial'
+          'Morning scenic ride along the Shyok River towards Turtuk Village.',
+          'Explore India’s northernmost border village, steeped in unique Balti culture and traditions.',
+          'Walk through ancient stone alleys, lush apricot orchards, and traditional wooden homes.',
+          'Visit the historic Turtuk Yabgo Royal Palace and the Shyok War Memorial.',
+          'Taste organic local apricots and walnuts while interacting with friendly locals.',
+          'Return to your Nubra Valley hotel/camp by evening.',
+          'Overnight in Nubra Valley.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 5,
-        title: 'Nubra Valley to Pangong Tso via Shyok River',
+        title: 'Nubra Valley to Pangong Tso via Shyok River Route [160 km / 5-6 hrs]',
         description: [
-          'Transfer: 160 km off-road journey via Agam & Shyok river route',
-          'Accommodation: Campsite near Pangong Lake',
-          'Sightseeing: Color-changing high-altitude Pangong Tso (4,300 m)',
-          'Sightseeing: 3 Idiots shooting point & lakeside sunset photography'
+          'Morning departure from Nubra Valley towards the iconic Pangong Tso.',
+          'Ride along the offbeat Shyok River route through Agham and Shyok villages.',
+          'Behold the breathtaking first view of Pangong Lake (4,350 m / 14,270 ft) changing colors from turquoise to deep blue.',
+          'Walk along the shore of the world’s highest saltwater lake and visit the 3-Idiots movie point.',
+          'Witness an unforgettable sunset over the shimmering Himalayan waters.',
+          'Check-in to your lake-view deluxe cottages/camps for a cozy night under the stars.',
+          'Overnight near Pangong Lake.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 6,
-        title: 'Pangong Tso to Hanle via Rezang La War Memorial',
+        title: 'Pangong Tso to Hanle via Rezang La War Memorial [165 km / 8-9 hrs]',
         description: [
-          'Transfer: 165 km ride/drive through Chushul & Loma Bridge across the Indus River',
-          'Accommodation: Homestay in Hanle',
-          'Sightseeing: Rezang La War Memorial tribute to the martyrs of 1962 War',
-          'Sightseeing: Dark sky stargazing in the tranquil high-altitude village of Hanle'
+          'Witness a magical sunrise over the tranquil waters of Pangong Tso.',
+          'Post-breakfast journey towards the remote astronomical hub of Hanle.',
+          'Pass Chushul village and pay homage at the Rezang La War Memorial.',
+          'Cross the Loma Bridge on the Indus River into the pristine Changthang Wildlife Sanctuary.',
+          'Arrive in Hanle village, one of the world’s highest inhabited plateaus.',
+          'Check-in to your traditional homestay and stargaze under India’s premier Dark Sky Reserve.',
+          'Overnight in Hanle.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 7,
-        title: 'Hanle to Umling La Pass (19,024 ft) & Demchok Excursion',
+        title: 'Hanle to Umling La Pass (19,024 ft) & Demchok Frontier Excursion [200 km / 7-8 hrs]',
         description: [
-          'Transfer: 200 km round-trip ride/drive crossing Photi La (5,524 m)',
-          'Accommodation: Homestay in Hanle',
-          'Sightseeing: Summit Umling La (5,640 m) — the world\'s highest motorable road',
-          'Sightseeing: Demchok border village (Indo-China border) & Indian Astronomical Observatory'
+          'Early morning expedition to conquer the highest motorable road on Earth.',
+          'Ascend through Photi La Pass (5,524 m) across rugged, moon-like high-altitude desert.',
+          'Summit Umling La Pass at an astounding 19,024 ft (5,640 m) – higher than Everest Base Camp.',
+          'Celebrate the milestone achievement with group photographs at the iconic summit board.',
+          'Ride down towards Demchok, the last Indian border outpost on the Indo-China LAC.',
+          'Visit the historic 17th-century Hanle Monastery overlooking the vast valley.',
+          'Return to your homestay in Hanle for a warm local dinner.',
+          'Overnight in Hanle.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 8,
-        title: 'Hanle to Tso Moriri Lake via Mahe',
+        title: 'Hanle to Tso Moriri Lake via Mahe Bridge [160 km / 5-6 hrs]',
         description: [
-          'Transfer: 150 km scenic journey across Loma Bridge & Mahe to Tso Moriri',
-          'Accommodation: Lake View Stay / Camp at Tso Moriri (Korzok)',
-          'Sightseeing: Pristine high-altitude deep blue waters of Tso Moriri Lake (4,522 m)',
-          'Sightseeing: Wetland sanctuary home to migratory birds & historic Korzok Monastery'
+          'Morning departure from Hanle towards the remote high-altitude gem, Tso Moriri.',
+          'Ride across the pristine Changthang plateau via Mahe Bridge.',
+          'Arrive at the spellbinding Tso Moriri Lake (4,522 m / 14,836 ft), surrounded by snow-capped peaks.',
+          'Spot rare wildlife including Kiangs (Tibetan wild ass), Marmots, and migratory Black-necked Cranes.',
+          'Walk along the serene shores of Karzok village.',
+          'Check-in to your hotel/campsite overlooking the cobalt-blue lake.',
+          'Overnight in Tso Moriri.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 9,
-        title: 'Tso Moriri to Leh via Puga Valley & Chumathang Hot Springs',
+        title: 'Tso Moriri to Leh via Puga Geothermal Valley & Chumathang [220 km / 6-7 hrs]',
         description: [
-          'Transfer: 154 km scenic drive/ride from Tso Moriri to Leh via Chumathang & Upshi',
-          'Accommodation: Hotel in Leh',
-          'Sightseeing: Geothermal sulphur mud pools of Puga Valley & Chumathang Hot Springs',
-          'Sightseeing: Scenic towns of Karu, Thiksey & evening shopping in Leh Main Bazaar'
+          'Post-breakfast ride from Tso Moriri back to Leh via Puga Valley and Chumathang.',
+          'Witness the surreal geothermal landscape of Puga Valley with bubbling sulphur mud pools and hot geysers.',
+          'Stop at Chumathang hot springs along the Indus River.',
+          'Drive through the scenic Indus gorge passing Upshi, Karu, and Thiksey.',
+          'Arrive in Leh by late afternoon and check-in to your hotel.',
+          'Spend your final evening shopping for Pashmina shawls, souvenirs, and dining at local cafes.',
+          'Overnight in Leh.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 10,
-        title: 'Leh Airport Drop & Tour Conclusion',
+        title: 'Departure from Leh | Trip Concludes',
         description: [
-          'Transfer: Hotel checkout & airport drop at Kushok Bakula Rimpochee Airport Leh',
-          'Sightseeing: Departure with unforgettable memories of the ultimate Ladakh expedition'
+          'Post-breakfast check-out from your Leh hotel.',
+          'Transfer to Kushok Bakula Rimpochee Airport for your return flight.',
+          'Trip concludes with lifelong memories of the ultimate Leh-Ladakh, Umling La & Changthang grand expedition.',
+          'Meals: Breakfast.'
         ]
       }
     ],
@@ -6543,91 +7154,126 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     itinerary: [
       {
         day: 1,
-        title: 'Arrival in Leh & Acclimatization Day',
+        title: 'Arrival in Leh | Acclimatization & Evening Market Walk',
         description: [
-          'Transfer: Airport pickup at Kushok Bakula Rimpochee Airport & hotel transfer',
-          'Accommodation: Hotel in Leh',
-          'Sightseeing: Mandatory rest & acclimatization walk around Leh town',
-          'Sightseeing: Evening bike allotment, test ride & briefing with Road Captain'
+          'Arrive at Leh Airport with stunning aerial views of the snow-capped Himalayan ranges.',
+          'Meet our tour executive and transfer to your hotel in Leh.',
+          'Check-in, relax, and rest for full acclimatization to high altitude (3,500 m).',
+          'Take a gentle evening stroll around Leh Main Bazaar and Tibetan market.',
+          'Briefing and orientation session with your trip leader.',
+          'Overnight in Leh.',
+          'Meals: Dinner.'
         ]
       },
       {
         day: 2,
-        title: 'Leh Local Sightseeing & Sham Valley Tour',
+        title: 'Leh to Sham Valley Excursion | Sangam, Magnetic Hill & Hall of Fame',
         description: [
-          'Accommodation: Hotel in Leh',
-          'Sightseeing: Iconic Shanti Stupa with panoramic views of Leh Valley',
-          'Sightseeing: Sangam Point (Indus & Zanskar River Confluence)',
-          'Sightseeing: Magnetic Hill optical illusion & historic Gurudwara Pathar Sahib',
-          'Sightseeing: Ladakh Hall of Fame War Memorial & evening cafe hopping at Leh Market'
+          'Morning ride towards Sham Valley along the Indus River.',
+          'Visit the peaceful Shanti Stupa for panoramic 360-degree views of Leh valley.',
+          'Witness the dramatic Sangam – confluence of the emerald Indus and muddy Zanskar rivers.',
+          'Experience the gravity-defying phenomenon at Magnetic Hill.',
+          'Seek blessings at Gurudwara Pathar Sahib, dedicated to Guru Nanak Dev Ji.',
+          'Visit the Hall of Fame War Memorial museum honoring the Indian Army martyrs.',
+          'Evening free for cafe hopping and shopping in Leh market.',
+          'Overnight in Leh.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 3,
-        title: 'Leh to Nubra Valley via Khardung La Pass (17,982 ft)',
+        title: 'Leh to Nubra Valley via Khardung La & Diskit Monastery [125 km / 5-6 hrs]',
         description: [
-          'Transfer: 125 km thrilling ride crossing Khardung La Pass (5,359 m)',
-          'Accommodation: Hotel / Camp in Nubra Valley',
-          'Sightseeing: Diskit Monastery & 106-ft Maitreya Buddha Statue',
-          'Sightseeing: Hunder Sand Dunes cold desert with double-humped camel safari & ATV rides'
+          'Morning departure from Leh towards the magical Nubra Valley.',
+          'Scale the legendary Khardung La Pass (5,359 m / 17,582 ft).',
+          'Descend into the scenic Shyok Valley to arrive at Diskit.',
+          'Visit the 14th-century Diskit Monastery and the towering 106-foot Maitreya Buddha.',
+          'Ride to the cold desert sand dunes of Hunder.',
+          'Enjoy double-humped Bactrian camel safaris and ATV rides across the white dunes.',
+          'Check-in to your deluxe campsite/hotel in Nubra Valley.',
+          'Overnight in Nubra Valley.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 4,
-        title: 'Day Excursion to Turtuk Village (Indo-Pak Border)',
+        title: 'Nubra Valley to Turtuk Village Excursion [200 km / 7-8 hrs]',
         description: [
-          'Transfer: 160 km round-trip ride along Shyok River to Turtuk',
-          'Accommodation: Hotel / Camp in Nubra Valley',
-          'Sightseeing: Ride to the remote border village of Turtuk & explore Balti culture',
-          'Sightseeing: Apricot and walnut orchards & Shyok War Memorial'
+          'Morning scenic ride along the Shyok River towards Turtuk Village.',
+          'Explore India’s northernmost frontier village, steeped in unique Balti heritage.',
+          'Walk through stone alleys, apricot orchards, and traditional wooden homes.',
+          'Visit the historic Turtuk Yabgo Royal Palace and Shyok War Memorial.',
+          'Taste organic local apricots and walnuts while interacting with friendly locals.',
+          'Return to your Nubra Valley hotel/camp by evening.',
+          'Overnight in Nubra Valley.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 5,
-        title: 'Nubra Valley to Pangong Tso via Shyok River',
+        title: 'Nubra Valley to Pangong Tso via Shyok River Route [160 km / 5-6 hrs]',
         description: [
-          'Transfer: 160 km off-road riverbed ride via Agam & Shyok river route',
-          'Accommodation: Campsite near Pangong Lake',
-          'Sightseeing: Color-changing high-altitude Pangong Tso (4,300 m)',
-          'Sightseeing: 3 Idiots shooting point & lakeside sunset photography'
+          'Morning departure from Nubra Valley towards the iconic Pangong Tso.',
+          'Ride along the offbeat Shyok River route through Agham and Shyok villages.',
+          'First glimpse of the magnificent, multi-hued Pangong Lake (4,350 m / 14,270 ft).',
+          'Walk along the shore of the world’s highest saltwater lake and visit the 3-Idiots movie point.',
+          'Witness a breathtaking sunset painting the lake in shades of sapphire and amber.',
+          'Check-in to lake-view deluxe cottages/camps.',
+          'Overnight near Pangong Lake.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 6,
-        title: 'Pangong Tso to Hanle via Rezang La War Memorial',
+        title: 'Pangong Tso to Hanle via Rezang La War Memorial [165 km / 8-9 hrs]',
         description: [
-          'Transfer: 165 km ride through Chushul & Loma Bridge across the Indus River',
-          'Accommodation: Homestay in Hanle',
-          'Sightseeing: Rezang La War Memorial tribute to the martyrs of 1962 War',
-          'Sightseeing: Dark sky stargazing in the tranquil high-altitude village of Hanle'
+          'Witness a magical sunrise over the tranquil blue waters of Pangong Tso.',
+          'Post-breakfast journey towards the remote astronomical hub of Hanle.',
+          'Pass Chushul village and pay homage at the Rezang La War Memorial.',
+          'Cross the Loma Bridge over the Indus River into the pristine Changthang sanctuary.',
+          'Arrive in Hanle village, one of the world’s highest inhabited plateaus.',
+          'Check-in to your traditional homestay and stargaze under India’s premier Dark Sky Reserve.',
+          'Overnight in Hanle.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 7,
-        title: 'Hanle to Umling La Pass (19,024 ft) & Demchok Excursion',
+        title: 'Hanle to Umling La Pass (19,024 ft) & Demchok Frontier Excursion [200 km / 7-8 hrs]',
         description: [
-          'Transfer: 200 km round-trip ride crossing Photi La (5,524 m)',
-          'Accommodation: Homestay in Hanle',
-          'Sightseeing: Summit Umling La (5,640 m) — the world\'s highest motorable road',
-          'Sightseeing: Demchok border village (Indo-China border) & Indian Astronomical Observatory'
+          'Early morning expedition to conquer the highest motorable road on Earth.',
+          'Ascend through Photi La Pass (5,524 m) across raw, lunar-like high-altitude desert.',
+          'Summit Umling La Pass at a record-shattering 19,024 ft (5,640 m).',
+          'Celebrate the milestone achievement with photos at the iconic summit marker.',
+          'Ride down towards Demchok, the last Indian border outpost on the Indo-China frontier.',
+          'Visit the historic 17th-century Hanle Monastery overlooking the valley.',
+          'Return to your homestay in Hanle for a warm local dinner.',
+          'Overnight in Hanle.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 8,
-        title: 'Hanle to Leh via Tso Moriri Lake & Chumathang',
+        title: 'Hanle to Leh via Tso Moriri Lake & Chumathang [289 km / 7-8 hrs]',
         description: [
-          'Transfer: 289 km scenic journey to Leh via Loma Bridge, Mahe & Chumathang',
-          'Accommodation: Hotel in Leh',
-          'Sightseeing: Pristine high-altitude deep blue waters of Tso Moriri Lake (4,522 m)',
-          'Sightseeing: Chumathang hot springs & evening shopping at Leh Main Bazaar'
+          'Morning departure from Hanle towards the pristine Tso Moriri Lake.',
+          'Ride via Loma Bridge and Mahe along the turquoise Indus and Chumathang hot springs.',
+          'Arrive at the majestic Tso Moriri (4,522 m / 14,836 ft), India’s highest and largest saltwater lake.',
+          'Spot rare Himalayan wildlife including Kiangs, Marmots, and migratory Black-necked Cranes.',
+          'Continue the scenic drive past Upshi, Karu, and Thiksey to arrive back in Leh.',
+          'Check-in to your hotel in Leh, relax, and explore Leh Main Bazaar for souvenirs and cafes.',
+          'Overnight in Leh.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 9,
-        title: 'Leh Airport Drop & Tour Conclusion',
+        title: 'Departure from Leh | Trip Concludes',
         description: [
-          'Transfer: Hotel checkout & airport drop at Kushok Bakula Rimpochee Airport Leh',
-          'Sightseeing: Departure with unforgettable riding memories of the Ladakh bike expedition'
+          'Post-breakfast check-out from your Leh hotel.',
+          'Transfer to Kushok Bakula Rimpochee Airport for your return flight.',
+          'Trip concludes with unforgettable memories of the Leh-Ladakh, Umling La & Changthang expedition.',
+          'Meals: Breakfast.'
         ]
       }
     ],
@@ -6820,68 +7466,88 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     itinerary: [
       {
         day: 1,
-        title: 'Arrival in Phuket & Transfer to Krabi Hotel',
+        title: 'Arrival in Phuket | Transfer to Krabi & Leisure',
         description: [
-          'Transfer: Airport pickup at Phuket International Airport & scenic transfer to Krabi',
-          'Accommodation: Hotel in Krabi',
-          'Sightseeing: Check-in, relax & evening stroll at Ao Nang Beach Market'
+          'Arrive at Phuket International Airport (HKT) and complete immigration formalities.',
+          'Meet our representative and board your scenic transfer to Krabi.',
+          'Check in to your hotel in Krabi and freshen up after your flight.',
+          'Spend the evening at leisure relaxing at Ao Nang Beach or exploring local night markets.',
+          'Overnight stay in Krabi.'
         ]
       },
       {
         day: 2,
-        title: 'Krabi 4-Island Tour by Longtail Boat with Snorkeling',
+        title: 'Krabi 4 Islands Tour by Longtail Boat with Beach Lunch',
         description: [
-          'Accommodation: Hotel in Krabi',
-          'Sightseeing: Phra Nang Cave Beach, Princess Cave & limestone cliffs',
-          'Sightseeing: Tub Island & Mor Island Sandbar Walk during low tide',
-          'Sightseeing: Chicken Island Snorkeling & coral reef marine life',
-          'Sightseeing: Poda Island Beach Picnic Lunch & turquoise waters'
+          'Enjoy breakfast at the hotel and transfer to the pier for your island hopping adventure.',
+          'Board a traditional longtail boat to explore Phra Nang Cave Beach, Tup Island, Poda Island, and Chicken Island.',
+          'Swim and snorkel in crystal-clear waters, witness sandbars during low tide, and admire limestone cliffs.',
+          'Relish a delicious local lunch on the beach at Poda Island.',
+          'Return to the mainland in the late afternoon and enjoy evening cafe hopping.',
+          'Overnight stay in Krabi.',
+          'Meals: Breakfast & Lunch.'
         ]
       },
       {
         day: 3,
-        title: 'Krabi to Koh Samui Ferry & Iconic Koh Phangan Full Moon Party',
+        title: 'Krabi to Koh Samui | World-Famous Koh Phangan Full Moon Party',
         description: [
-          'Transfer: Coach to pier & ferry crossing to Koh Samui island',
-          'Transfer: Speedboat transfer from Koh Samui to Koh Phangan for Full Moon Party',
-          'Accommodation: Overnight Full Moon Party on Haad Rin Beach, Koh Phangan',
-          'Sightseeing: World-famous Full Moon Beach Party with neon body paint & international DJs'
+          'Have breakfast, check out from Krabi, and transfer by coach and ferry to tropical Koh Samui.',
+          'Check in to your hotel in Koh Samui, freshen up, and get ready for the party of a lifetime.',
+          'Board your evening ferry transfer to Haad Rin Beach on Koh Phangan.',
+          'Dance the night away under the full moon with world-class DJs, neon body paint, and beachside music.',
+          'Enjoy the legendary Full Moon Party till dawn.',
+          'Overnight Full Moon Party experience at Koh Phangan.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 4,
-        title: 'Koh Phangan to Koh Samui Return & Beach Fire Show',
+        title: 'Koh Phangan to Koh Samui | Beach Fire Show & Nightlife',
         description: [
-          'Transfer: Early morning ferry return from Koh Phangan to Koh Samui hotel',
-          'Accommodation: Beach Resort in Koh Samui',
-          'Sightseeing: Afternoon relaxation & recovery by the pool',
-          'Sightseeing: Spectacular Night Beach Fire Show & Beachfront Clubbing'
+          'Board your return morning ferry back to Koh Samui and transfer to your hotel.',
+          'Relish a hearty breakfast and rest after the high-energy party night.',
+          'Spend a leisurely afternoon lounging by the pool or enjoying a traditional Thai massage.',
+          'In the evening, head to the beach club to witness an electrifying Thai Beach Fire Show.',
+          'Sip tropical cocktails and enjoy Samui’s vibrant seaside nightlife.',
+          'Overnight stay in Koh Samui.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 5,
-        title: 'Koh Samui to Phuket Transfer & Leisure Evening',
+        title: 'Koh Samui to Phuket via Donsak Pier',
         description: [
-          'Transfer: Ferry to Donsak Pier & private coach drive to Phuket',
-          'Accommodation: Hotel in Phuket',
-          'Sightseeing: Bangla Road Nightlife & Patong Beach Night Walk'
+          'Enjoy breakfast, check out from your hotel, and board the ferry to Donsak Pier on the mainland.',
+          'Board your comfortable transfer and drive across scenic landscapes to Phuket (4–5 hrs).',
+          'Arrive in Phuket, check in to your hotel, and unwind.',
+          'Spend the evening exploring Patong Beach, Bangla Road nightlife, or local seafood stalls.',
+          'Overnight stay in Phuket.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 6,
-        title: 'Phi Phi Islands Speedboat Tour with Maya Bay & Snorkeling',
+        title: 'Full-Day Phi Phi Islands Speedboat Tour with Buffet Lunch',
         description: [
-          'Accommodation: Hotel in Phuket',
-          'Sightseeing: Speedboat cruise to Phi Phi Don & Phi Phi Leh Islands',
-          'Sightseeing: Iconic Maya Bay, Viking Cave & Pileh Lagoon emerald swimming',
-          'Sightseeing: Monkey Beach Stroll & Khai Nok Island Snorkeling'
+          'Wake up early, enjoy breakfast, and transfer to the marina.',
+          'Board your high-speed boat to the world-famous Phi Phi Islands archipelago.',
+          'Cruise past iconic Maya Bay, Loh Samah Bay, Viking Cave, and Monkey Beach.',
+          'Savor a scrumptious buffet lunch at a beachfront restaurant on Phi Phi Don.',
+          'Snorkel among vibrant coral reefs and exotic marine life at Koh Khai Nok.',
+          'Return to Phuket by evening for your farewell night.',
+          'Overnight stay in Phuket.',
+          'Meals: Breakfast & Lunch.'
         ]
       },
       {
         day: 7,
-        title: 'Departure from Phuket - Return Flight Home',
+        title: 'Phuket Airport Transfer | Departure',
         description: [
-          'Transfer: Hotel checkout & transfer to Phuket International Airport for departure flight'
+          'Enjoy breakfast at the hotel and complete check-out formalities.',
+          'Board your transfer to Phuket International Airport (HKT) for your return flight.',
+          'Conclude your epic Thailand Full Moon Party vacation with unforgettable memories.',
+          'Meals: Breakfast.'
         ]
       }
     ],
@@ -7051,78 +7717,100 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     itinerary: [
       {
         day: 1,
-        title: 'Arrival in Phuket & Scenic Transfer to Krabi',
+        title: 'Arrival in Phuket | Transfer to Krabi & Leisure',
         description: [
-          'Transfer: Airport pickup at Phuket International Airport & scenic road drive to Krabi',
-          'Accommodation: Hotel / Resort in Krabi',
-          'Sightseeing: Check-in, freshen up & leisure sunset walk at Ao Nang Beach'
+          'Arrive at Phuket International Airport (HKT) and meet your representative.',
+          'Enjoy a scenic 3-hour private transfer to Krabi along tropical coastlines.',
+          'Check in to your romantic resort in Krabi and freshen up.',
+          'Spend a leisurely evening strolling along Ao Nang beach and enjoying sunset cocktails.',
+          'Overnight stay in Krabi.'
         ]
       },
       {
         day: 2,
-        title: 'Krabi 4-Island Speedboat Excursion with Beach Lunch',
+        title: 'Krabi 4 Islands Speedboat Tour with Beachside Lunch',
         description: [
-          'Accommodation: Hotel in Krabi',
-          'Sightseeing: Phranang Cave Beach & sacred Princess Shrine',
-          'Sightseeing: Tup Island & Mor Island pristine sandbar walk',
-          'Sightseeing: Poda Island Beach Stroll & Chicken Island limestone rock photography',
-          'Sightseeing: Snorkeling in crystal-clear emerald waters'
+          'Savor breakfast at your resort before heading to the pier.',
+          'Board a speedboat to explore Phra Nang Cave Beach, Tup Island, Chicken Island, and Poda Island.',
+          'Swim and snorkel in emerald waters and walk along the scenic sandbar during low tide.',
+          'Enjoy a romantic lunch on the white sandy beaches of Poda Island.',
+          'Return to your resort by late afternoon to relax.',
+          'Overnight stay in Krabi.',
+          'Meals: Breakfast & Lunch.'
         ]
       },
       {
         day: 3,
-        title: 'Krabi to Phuket Transfer & Evening Siam Cabaret Show',
+        title: 'Krabi to Phuket | Siam Niramit / Cabaret Show',
         description: [
-          'Transfer: Private transfer from Krabi to Phuket hotel',
-          'Accommodation: Hotel in Phuket',
-          'Sightseeing: Siam Cabaret Show dazzling theatrical performance & glamorous costumes'
+          'Enjoy breakfast, check out from Krabi, and take your scenic private transfer to Phuket.',
+          'Arrive in Phuket and check in to your deluxe honeymoon resort.',
+          'Spend the afternoon relaxing by the pool or enjoying couples’ spa treatments.',
+          'In the evening, watch the dazzling Siam Cabaret Show featuring stunning costumes and stage performances.',
+          'Overnight stay in Phuket.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 4,
-        title: 'Phi Phi Islands Speedboat Tour with Maya Bay',
+        title: 'Phi Phi Islands Speedboat Excursion with Buffet Lunch',
         description: [
-          'Accommodation: Hotel in Phuket',
-          'Sightseeing: Speedboat trip to Phi Phi Don & Phi Phi Leh',
-          'Sightseeing: Iconic Maya Bay & Pileh Lagoon emerald swimming',
-          'Sightseeing: Monkey Beach & Viking Cave historic rock formations'
+          'Wake up early and enjoy breakfast before transferring to the marina.',
+          'Cruise on a high-speed boat to the stunning Phi Phi Islands.',
+          'Visit world-famous Maya Bay, Viking Cave, and pristine Monkey Beach.',
+          'Relish a delicious buffet lunch at a beachfront restaurant on Phi Phi Don.',
+          'Enjoy snorkeling among colorful reefs and turquoise waters at Khai Island.',
+          'Return to Phuket in the evening for dinner at your leisure.',
+          'Overnight stay in Phuket.',
+          'Meals: Breakfast & Lunch.'
         ]
       },
       {
         day: 5,
-        title: 'Phuket City Heritage & Scenic Viewpoints Tour',
+        title: 'Phuket City & Cultural Sightseeing Tour',
         description: [
-          'Accommodation: Hotel in Phuket',
-          'Sightseeing: Karon Viewpoint panoramic vistas of Kata & Kata Noi beaches',
-          'Sightseeing: Sacred Wat Chalong Buddhist Temple & Big Buddha Statue on Nakkerd Hill',
-          'Sightseeing: Leisure Evening at Patong Beach & Night Bazaar'
+          'Have breakfast at the resort and set out for a guided Phuket city tour.',
+          'Admire sweeping coastal panoramas from Karon Viewpoint and Promthep Cape.',
+          'Visit the revered Wat Chalong Temple and marvel at the 45-meter Big Buddha statue.',
+          'Walk through Old Phuket Town admiring Sino-Portuguese heritage architecture.',
+          'Spend a romantic evening at leisure watching the sunset over Patong Beach.',
+          'Overnight stay in Phuket.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 6,
-        title: 'Phuket to Bangkok Flight & Romantic Chao Phraya Dinner Cruise',
+        title: 'Flight to Bangkok | Luxury Chao Phraya River Dinner Cruise',
         description: [
-          'Transfer: Domestic flight from Phuket to Bangkok & private hotel transfer',
-          'Accommodation: Hotel in Bangkok',
-          'Sightseeing: Luxury Chao Phraya River Evening Dinner Cruise',
-          'Sightseeing: Illuminated Night Views of Wat Arun, Grand Palace & Skyline'
+          'Enjoy breakfast, check out from Phuket, and transfer to Phuket Airport for your flight to Bangkok.',
+          'Arrive at Bangkok Airport, meet our representative, and transfer to your luxury hotel.',
+          'Check in and freshen up before your evening romantic experience.',
+          'Board a luxury cruise on the Chao Phraya River for an exquisite buffet dinner under the illuminated Bangkok skyline.',
+          'Enjoy live music, traditional Thai dance, and iconic views of Wat Arun lit up at night.',
+          'Overnight stay in Bangkok.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 7,
-        title: 'Bangkok Historic Temples Tour & Gems Gallery',
+        title: 'Bangkok City & Iconic Temple Tour',
         description: [
-          'Accommodation: Hotel in Bangkok',
-          'Sightseeing: Golden Buddha Temple (Wat Traimit) & Emerald Buddha Temple (Wat Phra Kaew)',
-          'Sightseeing: World\'s Largest Gems Gallery Handcrafted Jewelry Tour',
-          'Sightseeing: Evening Street Food & Shopping at IconSiam / Pratunam'
+          'Relish breakfast and embark on a guided Bangkok city and heritage tour.',
+          'Visit the Temple of the Golden Buddha (Wat Traimit) and the Temple of the Reclining Buddha (Wat Pho).',
+          'Stop at the Gems Gallery for authentic Thai gemstones and jewelry.',
+          'Spend the afternoon and evening shopping at ICONSIAM or exploring vibrant night markets.',
+          'Overnight stay in Bangkok.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 8,
-        title: 'Departure from Bangkok - Return Flight Home',
+        title: 'Bangkok Departure | Farewell Thailand',
         description: [
-          'Transfer: Hotel checkout & transfer to Suvarnabhumi / Don Mueang International Airport'
+          'Savor breakfast at the hotel and complete check-out formalities.',
+          'Board your private transfer to Bangkok Airport (BKK/DMK) for your flight home.',
+          'Conclude your romantic Thailand honeymoon with unforgettable memories.',
+          'Meals: Breakfast.'
         ]
       }
     ],
@@ -7266,58 +7954,74 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     itinerary: [
       {
         day: 1,
-        title: 'Arrival in Phuket & Transfer to Krabi',
+        title: 'Arrival in Phuket | Transfer to Krabi & Leisure',
         description: [
-          'Transfer: Airport pickup at Phuket Airport & scenic 3-hour transfer to Krabi',
-          'Accommodation: Hotel in Krabi',
-          'Sightseeing: Check-in, relax & evening at leisure'
+          'Arrive at Phuket International Airport (HKT) and meet our representative.',
+          'Board your scenic private transfer to Krabi (approx. 3 hrs).',
+          'Check in to your romantic resort in Krabi and freshen up.',
+          'Spend a relaxed evening walking along Ao Nang beach and taking in the tropical sea breeze.',
+          'Overnight stay in Krabi.'
         ]
       },
       {
         day: 2,
-        title: 'Krabi 4-Island Tour by Speedboat',
+        title: 'Krabi 4 Islands Speedboat Tour with Beachside Lunch',
         description: [
-          'Accommodation: Hotel in Krabi',
-          'Sightseeing: Krabi 4 Island Speedboat Tour',
-          'Sightseeing: Phra Nang Cave Beach, Tup Island & Poda Island',
-          'Sightseeing: Chicken Island Snorkeling & Beach Picnic Lunch'
+          'Enjoy breakfast at your resort before heading to the pier.',
+          'Board a speedboat to explore Phra Nang Cave Beach, Tup Island, Chicken Island, and Poda Island.',
+          'Swim, snorkel in turquoise waters, and walk along the scenic sandbar during low tide.',
+          'Savor a delicious picnic lunch on the sandy shores of Poda Island.',
+          'Return to your resort by late afternoon to relax.',
+          'Overnight stay in Krabi.',
+          'Meals: Breakfast & Lunch.'
         ]
       },
       {
         day: 3,
-        title: 'Krabi to Phuket Transfer & Evening Siam Cabaret Show',
+        title: 'Krabi to Phuket | Siam Cabaret Show',
         description: [
-          'Transfer: Scenic road transfer from Krabi to Phuket hotel',
-          'Accommodation: Hotel in Phuket',
-          'Sightseeing: Check-in & evening Siam Cabaret Show Phuket'
+          'Savor breakfast, check out from Krabi, and take your private transfer to Phuket.',
+          'Arrive in Phuket, check in to your deluxe hotel, and relax.',
+          'In the evening, watch the dazzling Siam Cabaret Show with spectacular choreography, music, and vibrant costumes.',
+          'Overnight stay in Phuket.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 4,
-        title: 'Phi Phi Islands Speedboat Tour',
+        title: 'Phi Phi Islands Speedboat Excursion with Buffet Lunch',
         description: [
-          'Transfer: Speedboat transfers for island hopping',
-          'Accommodation: Hotel in Phuket',
-          'Sightseeing: Phi Phi Island Speedboat Tour with Maya Bay & Monkey Beach',
-          'Sightseeing: Snorkeling in crystal-clear waters & beachside lunch'
+          'Wake up early and enjoy breakfast before transferring to the marina.',
+          'Board your speedboat to explore the world-famous Phi Phi Islands.',
+          'Cruise past iconic Maya Bay, Viking Cave, and pristine Monkey Beach.',
+          'Enjoy a buffet lunch at a beachfront restaurant on Phi Phi Don.',
+          'Snorkel among colorful coral reefs and marine life at Khai Island.',
+          'Return to Phuket in the evening for leisure.',
+          'Overnight stay in Phuket.',
+          'Meals: Breakfast & Lunch.'
         ]
       },
       {
         day: 5,
-        title: 'Phuket City Tour & Leisure Evening',
+        title: 'Phuket City & Cultural Sightseeing Tour',
         description: [
-          'Accommodation: Hotel in Phuket',
-          'Sightseeing: Phuket City Tour & Karon View Point',
-          'Sightseeing: Historic Wat Chalong Temple & Big Buddha Statue',
-          'Sightseeing: Panoramic views of Kata & Kata Noi Beaches'
+          'Have breakfast at the hotel and embark on a guided Phuket city tour.',
+          'Admire coastal panoramas from Karon Viewpoint and Promthep Cape.',
+          'Visit the historic Wat Chalong Temple and the monumental Big Buddha statue.',
+          'Explore the charming heritage shophouses of Old Phuket Town.',
+          'Spend your final romantic evening at leisure exploring Patong night markets.',
+          'Overnight stay in Phuket.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 6,
-        title: 'Phuket Departure',
+        title: 'Phuket Airport Transfer | Departure',
         description: [
-          'Transfer: Hotel checkout & transfer to Phuket Airport for onward flight',
-          'Sightseeing: Departure with cherished tropical memories'
+          'Savor breakfast at the hotel and complete check-out formalities.',
+          'Board your private transfer to Phuket International Airport (HKT) for your onward flight.',
+          'Conclude your romantic Krabi & Phuket escape with beautiful memories.',
+          'Meals: Breakfast.'
         ]
       }
     ],
@@ -7443,59 +8147,76 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     itinerary: [
       {
         day: 1,
-        title: 'Arrival in Phuket & Simon Cabaret Show',
+        title: 'Arrival in Phuket. Cabaret Show in the evening.',
         description: [
-          'Transfer: Airport pickup at Phuket Airport & transfer to hotel',
-          'Accommodation: Hotel in Phuket',
-          'Sightseeing: Check-in & evening Simon Cabaret Show Phuket'
+          'Arrive at Phuket International Airport, complete immigration, and meet our local tour representative.',
+          'Board your private transfer and drive through scenic coastal roads to your Phuket hotel.',
+          'Check in to your hotel and unwind after your journey.',
+          'In the evening, attend the world-renowned Simon Cabaret Show featuring glamorous musical acts and stunning sets.',
+          'Overnight stay in Phuket.',
+          'Meals: Not Included.'
         ]
       },
       {
         day: 2,
-        title: 'Phi Phi Islands Speedboat Tour',
+        title: 'Phi Phi Island Tour.',
         description: [
-          'Transfer: Speedboat transfers for island hopping',
-          'Accommodation: Hotel in Phuket',
-          'Sightseeing: Phi Phi Island Tour with Maya Bay & Monkey Beach',
-          'Sightseeing: Snorkeling in turquoise waters & island lunch'
+          'Enjoy a delightful tropical breakfast at the hotel before morning pickup.',
+          'Transfer to the pier and board a high-speed speedboat towards the world-famous Phi Phi Islands.',
+          'Cruise across azure waters and visit iconic Maya Bay, surrounded by soaring limestone cliffs.',
+          'Discover hidden sea caves and take romantic beachside strolls along soft white sands of Monkey Beach.',
+          'Relish a delicious buffet lunch on the island and enjoy swimming and snorkeling in turquoise waters.',
+          'Board your speedboat back to the mainland pier and transfer to your hotel.',
+          'Overnight stay in Phuket.',
+          'Meals: Breakfast & Lunch.'
         ]
       },
       {
         day: 3,
-        title: 'Phuket City Tour & Leisure Evening',
+        title: 'Phuket City Tour. Evening at Leisure.',
         description: [
-          'Accommodation: Hotel in Phuket',
-          'Sightseeing: Phuket City Tour with Karon View Point',
-          'Sightseeing: Wat Chalong Temple & Big Buddha Statue',
-          'Sightseeing: Scenic views of Kata & Kata Noi Beaches'
+          'Savor breakfast at the hotel and set out on a comprehensive guided Phuket city tour.',
+          'Drive up to Karon Viewpoint to take in panoramic vistas of Kata Noi, Kata, and Karon beaches.',
+          'Visit the revered Wat Chalong Temple and marvel at the colossal 45-meter Big Buddha statue.',
+          'Spend the evening at leisure exploring Patong nightlife, vibrant street markets, or relaxing on the beach.',
+          'Overnight stay in Phuket.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 4,
-        title: 'Phuket to Bangkok & Chao Phraya Dinner Cruise',
+        title: 'Phuket to Bangkok. Evening Dinner Cruise.',
         description: [
-          'Transfer: Transfer to Phuket Airport & flight to Bangkok',
-          'Transfer: Bangkok Airport pickup & transfer to hotel',
-          'Accommodation: Hotel in Bangkok',
-          'Sightseeing: Luxury Chao Phraya River Dinner Cruise with live performances'
+          'Enjoy breakfast at the hotel and complete check-out formalities.',
+          'Transfer to Phuket Airport and board your scheduled domestic flight to Bangkok.',
+          'Arrive in Bangkok, meet your representative, and transfer to your hotel for check-in.',
+          'In the evening, embark on a luxury Chao Phraya River Dinner Cruise featuring live entertainment.',
+          'Savor a lavish international buffet dinner while admiring Bangkok’s illuminated riverfront palaces and temples.',
+          'Transfer back to your hotel after the cruise.',
+          'Overnight stay in Bangkok.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 5,
-        title: 'Bangkok City & Temple Tour',
+        title: 'Bangkok City Tour and Temple Tour.',
         description: [
-          'Accommodation: Hotel in Bangkok',
-          'Sightseeing: Bangkok City & Temple Tour',
-          'Sightseeing: Golden Buddha Temple (Wat Traimit) & Emerald Buddha Temple',
-          'Sightseeing: Gems Gallery shopping experience'
+          'Wake up to breakfast at the hotel and depart for a guided Bangkok city & temple tour.',
+          'Visit Wat Traimit (Temple of the Golden Buddha) and Wat Phra Kaew (Temple of the Emerald Buddha).',
+          'Explore the world-famous Gems Gallery to witness artisanal Thai jewelry craftsmanship.',
+          'Spend the evening exploring vibrant night bazaars, street food stalls, or luxury shopping malls at leisure.',
+          'Overnight stay in Bangkok.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 6,
-        title: 'Bangkok Departure',
+        title: 'Departure. Take back a lot of romantic memories.',
         description: [
-          'Transfer: Hotel checkout & transfer to Bangkok Airport for onward journey',
-          'Sightseeing: Departure with unforgettable Thailand memories'
+          'Enjoy breakfast at the hotel and pack your bags for departure.',
+          'Complete check-out formalities and board your transfer to Suvarnabhumi / Don Mueang International Airport.',
+          'Board your flight back home carrying cherished memories of your romantic Thailand getaway.',
+          'Meals: Breakfast.'
         ]
       }
     ],
@@ -7629,91 +8350,117 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     itinerary: [
       {
         day: 1,
-        title: 'Arrival in Bangkok, Transfer to Pattaya & Alcazar Show',
+        title: 'Arrive in Bangkok. Transfer to Pattaya and Evening Alcazar Show.',
         description: [
-          'Transfer: Airport pickup at Bangkok Airport & 2-hour drive to Pattaya',
-          'Accommodation: Hotel in Pattaya',
-          'Sightseeing: Check-in & evening Alcazar Cabaret Show with exotic set designs'
+          'Arrive at Bangkok International Airport, complete customs formalities, and meet our tour representative.',
+          'Board your comfortable transfer for a scenic 2-hour drive along the eastern seaboard to Pattaya.',
+          'Check in to your Pattaya hotel and relax after your journey.',
+          'In the evening, head out for the world-famous Alcazar Cabaret Show featuring 17 grand cultural acts, dazzling costumes, and state-of-the-art light and sound.',
+          'Return to your hotel after the spectacular performance.',
+          'Overnight stay in Pattaya.',
+          'Meals: Dinner.'
         ]
       },
       {
         day: 2,
-        title: 'Coral Island Speedboat Tour & Pattaya Nightlife',
+        title: 'Coral Island Tour. Spend the Evening at Pattaya Night Street.',
         description: [
-          'Transfer: Speedboat ride from Pattaya pier to Coral Island',
-          'Accommodation: Hotel in Pattaya',
-          'Sightseeing: Tawaen Beach relaxation, swimming & water sports',
-          'Sightseeing: Snorkeling & sea walker coral exploration',
-          'Sightseeing: Evening stroll & nightlife on Pattaya Walking Street'
+          'Enjoy an energizing breakfast at the hotel before morning pickup.',
+          'Transfer to Pattaya beach pier and board a high-speed speedboat to Coral Island (Koh Larn).',
+          'Arrive at Tawaen Beach, sink your feet into powdery white sand, and enjoy swimming in crystal-clear waters.',
+          'Optionally participate in thrilling watersports like parasailing, jet skiing, banana boat rides, or sea walking.',
+          'Savor a delicious Indian lunch before cruising back to the Pattaya mainland.',
+          'Spend your evening exploring Pattaya Walking Street with its energetic night markets, live music, and dining hubs.',
+          'Overnight stay in Pattaya.',
+          'Meals: Breakfast & Lunch.'
         ]
       },
       {
         day: 3,
-        title: 'Nong Nooch Tropical Botanical Village Tour',
+        title: 'Nong Nooch Village Tour.',
         description: [
-          'Transfer: Round-trip transfer to Nong Nooch Tropical Village',
-          'Accommodation: Hotel in Pattaya',
-          'Sightseeing: Nong Nooch Botanical Gardens, Zoo & Thai Cultural Show',
-          'Sightseeing: Themed gardens, elephant talent show & scenic lake paddle boating'
+          'Relish breakfast at your hotel and board your transfer to Nong Nooch Tropical Botanical Garden.',
+          'Explore landscaped themed gardens including the French Garden, Stonehenge Garden, and Dinosaur Valley.',
+          'Watch captivating Thai cultural dance performances, martial arts demonstrations, and the famous elephant show.',
+          'Enjoy a leisurely paddle boat ride on the lake or stroll through the colorful orchid nursery.',
+          'Return to your hotel in Pattaya for an evening at leisure.',
+          'Overnight stay in Pattaya.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 4,
-        title: 'Pattaya to Bangkok, City Temples & Chao Phraya Dinner Cruise',
+        title: 'Pattaya to Bangkok. City Tour and Evening Dinner Cruise.',
         description: [
-          'Transfer: Inter-city transfer from Pattaya to Bangkok hotel',
-          'Accommodation: Hotel in Bangkok',
-          'Sightseeing: Bangkok City & Temple Tour with Golden Buddha & Gems Gallery',
-          'Sightseeing: Luxury Chao Phraya River Dinner Cruise with international buffet'
+          'Have breakfast at the hotel, check out, and board your transfer to Bangkok.',
+          'Upon arrival, embark on a guided temple tour visiting Wat Traimit (Golden Buddha) and Wat Pho (Reclining Buddha).',
+          'Visit the renowned Gems Gallery to witness Thai gemstone artistry.',
+          'Check in to your Bangkok hotel and relax.',
+          'In the evening, board a luxury Chao Phraya River Dinner Cruise featuring live entertainment and an international buffet.',
+          'Admire illuminated Bangkok landmarks like Wat Arun and the Grand Palace from the open-air deck.',
+          'Overnight stay in Bangkok.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 5,
-        title: 'Full Day Safari World & Marine Park',
+        title: 'Full Day at the Safari World and Marine Park.',
         description: [
-          'Transfer: Round-trip transfer to Safari World & Marine Park',
-          'Accommodation: Hotel in Bangkok',
-          'Sightseeing: Open-air Safari Park with lions, tigers, zebras & giraffes',
-          'Sightseeing: Marine Park shows featuring dolphins, sea lions & cowboy stunts',
-          'Sightseeing: Buffet lunch inside the park & exotic bird aviary'
+          'Enjoy breakfast at the hotel and set off for an action-packed day at Safari World and Marine Park.',
+          'Drive through the open-air Safari Park to spot lions, zebras, giraffes, and rhinos roaming freely.',
+          'Proceed to the Marine Park to witness exciting live shows including Dolphin Shows, Sea Lion shows, and the Hollywood Stunt Show.',
+          'Relish a delicious buffet lunch served within the park complex.',
+          'Visit the bird aviary and feed giraffes at the elevated feeding terrace.',
+          'Return to your Bangkok hotel in the late afternoon for evening leisure.',
+          'Overnight stay in Bangkok.',
+          'Meals: Breakfast & Lunch.'
         ]
       },
       {
         day: 6,
-        title: 'Bangkok to Phuket & Simon Cabaret Show',
+        title: 'Bangkok to Phuket. Cabaret Show in the evening.',
         description: [
-          'Transfer: Transfer to Bangkok Airport & flight to Phuket',
-          'Transfer: Phuket Airport pickup & hotel check-in',
-          'Accommodation: Hotel in Phuket',
-          'Sightseeing: Evening Simon Cabaret Show Phuket'
+          'Have breakfast at the hotel, check out, and transfer to the airport for your flight to Phuket.',
+          'Arrive at Phuket International Airport, meet your representative, and transfer to your Phuket hotel.',
+          'Complete check-in formalities and spend the afternoon unwinding.',
+          'In the evening, attend the dazzling Simon Cabaret Show, Phuket’s premier transvestite theatrical performance.',
+          'Overnight stay in Phuket.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 7,
-        title: 'Phi Phi Islands Speedboat Tour',
+        title: 'Phi Phi Island Tour.',
         description: [
-          'Transfer: Speedboat transfers for island hopping',
-          'Accommodation: Hotel in Phuket',
-          'Sightseeing: Phi Phi Island Tour with Maya Bay & Monkey Beach',
-          'Sightseeing: Snorkeling in turquoise waters & beachside lunch'
+          'Enjoy breakfast at the hotel and transfer to the pier for your Phi Phi Islands speedboat excursion.',
+          'Glide across the turquoise Andaman Sea towards Maya Bay, Loh Samah Bay, and Viking Cave.',
+          'Visit Monkey Beach to spot playful wild macaques on the shore.',
+          'Swim, snorkel among vibrant coral reefs, and savor a buffet lunch at Phi Phi Don.',
+          'Return by speedboat to Phuket and transfer back to your hotel.',
+          'Overnight stay in Phuket.',
+          'Meals: Breakfast & Lunch.'
         ]
       },
       {
         day: 8,
-        title: 'Phuket City Tour & Leisure Evening',
+        title: 'Phuket City Tour. Evening at Leisure.',
         description: [
-          'Accommodation: Hotel in Phuket',
-          'Sightseeing: Phuket City Tour & Karon View Point',
-          'Sightseeing: Wat Chalong Temple & Big Buddha Statue',
-          'Sightseeing: Scenic coastline views of Kata & Kata Noi Beaches'
+          'Savor breakfast at the hotel and set out on a guided sightseeing tour across Phuket.',
+          'Take in sweeping panoramic views from Karon Viewpoint and visit the iconic 45m-tall Big Buddha.',
+          'Explore the sacred Wat Chalong Temple and marvel at Sino-Portuguese heritage architecture in Old Phuket Town.',
+          'Spend the evening relaxing on Patong Beach or exploring Bangla Road and night markets.',
+          'Overnight stay in Phuket.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 9,
-        title: 'Phuket Departure',
+        title: 'Departure. Take back a lot of romantic memories.',
         description: [
-          'Transfer: Hotel checkout & transfer to Phuket Airport for onward flight',
-          'Sightseeing: Departure with wonderful memories of Thailand'
+          'Enjoy your final breakfast at the hotel and pack your luggage.',
+          'Complete check-out and board your scheduled transfer to Phuket International Airport.',
+          'Board your flight back home filled with unforgettable memories of your comprehensive Thailand journey.',
+          'Meals: Breakfast.'
         ]
       }
     ],
@@ -7848,69 +8595,92 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     itinerary: [
       {
         day: 1,
-        title: 'Arrival in Bangkok, Transfer to Pattaya & Alcazar Show',
+        title: 'Arrive in Bangkok. Transfer to Pattaya and Evening Alcazar Show.',
         description: [
-          'Transfer: Airport pickup at Bangkok Airport & 2-hour drive to Pattaya',
-          'Accommodation: Hotel in Pattaya',
-          'Sightseeing: Check-in & evening Alcazar Cabaret Show'
+          'Arrive at Bangkok Airport, complete immigration formalities, and meet our representative.',
+          'Board your private transfer and drive 2 hours through scenic coastal highways to Pattaya.',
+          'Check in to your Pattaya hotel and unwind after your journey.',
+          'In the evening, attend the world-famous Alcazar Cabaret Show with 17 spectacular cultural acts, dazzling stage designs, and grand costumes.',
+          'Overnight stay in Pattaya.',
+          'Meals: Dinner.'
         ]
       },
       {
         day: 2,
-        title: 'Coral Island Speedboat Tour & Pattaya Walking Street',
+        title: 'Coral Island Tour. Spend the Evening at Pattaya Night Street.',
         description: [
-          'Transfer: Speedboat ride to Coral Island (Koh Larn)',
-          'Accommodation: Hotel in Pattaya',
-          'Sightseeing: Tawaen Beach relaxation & water sports',
-          'Sightseeing: Snorkeling & vibrant evening at Pattaya Walking Street'
+          'Enjoy an early breakfast at the hotel before morning pickup.',
+          'Transfer to Pattaya beach pier and board a speedboat to Coral Island (Koh Larn).',
+          'Arrive at Tawaen Beach to relax on white sands or swim in clear turquoise waters.',
+          'Optionally participate in exciting watersports like parasailing, sea walking, or banana boat rides.',
+          'Savor a delicious Indian lunch on the island before returning by speedboat to the mainland.',
+          'Spend the evening exploring Pattaya’s vibrant walking street, beach promenade, and night markets.',
+          'Overnight stay in Pattaya.',
+          'Meals: Breakfast & Lunch.'
         ]
       },
       {
         day: 3,
-        title: 'Nong Nooch Tropical Botanical Village Tour',
+        title: 'Nong Nooch Village Tour.',
         description: [
-          'Transfer: Round-trip transfer to Nong Nooch Tropical Village',
-          'Accommodation: Hotel in Pattaya',
-          'Sightseeing: Nong Nooch Botanical Gardens, Zoo & Thai Cultural Show',
-          'Sightseeing: Elephant shows, themed gardens & lake views'
+          'Relish a hearty breakfast at your hotel and board transfers to Nong Nooch Tropical Botanical Garden.',
+          'Explore world-class landscaped gardens including the French Garden, Stonehenge Garden, and Dinosaur Valley.',
+          'Watch captivating Thai cultural dance performances, traditional martial arts, and the famous elephant talent show.',
+          'Enjoy paddle boating on the scenic lake or stroll through colorful orchid and bonsai exhibits.',
+          'Return to Pattaya in the late afternoon with the evening free at leisure.',
+          'Overnight stay in Pattaya.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 4,
-        title: 'Pattaya to Bangkok, City Temples & Chao Phraya Dinner Cruise',
+        title: 'Pattaya to Bangkok. City Tour and Evening Dinner Cruise.',
         description: [
-          'Transfer: Inter-city transfer from Pattaya to Bangkok',
-          'Accommodation: Hotel in Bangkok',
-          'Sightseeing: Golden Buddha Temple, Reclining Buddha & Gems Gallery',
-          'Sightseeing: Luxury Chao Phraya River Dinner Cruise with live entertainment'
+          'Have breakfast at the hotel, check out, and board your comfortable transfer to Bangkok.',
+          'Upon arrival in Bangkok, embark on a guided temple tour visiting Wat Traimit (Golden Buddha) and Wat Pho (Reclining Buddha).',
+          'Visit the renowned Gems Gallery to browse exquisite handcrafted jewelry.',
+          'Check in to your Bangkok hotel and relax.',
+          'In the evening, board a luxury Chao Phraya River Dinner Cruise featuring live entertainment and an international buffet.',
+          'Admire illuminated Bangkok landmarks along the riverfront under the night sky.',
+          'Overnight stay in Bangkok.',
+          'Meals: Breakfast & Dinner.'
         ]
       },
       {
         day: 5,
-        title: 'Full Day Safari World & Marine Park',
+        title: 'Full Day at the Safari World and Marine Park.',
         description: [
-          'Transfer: Round-trip transfer to Safari World & Marine Park',
-          'Accommodation: Hotel in Bangkok',
-          'Sightseeing: Open-air Safari Park drive-through with exotic wildlife',
-          'Sightseeing: Marine Park dolphin, sea lion & stunt shows with buffet lunch'
+          'Enjoy breakfast at the hotel and set off for an exciting family day at Safari World and Marine Park.',
+          'Drive through the open Safari Park and witness lions, tigers, zebras, and giraffes in open habitats.',
+          'Explore Marine Park to watch thrilling live shows including Dolphin Shows, Sea Lion spectacles, and the Hollywood Stunt Show.',
+          'Relish a delicious buffet lunch inside the park complex.',
+          'Hand-feed giraffes at the elevated feeding platform and explore the tropical aviary.',
+          'Return to your Bangkok hotel in the evening.',
+          'Overnight stay in Bangkok.',
+          'Meals: Breakfast & Lunch.'
         ]
       },
       {
         day: 6,
-        title: 'Full Day Dream World Amusement Park',
+        title: 'Full-Day Tour of Dream World.',
         description: [
-          'Transfer: Round-trip transfer to Dream World Bangkok',
-          'Accommodation: Hotel in Bangkok',
-          'Sightseeing: Thrill rides including Sky Coaster, Grand Canyon & Super Splash',
-          'Sightseeing: Snow Town winter experience, cartoon parades & buffet lunch'
+          'Have breakfast at the hotel and transfer to Dream World Amusement Park for a thrilling day with family.',
+          'Experience adrenaline-pumping rides including Sky Coaster, Speed Mouse, Grand Canyon, Super Splash, and Space Mountain.',
+          'Meet beloved cartoon characters in fantasy zones and explore the magical Snow Town with sub-zero snow slides.',
+          'Enjoy a delightful buffet lunch at the park restaurant.',
+          'Cool off on family-friendly water attractions and canyon splashes before transferring back to the hotel.',
+          'Overnight stay in Bangkok.',
+          'Meals: Breakfast & Lunch.'
         ]
       },
       {
         day: 7,
-        title: 'Bangkok Departure',
+        title: 'Departure. Take back a lot of romantic memories.',
         description: [
-          'Transfer: Hotel checkout & transfer to Bangkok Airport for departure',
-          'Sightseeing: Departure with cherished family memories'
+          'Enjoy breakfast at the hotel and pack your bags.',
+          'Complete check-out formalities and board your scheduled transfer to Bangkok Airport.',
+          'Depart for home carrying wonderful memories of your fun-filled Thailand family vacation.',
+          'Meals: Breakfast.'
         ]
       }
     ],
@@ -8038,49 +8808,65 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     itinerary: [
       {
         day: 1,
-        title: 'Arrival in Phuket & Leisure Day',
+        title: 'Arrive in Phuket. Day at leisure.',
         description: [
-          'Transfer: Airport pickup at Phuket International Airport & transfer to hotel',
-          'Accommodation: Hotel in Phuket',
-          'Sightseeing: Check-in, relax & evening at leisure'
+          'Arrive at Phuket International Airport, complete customs and immigration, and meet our tour representative.',
+          'Board your private transfer and drive to your hotel in Phuket.',
+          'Check in to your hotel and unwind in the tropical setting.',
+          'Spend the rest of the day at leisure exploring local cafes or relaxing by the beach.',
+          'Overnight stay in Phuket.',
+          'Meals: Not Included.'
         ]
       },
       {
         day: 2,
-        title: 'Phuket City Tour with Big Buddha & Promthep Cape',
+        title: 'Phuket City Tour. Evening at Leisure.',
         description: [
-          'Accommodation: Hotel in Phuket',
-          'Sightseeing: Karon View Point overlooking Kata & Kata Noi Beaches',
-          'Sightseeing: Wat Chalong Temple & Phuket Big Buddha Statue',
-          'Sightseeing: Promthep Cape panoramic viewpoints & Old Phuket Town Sino-Portuguese architecture'
+          'Enjoy a leisurely breakfast at your hotel before setting out on a guided Phuket city tour.',
+          'Visit Karon Viewpoint for sweeping panoramic views over Kata Noi, Kata, and Karon beaches.',
+          'Explore the sacred Wat Chalong Temple and marvel at the 45-meter-tall Big Buddha on Nakkerd Hill.',
+          'Admire vibrant Sino-Portuguese heritage architecture and colorful murals in Old Phuket Town.',
+          'Visit Promthep Cape, Phuket’s southernmost viewpoint, famous for stunning ocean scenery.',
+          'Spend the evening relaxing at Patong or exploring night markets.',
+          'Overnight stay in Phuket.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 3,
-        title: 'Phi Phi Islands Speedboat Tour with Local Lunch',
+        title: 'Phi Phi Island Tour with Local Lunch',
         description: [
-          'Transfer: Speedboat transfers for island hopping',
-          'Accommodation: Hotel in Phuket',
-          'Sightseeing: Phi Phi Island Tour with Maya Bay, Viking Cave & Monkey Beach',
-          'Sightseeing: Snorkeling in turquoise lagoons & beachside lunch'
+          'Have breakfast at the hotel and transfer to the pier for your Phi Phi Islands speedboat excursion.',
+          'Cruise through crystal-clear waters to Maya Bay, surrounded by towering limestone cliffs.',
+          'Visit Viking Cave, Loh Samah Bay, and Monkey Beach to observe playful monkeys along the sand.',
+          'Relish a delicious buffet lunch on Phi Phi Don Island.',
+          'Swim and snorkel among colorful coral reefs and exotic marine life before returning by speedboat to the pier.',
+          'Transfer back to your hotel for an evening at leisure.',
+          'Overnight stay in Phuket.',
+          'Meals: Breakfast & Lunch.'
         ]
       },
       {
         day: 4,
-        title: 'Tiger Kingdom Phuket (Medium Tiger Zone) & Leisure Evening',
+        title: 'Visit Tiger Kingdom (Medium Tiger Zone). Evening at Leisure.',
         description: [
-          'Transfer: Round-trip transfer to Tiger Kingdom Phuket',
-          'Accommodation: Hotel in Phuket',
-          'Sightseeing: Tiger Kingdom Medium Tiger Zone encounter & photo opportunities',
-          'Sightseeing: Educational conservation briefing & evening leisure at Patong'
+          'Savor breakfast at the hotel and depart for a thrilling visit to Tiger Kingdom Phuket.',
+          'Enter the Medium Tiger Zone under professional handler guidance to observe, pet, and take memorable photos with majestic big cats.',
+          'Learn about tiger conservation initiatives and captive care standards.',
+          'Browse the on-site souvenir shop and relax at the garden cafe.',
+          'Return to your hotel with the remainder of the day free for beach activities or shopping.',
+          'Overnight stay in Phuket.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 5,
-        title: 'Phuket Departure',
+        title: 'Departure. Take back a lot of happy memories.',
         description: [
-          'Transfer: Hotel checkout & transfer to Phuket Airport for onward flight',
-          'Sightseeing: Departure with wonderful family memories'
+          'Enjoy breakfast at the hotel and pack your luggage.',
+          'Complete check-out formalities and board your scheduled transfer to Phuket International Airport.',
+          'Depart for home carrying wonderful tropical memories of your Phuket family holiday.',
+          'Meals: Breakfast.'
         ]
       }
     ],
@@ -8205,58 +8991,76 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     itinerary: [
       {
         day: 1,
-        title: 'Arrival in Bangkok & Transfer to Pattaya',
+        title: 'Arrive in Bangkok. Transfer to Pattaya.',
         description: [
-          'Transfer: Airport pickup at Bangkok Airport & 2-hour drive to Pattaya',
-          'Accommodation: Hotel in Pattaya',
-          'Sightseeing: Check-in, relax & evening at leisure'
+          'Arrive at Bangkok Airport, complete customs and immigration, and meet our tour representative.',
+          'Board your private transfer and enjoy a scenic 2-hour drive to the vibrant coastal resort city of Pattaya.',
+          'Check in to your Pattaya hotel and relax after your journey.',
+          'Spend the evening at leisure exploring local cafes, Pattaya beach, or relaxing at the hotel.',
+          'Overnight stay in Pattaya.',
+          'Meals: Not Included.'
         ]
       },
       {
         day: 2,
-        title: 'Coral Island Speedboat Tour & Pattaya Nightlife',
+        title: 'Coral Island Tour. Spend the Evening at Pattaya Night Street.',
         description: [
-          'Transfer: Speedboat ride from Pattaya pier to Coral Island (Koh Larn)',
-          'Accommodation: Hotel in Pattaya',
-          'Sightseeing: Tawaen Beach relaxation, swimming & water sports',
-          'Sightseeing: Snorkeling, seafood lunch & evening at Pattaya Walking Street'
+          'Enjoy breakfast at the hotel and transfer to Pattaya pier.',
+          'Board a high-speed speedboat and cruise across turquoise waters to Coral Island (Koh Larn).',
+          'Relax on the sandy shores of Tawaen Beach or swim in clear emerald waters.',
+          'Optionally participate in thrilling watersports including parasailing, jet skiing, and sea walking.',
+          'Savor a delicious Indian lunch before returning by speedboat to the mainland.',
+          'Spend the evening exploring Pattaya’s bustling walking street and night bazaar.',
+          'Overnight stay in Pattaya.',
+          'Meals: Breakfast & Lunch.'
         ]
       },
       {
         day: 3,
-        title: 'Leisure Day in Pattaya & Optional Sightseeing',
+        title: 'Day at leisure (Free Day to Explore the city)',
         description: [
-          'Accommodation: Hotel in Pattaya',
-          'Sightseeing: Free day for beach leisure, shopping or visiting Sanctuary of Truth',
-          'Sightseeing: Optional visit to Big Buddha Temple & Pattaya City Viewpoint'
+          'Wake up to a leisurely breakfast at the hotel with the entire day free at your own pace.',
+          'Optionally visit iconic landmarks like the Big Buddha Temple (Wat Phra Yai) or the Sanctuary of Truth.',
+          'Relax by the hotel swimming pool or indulge in shopping at Central Festival Mall.',
+          'In the evening, optionally attend the famous Alcazar Show or explore lively local eateries.',
+          'Overnight stay in Pattaya.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 4,
-        title: 'Pattaya to Bangkok & En Route City Temple Tour',
+        title: 'Pattaya to Bangkok. En route Bangkok City Tour.',
         description: [
-          'Transfer: Scenic inter-city transfer from Pattaya to Bangkok',
-          'Accommodation: Hotel in Bangkok',
-          'Sightseeing: Bangkok City Tour with Golden Buddha Temple & Reclining Buddha',
-          'Sightseeing: Hotel check-in & evening leisure'
+          'Have breakfast at the hotel, complete check-out, and board your transfer to Bangkok.',
+          'Upon arrival, embark on a city tour visiting Wat Traimit (Golden Buddha) and Wat Pho (Reclining Buddha).',
+          'Visit the World Gems Collection gallery to see handcrafted jewelry and gemstone exhibits.',
+          'Check in to your Bangkok hotel and enjoy the rest of the day exploring the city at leisure.',
+          'Overnight stay in Bangkok.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 5,
-        title: 'Full Day Safari World & Marine Park',
+        title: 'Full Day at the Safari World and Marine Park.',
         description: [
-          'Transfer: Round-trip transfer to Safari World & Marine Park',
-          'Accommodation: Hotel in Bangkok',
-          'Sightseeing: Open-air Safari Park safari drive with lions, zebras & giraffes',
-          'Sightseeing: Marine Park dolphin, seal & stunt shows with buffet lunch'
+          'Enjoy breakfast at the hotel and depart for a full-day adventure at Safari World & Marine Park.',
+          'Take a safari drive through open landscapes to see zebras, giraffes, lions, and exotic African wildlife.',
+          'Watch entertaining marine shows including the Dolphin Show, Sea Lion Show, and stunt performances.',
+          'Relish a delicious buffet lunch served within the park.',
+          'Visit the tropical bird aviary and feed giraffes from the raised observation terrace.',
+          'Transfer back to your Bangkok hotel in the late afternoon.',
+          'Overnight stay in Bangkok.',
+          'Meals: Breakfast & Lunch.'
         ]
       },
       {
         day: 6,
-        title: 'Bangkok Departure',
+        title: 'Departure. Take back a lot of happy memories.',
         description: [
-          'Transfer: Hotel checkout & transfer to Bangkok Airport for departure',
-          'Sightseeing: Departure with memorable family experiences'
+          'Enjoy breakfast at the hotel and pack your bags.',
+          'Complete check-out formalities and board your transfer to Bangkok Airport.',
+          'Board your flight back home with wonderful memories of your relaxed Thailand family holiday.',
+          'Meals: Breakfast.'
         ]
       }
     ],
@@ -8380,68 +9184,89 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     itinerary: [
       {
         day: 1,
-        title: 'Arrival in Phuket & Transfer to Krabi',
+        title: 'Arrive in Phuket. Transfer to Krabi.',
         description: [
-          'Transfer: Airport pickup at Phuket Airport & 3-hour transfer to Krabi',
-          'Accommodation: Hotel in Krabi',
-          'Sightseeing: Check-in, relax & evening at leisure'
+          'Arrive at Phuket International Airport, complete customs and immigration, and meet our representative.',
+          'Board your comfortable air-conditioned transfer for a scenic 3-hour drive along the Andaman coast to Krabi.',
+          'Check in to your resort in Krabi and unwind after your journey.',
+          'Spend the evening at leisure strolling along Ao Nang beach or enjoying a seaside cafe.',
+          'Overnight stay in Krabi.',
+          'Meals: Not Included.'
         ]
       },
       {
         day: 2,
-        title: 'Krabi 4-Island Tour by Speedboat',
+        title: '4 Island Tour by Speed Boat.',
         description: [
-          'Transfer: Speedboat transfers for 4-Island hopping',
-          'Accommodation: Hotel in Krabi',
-          'Sightseeing: Phra Nang Cave Beach, Tup Island & Poda Island',
-          'Sightseeing: Chicken Island Snorkeling & beach picnic lunch'
+          'Enjoy breakfast at the resort and transfer to the pier for your Krabi 4 Islands speedboat tour.',
+          'Visit Phra Nang Cave Beach with its Princess Cave shrine and towering limestone cliffs.',
+          'Walk along the famous sandbar connecting Tup Island and Mor Island at low tide.',
+          'Admire Chicken Island’s unique rock formation and snorkel in vibrant coral reefs.',
+          'Relax and enjoy a packed picnic lunch on the pristine white sands of Poda Island.',
+          'Return by speedboat to the pier and transfer back to your resort.',
+          'Overnight stay in Krabi.',
+          'Meals: Breakfast & Lunch.'
         ]
       },
       {
         day: 3,
-        title: 'Krabi Half-Day Morning City Tour & Rainforest Walk',
+        title: 'Krabi Half Day Morning City Tour. Evening at leisure.',
         description: [
-          'Accommodation: Hotel in Krabi',
-          'Sightseeing: Scenic coastline drive & Khao Khanab Nam limestone cave',
-          'Sightseeing: Mud Crabs Sculpture photo stop & Wat Sai Thai Reclining Buddha',
-          'Sightseeing: Tiger Cave Temple panoramic viewpoint & 1000-year-old rainforest walk'
+          'Savor breakfast at the resort and embark on a guided morning city tour of Krabi.',
+          'Admire views of Khao Khanab Nam limestone peaks rising over the Krabi River.',
+          'Stop at the iconic Giant Mud Crabs sculpture along the mangrove waterfront for photos.',
+          'Visit Wat Sai Thai with its historic 150-year-old reclining Buddha under a limestone cliff.',
+          'Visit the revered Tiger Cave Temple (Wat Tham Suea) nestled within lush ancient rainforests.',
+          'Return to your resort and enjoy the afternoon and evening at leisure.',
+          'Overnight stay in Krabi.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 4,
-        title: 'Krabi to Phuket Transfer & Leisure Evening',
+        title: 'Transfer from Krabi to Phuket. Day at leisure.',
         description: [
-          'Transfer: Scenic 2-3 hour drive from Krabi to Phuket hotel',
-          'Accommodation: Hotel in Phuket',
-          'Sightseeing: Check-in, beach relaxation & evening stroll at Patong'
+          'Enjoy breakfast at the resort, check out, and board your transfer to Phuket.',
+          'Enjoy the scenic 2-to-3-hour overland drive across southern Thailand’s tropical countryside.',
+          'Arrive in Phuket, check in to your hotel, and relax.',
+          'Spend the rest of the day exploring Phuket’s beaches or relaxing by the pool.',
+          'Overnight stay in Phuket.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 5,
-        title: 'Phi Phi Islands Speedboat Tour',
+        title: 'Phi Phi Island Tour.',
         description: [
-          'Transfer: Speedboat transfers for island hopping',
-          'Accommodation: Hotel in Phuket',
-          'Sightseeing: Phi Phi Island Tour with Maya Bay & Monkey Beach',
-          'Sightseeing: Snorkeling in crystal-clear waters & beachside lunch'
+          'Enjoy breakfast at the hotel and transfer to the pier for your Phi Phi Islands speedboat excursion.',
+          'Cruise to Maya Bay, Viking Cave, and Loh Samah Bay surrounded by sheer karst cliffs.',
+          'Stroll along Monkey Beach and observe wild monkeys in their natural coastal habitat.',
+          'Relish a delicious buffet lunch at Phi Phi Don Island.',
+          'Swim and snorkel in warm crystal-clear waters before returning to the Phuket mainland.',
+          'Overnight stay in Phuket.',
+          'Meals: Breakfast & Lunch.'
         ]
       },
       {
         day: 6,
-        title: 'Phuket City Tour & Panoramic Viewpoints',
+        title: 'Phuket City Tour. Evening at Leisure.',
         description: [
-          'Accommodation: Hotel in Phuket',
-          'Sightseeing: Karon View Point overlooking Kata & Kata Noi Beaches',
-          'Sightseeing: Historic Wat Chalong Temple & Phuket Big Buddha Statue',
-          'Sightseeing: Old Phuket Town heritage walk & sunset views'
+          'Savor breakfast at the hotel and depart for a guided Phuket highlights tour.',
+          'Take in panoramic ocean views from Karon Viewpoint and visit the majestic Big Buddha.',
+          'Visit the historic Wat Chalong Temple and admire Sino-Portuguese heritage buildings in Old Phuket Town.',
+          'Spend your final evening shopping for souvenirs or enjoying Patong’s lively nightlife.',
+          'Overnight stay in Phuket.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 7,
-        title: 'Phuket Departure',
+        title: 'Departure. Take back a lot of romantic memories.',
         description: [
-          'Transfer: Hotel checkout & transfer to Phuket Airport for departure',
-          'Sightseeing: Departure with cherished romantic memories'
+          'Enjoy breakfast at the hotel and complete check-out formalities.',
+          'Board your scheduled transfer to Phuket International Airport.',
+          'Depart for home carrying unforgettable romantic memories of your Krabi and Phuket escape.',
+          'Meals: Breakfast.'
         ]
       }
     ],
@@ -8563,7 +9388,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     tripType: 'International',
     showGetQuoteOnly: false,
     inclusionsSummary: {
-      hotels: 4,
+      hotels: '4 Cities',
       transfers: 14,
       experiences: 9,
       meals: 8,
@@ -8600,7 +9425,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
         '7 Breakfast'
       ],
       transfers: [
-        'Airport & Sightseeing in Private Mini Bus',
+        'Airport & Sightseeing in Private Mini Bus.',
         'Hanoi - Sapa By Luxury Train',
         'Sapa - Hanoi By Sleeper Bus'
       ],
@@ -8649,7 +9474,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
         day: 1,
         title: 'Hanoi Arrival , Hanoi City Tour , Evening visit Train Street & Beer Street',
         description: [
-          'Accommodation: Babylon Grand Hotel',
+          'Accommodation : Babylon Grand Hotel',
           'Arrive in Hanoi',
           'Transfer to Hotel In Central Hanoi OLD QUATER',
           'Guided City Tour',
@@ -8662,8 +9487,6 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
         day: 2,
         title: 'Ninh - Binh - Trang An - Mua Cave , Overnight Train to Sapa',
         description: [
-          'Accommodation: Luxury Overnight Train (SP3 AC Sleeper Cabin)',
-          'Meals: Breakfast',
           'Enjoy Early Morning Breakfast',
           'Day Trip to Ninh Binh',
           'Experience most iconic Boat Ride Trang An',
@@ -8671,80 +9494,76 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
           'Evening experience sunset from Mua Cave',
           'Later Experience Overnight Train Journey to Sapa',
           'Hanoi → Sapa: SP3 Overnight Train — 22:00–05:55 hrs',
-          'Overnight in Train'
+          'Overnight in Train',
+          'Meal : ( Breakfast )'
         ]
       },
       {
         day: 3,
         title: 'Sapa Rong May Glass Bridge , Rainbow Slide , Alpine Coaster & Cat Cat Village',
         description: [
-          'Accommodation: Sapa Relax Hotel',
-          'Meals: Breakfast',
           'Arrive Early Morning around 5 am in Sapa',
-          'Early Hotel Check in Relax & Rest',
+          'Early Hotel Check in Relax &  Rest',
           'After Breakfast Later in Afternoon Visit Muong Hoa Glass Bridge',
           'Experience Most iconic Rainbow Slide Alpine Coaster',
           'Cat Cat Village Beautiful Trail',
           'Evening at Leisure Explore Cafe Shopping Street',
-          'Overnight in Sapa'
+          'Overnight in Sapa',
+          'Meals : Breakfast'
         ]
       },
       {
         day: 4,
         title: 'Fansipan Peak with Muong Hoa Train & Cable Car , Sleeper Bus Transfer from Sapa - Hanoi',
         description: [
-          'Accommodation: Babylon Grand Hotel',
-          'Meals: Breakfast',
           'Early Morning Breakfast',
           'After Breakfast visit Fansipan Peak ( Roof of Indochina )',
           'Muong Hoa Train & Cable Car',
           'Later Board your Sleeper Bus To Hanoi',
           'Reach Hanoi by Evening & evening at leisure enjoy nightlife in Hanoi.',
-          'Overnight in Hanoi.'
+          'Overnight in Hanoi.',
+          'Meals : ( Breakfast )'
         ]
       },
       {
         day: 5,
         title: 'Hanoi to Danang , Hoi An ancient town Exploration',
         description: [
-          'Accommodation: Vinh Hung Old Town Hotel / Merry Hotel',
-          'Meals: Breakfast',
           'Early Morning Packed Breakfast',
           'Transfer to Airport & catch flight for Danang',
           'Arrive in Danang Board your Transfer for Hoi An ( Most Iconic Ancient Town of Vietnam )',
           'Enjoy Coconut Basket Ride',
           'Experience Hoi An Lantern Village Paddling on Cycle',
           'Evening Lantern Boat Ride Experience',
-          'Overnight in Danang'
+          'Overnight in Danang',
+          'Meals ( Breakfast )'
         ]
       },
       {
         day: 6,
         title: 'Visit Bana Hill Cable Car, Golden Bridge, Fantasy Park & French Village & Visit Dragon Bridge.',
         description: [
-          'Accommodation: Merry Hotel',
-          'Meals: Breakfast',
           'Relaxing Morning Breakfast',
           'Visit Bana Hills Two Way Cable Car',
           'Golden Hands Bridge',
           'Fantasy Park',
           'Visit French Village',
           'Relaxing Evening on the beach Explore Cafes & Nightlife',
-          'Overnight in Danang.'
+          'Overnight in Danang.',
+          'Meals : ( Breakfast )'
         ]
       },
       {
         day: 7,
         title: 'Early Morning Flight Danang to Ho Chi Minh , Cu Chi Tunnel',
         description: [
-          'Accommodation: Liberty Green Hotel',
-          'Meals: Breakfast',
           'After Breakfast Transfer To Airport',
           'Arrive in Ho Chi Minh',
           'Visit Cu Chi Tunnel Experience Riffle Shooting',
           'Cafe Hopping visit Apartment Cafe',
           'Evening at Leisure at Bui Vien Street',
-          'Overnight in Ho Chi Minh'
+          'Overnight in Ho Chi Minh',
+          'Meals : ( Breakfast )'
         ]
       },
       {
@@ -8774,7 +9593,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     ],
     notIncluded: [
       'Meals as mentioned above',
-      'Compulsory tipping for guide & driver: 3usd/pax/day',
+      'Compjlsory tipping for guide & driver: 3usd/pax/day',
       'Governmnet Taxes & Charges',
       'Domestic flight',
       'Visa Fee',
@@ -8794,11 +9613,11 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
       },
       {
         month: 'October',
-        ranges: ['2nd - 9th October']
+        ranges: ['2nd - 9th Oct']
       },
       {
         month: 'November',
-        ranges: ['14th - 21st November']
+        ranges: ['14th - 21st Nov']
       },
       {
         month: 'December',
@@ -8933,144 +9752,126 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
       'Trip End: Phu Quoc.',
       'Major Highlights: Hanoi Train Street, Ha Long Bay Luxury Cruise with Kayaking, Ba Na Hills & Golden Bridge, Coconut Forest, Hoi An Ancient Town with Lantern Boat ride, and Phu Quoc island hopping.'
     ],
-    summaryDetails: {
-      accommodation: [
-        { city: 'Hanoi', hotel: 'Hotel / Similar' },
-        { city: 'Da Nang', hotel: 'Hotel / Similar' },
-        { city: 'Phu Quoc', hotel: 'Hotel / Similar' }
-      ],
-      meals: [
-        '8 Breakfast & 1 Cruise Lunch'
-      ],
-      transfers: [
-        'Airport Pick-up & Drop-off in Private AC Vehicle',
-        'Hanoi - Ha Long Bay Return Cruise Transfers',
-        'Hanoi to Da Nang & Da Nang to Phu Quoc Domestic Flight Transfers'
-      ],
-      activities: [
-        {
-          city: 'Hanoi & Ha Long Bay',
-          items: [
-            'Hanoi Guided City Tour & Tran Quoc Pagoda',
-            'Famous Train Street & Beer Street Experience',
-            'Ha Long Bay Luxury Day Cruise with Kayaking & Sunset Party'
-          ]
-        },
-        {
-          city: 'Da Nang & Hoi An',
-          items: [
-            'Marble Mountains & Huyen Khong Cave',
-            'Coconut Village Basket Boat Ride in Cam Thanh',
-            'Hoi An Ancient Town Walking Tour & Lantern Boat Ride',
-            'Ba Na Hills Cable Car, Golden Bridge & Fantasy Park'
-          ]
-        },
-        {
-          city: 'Phu Quoc',
-          items: [
-            '4 Islands Speedboat Tour with Coral Reef Snorkeling',
-            'Aquatopia Water Park & Hon Thom Cable Car Ride',
-            'Grand World & VinWonders / Vinpearl Safari (Optional)'
-          ]
-        }
-      ]
-    },
     itinerary: [
       {
         day: 1,
-        title: 'Hanoi Arrival, Half-Day City Tour, Train Street & Beer Street',
+        title: 'Arrival in Hanoi - Half-Day City Tour',
         description: [
-          'Transfer: Pick up at Noi Bai International Airport & transfer to Hanoi Hotel by Private Vehicle',
-          'Accommodation: Hotel in Hanoi',
-          'Sightseeing: Tran Quoc Pagoda & West Lake',
-          'Sightseeing: Ho Chi Minh Mausoleum & One Pillar Pagoda',
-          'Sightseeing: Famous Train Street & Cafe Experience',
-          'Sightseeing: Old Quarter Market & Beer Street'
+          'Arrive at Noi Bai International Airport, complete customs & immigration, and meet our tour representative.',
+          'Transfer to your hotel in central Hanoi, check in, and refresh.',
+          'Visit Tran Quoc Pagoda, Hanoi’s oldest Buddhist temple set on the picturesque West Lake.',
+          'Experience the excitement of Hanoi Train Street, sipping Vietnamese egg coffee as the train passes inches away.',
+          'Pass by the historic Ho Chi Minh Mausoleum complex and visit the iconic One Pillar Pagoda.',
+          'Explore the lively 36 Guilds of the Hanoi Old Quarter and immerse in the buzzing nightlife of Ta Hien Beer Street.',
+          'Overnight stay in Hanoi.',
+          'Meals: Not Included.'
         ]
       },
       {
         day: 2,
-        title: 'Ha Long Bay Luxury Day Cruise, Kayaking & Sunset Party',
+        title: 'Ha Long Bay Luxury Cruise - Kayaking & Sunset Party',
         description: [
-          'Transfer: Hanoi to Tuan Chau Marina (Ha Long Bay) & return transfers',
-          'Accommodation: Hotel in Hanoi',
-          'Sightseeing: Ha Long Bay UNESCO World Heritage Island Cruising',
-          'Sightseeing: Kayaking through Hidden Lagoons & Caves',
-          'Sightseeing: Sunset Party on Cruise with Music & Drinks'
+          'Enjoy breakfast at the hotel and depart on a scenic highway drive to Tuan Chau Marina.',
+          'Board a luxury day cruise and glide through UNESCO-listed Ha Long Bay surrounded by thousands of limestone karsts.',
+          'Relish a sumptuous Vietnamese seafood buffet lunch while cruising past iconic rock formations.',
+          'Kayak or take a bamboo boat through hidden emerald lagoons and sea caves.',
+          'Enjoy an energetic upper-deck sunset party with music, refreshments, and panoramic views of the bay.',
+          'Disembark at Tuan Chau Marina and transfer back to Hanoi in the evening.',
+          'Overnight stay in Hanoi.',
+          'Meals: Breakfast & Lunch.'
         ]
       },
       {
         day: 3,
-        title: 'Hanoi to Da Nang Flight, Hotel Check-in & Leisure Exploration',
+        title: 'Transfer from Hanoi to Da Nang. Day at Leisure.',
         description: [
-          'Transfer: Transfer to Hanoi Airport, domestic flight to Da Nang & hotel transfer',
-          'Accommodation: Hotel in Da Nang',
-          'Sightseeing: Relax at My Khe Beach',
-          'Sightseeing: Visit Dragon Bridge & Local Da Nang Night Markets'
+          'Have breakfast at the hotel, complete check-out, and transfer to Noi Bai Airport.',
+          'Board your short 1.5-hour domestic flight to the coastal city of Da Nang.',
+          'Meet your local representative on arrival and transfer to your beachfront hotel.',
+          'Spend the afternoon relaxing on My Khe Beach or exploring Da Nang’s trendy seaside cafes.',
+          'In the evening, take a leisurely stroll along the Han River to view the iconic Dragon Bridge.',
+          'Overnight stay in Da Nang.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 4,
-        title: 'Marble Mountains, Coconut Basket Boat & Hoi An Ancient Town with Lantern Boat Ride',
+        title: 'Full Day Trip to Marble Mountain, Hoi An Ancient Town and Lantern on Boat Tour.',
         description: [
-          'Accommodation: Hotel in Da Nang',
-          'Sightseeing: Marble Mountains & Huyen Khong Cave Temple',
-          'Sightseeing: Non Nuoc Stone Carving Village',
-          'Sightseeing: Iconic Coconut Basket Boat Ride in Cam Thanh Village',
-          'Sightseeing: Hoi An Ancient Town Exploration & Japanese Covered Bridge',
-          'Sightseeing: Evening Lantern Boat Ride on Hoai River'
+          'Savor breakfast at the hotel and head to the sacred Marble Mountains (Thuy Son).',
+          'Explore hidden cave sanctuaries including Huyen Khong Cave and visit ancient Tam Thai Pagoda.',
+          'Stop at Non Nuoc Stone Carving Village to observe local sculptors at work.',
+          'Head to Cam Thanh Coconut Village for an exciting spinning bamboo basket boat ride through water coconut waterways.',
+          'Proceed to the UNESCO World Heritage town of Hoi An to explore the 17th-century Japanese Covered Bridge and Chinese Assembly Halls.',
+          'Board a traditional wooden boat on the Hoai River at dusk to release glowing flower lanterns onto the water.',
+          'Return to Da Nang in the evening.',
+          'Overnight stay in Da Nang.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 5,
-        title: 'Ba Na Hills Tour, Cable Car, Golden Hands Bridge & Fantasy Park',
+        title: 'Ba Na Hills Day Trip - Golden Bridge, Fantasy Park & French Village',
         description: [
-          'Accommodation: Hotel in Da Nang',
-          'Sightseeing: Ba Na Hills Scenic Cable Car Ride',
-          'Sightseeing: Iconic Golden Hands Bridge',
-          'Sightseeing: French Village & European Architecture',
-          'Sightseeing: Fantasy Park Rides & Entertainment Zone',
-          'Sightseeing: Linh Ung Pagoda & Flower Gardens'
+          'Enjoy breakfast at the hotel and transfer to the base of the Truong Son Mountains at Ba Na Hills.',
+          'Ascend via the world-record cable car system offering breathtaking forest canopy views.',
+          'Walk across the world-famous Golden Hands Bridge perched high above the mist.',
+          'Explore the European-inspired French Village, Debay Wine Cellar, and Le Jardin D’Amour flower gardens.',
+          'Enjoy indoor rides, 4D/5D theaters, and games at Fantasy Park.',
+          'Descend via cable car and return to your Da Nang hotel for an evening at leisure.',
+          'Overnight stay in Da Nang.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 6,
-        title: 'Da Nang to Phu Quoc Flight, Leisure & Optional Grand World Exploration',
+        title: 'Transfer to Phu Quoc. Leisure Day. Optional Visit to Grand World.',
         description: [
-          'Transfer: Transfer to Da Nang Airport & flight to Phu Quoc Island',
-          'Accommodation: Hotel in Phu Quoc',
-          'Sightseeing: Leisure Time at Long Beach',
-          'Sightseeing: Visit Grand World Phu Quoc & Venice Canals (Optional)',
-          'Sightseeing: Duong Dong Night Market Seafood & Shopping'
+          'Have breakfast at the hotel, check out, and transfer to Da Nang Airport.',
+          'Board your domestic flight to the tropical paradise island of Phu Quoc.',
+          'Arrive at Phu Quoc International Airport, transfer to your beach resort, and check in.',
+          'Spend the afternoon unwinding on powdery sands or relaxing by the resort pool.',
+          'In the evening, optionally visit Grand World Phu Quoc—"The Sleepless City"—to stroll Venice-style canals and watch the water fountain spectacle.',
+          'Overnight stay in Phu Quoc.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 7,
-        title: 'Phu Quoc 4 Islands Speedboat Tour, Snorkeling, Aquatopia Water Park & Cable Car',
+        title: '4 Islands Tour with Cable Car and Aquatopia Water Park.',
         description: [
-          'Accommodation: Hotel in Phu Quoc',
-          'Sightseeing: 4 Islands Speedboat Tour (Gam Ghi, Xuong & May Rut Islands)',
-          'Sightseeing: Snorkeling among Coral Reefs & Marine Life',
-          'Sightseeing: Aquatopia Water Park Thrill Rides on Thom Island',
-          'Sightseeing: World\'s Longest Sea-Crossing Hon Thom Cable Car Ride'
+          'Enjoy a tropical breakfast at the resort before morning pickup.',
+          'Board a high-speed speedboat to explore south Phu Quoc’s islands: Gam Ghi, Xuong, May Rut, and Thom Island.',
+          'Snorkel among pristine coral reefs in crystal-clear waters and relax on May Rut Beach.',
+          'Relish a delicious island lunch with fresh local specialties.',
+          'Arrive at Thom Island to enjoy thrilling water slides and rides at Aquatopia Water Park.',
+          'Experience the world’s longest over-sea cable car ride back to An Thoi harbour with spectacular 360-degree ocean panoramas.',
+          'Transfer back to your resort for evening leisure.',
+          'Overnight stay in Phu Quoc.',
+          'Meals: Breakfast & Lunch.'
         ]
       },
       {
         day: 8,
-        title: 'Phu Quoc Day at Leisure - Optional VinWonders & Vinpearl Safari Park',
+        title: 'Day at Leisure. Optional Tour to Vin Wonders and Vinpearl Safari Park.',
         description: [
-          'Accommodation: Hotel in Phu Quoc',
-          'Sightseeing: Day at Leisure to Relax at Tropical Beaches & Resort',
-          'Sightseeing: VinWonders Theme Park Thrill Rides (Optional)',
-          'Sightseeing: Vinpearl Safari Open Wildlife Conservation Tour (Optional)',
-          'Sightseeing: Sunset Views & Cafe Hopping in Sunset Town'
+          'Wake up to a leisurely breakfast at the resort with the day free to explore at your own pace.',
+          'Optionally visit Vinpearl Safari, Vietnam’s premier semi-wild animal conservation sanctuary.',
+          'Ride open safari vehicles to spot lions, rhinos, giraffes, and Bengal tigers roaming freely.',
+          'Optionally spend the afternoon at VinWonders theme park experiencing thrilling coasters and the giant sea-shell aquarium.',
+          'Visit Duong Dong Night Market in the evening to taste fresh grilled seafood and shop for Phu Quoc black pepper and pearls.',
+          'Overnight stay in Phu Quoc.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 9,
-        title: 'Departure from Phu Quoc - Tour Concludes with Unforgettable Memories',
+        title: 'Departure from Phu Quoc. Depart with a lot of happy memories.',
         description: [
-          'Transfer: Transfer to Phu Quoc International Airport as per group departure flight timing'
+          'Enjoy your final tropical breakfast at the resort and complete check-out.',
+          'Board your scheduled private transfer to Phu Quoc International Airport for your departure flight.',
+          'Depart Vietnam with incredible memories, photos, and stories of your northern, central, and island adventure.',
+          'Meals: Breakfast.'
         ]
       }
     ],
@@ -9246,94 +10047,123 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     itinerary: [
       {
         day: 1,
-        title: 'Arrival in Hanoi, Transfer to Sapa & Evening at Leisure',
+        title: 'Arrival In Hanoi & Transfer To Sapa | Evening At Leisure',
         description: [
-          'Transfer: Pick up at Noi Bai International Airport & transfer to Sapa by Sleeper / Limousine Bus',
-          'Accommodation: Hotel in Sapa',
-          'Sightseeing: Scenic Drive through Northern Highlands',
-          'Sightseeing: Evening at Leisure in Sapa Town & Central Square'
+          'Arrive at Noi Bai International Airport in Hanoi, complete immigration, and meet our tour representative.',
+          'Board your scheduled luxury limousine / sleeper bus for a scenic highland journey to Sapa.',
+          'Wind through lush pine-covered valleys, misty peaks, and terraced rice hillsides.',
+          'Arrive in Sapa mountain town, check in to your hotel, and relax.',
+          'Spend the evening at leisure exploring Sapa Town square, the Stone Church, and cozy alpine cafes.',
+          'Overnight stay in Sapa.',
+          'Meals: Not Included.'
         ]
       },
       {
         day: 2,
-        title: 'Sapa Sightseeing - Fansipan Peak, Glass Bridge & Cat Cat Village',
+        title: 'Sapa Sightseeing Tour | Fansipan Peak, Glass Bridge & Cat Cat Village',
         description: [
-          'Accommodation: Hotel in Sapa',
-          'Sightseeing: Sun World Fansipan Legend Cable Car to Indochina Peak',
-          'Sightseeing: Rong May Glass Bridge Mountain Valley Views',
-          'Sightseeing: Cat Cat Traditional Hmong Cultural Village Trail'
+          'Enjoy breakfast at the hotel and set off for Fansipan Peak—the "Roof of Indochina" at 3,143m.',
+          'Ride the Sun World cable car soaring high above the Muong Hoa Valley to reach the summit.',
+          'Explore grand pagodas, the giant bronze Buddha, and panoramic viewing platforms on the peak.',
+          'Visit the Rong May Glass Bridge and gaze down through glass walkways into sheer mountain canyons.',
+          'Trek down through the picturesque Hmong tribal hamlet of Cat Cat Village with its cascades and waterwheels.',
+          'Return to Sapa town in the late afternoon for evening leisure.',
+          'Overnight stay in Sapa.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 3,
-        title: 'Sapa to Hanoi Transfer & Half-Day Guided City Tour',
+        title: 'Sapa To Hanoi | Hanoi Half-Day City Tour',
         description: [
-          'Transfer: Transfer from Sapa to Hanoi by Sleeper / Limousine Bus',
-          'Accommodation: Hotel in Hanoi',
-          'Sightseeing: Ho Chi Minh Complex, Mausoleum & One Pillar Pagoda',
-          'Sightseeing: Historic Temple of Literature',
-          'Sightseeing: Hoan Kiem Lake, Ngoc Son Temple & Old Quarter Walking Tour'
+          'Savor breakfast at the hotel, check out, and board your return limousine/sleeper transfer to Hanoi.',
+          'Arrive in Hanoi in the afternoon, check in to your hotel, and set out for a guided city tour.',
+          'Visit the historic Ho Chi Minh Complex, Ba Dinh Square, and the unique lotus-shaped One Pillar Pagoda.',
+          'Explore the Temple of Literature, Vietnam’s first national university dating back to 1070.',
+          'Stroll around Hoan Kiem Lake, cross the red Huc Bridge to Ngoc Son Temple, and explore the bustling 36 Old Quarter streets.',
+          'Overnight stay in Hanoi.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 4,
-        title: 'Ha Long Bay Luxury Day Cruise, Kayaking & Buffet Lunch',
+        title: 'Ha Long Bay | Luxury Day Cruise, Kayaking & Buffet Lunch.',
         description: [
-          'Transfer: Hanoi to Ha Long Bay return transfers in AC vehicle',
-          'Accommodation: Hotel in Hanoi',
-          'Sightseeing: Ha Long Bay UNESCO World Heritage Luxury Cruising',
-          'Sightseeing: Kayaking through Limestone Lagoons & Hidden Caves',
-          'Sightseeing: Onboard Vietnamese Buffet Lunch with Bay Views'
+          'Enjoy an early breakfast at the hotel and board transfers across the Red River Delta to Tuan Chau Marina.',
+          'Embark on a luxury day cruise across UNESCO-listed Ha Long Bay amidst soaring limestone pillars.',
+          'Savor a lavish seafood and Vietnamese buffet lunch served in the panoramic dining salon.',
+          'Kayak or take a bamboo sampan through tranquil lagoons, sea grottoes, and limestone arches.',
+          'Relax on the open sun deck for a lively sunset party with music, refreshments, and sea breezes.',
+          'Disembark at the marina and transfer back to Hanoi.',
+          'Overnight stay in Hanoi.',
+          'Meals: Breakfast & Lunch.'
         ]
       },
       {
         day: 5,
-        title: 'Hanoi to Da Nang Flight & Evening at Leisure',
+        title: 'Hanoi To Da Nang | Evening At Leisure.',
         description: [
-          'Transfer: Transfer to Noi Bai Airport, flight to Da Nang & hotel transfer',
-          'Accommodation: Hotel in Da Nang',
-          'Sightseeing: Relax at My Khe Beach',
-          'Sightseeing: Visit Dragon Bridge & Han River Promenade'
+          'Have breakfast at the hotel, complete check-out, and transfer to Hanoi Airport.',
+          'Board your domestic flight to Da Nang (approx. 1 hour 20 minutes).',
+          'Arrive in Da Nang, meet your local guide, and transfer to your coastal hotel for check-in.',
+          'Spend the afternoon relaxing on white sandy shores of My Khe Beach.',
+          'In the evening, stroll along the Han River waterfront to witness the illuminated Dragon Bridge.',
+          'Overnight stay in Da Nang.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 6,
-        title: 'Marble Mountain, Coconut Forest & Hoi An Ancient Town with Lantern Boat',
+        title: 'Da Nang | Marble Mountain, Coconut Forest, Hoi An Ancient Town & Lantern Boat Ride',
         description: [
-          'Accommodation: Hotel in Da Nang',
-          'Sightseeing: Marble Mountains & Cave Temples',
-          'Sightseeing: Cam Thanh Coconut Village Basket Boat Ride',
-          'Sightseeing: Hoi An Ancient Town Walking Tour',
-          'Sightseeing: Evening Lantern Boat Ride on Hoai River'
+          'Enjoy breakfast at the hotel and depart for the sacred Marble Mountains.',
+          'Climb stone steps to explore Huyen Khong Cave, Tam Thai Pagoda, and panoramic coastal viewpoints.',
+          'Proceed to Cam Thanh Coconut Village and board traditional spinning bamboo basket boats through nipa palm canals.',
+          'Head into UNESCO World Heritage town of Hoi An, walking past Chinese Assembly Halls and the Japanese Covered Bridge.',
+          'At dusk, board a wooden lantern boat on the Hoai River to release candlelit flower lanterns.',
+          'Return to Da Nang in the evening.',
+          'Overnight stay in Da Nang.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 7,
-        title: 'Ba Na Hills Tour, Cable Car, Golden Hands Bridge & Fantasy Park',
+        title: 'Ba Na Hills Day Trip | Cable Car, Golden Bridge, Fantasy Park & French Village.',
         description: [
-          'Accommodation: Hotel in Da Nang',
-          'Sightseeing: Ba Na Hills Scenic Cable Car Ascent',
-          'Sightseeing: Iconic Golden Hands Bridge',
-          'Sightseeing: French Village Architecture & Square',
-          'Sightseeing: Fantasy Park Indoor Rides & Entertainment'
+          'Savor breakfast at the hotel and journey to the base of Ba Na Hills.',
+          'Ride the world-record cable car over lush rainforests and waterfalls up to the mountain resort.',
+          'Walk across the world-famous Golden Hands Bridge held aloft by colossal stone hands.',
+          'Explore the French Village, Le Jardin D’Amour flower gardens, and Linh Ung Pagoda.',
+          'Enjoy free access to rides, 4D/5D attractions, and arcade games at Fantasy Park.',
+          'Descend by cable car in the late afternoon and return to Da Nang.',
+          'Overnight stay in Da Nang.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 8,
-        title: 'Da Nang to Ho Chi Minh City Flight & Evening Exploration',
+        title: 'Da Nang To Ho Chi Minh City | Evening At Leisure.',
         description: [
-          'Transfer: Transfer to Da Nang Airport & flight to Ho Chi Minh City',
-          'Accommodation: Hotel in Ho Chi Minh City',
-          'Sightseeing: Nguyen Hue Walking Street & Saigon Skyline',
-          'Sightseeing: Exterior of Saigon Central Post Office & Notre-Dame Cathedral'
+          'Have breakfast at the hotel, complete check-out, and transfer to Da Nang Airport.',
+          'Board your flight to Ho Chi Minh City (Saigon).',
+          'Arrive in Saigon, meet your representative, and transfer to your central hotel for check-in.',
+          'Spend the evening strolling along Nguyen Hue Walking Street, admiring Saigon Opera House and the French colonial City Hall.',
+          'Optionally visit Bui Vien Walking Street to experience Saigon’s energetic nightlife.',
+          'Overnight stay in Ho Chi Minh City.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 9,
-        title: 'Cu Chi Tunnels Tour & Departure with Unforgettable Memories',
+        title: 'Explore Cu Chi Tunnels | Depart With A Lot Of Happy Memories',
         description: [
-          'Transfer: Transfer to Tan Son Nhat Airport for onward flight',
-          'Sightseeing: Historic Cu Chi Tunnels Underground Network Tour'
+          'Enjoy breakfast at the hotel and check out of your room.',
+          'Depart for the historic Cu Chi Tunnels, an immense 250km underground network from the Vietnam War.',
+          'Crawl through preserved tunnels, see hidden trapdoors, field hospitals, and weapon workshops.',
+          'Optionally test your aim at the firing range with historic AK-47 rifles.',
+          'Transfer directly to Tan Son Nhat International Airport in Ho Chi Minh City for your onward flight.',
+          'Depart with memories of an unforgettable journey from North to South Vietnam.',
+          'Meals: Breakfast.'
         ]
       }
     ],
@@ -9509,83 +10339,107 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     itinerary: [
       {
         day: 1,
-        title: 'Arrival in Hanoi, Transfer to Sapa & Evening at Leisure',
+        title: 'Arrival In Hanoi & Transfer To Sapa | Evening At Leisure',
         description: [
-          'Transfer: Pick up at Noi Bai International Airport & transfer to Sapa by Sleeper / Limousine Bus',
-          'Accommodation: Hotel in Sapa',
-          'Sightseeing: Scenic Drive through Northern Highlands',
-          'Sightseeing: Evening at Leisure in Sapa Town & Central Square'
+          'Arrive at Noi Bai International Airport in Hanoi, complete immigration, and meet our tour representative.',
+          'Board your scheduled luxury limousine / sleeper bus for a scenic highland journey to Sapa.',
+          'Wind through lush pine-covered valleys, misty peaks, and terraced rice hillsides.',
+          'Arrive in Sapa mountain town, check in to your hotel, and relax.',
+          'Spend the evening at leisure exploring Sapa Town square, the Stone Church, and cozy alpine cafes.',
+          'Overnight stay in Sapa.',
+          'Meals: Not Included.'
         ]
       },
       {
         day: 2,
-        title: 'Sapa Sightseeing - Fansipan Peak, Glass Bridge & Cat Cat Village',
+        title: 'Sapa Sightseeing Tour | Fansipan Peak, Glass Bridge & Cat Cat Village',
         description: [
-          'Accommodation: Hotel in Sapa',
-          'Sightseeing: Sun World Fansipan Legend Cable Car to Highest Peak',
-          'Sightseeing: Rong May Glass Bridge Mountain Valley Views',
-          'Sightseeing: Cat Cat Traditional Hmong Cultural Village Trail'
+          'Enjoy breakfast at the hotel and set off for Fansipan Peak—the "Roof of Indochina" at 3,143m.',
+          'Ride the Sun World cable car soaring high above the Muong Hoa Valley to reach the summit.',
+          'Explore grand pagodas, the giant bronze Buddha, and panoramic viewing platforms on the peak.',
+          'Visit the Rong May Glass Bridge and gaze down through glass walkways into sheer mountain canyons.',
+          'Trek down through the picturesque Hmong tribal hamlet of Cat Cat Village with its cascades and waterwheels.',
+          'Return to Sapa town in the late afternoon for evening leisure.',
+          'Overnight stay in Sapa.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 3,
-        title: 'Sapa to Hanoi Transfer & Half-Day Guided City Tour',
+        title: 'Sapa To Hanoi | Hanoi Half-Day City Tour',
         description: [
-          'Transfer: Transfer from Sapa to Hanoi by Sleeper / Limousine Bus',
-          'Accommodation: Hotel in Hanoi',
-          'Sightseeing: Ho Chi Minh Complex, Mausoleum & One Pillar Pagoda',
-          'Sightseeing: Historic Temple of Literature',
-          'Sightseeing: Hoan Kiem Lake, Ngoc Son Temple & Old Quarter Walking Tour'
+          'Savor breakfast at the hotel, check out, and board your return limousine/sleeper transfer to Hanoi.',
+          'Arrive in Hanoi in the afternoon, check in to your hotel, and set out for a guided city tour.',
+          'Visit the historic Ho Chi Minh Complex, Ba Dinh Square, and the unique lotus-shaped One Pillar Pagoda.',
+          'Explore the Temple of Literature, Vietnam’s first national university dating back to 1070.',
+          'Stroll around Hoan Kiem Lake, cross the red Huc Bridge to Ngoc Son Temple, and explore the bustling 36 Old Quarter streets.',
+          'Overnight stay in Hanoi.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 4,
-        title: 'Ha Long Bay Luxury Day Cruise, Kayaking & Sunset Party',
+        title: 'Ha Long Bay | Luxury Day Cruise, Kayaking & Buffet Lunch.',
         description: [
-          'Transfer: Hanoi to Ha Long Bay return transfers in AC vehicle',
-          'Accommodation: Hotel in Hanoi',
-          'Sightseeing: Ha Long Bay UNESCO World Heritage Island Cruising',
-          'Sightseeing: Kayaking through Limestone Lagoons & Hidden Caves',
-          'Sightseeing: Sunset Party on Luxury Cruise with Music & Drinks'
+          'Enjoy an early breakfast at the hotel and board transfers across the Red River Delta to Tuan Chau Marina.',
+          'Embark on a luxury day cruise across UNESCO-listed Ha Long Bay amidst soaring limestone pillars.',
+          'Savor a lavish seafood and Vietnamese buffet lunch served in the panoramic dining salon.',
+          'Kayak or take a bamboo sampan through tranquil lagoons, sea grottoes, and limestone arches.',
+          'Relax on the open sun deck for a lively sunset party with music, refreshments, and sea breezes.',
+          'Disembark at the marina and transfer back to Hanoi.',
+          'Overnight stay in Hanoi.',
+          'Meals: Breakfast & Lunch.'
         ]
       },
       {
         day: 5,
-        title: 'Hanoi to Da Nang Flight & Evening at Leisure',
+        title: 'Hanoi To Da Nang | Evening At Leisure.',
         description: [
-          'Transfer: Transfer to Noi Bai Airport, flight to Da Nang & hotel transfer',
-          'Accommodation: Hotel in Da Nang',
-          'Sightseeing: Relax at My Khe Beach',
-          'Sightseeing: Visit Dragon Bridge & Han River Promenade'
+          'Have breakfast at the hotel, complete check-out, and transfer to Hanoi Airport.',
+          'Board your domestic flight to Da Nang (approx. 1 hour 20 minutes).',
+          'Arrive in Da Nang, meet your local guide, and transfer to your coastal hotel for check-in.',
+          'Spend the afternoon relaxing on white sandy shores of My Khe Beach.',
+          'In the evening, stroll along the Han River waterfront to witness the illuminated Dragon Bridge.',
+          'Overnight stay in Da Nang.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 6,
-        title: 'Marble Mountain, Coconut Forest & Hoi An Ancient Town with Lantern Boat',
+        title: 'Da Nang | Marble Mountain, Coconut Forest, Hoi An Ancient Town & Lantern Boat Ride',
         description: [
-          'Accommodation: Hotel in Da Nang',
-          'Sightseeing: Marble Mountains & Cave Temples',
-          'Sightseeing: Cam Thanh Coconut Village Basket Boat Ride',
-          'Sightseeing: Hoi An Ancient Town Walking Tour',
-          'Sightseeing: Evening Lantern Boat Ride on Hoai River'
+          'Enjoy breakfast at the hotel and depart for the sacred Marble Mountains.',
+          'Climb stone steps to explore Huyen Khong Cave, Tam Thai Pagoda, and panoramic coastal viewpoints.',
+          'Proceed to Cam Thanh Coconut Village and board traditional spinning bamboo basket boats through nipa palm canals.',
+          'Head into UNESCO World Heritage town of Hoi An, walking past Chinese Assembly Halls and the Japanese Covered Bridge.',
+          'At dusk, board a wooden lantern boat on the Hoai River to release candlelit flower lanterns.',
+          'Return to Da Nang in the evening.',
+          'Overnight stay in Da Nang.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 7,
-        title: 'Ba Na Hills Tour, Cable Car, Golden Hands Bridge & Fantasy Park',
+        title: 'Ba Na Hills Day Trip | Cable Car, Golden Bridge, Fantasy Park & French Village.',
         description: [
-          'Accommodation: Hotel in Da Nang',
-          'Sightseeing: Ba Na Hills Scenic Cable Car Ascent',
-          'Sightseeing: Iconic Golden Hands Bridge',
-          'Sightseeing: French Village Architecture & Square',
-          'Sightseeing: Fantasy Park Indoor Rides & Entertainment'
+          'Savor breakfast at the hotel and journey to the base of Ba Na Hills.',
+          'Ride the world-record cable car over lush rainforests and waterfalls up to the mountain resort.',
+          'Walk across the world-famous Golden Hands Bridge held aloft by colossal stone hands.',
+          'Explore the French Village, Le Jardin D’Amour flower gardens, and Linh Ung Pagoda.',
+          'Enjoy free access to rides, 4D/5D attractions, and arcade games at Fantasy Park.',
+          'Descend by cable car in the late afternoon and return to Da Nang.',
+          'Overnight stay in Da Nang.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 8,
-        title: 'Departure from Da Nang - Tour Concludes with Happy Memories',
+        title: 'Depart With A Lot Of Happy Memories',
         description: [
-          'Transfer: Transfer to Da Nang International Airport for onward flight'
+          'Enjoy breakfast at the hotel and complete check-out formalities.',
+          'Board your scheduled transfer to Da Nang International Airport for your departure flight.',
+          'Depart Vietnam with lifelong memories of northern mountains, misty peaks, limestone bays, and ancient lantern-lit towns.',
+          'Meals: Breakfast.'
         ]
       }
     ],
@@ -9756,115 +10610,147 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     itinerary: [
       {
         day: 1,
-        title: 'Arrival in Hanoi, Transfer to Sapa & Evening at Leisure',
+        title: 'Arrival In Hanoi & Transfer To Sapa | Evening At Leisure',
         description: [
-          'Transfer: Pick up at Noi Bai International Airport & transfer to Sapa by Sleeper / Limousine Bus',
-          'Accommodation: Hotel in Sapa',
-          'Sightseeing: Scenic Mountain Drive through Northern Highlands',
-          'Sightseeing: Evening at Leisure in Sapa Town & Central Square'
+          'Arrive at Noi Bai International Airport in Hanoi, complete immigration, and meet our representative.',
+          'Board your scheduled luxury limousine / sleeper bus for a scenic highland journey to Sapa.',
+          'Travel through misty mountain valleys and terraced rice hillsides of the Hoang Lien Son range.',
+          'Arrive in Sapa, check in to your hotel, and relax.',
+          'Spend the evening at leisure exploring Sapa Town square, the Stone Church, and local alpine cafes.',
+          'Overnight stay in Sapa.',
+          'Meals: Not Included.'
         ]
       },
       {
         day: 2,
-        title: 'Sapa Sightseeing - Fansipan Peak, Glass Bridge & Cat Cat Village',
+        title: 'Sapa Sightseeing Tour | Fansipan Peak, Glass Bridge & Cat Cat Village',
         description: [
-          'Accommodation: Hotel in Sapa',
-          'Sightseeing: Sun World Fansipan Legend Cable Car to Highest Peak',
-          'Sightseeing: Rong May Glass Bridge Valley Views',
-          'Sightseeing: Cat Cat Traditional Hmong Cultural Village Trail'
+          'Enjoy breakfast at the hotel and set off for Fansipan Peak—the "Roof of Indochina" at 3,143m.',
+          'Ride the Sun World cable car soaring over the misty Muong Hoa Valley to reach the summit.',
+          'Explore grand pagodas, the giant bronze Buddha, and scenic summit platforms.',
+          'Visit the Rong May Glass Bridge for exhilarating views looking down into sheer mountain gorges.',
+          'Trek down through the picturesque Hmong tribal village of Cat Cat with its waterfalls and waterwheels.',
+          'Return to Sapa town for an evening at leisure.',
+          'Overnight stay in Sapa.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 3,
-        title: 'Sapa to Hanoi Transfer & Half-Day Guided City Tour',
+        title: 'Sapa To Hanoi | Hanoi Half-Day City Tour',
         description: [
-          'Transfer: Transfer from Sapa to Hanoi by Sleeper / Limousine Bus',
-          'Accommodation: Hotel in Hanoi',
-          'Sightseeing: Ho Chi Minh Complex, Mausoleum & One Pillar Pagoda',
-          'Sightseeing: Historic Temple of Literature',
-          'Sightseeing: Hoan Kiem Lake, Ngoc Son Temple & Old Quarter Walking Tour'
+          'Savor breakfast at the hotel, check out, and board your return limousine/sleeper transfer to Hanoi.',
+          'Arrive in Hanoi, check in to your hotel, and embark on a guided cultural city tour.',
+          'Visit the historic Ho Chi Minh Complex, Ba Dinh Square, and the lotus-shaped One Pillar Pagoda.',
+          'Explore the Temple of Literature, Vietnam’s ancient first imperial university.',
+          'Stroll around Hoan Kiem Lake, cross the red Huc Bridge to Ngoc Son Temple, and explore the bustling 36 Old Quarter streets.',
+          'Overnight stay in Hanoi.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 4,
-        title: 'Ha Long Bay Luxury Day Cruise, Kayaking & Buffet Lunch',
+        title: 'Ha Long Bay | Luxury Day Cruise, Kayaking & Buffet Lunch.',
         description: [
-          'Transfer: Hanoi to Ha Long Bay return transfers in AC vehicle',
-          'Accommodation: Hotel in Hanoi',
-          'Sightseeing: Ha Long Bay UNESCO World Heritage Island Cruising',
-          'Sightseeing: Kayaking through Limestone Lagoons & Hidden Caves',
-          'Sightseeing: Onboard Vietnamese Buffet Lunch with Bay Views'
+          'Enjoy an early breakfast at the hotel and board transfers across the Red River Delta to Tuan Chau Marina.',
+          'Board a luxury day cruise and glide through UNESCO-listed Ha Long Bay surrounded by thousands of limestone karsts.',
+          'Savor a lavish seafood and Vietnamese buffet lunch in the panoramic dining salon.',
+          'Kayak or take a bamboo sampan through hidden emerald lagoons and sea caves.',
+          'Enjoy an upper-deck sunset party with music, refreshments, and sea breezes before returning to the pier.',
+          'Transfer back to Hanoi in the evening.',
+          'Overnight stay in Hanoi.',
+          'Meals: Breakfast & Lunch.'
         ]
       },
       {
         day: 5,
-        title: 'Hanoi to Da Nang Flight & Evening at Leisure',
+        title: 'Hanoi To Da Nang | Evening At Leisure.',
         description: [
-          'Transfer: Transfer to Noi Bai Airport, flight to Da Nang & hotel transfer',
-          'Accommodation: Hotel in Da Nang',
-          'Sightseeing: Relax at My Khe Beach',
-          'Sightseeing: Visit Dragon Bridge & Han River Promenade'
+          'Have breakfast at the hotel, complete check-out, and transfer to Hanoi Airport.',
+          'Board your short domestic flight to the coastal city of Da Nang.',
+          'Meet your local guide upon arrival and transfer to your beachfront hotel for check-in.',
+          'Spend the afternoon relaxing on white sandy shores of My Khe Beach.',
+          'In the evening, stroll along the Han River waterfront to view the illuminated Dragon Bridge.',
+          'Overnight stay in Da Nang.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 6,
-        title: 'Marble Mountain, Coconut Forest & Hoi An Ancient Town with Lantern Boat',
+        title: 'Da Nang | Marble Mountain, Coconut Forest, Hoi An Ancient Town & Lantern Boat Ride',
         description: [
-          'Accommodation: Hotel in Da Nang',
-          'Sightseeing: Marble Mountains & Cave Temples',
-          'Sightseeing: Cam Thanh Coconut Village Basket Boat Ride',
-          'Sightseeing: Hoi An Ancient Town Walking Tour',
-          'Sightseeing: Evening Lantern Boat Ride on Hoai River'
+          'Enjoy breakfast at the hotel and depart for the sacred Marble Mountains.',
+          'Climb stone steps to explore Huyen Khong Cave, Tam Thai Pagoda, and panoramic coastal viewpoints.',
+          'Proceed to Cam Thanh Coconut Village and board traditional spinning bamboo basket boats through nipa palm canals.',
+          'Head into UNESCO World Heritage town of Hoi An, walking past Chinese Assembly Halls and the Japanese Covered Bridge.',
+          'At dusk, board a wooden lantern boat on the Hoai River to release candlelit flower lanterns.',
+          'Return to Da Nang in the evening.',
+          'Overnight stay in Da Nang.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 7,
-        title: 'Ba Na Hills Tour, Cable Car, Golden Hands Bridge & Fantasy Park',
+        title: 'Ba Na Hills Day Trip | Cable Car, Golden Bridge, Fantasy Park & French Village.',
         description: [
-          'Accommodation: Hotel in Da Nang',
-          'Sightseeing: Ba Na Hills Scenic Cable Car Ascent',
-          'Sightseeing: Iconic Golden Hands Bridge',
-          'Sightseeing: French Village Architecture & Square',
-          'Sightseeing: Fantasy Park Indoor Rides & Entertainment'
+          'Savor breakfast at the hotel and journey to the base of Ba Na Hills.',
+          'Ride the world-record cable car over lush rainforests and waterfalls up to the mountain resort.',
+          'Walk across the world-famous Golden Hands Bridge held aloft by colossal stone hands.',
+          'Explore the French Village, Le Jardin D’Amour flower gardens, and Linh Ung Pagoda.',
+          'Enjoy free access to rides, 4D/5D attractions, and arcade games at Fantasy Park.',
+          'Descend by cable car in the late afternoon and return to Da Nang.',
+          'Overnight stay in Da Nang.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 8,
-        title: 'Da Nang to Phu Quoc Flight & Island Leisure',
+        title: 'Da Nang To Phu Quoc | Island Leisure.',
         description: [
-          'Transfer: Transfer to Da Nang Airport & flight to Phu Quoc Island',
-          'Accommodation: Hotel in Phu Quoc',
-          'Sightseeing: Relax along Golden Sands of Long Beach',
-          'Sightseeing: Explore Phu Quoc Night Market & Beachfront Cafes'
+          'Have breakfast at the hotel, complete check-out, and transfer to Da Nang Airport.',
+          'Board your domestic flight to Phu Quoc Island, the tropical pearl of southern Vietnam.',
+          'Arrive at Phu Quoc Airport, transfer to your beach resort, and complete check-in.',
+          'Spend the afternoon sunbathing on Long Beach or enjoying the resort swimming pool.',
+          'In the evening, visit Duong Dong Night Market to sample fresh grilled seafood and island delicacies.',
+          'Overnight stay in Phu Quoc.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 9,
-        title: 'Phu Quoc 4 Islands Speedboat Tour, Snorkeling, Aquatopia Water Park & Cable Car',
+        title: '4 Islands Tour with Cable Car and Aquatopia Water Park.',
         description: [
-          'Accommodation: Hotel in Phu Quoc',
-          'Sightseeing: Speedboat Tour to Gam Ghi, Xuong & May Rut Islands',
-          'Sightseeing: Snorkeling among Coral Reefs & Marine Life',
-          'Sightseeing: Aquatopia Water Park Thrill Rides on Thom Island',
-          'Sightseeing: World\'s Longest Sea-Crossing Hon Thom Cable Car Ride'
+          'Enjoy a tropical breakfast at the resort before morning pickup.',
+          'Board a high-speed speedboat to explore southern islands: Gam Ghi, Xuong, May Rut, and Thom Island.',
+          'Snorkel among pristine coral reefs in crystal-clear waters and relax on May Rut Beach.',
+          'Relish a delicious island lunch with fresh local specialties.',
+          'Arrive at Thom Island to enjoy exhilarating slides and wave pools at Aquatopia Water Park.',
+          'Ride the world’s longest over-sea cable car back to An Thoi harbour with spectacular 360-degree ocean panoramas.',
+          'Transfer back to your resort for evening leisure.',
+          'Overnight stay in Phu Quoc.',
+          'Meals: Breakfast & Lunch.'
         ]
       },
       {
         day: 10,
-        title: 'Phu Quoc Day at Leisure - Optional VinWonders & Vinpearl Safari Park',
+        title: 'Day at Leisure. Optional Tour to Vin Wonders and Vinpearl Safari Park.',
         description: [
-          'Accommodation: Hotel in Phu Quoc',
-          'Sightseeing: Day at Leisure to Relax at Tropical Beaches & Resort',
-          'Sightseeing: VinWonders Theme Park Thrill Rides (Optional)',
-          'Sightseeing: Vinpearl Safari Open Wildlife Conservation Tour (Optional)',
-          'Sightseeing: Sunset Views & Cafe Hopping in Sunset Town'
+          'Wake up to a leisurely breakfast at the resort with the day free to explore at your own pace.',
+          'Optionally visit Vinpearl Safari, Vietnam’s premier open wildlife sanctuary, to view lions, rhinos, and giraffes.',
+          'Optionally explore VinWonders theme park with its giant Neptune palace aquarium and rollercoasters.',
+          'In the evening, optionally visit Grand World Phu Quoc to stroll illuminated Venetian canals and watch the water show.',
+          'Overnight stay in Phu Quoc.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 11,
-        title: 'Departure from Phu Quoc - Tour Concludes with Happy Memories',
+        title: 'Departure from Phu Quoc. Depart with a lot of happy memories.',
         description: [
-          'Transfer: Transfer to Phu Quoc International Airport for onward flight'
+          'Enjoy your final tropical breakfast at the resort and complete check-out.',
+          'Board your scheduled transfer to Phu Quoc International Airport for your departure flight.',
+          'Depart Vietnam with unforgettable memories of mountains, bays, heritage towns, and tropical islands.',
+          'Meals: Breakfast.'
         ]
       }
     ],
@@ -10037,77 +10923,95 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     itinerary: [
       {
         day: 1,
-        title: 'Hanoi Arrival, Half-Day City Tour, Train Street & Beer Street',
+        title: 'Arrival in Hanoi - Half-Day City Tour',
         description: [
-          'Transfer: Pick up at Noi Bai International Airport & transfer to hostel/hotel in Hanoi',
-          'Accommodation: Stay in Hanoi',
-          'Sightseeing: Tran Quoc Pagoda & West Lake',
-          'Sightseeing: Ho Chi Minh Mausoleum & One Pillar Pagoda',
-          'Sightseeing: Iconic Train Street & Cafe Experience',
-          'Sightseeing: Old Quarter Market & Beer Street'
+          'Arrive at Noi Bai International Airport in Hanoi, complete customs, and meet our tour representative.',
+          'Transfer to your central accommodation, check in, and refresh.',
+          'Visit Tran Quoc Pagoda on West Lake and pass by the historic Ho Chi Minh Mausoleum complex.',
+          'Experience the buzz of Hanoi Train Street, watching trains rumble past cozy trackside cafes.',
+          'Stroll through the lively alleys of Hanoi Old Quarter and experience the nightlife on Ta Hien Beer Street.',
+          'Overnight stay in Hanoi.',
+          'Meals: Not Included.'
         ]
       },
       {
         day: 2,
-        title: 'Ha Long Bay Luxury Day Cruise, Kayaking & Sunset Party',
+        title: 'Ha Long Bay Luxury Cruise - Kayaking & Sunset Party',
         description: [
-          'Transfer: Hanoi to Ha Long Bay return transfers in AC vehicle',
-          'Accommodation: Stay in Hanoi',
-          'Sightseeing: Ha Long Bay UNESCO World Heritage Luxury Cruising',
-          'Sightseeing: Kayaking through Limestone Lagoons & Caves',
-          'Sightseeing: Sunset Party on Cruise with Music & Drinks'
+          'Enjoy breakfast and travel along the expressway to Tuan Chau Marina.',
+          'Board a luxury day cruise across UNESCO World Heritage Ha Long Bay surrounded by towering limestone karsts.',
+          'Savor a delicious seafood and Vietnamese buffet lunch on board.',
+          'Kayak or take a bamboo sampan through hidden lagoons and sea caves.',
+          'Enjoy an energetic upper-deck sunset party with music, refreshments, and panoramic bay views.',
+          'Disembark at the marina and transfer back to Hanoi.',
+          'Overnight stay in Hanoi.',
+          'Meals: Breakfast & Lunch.'
         ]
       },
       {
         day: 3,
-        title: 'Hanoi to Da Nang Flight, Check-in & Leisure Exploration',
+        title: 'Transfer from Hanoi to Da Nang. Day at Leisure.',
         description: [
-          'Transfer: Transfer to Hanoi Airport, domestic flight to Da Nang & transfer to stay',
-          'Accommodation: Stay in Da Nang',
-          'Sightseeing: Relax at My Khe Beach',
-          'Sightseeing: Visit Dragon Bridge & Local Night Markets'
+          'Have breakfast, complete check-out, and transfer to Hanoi Airport.',
+          'Board your short 1.5-hour domestic flight to the coastal city of Da Nang.',
+          'Arrive in Da Nang, transfer to your hotel, and check in.',
+          'Spend the afternoon relaxing on the sands of My Khe Beach.',
+          'In the evening, stroll along the Han River to view the iconic Dragon Bridge.',
+          'Overnight stay in Da Nang.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 4,
-        title: 'Marble Mountains, Coconut Basket Boat & Hoi An Ancient Town with Lantern Boat',
+        title: 'Full Day Trip to Marble Mountain, Hoi An Ancient Town and Lantern on Boat Tour.',
         description: [
-          'Accommodation: Stay in Da Nang',
-          'Sightseeing: Marble Mountains & Huyen Khong Cave Temple',
-          'Sightseeing: Non Nuoc Stone Carving Village',
-          'Sightseeing: Iconic Coconut Basket Boat Ride in Cam Thanh',
-          'Sightseeing: Hoi An Ancient Town Exploration & Japanese Bridge',
-          'Sightseeing: Evening Lantern Boat Ride on Hoai River'
+          'Enjoy breakfast and set out for the limestone peaks of the Marble Mountains.',
+          'Climb to explore Huyen Khong Cave sanctuary, Tam Thai Pagoda, and panoramic coastal lookouts.',
+          'Proceed to Cam Thanh Coconut Village for a fun spinning bamboo basket boat ride.',
+          'Explore UNESCO-listed Hoi An Ancient Town, crossing the 17th-century Japanese Bridge and viewing historic merchant houses.',
+          'At dusk, board a traditional wooden boat on the Hoai River to release glowing flower lanterns.',
+          'Return to Da Nang in the evening.',
+          'Overnight stay in Da Nang.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 5,
-        title: 'Ba Na Hills Tour, Cable Car, Golden Hands Bridge & Fantasy Park',
+        title: 'Ba Na Hills Day Trip - Golden Bridge, Fantasy Park & French Village',
         description: [
-          'Accommodation: Stay in Da Nang',
-          'Sightseeing: Ba Na Hills Scenic Cable Car Ascent',
-          'Sightseeing: Iconic Golden Hands Bridge',
-          'Sightseeing: French Village Architecture & Square',
-          'Sightseeing: Fantasy Park Rides & Entertainment Zone',
-          'Sightseeing: Linh Ung Pagoda & Flower Gardens'
+          'Savor breakfast at the hotel and transfer to the base of Ba Na Hills.',
+          'Ride the world-record cable car soaring above lush mountain rainforests and waterfalls.',
+          'Walk along the breathtaking Golden Hands Bridge held high by giant stone hands.',
+          'Explore the European-inspired French Village, Debay Wine Cellar, and Le Jardin D’Amour flower gardens.',
+          'Enjoy indoor attractions, games, and 4D/5D theaters at Fantasy Park.',
+          'Descend by cable car and return to Da Nang.',
+          'Overnight stay in Da Nang.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 6,
-        title: 'Da Nang to Saigon (Ho Chi Minh) Flight & Leisure Exploration',
+        title: 'Da Nang to Saigon. Spend the day at Leisure.',
         description: [
-          'Transfer: Transfer to Da Nang Airport & flight to Ho Chi Minh City (Saigon)',
-          'Accommodation: Stay in Saigon',
-          'Sightseeing: Nguyen Hue Walking Street & Local Food Trail',
-          'Sightseeing: Evening at Leisure to Explore City Landmarks'
+          'Have breakfast, complete check-out, and transfer to Da Nang Airport.',
+          'Board your domestic flight to Ho Chi Minh City (Saigon).',
+          'Arrive in Saigon, meet your representative, and transfer to your accommodation.',
+          'Spend the afternoon and evening at leisure exploring Nguyen Hue Walking Street and the French colonial Opera House.',
+          'Optionally visit Bui Vien Walking Street to experience Saigon’s buzzing nightlife.',
+          'Overnight stay in Saigon.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 7,
-        title: 'Cu Chi Tunnels Tour & Departure with Happy Memories',
+        title: 'Visit Cu Chi Tunnels | Depart with a lot of happy memories.',
         description: [
-          'Transfer: Transfer to Tan Son Nhat Airport for onward journey',
-          'Sightseeing: Historic Cu Chi Tunnels Underground Network Exploration'
+          'Enjoy breakfast and check out of your accommodation.',
+          'Drive to the historic Cu Chi Tunnels network used during the Vietnam War.',
+          'Crawl through preserved tunnels, see hidden trapdoors, underground bunkers, and weapon displays.',
+          'Transfer directly to Tan Son Nhat International Airport in Ho Chi Minh City for your departure flight.',
+          'Depart Vietnam with incredible memories of your backpacking journey from North to South.',
+          'Meals: Breakfast.'
         ]
       }
     ],
@@ -10262,77 +11166,95 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     itinerary: [
       {
         day: 1,
-        title: 'Hanoi Arrival, Half-Day City Tour, Train Street & Beer Street',
+        title: 'Arrival in Hanoi - Half-Day City Tour',
         description: [
-          'Transfer: Pick up at Noi Bai International Airport & transfer to hotel in Hanoi',
-          'Accommodation: Hotel in Hanoi',
-          'Sightseeing: Tran Quoc Pagoda & West Lake',
-          'Sightseeing: Ho Chi Minh Mausoleum & One Pillar Pagoda',
-          'Sightseeing: Iconic Train Street & Cafe Experience',
-          'Sightseeing: Old Quarter Market & Beer Street'
+          'Arrive at Noi Bai International Airport in Hanoi, complete customs, and meet our representative.',
+          'Transfer to your central hotel, check in, and refresh.',
+          'Visit Tran Quoc Pagoda on West Lake and pass by the historic Ho Chi Minh Mausoleum complex.',
+          'Experience the buzz of Hanoi Train Street, watching trains rumble past cozy trackside cafes.',
+          'Stroll through the lively alleys of Hanoi Old Quarter and experience the nightlife on Ta Hien Beer Street.',
+          'Overnight stay in Hanoi.',
+          'Meals: Not Included.'
         ]
       },
       {
         day: 2,
-        title: 'Ha Long Bay Luxury Day Cruise, Kayaking & Sunset Party',
+        title: 'Ha Long Bay Luxury Cruise - Kayaking & Sunset Party',
         description: [
-          'Transfer: Hanoi to Ha Long Bay return transfers in AC vehicle',
-          'Accommodation: Hotel in Hanoi',
-          'Sightseeing: Ha Long Bay UNESCO World Heritage Luxury Cruising',
-          'Sightseeing: Kayaking through Limestone Lagoons & Caves',
-          'Sightseeing: Sunset Party on Cruise with Music & Drinks'
+          'Enjoy breakfast and travel along the expressway to Tuan Chau Marina.',
+          'Board a luxury day cruise across UNESCO World Heritage Ha Long Bay surrounded by towering limestone karsts.',
+          'Savor a delicious seafood and Vietnamese buffet lunch on board.',
+          'Kayak or take a bamboo sampan through hidden lagoons and sea caves.',
+          'Enjoy an energetic upper-deck sunset party with music, refreshments, and panoramic bay views.',
+          'Disembark at the marina and transfer back to Hanoi.',
+          'Overnight stay in Hanoi.',
+          'Meals: Breakfast & Lunch.'
         ]
       },
       {
         day: 3,
-        title: 'Hanoi to Da Nang Flight, Check-in & Leisure Exploration',
+        title: 'Transfer from Hanoi to Da Nang. Day at Leisure.',
         description: [
-          'Transfer: Transfer to Hanoi Airport, domestic flight to Da Nang & hotel transfer',
-          'Accommodation: Hotel in Da Nang',
-          'Sightseeing: Relax at My Khe Beach',
-          'Sightseeing: Visit Dragon Bridge & Local Night Markets'
+          'Have breakfast, complete check-out, and transfer to Hanoi Airport.',
+          'Board your short 1.5-hour domestic flight to the coastal city of Da Nang.',
+          'Arrive in Da Nang, transfer to your hotel, and check in.',
+          'Spend the afternoon relaxing on the sands of My Khe Beach.',
+          'In the evening, stroll along the Han River to view the iconic Dragon Bridge.',
+          'Overnight stay in Da Nang.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 4,
-        title: 'Marble Mountains, Coconut Basket Boat & Hoi An Ancient Town with Lantern Boat',
+        title: 'Full Day Trip to Marble Mountain, Hoi An Ancient Town and Lantern on Boat Tour.',
         description: [
-          'Accommodation: Hotel in Da Nang',
-          'Sightseeing: Marble Mountains & Huyen Khong Cave Temple',
-          'Sightseeing: Non Nuoc Stone Carving Village',
-          'Sightseeing: Iconic Coconut Basket Boat Ride in Cam Thanh',
-          'Sightseeing: Hoi An Ancient Town Exploration & Japanese Bridge',
-          'Sightseeing: Evening Lantern Boat Ride on Hoai River'
+          'Enjoy breakfast and set out for the limestone peaks of the Marble Mountains.',
+          'Climb to explore Huyen Khong Cave sanctuary, Tam Thai Pagoda, and panoramic coastal lookouts.',
+          'Proceed to Cam Thanh Coconut Village for a fun spinning bamboo basket boat ride.',
+          'Explore UNESCO-listed Hoi An Ancient Town, crossing the 17th-century Japanese Bridge and viewing historic merchant houses.',
+          'At dusk, board a traditional wooden boat on the Hoai River to release glowing flower lanterns.',
+          'Return to Da Nang in the evening.',
+          'Overnight stay in Da Nang.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 5,
-        title: 'Ba Na Hills Tour, Cable Car, Golden Hands Bridge & Fantasy Park',
+        title: 'Ba Na Hills Day Trip - Golden Bridge, Fantasy Park & French Village',
         description: [
-          'Accommodation: Hotel in Da Nang',
-          'Sightseeing: Ba Na Hills Scenic Cable Car Ascent',
-          'Sightseeing: Iconic Golden Hands Bridge',
-          'Sightseeing: French Village Architecture & Square',
-          'Sightseeing: Fantasy Park Rides & Entertainment Zone',
-          'Sightseeing: Linh Ung Pagoda & Flower Gardens'
+          'Savor breakfast at the hotel and transfer to the base of Ba Na Hills.',
+          'Ride the world-record cable car soaring above lush mountain rainforests and waterfalls.',
+          'Walk along the breathtaking Golden Hands Bridge held high by giant stone hands.',
+          'Explore the European-inspired French Village, Debay Wine Cellar, and Le Jardin D’Amour flower gardens.',
+          'Enjoy indoor attractions, games, and 4D/5D theaters at Fantasy Park.',
+          'Descend by cable car and return to Da Nang.',
+          'Overnight stay in Da Nang.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 6,
-        title: 'Da Nang to Saigon (Ho Chi Minh) Flight & Leisure Exploration',
+        title: 'Da Nang to Saigon. Spend the day at Leisure.',
         description: [
-          'Transfer: Transfer to Da Nang Airport & flight to Ho Chi Minh City (Saigon)',
-          'Accommodation: Hotel in Saigon',
-          'Sightseeing: Nguyen Hue Walking Street & Local Food Trail',
-          'Sightseeing: Evening at Leisure to Explore City Landmarks'
+          'Have breakfast, complete check-out, and transfer to Da Nang Airport.',
+          'Board your domestic flight to Ho Chi Minh City (Saigon).',
+          'Arrive in Saigon, meet your representative, and transfer to your hotel.',
+          'Spend the afternoon and evening at leisure exploring Nguyen Hue Walking Street and the French colonial Opera House.',
+          'Optionally visit Bui Vien Walking Street to experience Saigon’s buzzing nightlife.',
+          'Overnight stay in Saigon.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 7,
-        title: 'Cu Chi Tunnels Tour & Departure with Happy Memories',
+        title: 'Cu Chi Tunnels and Departure',
         description: [
-          'Transfer: Transfer to Tan Son Nhat Airport for onward journey',
-          'Sightseeing: Historic Cu Chi Tunnels Underground Network Exploration'
+          'Enjoy breakfast and check out of your hotel.',
+          'Drive to the historic Cu Chi Tunnels network used during the Vietnam War.',
+          'Crawl through preserved tunnels, see hidden trapdoors, underground bunkers, and weapon displays.',
+          'Transfer directly to Tan Son Nhat International Airport in Ho Chi Minh City for your departure flight.',
+          'Depart Vietnam with incredible memories of your journey from Hanoi to Saigon.',
+          'Meals: Breakfast.'
         ]
       }
     ],
@@ -10495,66 +11417,80 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     itinerary: [
       {
         day: 1,
-        title: 'Hanoi Arrival, Half-Day City Tour, Train Street & Beer Street',
+        title: 'Arrival in Hanoi - Half-Day City Tour',
         description: [
-          'Transfer: Pick up at Noi Bai International Airport & transfer to hotel in Hanoi',
-          'Accommodation: Hotel in Hanoi',
-          'Sightseeing: Tran Quoc Pagoda & West Lake',
-          'Sightseeing: Ho Chi Minh Mausoleum & One Pillar Pagoda',
-          'Sightseeing: Famous Train Street & Cafe Experience',
-          'Sightseeing: Old Quarter Market & Beer Street'
+          'Arrive at Noi Bai International Airport in Hanoi, complete immigration, and meet our tour representative.',
+          'Transfer to your hotel in central Hanoi, check in, and refresh.',
+          'Visit Tran Quoc Pagoda on West Lake and pass by the historic Ho Chi Minh Mausoleum complex.',
+          'Experience the buzz of Hanoi Train Street, watching trains rumble past cozy trackside cafes.',
+          'Stroll through the lively alleys of Hanoi Old Quarter and experience the nightlife on Ta Hien Beer Street.',
+          'Overnight stay in Hanoi.',
+          'Meals: Not Included.'
         ]
       },
       {
         day: 2,
-        title: 'Ha Long Bay Luxury Day Cruise, Kayaking & Sunset Party',
+        title: 'Ha Long Bay Luxury Cruise - Kayaking & Sunset Party',
         description: [
-          'Transfer: Hanoi to Ha Long Bay return transfers in AC vehicle',
-          'Accommodation: Hotel in Hanoi',
-          'Sightseeing: Ha Long Bay UNESCO World Heritage Luxury Cruising',
-          'Sightseeing: Kayaking through Limestone Lagoons & Caves',
-          'Sightseeing: Sunset Party on Cruise with Music & Drinks'
+          'Enjoy breakfast and travel along the expressway to Tuan Chau Marina.',
+          'Board a luxury day cruise across UNESCO World Heritage Ha Long Bay surrounded by towering limestone karsts.',
+          'Savor a delicious seafood and Vietnamese buffet lunch on board.',
+          'Kayak or take a bamboo sampan through hidden lagoons and sea caves.',
+          'Enjoy an energetic upper-deck sunset party with music, refreshments, and panoramic bay views.',
+          'Disembark at the marina and transfer back to Hanoi.',
+          'Overnight stay in Hanoi.',
+          'Meals: Breakfast & Lunch.'
         ]
       },
       {
         day: 3,
-        title: 'Hanoi to Da Nang Flight, Hotel Check-in & Leisure Exploration',
+        title: 'Transfer from Hanoi to Da Nang. Day at Leisure.',
         description: [
-          'Transfer: Transfer to Hanoi Airport, domestic flight to Da Nang & hotel transfer',
-          'Accommodation: Hotel in Da Nang',
-          'Sightseeing: Relax at My Khe Beach',
-          'Sightseeing: Visit Dragon Bridge & Local Da Nang Night Markets'
+          'Have breakfast, complete check-out, and transfer to Hanoi Airport.',
+          'Board your short 1.5-hour domestic flight to the coastal city of Da Nang.',
+          'Arrive in Da Nang, transfer to your hotel, and check in.',
+          'Spend the afternoon relaxing on the sands of My Khe Beach.',
+          'In the evening, stroll along the Han River to view the iconic Dragon Bridge.',
+          'Overnight stay in Da Nang.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 4,
-        title: 'Marble Mountains, Coconut Basket Boat & Hoi An Ancient Town with Lantern Boat',
+        title: 'Full Day Trip to Marble Mountain, Hoi An Ancient Town and Lantern on Boat Tour.',
         description: [
-          'Accommodation: Hotel in Da Nang',
-          'Sightseeing: Marble Mountains & Huyen Khong Cave Temple',
-          'Sightseeing: Non Nuoc Stone Carving Village',
-          'Sightseeing: Iconic Coconut Basket Boat Ride in Cam Thanh',
-          'Sightseeing: Hoi An Ancient Town Exploration & Japanese Bridge',
-          'Sightseeing: Evening Lantern Boat Ride on Hoai River'
+          'Enjoy breakfast and set out for the limestone peaks of the Marble Mountains.',
+          'Climb to explore Huyen Khong Cave sanctuary, Tam Thai Pagoda, and panoramic coastal lookouts.',
+          'Proceed to Cam Thanh Coconut Village for a fun spinning bamboo basket boat ride.',
+          'Explore UNESCO-listed Hoi An Ancient Town, crossing the 17th-century Japanese Bridge and viewing historic merchant houses.',
+          'At dusk, board a traditional wooden boat on the Hoai River to release glowing flower lanterns.',
+          'Return to Da Nang in the evening.',
+          'Overnight stay in Da Nang.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 5,
-        title: 'Ba Na Hills Tour, Cable Car, Golden Hands Bridge & Fantasy Park',
+        title: 'Ba Na Hills Day Trip - Golden Bridge, Fantasy Park & French Village',
         description: [
-          'Accommodation: Hotel in Da Nang',
-          'Sightseeing: Ba Na Hills Scenic Cable Car Ascent',
-          'Sightseeing: Iconic Golden Hands Bridge',
-          'Sightseeing: French Village Architecture & Square',
-          'Sightseeing: Fantasy Park Rides & Entertainment Zone',
-          'Sightseeing: Linh Ung Pagoda & Flower Gardens'
+          'Savor breakfast at the hotel and transfer to the base of Ba Na Hills.',
+          'Ride the world-record cable car soaring above lush mountain rainforests and waterfalls.',
+          'Walk along the breathtaking Golden Hands Bridge held high by giant stone hands.',
+          'Explore the European-inspired French Village, Debay Wine Cellar, and Le Jardin D’Amour flower gardens.',
+          'Enjoy indoor attractions, games, and 4D/5D theaters at Fantasy Park.',
+          'Descend by cable car and return to Da Nang.',
+          'Overnight stay in Da Nang.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 6,
-        title: 'Departure from Da Nang - Tour Concludes with Happy Memories',
+        title: 'Departure from Da Nang. Take back a lot of happy memories.',
         description: [
-          'Transfer: Transfer to Da Nang International Airport for onward journey'
+          'Enjoy breakfast at the hotel and complete check-out formalities.',
+          'Board your scheduled transfer to Da Nang International Airport for your departure flight.',
+          'Depart Vietnam with incredible memories of Hanoi, Ha Long Bay, Ba Na Hills, and Hoi An.',
+          'Meals: Breakfast.'
         ]
       }
     ],
@@ -10715,63 +11651,83 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     itinerary: [
       {
         day: 1,
-        title: 'Hanoi Arrival, Half-Day City Tour, Train Street & Beer Street',
+        title: 'Arrival in Hanoi - Half-Day City Tour',
         description: [
-          'Transfer: Pick up at Noi Bai International Airport & transfer to hotel in Hanoi',
-          'Accommodation: Hotel in Hanoi',
-          'Sightseeing: Tran Quoc Pagoda & West Lake',
-          'Sightseeing: Ho Chi Minh Mausoleum & One Pillar Pagoda',
-          'Sightseeing: Famous Train Street & Cafe Experience',
-          'Sightseeing: Old Quarter Market & Beer Street'
+          'Arrive at Noi Bai International Airport in Hanoi, complete immigration, and meet our tour representative.',
+          'Transfer to your romantic central hotel, check in, and refresh.',
+          'Visit Tran Quoc Pagoda on West Lake and view the historic Ho Chi Minh Mausoleum complex.',
+          'Experience the buzz of Hanoi Train Street, enjoying a cup of egg coffee beside the tracks.',
+          'Enjoy a 1-hour romantic cyclo ride through the 36 Old Quarter streets and explore Ta Hien Beer Street.',
+          'Overnight stay in Hanoi.',
+          'Meals: Not Included.'
         ]
       },
       {
         day: 2,
-        title: 'Ninh Binh Day Tour - Hoa Lu Ancient Capital, Tam Coc Caves & Bich Dong',
+        title: 'Full Day Tour To Ninh Binh – Hoa Lu – Tam Coc',
         description: [
-          'Accommodation: Hotel in Hanoi',
-          'Sightseeing: Tam Coc Caves Sampan Boat Ride (Halong Bay on Land)',
-          'Sightseeing: Hoa Lu Ancient Capital, Dinh & Le Temples',
-          'Sightseeing: Bich Dong Pagoda Cave Temple Exploration'
+          'Enjoy breakfast at the hotel and take a scenic drive south through rural landscapes to Ninh Binh.',
+          'Board a traditional sampan boat for a serene cruise through the three limestone caves of Tam Coc ("Halong Bay on Land").',
+          'Glide past emerald rivers, towering karst formations, and lush paddy fields.',
+          'Relish a delicious local Vietnamese lunch at a riverside restaurant.',
+          'Explore Hoa Lu, the 10th-century ancient capital of Vietnam, visiting the historic Dinh and Le king temples.',
+          'Visit peaceful Bich Dong Pagoda built into a limestone cliff face before returning to Hanoi.',
+          'Overnight stay in Hanoi.',
+          'Meals: Breakfast & Lunch.'
         ]
       },
       {
         day: 3,
-        title: 'Hanoi to Halong Bay - Luxury Overnight Cruise Experience',
+        title: 'Transfer from Hanoi to Halong Bay. Overnight Stay on Cruise.',
         description: [
-          'Transfer: Scenic transfer from Hanoi to Tuan Chau Marina (Halong Bay)',
-          'Accommodation: Luxury Overnight Cruise in Halong Bay',
-          'Sightseeing: Halong Bay UNESCO World Heritage Karst Cruising',
-          'Sightseeing: Grottoes Exploration, Kayaking & Sunset Viewing',
-          'Sightseeing: Onboard Cooking Demonstration & Evening Entertainment'
+          'Enjoy breakfast at the hotel and travel through the scenic Red River Delta to Tuan Chau Marina.',
+          'Board a luxury boutique overnight cruise across the emerald waters of UNESCO-listed Ha Long Bay.',
+          'Relish a gourmet seafood lunch on board as you sail past towering limestone islands.',
+          'Kayak or take a bamboo boat through hidden sea caves and swim in secluded emerald lagoons.',
+          'Participate in a sunset cooking demonstration and enjoy happy hour cocktails on the sun deck.',
+          'Savor a candlelit dinner on board followed by squid fishing or stargazing.',
+          'Overnight stay on cruise in Ha Long Bay.',
+          'Meals: Breakfast, Lunch & Dinner.'
         ]
       },
       {
         day: 4,
-        title: 'Halong Bay Sunrise Cruise, Disembark & Flight to Saigon (Ho Chi Minh)',
+        title: 'Halong Bay to Hanoi. Transfer From Hanoi to Saigon.',
         description: [
-          'Transfer: Return transfer to Hanoi & domestic flight to Ho Chi Minh City (Saigon)',
-          'Accommodation: Hotel in Saigon',
-          'Sightseeing: Morning Sunrise over Halong Bay Islets & Caves Tour',
-          'Sightseeing: Evening Exploration & Ben Thanh Market Shopping'
+          'Greet the sunrise over Ha Long Bay with a morning Tai Chi session on the sun deck.',
+          'Cruise past iconic islets including Butterfly Rock, Turtle Islet, and floating fishing villages.',
+          'Enjoy an international buffet brunch on board as the ship glides back toward the harbour.',
+          'Disembark at Tuan Chau Marina and transfer directly to Hanoi Airport.',
+          'Board your domestic flight to vibrant Ho Chi Minh City (Saigon).',
+          'Arrive in Saigon, meet your guide, and transfer to your hotel for check-in and evening leisure.',
+          'Overnight stay in Saigon.',
+          'Meals: Breakfast & Brunch.'
         ]
       },
       {
         day: 5,
-        title: 'Full-Day Mekong Delta Tour, Canal Boat Ride & Vinh Trang Pagoda',
+        title: 'Full-Day Tour to Mekong Delta',
         description: [
-          'Accommodation: Hotel in Saigon',
-          'Sightseeing: Scenic Mekong Delta River Boat Ride to My Tho',
-          'Sightseeing: Coconut Candy & Rice Paper Workshop Tour',
-          'Sightseeing: Traditional Southern Folk Music & Tropical Fruits',
-          'Sightseeing: Vinh Trang Pagoda Architectural Visit'
+          'Enjoy breakfast at the hotel and depart for My Tho in the fertile Mekong Delta.',
+          'Board a private wooden motorboat and cruise along the mighty Mekong River.',
+          'Sample fresh tropical fruits and listen to live southern Vietnamese folk music (Don Ca Tai Tu).',
+          'Row through shaded coconut palm canals on small traditional sampans.',
+          'Visit a local family-run coconut candy workshop and taste warm honey tea with royal jelly.',
+          'Visit historic Vinh Trang Pagoda featuring unique Vietnamese, Khmer, and French colonial architecture.',
+          'Return to Saigon in the late afternoon for an evening at leisure.',
+          'Overnight stay in Saigon.',
+          'Meals: Breakfast & Lunch.'
         ]
       },
       {
         day: 6,
-        title: 'Departure from Saigon - Tour Concludes with Romantic Memories',
+        title: 'Departure from Saigon. Take back a lot of happy memories.',
         description: [
-          'Transfer: Transfer to Tan Son Nhat Airport for onward journey'
+          'Enjoy breakfast at the hotel and complete check-out formalities.',
+          'Spend any remaining free time shopping for souvenirs at Ben Thanh Market.',
+          'Board your private airport transfer to Tan Son Nhat International Airport for your departure flight.',
+          'Depart Vietnam with cherished memories of your romantic escape together.',
+          'Meals: Breakfast.'
         ]
       }
     ],
@@ -10930,84 +11886,109 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     itinerary: [
       {
         day: 1,
-        title: 'Hanoi Arrival, Ba Dinh Square, Temple of Literature & 1-Hour Cyclo Tour',
+        title: 'Arrival in Hanoi | Hanoi City Tour & Cyclo Experience',
         description: [
-          'Transfer: Pick up at Noi Bai International Airport & transfer to hotel in Hanoi',
-          'Accommodation: Hotel in Hanoi',
-          'Sightseeing: Ba Dinh Square, Ho Chi Minh Complex & One Pillar Pagoda',
-          'Sightseeing: Historic Temple of Literature',
-          'Sightseeing: 1-Hour Traditional Cyclo Tour of Hanoi Old Quarter & Hoan Kiem Lake'
+          'Arrive at Noi Bai International Airport in Hanoi and meet the local tour representative.',
+          'Transfer to the hotel in downtown Hanoi for check-in and leisure time.',
+          'Visit Ba Dinh Square, Ho Chi Minh Complex (Mausoleum exterior, house-on-stilts, fishpond), and One Pillar Pagoda.',
+          'Explore the Temple of Literature (Van Mieu), Vietnam\'s first national university.',
+          'Enjoy a 1-hour cyclo ride exploring the bustling French & Old Quarter and scenic Hoan Kiem Lake.',
+          'Overnight stay in Hanoi.',
+          'Meals: Not Included.'
         ]
       },
       {
         day: 2,
-        title: 'Hanoi to Halong Bay - Luxury Overnight Cruise Experience',
+        title: 'Hanoi to Halong Bay | Luxury Overnight Cruise & Karst Exploration',
         description: [
-          'Transfer: Transfer from Hanoi to Halong Bay in AC vehicle',
-          'Accommodation: Luxury Overnight Cruise in Halong Bay',
-          'Sightseeing: Halong Bay UNESCO World Heritage Cruising',
-          'Sightseeing: Limestone Grottoes Exploration, Kayaking & Swimming',
-          'Sightseeing: Sunset Party, Cooking Demonstration & Dinner on Cruise'
+          'Enjoy breakfast at the hotel and check out by 9:00 AM.',
+          'Drive east through the Red River Delta countryside and rural villages towards Halong Bay (approx. 3 hours).',
+          'Board the luxury Halong Bay cruise, receive a welcome briefing, and check in to your cabin.',
+          'Savor a gourmet buffet lunch while sailing past iconic limestone karsts and islets.',
+          'Visit limestone grottos and enjoy swimming or kayaking through tranquil emerald waters.',
+          'Attend a Vietnamese cooking demonstration on the sundeck followed by a multi-course dinner.',
+          'Spend the evening relaxing on board, squid fishing, or enjoying onboard entertainment.',
+          'Overnight stay in Halong Bay Cruise.',
+          'Meals: Breakfast, Lunch & Dinner.'
         ]
       },
       {
         day: 3,
-        title: 'Halong Bay Sunrise Cruise, Brunch & Return to Hanoi',
+        title: 'Halong Bay to Hanoi | Sunrise Cruise & Return to Hanoi',
         description: [
-          'Transfer: Disembark from cruise & return transfer to Hanoi',
-          'Accommodation: Hotel in Hanoi',
-          'Sightseeing: Sunrise Viewing over Emerald Bay & Caves Excursion',
-          'Sightseeing: Onboard Gourmet Brunch',
-          'Sightseeing: Evening at Leisure in Hanoi'
+          'Wake up early for sunrise over the Eastern Sea and an optional morning Tai Chi session on deck.',
+          'Cruise past famous karst formations including Sail Island, Fisherman\'s Head Rock, Butterfly Rock, and Turtle Islet.',
+          'Enjoy a hearty brunch on board as the cruise sails back toward the harbor.',
+          'Disembark at Tuan Chau pier and transfer by road back to Hanoi.',
+          'Check in to your hotel in Hanoi and enjoy the evening at leisure exploring local cafes and night markets.',
+          'Overnight stay in Hanoi.',
+          'Meals: Breakfast & Brunch.'
         ]
       },
       {
         day: 4,
-        title: 'Hanoi to Da Nang Flight & Hoi An Ancient Town Walking Tour',
+        title: 'Hanoi to Da Nang | Flight Transfer & Hoi An Ancient Town Tour',
         description: [
-          'Transfer: Transfer to Hanoi Airport, domestic flight to Da Nang & hotel check-in',
-          'Accommodation: Hotel in Da Nang',
-          'Sightseeing: Hoi An Ancient Town UNESCO Heritage Walk',
-          'Sightseeing: Japanese Covered Bridge & Chinese Assembly Halls',
-          'Sightseeing: Thu Bon River Promenade & Lantern Market'
+          'Have breakfast at the hotel, check out, and transfer to Hanoi Airport.',
+          'Board a domestic flight to Da Nang; meet your local representative upon arrival and check in to your beachside hotel.',
+          'Transfer to the UNESCO World Heritage town of Hoi An in the afternoon.',
+          'Take a guided walking tour across the Japanese Covered Bridge, Chinese Assembly Halls, and historic merchant houses.',
+          'Stroll along the lantern-lit Thu Bon River and vibrant night market, with opportunities for custom tailoring and souvenir shopping.',
+          'Transfer back to Da Nang for the night.',
+          'Overnight stay in Da Nang.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 5,
-        title: 'Ba Na Hills Tour, Cable Car, Golden Hands Bridge & Fantasy Park',
+        title: 'Ba Na Hills Excursion | Golden Bridge & Fantasy Park',
         description: [
-          'Accommodation: Hotel in Da Nang',
-          'Sightseeing: Ba Na Hills World-Record Cable Car Ascent',
-          'Sightseeing: Iconic Golden Hands Bridge Panoramic Views',
-          'Sightseeing: French Village Architecture & Debay Wine Cellar',
-          'Sightseeing: Fantasy Park Rides & Entertainment'
+          'Enjoy breakfast at the hotel and depart for the scenic Ba Na Hills.',
+          'Ride the world-record cable car up to 1,487m above sea level, enjoying sweeping views of Da Nang.',
+          'Walk across the world-famous Golden Bridge held aloft by giant stone hands.',
+          'Explore Le Jardin D\'Amour flower gardens, Debay Wine Cellar, Linh Ung Pagoda, and the giant Buddha statue.',
+          'Enjoy thrilling rides, carnival games, and 4D/5D experiences at Fantasy Park.',
+          'Visit Nghinh Phong Tower and the Bell Tower at the mountain summit before riding the cable car down.',
+          'Return to Da Nang and spend the evening relaxing by My Khe Beach.',
+          'Overnight stay in Da Nang.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 6,
-        title: 'Da Nang to Saigon Flight & Historic City Sights Tour',
+        title: 'Da Nang to Ho Chi Minh City (Saigon) | Saigon City Landmarks',
         description: [
-          'Transfer: Transfer to Da Nang Airport & flight to Ho Chi Minh City (Saigon)',
-          'Accommodation: Hotel in Saigon',
-          'Sightseeing: War Remnants Museum & Reunification Palace',
-          'Sightseeing: Notre-Dame Cathedral & Saigon Central Post Office',
-          'Sightseeing: Ben Thanh Market Shopping & Food Trail'
+          'Enjoy breakfast at the hotel, check out, and transfer to Da Nang Airport.',
+          'Board a flight to Ho Chi Minh City (Saigon) and transfer to your downtown hotel for check-in.',
+          'Visit the War Remnants Museum to explore historic military exhibits, photographs, and artifacts.',
+          'Tour the historic Reunification Palace, the former presidential headquarters of South Vietnam.',
+          'Admire French colonial landmarks including Notre Dame Cathedral (exterior) and the Central Post Office.',
+          'Browse local handicrafts, textiles, and street food at the iconic Ben Thanh Market.',
+          'Overnight stay in Ho Chi Minh City (Saigon).',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 7,
-        title: 'Cu Chi Tunnels Underground Network Tour & Leisure Afternoon',
+        title: 'Cu Chi Tunnels Excursion | Underground War Network',
         description: [
-          'Accommodation: Hotel in Saigon',
-          'Sightseeing: Historic Cu Chi Tunnels Military Network Tour & Underground Crawl Experience',
-          'Sightseeing: Afternoon at Leisure in Saigon Downtown'
+          'Have breakfast at the hotel and depart for the historic Cu Chi Tunnels.',
+          'Watch an introductory documentary highlighting the guerrilla defense network built during the war.',
+          'Explore the underground network featuring trap doors, living quarters, weapon workshops, and command bunkers.',
+          'Experience crawling through a preserved tunnel section to appreciate the resilience of the fighters.',
+          'Return to Ho Chi Minh City for an afternoon at leisure for shopping or relaxation.',
+          'Overnight stay in Ho Chi Minh City (Saigon).',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 8,
-        title: 'Departure from Saigon - Tour Concludes with Sweet Memories',
+        title: 'Departure from Ho Chi Minh City | Trip Concludes',
         description: [
-          'Transfer: Transfer to Tan Son Nhat Airport for return flight'
+          'Enjoy breakfast at your hotel and spend the morning at leisure for last-minute souvenir shopping.',
+          'Complete check-out formalities and transfer to Tan Son Nhat International Airport.',
+          'Board your scheduled flight back home with unforgettable memories of Vietnam.',
+          'Meals: Breakfast.'
         ]
       }
     ],
@@ -11166,96 +12147,121 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     itinerary: [
       {
         day: 1,
-        title: 'Arrival in Hanoi & City Sightseeing Tour',
+        title: 'Arrival in Hanoi | Hanoi City Tour & Cyclo Experience',
         description: [
-          'Transfer: Airport pickup & transfer to Hanoi downtown hotel',
-          'Accommodation: Hotel in Hanoi',
-          'Sightseeing: Ba Dinh Square & Ho Chi Minh Complex (Mausoleum exterior, Stilt House, One-Pillar Pagoda)',
-          'Sightseeing: Temple of Literature (First University of Vietnam)',
-          'Sightseeing: 1-Hour Cyclo Tour through Hanoi Old Quarter & Hoan Kiem Lake'
+          'Arrive at Noi Bai International Airport in Hanoi and meet your local tour representative.',
+          'Transfer to the hotel in downtown Hanoi for check-in and relaxation.',
+          'Visit Ba Dinh Square, Ho Chi Minh Complex (Mausoleum exterior, stilt house, fishpond), and One Pillar Pagoda.',
+          'Explore the historic Temple of Literature, Vietnam\'s first national university.',
+          'Experience a 1-hour traditional cyclo ride exploring Hanoi\'s bustling Old Quarter and scenic Hoan Kiem Lake.',
+          'Overnight stay in Hanoi.',
+          'Meals: Not Included.'
         ]
       },
       {
         day: 2,
-        title: 'Hanoi to Halong Bay Transfer & Luxury Cruise with Kayaking',
+        title: 'Hanoi to Halong Bay | Luxury Overnight Cruise & Karst Exploration',
         description: [
-          'Transfer: Drive through Red River Delta to Halong Bay pier',
-          'Accommodation: Overnight Luxury Cruise in Halong Bay',
-          'Sightseeing: Halong Bay UNESCO World Heritage Island Cruising',
-          'Sightseeing: Limestone Cave Exploration, Kayaking & Swimming',
-          'Sightseeing: Sunset Deck Cooking Demonstration & Squid Fishing'
+          'Enjoy breakfast at the hotel, check out, and depart eastward for Halong Bay (approx. 3 hours).',
+          'Drive through the lush Red River Delta with scenic views of countryside rice fields.',
+          'Board the luxury cruise at Halong Bay pier, attend a welcome briefing, and check in to your cabin.',
+          'Relish a delectable seafood lunch while sailing past iconic limestone karsts and islets.',
+          'Explore hidden limestone caves and enjoy kayaking or swimming in emerald waters.',
+          'Attend a Vietnamese cooking demonstration on the sundeck followed by a gourmet dinner.',
+          'Overnight stay in Halong Bay Cruise.',
+          'Meals: Breakfast, Lunch & Dinner.'
         ]
       },
       {
         day: 3,
-        title: 'Halong Bay Sunrise Cruise & Transfer back to Hanoi',
+        title: 'Halong Bay to Hanoi | Sunrise Cruise & Return to Hanoi',
         description: [
-          'Transfer: Cruise disembarkation & transfer back to Hanoi',
-          'Accommodation: Hotel in Hanoi',
-          'Sightseeing: Early Morning Sunrise & Tai Chi on the Bay',
-          'Sightseeing: Scenic Island Cruising past Sail Island & Turtle Islet',
-          'Sightseeing: Leisure Evening exploring Hanoi Nightlife & Cafes'
+          'Wake up early to witness a breathtaking sunrise over the bay and join an optional Tai Chi session.',
+          'Cruise past notable islets including Sail Island, Fisherman\'s Head Rock, Butterfly Rock, and Turtle Islet.',
+          'Savor an early brunch on board while cruising back towards Tuan Chau pier.',
+          'Disembark and transfer by road back to Hanoi to check in at your hotel.',
+          'Spend the evening at leisure exploring Hanoi\'s night markets, cafes, and street food scene.',
+          'Overnight stay in Hanoi.',
+          'Meals: Breakfast & Brunch.'
         ]
       },
       {
         day: 4,
-        title: 'Hanoi to Da Nang Flight & Hoi An Ancient Town Walking Tour',
+        title: 'Hanoi to Da Nang | Flight Transfer & Hoi An Ancient Town Tour',
         description: [
-          'Transfer: Airport transfer & domestic flight from Hanoi to Da Nang',
-          'Accommodation: Beachside Hotel in Da Nang',
-          'Sightseeing: Hoi An Ancient Town Guided Heritage Walk',
-          'Sightseeing: Japanese Covered Bridge, Chinese Assembly Halls & Ancient Houses',
-          'Sightseeing: Lantern Shopping & Street Food Walk along Thu Bon River'
+          'Have breakfast at the hotel, check out, and transfer to Hanoi Airport.',
+          'Board a domestic flight to Da Nang; meet your local representative upon arrival and check in to your beachside hotel.',
+          'Transfer to the UNESCO World Heritage town of Hoi An in the afternoon.',
+          'Take a walking tour across the 400-year-old Japanese Covered Bridge, Chinese Assembly Halls, and historic merchant houses.',
+          'Stroll through the lantern-lit streets along Thu Bon River and explore local handicraft markets.',
+          'Transfer back to Da Nang for an overnight stay.',
+          'Overnight stay in Da Nang.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 5,
-        title: 'Ba Na Hills Tour, World-Record Cable Car & Golden Bridge',
+        title: 'Ba Na Hills Excursion | Golden Bridge & Fantasy Park',
         description: [
-          'Accommodation: Hotel in Da Nang',
-          'Sightseeing: Ba Na Hills World-Record Cable Car Ascent',
-          'Sightseeing: Iconic Golden Hands Bridge Panoramic Walk',
-          'Sightseeing: Le Jardin D’Amour Flower Gardens, Debay Wine Cellar & Linh Ung Pagoda',
-          'Sightseeing: Fantasy Park Rides & French Village Summit Views'
+          'Enjoy breakfast at the hotel and proceed to the scenic Ba Na Hills.',
+          'Ride the world-record cable car ascending 1,487m above sea level with panoramic mountain views.',
+          'Walk across the world-famous Golden Bridge held up by giant stone hands.',
+          'Explore Le Jardin D\'Amour flower gardens, Debay Wine Cellar, and Linh Ung Pagoda with its giant Buddha statue.',
+          'Enjoy thrilling rides and games at Fantasy Park, and visit Nghinh Phong Tower at the peak.',
+          'Ride the cable car down and return to Da Nang for an evening at leisure by the beach.',
+          'Overnight stay in Da Nang.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 6,
-        title: 'Da Nang to Saigon Flight & Historic Landmarks Tour',
+        title: 'Da Nang to Ho Chi Minh City (Saigon) | Saigon City Landmarks',
         description: [
-          'Transfer: Transfer to Da Nang Airport & flight to Ho Chi Minh City (Saigon)',
-          'Accommodation: Hotel in Saigon (Ho Chi Minh City)',
-          'Sightseeing: War Remnants Museum & Reunification Palace',
-          'Sightseeing: Notre-Dame Cathedral & Saigon Central Post Office',
-          'Sightseeing: Ben Thanh Market Shopping & Food Trail'
+          'Enjoy breakfast at the hotel, check out, and transfer to Da Nang Airport.',
+          'Board a flight to Ho Chi Minh City (Saigon) and transfer to your downtown hotel for check-in.',
+          'Visit the War Remnants Museum to learn about Vietnam\'s wartime history and heroic resistance.',
+          'Tour the historic Reunification Palace, a premier symbol of the end of the Vietnam War.',
+          'Admire classic French colonial architecture at Notre Dame Cathedral (exterior) and the Central Post Office.',
+          'Explore the vibrant Ben Thanh Market for local souvenirs, handicrafts, and delicacies.',
+          'Overnight stay in Ho Chi Minh City (Saigon).',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 7,
-        title: 'Mekong Delta Boat Excursion, Canals & Vinh Trang Pagoda',
+        title: 'Mekong Delta Excursion | River Cruise & Island Culture',
         description: [
-          'Accommodation: Hotel in Saigon',
-          'Sightseeing: Scenic Boat Cruise along Mekong River & Floating Villages',
-          'Sightseeing: Tropical Fruit Tasting & Southern Vietnamese Folk Music',
-          'Sightseeing: Hand-rowed Sampan Ride through Shaded Coconut Canals',
-          'Sightseeing: Coconut Candy Workshop & Honeybee Farm',
-          'Sightseeing: Historic Vinh Trang Pagoda Architectural Tour'
+          'Savor breakfast at the hotel and travel south towards My Tho in the Mekong Delta.',
+          'Board a motorboat cruise along the Mekong River, observing floating houses and riverbank life.',
+          'Visit a lush fruit orchard on an island to taste fresh tropical fruits while listening to Southern Vietnamese folk music.',
+          'Take a scenic rowboat ride along narrow palm-shaded canals and visit local coconut candy and honey workshops.',
+          'Visit the historic Vinh Trang Pagoda, showcasing a unique blend of Asian and European architectural styles.',
+          'Return to Ho Chi Minh City in the late afternoon and enjoy an evening stroll along Nguyen Hue Walking Street.',
+          'Overnight stay in Ho Chi Minh City (Saigon).',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 8,
-        title: 'Cu Chi Tunnels Underground Network Tour & Afternoon Leisure',
+        title: 'Cu Chi Tunnels Excursion | Underground War Network',
         description: [
-          'Accommodation: Hotel in Saigon',
-          'Sightseeing: Historic Cu Chi Tunnels Network Tour & Underground Crawl Experience',
-          'Sightseeing: Afternoon at Leisure for Shopping & Cafe Hopping in Saigon'
+          'Enjoy breakfast at the hotel and depart for the historic Cu Chi Tunnels.',
+          'Watch an introductory documentary highlighting the extensive underground network built during the war.',
+          'Explore the multi-tiered tunnel system featuring trap doors, living quarters, weapon workshops, and field hospitals.',
+          'Experience crawling through a designated safe section of the underground tunnels.',
+          'Return to Ho Chi Minh City for an afternoon at leisure for shopping and relaxation.',
+          'Overnight stay in Ho Chi Minh City (Saigon).',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 9,
-        title: 'Departure from Saigon - Return Flight Home',
+        title: 'Departure from Ho Chi Minh City | Trip Concludes',
         description: [
-          'Transfer: Transfer to Tan Son Nhat International Airport for departure flight'
+          'Enjoy breakfast at your hotel and spend free time at leisure for last-minute shopping.',
+          'Complete check-out formalities and transfer to Tan Son Nhat International Airport.',
+          'Board your departure flight back home carrying unforgettable memories of Vietnam.',
+          'Meals: Breakfast.'
         ]
       }
     ],
@@ -11415,85 +12421,106 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     itinerary: [
       {
         day: 1,
-        title: 'Arrival in Hanoi & Half-Day City Tour with Train Street',
+        title: 'Arrival in Hanoi | Hanoi City Tour & Train Street Experience',
         description: [
-          'Transfer: Airport pickup & transfer to Hanoi hotel',
-          'Accommodation: Hotel in Hanoi',
-          'Sightseeing: Tran Quoc Pagoda on West Lake',
-          'Sightseeing: Famous Hanoi Train Street Cafe Experience',
-          'Sightseeing: Ho Chi Minh Mausoleum & One Pillar Pagoda',
-          'Sightseeing: Old Quarter Market & Beer Street Night Walk'
+          'Arrive at Noi Bai International Airport in Hanoi and complete immigration formalities.',
+          'Meet your driver and transfer to the downtown hotel for check-in and leisure.',
+          'Visit Tran Quoc Pagoda, the oldest Buddhist temple in Hanoi set beside the tranquil West Lake.',
+          'Experience the famous Hanoi Train Street with cafes perched along active railroad tracks.',
+          'Visit the Ho Chi Minh Mausoleum and the unique lotus-shaped One Pillar Pagoda.',
+          'Explore the bustling Old Quarter markets, Beer Street (Ta Hien), and Hanoi Night Market.',
+          'Overnight stay in Hanoi.',
+          'Meals: Not Included.'
         ]
       },
       {
         day: 2,
-        title: 'Full-Day Ninh Binh Tour - Hoa Lu Ancient Capital & Tam Coc Caves',
+        title: 'Ninh Binh Day Tour | Hoa Lu Ancient Capital & Tam Coc Caves',
         description: [
-          'Transfer: Scenic countryside drive to Ninh Binh (approx. 90 km)',
-          'Accommodation: Hotel in Hanoi',
-          'Sightseeing: Tam Coc Caves Sampan Boat Ride (Halong Bay on Land)',
-          'Sightseeing: Hoa Lu Ancient Capital, Dinh & Le Dynasties Temples',
-          'Sightseeing: Bich Dong Pagoda Cave Temple & Mountain Views'
+          'Enjoy breakfast at the hotel and drive south towards Ninh Binh province (approx. 90 km).',
+          'Embark on a traditional sampan boat ride through the scenic limestone caves of Tam Coc ("Halong Bay on Land").',
+          'Savor a local Vietnamese buffet lunch at a restaurant in Ninh Binh.',
+          'Visit Hoa Lu, the ancient 10th-century capital of Vietnam, exploring the historic Dinh and Le temples.',
+          'Admire the serene Bich Dong Pagoda nestled against limestone mountains.',
+          'Drive back to Hanoi in the late afternoon and enjoy an evening at leisure.',
+          'Overnight stay in Hanoi.',
+          'Meals: Breakfast & Lunch.'
         ]
       },
       {
         day: 3,
-        title: 'Halong Bay UNESCO Day Cruise & Evening at Leisure in Hanoi',
+        title: 'Halong Bay Day Cruise | Limestone Karsts & Grottoes',
         description: [
-          'Transfer: Round-trip highway transfer between Hanoi and Halong Bay pier',
-          'Accommodation: Hotel in Hanoi',
-          'Sightseeing: Halong Bay UNESCO Day Cruise & Seafood Lunch Onboard',
-          'Sightseeing: Karst Grottoes Exploration past Sail Island & Turtle Islet',
-          'Sightseeing: Floating Fishing Village Views & Evening at Leisure'
+          'Have breakfast at your hotel and depart by road for Halong Bay (approx. 3.5 hours).',
+          'Arrive at Tuan Chau Marina and board a 4-hour scenic Halong Bay day cruise.',
+          'Cruise past iconic limestone formations including Sail Island, Fisherman\'s Head Rock, Butterfly Rock, and Turtle Islet.',
+          'Explore natural limestone grottos and cruise past floating fishing villages.',
+          'Savor a freshly prepared Vietnamese seafood lunch on board the cruise.',
+          'Disembark at the marina and transfer back to Hanoi for an evening at leisure.',
+          'Overnight stay in Hanoi.',
+          'Meals: Breakfast & Lunch.'
         ]
       },
       {
         day: 4,
-        title: 'Hanoi to Da Nang Flight & Coastal Town Leisure',
+        title: 'Hanoi to Da Nang | Coastal Transfer & Leisure',
         description: [
-          'Transfer: Airport transfer & flight to Da Nang; hotel check-in',
-          'Accommodation: Hotel in Da Nang',
-          'Sightseeing: My Khe Beach Stroll & Da Nang City Exploration',
-          'Sightseeing: Dragon Bridge & Evening Riverside Atmosphere'
+          'Enjoy breakfast at the hotel, check out, and transfer to Hanoi Airport.',
+          'Board a domestic flight to Da Nang; meet your local tour representative upon arrival.',
+          'Transfer to your beachside hotel in Da Nang for check-in and relaxation.',
+          'Spend the afternoon and evening at leisure exploring My Khe Beach, local markets, or the Dragon Bridge.',
+          'Overnight stay in Da Nang.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 5,
-        title: 'Ba Na Hills Tour, World-Record Cable Car & Golden Bridge',
+        title: 'Ba Na Hills Excursion | Golden Bridge & Fantasy Park',
         description: [
-          'Accommodation: Hotel in Da Nang',
-          'Sightseeing: Ba Na Hills World-Record Cable Car Ascent',
-          'Sightseeing: Iconic Golden Hands Bridge Panoramic Walk',
-          'Sightseeing: Debay Wine Cellar, Le Jardin D’Amour Gardens & Linh Ung Pagoda',
-          'Sightseeing: Fantasy Park Rides & French Village Summit Views'
+          'Have breakfast at the hotel and transfer to the scenic Ba Na Hills resort.',
+          'Ascend via the world-record cable car to 1,487m above sea level with panoramic views.',
+          'Walk across the iconic Golden Bridge supported by colossal stone hands.',
+          'Explore Le Jardin D\'Amour flower gardens, Debay Wine Cellar, and Linh Ung Pagoda with its giant Buddha statue.',
+          'Enjoy exciting rides, arcade games, and 4D/5D attractions at Fantasy Park.',
+          'Visit Nghinh Phong Tower and Bell Tower before taking the cable car back down to the foothill.',
+          'Return to Da Nang for a relaxing evening at leisure.',
+          'Overnight stay in Da Nang.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 6,
-        title: 'Hoi An Ancient Town Heritage Tour & Lantern Markets',
+        title: 'Hoi An Ancient Town Tour | UNESCO World Heritage Walking Tour',
         description: [
-          'Accommodation: Hotel in Da Nang',
-          'Sightseeing: Hoi An UNESCO Ancient Town Guided Walk',
-          'Sightseeing: 17th-Century Japanese Covered Bridge & Chinese Assembly Halls',
-          'Sightseeing: Traditional Old Town Clubhouses & Folk Music',
-          'Sightseeing: Lantern Shopping & Street Food along Thu Bon River'
+          'Enjoy breakfast at the hotel and depart for a full-day tour to the UNESCO-listed ancient town of Hoi An.',
+          'Take a walking tour across the 17th-century Japanese Covered Bridge and visit historic Chinese Assembly Halls.',
+          'Explore ancient timber merchant houses and listen to traditional folk music at old town clubhouses.',
+          'Stroll along the scenic Thu Bon River and vibrant night market with custom tailor shops and lantern displays.',
+          'Transfer back to Da Nang in the evening.',
+          'Overnight stay in Da Nang.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 7,
-        title: 'Da Nang to Saigon Flight & Dynamic City Leisure',
+        title: 'Da Nang to Ho Chi Minh City (Saigon) | Flight Transfer & Leisure',
         description: [
-          'Transfer: Transfer to Da Nang Airport & flight to Ho Chi Minh City (Saigon)',
-          'Accommodation: Hotel in Saigon (Ho Chi Minh City)',
-          'Sightseeing: Ben Thanh Market Shopping & Food Exploration',
-          'Sightseeing: Dynamic Saigon Nightlife & Nguyen Hue Walking Street'
+          'Enjoy breakfast at the hotel, complete check-out, and transfer to Da Nang Airport.',
+          'Fly to Ho Chi Minh City (Saigon) and transfer with your representative to the downtown hotel.',
+          'Check in to your hotel and spend the afternoon and evening at leisure.',
+          'Explore top Saigon landmarks, shop at the bustling Ben Thanh Market, or experience the nightlife on Bui Vien Street.',
+          'Overnight stay in Ho Chi Minh City (Saigon).',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 8,
-        title: 'Departure from Saigon - Return Flight Home',
+        title: 'Departure from Ho Chi Minh City | Trip Concludes',
         description: [
-          'Transfer: Transfer to Tan Son Nhat International Airport for departure flight'
+          'Have breakfast at the hotel and spend free time at leisure for last-minute shopping.',
+          'Complete check-out formalities and transfer to Tan Son Nhat International Airport.',
+          'Board your departure flight back home with wonderful memories of Vietnam.',
+          'Meals: Breakfast.'
         ]
       }
     ],
@@ -11654,97 +12681,120 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     itinerary: [
       {
         day: 1,
-        title: 'Arrival in Hanoi & Half-Day City Tour with Train Street',
+        title: 'Arrival in Hanoi | Hanoi City Tour & Train Street Experience',
         description: [
-          'Transfer: Airport pickup & transfer to Hanoi hotel',
-          'Accommodation: Hotel in Hanoi',
-          'Sightseeing: Tran Quoc Pagoda on West Lake',
-          'Sightseeing: Famous Hanoi Train Street Cafe Experience',
-          'Sightseeing: Ho Chi Minh Mausoleum & One Pillar Pagoda',
-          'Sightseeing: Old Quarter Market & Beer Street Night Walk'
+          'Arrive at Noi Bai International Airport in Hanoi and complete immigration formalities.',
+          'Transfer to the downtown hotel for check-in and leisure time.',
+          'Visit Tran Quoc Pagoda, the oldest Buddhist pagoda in Hanoi located on the West Lake.',
+          'Experience the thrill of Hanoi Train Street with vibrant cafes along the railway tracks.',
+          'Visit the Ho Chi Minh Mausoleum complex and the historic lotus-shaped One Pillar Pagoda.',
+          'Explore the bustling Old Quarter markets, Beer Street, and the lively Hanoi Night Market.',
+          'Overnight stay in Hanoi.',
+          'Meals: Not Included.'
         ]
       },
       {
         day: 2,
-        title: 'Full-Day Ninh Binh Tour - Hoa Lu Ancient Capital & Tam Coc Caves',
+        title: 'Ninh Binh Day Tour | Hoa Lu Ancient Capital & Tam Coc Caves',
         description: [
-          'Transfer: Countryside transfer to Ninh Binh (approx. 90 km)',
-          'Accommodation: Hotel in Hanoi',
-          'Sightseeing: Tam Coc Caves Sampan Boat Ride (Halong Bay on Land)',
-          'Sightseeing: Hoa Lu Ancient Capital, Dinh & Le Dynasties Temples',
-          'Sightseeing: Bich Dong Pagoda Cave Temple & Mountain Views'
+          'Enjoy breakfast at the hotel and depart on a scenic drive to Ninh Binh province (approx. 90 km).',
+          'Take a relaxing sampan boat ride through the majestic limestone caves of Tam Coc.',
+          'Savor a traditional Vietnamese lunch at a local restaurant in Ninh Binh.',
+          'Tour Hoa Lu, the 10th-century ancient capital of Vietnam, visiting the historic Dinh and Le temples.',
+          'Visit the tranquil Bich Dong Pagoda nestled into the mountainside.',
+          'Return to Hanoi in the late afternoon and spend the evening exploring local cafes and street food.',
+          'Overnight stay in Hanoi.',
+          'Meals: Breakfast & Lunch.'
         ]
       },
       {
         day: 3,
-        title: 'Halong Bay UNESCO Day Cruise & Evening at Leisure in Hanoi',
+        title: 'Halong Bay Day Cruise | Limestone Karsts & Grottoes',
         description: [
-          'Transfer: Round-trip highway transfer between Hanoi and Halong Bay pier',
-          'Accommodation: Hotel in Hanoi',
-          'Sightseeing: Halong Bay UNESCO Day Cruise & Seafood Lunch Onboard',
-          'Sightseeing: Karst Grottoes Exploration past Sail Island & Turtle Islet',
-          'Sightseeing: Floating Fishing Village Views & Evening at Leisure'
+          'Enjoy breakfast at your hotel and depart by road for Halong Bay (approx. 3.5 hours).',
+          'Arrive at Tuan Chau Marina and board a 4-hour scenic Halong Bay day cruise.',
+          'Cruise past iconic limestone formations including Sail Island, Fisherman\'s Head Rock, Butterfly Rock, and Turtle Islet.',
+          'Explore natural limestone caves and cruise past floating fishing villages.',
+          'Relish a freshly prepared Vietnamese lunch served on board the cruise.',
+          'Disembark at the marina and transfer back to Hanoi for an evening at leisure.',
+          'Overnight stay in Hanoi.',
+          'Meals: Breakfast & Lunch.'
         ]
       },
       {
         day: 4,
-        title: 'Hanoi to Da Nang Flight & Coastal Town Leisure',
+        title: 'Hanoi to Da Nang | Coastal Transfer & Leisure',
         description: [
-          'Transfer: Airport transfer & flight to Da Nang; hotel check-in',
-          'Accommodation: Hotel in Da Nang',
-          'Sightseeing: My Khe Beach Stroll & Da Nang City Exploration',
-          'Sightseeing: Dragon Bridge & Evening Riverside Atmosphere'
+          'Enjoy breakfast at the hotel, check out, and transfer to Hanoi Airport.',
+          'Board a domestic flight to Da Nang; meet your local tour representative upon arrival.',
+          'Transfer to your hotel in Da Nang for check-in and relaxation.',
+          'Spend the afternoon and evening at leisure exploring My Khe Beach, local markets, or the illuminated Dragon Bridge.',
+          'Overnight stay in Da Nang.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 5,
-        title: 'Ba Na Hills Tour, World-Record Cable Car & Golden Bridge',
+        title: 'Ba Na Hills Excursion | Golden Bridge & Fantasy Park',
         description: [
-          'Accommodation: Hotel in Da Nang',
-          'Sightseeing: Ba Na Hills World-Record Cable Car Ascent',
-          'Sightseeing: Iconic Golden Hands Bridge Panoramic Walk',
-          'Sightseeing: Debay Wine Cellar, Le Jardin D’Amour Gardens & Linh Ung Pagoda',
-          'Sightseeing: Fantasy Park Rides & French Village Summit Views'
+          'Have breakfast at the hotel and transfer to the scenic Ba Na Hills resort.',
+          'Ascend via the world-record cable car to 1,487m above sea level with panoramic views.',
+          'Walk across the iconic Golden Bridge supported by colossal stone hands.',
+          'Explore Le Jardin D\'Amour flower gardens, Debay Wine Cellar, and Linh Ung Pagoda with its giant Buddha statue.',
+          'Enjoy exciting rides, arcade games, and 4D/5D attractions at Fantasy Park.',
+          'Visit Nghinh Phong Tower and Bell Tower before taking the cable car back down to the foothill.',
+          'Return to Da Nang for a relaxing evening at leisure.',
+          'Overnight stay in Da Nang.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 6,
-        title: 'Hoi An Ancient Town Heritage Tour & Lantern Markets',
+        title: 'Hoi An Ancient Town Tour | UNESCO World Heritage Walking Tour',
         description: [
-          'Accommodation: Hotel in Da Nang',
-          'Sightseeing: Hoi An UNESCO Ancient Town Guided Walk',
-          'Sightseeing: 17th-Century Japanese Covered Bridge & Chinese Assembly Halls',
-          'Sightseeing: Traditional Old Town Clubhouses & Folk Music',
-          'Sightseeing: Lantern Shopping & Street Food along Thu Bon River'
+          'Enjoy breakfast at the hotel and depart for a full-day tour to the UNESCO-listed ancient town of Hoi An.',
+          'Take a walking tour across the 17th-century Japanese Covered Bridge and visit historic Chinese Assembly Halls.',
+          'Explore ancient timber merchant houses and listen to traditional folk music at old town clubhouses.',
+          'Stroll along the scenic Thu Bon River and vibrant night market with custom tailor shops and lantern displays.',
+          'Transfer back to Da Nang in the evening.',
+          'Overnight stay in Da Nang.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 7,
-        title: 'Da Nang to Saigon Flight & Dynamic City Leisure',
+        title: 'Da Nang to Ho Chi Minh City (Saigon) | Flight Transfer & Leisure',
         description: [
-          'Transfer: Transfer to Da Nang Airport & flight to Ho Chi Minh City (Saigon)',
-          'Accommodation: Hotel in Saigon (Ho Chi Minh City)',
-          'Sightseeing: Ben Thanh Market Shopping & Food Exploration',
-          'Sightseeing: Dynamic Saigon Nightlife & Nguyen Hue Walking Street'
+          'Enjoy breakfast at the hotel, complete check-out, and transfer to Da Nang Airport.',
+          'Fly to Ho Chi Minh City (Saigon) and transfer with your representative to the downtown hotel.',
+          'Check in to your hotel and spend the afternoon and evening at leisure.',
+          'Explore top Saigon landmarks, shop at the bustling Ben Thanh Market, or experience the nightlife on Bui Vien Street.',
+          'Overnight stay in Ho Chi Minh City (Saigon).',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 8,
-        title: 'Full-Day Mekong Delta Boat Tour & Canals',
+        title: 'Mekong Delta Excursion | River Cruise & Island Culture',
         description: [
-          'Accommodation: Hotel in Saigon',
-          'Sightseeing: Scenic Boat Cruise along Mekong River to My Tho',
-          'Sightseeing: Tropical Fruit Tasting & Southern Vietnamese Folk Music',
-          'Sightseeing: Hand-rowed Sampan Ride through Shaded Coconut Canals',
-          'Sightseeing: Coconut Candy Workshop & Honeybee Farm',
-          'Sightseeing: Historic Vinh Trang Pagoda Architectural Tour'
+          'Enjoy breakfast at the hotel and depart for My Tho in the scenic Mekong Delta.',
+          'Board a motorized boat to cruise along the river, observing floating fish farms and river life.',
+          'Visit an island orchard to sample fresh tropical fruits while enjoying traditional folk music.',
+          'Row along narrow palm-fringed canals on a wooden sampan and visit local honeybee and coconut candy workshops.',
+          'Visit the historic Vinh Trang Pagoda, known for its unique blend of Asian and European architecture.',
+          'Return to Ho Chi Minh City in the evening for an overnight stay.',
+          'Overnight stay in Ho Chi Minh City (Saigon).',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 9,
-        title: 'Departure from Saigon - Return Flight Home',
+        title: 'Departure from Ho Chi Minh City | Trip Concludes',
         description: [
-          'Transfer: Transfer to Tan Son Nhat International Airport for departure flight'
+          'Enjoy breakfast at the hotel and spend free time at leisure for last-minute shopping.',
+          'Complete check-out formalities and transfer to Tan Son Nhat International Airport.',
+          'Board your departure flight back home with unforgettable memories of Vietnam.',
+          'Meals: Breakfast.'
         ]
       }
     ],
@@ -11905,62 +12955,79 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     itinerary: [
       {
         day: 1,
-        title: 'Arrival in Hanoi & City Sightseeing Tour',
+        title: 'Arrival in Hanoi | Hanoi City Tour & Cyclo Experience',
         description: [
-          'Transfer: Airport pickup & transfer to Hanoi downtown hotel',
-          'Accommodation: Hotel in Hanoi',
-          'Sightseeing: Ba Dinh Square & Ho Chi Minh Complex (Mausoleum exterior, Stilt House, One-Pillar Pagoda)',
-          'Sightseeing: Temple of Literature (First University of Vietnam)',
-          'Sightseeing: 1-Hour Cyclo Tour through Hanoi Old Quarter & Hoan Kiem Lake'
+          'Arrive at Noi Bai International Airport in Hanoi and meet the local tour representative.',
+          'Transfer to the downtown hotel for check-in and leisure time.',
+          'Visit Ba Dinh Square, Ho Chi Minh Complex (Mausoleum exterior, house-on-stilts, fishpond), and One Pillar Pagoda.',
+          'Explore the Temple of Literature (Van Mieu), Vietnam\'s first national university.',
+          'Enjoy a 1-hour cyclo ride exploring Hanoi\'s vibrant Old Quarter and scenic Hoan Kiem Lake.',
+          'Overnight stay in Hanoi.',
+          'Meals: Not Included.'
         ]
       },
       {
         day: 2,
-        title: 'Hanoi to Halong Bay Transfer & Luxury Cruise with Kayaking',
+        title: 'Hanoi to Halong Bay | Luxury Overnight Cruise & Karst Exploration',
         description: [
-          'Transfer: Countryside drive to Halong Bay pier',
-          'Accommodation: Overnight Luxury Cruise in Halong Bay',
-          'Sightseeing: Halong Bay UNESCO World Heritage Island Cruising',
-          'Sightseeing: Limestone Cave Exploration, Kayaking & Swimming',
-          'Sightseeing: Sunset Deck Cooking Demonstration & Squid Fishing'
+          'Enjoy breakfast at the hotel, check out, and depart eastward for Halong Bay (approx. 3 hours).',
+          'Drive through the lush Red River Delta with views of countryside farms and paddy fields.',
+          'Board the luxury cruise at Halong Bay, receive a welcome briefing, and settle into your cabin.',
+          'Savor a gourmet buffet lunch while cruising past magnificent karst peaks and islets.',
+          'Explore limestone caves and enjoy swimming or kayaking in emerald waters.',
+          'Attend a Vietnamese cooking demonstration on the sundeck followed by a multi-course dinner.',
+          'Overnight stay in Halong Bay Cruise.',
+          'Meals: Breakfast, Lunch & Dinner.'
         ]
       },
       {
         day: 3,
-        title: 'Halong Bay Sunrise Cruise & Transfer back to Hanoi',
+        title: 'Halong Bay to Hanoi | Sunrise Cruise & Return to Hanoi',
         description: [
-          'Transfer: Cruise disembarkation & transfer back to Hanoi',
-          'Accommodation: Hotel in Hanoi',
-          'Sightseeing: Early Morning Sunrise & Tai Chi on the Bay',
-          'Sightseeing: Scenic Island Cruising past Sail Island & Turtle Islet',
-          'Sightseeing: Leisure Evening exploring Hanoi Nightlife & Cafes'
+          'Wake up early to catch the sunrise over the bay and join an optional Tai Chi session on deck.',
+          'Cruise past notable formations including Sail Island, Fisherman\'s Head Rock, Butterfly Rock, and Turtle Islet.',
+          'Enjoy a hearty brunch on board as the cruise sails back toward the harbor.',
+          'Disembark at Tuan Chau pier and transfer by road back to Hanoi.',
+          'Check in to your hotel in Hanoi and enjoy the evening exploring local night markets and cafes.',
+          'Overnight stay in Hanoi.',
+          'Meals: Breakfast & Brunch.'
         ]
       },
       {
         day: 4,
-        title: 'Hanoi to Saigon Flight & Historic Landmarks Tour',
+        title: 'Hanoi to Ho Chi Minh City (Saigon) | Saigon City Landmarks',
         description: [
-          'Transfer: Transfer to airport & flight to Ho Chi Minh City (Saigon)',
-          'Accommodation: Hotel in Saigon (Ho Chi Minh City)',
-          'Sightseeing: War Remnants Museum & Reunification Palace',
-          'Sightseeing: Notre-Dame Cathedral & Saigon Central Post Office',
-          'Sightseeing: Ben Thanh Market Shopping & Street Food'
+          'Have breakfast at the hotel, check out, and transfer to Hanoi Airport.',
+          'Board a domestic flight to Ho Chi Minh City (Saigon) and transfer to your downtown hotel for check-in.',
+          'Visit the War Remnants Museum to explore historic military exhibits, photographs, and artifacts.',
+          'Tour the historic Reunification Palace, the former presidential headquarters of South Vietnam.',
+          'Admire French colonial landmarks including Notre Dame Cathedral (exterior) and the Central Post Office.',
+          'Browse local handicrafts, textiles, and street food at the iconic Ben Thanh Market.',
+          'Overnight stay in Ho Chi Minh City (Saigon).',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 5,
-        title: 'Cu Chi Tunnels Underground Network Tour & Afternoon Leisure',
+        title: 'Cu Chi Tunnels Excursion | Underground War Network',
         description: [
-          'Accommodation: Hotel in Saigon',
-          'Sightseeing: Historic Cu Chi Tunnels Network Tour & Underground Crawl Experience',
-          'Sightseeing: Afternoon at Leisure for Shopping & Cafe Hopping in Saigon'
+          'Enjoy breakfast at the hotel and depart for the historic Cu Chi Tunnels.',
+          'Watch an introductory documentary highlighting the guerrilla defense network built during the war.',
+          'Explore the underground network featuring trap doors, living quarters, weapon workshops, and command bunkers.',
+          'Experience crawling through a preserved tunnel section to appreciate the resilience of the fighters.',
+          'Return to Ho Chi Minh City for an afternoon at leisure for shopping or relaxation.',
+          'Overnight stay in Ho Chi Minh City (Saigon).',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 6,
-        title: 'Departure from Saigon - Return Flight Home',
+        title: 'Departure from Ho Chi Minh City | Trip Concludes',
         description: [
-          'Transfer: Transfer to Tan Son Nhat International Airport for departure flight'
+          'Enjoy breakfast at your hotel and spend the morning at leisure for last-minute souvenir shopping.',
+          'Complete check-out formalities and transfer to Tan Son Nhat International Airport.',
+          'Board your scheduled flight back home with unforgettable memories of Vietnam.',
+          'Meals: Breakfast.'
         ]
       }
     ],
@@ -12113,74 +13180,97 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     itinerary: [
       {
         day: 1,
-        title: 'Arrival in Hanoi & Half-Day City Tour with Train Street',
+        title: 'Arrival in Hanoi | Hanoi City Tour & Train Street Experience',
         description: [
-          'Transfer: Airport pickup & transfer to Hanoi hotel',
-          'Accommodation: Hotel in Hanoi',
-          'Sightseeing: Tran Quoc Pagoda on West Lake',
-          'Sightseeing: Famous Hanoi Train Street Cafe Experience',
-          'Sightseeing: Ho Chi Minh Mausoleum & One Pillar Pagoda',
-          'Sightseeing: Old Quarter Market & Beer Street Night Walk'
+          'Arrive at Noi Bai International Airport in Hanoi and complete immigration formalities.',
+          'Meet your driver and transfer to the downtown hotel for check-in and leisure.',
+          'Visit Tran Quoc Pagoda, the oldest Buddhist temple in Hanoi located on the tranquil West Lake.',
+          'Experience the famous Hanoi Train Street with trackside cafes and unique street vibes.',
+          'Visit the Ho Chi Minh Mausoleum complex and the iconic lotus-shaped One Pillar Pagoda.',
+          'Explore the vibrant Old Quarter, shop for local souvenirs, and enjoy the nightlife on Beer Street.',
+          'Overnight stay in Hanoi.',
+          'Meals: Not Included.'
         ]
       },
       {
         day: 2,
-        title: 'Full-Day Ninh Binh Tour - Hoa Lu Ancient Capital & Tam Coc Caves',
+        title: 'Ninh Binh Day Tour | Hoa Lu Ancient Capital & Tam Coc Caves',
         description: [
-          'Transfer: Countryside transfer to Ninh Binh (approx. 90 km)',
-          'Accommodation: Hotel in Hanoi',
-          'Sightseeing: Tam Coc Caves Sampan Boat Ride (Halong Bay on Land)',
-          'Sightseeing: Hoa Lu Ancient Capital, Dinh & Le Dynasties Temples',
-          'Sightseeing: Bich Dong Pagoda Cave Temple & Mountain Views'
+          'Enjoy breakfast at the hotel and depart on a 90 km scenic drive south to Ninh Binh province.',
+          'Embark on a traditional sampan boat ride through the stunning limestone caves of Tam Coc.',
+          'Savor a delicious buffet lunch featuring local Vietnamese delicacies.',
+          'Visit Hoa Lu, the 10th-century ancient capital of Vietnam, and explore the Dinh and Le dynasty temples.',
+          'Admire the serene Bich Dong Pagoda nestled into the mountain cliffside.',
+          'Return by road to Hanoi in the late afternoon for an evening at leisure.',
+          'Overnight stay in Hanoi.',
+          'Meals: Breakfast & Lunch.'
         ]
       },
       {
         day: 3,
-        title: 'Hanoi to Halong Bay Transfer & Overnight Cruise Experience',
+        title: 'Hanoi to Halong Bay | Luxury Overnight Cruise & Karst Exploration',
         description: [
-          'Transfer: Drive through Red River Delta to Halong Bay pier',
-          'Accommodation: Overnight Luxury Cruise in Halong Bay',
-          'Sightseeing: Halong Bay UNESCO World Heritage Island Cruising',
-          'Sightseeing: Grottoes Exploration, Kayaking & Swimming',
-          'Sightseeing: Sunset Deck Cooking Demonstration & Dinner'
+          'Enjoy breakfast at the hotel, check out, and depart at 9:00 AM for Halong Bay (approx. 3 hours).',
+          'Drive through the lush Red River Delta countryside with views of rural farming communities.',
+          'Arrive at Tuan Chau Marina, board your luxury overnight cruise, and check in to your cabin.',
+          'Relish a delectable seafood lunch while sailing past majestic karst formations and islets.',
+          'Explore limestone grottos and enjoy swimming or kayaking through emerald waters.',
+          'Attend a Vietnamese cooking demonstration on the sundeck and watch a picturesque sunset.',
+          'Savor a gourmet dinner on board and spend the evening enjoying squid fishing or music.',
+          'Overnight stay in Halong Bay Cruise.',
+          'Meals: Breakfast, Lunch & Dinner.'
         ]
       },
       {
         day: 4,
-        title: 'Halong Bay Sunrise Cruise & Flight to Saigon',
+        title: 'Halong Bay to Hanoi & Flight to Ho Chi Minh City | Coastal to Metropolis Transfer',
         description: [
-          'Transfer: Cruise disembarkation, drive to Hanoi Airport & flight to Ho Chi Minh City (Saigon)',
-          'Accommodation: Hotel in Saigon (Ho Chi Minh City)',
-          'Sightseeing: Sunrise View & Morning Cruise past Sail Island & Turtle Islet',
-          'Sightseeing: Ben Thanh Market & Evening Leisure in Dynamic Saigon'
+          'Wake up early to catch the sunrise over the bay and join an optional Tai Chi session.',
+          'Cruise past notable rock formations including Sail Island, Fisherman\'s Head Rock, and Turtle Islet.',
+          'Explore hidden caves and floating fishing villages before savoring a delicious brunch on board.',
+          'Disembark at the marina and transfer by road to Hanoi Airport.',
+          'Board a domestic flight to Ho Chi Minh City (Saigon) and transfer to your downtown hotel for check-in.',
+          'Spend the evening at leisure exploring local streets or shopping at Ben Thanh Market.',
+          'Overnight stay in Ho Chi Minh City (Saigon).',
+          'Meals: Breakfast & Brunch.'
         ]
       },
       {
         day: 5,
-        title: 'Full-Day Mekong Delta Boat Tour & Canals',
+        title: 'Mekong Delta Excursion | River Cruise & Island Culture',
         description: [
-          'Accommodation: Hotel in Saigon',
-          'Sightseeing: Scenic Boat Cruise along Mekong River to My Tho',
-          'Sightseeing: Tropical Fruit Tasting & Southern Vietnamese Folk Music',
-          'Sightseeing: Hand-rowed Sampan Ride through Shaded Coconut Canals',
-          'Sightseeing: Coconut Candy Workshop & Honeybee Farm',
-          'Sightseeing: Historic Vinh Trang Pagoda Architectural Tour'
+          'Enjoy breakfast at the hotel and depart for My Tho in the picturesque Mekong Delta.',
+          'Board a motorized boat cruise on the Mekong River, observing floating fish farms and river life.',
+          'Stop at an island orchard to sample sweet tropical fruits while enjoying Southern Vietnamese folk music.',
+          'Row through narrow, palm-shaded canals on small sampans and visit local honeybee and coconut candy workshops.',
+          'Visit the historic Vinh Trang Pagoda, admiring its ornate fusion of Chinese, Cambodian, and French architecture.',
+          'Transfer back to Ho Chi Minh City in the late afternoon for an evening at leisure.',
+          'Overnight stay in Ho Chi Minh City (Saigon).',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 6,
-        title: 'Cu Chi Tunnels Underground Network Tour & Afternoon Leisure',
+        title: 'Cu Chi Tunnels Excursion | Underground War Network',
         description: [
-          'Accommodation: Hotel in Saigon',
-          'Sightseeing: Historic Cu Chi Tunnels Network Tour & Underground Crawl Experience',
-          'Sightseeing: Afternoon at Leisure for Shopping & Cafe Hopping in Saigon'
+          'Have breakfast at the hotel and transfer to the historic Cu Chi Tunnels.',
+          'Watch an introductory documentary highlighting the guerrilla warfare and tunnel construction.',
+          'Explore the underground network featuring trap doors, living quarters, weapon workshops, and field hospitals.',
+          'Experience crawling through a designated preserved tunnel section.',
+          'Enjoy a traditional lunch at a local restaurant before returning to Ho Chi Minh City.',
+          'Spend the evening exploring vibrant markets, rooftop lounges, or the nightlife on Bui Vien Street.',
+          'Overnight stay in Ho Chi Minh City (Saigon).',
+          'Meals: Breakfast & Lunch.'
         ]
       },
       {
         day: 7,
-        title: 'Departure from Saigon - Return Flight Home',
+        title: 'Departure from Ho Chi Minh City | Trip Concludes',
         description: [
-          'Transfer: Transfer to Tan Son Nhat International Airport for departure flight'
+          'Enjoy breakfast at the hotel and complete check-out formalities.',
+          'Board your transfer to Tan Son Nhat International Airport in Ho Chi Minh City.',
+          'Board your flight back home carrying fond memories of your Vietnam family holiday.',
+          'Meals: Breakfast.'
         ]
       }
     ],
@@ -12338,85 +13428,109 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     itinerary: [
       {
         day: 1,
-        title: 'Arrival in Hanoi & Half-Day City Tour with Train Street',
+        title: 'Arrival in Hanoi | Hanoi City Tour & Train Street Experience',
         description: [
-          'Transfer: Airport pickup & transfer to Hanoi hotel',
-          'Accommodation: Hotel in Hanoi',
-          'Sightseeing: Tran Quoc Pagoda on West Lake',
-          'Sightseeing: Famous Hanoi Train Street Cafe Experience',
-          'Sightseeing: Ho Chi Minh Mausoleum & One Pillar Pagoda',
-          'Sightseeing: Old Quarter Market & Beer Street Night Walk'
+          'Arrive at Noi Bai International Airport in Hanoi and complete immigration formalities.',
+          'Meet your driver and transfer to the downtown hotel for check-in and leisure.',
+          'Visit Tran Quoc Pagoda, the oldest Buddhist temple in Hanoi located on West Lake.',
+          'Experience Hanoi Train Street with vibrant cafes along the railway tracks.',
+          'Visit the Ho Chi Minh Mausoleum complex and the lotus-shaped One Pillar Pagoda.',
+          'Explore the Old Quarter, shop for local souvenirs, and enjoy the evening at Beer Street and the night market.',
+          'Overnight stay in Hanoi.',
+          'Meals: Not Included.'
         ]
       },
       {
         day: 2,
-        title: 'Hanoi to Halong Bay Transfer & Luxury Overnight Cruise',
+        title: 'Hanoi to Halong Bay | Luxury Overnight Cruise & Karst Exploration',
         description: [
-          'Transfer: Drive through Red River Delta to Halong Bay pier',
-          'Accommodation: Overnight Luxury Cruise in Halong Bay',
-          'Sightseeing: Halong Bay UNESCO World Heritage Island Cruising',
-          'Sightseeing: Grottoes Exploration, Kayaking & Swimming',
-          'Sightseeing: Sunset Deck Cooking Demonstration & Dinner'
+          'Enjoy breakfast at the hotel, check out, and depart at 9:00 AM for Halong Bay (approx. 3 hours).',
+          'Drive through the lush Red River Delta countryside with views of rural paddy fields and villages.',
+          'Arrive at Tuan Chau Marina, board your luxury overnight cruise, and check in to your cabin.',
+          'Savor a gourmet buffet lunch while sailing past iconic karst formations and islets.',
+          'Explore limestone grottos and enjoy swimming or kayaking in emerald waters.',
+          'Attend a Vietnamese cooking demonstration on the sundeck followed by a multi-course dinner.',
+          'Spend the evening relaxing on board or participating in squid fishing.',
+          'Overnight stay in Halong Bay Cruise.',
+          'Meals: Breakfast, Lunch & Dinner.'
         ]
       },
       {
         day: 3,
-        title: 'Halong Bay Sunrise Cruise & Transfer back to Hanoi',
+        title: 'Halong Bay to Hanoi | Sunrise Cruise & Return to Hanoi',
         description: [
-          'Transfer: Cruise disembarkation & transfer back to Hanoi hotel',
-          'Accommodation: Hotel in Hanoi',
-          'Sightseeing: Early Morning Sunrise & Tai Chi on the Bay',
-          'Sightseeing: Scenic Cruising past Sail Island & Turtle Islet',
-          'Sightseeing: Leisure Evening exploring Hanoi Nightlife'
+          'Rise early for sunrise over the bay and an optional morning Tai Chi session on the sundeck.',
+          'Cruise past famous karst formations including Sail Island, Fisherman\'s Head Rock, Butterfly Rock, and Turtle Islet.',
+          'Check out of your cabin and enjoy a hearty brunch on board as the ship cruises back to the harbor.',
+          'Disembark at the pier and transfer by road back to Hanoi.',
+          'Check in to your hotel and enjoy the evening at leisure exploring Hanoi\'s lively streets and cafes.',
+          'Overnight stay in Hanoi.',
+          'Meals: Breakfast & Brunch.'
         ]
       },
       {
         day: 4,
-        title: 'Hanoi to Da Nang Flight & Hoi An Ancient Town Heritage Tour',
+        title: 'Hanoi to Da Nang | Flight Transfer & Hoi An Ancient Town Tour',
         description: [
-          'Transfer: Airport transfer & flight to Da Nang; beachside hotel check-in',
-          'Accommodation: Hotel in Da Nang',
-          'Sightseeing: Hoi An UNESCO Ancient Town Guided Walk',
-          'Sightseeing: Japanese Covered Bridge & Chinese Assembly Halls',
-          'Sightseeing: Lantern Shopping & Food Stalls along Thu Bon River'
+          'Enjoy breakfast at the hotel, check out, and transfer to Hanoi Airport.',
+          'Board a domestic flight to Da Nang; meet your local tour guide upon arrival and check in to your beachside hotel.',
+          'Transfer to the UNESCO World Heritage town of Hoi An in the afternoon.',
+          'Take a guided walking tour across the 400-year-old Japanese Covered Bridge, Chinese Assembly Halls, and historic merchant houses.',
+          'Stroll along the lantern-lit Thu Bon River and vibrant night market, with opportunities for custom tailoring and shopping.',
+          'Transfer back to Da Nang for the night.',
+          'Overnight stay in Da Nang.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 5,
-        title: 'Ba Na Hills Tour, World-Record Cable Car & Golden Bridge',
+        title: 'Ba Na Hills Excursion | Golden Bridge & Fantasy Park',
         description: [
-          'Accommodation: Hotel in Da Nang',
-          'Sightseeing: Ba Na Hills World-Record Cable Car Ascent',
-          'Sightseeing: Iconic Golden Hands Bridge Panoramic Walk',
-          'Sightseeing: Debay Wine Cellar, Le Jardin D’Amour Gardens & Linh Ung Pagoda',
-          'Sightseeing: Fantasy Park Rides & French Village Summit Views'
+          'Enjoy breakfast at the hotel and depart for the scenic Ba Na Hills.',
+          'Ride the world-record cable car ascending 1,487m above sea level with panoramic mountain views.',
+          'Walk across the iconic Golden Bridge held aloft by giant stone hands.',
+          'Explore Le Jardin D\'Amour flower gardens, Debay Wine Cellar, and Linh Ung Pagoda with its giant Buddha statue.',
+          'Enjoy exciting rides and entertainment at Fantasy Park, and visit Nghinh Phong Tower and Bell Tower at the summit.',
+          'Take the cable car back down to the foothill and return to Da Nang for an evening at leisure.',
+          'Overnight stay in Da Nang.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 6,
-        title: 'Da Nang to Saigon Flight & Historic Landmarks Tour',
+        title: 'Da Nang to Ho Chi Minh City (Saigon) | Saigon City Landmarks',
         description: [
-          'Transfer: Transfer to Da Nang Airport & flight to Ho Chi Minh City (Saigon)',
-          'Accommodation: Hotel in Saigon (Ho Chi Minh City)',
-          'Sightseeing: War Remnants Museum & Reunification Palace',
-          'Sightseeing: Notre-Dame Cathedral & Saigon Central Post Office',
-          'Sightseeing: Ben Thanh Market Shopping & Food Exploration'
+          'Have breakfast at the hotel, check out, and transfer to Da Nang Airport.',
+          'Fly to Ho Chi Minh City (Saigon) and transfer with your representative to the downtown hotel for check-in.',
+          'Visit the War Remnants Museum to explore historic military exhibits, photographs, and artifacts.',
+          'Tour the historic Reunification Palace, the former presidential headquarters of South Vietnam.',
+          'Admire French colonial landmarks including Notre Dame Cathedral (exterior) and the Central Post Office.',
+          'Explore the bustling Ben Thanh Market for local souvenirs, handicrafts, and delicacies.',
+          'Overnight stay in Ho Chi Minh City (Saigon).',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 7,
-        title: 'Cu Chi Tunnels Underground Network Tour & Afternoon Leisure',
+        title: 'Cu Chi Tunnels Excursion | Underground War Network',
         description: [
-          'Accommodation: Hotel in Saigon',
-          'Sightseeing: Historic Cu Chi Tunnels Network Tour & Underground Crawl Experience',
-          'Sightseeing: Afternoon at Leisure for Shopping & Cafe Hopping in Saigon'
+          'Enjoy breakfast at the hotel and depart for the historic Cu Chi Tunnels.',
+          'Watch an introductory documentary highlighting the guerrilla defense network built during the war.',
+          'Explore the underground network featuring trap doors, living quarters, weapon workshops, and command bunkers.',
+          'Experience crawling through a preserved tunnel section to appreciate the resilience of the fighters.',
+          'Enjoy lunch at a local restaurant and return to Ho Chi Minh City for an afternoon at leisure.',
+          'Overnight stay in Ho Chi Minh City (Saigon).',
+          'Meals: Breakfast & Lunch.'
         ]
       },
       {
         day: 8,
-        title: 'Departure from Saigon - Return Flight Home',
+        title: 'Departure from Ho Chi Minh City | Trip Concludes',
         description: [
-          'Transfer: Transfer to Tan Son Nhat International Airport for departure flight'
+          'Enjoy breakfast at the hotel and spend the morning at leisure for last-minute shopping.',
+          'Complete check-out formalities and transfer to Tan Son Nhat International Airport.',
+          'Board your departure flight back home carrying wonderful memories of Vietnam.',
+          'Meals: Breakfast.'
         ]
       }
     ],
@@ -12574,106 +13688,133 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     itinerary: [
       {
         day: 1,
-        title: 'Arrival in Hanoi & Half-Day City Tour with Train Street',
+        title: 'Arrival in Hanoi | Hanoi City Tour & Train Street Experience',
         description: [
-          'Transfer: Airport pickup & transfer to Hanoi hotel',
-          'Accommodation: Hotel in Hanoi',
-          'Sightseeing: Tran Quoc Pagoda on West Lake',
-          'Sightseeing: Famous Hanoi Train Street Cafe Experience',
-          'Sightseeing: Ho Chi Minh Mausoleum & One Pillar Pagoda',
-          'Sightseeing: Old Quarter Market & Beer Street Night Walk'
+          'Arrive at Noi Bai International Airport in Hanoi and complete immigration formalities.',
+          'Transfer to the downtown hotel for check-in and leisure time.',
+          'Visit Tran Quoc Pagoda, the oldest Buddhist pagoda in Hanoi located on the West Lake.',
+          'Experience the thrill of Hanoi Train Street with vibrant cafes along the active railway tracks.',
+          'Visit the Ho Chi Minh Mausoleum complex and the historic lotus-shaped One Pillar Pagoda.',
+          'Explore the bustling Old Quarter markets, Beer Street, and the lively Hanoi Night Market.',
+          'Overnight stay in Hanoi.',
+          'Meals: Not Included.'
         ]
       },
       {
         day: 2,
-        title: 'Full-Day Ninh Binh Tour - Hoa Lu Ancient Capital & Tam Coc Caves',
+        title: 'Ninh Binh Day Tour | Hoa Lu Ancient Capital & Tam Coc Caves',
         description: [
-          'Transfer: Countryside transfer to Ninh Binh (approx. 90 km)',
-          'Accommodation: Hotel in Hanoi',
-          'Sightseeing: Tam Coc Caves Sampan Boat Ride (Halong Bay on Land)',
-          'Sightseeing: Hoa Lu Ancient Capital, Dinh & Le Dynasties Temples',
-          'Sightseeing: Bich Dong Pagoda Cave Temple & Mountain Views'
+          'Enjoy breakfast at the hotel and depart on a scenic 90 km drive to Ninh Binh province.',
+          'Take a relaxing sampan boat ride through the majestic limestone caves of Tam Coc ("Halong Bay on Land").',
+          'Savor a traditional Vietnamese lunch at a local restaurant in Ninh Binh.',
+          'Tour Hoa Lu, the 10th-century ancient capital of Vietnam, exploring the historic Dinh and Le temples.',
+          'Visit the tranquil Bich Dong Pagoda nestled into the mountain cliffside.',
+          'Return to Hanoi in the late afternoon and spend the evening at leisure.',
+          'Overnight stay in Hanoi.',
+          'Meals: Breakfast & Lunch.'
         ]
       },
       {
         day: 3,
-        title: 'Halong Bay UNESCO Day Cruise & Evening at Leisure in Hanoi',
+        title: 'Halong Bay Day Cruise | Limestone Karsts & Grottoes',
         description: [
-          'Transfer: Round-trip highway transfer between Hanoi and Halong Bay pier',
-          'Accommodation: Hotel in Hanoi',
-          'Sightseeing: Halong Bay UNESCO Day Cruise & Seafood Lunch Onboard',
-          'Sightseeing: Karst Grottoes Exploration past Sail Island & Turtle Islet',
-          'Sightseeing: Floating Fishing Village Views & Evening at Leisure'
+          'Have breakfast at your hotel and depart by road for Halong Bay (approx. 3.5 hours).',
+          'Arrive at Tuan Chau Marina and board a 4-hour scenic Halong Bay day cruise.',
+          'Cruise past iconic limestone formations including Sail Island, Fisherman\'s Head Rock, Butterfly Rock, and Turtle Islet.',
+          'Explore natural limestone caves and cruise past floating fishing villages.',
+          'Savor a freshly prepared Vietnamese seafood lunch served on board.',
+          'Disembark at the marina and transfer back to Hanoi for an evening at leisure.',
+          'Overnight stay in Hanoi.',
+          'Meals: Breakfast & Lunch.'
         ]
       },
       {
         day: 4,
-        title: 'Hanoi to Da Nang Flight & Coastal Town Leisure',
+        title: 'Hanoi to Da Nang | Coastal Transfer & Leisure',
         description: [
-          'Transfer: Airport transfer & flight to Da Nang; hotel check-in',
-          'Accommodation: Hotel in Da Nang',
-          'Sightseeing: My Khe Beach Stroll & Da Nang City Exploration',
-          'Sightseeing: Dragon Bridge & Evening Riverside Atmosphere'
+          'Enjoy breakfast at the hotel, check out, and transfer to Hanoi Airport.',
+          'Board a domestic flight to Da Nang; meet your local tour representative upon arrival.',
+          'Transfer to your beachside hotel in Da Nang for check-in and relaxation.',
+          'Spend the afternoon and evening at leisure exploring My Khe Beach, local markets, or the illuminated Dragon Bridge.',
+          'Overnight stay in Da Nang.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 5,
-        title: 'Ba Na Hills Tour, World-Record Cable Car & Golden Bridge',
+        title: 'Ba Na Hills Excursion | Golden Bridge & Fantasy Park',
         description: [
-          'Accommodation: Hotel in Da Nang',
-          'Sightseeing: Ba Na Hills World-Record Cable Car Ascent',
-          'Sightseeing: Iconic Golden Hands Bridge Panoramic Walk',
-          'Sightseeing: Debay Wine Cellar, Le Jardin D’Amour Gardens & Linh Ung Pagoda',
-          'Sightseeing: Fantasy Park Rides & French Village Summit Views'
+          'Have breakfast at the hotel and transfer to the scenic Ba Na Hills resort.',
+          'Ascend via the world-record cable car to 1,487m above sea level with panoramic mountain views.',
+          'Walk across the iconic Golden Bridge supported by colossal stone hands.',
+          'Explore Le Jardin D\'Amour flower gardens, Debay Wine Cellar, and Linh Ung Pagoda with its giant Buddha statue.',
+          'Enjoy exciting rides, arcade games, and 4D/5D attractions at Fantasy Park.',
+          'Visit Nghinh Phong Tower and Bell Tower before taking the cable car back down to the foothill.',
+          'Return to Da Nang for a relaxing evening at leisure.',
+          'Overnight stay in Da Nang.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 6,
-        title: 'Hoi An Ancient Town Heritage Tour & Lantern Markets',
+        title: 'Hoi An Ancient Town Tour | UNESCO World Heritage Walking Tour',
         description: [
-          'Accommodation: Hotel in Da Nang',
-          'Sightseeing: Hoi An UNESCO Ancient Town Guided Walk',
-          'Sightseeing: 17th-Century Japanese Covered Bridge & Chinese Assembly Halls',
-          'Sightseeing: Traditional Old Town Clubhouses & Folk Music',
-          'Sightseeing: Lantern Shopping & Street Food along Thu Bon River'
+          'Enjoy breakfast at the hotel and depart for a full-day tour to the UNESCO-listed ancient town of Hoi An.',
+          'Take a walking tour across the 17th-century Japanese Covered Bridge and visit historic Chinese Assembly Halls.',
+          'Explore ancient timber merchant houses and listen to traditional folk music at old town clubhouses.',
+          'Stroll along the scenic Thu Bon River and vibrant night market with custom tailor shops and lantern displays.',
+          'Transfer back to Da Nang in the evening.',
+          'Overnight stay in Da Nang.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 7,
-        title: 'Da Nang to Saigon Flight & Dynamic City Leisure',
+        title: 'Da Nang to Ho Chi Minh City (Saigon) | Flight Transfer & Leisure',
         description: [
-          'Transfer: Transfer to Da Nang Airport & flight to Ho Chi Minh City (Saigon)',
-          'Accommodation: Hotel in Saigon (Ho Chi Minh City)',
-          'Sightseeing: Ben Thanh Market Shopping & Food Exploration',
-          'Sightseeing: Dynamic Saigon Nightlife & Nguyen Hue Walking Street'
+          'Enjoy breakfast at the hotel, complete check-out, and transfer to Da Nang Airport.',
+          'Fly to Ho Chi Minh City (Saigon) and transfer with your representative to the downtown hotel for check-in.',
+          'Spend the afternoon and evening at leisure exploring Saigon\'s vibrant streets, cafes, or Ben Thanh Market.',
+          'Experience the bustling nightlife along Bui Vien Walking Street or Nguyen Hue Boulevard.',
+          'Overnight stay in Ho Chi Minh City (Saigon).',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 8,
-        title: 'Full-Day Mekong Delta Boat Tour & Canals',
+        title: 'Mekong Delta Excursion | River Cruise & Island Culture',
         description: [
-          'Accommodation: Hotel in Saigon',
-          'Sightseeing: Scenic Boat Cruise along Mekong River to My Tho',
-          'Sightseeing: Tropical Fruit Tasting & Southern Vietnamese Folk Music',
-          'Sightseeing: Hand-rowed Sampan Ride through Shaded Coconut Canals',
-          'Sightseeing: Coconut Candy Workshop & Honeybee Farm',
-          'Sightseeing: Historic Vinh Trang Pagoda Architectural Tour'
+          'Enjoy breakfast at the hotel and depart for My Tho in the scenic Mekong Delta.',
+          'Board a motorized boat to cruise along the Mekong River, observing floating fish farms and river life.',
+          'Visit an island orchard to sample fresh tropical fruits while enjoying traditional Southern folk music.',
+          'Row along narrow palm-fringed canals on a wooden sampan and visit local honeybee and coconut candy workshops.',
+          'Visit the historic Vinh Trang Pagoda, known for its unique blend of Asian and European architecture.',
+          'Return to Ho Chi Minh City in the evening for an overnight stay.',
+          'Overnight stay in Ho Chi Minh City (Saigon).',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 9,
-        title: 'Cu Chi Tunnels Underground Network Tour & Afternoon Leisure',
+        title: 'Cu Chi Tunnels Excursion | Underground War Network',
         description: [
-          'Accommodation: Hotel in Saigon',
-          'Sightseeing: Historic Cu Chi Tunnels Network Tour & Underground Crawl Experience',
-          'Sightseeing: Afternoon at Leisure for Shopping & Cafe Hopping in Saigon'
+          'Have breakfast at the hotel and depart for the historic Cu Chi Tunnels.',
+          'Watch an introductory documentary highlighting the extensive underground network built during the war.',
+          'Explore the multi-tiered tunnel system featuring trap doors, living quarters, weapon workshops, and field hospitals.',
+          'Experience crawling through a designated safe section of the underground tunnels.',
+          'Savor a local lunch at a restaurant before returning to Ho Chi Minh City for an afternoon at leisure.',
+          'Overnight stay in Ho Chi Minh City (Saigon).',
+          'Meals: Breakfast & Lunch.'
         ]
       },
       {
         day: 10,
-        title: 'Departure from Saigon - Return Flight Home',
+        title: 'Departure from Ho Chi Minh City | Trip Concludes',
         description: [
-          'Transfer: Transfer to Tan Son Nhat International Airport for departure flight'
+          'Enjoy breakfast at the hotel and spend free time at leisure for last-minute shopping.',
+          'Complete check-out formalities and transfer to Tan Son Nhat International Airport.',
+          'Board your departure flight back home carrying unforgettable memories of Vietnam.',
+          'Meals: Breakfast.'
         ]
       }
     ],
@@ -12834,94 +13975,119 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     itinerary: [
       {
         day: 1,
-        title: 'Arrival in Hanoi & Half-Day City Tour with Train Street',
+        title: 'Arrival in Hanoi | Hanoi City Tour & Train Street Experience',
         description: [
-          'Transfer: Airport pickup & transfer to Hanoi hotel',
-          'Accommodation: Hotel in Hanoi',
-          'Sightseeing: Tran Quoc Pagoda on West Lake',
-          'Sightseeing: Famous Hanoi Train Street Cafe Experience',
-          'Sightseeing: Ho Chi Minh Mausoleum & One Pillar Pagoda',
-          'Sightseeing: Old Quarter Market & Beer Street Night Walk'
+          'Arrive at Noi Bai International Airport in Hanoi and complete immigration formalities.',
+          'Meet your driver and transfer to the downtown hotel for check-in and leisure.',
+          'Visit Tran Quoc Pagoda, the oldest Buddhist temple in Hanoi located on West Lake.',
+          'Experience the famous Hanoi Train Street with trackside cafes and lively neighborhood vibe.',
+          'Visit the Ho Chi Minh Mausoleum complex and the iconic lotus-shaped One Pillar Pagoda.',
+          'Explore the bustling Old Quarter markets, Beer Street (Ta Hien), and the Hanoi Night Market.',
+          'Overnight stay in Hanoi.',
+          'Meals: Not Included.'
         ]
       },
       {
         day: 2,
-        title: 'Full-Day Ninh Binh Tour - Hoa Lu Ancient Capital & Tam Coc Caves',
+        title: 'Ninh Binh Day Tour | Hoa Lu Ancient Capital & Tam Coc Caves',
         description: [
-          'Transfer: Countryside transfer to Ninh Binh (approx. 90 km)',
-          'Accommodation: Hotel in Hanoi',
-          'Sightseeing: Tam Coc Caves Sampan Boat Ride (Halong Bay on Land)',
-          'Sightseeing: Hoa Lu Ancient Capital, Dinh & Le Dynasties Temples',
-          'Sightseeing: Bich Dong Pagoda Cave Temple & Mountain Views'
+          'Enjoy breakfast at the hotel and depart on a 90 km scenic drive south to Ninh Binh province.',
+          'Embark on a traditional sampan boat ride through the majestic limestone caves of Tam Coc.',
+          'Savor a delicious buffet lunch featuring authentic Vietnamese specialties.',
+          'Visit Hoa Lu, the 10th-century ancient capital of Vietnam, and tour the historic Dinh and Le temples.',
+          'Admire the serene Bich Dong Pagoda nestled against the mountain cliffside.',
+          'Return to Hanoi in the late afternoon for an evening at leisure.',
+          'Overnight stay in Hanoi.',
+          'Meals: Breakfast & Lunch.'
         ]
       },
       {
         day: 3,
-        title: 'Halong Bay UNESCO Day Cruise & Evening at Leisure in Hanoi',
+        title: 'Halong Bay Day Cruise | Limestone Karsts & Grottoes',
         description: [
-          'Transfer: Round-trip highway transfer between Hanoi and Halong Bay pier',
-          'Accommodation: Hotel in Hanoi',
-          'Sightseeing: Halong Bay UNESCO Day Cruise & Seafood Lunch Onboard',
-          'Sightseeing: Karst Grottoes Exploration past Sail Island & Turtle Islet',
-          'Sightseeing: Floating Fishing Village Views & Evening at Leisure'
+          'Enjoy breakfast at the hotel and depart by road for Halong Bay (approx. 3.5 hours).',
+          'Arrive at Tuan Chau Marina and board a 4-hour scenic Halong Bay day cruise.',
+          'Cruise past iconic limestone formations including Sail Island, Fisherman\'s Head Rock, Butterfly Rock, and Turtle Islet.',
+          'Explore natural limestone grottos and cruise past floating fishing villages.',
+          'Savor a freshly prepared Vietnamese seafood lunch on board the cruise.',
+          'Disembark at the marina and transfer back to Hanoi for an evening at leisure.',
+          'Overnight stay in Hanoi.',
+          'Meals: Breakfast & Lunch.'
         ]
       },
       {
         day: 4,
-        title: 'Hanoi to Da Nang Flight & Coastal Town Leisure',
+        title: 'Hanoi to Da Nang | Coastal Transfer & Leisure',
         description: [
-          'Transfer: Airport transfer & flight to Da Nang; hotel check-in',
-          'Accommodation: Hotel in Da Nang',
-          'Sightseeing: My Khe Beach Stroll & Da Nang City Exploration',
-          'Sightseeing: Dragon Bridge & Evening Riverside Atmosphere'
+          'Enjoy breakfast at the hotel, check out, and transfer to Hanoi Airport.',
+          'Board a domestic flight to Da Nang; meet your local tour guide upon arrival.',
+          'Transfer to your hotel in Da Nang for check-in and relaxation.',
+          'Spend the afternoon and evening at leisure exploring My Khe Beach, local seafood spots, or the Dragon Bridge.',
+          'Overnight stay in Da Nang.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 5,
-        title: 'Ba Na Hills Tour, World-Record Cable Car & Golden Bridge',
+        title: 'Ba Na Hills Excursion | Golden Bridge & Fantasy Park',
         description: [
-          'Accommodation: Hotel in Da Nang',
-          'Sightseeing: Ba Na Hills World-Record Cable Car Ascent',
-          'Sightseeing: Iconic Golden Hands Bridge Panoramic Walk',
-          'Sightseeing: Debay Wine Cellar, Le Jardin D’Amour Gardens & Linh Ung Pagoda',
-          'Sightseeing: Fantasy Park Rides & French Village Summit Views'
+          'Have breakfast at the hotel and transfer to the scenic Ba Na Hills resort.',
+          'Ascend via the world-record cable car to 1,487m above sea level with panoramic views.',
+          'Walk across the iconic Golden Bridge supported by colossal stone hands.',
+          'Explore Le Jardin D\'Amour flower gardens, Debay Wine Cellar, and Linh Ung Pagoda with its giant Buddha statue.',
+          'Enjoy exciting rides, arcade games, and 4D/5D attractions at Fantasy Park.',
+          'Visit Nghinh Phong Tower and Bell Tower before taking the cable car back down to the foothill.',
+          'Return to Da Nang for a relaxing evening at leisure.',
+          'Overnight stay in Da Nang.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 6,
-        title: 'Hoi An Ancient Town Heritage Tour & Lantern Markets',
+        title: 'Hoi An Ancient Town Tour | UNESCO World Heritage Walking Tour',
         description: [
-          'Accommodation: Hotel in Da Nang',
-          'Sightseeing: Hoi An UNESCO Ancient Town Guided Walk',
-          'Sightseeing: 17th-Century Japanese Covered Bridge & Chinese Assembly Halls',
-          'Sightseeing: Traditional Old Town Clubhouses & Folk Music',
-          'Sightseeing: Lantern Shopping & Street Food along Thu Bon River'
+          'Enjoy breakfast at the hotel and depart for a full-day tour to the UNESCO-listed ancient town of Hoi An.',
+          'Take a walking tour across the 17th-century Japanese Covered Bridge and visit historic Chinese Assembly Halls.',
+          'Explore ancient timber merchant houses and listen to traditional folk music at old town clubhouses.',
+          'Stroll along the scenic Thu Bon River and vibrant night market with custom tailor shops and lantern displays.',
+          'Transfer back to Da Nang in the evening.',
+          'Overnight stay in Da Nang.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 7,
-        title: 'Da Nang to Saigon Flight & Dynamic City Leisure',
+        title: 'Da Nang to Ho Chi Minh City (Saigon) | Flight Transfer & Leisure',
         description: [
-          'Transfer: Transfer to Da Nang Airport & flight to Ho Chi Minh City (Saigon)',
-          'Accommodation: Hotel in Saigon (Ho Chi Minh City)',
-          'Sightseeing: Ben Thanh Market Shopping & Food Exploration',
-          'Sightseeing: Dynamic Saigon Nightlife & Nguyen Hue Walking Street'
+          'Enjoy breakfast at the hotel, complete check-out, and transfer to Da Nang Airport.',
+          'Fly to Ho Chi Minh City (Saigon) and transfer with your representative to the downtown hotel for check-in.',
+          'Spend the afternoon and evening at leisure exploring Saigon\'s vibrant streets, cafes, or Ben Thanh Market.',
+          'Experience the bustling nightlife along Bui Vien Walking Street or Nguyen Hue Boulevard.',
+          'Overnight stay in Ho Chi Minh City (Saigon).',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 8,
-        title: 'Cu Chi Tunnels Underground Network Tour & Afternoon Leisure',
+        title: 'Cu Chi Tunnels Excursion | Underground War Network',
         description: [
-          'Accommodation: Hotel in Saigon',
-          'Sightseeing: Historic Cu Chi Tunnels Network Tour & Underground Crawl Experience',
-          'Sightseeing: Afternoon at Leisure for Shopping & Cafe Hopping in Saigon'
+          'Have breakfast at the hotel and depart for the historic Cu Chi Tunnels.',
+          'Watch an introductory documentary highlighting the extensive underground network built during the war.',
+          'Explore the multi-tiered tunnel system featuring trap doors, living quarters, weapon workshops, and field hospitals.',
+          'Experience crawling through a designated safe section of the underground tunnels.',
+          'Enjoy lunch at a local restaurant before returning to Ho Chi Minh City for an afternoon at leisure.',
+          'Overnight stay in Ho Chi Minh City (Saigon).',
+          'Meals: Breakfast & Lunch.'
         ]
       },
       {
         day: 9,
-        title: 'Departure from Saigon - Return Flight Home',
+        title: 'Departure from Ho Chi Minh City | Trip Concludes',
         description: [
-          'Transfer: Transfer to Tan Son Nhat International Airport for departure flight'
+          'Have breakfast at the hotel and complete check-out formalities.',
+          'Board your transfer to Tan Son Nhat International Airport in Ho Chi Minh City.',
+          'Board your scheduled flight back home with unforgettable memories of Vietnam.',
+          'Meals: Breakfast.'
         ]
       }
     ],
@@ -13076,80 +14242,102 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     itinerary: [
       {
         day: 1,
-        title: 'Arrival in Bali & Transfer to Ubud',
+        title: 'Arrival in Bali | Transfer to Ubud & Leisure',
         description: [
-          'Transfer: Airport pickup at Ngurah Rai International Airport & scenic drive to Ubud',
-          'Accommodation: Hotel in Ubud',
-          'Sightseeing: Check-in, relax & evening stroll in Ubud cultural market'
+          'Arrive at Ngurah Rai International Airport (Denpasar) in Bali and complete immigration formalities.',
+          'Meet your tour representative and transfer scenic inland to Ubud.',
+          'Check in to your hotel in Ubud and freshen up.',
+          'Spend the rest of the evening at leisure exploring Ubud\'s vibrant cafes and art markets.',
+          'Overnight stay in Ubud.',
+          'Meals: Not Included.'
         ]
       },
       {
         day: 2,
-        title: 'Iconic Bali Swing & Thrilling ATV Quad Bike Adventure',
+        title: 'Ubud Adventure Day | Bali Jungle Swing & ATV Quad Bike Tour',
         description: [
-          'Accommodation: Hotel in Ubud',
-          'Sightseeing: Bali Swing Experience over lush jungle & rice terraces',
-          'Sightseeing: All-Terrain Vehicle (ATV) Quad Bike Ride through streams & mud trails',
-          'Sightseeing: Authentic Indonesian Lunch & Ubud Sunset Views'
+          'Enjoy a hearty breakfast at the hotel and set out for a thrilling adventure day in Ubud.',
+          'Experience the famous Bali Swing, soaring over lush tropical rainforests and rice terraces.',
+          'Capture Instagram-worthy photos in flowing dresses at iconic nest and swing setups.',
+          'Gear up for a thrilling 1-hour guided ATV quad bike ride through countryside mud tracks, bamboo forests, and river streams.',
+          'Return to your hotel in Ubud to freshen up and relax.',
+          'Overnight stay in Ubud.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 3,
-        title: 'Ubud to Gili Trawangan Speedboat Transfer & Island Nightlife',
+        title: 'Ubud to Gili Trawangan | Fast Ferry & Island Foam Party',
         description: [
-          'Transfer: Transfer to Bali Pier & fast speedboat to Gili Trawangan',
-          'Transfer: Traditional Cidomo (horse cart) transfer to island hotel',
-          'Accommodation: Hotel in Gili Trawangan',
-          'Sightseeing: Vehicle-free Island Exploration by bicycle or foot',
-          'Sightseeing: Rabbit Jump Sunset Party & Gili Night Market Street Food'
+          'Grab a packed breakfast and depart early at 6:00 AM for the harbor.',
+          'Board a fast ferry across the ocean to the tropical paradise of Gili Trawangan (approx. 2.5 to 3 hours).',
+          'Hop on a traditional Cidomo (horse-drawn cart) to transfer to your island resort and check in.',
+          'Spend the afternoon at leisure strolling along pristine white-sand beaches or cycling around the island.',
+          'Join the famous Rabbit Jump foam party in the evening and explore Gili\'s lively night market.',
+          'Overnight stay in Gili Trawangan.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 4,
-        title: 'Gili Islands Snorkeling Adventure & Underwater Sculptures',
+        title: 'Gili Trawangan Island Life | Water Adventures & Sunset Leisure',
         description: [
-          'Accommodation: Hotel in Gili Trawangan',
-          'Sightseeing: 3-Island Snorkeling Cruise around Gili Air, Gili Meno & Gili Trawangan',
-          'Sightseeing: Famous Underwater Statues & Sea Turtle Spotting Point',
-          'Sightseeing: Sunset Over Ocean & Lively Beachfront Cafes'
+          'Wake up to a tropical island morning and enjoy breakfast at the resort.',
+          'Spend the day at leisure on the non-motorized island, cycling along coastal paths or relaxing on the beach.',
+          'Option to join a 2–3 hour Scuba Diving session with pool training and open-water reef diving.',
+          'Option to join a full-day 3-Island snorkeling tour covering Gili Air, Gili Meno, and Gili Trawangan coral reefs and sea turtle spots.',
+          'Witness a spectacular tropical sunset on the western beach and enjoy Gili\'s beachside nightlife.',
+          'Overnight stay in Gili Trawangan.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 5,
-        title: 'Gili to Nusa Penida Speedboat & Kelingking T-Rex Sunset',
+        title: 'Gili Trawangan to Nusa Penida | Kelingking Beach Sunset',
         description: [
-          'Transfer: Cidomo to Gili Port & speedboat transfer to Nusa Penida Island',
-          'Accommodation: Hotel in Nusa Penida',
-          'Sightseeing: Kelingking Beach Iconic T-Rex Cliff Viewpoint',
-          'Sightseeing: Sunset Views from high limestone cliffs & Indian Dinner'
+          'Enjoy breakfast at the hotel and board a Cidomo transfer back to Gili pier.',
+          'Board a speed ferry across the azure ocean to the dramatic island of Nusa Penida.',
+          'Arrive in Nusa Penida and savor a delicious Indian lunch.',
+          'Visit the world-famous Kelingking Beach to marvel at the iconic T-Rex cliff formation and watch a panoramic sunset.',
+          'Check in to your hotel in Nusa Penida for a relaxing evening.',
+          'Overnight stay in Nusa Penida.',
+          'Meals: Breakfast & Lunch.'
         ]
       },
       {
         day: 6,
-        title: 'Diamond Beach Sunrise, Mainland Transfer & Uluwatu Kecak Dance',
+        title: 'Diamond Beach Sunrise & Mainland Return | Uluwatu Temple & Kecak Dance',
         description: [
-          'Transfer: Speedboat from Nusa Penida to Sanur Port (Mainland Bali) & drive to Kuta',
-          'Accommodation: Hotel in Kuta',
-          'Sightseeing: Early Morning Sunrise at Diamond Beach & Rumah Pohon Treehouse',
-          'Sightseeing: Uluwatu Cliff Temple Sunset Views',
-          'Sightseeing: Traditional Balinese Kecak & Fire Dance Performance'
+          'Early morning wake-up at 3:00 AM to witness a magical sunrise at Diamond Beach.',
+          'Admire the sparkling white sands, diamond-shaped sea stacks, and lush coastal cliffs.',
+          'Return to the hotel for breakfast, check out by 11:00 AM, and transfer to the port.',
+          'Board the speed ferry back to Sanur harbor on mainland Bali.',
+          'Visit the dramatic cliff-top Uluwatu Temple overlooking the Indian Ocean for a mesmerizing sunset.',
+          'Watch the iconic Balinese Kecak Fire Dance performance depicting the epic Ramayana.',
+          'Transfer to your hotel in Kuta for check-in.',
+          'Overnight stay in Kuta.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 7,
-        title: 'Day at Leisure in Kuta - Beaches, Cafe Hopping & Spa',
+        title: 'Day at Leisure in Kuta | Beach, Spa & Shopping',
         description: [
-          'Accommodation: Hotel in Kuta',
-          'Sightseeing: Leisure Morning at Kuta Beach / Seminyak Beach Clubs',
-          'Sightseeing: Traditional Balinese Spa & Massage (Optional)',
-          'Sightseeing: Souvenir Shopping at Discovery Mall & Street Boutiques'
+          'Enjoy breakfast at the hotel and spend a full day at leisure in Kuta.',
+          'Optional activities include relaxing with a traditional Balinese massage, taking a surf lesson, or visiting GWK Cultural Park.',
+          'Explore vibrant beach clubs, local boutiques, and seaside restaurants in Kuta and Seminyak.',
+          'Overnight stay in Kuta.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 8,
-        title: 'Departure from Bali - Return Flight Home',
+        title: 'Departure from Bali | Trip Concludes',
         description: [
-          'Transfer: Hotel checkout & transfer to Denpasar International Airport'
+          'Enjoy breakfast at the hotel and spend your final hours packing or souvenir shopping.',
+          'Complete check-out formalities and board your transfer to Denpasar International Airport.',
+          'Board your scheduled flight back home with incredible memories of Bali and the Gili Islands.',
+          'Meals: Breakfast.'
         ]
       }
     ],
@@ -13282,57 +14470,75 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     itinerary: [
       {
         day: 1,
-        title: 'Arrival in Bali & Transfer to Kuta Hotel',
+        title: 'Arrival in Bali | Transfer to Kuta & Leisure',
         description: [
-          'Transfer: Airport pickup at Ngurah Rai International Airport & transfer to Kuta',
-          'Accommodation: 4-Star Deluxe Hotel in Kuta',
-          'Sightseeing: Check-in, freshen up & leisure evening exploring Kuta beach and markets'
+          'Arrive at Ngurah Rai International Airport (Denpasar) in Bali and complete immigration formalities.',
+          'Meet your local representative and transfer to your hotel in Kuta.',
+          'Check in to your hotel and unwind after your flight.',
+          'Spend the evening at leisure exploring Kuta Beach, local markets, and vibrant seaside cafes.',
+          'Overnight stay in Kuta.',
+          'Meals: Not Included.'
         ]
       },
       {
         day: 2,
-        title: 'Tanjung Benoa Watersports & Uluwatu Sunset Temple Tour',
+        title: 'Tanjung Benoa Water Sports & Uluwatu Temple Sunset Tour',
         description: [
-          'Accommodation: Hotel in Kuta',
-          'Sightseeing: Tanjung Benoa Watersports (Banana Boat Ride, Jet Ski & Parasailing)',
-          'Sightseeing: Uluwatu Cliff Temple Scenic Sunset Views',
-          'Sightseeing: Evening Cafes & Nightlife in South Bali'
+          'Enjoy breakfast at the hotel and transfer to the Tanjung Benoa peninsula for thrilling water sports.',
+          'Experience an action-packed banana boat ride, jet ski adventure, and parasailing over the Indian Ocean.',
+          'Savor lunch at a local restaurant before departing for the southern cliff coast.',
+          'Visit the dramatic cliff-top Uluwatu Temple, perched 70 meters above the roaring waves, to watch a breathtaking sunset.',
+          'Return to Kuta for an evening at leisure.',
+          'Overnight stay in Kuta.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 3,
-        title: 'Tanah Lot Coastal Temple Tour & Leisure Afternoon',
+        title: 'Tanah Lot Coastal Temple Tour & Sunset Views',
         description: [
-          'Accommodation: Hotel in Kuta',
-          'Sightseeing: Historic Tanah Lot Sea Temple on Ocean Rock Formation',
-          'Sightseeing: Afternoon at Leisure for Beach Stroll, Cafe Hopping & Spa'
+          'Have breakfast at the hotel and spend the morning relaxing at the hotel pool or strolling along the beach.',
+          'Depart in the afternoon for a half-day tour to the iconic Tanah Lot Temple.',
+          'Admire the ancient Hindu shrine perched atop a wave-swept offshore rock formation.',
+          'Capture stunning sunset photographs as the sun dips below the ocean horizon.',
+          'Return to your hotel in Kuta for the night.',
+          'Overnight stay in Kuta.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 4,
-        title: 'Kuta to Ubud Transfer with Iconic Bali Swing Experience',
+        title: 'Kuta to Ubud Transfer | World-Famous Bali Swing Experience',
         description: [
-          'Transfer: Scenic drive from Kuta to Ubud cultural valley',
-          'Accommodation: Deluxe Hotel / Resort in Ubud',
-          'Sightseeing: World-Famous Bali Swing Experience overlooking jungle and rice terraces',
-          'Sightseeing: Ubud Market & Art Galleries Evening Walk'
+          'Enjoy breakfast at the hotel, check out, and depart on a scenic drive from Kuta to Ubud.',
+          'Stop en route to experience the world-famous Bali Jungle Swing, soaring high over tropical ravines and palm groves.',
+          'Pose for romantic couple photos in floral bird nests and cliffside photo points.',
+          'Arrive in Ubud, check in to your resort, and spend the evening exploring Ubud\'s art markets and tranquil surroundings.',
+          'Overnight stay in Ubud.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 5,
-        title: 'Kintamani Mt. Batur Volcano, Tegalalang Rice Terraces & Waterfall',
+        title: 'Kintamani Highland Tour | Mt. Batur, Tegalalang Rice Terraces & Tegenungan Waterfall',
         description: [
-          'Accommodation: Hotel in Ubud',
-          'Sightseeing: Kintamani Village & Active Mt. Batur Volcano Panoramic Viewpoint',
-          'Sightseeing: UNESCO Tegalalang Step Rice Terraces Walk',
-          'Sightseeing: Scenic Cascades at Tegenungan Waterfall'
+          'Savor breakfast at the hotel and depart for a full-day cultural and nature tour of Kintamani.',
+          'Stop at the Kintamani viewpoint to take in panoramic vistas of active volcano Mount Batur and its crater lake.',
+          'Walk through the emerald-green terraces of Tegalalang Rice Field and learn about traditional Subak irrigation.',
+          'Visit the scenic Tegenungan Waterfall nestled amidst lush tropical foliage.',
+          'Return to Ubud for a relaxing evening.',
+          'Overnight stay in Ubud.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 6,
-        title: 'Departure from Bali - Return Flight Home',
+        title: 'Departure from Bali | Trip Concludes',
         description: [
-          'Transfer: Hotel checkout & transfer to Denpasar International Airport for departure flight'
+          'Enjoy breakfast at the hotel and spend free time at leisure for last-minute shopping.',
+          'Complete check-out formalities and transfer to Denpasar International Airport.',
+          'Board your scheduled flight back home with cherished memories of your romantic Bali getaway.',
+          'Meals: Breakfast.'
         ]
       }
     ],
@@ -13446,66 +14652,88 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     itinerary: [
       {
         day: 1,
-        title: 'Arrival in Bali & Transfer to Seminyak with Candlelight Dinner',
+        title: 'Arrival in Bali | Transfer to Seminyak & Candlelight Dinner',
         description: [
-          'Transfer: Airport pickup at Ngurah Rai International Airport & transfer to Seminyak',
-          'Accommodation: Deluxe Hotel / Villa in Seminyak',
-          'Sightseeing: Relaxing check-in & romantic candlelight dinner at hotel'
+          'Arrive at Ngurah Rai International Airport (Denpasar) in Bali and complete immigration formalities.',
+          'Meet your tour representative and transfer to your luxury hotel in stylish Seminyak.',
+          'Check in to your room and enjoy free time to unwind by the pool or stroll along Seminyak Beach.',
+          'Savor a romantic complimentary candlelight dinner at the hotel in the evening.',
+          'Overnight stay in Seminyak.',
+          'Meals: Dinner.'
         ]
       },
       {
         day: 2,
-        title: 'Iconic Temples Tour - Uluwatu Cliff Temple & Tanah Lot Sunset',
+        title: 'Iconic Temples Tour | Cliff-top Uluwatu & Coastal Tanah Lot Sunset',
         description: [
-          'Accommodation: Hotel in Seminyak',
-          'Sightseeing: Uluwatu Cliff Temple with breathtaking Indian Ocean views',
-          'Sightseeing: Historic Tanah Lot Sea Temple & Golden Sunset Photography'
+          'Enjoy breakfast at the hotel and depart on a scenic southern coastal temple tour.',
+          'Visit the dramatic cliff-top Uluwatu Temple, perched 70 meters above the crashing waves of the Indian Ocean.',
+          'Return to the hotel to relax, before heading out in the late afternoon to the coastal Tanah Lot Temple.',
+          'Watch a glorious sunset as the ancient temple is illuminated against the ocean tide.',
+          'Capture stunning couple photographs before returning to your hotel.',
+          'Overnight stay in Seminyak.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 3,
-        title: 'Seminyak to Nusa Penida Speedboat & Kelingking T-Rex Excursion',
+        title: 'Seminyak to Nusa Penida | Crystal Bay, Kelingking T-Rex Cliff & Secret Point',
         description: [
-          'Transfer: Speedboat from Sanur to Nusa Penida Island',
-          'Accommodation: Hotel in Nusa Penida',
-          'Sightseeing: Crystal Beach & Snorkeling Bay (Optional Watersports)',
-          'Sightseeing: Iconic Kelingking T-Rex Cliff Viewpoint & Secret Beach'
+          'Have breakfast at the hotel, check out, and transfer to the harbor.',
+          'Board a fast speed boat across the azure ocean to Nusa Penida island.',
+          'Travel from Sampalan Beach to Crystal Bay with opportunities for swimming and snorkeling.',
+          'Savor lunch and visit the iconic Kelingking Beach to admire the famous T-Rex cliff viewpoint.',
+          'Explore the scenic Secret Point surf viewpoint before checking in to your Nusa Penida hotel.',
+          'Overnight stay in Nusa Penida.',
+          'Meals: Breakfast & Lunch.'
         ]
       },
       {
         day: 4,
-        title: 'Diamond Beach Sunrise & Transfer to Ubud Valley',
+        title: 'Diamond Beach Sunrise & Treehouse | Transfer to Cultural Ubud',
         description: [
-          'Transfer: Speedboat from Nusa Penida to Mainland Bali & scenic drive to Ubud',
-          'Accommodation: Deluxe Hotel in Ubud',
-          'Sightseeing: Early Sunrise at Diamond Beach & Rumah Pohon Treehouse',
-          'Sightseeing: Ubud Traditional Art Market & Evening Stroll'
+          'Depart early at 4:30 AM for a magical sunrise tour at Diamond Beach.',
+          'Visit the famous Rumah Pohon Molenteng Tree House for panoramic couple photos overlooking the bay.',
+          'Return to the hotel for breakfast by 9:30 AM, check out, and transfer to the port.',
+          'Board a fast boat to Sanur harbor on mainland Bali and transfer scenic inland to Ubud.',
+          'Check in to your resort in Ubud and spend a relaxing evening amidst tranquil tropical greenery.',
+          'Overnight stay in Ubud.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 5,
-        title: 'Ubud Bali Swing & Thrilling ATV Quad Bike Adventure',
+        title: 'Ubud Adventure Day | Bali Jungle Swing & ATV Quad Bike Tour',
         description: [
-          'Accommodation: Hotel in Ubud',
-          'Sightseeing: World-Famous Bali Swing over tropical jungles and rice fields',
-          'Sightseeing: ATV Quad Bike Safari across mud tracks, waterfalls & caves'
+          'Wake up to a serene morning in Ubud and enjoy breakfast at the hotel.',
+          'Experience the famous Bali Jungle Swing, soaring over lush rainforests and cascading valleys.',
+          'Pose for photos in whimsical nests, heart swings, and jungle viewpoints.',
+          'Gear up for an exhilarating guided ATV quad bike ride through countryside trails, river streams, and bamboo forests.',
+          'Return to your Ubud resort to freshen up and relax for the evening.',
+          'Overnight stay in Ubud.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 6,
-        title: 'Ubud to Kuta Transfer & Authentic Balinese Couple Spa',
+        title: 'Ubud to Kuta Transfer | Rejuvenating Balinese Couple Spa',
         description: [
-          'Transfer: Transfer from Ubud to Kuta coastal town',
-          'Accommodation: Deluxe Hotel in Kuta',
-          'Sightseeing: Authentic 2-Hour Balinese Rejuvenation Spa & Massage',
-          'Sightseeing: Sunset Drinks & Souvenir Shopping in Kuta Downtown'
+          'Enjoy breakfast at the resort, check out, and transfer to vibrant Kuta.',
+          'Check in to your hotel in Kuta and relax after the drive.',
+          'Indulge together in an authentic, rejuvenating traditional Balinese spa and couples massage.',
+          'Spend the evening exploring Kuta\'s vibrant markets, beach promenade, and boutique shops.',
+          'Overnight stay in Kuta.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 7,
-        title: 'Departure from Bali - Return Flight Home',
+        title: 'Departure from Bali | Trip Concludes',
         description: [
-          'Transfer: Hotel checkout & transfer to Denpasar International Airport for departure flight'
+          'Have breakfast at the hotel and spend your morning packing or doing last-minute souvenir shopping.',
+          'Complete check-out formalities and board your transfer to Denpasar International Airport.',
+          'Board your departure flight back home with romantic, lifelong memories of Bali.',
+          'Meals: Breakfast.'
         ]
       }
     ],
@@ -13619,74 +14847,101 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     itinerary: [
       {
         day: 1,
-        title: 'Arrival in Bali & Transfer to Ubud with Candlelight Dinner',
+        title: 'Arrival in Bali | Transfer to Ubud & Candlelight Dinner',
         description: [
-          'Transfer: Airport pickup at Denpasar Airport & transfer to Ubud',
-          'Accommodation: Deluxe Villa / Resort in Ubud',
-          'Sightseeing: Check-in, relax & romantic candlelight dinner at resort'
+          'Arrive at Ngurah Rai International Airport (Denpasar) in Bali and complete immigration formalities.',
+          'Meet your tour representative and transfer to your luxury resort in Ubud.',
+          'Check in to your room and enjoy free time to unwind amidst tropical jungle landscapes.',
+          'Savor a romantic complimentary candlelight dinner at the resort in the evening.',
+          'Overnight stay in Ubud.',
+          'Meals: Dinner.'
         ]
       },
       {
         day: 2,
         title: 'Ayung River White Water Rafting & ATV Quad Bike Adventure',
         description: [
-          'Accommodation: Villa / Resort in Ubud',
-          'Sightseeing: Ayung River Whitewater Rafting with certified instructor',
-          'Sightseeing: Jungle & Mud Trail ATV Quad Bike Adventure'
+          'Wake up to a lush tropical morning and enjoy breakfast at the hotel.',
+          'Transfer to the Ayung River for an exciting white-water rafting adventure through jungle gorges.',
+          'Receive a safety briefing and paddle through gentle rapids with scenic waterfall views.',
+          'Gear up for an exhilarating guided ATV quad bike tour through rural Balinese villages and mud trails.',
+          'Return to your resort in Ubud for a relaxing evening.',
+          'Overnight stay in Ubud.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 3,
-        title: 'Bali Swing, Kintamani Mt. Batur, Tegalalang Terraces & Waterfall',
+        title: 'Bali Jungle Swing, Mt. Batur Viewpoint, Tegalalang Rice Terraces & Tegenungan Waterfall',
         description: [
-          'Accommodation: Villa / Resort in Ubud',
-          'Sightseeing: Iconic Bali Swing Experience with panoramic valley view',
-          'Sightseeing: Kintamani Viewpoint overlooking Mt. Batur volcano & Lake Batur',
-          'Sightseeing: Tegalalang Step Rice Terraces & Tegenungan Cascading Waterfall'
+          'Enjoy breakfast at the hotel and set out to explore the cultural highlights of Ubud.',
+          'Experience the famous Bali Jungle Swing, soaring high over tropical ravines with iconic photo stops.',
+          'Head to the Kintamani viewpoint to admire panoramic vistas of Mount Batur volcano and its crater lake.',
+          'Stroll through the scenic terraced landscape of Tegalalang Rice Terraces.',
+          'Visit the cascading Tegenungan Waterfall surrounded by dense tropical greenery.',
+          'Return to Ubud for the evening.',
+          'Overnight stay in Ubud.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 4,
-        title: 'Ubud to Kuta Transfer & Tanah Lot Coastal Temple Sunset',
+        title: 'Ubud to Kuta Transfer | Tanah Lot Sea Temple Sunset',
         description: [
-          'Transfer: Transfer from Ubud to Kuta hotel',
-          'Accommodation: 4-Star Deluxe Hotel in Kuta',
-          'Sightseeing: Iconic Tanah Lot Temple Sunset Views on rocky sea outcrop'
+          'Have breakfast at the resort, check out, and transfer south to vibrant Kuta.',
+          'Check in to your hotel in Kuta and relax after the journey.',
+          'Depart in the late afternoon for the iconic coastal Tanah Lot Temple.',
+          'Witness a mesmerizing sunset as the tide surrounds this ancient sea temple, capturing postcard-worthy photos.',
+          'Return to Kuta for an evening at leisure.',
+          'Overnight stay in Kuta.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 5,
-        title: 'Full-Day Nusa Penida Excursion - Kelingking T-Rex & Crystal Bay',
+        title: 'Nusa Penida Day Tour | Crystal Bay & Kelingking T-Rex Cliff',
         description: [
-          'Transfer: Fast speedboat round-trip between Sanur and Nusa Penida Island',
-          'Accommodation: Hotel in Kuta',
-          'Sightseeing: Kelingking Beach T-Rex Cliff Edge Panoramic Viewpoint',
-          'Sightseeing: Crystal Bay Beach Stroll & Optional Snorkeling'
+          'Enjoy breakfast at the hotel and transfer to Sanur harbor for a fast boat ride to Nusa Penida island.',
+          'Cruise across azure waters and visit Crystal Bay with opportunities for swimming or snorkeling.',
+          'Savor lunch and explore the world-famous Kelingking Beach to marvel at the iconic T-Rex cliff formation.',
+          'Board the fast boat back to mainland Bali in the afternoon and return to your hotel in Kuta.',
+          'Overnight stay in Kuta.',
+          'Meals: Breakfast & Lunch.'
         ]
       },
       {
         day: 6,
-        title: 'Uluwatu Cliff Temple, Padang-Padang Beach & Beach Club',
+        title: 'South Bali Highlights | Cliff-top Uluwatu Temple & Padang Padang Beach',
         description: [
-          'Accommodation: Hotel in Kuta',
-          'Sightseeing: Uluwatu Ocean Cliff Temple & Spiritual Views',
-          'Sightseeing: Padang-Padang Beach Walk & Single Fin Beach Club Sunset'
+          'Enjoy breakfast at the hotel and depart on a scenic South Bali sightseeing tour.',
+          'Visit the dramatic cliff-top Uluwatu Temple, perched 70 meters above the crashing Indian Ocean.',
+          'Relax on the golden sands of picturesque Padang Padang Beach.',
+          'Spend the afternoon at leisure, with optional entry to the famous Single Fin Day Club.',
+          'Return to Kuta in the evening for an overnight stay.',
+          'Overnight stay in Kuta.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 7,
-        title: 'Lempuyang Gate of Heaven & Balinese Couples Spa',
+        title: 'Pura Lempuyang "Gate of Heaven" Tour & Rejuvenating Balinese Spa',
         description: [
-          'Accommodation: Hotel in Kuta',
-          'Sightseeing: Pura Lempuyang Iconic "Gate of Heaven" with Mt. Agung backdrop',
-          'Sightseeing: Relaxing Balinese Traditional Full-Body Couple Spa & Massage'
+          'Savor breakfast at the hotel and travel to East Bali to visit the historic Pura Lempuyang Temple.',
+          'Pose at the iconic "Gate of Heaven" with majestic Mount Agung framed between the split gates.',
+          'Return to Kuta in the afternoon for a traditional Balinese couple spa and rejuvenating massage.',
+          'Spend your final evening shopping for souvenirs or dining at vibrant beach clubs.',
+          'Overnight stay in Kuta.',
+          'Meals: Breakfast.'
         ]
       },
       {
         day: 8,
-        title: 'Departure from Bali - Return Flight Home',
+        title: 'Departure from Bali | Trip Concludes',
         description: [
-          'Transfer: Hotel checkout & transfer to Denpasar International Airport for departure flight'
+          'Enjoy breakfast at the hotel and spend your morning packing and at leisure.',
+          'Complete check-out formalities and board your transfer to Denpasar International Airport.',
+          'Board your departure flight back home carrying unforgettable romantic memories of Bali.',
+          'Meals: Breakfast.'
         ]
       }
     ],
