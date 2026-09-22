@@ -301,6 +301,182 @@ export function getLowestPriceForTrips(tripsList: Trip[]): number {
   return prices.length > 0 ? Math.min(...prices) : 0;
 }
 
+const BATCH_MONTH_MAP: Record<string, number> = {
+  jan: 0, january: 0,
+  feb: 1, february: 1,
+  mar: 2, march: 2,
+  apr: 3, april: 3,
+  may: 4,
+  jun: 5, june: 5,
+  jul: 6, july: 6,
+  aug: 7, august: 7,
+  sep: 8, sept: 8, september: 8,
+  oct: 9, october: 9,
+  nov: 10, november: 10,
+  dec: 11, december: 11,
+};
+
+function parseMonthText(str: string): number | null {
+  if (!str) return null;
+  const cleaned = str.trim().toLowerCase().replace(/[^a-z]/g, '');
+  if (cleaned in BATCH_MONTH_MAP) {
+    return BATCH_MONTH_MAP[cleaned];
+  }
+  for (const [key, val] of Object.entries(BATCH_MONTH_MAP)) {
+    if (cleaned.startsWith(key) || key.startsWith(cleaned)) {
+      return val;
+    }
+  }
+  return null;
+}
+
+export function parseBatchDateRange(
+  rangeStr: string,
+  defaultMonth?: string,
+  fallbackYear = new Date().getFullYear()
+): { startDate: Date; endDate: Date } | null {
+  if (!rangeStr || typeof rangeStr !== 'string') return null;
+
+  // Remove parenthetical labels like "( Eid Holiday )", "( Ganesh Chaturthi Holiday )"
+  const cleanStr = rangeStr.replace(/\s*\([^)]*\)/g, '').trim();
+
+  // 1. Check for standard ISO format e.g. "2026-05-16 - 2026-05-21" or "2026-05-16"
+  const isoMatches = cleanStr.match(/\d{4}-\d{2}-\d{2}/g);
+  if (isoMatches && isoMatches.length > 0) {
+    const start = new Date(isoMatches[0] + 'T00:00:00');
+    const end = isoMatches.length > 1 ? new Date(isoMatches[1] + 'T23:59:59') : new Date(isoMatches[0] + 'T23:59:59');
+    if (!isNaN(start.getTime()) && !isNaN(end.getTime())) {
+      return { startDate: start, endDate: end };
+    }
+  }
+
+  // 2. Split into start and end parts
+  const parts = cleanStr.split(/\s*[-–—]\s*|\s+to\s+/i).map((s) => s.trim());
+  if (parts.length === 0 || !parts[0]) return null;
+
+  const startPart = parts[0];
+  const endPart = parts.length > 1 ? parts[1] : parts[0];
+
+  // Extract explicit 4-digit year if present in range string
+  const yearMatch = cleanStr.match(/\b(20\d{2})\b/);
+  const baseYear = yearMatch ? parseInt(yearMatch[1], 10) : fallbackYear;
+
+  const defaultMonthIdx = defaultMonth ? parseMonthText(defaultMonth) : null;
+
+  const extractDayAndMonth = (part: string, fallbackMonthIndex: number | null) => {
+    const noOrdinals = part.replace(/(\d+)(st|nd|rd|th)\b/gi, '$1');
+    const dayMatch = noOrdinals.match(/\b\d{1,2}\b/);
+    const day = dayMatch ? parseInt(dayMatch[0], 10) : 1;
+
+    const alphaMatch = noOrdinals.match(/[a-zA-Z]+/g);
+    let monthIdx: number | null = null;
+    if (alphaMatch) {
+      for (const word of alphaMatch) {
+        const m = parseMonthText(word);
+        if (m !== null) {
+          monthIdx = m;
+          break;
+        }
+      }
+    }
+
+    if (monthIdx === null) {
+      monthIdx = fallbackMonthIndex;
+    }
+
+    return { day, monthIdx };
+  };
+
+  const endInfo = extractDayAndMonth(endPart, defaultMonthIdx);
+  const startInfo = extractDayAndMonth(startPart, endInfo.monthIdx ?? defaultMonthIdx);
+
+  if (startInfo.monthIdx === null && endInfo.monthIdx !== null) {
+    startInfo.monthIdx = endInfo.monthIdx;
+  }
+  if (endInfo.monthIdx === null && startInfo.monthIdx !== null) {
+    endInfo.monthIdx = startInfo.monthIdx;
+  }
+
+  if (startInfo.monthIdx === null) {
+    return null;
+  }
+
+  const startMonth = startInfo.monthIdx;
+  const endMonth = endInfo.monthIdx ?? startMonth;
+  const startDay = Math.min(31, Math.max(1, startInfo.day));
+  const endDay = Math.min(31, Math.max(1, endInfo.day));
+
+  let startYear = baseYear;
+  let endYear = baseYear;
+
+  // Year wrap-around if start is Dec and end is Jan
+  if (startMonth === 11 && endMonth === 0) {
+    endYear = startYear + 1;
+  }
+
+  const startDate = new Date(startYear, startMonth, startDay, 0, 0, 0, 0);
+  const endDate = new Date(endYear, endMonth, endDay, 23, 59, 59, 999);
+
+  return { startDate, endDate };
+}
+
+export function isBatchDateUpcoming(
+  rangeStr: string,
+  defaultMonth?: string,
+  referenceDate = new Date()
+): boolean {
+  const today = new Date(
+    referenceDate.getFullYear(),
+    referenceDate.getMonth(),
+    referenceDate.getDate(),
+    0, 0, 0, 0
+  );
+
+  const parsed = parseBatchDateRange(rangeStr, defaultMonth, referenceDate.getFullYear());
+  if (!parsed) return true;
+
+  // A batch is upcoming if its start date is today or later
+  return parsed.startDate.getTime() >= today.getTime();
+}
+
+export function getUpcomingBatchDates(
+  batchDates?: { month: string; ranges: string[] }[],
+  referenceDate = new Date()
+): { month: string; ranges: string[] }[] {
+  if (!batchDates || !Array.isArray(batchDates)) return [];
+
+  const result: { month: string; ranges: string[] }[] = [];
+
+  for (const batch of batchDates) {
+    if (!batch || !Array.isArray(batch.ranges)) continue;
+
+    const upcomingRanges = batch.ranges.filter((range) =>
+      isBatchDateUpcoming(range, batch.month, referenceDate)
+    );
+
+    if (upcomingRanges.length > 0) {
+      result.push({
+        month: batch.month,
+        ranges: upcomingRanges,
+      });
+    }
+  }
+
+  return result;
+}
+
+export function getUpcomingTripDates(
+  dates?: { startDate: string; endDate: string; spots: number }[],
+  referenceDate = new Date()
+): { startDate: string; endDate: string; spots: number }[] {
+  if (!dates || !Array.isArray(dates)) return [];
+
+  const todayStr = `${referenceDate.getFullYear()}-${String(referenceDate.getMonth() + 1).padStart(2, '0')}-${String(referenceDate.getDate()).padStart(2, '0')}`;
+
+  return dates.filter((d) => d && d.startDate && d.startDate >= todayStr);
+}
+
+
 export interface Destination {
   title: string
   slug: string
@@ -380,6 +556,7 @@ export const trips: Trip[] = [
     description: 'Are you ready for an unforgettable adventure in the breathtaking landscapes of Ladakh? This Ladakh tour package takes you on an exciting 6-day journey through some of the most stunning places in the Himalayas. From the moment you land in Leh, you\'ll experience mesmerizing views, peaceful monasteries, thrilling high-altitude passes, and crystal-clear lakes. Your adventure starts with a day to relax and acclimate to the high altitude in Leh. Then, you\'ll explore local gems like Shanti Stupa, Magnetic Hill, and the famous Gurudwara Pathar Sahib. Next, get ready for an epic road trip to Nubra Valley via the mighty Khardung La Pass. Enjoy the beauty of Diskit Monastery, ride a double-humped camel in Hunder, and soak in the desert magic of Nubra Valley. From there, you\'ll travel to the magical Pangong Lake, where the blue waters will leave you speechless. Spend a peaceful night by the lake before heading back to Leh through the stunning Chang La. The trip ends with a final evening in Leh, where you can explore the local market and carry home memories that last a lifetime.',
     duration: 6,
     nights: 5,
+    route: '2N Leh - 1N Nubra - 1N Pangong - 1N Leh',
     price: 0,
     rating: 4.8,
     difficulty: 'Moderate',
@@ -397,19 +574,88 @@ export const trips: Trip[] = [
       'Major Highlights: Khardung La, Pangong Lake, Chang La'
     ],
     highlights: [
-      'Khardung La',
-      'Pangong Lake',
-      'Chang La',
-      'Shanti Stupa & Magnetic Hill',
-      'Nubra Valley camel safari'
+      'Khardung La Pass (17,582 ft / 5,359 m)',
+      'Pangong Tso Lake & 3-Idiots Point',
+      'Chang La Pass (17,586 ft / 5,360 m)',
+      'Diskit Monastery & 106 ft Maitreya Buddha',
+      'Hunder Sand Dunes Camel Safari & ATV Biking',
+      'Magnetic Hill & Hall of Fame Museum',
+      'Gurudwara Pathar Sahib & Sangam Point',
+      'Shanti Stupa Sunset View & Leh Market',
+      'Thiksey Monastery & Rancho School',
+      'Stargazing at Pangong & Camp Bonfire in Nubra'
     ],
+    inclusionsSummary: {
+      hotels: 3,
+      transfers: 5,
+      experiences: 18,
+      meals: 10
+    },
+    summaryDetails: {
+      transfers: [
+        'Meet Wanderphilia representative & private transfer to hotel in Leh',
+        'Scenic mountain drive from Leh to Nubra Valley via Khardung La Pass (130 km, 5-6 hrs)',
+        'Drive from Nubra Valley to Pangong Lake via rugged Shyok River route (180 km, 5-6 hrs)',
+        'Drive from Pangong Lake back to Leh via Chang La Pass (140 km, 5-6 hrs)',
+        'Hotel check-out and private transfer to Leh Airport as per flight schedule'
+      ],
+      activities: [
+        {
+          city: 'Leh & Around',
+          title: 'Sightseeing & Heritage',
+          items: [
+            'Hall of Fame War Memorial & Military Museum visit',
+            'Magnetic Hill gravity-defying optical phenomenon',
+            'Sacred Gurudwara Pathar Sahib shrine visit',
+            'Sangam Point — Confluence of Indus & Zanskar rivers',
+            'Shanti Stupa & panoramic sunset view over Leh Valley',
+            'Iconic 12-storey Thiksey Monastery visit',
+            'Rancho School (Druk Padma Karpo from 3-Idiots)',
+            'Leh Main Bazaar & Tibetan market cultural walk'
+          ]
+        },
+        {
+          city: 'Nubra Valley',
+          title: 'High Passes, Dunes & Monasteries',
+          items: [
+            'Crossing Khardung La Pass (17,582 ft / 5,359 m)',
+            'Diskit Monastery & giant 106 ft Maitreya Buddha Statue',
+            'Double-humped Bactrian camel safari on Hunder Sand Dunes',
+            'ATV quad biking on Hunder cold desert dunes',
+            'Evening bonfire night under starry skies at Nubra camp'
+          ]
+        },
+        {
+          city: 'Pangong Lake & Chang La',
+          title: 'Lakeside Wonders & Stargazing',
+          items: [
+            'Pangong Tso Lake (14,270 ft / 4,350 m) color-changing waters',
+            'Iconic 3-Idiots yellow scooter photography spot',
+            'Sunset & golden sunrise views over Pangong Lake',
+            'High-altitude dark-sky stargazing & Milky Way observation',
+            'Crossing mighty Chang La Pass (17,586 ft / 5,360 m)'
+          ]
+        }
+      ],
+      meals: [
+        '5 Breakfasts & 5 Dinners included as per itinerary',
+        'Buffet Breakfast & Dinner at Leh Hotel (Days 1, 2, 5 & 6)',
+        'Hot Dinner & Breakfast at Nubra Valley Deluxe Camp (Days 3 & 4)',
+        'Lakeside Dinner & Breakfast at Pangong Lake Camps (Days 4 & 5)'
+      ],
+      accommodation: [
+        { city: 'Leh (3 Nights)', hotel: 'The Kaal Hotel / Hotel Zanang / Similar' },
+        { city: 'Nubra Valley (1 Night)', hotel: 'Hideout Camps / Deluxe Hotel' },
+        { city: 'Pangong Lake (1 Night)', hotel: 'Snow Pine Cottages / Deluxe Camps' }
+      ]
+    },
     itinerary: [
       {
         day: 1,
         title: 'Arrival in Leh & Acclimatization Day',
         description: [
           'Fly to Leh & arrive at Kushok Bakula Rimpochee Airport with scenic Himalayan aerial views',
-          'Meet Wanderphilia representative & private transfer to hotel in Leh',
+          'Transfer: Meet Wanderphilia representative & private transfer to hotel in Leh',
           'Hotel check-in, rest & mandatory high-altitude acclimatization',
           'Evening gentle acclimatization walk around Leh local market & cafes',
           'Trip briefing & route orientation by Trip Captain',
@@ -436,11 +682,11 @@ export const trips: Trip[] = [
         day: 3,
         title: 'Leh to Nubra Valley via Khardung La Pass (5,359 m) — 130 km, 5-6 hrs',
         description: [
-          'Early morning breakfast & start thrilling drive towards Nubra Valley',
+          'Transfer: Scenic mountain drive from Leh to Nubra Valley via Khardung La Pass (130 km, 5-6 hrs)',
           'Ascend and cross Khardung La Pass (17,582 ft / 5,359 m) — one of the highest motorable roads in the world',
           'Descend into the scenic valley of flowers along Shyok River',
           'Visit Diskit Monastery & marvel at the giant 106 ft Maitreya Buddha Statue',
-          'Experience double-humped Bactrian camel safari & ATV rides on Hunder Sand Dunes',
+          'Experience double-humped Bactrian camel safari & ATV quad biking on Hunder Sand Dunes',
           'Evening check-in at Nubra deluxe camp / hotel with bonfire',
           'Overnight in Nubra Valley',
           'Meals: Breakfast & Dinner'
@@ -450,13 +696,12 @@ export const trips: Trip[] = [
         day: 4,
         title: 'Nubra Valley to Pangong Lake via Shyok River Route — 180 km, 5-6 hrs',
         description: [
-          'Morning breakfast amidst peaceful Nubra desert landscape',
-          'Drive along the scenic and rugged Shyok River valley route',
+          'Transfer: Drive from Nubra Valley to Pangong Lake via rugged Shyok River route (180 km, 5-6 hrs)',
           'Pass through picturesque remote villages of Agam and Durbuk',
-          'First glimpse of the mesmerizing blue waters of Pangong Tso (14,270 ft / 4,350 m)',
+          'First glimpse of the mesmerizing color-changing blue waters of Pangong Tso (14,270 ft / 4,350 m)',
           'Spend afternoon admiring color-changing hues of the lake & click photos at famous 3-Idiots point',
           'Witness magical sunset over high-altitude lake surrounded by barren peaks',
-          'Stargazing experience under crystal clear Himalayan skies',
+          'High-altitude stargazing experience under crystal clear Himalayan dark skies',
           'Overnight in Pangong Lake Camps',
           'Meals: Breakfast & Dinner'
         ]
@@ -466,9 +711,9 @@ export const trips: Trip[] = [
         title: 'Pangong Lake to Leh via Chang La Pass (5,360 m) — 140 km, 5-6 hrs',
         description: [
           'Wake up early to witness breathtaking golden sunrise over Pangong Lake',
-          'Enjoy warm lakeside breakfast before departure',
+          'Transfer: Drive from Pangong Lake back to Leh via Chang La Pass (140 km, 5-6 hrs)',
           'Ascend and cross mighty Chang La Pass (17,586 ft / 5,360 m)',
-          'En route visit the iconic Thiksey Monastery & Rancho School (Druk Padma Karpo)',
+          'En route visit the iconic 12-storey Thiksey Monastery & Rancho School (Druk Padma Karpo)',
           'Arrive back in Leh by evening & hotel check-in',
           'Free time for souvenir shopping in Leh Main Bazaar & farewell cafe evening',
           'Overnight in Leh',
@@ -479,9 +724,8 @@ export const trips: Trip[] = [
         day: 6,
         title: 'Departure from Leh — Fly Home with Unforgettable Ladakh Memories',
         description: [
-          'Enjoy final breakfast in Leh',
-          'Hotel check-out and private transfer to Leh Airport as per flight schedule',
-          'Board flight with aerial Himalayan views & unforgettable Ladakh memories',
+          'Transfer: Hotel check-out and private transfer to Leh Airport as per flight schedule',
+          'Board departure flight with aerial Himalayan views & unforgettable Ladakh memories',
           'Meals: Breakfast'
         ]
       }
@@ -669,24 +913,106 @@ export const trips: Trip[] = [
     description: 'Embark on a 7-day Leh - Leh group trip with Turtuk that begins and ends in Leh. This incredible bike journey starts with acclimatization and local sightseeing in Leh before heading over Khardung La to Nubra Valley, exploring the remote village of Turtuk, and continuing to the crystal-clear waters of Pangong Lake. The trip returns to Leh via Chang-La, offering breathtaking high-altitude scenery and unforgettable memories.',
     duration: 7,
     nights: 6,
+    route: '2N Leh - 2N Nubra - 1N Pangong - 1N Leh',
     price: 15800,
     rating: 4.8,
     difficulty: 'Moderate',
     groupSize: 15,
     tripType: 'India',
     highlights: [
-      'Khardung La',
-      'Nubra Valley',
-      'Turtuk',
-      'Pangong Lake',
-      'Magnetic Hill',
-      'Shanti Stupa'
+      'Khardung La Pass (17,582 ft / 5,359 m)',
+      'Turtuk Village & Tyakshi Indo-Pak Border',
+      'Pangong Tso Lake & 3-Idiots Point',
+      'Chang La Pass (17,586 ft / 5,360 m)',
+      'Diskit Monastery & 106 ft Maitreya Buddha',
+      'Hunder Sand Dunes Bactrian Camel Safari',
+      'Magnetic Hill, Hall of Fame & Sangam Point',
+      'Thiksey Monastery & Sindhu Ghat',
+      'Shanti Stupa Sunset View & Leh Market',
+      'Stargazing at Pangong & Camp Bonfire in Nubra'
     ],
+    inclusionsSummary: {
+      hotels: 3,
+      transfers: 6,
+      experiences: 22,
+      meals: 12
+    },
+    summaryDetails: {
+      transfers: [
+        'Meet Wanderphilia representative & private airport transfer to hotel in Leh',
+        'Leh local sightseeing excursion to Hall of Fame, Magnetic Hill, Gurudwara Pathar Sahib & Sangam Confluence',
+        'Scenic mountain drive from Leh to Nubra Valley via Khardung La Pass (125 km, 5-6 hrs)',
+        'Full-day excursion to Turtuk Village & Tyakshi Indo-Pak Border along Shyok River (200 km roundtrip, 7-8 hrs)',
+        'Drive from Nubra Valley to Pangong Lake via rugged Shyok River route (160 km, 5-6 hrs)',
+        'Drive from Pangong Lake back to Leh via Chang La Pass (140 km, 5-6 hrs)',
+        'Hotel check-out and private transfer to Leh Airport as per flight schedule'
+      ],
+      activities: [
+        {
+          city: 'Leh & Around',
+          title: 'Sightseeing & Heritage',
+          items: [
+            'Hall of Fame War Memorial & Military Museum visit',
+            'Magnetic Hill gravity-defying optical phenomenon',
+            'Sacred Gurudwara Pathar Sahib shrine visit',
+            'Sangam Point — Confluence of Indus & Zanskar rivers',
+            'Shanti Stupa & panoramic sunset view over Leh Valley',
+            'Iconic 12-storey Thiksey Monastery visit',
+            'Sindhu Ghat cultural riverbank exploration',
+            'Leh Main Bazaar & Tibetan market cultural walk'
+          ]
+        },
+        {
+          city: 'Nubra Valley',
+          title: 'High Passes, Dunes & Monasteries',
+          items: [
+            'Crossing Khardung La Pass (17,582 ft / 5,359 m)',
+            'Diskit Monastery & giant 106 ft Maitreya Buddha Statue',
+            'Double-humped Bactrian camel safari on Hunder Sand Dunes',
+            'ATV quad biking on Hunder cold desert dunes',
+            'Evening bonfire night under starry skies at Nubra camp'
+          ]
+        },
+        {
+          city: 'Turtuk & Indo-Pak Border',
+          title: 'Balti Heritage & Borderland',
+          items: [
+            'Turtuk Village heritage walk & ancient wooden houses',
+            'Balti cultural interaction & apricot orchards exploration',
+            'Traditional Balti cuisine & organic apricot tasting',
+            'Tyakshi Village — last accessible Indian border post near LOC'
+          ]
+        },
+        {
+          city: 'Pangong Lake & Chang La',
+          title: 'High-Altitude Lake & Passes',
+          items: [
+            'Pangong Tso Lake (14,270 ft) turquoise-to-blue water viewing',
+            'Iconic 3-Idiots movie point photography session',
+            'Lakeside sunset & sunrise photography at Pangong',
+            'Stargazing under crystal-clear high altitude night skies',
+            'Crossing Chang La Pass (17,586 ft / 5,360 m)'
+          ]
+        }
+      ],
+      accommodation: [
+        { city: 'Leh (3 Nights)', hotel: 'Standard / Deluxe Hotel with modern amenities' },
+        { city: 'Nubra Valley (2 Nights)', hotel: 'Deluxe Swiss Camps / Cottage Resort in Hunder' },
+        { city: 'Pangong Tso (1 Night)', hotel: 'Deluxe Lakeside Camps / Cottage Stays' }
+      ],
+      meals: [
+        'Daily buffet breakfast and dinner as per itinerary',
+        '6 Dinners (Day 1 to Day 6)',
+        '6 Breakfasts (Day 2 to Day 7)',
+        'Welcome tea and morning / evening tea during stays'
+      ]
+    },
     itinerary: [
       {
         day: 1,
         title: 'Arrival in Leh & Acclimatization Day',
         description: [
+          'Transfer: Leh Airport to hotel in Leh',
           'Arrive at Leh Airport with stunning aerial views of snow-clad Himalayan ranges',
           'Warm welcome & private transfer to hotel in Leh',
           'Check-in and mandatory rest for high-altitude acclimatization',
@@ -700,7 +1026,7 @@ export const trips: Trip[] = [
         day: 2,
         title: 'Leh Cultural Sightseeing: Sangam, Magnetic Hill, Pathar Sahib & Shanti Stupa',
         description: [
-          'Morning breakfast at hotel',
+          'Transfer: Leh local sightseeing circuit (approx 70 km roundtrip)',
           'Explore Hall of Fame war museum & pay tribute to Indian heroes',
           'Experience Magnetic Hill phenomenon & drive along scenic Indus Valley',
           'Visit Gurudwara Pathar Sahib & Sangam confluence (Indus & Zanskar rivers)',
@@ -714,7 +1040,7 @@ export const trips: Trip[] = [
         day: 3,
         title: 'Leh to Nubra Valley via Khardung La Pass (5,359 m) — 125 km, 5-6 hrs',
         description: [
-          'Early morning breakfast & start adventurous ride towards Nubra Valley',
+          'Transfer: Leh to Nubra Valley via Khardung La Pass (125 km, 5-6 hrs)',
           'Summit the legendary Khardung La Pass (17,582 ft / 5,359 m) — world’s premier motorable pass',
           'Scenic descent into Nubra Valley along Shyok River',
           'Visit historic Diskit Monastery & 106 ft Maitreya Buddha Statue overlooking the valley',
@@ -728,7 +1054,7 @@ export const trips: Trip[] = [
         day: 4,
         title: 'Excursion to Turtuk Village & Tyakshi (Indo-Pak Border) — 200 km, 7-8 hrs',
         description: [
-          'Morning breakfast and drive along the scenic Shyok River towards Baltistan border',
+          'Transfer: Nubra Valley to Turtuk Village & Tyakshi Border excursion (200 km roundtrip, 7-8 hrs)',
           'Enter Turtuk Village — India’s northernmost village opened to tourists in 2010',
           'Explore unique Balti cultural heritage, ancient wooden houses & lush apricot orchards',
           'Visit Tyakshi Village — the last point accessible before the Indo-Pakistan Line of Control (LOC)',
@@ -742,7 +1068,7 @@ export const trips: Trip[] = [
         day: 5,
         title: 'Nubra Valley to Pangong Lake via Shyok Route — 160 km, 5-6 hrs',
         description: [
-          'Breakfast with scenic morning desert views in Nubra',
+          'Transfer: Nubra Valley to Pangong Lake via Shyok River route (160 km, 5-6 hrs)',
           'Ride along the rugged Shyok River gorges and scenic river crossings',
           'Pass picturesque remote hamlets of Agam, Shyok & Durbuk',
           'Arrive at world-famous Pangong Tso (14,270 ft / 4,350 m) — highest saltwater lake',
@@ -756,8 +1082,8 @@ export const trips: Trip[] = [
         day: 6,
         title: 'Pangong Lake to Leh via Chang La Pass (5,360 m) — 140 km, 5-6 hrs',
         description: [
+          'Transfer: Pangong Lake to Leh via Chang La Pass (140 km, 5-6 hrs)',
           'Sunrise photography session over tranquil waters of Pangong Lake',
-          'Lakeside breakfast & start return drive to Leh',
           'Cross mighty Chang La Pass (17,586 ft / 5,360 m) — 3rd highest motorable pass in the world',
           'En route stop at famous Thiksey Monastery & Sindhu Ghat',
           'Arrive in Leh by evening, check into hotel & rest',
@@ -770,7 +1096,7 @@ export const trips: Trip[] = [
         day: 7,
         title: 'Departure from Leh — Return Home with Lifetime Memories',
         description: [
-          'Morning breakfast at hotel',
+          'Transfer: Hotel in Leh to Leh Airport (IXL)',
           'Assisted transfer to Leh Airport as per flight schedule',
           'Fly back home carrying cherishable Ladakh expedition memories',
           'Meals: Breakfast'
@@ -943,6 +1269,7 @@ export const trips: Trip[] = [
     description: "Are you ready for an unforgettable adventure in the breathtaking landscapes of Ladakh? This Ladakh tour package takes you on an exciting 7-day journey through some of the most stunning places in the Himalayas. From the moment you land in Leh, you'll experience mesmerizing views, peaceful monasteries, thrilling high-altitude passes, and crystal-clear lakes. Your adventure starts with a day to relax and acclimate to the high altitude in Leh. Then, you'll explore local gems like Shanti Stupa, Magnetic Hill, and the famous Gurudwara Pathar Sahib. Next, get ready for an epic road trip to Nubra Valley via the mighty Khardung La Pass. Enjoy the beauty of Diskit Monastery, ride a double-humped camel in Hunder. From Nubra, you’ll travel to the magical Pangong Lake, where the blue waters will leave you speechless. From Pangong Lake to travel to Hanle Spend a peaceful night by the lake. Located deep in the remote Changthang region, Hanle is where Ladakh feels untouched.No crowds. No noise. Just vast open landscapes and a sky filled with millions of stars.Home to one of the world’s highest observatories, Hanle offers a stargazing experience that feels almost unreal — a moment where you truly disconnect from everything. Heading back to Leh through the stunning Chang-La. Your trip ends with a final evening in Leh, where you can explore the local market and soak in the last moments of this incredible journey. As you fly back home, you’ll carry a heart full of memories and the spirit of Ladakh with you. Are you ready to explore this paradise?",
     duration: 7,
     nights: 6,
+    route: '2N Leh - 1N Nubra - 1N Pangong - 1N Hanle - 1N Leh',
     price: 0,
     rating: 4.8,
     difficulty: 'Moderate',
@@ -962,18 +1289,100 @@ export const trips: Trip[] = [
     ],
 
     highlights: [
-      'Khardung La',
-      'Pangong Lake',
-      'Hanle',
-      'Shanti Stupa & Magnetic Hill',
-      'Nubra Valley camel safari'
+      'Khardung La Pass (17,582 ft / 5,359 m)',
+      'Hanle Dark Sky Reserve & Astronomical Observatory',
+      'Rezang La War Memorial & Tsaga La Pass',
+      'Pangong Tso Lake & 3-Idiots Point',
+      'Diskit Monastery & 106 ft Maitreya Buddha',
+      'Hunder Sand Dunes Bactrian Camel Safari & ATV Ride',
+      'Magnetic Hill, Hall of Fame & Sangam Point',
+      'Chumathang Hot Springs & Changthang Wildlife',
+      'Shanti Stupa Sunset View & Leh Market',
+      'Stargazing & Milky Way Photography at Hanle'
     ],
-
+    inclusionsSummary: {
+      hotels: 4,
+      transfers: 6,
+      experiences: 22,
+      meals: 12
+    },
+    summaryDetails: {
+      transfers: [
+        'Meet Wanderphilia representative & transfer to hotel in Leh',
+        'Acclimatization ride along Leh-Srinagar Highway to Hall of Fame, Magnetic Hill & Sangam',
+        'Mountain bike ride from Leh to Nubra Valley via Khardung La Pass (130 km, 5-6 hrs)',
+        'Off-road ride from Nubra Valley to Pangong Lake via Shyok River route (180 km, 5-6 hrs)',
+        'Trans-Himalayan ride from Pangong Lake to Hanle via Chushul, Rezang La & Tsaga La (165 km, 7-8 hrs)',
+        'Return ride from Hanle to Leh via Chumathang Hot Springs & Upshi along Indus River (260 km, 7-8 hrs)',
+        'Hotel check-out and private transfer to Leh Airport as per flight schedule'
+      ],
+      activities: [
+        {
+          city: 'Leh & Around',
+          title: 'Sightseeing & Heritage',
+          items: [
+            'Hall of Fame War Memorial & Military Museum visit',
+            'Magnetic Hill gravity-defying optical phenomenon',
+            'Sacred Gurudwara Pathar Sahib shrine visit',
+            'Sangam Point — Confluence of Indus & Zanskar rivers',
+            'Shanti Stupa panoramic sunset view over Leh Valley',
+            'Leh Main Bazaar & Tibetan market cultural walk'
+          ]
+        },
+        {
+          city: 'Nubra Valley',
+          title: 'High Passes, Dunes & Monasteries',
+          items: [
+            'Crossing Khardung La Pass (17,582 ft / 5,359 m)',
+            'Diskit Monastery & giant 106 ft Maitreya Buddha Statue',
+            'Double-humped Bactrian camel safari on Hunder Sand Dunes',
+            'ATV quad biking on Hunder cold desert dunes',
+            'Evening bonfire night under starry skies at Nubra camp'
+          ]
+        },
+        {
+          city: 'Pangong Lake',
+          title: 'High-Altitude Lake & Photography',
+          items: [
+            'Pangong Tso Lake (14,270 ft) multi-hued blue water viewing',
+            'Iconic 3-Idiots movie point photography session',
+            'Lakeside sunset & sunrise reflections photography',
+            'Lakeside stargazing under crystal-clear night skies'
+          ]
+        },
+        {
+          city: 'Hanle & Changthang',
+          title: 'Dark Sky Reserve & Frontiers',
+          items: [
+            'Rezang La War Memorial homage (1962 Sino-Indian War heroes)',
+            'Crossing scenic Tsaga La Pass & Loma Checkpoint',
+            'Hanle Monastery (historic 17th-century Gompa)',
+            'Indian Astronomical Observatory (world’s highest optical telescope)',
+            'Dark Sky Sanctuary pristine stargazing & Milky Way spotting',
+            'Changthang wildlife spotting (Tibetan Wild Ass / Kiang, Marmots)',
+            'Chumathang natural mineral hot springs visit'
+          ]
+        }
+      ],
+      accommodation: [
+        { city: 'Leh (3 Nights)', hotel: 'Standard / Deluxe Hotel with modern amenities' },
+        { city: 'Nubra Valley (1 Night)', hotel: 'Deluxe Swiss Camps / Cottage Resort in Hunder' },
+        { city: 'Pangong Tso (1 Night)', hotel: 'Deluxe Lakeside Camps / Cottages' },
+        { city: 'Hanle (1 Night)', hotel: 'Traditional Stargazing Homestay / Guesthouse' }
+      ],
+      meals: [
+        'Daily buffet breakfast and dinner as per itinerary',
+        '6 Dinners (Day 1 to Day 6)',
+        '6 Breakfasts (Day 2 to Day 7)',
+        'Welcome tea and morning / evening tea during stays'
+      ]
+    },
     itinerary: [
       {
         day: 1,
         title: 'Arrival in Leh & Acclimatization Day',
         description: [
+          'Transfer: Leh Airport to hotel in Leh',
           'Arrive at Leh Airport with breathtaking Himalayan aerial vistas',
           'Warm welcome & transfer to hotel in Leh',
           'Mandatory complete rest day for high-altitude acclimatization',
@@ -987,6 +1396,7 @@ export const trips: Trip[] = [
         day: 2,
         title: 'Leh Sightseeing & Acclimatization Ride: Sangam, Magnetic Hill & Shanti Stupa',
         description: [
+          'Transfer: Leh local sightseeing ride circuit (approx 70 km roundtrip)',
           'Breakfast followed by orientation ride along the scenic Leh-Srinagar Highway',
           'Visit Hall of Fame Museum, Magnetic Hill & Gurudwara Pathar Sahib',
           'Witness the scenic confluence of Indus & Zanskar rivers at Sangam Point',
@@ -1000,6 +1410,7 @@ export const trips: Trip[] = [
         day: 3,
         title: 'Leh to Nubra Valley via Khardung La Pass (5,359 m) — 130 km, 5-6 hrs',
         description: [
+          'Transfer: Leh to Nubra Valley via Khardung La Pass (130 km, 5-6 hrs)',
           'Early morning ride flag-off towards Khardung La',
           'Scale Khardung La Pass (17,582 ft / 5,359 m) — iconic high mountain pass',
           'Descend into the vast white desert valley of Nubra',
@@ -1013,6 +1424,7 @@ export const trips: Trip[] = [
         day: 4,
         title: 'Nubra Valley to Pangong Lake via Shyok Route — 180 km, 5-6 hrs',
         description: [
+          'Transfer: Nubra Valley to Pangong Lake via Shyok River route (180 km, 5-6 hrs)',
           'Morning breakfast in Nubra and start off-road trail along Shyok River',
           'Cross scenic riverbeds, rocky terrain and picturesque Ladakhi hamlets',
           'First breathtaking look of azure Pangong Lake (14,270 ft)',
@@ -1026,6 +1438,7 @@ export const trips: Trip[] = [
         day: 5,
         title: 'Pangong Lake to Hanle via Chushul, Rezang La & Tsaga La — 165 km, 7-8 hrs',
         description: [
+          'Transfer: Pangong Lake to Hanle via Chushul, Rezang La & Tsaga La (165 km, 7-8 hrs)',
           'Sunrise breakfast by Pangong Lake',
           'Ride through remote Changthang plateau towards Indo-China border region',
           'Pay tribute to 1962 war heroes at the historic Rezang La War Memorial',
@@ -1041,6 +1454,7 @@ export const trips: Trip[] = [
         day: 6,
         title: 'Hanle to Leh via Chumathang Hot Springs & Indus Valley — 260 km, 7-8 hrs',
         description: [
+          'Transfer: Hanle to Leh via Chumathang Hot Springs & Upshi along Indus River (260 km, 7-8 hrs)',
           'Morning breakfast in remote Hanle village',
           'Ride along the surreal Changthang landscapes and wild Kiang (Tibetan wild ass) sightings',
           'Stop at Chumathang Hot Springs known for natural mineral waters',
@@ -1055,6 +1469,7 @@ export const trips: Trip[] = [
         day: 7,
         title: 'Departure from Leh — End of Epic Ladakh Expedition',
         description: [
+          'Transfer: Hotel in Leh to Leh Airport (IXL)',
           'Morning breakfast at hotel',
           'Transfer to Leh Airport for return flight',
           'Depart with unforgettable memories of Khardung La, Pangong & Hanle',
@@ -1232,6 +1647,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
 This tour gives you the real feel of Ladakh’s nature and open roads, without extra frills - just great routes, great views and great memories.`,
     duration: 8,
     nights: 7,
+    route: '2N Leh - 1N Nubra - 1N Pangong - 2N Hanle - 1N Leh',
     price: 0,
     rating: 4.9,
     difficulty: 'Moderate',
@@ -1249,21 +1665,111 @@ This tour gives you the real feel of Ladakh’s nature and open roads, without e
       'Major Highlights: Khardung La, Nubra Valley, Pangong Lake, Hanle, Umingla, Tso Moriri.'
     ],
     highlights: [
-      'Khardung La',
-      'Nubra Valley',
-      'Pangong Lake',
-      'Hanle',
-      'Umling La',
-      'Tso Moriri',
-      'Shanti Stupa',
-      'Magnetic Hill',
-      'Rezang La War Memorial'
+      'Umling La Pass (19,024 ft / 5,798 m — World’s Highest Motorable Road)',
+      'Hanle Dark Sky Sanctuary & Indian Astronomical Observatory',
+      'Tso Moriri High-Altitude Lake (14,836 ft) & Kyagar Tso',
+      'Puga Valley Geothermal Sulphur Springs',
+      'Rezang La War Memorial & Tsaga La Pass',
+      'Khardung La Pass (17,582 ft / 5,359 m)',
+      'Pangong Tso Lake & 3-Idiots Point',
+      'Diskit Monastery & 106 ft Maitreya Buddha',
+      'Hunder Sand Dunes Bactrian Camel Safari',
+      'Magnetic Hill, Hall of Fame & Sangam Point'
     ],
+    inclusionsSummary: {
+      hotels: 4,
+      transfers: 7,
+      experiences: 26,
+      meals: 14
+    },
+    summaryDetails: {
+      transfers: [
+        'Meet Wanderphilia representative & transfer to hotel in Leh',
+        'Acclimatization ride along Leh-Srinagar Highway to Hall of Fame, Magnetic Hill & Sangam',
+        'High-altitude mountain ride from Leh to Nubra Valley via Khardung La Pass (125 km, 5-6 hrs)',
+        'Off-road bike ride from Nubra Valley to Pangong Lake via Shyok River route (160 km, 5-6 hrs)',
+        'Trans-Himalayan ride from Pangong Lake to Hanle via Rezang La & Tsaga La (165 km, 7-8 hrs)',
+        'Full-day high-altitude excursion to Umling La Pass (19,024 ft) & Demchok Border (150 km roundtrip, 6-7 hrs)',
+        'Scenic long-distance ride from Hanle to Leh via Tso Moriri, Kyagar Tso, Puga Valley & Chumathang (289 km, 8-9 hrs)',
+        'Hotel check-out and private transfer to Leh Airport as per flight schedule'
+      ],
+      activities: [
+        {
+          city: 'Leh & Around',
+          title: 'Sightseeing & Heritage',
+          items: [
+            'Hall of Fame War Memorial & Military Museum visit',
+            'Magnetic Hill gravity-defying optical phenomenon',
+            'Sacred Gurudwara Pathar Sahib shrine visit',
+            'Sangam Point — Confluence of Indus & Zanskar rivers',
+            'Shanti Stupa panoramic sunset view over Leh Valley',
+            'Leh Main Bazaar & Tibetan market cultural walk'
+          ]
+        },
+        {
+          city: 'Nubra Valley',
+          title: 'High Passes, Dunes & Monasteries',
+          items: [
+            'Crossing Khardung La Pass (17,582 ft / 5,359 m)',
+            'Diskit Monastery & giant 106 ft Maitreya Buddha Statue',
+            'Double-humped Bactrian camel safari on Hunder Sand Dunes',
+            'ATV quad biking on Hunder cold desert dunes',
+            'Evening bonfire night under starry skies at Nubra camp'
+          ]
+        },
+        {
+          city: 'Pangong Lake',
+          title: 'High-Altitude Lake & Photography',
+          items: [
+            'Pangong Tso Lake (14,270 ft) multi-shade blue water viewing',
+            'Iconic 3-Idiots movie point photography session',
+            'Lakeside sunset & sunrise reflections photography',
+            'Lakeside stargazing under crystal-clear night skies'
+          ]
+        },
+        {
+          city: 'Hanle & Umling La',
+          title: 'World Record Pass & Dark Sky',
+          items: [
+            'Conquering Umling La Pass (19,024 ft / 5,798 m) — World’s Highest Motorable Road',
+            'World record milestone photoshoot at Umling La top',
+            'Demchok village & Indo-China borderland exploration',
+            'Rezang La War Memorial homage (1962 heroics)',
+            'Crossing scenic Tsaga La Pass & Loma Checkpoint',
+            'Hanle Monastery (historic 17th-century Gompa)',
+            'Indian Astronomical Observatory & Dark Sky Reserve stargazing'
+          ]
+        },
+        {
+          city: 'Tso Moriri & Puga Valley',
+          title: 'Pristine Lakes & Geothermal Vents',
+          items: [
+            'Tso Moriri Lake (14,836 ft) & turquoise Kyagar Tso lake exploration',
+            'Surreal Puga Valley bubbling geothermal sulphur vents & steam geysers',
+            'Chumathang natural mineral hot springs visit',
+            'Changthang wildlife spotting (Tibetan Wild Ass / Kiang, Marmots)'
+          ]
+        }
+      ],
+      accommodation: [
+        { city: 'Leh (3 Nights)', hotel: 'Standard / Deluxe Hotel with modern amenities' },
+        { city: 'Nubra Valley (1 Night)', hotel: 'Deluxe Swiss Camps / Cottage Resort in Hunder' },
+        { city: 'Pangong Tso (1 Night)', hotel: 'Deluxe Lakeside Camps / Cottages' },
+        { city: 'Hanle (2 Nights)', hotel: 'Traditional Stargazing Homestay / Guesthouse' }
+      ],
+      meals: [
+        'Daily buffet breakfast and dinner as per itinerary',
+        '7 Dinners (Day 1 to Day 7)',
+        '7 Breakfasts (Day 2 to Day 8)',
+        'Welcome tea and morning / evening tea during stays'
+      ]
+    },
     itinerary: [
       {
         day: 1,
         title: 'Arrival in Leh & Acclimatization Day',
         description: [
+          'Transfer: Leh Airport to hotel in Leh',
           'Arrive at Leh Airport with stunning snow-capped mountain views',
           'Airport reception & transfer to hotel in Leh',
           'Mandatory day of rest for oxygen acclimatization',
@@ -1276,6 +1782,7 @@ This tour gives you the real feel of Ladakh’s nature and open roads, without e
         day: 2,
         title: 'Leh Sightseeing: Sangam, Magnetic Hill, Pathar Sahib & Shanti Stupa',
         description: [
+          'Transfer: Leh local sightseeing circuit (approx 70 km roundtrip)',
           'Breakfast followed by test ride & bike allocation',
           'Visit Hall of Fame Museum, Magnetic Hill & Gurudwara Pathar Sahib',
           'Scenic stop at Indus-Zanskar Sangam confluence',
@@ -1288,6 +1795,7 @@ This tour gives you the real feel of Ladakh’s nature and open roads, without e
         day: 3,
         title: 'Leh to Nubra Valley via Khardung La (5,359 m) — 125 km, 5-6 hrs',
         description: [
+          'Transfer: Leh to Nubra Valley via Khardung La Pass (125 km, 5-6 hrs)',
           'Breakfast & thrilling ride up to Khardung La (17,582 ft / 5,359 m)',
           'Celebrate summiting world’s most iconic motorable pass',
           'Descend into picturesque Nubra Valley along Shyok River',
@@ -1301,6 +1809,7 @@ This tour gives you the real feel of Ladakh’s nature and open roads, without e
         day: 4,
         title: 'Nubra Valley to Pangong Lake via Shyok Route — 160 km, 5-6 hrs',
         description: [
+          'Transfer: Nubra Valley to Pangong Lake via Shyok River route (160 km, 5-6 hrs)',
           'Morning breakfast & off-road adventure along Shyok River valley',
           'Arrive at Pangong Tso (14,270 ft) & marvel at its multi-shade blue waters',
           'Lakeside photography at 3-Idiots point & sunset walk',
@@ -1313,6 +1822,7 @@ This tour gives you the real feel of Ladakh’s nature and open roads, without e
         day: 5,
         title: 'Pangong Lake to Hanle via Rezang La War Memorial — 165 km, 7-8 hrs',
         description: [
+          'Transfer: Pangong Lake to Hanle via Rezang La & Tsaga La (165 km, 7-8 hrs)',
           'Lakeside sunrise breakfast & departure towards Changthang border region',
           'Visit the iconic Rezang La War Memorial & pay homage to Charlie Company heroes',
           'Cross Tsaga La Pass and drive along raw Tibetan plateau wilderness',
@@ -1326,6 +1836,7 @@ This tour gives you the real feel of Ladakh’s nature and open roads, without e
         day: 6,
         title: 'Excursion to Umling La Pass (19,024 ft) — World’s Highest Motorable Pass',
         description: [
+          'Transfer: Hanle to Umling La Pass & Demchok excursion roundtrip (150 km, 6-7 hrs)',
           'Early morning breakfast & prepare for the pinnacle ride of the expedition',
           'Ascend through high-altitude desert terrain to conquer Umling La Pass (19,024 ft / 5,798 m)',
           'Stand atop the Highest Motorable Road on Planet Earth — a world record achievement',
@@ -1339,6 +1850,7 @@ This tour gives you the real feel of Ladakh’s nature and open roads, without e
         day: 7,
         title: 'Hanle to Leh via Tso Moriri, Kyagar Tso, Puga & Chumathang — 289 km, 8-9 hrs',
         description: [
+          'Transfer: Hanle to Leh via Tso Moriri, Kyagar Tso, Puga Valley & Chumathang (289 km, 8-9 hrs)',
           'Early breakfast & start long scenic expedition across southern Ladakh',
           'Visit pristine high-altitude lake of Tso Moriri & Kyagar Tso',
           'Witness bubbling geothermal sulphur vents in surreal Puga Valley',
@@ -1351,6 +1863,7 @@ This tour gives you the real feel of Ladakh’s nature and open roads, without e
         day: 8,
         title: 'Departure from Leh — Fly Home with World Record Memories',
         description: [
+          'Transfer: Hotel in Leh to Leh Airport (IXL)',
           'Morning breakfast at hotel',
           'Transfer to Leh Airport for onward journey',
           'Meals: Breakfast'
@@ -1521,6 +2034,7 @@ Each day is filled with adventure, scenic beauty, and unforgettable memories.
 As the trip concludes, you’ll fly back home with a heart full of happiness and stories to tell from this amazing biking adventure in Ladakh.`,
     duration: 8,
     nights: 7,
+    route: '2N Leh - 2N Nubra - 1N Pangong - 1N Tso Moriri - 1N Leh',
     price: 0,
     rating: 4.8,
     difficulty: 'Moderate',
@@ -1538,21 +2052,110 @@ As the trip concludes, you’ll fly back home with a heart full of happiness and
       'Major Highlights: Khardung La, Nubra Valley , Turtuk , Pangong Lake, Tso Moriri.'
     ],
     highlights: [
-      'Khardung La',
-      'Nubra Valley',
-      'Turtuk',
-      'Pangong Lake',
-      'Tso Moriri',
-      'Shanti Stupa',
-      'Magnetic Hill',
-      'Hall of Fame',
-      'Gata Loops'
+      'Khardung La Pass (17,582 ft / 5,359 m)',
+      'Tso Moriri Sapphire Lake (Korzok - 14,836 ft)',
+      'Turtuk Village & Tyakshi Indo-Pak Border',
+      'Pangong Tso Lake & 3-Idiots Point',
+      'Tanglang La Pass (17,480 ft / 5,328 m)',
+      'Rezang La War Memorial & Tsaga La Pass',
+      'Puga Valley Geothermal Sulphur Springs & Tsokar Salt Lake',
+      'Diskit Monastery & 106 ft Maitreya Buddha',
+      'Hunder Sand Dunes Bactrian Camel Safari',
+      'Magnetic Hill, Hall of Fame & Sangam Point'
     ],
+    inclusionsSummary: {
+      hotels: 4,
+      transfers: 7,
+      experiences: 25,
+      meals: 14
+    },
+    summaryDetails: {
+      transfers: [
+        'Meet Wanderphilia representative & transfer to hotel in Leh',
+        'Leh local sightseeing orientation ride to Hall of Fame, Magnetic Hill & Sangam',
+        'Mountain bike ride from Leh to Nubra Valley via Khardung La Pass (125 km, 5-6 hrs)',
+        'Full-day excursion to Turtuk Village & Tyakshi Indo-Pak Border along Shyok River (200 km, 7-8 hrs)',
+        'Off-road ride from Nubra Valley to Pangong Lake via rugged Shyok River route (160 km, 5-6 hrs)',
+        'Trans-Himalayan ride from Pangong Lake to Tso Moriri via Rezang La, Tsaga La & Loma (175 km, 8-9 hrs)',
+        'Return ride from Tso Moriri to Leh via Puga Valley, Tsokar Lake & Tanglang La Pass (220 km, 7-8 hrs)',
+        'Hotel check-out and private transfer to Leh Airport as per flight schedule'
+      ],
+      activities: [
+        {
+          city: 'Leh & Around',
+          title: 'Sightseeing & Heritage',
+          items: [
+            'Hall of Fame War Memorial & Military Museum visit',
+            'Magnetic Hill gravity-defying optical phenomenon',
+            'Sacred Gurudwara Pathar Sahib shrine visit',
+            'Sangam Point — Confluence of Indus & Zanskar rivers',
+            'Shanti Stupa panoramic sunset view over Leh Valley',
+            'Leh Main Bazaar & Tibetan market cultural walk'
+          ]
+        },
+        {
+          city: 'Nubra Valley',
+          title: 'High Passes, Dunes & Monasteries',
+          items: [
+            'Crossing Khardung La Pass (17,582 ft / 5,359 m)',
+            'Diskit Monastery & giant 106 ft Maitreya Buddha Statue',
+            'Double-humped Bactrian camel safari on Hunder Sand Dunes',
+            'ATV quad biking on Hunder cold desert dunes',
+            'Evening bonfire night under starry skies at Nubra camp'
+          ]
+        },
+        {
+          city: 'Turtuk & Indo-Pak Border',
+          title: 'Balti Heritage & Borderland',
+          items: [
+            'Turtuk Village heritage walk & ancient wooden houses',
+            'Balti cultural interaction & apricot orchards exploration',
+            'Traditional Balti cuisine & organic apricot tasting',
+            'Tyakshi Village — last accessible Indian border post near LOC'
+          ]
+        },
+        {
+          city: 'Pangong Lake',
+          title: 'High-Altitude Lake & Photography',
+          items: [
+            'Pangong Tso Lake (14,270 ft) turquoise-to-blue water viewing',
+            'Iconic 3-Idiots movie point photography session',
+            'Lakeside sunset & sunrise reflections photography',
+            'Lakeside stargazing under crystal-clear night skies'
+          ]
+        },
+        {
+          city: 'Tso Moriri & High Passes',
+          title: 'High Passes, Sapphire Lake & Geothermal Valley',
+          items: [
+            'Rezang La War Memorial homage (1962 heroics) & Tsaga La Pass',
+            'Tso Moriri Lake (14,836 ft) & Korzok Monastery visit',
+            'Puga Valley bubbling geothermal sulphur vents & steam geysers',
+            'Tsokar high-altitude white salt lake exploration',
+            'Crossing Tanglang La Pass (17,480 ft / 5,328 m) — 2nd highest pass in Ladakh',
+            'Changthang wildlife spotting (Tibetan Wild Ass / Kiang, Marmots)'
+          ]
+        }
+      ],
+      accommodation: [
+        { city: 'Leh (3 Nights)', hotel: 'Standard / Deluxe Hotel with modern amenities' },
+        { city: 'Nubra Valley (2 Nights)', hotel: 'Deluxe Swiss Camps / Cottage Resort in Hunder' },
+        { city: 'Pangong Tso (1 Night)', hotel: 'Deluxe Lakeside Camps / Cottages' },
+        { city: 'Tso Moriri (1 Night)', hotel: 'Deluxe Lake View Camps / Guesthouse in Korzok' }
+      ],
+      meals: [
+        'Daily buffet breakfast and dinner as per itinerary',
+        '7 Dinners (Day 1 to Day 7)',
+        '7 Breakfasts (Day 2 to Day 8)',
+        'Welcome tea and morning / evening tea during stays'
+      ]
+    },
     itinerary: [
       {
         day: 1,
         title: 'Arrival in Leh & Acclimatization Day',
         description: [
+          'Transfer: Leh Airport to hotel in Leh',
           'Arrive at Leh Airport & transfer to hotel',
           'Complete rest day for high-altitude acclimatization',
           'Evening stroll in Leh Bazaar & tour briefing',
@@ -1564,6 +2167,7 @@ As the trip concludes, you’ll fly back home with a heart full of happiness and
         day: 2,
         title: 'Leh Local Sightseeing: Magnetic Hill, Pathar Sahib & Shanti Stupa',
         description: [
+          'Transfer: Leh local sightseeing ride circuit (approx 70 km roundtrip)',
           'Breakfast & test ride along Indus Valley',
           'Visit Hall of Fame, Magnetic Hill, Gurudwara Pathar Sahib & Sangam confluence',
           'Sunset views from Shanti Stupa overlooking Leh city',
@@ -1575,6 +2179,7 @@ As the trip concludes, you’ll fly back home with a heart full of happiness and
         day: 3,
         title: 'Leh to Nubra Valley via Khardung La Pass (5,359 m) — 125 km, 5-6 hrs',
         description: [
+          'Transfer: Leh to Nubra Valley via Khardung La Pass (125 km, 5-6 hrs)',
           'Ride over legendary Khardung La Pass (17,582 ft / 5,359 m)',
           'Descend into Nubra Valley & visit Diskit Monastery (106 ft Buddha Statue)',
           'Double-humped camel safari on Hunder Sand Dunes',
@@ -1586,6 +2191,7 @@ As the trip concludes, you’ll fly back home with a heart full of happiness and
         day: 4,
         title: 'Excursion to Turtuk Village & Tyakshi (Indo-Pak Border) — 200 km, 7-8 hrs',
         description: [
+          'Transfer: Nubra Valley to Turtuk Village & Tyakshi Border excursion (200 km, 7-8 hrs)',
           'Scenic drive along Shyok River to Indo-Pakistan border region',
           'Explore traditional Balti village of Turtuk, apricot orchards & heritage museum',
           'Visit Tyakshi border village before returning to Hunder',
@@ -1597,6 +2203,7 @@ As the trip concludes, you’ll fly back home with a heart full of happiness and
         day: 5,
         title: 'Nubra Valley to Pangong Lake via Shyok Route — 160 km, 5-6 hrs',
         description: [
+          'Transfer: Nubra Valley to Pangong Lake via Shyok River route (160 km, 5-6 hrs)',
           'Ride through rugged Shyok River gorges and rocky water crossings',
           'Arrive at magnificent Pangong Tso (14,270 ft) & enjoy colour-changing views',
           'Photoshoot at 3-Idiots point & lakeside stargazing',
@@ -1608,6 +2215,7 @@ As the trip concludes, you’ll fly back home with a heart full of happiness and
         day: 6,
         title: 'Pangong Tso to Tso Moriri via Chushul, Tsaga La & Loma — 175 km, 8-9 hrs',
         description: [
+          'Transfer: Pangong Lake to Tso Moriri via Rezang La, Tsaga La & Loma (175 km, 8-9 hrs)',
           'Sunrise breakfast & ride along untouched Changthang landscapes',
           'Pay homage at Rezang La War Memorial & cross scenic Tsaga La Pass',
           'Pass Loma and Mahe Bridge to reach breathtaking Tso Moriri Lake (Korzok - 14,836 ft)',
@@ -1620,6 +2228,7 @@ As the trip concludes, you’ll fly back home with a heart full of happiness and
         day: 7,
         title: 'Tso Moriri to Leh via Puga Geothermal Valley, Tsokar & Tanglang La — 220 km, 7-8 hrs',
         description: [
+          'Transfer: Tso Moriri to Leh via Puga Valley, Tsokar Lake & Tanglang La Pass (220 km, 7-8 hrs)',
           'Morning walk along Tso Moriri shores & breakfast',
           'Explore steaming sulphur springs in Puga Valley & salt-encrusted Tsokar Lake',
           'Cross mighty Tanglang La Pass (17,480 ft / 5,328 m) — 2nd highest pass in Ladakh',
@@ -1632,6 +2241,7 @@ As the trip concludes, you’ll fly back home with a heart full of happiness and
         day: 8,
         title: 'Departure from Leh — Fly Home',
         description: [
+          'Transfer: Hotel in Leh to Leh Airport (IXL)',
           'Breakfast at hotel',
           'Transfer to Leh Airport with extraordinary memories of Ladakh circuit',
           'Meals: Breakfast'
@@ -1794,6 +2404,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
 
     duration: 9,
     nights: 8,
+    route: '2N Leh - 1N Nubra - 1N Pangong - 2N Hanle - 1N Tso Moriri - 1N Leh',
     price: 0,
     rating: 4.9,
     difficulty: 'Hard',
@@ -1811,23 +2422,115 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
       'Major Highlights: Khardung La, Nubra Valley , Pangong Lake, Hanle , Uming la , Tso Moriri.'
     ],
     highlights: [
-      'Khardung La',
-      'Nubra Valley',
-      'Pangong Lake',
-      'Hanle',
-      'Umling La',
-      'Tso Moriri',
-      'Rezang La War Memorial',
-      'Demchok',
-      'Shanti Stupa',
-      'Magnetic Hill',
-      'Hall of Fame'
+      'Umling La Pass (19,024 ft / 5,798 m — World’s Highest Motorable Road)',
+      'Hanle Dark Sky Reserve & Indian Astronomical Observatory',
+      'Tso Moriri High-Altitude Sapphire Lake (14,836 ft)',
+      'Rezang La War Memorial & Tsaga La Pass',
+      'Khardung La Pass (17,582 ft / 5,359 m)',
+      'Pangong Tso Lake & 3-Idiots Point',
+      'Tanglang La Pass (17,480 ft / 5,328 m)',
+      'Puga Valley Geothermal Sulphur Springs & Tsokar Salt Lake',
+      'Diskit Monastery & 106 ft Maitreya Buddha',
+      'Magnetic Hill, Hall of Fame & Sangam Point'
     ],
+    inclusionsSummary: {
+      hotels: 5,
+      transfers: 8,
+      experiences: 28,
+      meals: 16
+    },
+    summaryDetails: {
+      transfers: [
+        'Meet Wanderphilia representative & transfer to hotel in Leh',
+        'Leh local sightseeing orientation ride to Hall of Fame, Magnetic Hill & Sangam',
+        'Mountain bike ride from Leh to Nubra Valley via Khardung La Pass (130 km, 5-6 hrs)',
+        'Off-road ride from Nubra Valley to Pangong Lake via rugged Shyok River route (160 km, 5-6 hrs)',
+        'Trans-Himalayan ride from Pangong Lake to Hanle via Rezang La & Tsaga La (165 km, 7-8 hrs)',
+        'Full-day excursion to Umling La Pass (19,024 ft) & Demchok Border (150 km roundtrip, 6-7 hrs)',
+        'High-altitude ride from Hanle to Tso Moriri via Mahe Bridge & Kyagar Tso (160 km, 6-7 hrs)',
+        'Return ride from Tso Moriri to Leh via Puga Valley, Tsokar Lake & Tanglang La Pass (220 km, 7-8 hrs)',
+        'Hotel check-out and private transfer to Leh Airport as per flight schedule'
+      ],
+      activities: [
+        {
+          city: 'Leh & Around',
+          title: 'Sightseeing & Heritage',
+          items: [
+            'Hall of Fame War Memorial & Military Museum visit',
+            'Magnetic Hill gravity-defying optical phenomenon',
+            'Sacred Gurudwara Pathar Sahib shrine visit',
+            'Sangam Point — Confluence of Indus & Zanskar rivers',
+            'Shanti Stupa panoramic sunset view over Leh Valley',
+            'Leh Main Bazaar & Tibetan market cultural walk'
+          ]
+        },
+        {
+          city: 'Nubra Valley',
+          title: 'High Passes, Dunes & Monasteries',
+          items: [
+            'Crossing Khardung La Pass (17,582 ft / 5,359 m)',
+            'Diskit Monastery & giant 106 ft Maitreya Buddha Statue',
+            'Double-humped Bactrian camel safari on Hunder Sand Dunes',
+            'ATV quad biking on Hunder cold desert dunes',
+            'Evening bonfire night under starry skies at Nubra camp'
+          ]
+        },
+        {
+          city: 'Pangong Lake',
+          title: 'High-Altitude Lake & Photography',
+          items: [
+            'Pangong Tso Lake (14,270 ft) multi-hued blue water viewing',
+            'Iconic 3-Idiots movie point photography session',
+            'Lakeside sunset & sunrise reflections photography',
+            'Lakeside stargazing under crystal-clear night skies'
+          ]
+        },
+        {
+          city: 'Hanle & Umling La',
+          title: 'World Record Pass & Dark Sky',
+          items: [
+            'Conquering Umling La Pass (19,024 ft / 5,798 m) — World’s Highest Motorable Road',
+            'World record milestone photoshoot at Umling La top',
+            'Demchok village & Indo-China borderland exploration',
+            'Rezang La War Memorial homage (1962 heroics)',
+            'Crossing scenic Tsaga La Pass & Loma Checkpoint',
+            'Hanle Monastery (historic 17th-century Gompa)',
+            'Indian Astronomical Observatory & Dark Sky Reserve stargazing'
+          ]
+        },
+        {
+          city: 'Tso Moriri & High Passes',
+          title: 'Pristine Lake & Geothermal Valley',
+          items: [
+            'Tso Moriri Lake (14,836 ft) & Korzok village exploration',
+            'Kyagar Tso high-altitude turquoise lake stop',
+            'Puga Valley bubbling geothermal sulphur vents & steam geysers',
+            'Tsokar high-altitude white salt lake exploration',
+            'Crossing Tanglang La Pass (17,480 ft / 5,328 m) — 2nd highest pass in Ladakh',
+            'Changthang wildlife spotting (Tibetan Wild Ass / Kiang, Marmots)'
+          ]
+        }
+      ],
+      accommodation: [
+        { city: 'Leh (3 Nights)', hotel: 'Standard / Deluxe Hotel with modern amenities' },
+        { city: 'Nubra Valley (1 Night)', hotel: 'Deluxe Swiss Camps / Cottage Resort in Hunder' },
+        { city: 'Pangong Tso (1 Night)', hotel: 'Deluxe Lakeside Camps / Cottages' },
+        { city: 'Hanle (2 Nights)', hotel: 'Traditional Stargazing Homestay / Guesthouse' },
+        { city: 'Tso Moriri (1 Night)', hotel: 'Deluxe Lake View Camps / Guesthouse in Korzok' }
+      ],
+      meals: [
+        'Daily buffet breakfast and dinner as per itinerary',
+        '8 Dinners (Day 1 to Day 8)',
+        '8 Breakfasts (Day 2 to Day 9)',
+        'Welcome tea and morning / evening tea during stays'
+      ]
+    },
     itinerary: [
       {
         day: 1,
         title: 'Arrival in Leh & Acclimatization Day',
         description: [
+          'Transfer: Leh Airport to hotel in Leh',
           'Arrive at Leh Airport with aerial views of snow peaks & transfer to hotel',
           'Mandatory day of rest for oxygen acclimatization',
           'Evening walk to Leh market & briefing by Trip Captain',
@@ -1839,6 +2542,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
         day: 2,
         title: 'Leh Sightseeing: Sangam, Magnetic Hill, Pathar Sahib & Shanti Stupa',
         description: [
+          'Transfer: Leh local sightseeing circuit (approx 70 km roundtrip)',
           'Breakfast and acclimatization ride along Indus River',
           'Visit Hall of Fame Museum, Magnetic Hill, Gurudwara Pathar Sahib & Sangam confluence',
           'Catch golden sunset over Leh from Shanti Stupa',
@@ -1850,6 +2554,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
         day: 3,
         title: 'Leh to Nubra Valley via Khardung La Pass (5,359 m) — 130 km, 5-6 hrs',
         description: [
+          'Transfer: Leh to Nubra Valley via Khardung La Pass (130 km, 5-6 hrs)',
           'Ascend and cross legendary Khardung La Pass (17,582 ft / 5,359 m)',
           'Visit Diskit Monastery & 106 ft Maitreya Buddha Statue',
           'Camel ride and ATV adventures on Hunder Sand Dunes',
@@ -1861,6 +2566,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
         day: 4,
         title: 'Nubra Valley to Pangong Lake via Shyok Route — 160 km, 5-6 hrs',
         description: [
+          'Transfer: Nubra Valley to Pangong Lake via Shyok River route (160 km, 5-6 hrs)',
           'Ride along rugged Shyok River gorges and scenic river crossings',
           'Reach azure Pangong Tso (14,270 ft) & witness colour changes across the lake',
           'Lakeside photoshoot at 3-Idiots point & magical evening bonfire',
@@ -1872,6 +2578,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
         day: 5,
         title: 'Pangong Lake to Hanle via Rezang La War Memorial — 165 km, 7-8 hrs',
         description: [
+          'Transfer: Pangong Lake to Hanle via Rezang La & Tsaga La (165 km, 7-8 hrs)',
           'Sunrise breakfast by Pangong Lake',
           'Ride through remote Changthang plateau towards Indo-China border',
           'Pay tribute to 1962 heroes at Rezang La War Memorial',
@@ -1885,6 +2592,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
         day: 6,
         title: 'Hanle to Umling La Pass (19,024 ft) — World’s Highest Motorable Pass',
         description: [
+          'Transfer: Hanle to Umling La Pass & Demchok excursion roundtrip (150 km, 6-7 hrs)',
           'Early breakfast and ride to conquer Umling La Pass (19,024 ft / 5,798 m)',
           'Stand on the world’s highest motorable road & photo milestone session',
           'Visit Demchok village & return to Hanle for evening celebration',
@@ -1896,6 +2604,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
         day: 7,
         title: 'Hanle to Tso Moriri (Korzok) via Mahe Bridge & Kyagar Tso — 160 km, 6-7 hrs',
         description: [
+          'Transfer: Hanle to Tso Moriri via Mahe Bridge & Kyagar Tso (160 km, 6-7 hrs)',
           'Morning breakfast in Hanle and ride across raw Changthang wilderness',
           'Spot wildlife including Tibetan Wild Ass (Kiang), Black-Necked Cranes and Marmots',
           'Arrive at stunning high-altitude lake of Tso Moriri (Korzok - 14,836 ft)',
@@ -1908,6 +2617,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
         day: 8,
         title: 'Tso Moriri to Leh via Puga Geothermal Valley, Tsokar & Tanglang La — 220 km, 7-8 hrs',
         description: [
+          'Transfer: Tso Moriri to Leh via Puga Valley, Tsokar Lake & Tanglang La Pass (220 km, 7-8 hrs)',
           'Breakfast with panoramic views of Tso Moriri',
           'Explore steaming geothermal sulphur springs in Puga Valley & salt lake Tsokar',
           'Cross mighty Tanglang La Pass (17,480 ft / 5,328 m)',
@@ -1920,6 +2630,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
         day: 9,
         title: 'Departure from Leh — Fly Home',
         description: [
+          'Transfer: Hotel in Leh to Leh Airport (IXL)',
           'Breakfast at hotel',
           'Transfer to Leh Airport with a heart full of high-altitude adventures',
           'Meals: Breakfast'
@@ -2087,6 +2798,7 @@ This journey is not just about the road—it's about the adventure, the stories,
 
     duration: 12,
     nights: 11,
+    route: '1N Manali - 1N Sarchu - 1N Leh - 2N Nubra - 1N Pangong - 2N Hanle - 1N Leh - 1N Jispa',
     price: 38000,
     rating: 4.9,
     difficulty: 'Moderate',
@@ -2094,36 +2806,135 @@ This journey is not just about the road—it's about the adventure, the stories,
     tripType: 'India',
 
     overviewPoints: [
-      'Route: Delhi → Manali → Sarchu - Leh → Nubra Valley → Pangong Tso → Hanle → Umingla → Demchok → Tso Moriri - Leh - Jispa - Manali - Delhi',
+      'Route: Delhi → Manali → Sarchu → Leh → Nubra Valley → Turtuk → Pangong Tso → Hanle → Umling La → Demchok → Tso Moriri → Leh → Jispa → Manali → Delhi',
       'Duration: 11 Nights / 12 Days.',
       'Trip Start: Delhi',
       'Bike Ride Starts From: Manali',
       'Trip End: Delhi',
-      'Highest Point: Umling La (19,038 ft).',
+      'Highest Point: Umling La (19,024 ft).',
       'Difficulty Level: Moderate - Difficult.',
       'Best Time to Visit: May to September.',
-      'Major Highlights: Manali , Sarchu , Khardung La , Leh , Nubra Valley , Pangong Lake, Hanle , Uming la , Demchok , Tso Moriri , Jispa.'
+      'Major Highlights: Manali, Sarchu, Khardung La, Leh, Nubra Valley, Turtuk, Pangong Lake, Hanle, Umling La, Demchok, Tso Moriri, Jispa.'
     ],
 
     highlights: [
-      'Manali',
-      'Sarchu',
-      'Khardung La',
-      'Leh',
-      'Nubra Valley',
-      'Turtuk',
-      'Pangong Lake',
-      'Hanle',
-      'Umling La',
-      'Tso Moriri',
-      'Jispa'
+      'Umling La Pass (19,024 ft / 5,798 m — World’s Highest Motorable Road)',
+      'Hanle Dark Sky Sanctuary & Indian Astronomical Observatory',
+      'Turtuk Village & Tyakshi Indo-Pak Border',
+      'Tso Moriri High-Altitude Sapphire Lake (14,836 ft)',
+      'Pangong Tso Lake & 3-Idiots Point',
+      'Khardung La Pass (17,582 ft / 5,359 m)',
+      'Baralacha La, Tanglang La & Gata Loops 21 Hairpin Bends',
+      'Atal Tunnel (9.02 km) & Sissu Waterfall',
+      'Diskit Monastery & 106 ft Maitreya Buddha',
+      'Rezang La War Memorial & Changthang Wildlife'
     ],
-
+    inclusionsSummary: {
+      hotels: 7,
+      transfers: 10,
+      experiences: 31,
+      meals: 20
+    },
+    summaryDetails: {
+      transfers: [
+        'Overnight AC Volvo coach transfer from Delhi / Chandigarh to Manali',
+        'High-altitude mountain ride from Manali to Sarchu via Atal Tunnel & Baralacha La Pass (175 km, 7-8 hrs)',
+        'Expedition ride from Sarchu to Leh via Gata Loops, Moore Plains & Tanglang La Pass (260 km, 7-8 hrs)',
+        'Scenic ride from Leh to Nubra Valley via Khardung La Pass (125 km, 5-6 hrs)',
+        'Full-day excursion to Turtuk Village & Tyakshi Indo-Pak Border along Shyok River (200 km, 7-8 hrs)',
+        'Off-road ride from Nubra Valley to Pangong Lake via rugged Shyok River route (160 km, 5-6 hrs)',
+        'Trans-Himalayan ride from Pangong Lake to Hanle via Chushul & Rezang La (165 km, 8-9 hrs)',
+        'Full-day excursion to Umling La Pass (19,024 ft) & Demchok Border (200 km roundtrip, 7-8 hrs)',
+        'Scenic long-distance ride from Hanle to Leh via Tso Moriri Lake & Chumathang (289 km, 7-8 hrs)',
+        'Return ride from Leh to Jispa via Tanglang La, Moore Plains & Baralacha La (260 km, 8-9 hrs)',
+        'Scenic ride from Jispa to Manali via Sissu & Atal Tunnel (135 km, 4-5 hrs)',
+        'Overnight AC Volvo coach transfer from Manali to Delhi'
+      ],
+      activities: [
+        {
+          city: 'Manali & Lahaul Valley',
+          title: 'Gateway & High Mountain Passes',
+          items: [
+            'Hadimba Devi Temple visit amidst deodar forests',
+            'Scenic hike to Jogini Waterfalls & Vashisht hot springs',
+            'Passing through Atal Tunnel (9.02 km engineering marvel)',
+            'Crossing Baralacha La Pass (16,043 ft / 4,890 m)',
+            'Emerald Suraj Tal & Deepak Tal high-altitude lakes',
+            'Sissu Waterfall view in Lahaul Valley'
+          ]
+        },
+        {
+          city: 'Leh & Manali Highway Circuit',
+          title: 'Iconic Passes & Bends',
+          items: [
+            'Conquering 21 hairpin bends of Gata Loops (4,669 m)',
+            'Crossing Nakee La (4,738 m) & Lachung La (5,065 m) passes',
+            'Cruising across the vast 50 km Moore Plains (4,000+ m)',
+            'Crossing Tanglang La Pass (17,480 ft / 5,328 m)',
+            'Shanti Stupa panoramic sunset view over Leh Valley',
+            'Leh Main Bazaar cultural walk & shopping'
+          ]
+        },
+        {
+          city: 'Nubra Valley & Turtuk',
+          title: 'Dunes, Monasteries & Borderland',
+          items: [
+            'Crossing Khardung La Pass (17,582 ft / 5,359 m)',
+            'Diskit Monastery & 106 ft Maitreya Buddha Statue',
+            'Double-humped Bactrian camel safari on Hunder Sand Dunes',
+            'ATV quad biking on Hunder cold desert dunes',
+            'Turtuk Village heritage walk & ancient wooden homes',
+            'Balti cultural interaction & organic apricot tasting',
+            'Turtuk Yabgo Royal Palace & Shyok War Memorial'
+          ]
+        },
+        {
+          city: 'Pangong Lake',
+          title: 'High-Altitude Lake & Sunset',
+          items: [
+            'Pangong Tso Lake (14,270 ft) turquoise-to-blue water viewing',
+            'Iconic 3-Idiots movie point photography session',
+            'Lakeside sunset & sunrise photography at Pangong',
+            'Lakeside bonfire evening under starry skies'
+          ]
+        },
+        {
+          city: 'Hanle, Umling La & Tso Moriri',
+          title: 'World Record Pass, Dark Sky & Sapphire Lake',
+          items: [
+            'Conquering Umling La Pass (19,024 ft / 5,640 m) — World’s Highest Motorable Road',
+            'World record milestone photoshoot at Umling La summit',
+            'Demchok village & Indo-China border post exploration',
+            'Rezang La War Memorial homage (1962 heroics)',
+            'Hanle Monastery (17th century) & Indian Astronomical Observatory',
+            'Pristine Dark Sky Reserve stargazing & Milky Way spotting',
+            'Tso Moriri high-altitude lake (14,836 ft) exploration',
+            'Chumathang natural mineral hot springs visit'
+          ]
+        }
+      ],
+      accommodation: [
+        { city: 'Manali (1 Night)', hotel: 'Standard / Deluxe Hotel' },
+        { city: 'Sarchu (1 Night)', hotel: 'Deluxe Swiss Camps with attached washrooms' },
+        { city: 'Leh (2 Nights)', hotel: 'Standard / Deluxe Hotel with modern amenities' },
+        { city: 'Nubra Valley (2 Nights)', hotel: 'Deluxe Swiss Camps / Resort in Hunder' },
+        { city: 'Pangong Tso (1 Night)', hotel: 'Deluxe Lakeside Cottages / Camps' },
+        { city: 'Hanle (2 Nights)', hotel: 'Traditional Stargazing Homestay / Guesthouse' },
+        { city: 'Jispa (1 Night)', hotel: 'Riverside Camps / Hotel in Jispa' }
+      ],
+      meals: [
+        'Daily buffet breakfast and dinner as per itinerary',
+        '10 Dinners (Day 1 to Day 10)',
+        '10 Breakfasts (Day 2 to Day 11)',
+        'Welcome tea and morning / evening tea during stays'
+      ]
+    },
     itinerary: [
       {
         day: 0,
         title: 'Departure From Delhi / Chandigarh to Manali',
         description: [
+          'Transfer: Overnight AC Volvo Coach from Delhi / Chandigarh to Manali (530 km, 12-14 hrs)',
           'Report at Delhi / Chandigarh pickup point in the evening.',
           'Board the comfortable AC Volvo coach for Manali.',
           'Overnight semi-sleeper Volvo journey through the Himalayas.'
@@ -2133,6 +2944,7 @@ This journey is not just about the road—it's about the adventure, the stories,
         day: 1,
         title: 'Arrival in Manali | Acclimatization & Local Exploration',
         description: [
+          'Transfer: Manali bus stand to hotel in Manali',
           'Arrive in Manali (Valley of Gods) in the morning and transfer to your hotel.',
           'Check-in, relax, and freshen up after the overnight journey.',
           'Visit the historic Hadimba Devi Temple amidst towering deodar forests.',
@@ -2148,6 +2960,7 @@ This journey is not just about the road—it's about the adventure, the stories,
         day: 2,
         title: 'Manali to Sarchu via Atal Tunnel & Baralacha La [175 km / 7-8 hrs]',
         description: [
+          'Transfer: Manali to Sarchu via Atal Tunnel & Baralacha La Pass (175 km, 7-8 hrs)',
           'Early morning departure from Manali towards Sarchu via the Leh-Manali Highway.',
           'Drive through the engineering marvel, Atal Tunnel (9.02 km), entering Lahaul Valley.',
           'Cruise along the scenic Chandra River passing Keylong, Darcha, Patsio, and Zingzing Bar.',
@@ -2163,6 +2976,7 @@ This journey is not just about the road—it's about the adventure, the stories,
         day: 3,
         title: 'Sarchu to Leh via Gata Loops, Moore Plains & Tanglang La [260 km / 7-8 hrs]',
         description: [
+          'Transfer: Sarchu to Leh via Gata Loops, Moore Plains & Tanglang La Pass (260 km, 7-8 hrs)',
           'Post-breakfast ride from Sarchu to Leh crossing the high-altitude border.',
           'Conquer the legendary 21 hairpin bends of Gata Loops (4,669 m).',
           'Cross the high mountain passes: Nakee La (4,738 m) and Lachung La (5,065 m).',
@@ -2179,6 +2993,7 @@ This journey is not just about the road—it's about the adventure, the stories,
         day: 4,
         title: 'Leh to Nubra Valley via Khardung La & Diskit Monastery [125 km / 5-6 hrs]',
         description: [
+          'Transfer: Leh to Nubra Valley via Khardung La Pass (125 km, 5-6 hrs)',
           'Morning visit to Shanti Stupa for panoramic 360-degree views of Leh town and the Stok range.',
           'Embark on a thrilling ride north towards Nubra Valley via Khardung La.',
           'Summit the world-renowned Khardung La Pass (5,359 m / 17,582 ft).',
@@ -2195,6 +3010,7 @@ This journey is not just about the road—it's about the adventure, the stories,
         day: 5,
         title: 'Nubra Valley to Turtuk Village Excursion [200 km / 7-8 hrs]',
         description: [
+          'Transfer: Nubra Valley to Turtuk Village & Tyakshi Border excursion (200 km, 7-8 hrs)',
           'Morning drive towards Turtuk – India’s northernmost frontier village opened to tourists in 2010.',
           'Ride along the raging Shyok River through dramatic gorge landscapes.',
           'Explore Turtuk village, steeped in unique Balti heritage, apricot orchards, and wooden houses.',
@@ -2209,6 +3025,7 @@ This journey is not just about the road—it's about the adventure, the stories,
         day: 6,
         title: 'Nubra Valley to Pangong Tso via Shyok River Route [160 km / 5-6 hrs]',
         description: [
+          'Transfer: Nubra Valley to Pangong Lake via Shyok River route (160 km, 5-6 hrs)',
           'Morning departure from Nubra Valley towards the iconic Pangong Tso.',
           'Ride along the scenic Shyok River route through Agham and Shyok villages.',
           'First glimpse of the mesmerizing, color-changing turquoise waters of Pangong Lake (4,350 m / 14,270 ft).',
@@ -2223,6 +3040,7 @@ This journey is not just about the road—it's about the adventure, the stories,
         day: 7,
         title: 'Pangong Tso to Hanle via Rezang La War Memorial [165 km / 8-9 hrs]',
         description: [
+          'Transfer: Pangong Lake to Hanle via Chushul & Rezang La War Memorial (165 km, 8-9 hrs)',
           'Witness an unforgettable sunrise over the crystalline blue waters of Pangong Lake.',
           'Post-breakfast journey towards the remote astronomical paradise of Hanle.',
           'Ride past Chushul village and visit the legendary Rezang La War Memorial.',
@@ -2238,6 +3056,7 @@ This journey is not just about the road—it's about the adventure, the stories,
         day: 8,
         title: 'Hanle to Umling La Pass (19,024 ft) & Demchok Frontier Excursion [200 km / 7-8 hrs]',
         description: [
+          'Transfer: Hanle to Umling La Pass & Demchok Frontier excursion roundtrip (200 km, 7-8 hrs)',
           'Post-breakfast adventure to conquer the highest motorable road on the planet.',
           'Ascend through Photi La Pass (5,524 m) across raw, lunar-like mountain terrain.',
           'Summit Umling La Pass at a record-shattering 19,024 ft (5,640 m) – higher than Everest Base Camp.',
@@ -2253,6 +3072,7 @@ This journey is not just about the road—it's about the adventure, the stories,
         day: 9,
         title: 'Hanle to Leh via Tso Moriri Lake [289 km / 7-8 hrs]',
         description: [
+          'Transfer: Hanle to Leh via Tso Moriri Lake & Chumathang (289 km, 7-8 hrs)',
           'Morning departure from Hanle towards the pristine Tso Moriri Lake.',
           'Ride via Loma Bridge and Mahe along the turquoise Indus and Chumathang hot springs.',
           'Arrive at the majestic Tso Moriri (4,522 m / 14,836 ft), India’s largest and highest high-altitude wetland lake.',
@@ -2267,6 +3087,7 @@ This journey is not just about the road—it's about the adventure, the stories,
         day: 10,
         title: 'Leh to Jispa via Tanglang La, Moore Plains & Baralacha La [260 km / 8-9 hrs]',
         description: [
+          'Transfer: Leh to Jispa via Tanglang La, Moore Plains & Baralacha La Pass (260 km, 8-9 hrs)',
           'Morning departure from Leh on the return leg towards Jispa.',
           'Cross Tanglang La Pass (5,328 m) and cruise the vast 50 km stretch of Moore Plains.',
           'Traverse Lachung La (5,065 m) and Nakee La (4,738 m).',
@@ -2281,6 +3102,7 @@ This journey is not just about the road—it's about the adventure, the stories,
         day: 11,
         title: 'Jispa to Manali via Atal Tunnel | Departure to Delhi [135 km / 4-5 hrs]',
         description: [
+          'Transfer: Jispa to Manali via Sissu & Atal Tunnel (135 km, 4-5 hrs) & Evening Volvo to Delhi',
           'Post-breakfast scenic ride from Jispa towards Manali.',
           'Drive through Keylong, Sissu waterfalls, and cross the engineering marvel of Atal Tunnel.',
           'Pass through Solang Valley and arrive in Manali by afternoon.',
@@ -2465,6 +3287,7 @@ Long scenic drives, simple mountain stays, and raw landscapes make this journey 
 
     duration: 12,
     nights: 11,
+    route: '1N Manali - 1N Sarchu - 1N Leh - 2N Nubra - 1N Pangong - 2N Hanle - 1N Leh - 1N Kargil - 1N Srinagar',
     price: 38000,
     rating: 4.9,
     difficulty: 'Moderate',
@@ -2472,37 +3295,147 @@ Long scenic drives, simple mountain stays, and raw landscapes make this journey 
     tripType: 'India',
 
     overviewPoints: [
-      'Route: Srinagar - Kargil - Leh - Khardung-La - Nubra - Pangong - Hanle - Umling-La - Demchok - Tso Moriri - Leh - Sarchu - Manali - Delhi.',
+      'Route: Delhi → Manali → Sarchu → Leh → Nubra Valley → Turtuk → Pangong → Hanle → Umling La → Demchok → Tso Moriri → Leh → Kargil → Srinagar',
       'Duration: 11 Nights / 12 Days.',
-      'Trip Start: Srinagar',
-      'Bike Ride Starts From: Srinagar',
-      'Trip End: Delhi',
-      'Highest Point: Umling La (19,038 ft).',
+      'Trip Start: Delhi',
+      'Bike Ride Starts From: Manali',
+      'Trip End: Srinagar',
+      'Highest Point: Umling La (19,024 ft).',
       'Difficulty Level: Moderate - Difficult.',
       'Best Time to Visit: May to September.',
-      'Major Highlights: Manali , Sarchu , Khardung La , Leh , Nubra Valley , Pangong Lake, Hanle , Uming la , Demchok , Tso Moriri , Kargil , Srinagar.'
+      'Major Highlights: Manali, Sarchu, Khardung La, Leh, Nubra Valley, Turtuk, Pangong Lake, Hanle, Umling La, Demchok, Tso Moriri, Kargil, Srinagar.'
     ],
 
     highlights: [
-      'Manali',
-      'Sarchu',
-      'Khardung La',
-      'Leh',
-      'Nubra Valley',
-      // 'Turtuk',
-      'Pangong Lake',
-      'Hanle',
-      'Umling La',
-      'Demchok',
-      'Tso Moriri',
-      'Jispa',
-      'Srinagar'
+      'Umling La Pass (19,024 ft / 5,798 m — World’s Highest Motorable Road)',
+      'Hanle Dark Sky Sanctuary & Indian Astronomical Observatory',
+      'Turtuk Village & Tyakshi Indo-Pak Border',
+      'Tso Moriri High-Altitude Sapphire Lake (14,836 ft)',
+      'Pangong Tso Lake & 3-Idiots Point',
+      'Khardung La Pass (17,582 ft / 5,359 m)',
+      'Zoji La Pass (3,528 m) & Kargil War Memorial Drass',
+      'Baralacha La, Gata Loops & Moore Plains',
+      'Dal Lake Srinagar & Sonamarg Meadows',
+      'Diskit Monastery & 106 ft Maitreya Buddha'
     ],
+    inclusionsSummary: {
+      hotels: 8,
+      transfers: 10,
+      experiences: 36,
+      meals: 21
+    },
+    summaryDetails: {
+      transfers: [
+        'Overnight AC Volvo coach transfer from Delhi / Chandigarh to Manali',
+        'Mountain ride from Manali to Sarchu via Atal Tunnel & Baralacha La Pass (175 km, 7-8 hrs)',
+        'Expedition ride from Sarchu to Leh via Gata Loops, Moore Plains & Tanglang La Pass (260 km, 7-8 hrs)',
+        'Scenic ride from Leh to Nubra Valley via Khardung La Pass (125 km, 5-6 hrs)',
+        'Full-day excursion to Turtuk Village & Tyakshi Indo-Pak Border along Shyok River (200 km, 7-8 hrs)',
+        'Off-road ride from Nubra Valley to Pangong Lake via rugged Shyok River route (160 km, 5-6 hrs)',
+        'Trans-Himalayan ride from Pangong Lake to Hanle via Chushul & Rezang La (165 km, 8-9 hrs)',
+        'Full-day excursion to Umling La Pass (19,024 ft) & Demchok Border (200 km roundtrip, 7-8 hrs)',
+        'Scenic long-distance ride from Hanle to Leh via Tso Moriri Lake & Chumathang (289 km, 7-8 hrs)',
+        'Scenic highway ride from Leh to Kargil via Lamayuru, Fotu La & Sangam (230 km, 7-8 hrs)',
+        'Mountain ride from Kargil to Srinagar via Drass, Zoji La Pass & Sonamarg (200 km, 8-9 hrs)',
+        'Hotel check-out and private transfer to Srinagar Airport as per flight schedule'
+      ],
+      activities: [
+        {
+          city: 'Manali & Lahaul Valley',
+          title: 'Gateway & High Passes',
+          items: [
+            'Hadimba Devi Temple visit amidst deodar forests',
+            'Scenic hike to Jogini Waterfalls & Vashisht hot springs',
+            'Passing through Atal Tunnel (9.02 km engineering marvel)',
+            'Crossing Baralacha La Pass (16,043 ft / 4,890 m)',
+            'Emerald Suraj Tal & Deepak Tal high-altitude lakes'
+          ]
+        },
+        {
+          city: 'Leh & Manali Highway Circuit',
+          title: 'Iconic Passes & Bends',
+          items: [
+            'Conquering 21 hairpin bends of Gata Loops (4,669 m)',
+            'Crossing Nakee La (4,738 m) & Lachung La (5,065 m) passes',
+            'Cruising across the vast 50 km Moore Plains (4,000+ m)',
+            'Crossing Tanglang La Pass (17,480 ft / 5,328 m)',
+            'Shanti Stupa panoramic sunset view over Leh Valley',
+            'Leh Main Bazaar cultural walk & shopping'
+          ]
+        },
+        {
+          city: 'Nubra Valley & Turtuk',
+          title: 'Dunes, Monasteries & Borderland',
+          items: [
+            'Crossing Khardung La Pass (17,582 ft / 5,359 m)',
+            'Diskit Monastery & 106 ft Maitreya Buddha Statue',
+            'Double-humped Bactrian camel safari on Hunder Sand Dunes',
+            'ATV quad biking on Hunder cold desert dunes',
+            'Turtuk Village heritage walk & ancient wooden homes',
+            'Balti cultural interaction & organic apricot tasting',
+            'Turtuk Yabgo Royal Palace & Shyok War Memorial'
+          ]
+        },
+        {
+          city: 'Pangong Lake',
+          title: 'High-Altitude Lake & Sunset',
+          items: [
+            'Pangong Tso Lake (14,270 ft) turquoise-to-blue water viewing',
+            'Iconic 3-Idiots movie point photography session',
+            'Lakeside sunset & sunrise photography at Pangong',
+            'Lakeside bonfire evening under starry skies'
+          ]
+        },
+        {
+          city: 'Hanle, Umling La & Tso Moriri',
+          title: 'World Record Pass, Dark Sky & Sapphire Lake',
+          items: [
+            'Conquering Umling La Pass (19,024 ft / 5,640 m) — World’s Highest Motorable Road',
+            'World record milestone photoshoot at Umling La summit',
+            'Demchok village & Indo-China border post exploration',
+            'Rezang La War Memorial homage (1962 heroics)',
+            'Hanle Monastery (17th century) & Indian Astronomical Observatory',
+            'Pristine Dark Sky Reserve stargazing & Milky Way spotting',
+            'Tso Moriri high-altitude lake (14,836 ft) exploration',
+            'Chumathang natural mineral hot springs visit'
+          ]
+        },
+        {
+          city: 'Kargil & Kashmir Valley',
+          title: 'War Memorial, Zoji La & Dal Lake',
+          items: [
+            'Hall of Fame, Magnetic Hill & Sangam Confluence',
+            'Lamayuru Monastery & ancient moonland terrain',
+            'Kargil War Memorial at Drass (homage to 1999 heroes)',
+            'Conquering legendary Zoji La Pass (3,528 m)',
+            'Sonamarg alpine meadows & Thajiwas glacier views',
+            'Dal Lake scenic boulevard & Shikara boat ride in Srinagar'
+          ]
+        }
+      ],
+      accommodation: [
+        { city: 'Manali (1 Night)', hotel: 'Standard / Deluxe Hotel' },
+        { city: 'Sarchu (1 Night)', hotel: 'Deluxe Swiss Camps with attached washrooms' },
+        { city: 'Leh (2 Nights)', hotel: 'Standard / Deluxe Hotel with modern amenities' },
+        { city: 'Nubra Valley (2 Nights)', hotel: 'Deluxe Swiss Camps / Resort in Hunder' },
+        { city: 'Pangong Tso (1 Night)', hotel: 'Deluxe Lakeside Cottages / Camps' },
+        { city: 'Hanle (2 Nights)', hotel: 'Traditional Stargazing Homestay / Guesthouse' },
+        { city: 'Kargil (1 Night)', hotel: 'Deluxe Hotel in Kargil' },
+        { city: 'Srinagar (1 Night)', hotel: 'Deluxe Hotel / Premium Houseboat in Srinagar' }
+      ],
+      meals: [
+        'Daily buffet breakfast and dinner as per itinerary',
+        '11 Dinners (Day 1 to Day 11)',
+        '11 Breakfasts (Day 2 to Day 12)',
+        'Welcome tea and morning / evening tea during stays'
+      ]
+    },
     itinerary: [
       {
         day: 0,
         title: 'Departure From Delhi / Chandigarh to Manali',
         description: [
+          'Transfer: Overnight AC Volvo coach from Delhi / Chandigarh to Manali (530 km, 12-14 hrs)',
           'Report at Delhi / Chandigarh pickup point in the evening.',
           'Board the comfortable AC Volvo coach for Manali.',
           'Overnight semi-sleeper Volvo journey through the Himalayas.'
@@ -2512,6 +3445,7 @@ Long scenic drives, simple mountain stays, and raw landscapes make this journey 
         day: 1,
         title: 'Arrival in Manali | Acclimatization & Local Exploration',
         description: [
+          'Transfer: Manali bus stand to hotel in Manali',
           'Arrive in Manali (Valley of Gods) in the morning and transfer to your hotel.',
           'Check-in, relax, and freshen up after the overnight journey.',
           'Visit the historic Hadimba Devi Temple amidst towering deodar forests.',
@@ -2527,6 +3461,7 @@ Long scenic drives, simple mountain stays, and raw landscapes make this journey 
         day: 2,
         title: 'Manali to Sarchu via Atal Tunnel & Baralacha La [175 km / 7-8 hrs]',
         description: [
+          'Transfer: Manali to Sarchu via Atal Tunnel & Baralacha La Pass (175 km, 7-8 hrs)',
           'Early morning departure from Manali towards Sarchu via the Leh-Manali Highway.',
           'Drive through the engineering marvel, Atal Tunnel (9.02 km), entering Lahaul Valley.',
           'Cruise along the scenic Chandra River passing Keylong, Darcha, Patsio, and Zingzing Bar.',
@@ -2542,6 +3477,7 @@ Long scenic drives, simple mountain stays, and raw landscapes make this journey 
         day: 3,
         title: 'Sarchu to Leh via Gata Loops, Moore Plains & Tanglang La [260 km / 7-8 hrs]',
         description: [
+          'Transfer: Sarchu to Leh via Gata Loops, Moore Plains & Tanglang La Pass (260 km, 7-8 hrs)',
           'Post-breakfast ride from Sarchu to Leh crossing the high-altitude border.',
           'Conquer the legendary 21 hairpin bends of Gata Loops (4,669 m).',
           'Cross the high mountain passes: Nakee La (4,738 m) and Lachung La (5,065 m).',
@@ -2558,6 +3494,7 @@ Long scenic drives, simple mountain stays, and raw landscapes make this journey 
         day: 4,
         title: 'Leh to Nubra Valley via Khardung La & Diskit Monastery [125 km / 5-6 hrs]',
         description: [
+          'Transfer: Leh to Nubra Valley via Khardung La Pass (125 km, 5-6 hrs)',
           'Morning visit to Shanti Stupa for panoramic 360-degree views of Leh town and the Stok range.',
           'Embark on a thrilling ride north towards Nubra Valley via Khardung La.',
           'Summit the world-renowned Khardung La Pass (5,359 m / 17,582 ft).',
@@ -2574,6 +3511,7 @@ Long scenic drives, simple mountain stays, and raw landscapes make this journey 
         day: 5,
         title: 'Nubra Valley to Turtuk Village Excursion [200 km / 7-8 hrs]',
         description: [
+          'Transfer: Nubra Valley to Turtuk Village & Tyakshi Border excursion (200 km, 7-8 hrs)',
           'Morning drive towards Turtuk – India’s northernmost frontier village opened to tourists in 2010.',
           'Ride along the raging Shyok River through dramatic gorge landscapes.',
           'Explore Turtuk village, steeped in unique Balti heritage, apricot orchards, and wooden houses.',
@@ -2588,6 +3526,7 @@ Long scenic drives, simple mountain stays, and raw landscapes make this journey 
         day: 6,
         title: 'Nubra Valley to Pangong Tso via Shyok River Route [160 km / 5-6 hrs]',
         description: [
+          'Transfer: Nubra Valley to Pangong Lake via Shyok River route (160 km, 5-6 hrs)',
           'Morning departure from Nubra Valley towards the iconic Pangong Tso.',
           'Ride along the scenic Shyok River route through Agham and Shyok villages.',
           'First glimpse of the mesmerizing, color-changing turquoise waters of Pangong Lake (4,350 m / 14,270 ft).',
@@ -2602,6 +3541,7 @@ Long scenic drives, simple mountain stays, and raw landscapes make this journey 
         day: 7,
         title: 'Pangong Tso to Hanle via Rezang La War Memorial [165 km / 8-9 hrs]',
         description: [
+          'Transfer: Pangong Lake to Hanle via Chushul & Rezang La War Memorial (165 km, 8-9 hrs)',
           'Witness an unforgettable sunrise over the crystalline blue waters of Pangong Lake.',
           'Post-breakfast journey towards the remote astronomical paradise of Hanle.',
           'Ride past Chushul village and visit the legendary Rezang La War Memorial.',
@@ -2617,6 +3557,7 @@ Long scenic drives, simple mountain stays, and raw landscapes make this journey 
         day: 8,
         title: 'Hanle to Umling La Pass (19,024 ft) & Demchok Frontier Excursion [200 km / 7-8 hrs]',
         description: [
+          'Transfer: Hanle to Umling La Pass & Demchok Frontier excursion roundtrip (200 km, 7-8 hrs)',
           'Post-breakfast adventure to conquer the highest motorable road on the planet.',
           'Ascend through Photi La Pass (5,524 m) across raw, lunar-like mountain terrain.',
           'Summit Umling La Pass at a record-shattering 19,024 ft (5,640 m) – higher than Everest Base Camp.',
@@ -2632,6 +3573,7 @@ Long scenic drives, simple mountain stays, and raw landscapes make this journey 
         day: 9,
         title: 'Hanle to Leh via Tso Moriri Lake [289 km / 7-8 hrs]',
         description: [
+          'Transfer: Hanle to Leh via Tso Moriri Lake & Chumathang (289 km, 7-8 hrs)',
           'Morning departure from Hanle towards the pristine Tso Moriri Lake.',
           'Ride via Loma Bridge and Mahe along the turquoise Indus and Chumathang hot springs.',
           'Arrive at the majestic Tso Moriri (4,522 m / 14,836 ft), India’s largest and highest high-altitude wetland lake.',
@@ -2646,6 +3588,7 @@ Long scenic drives, simple mountain stays, and raw landscapes make this journey 
         day: 10,
         title: 'Leh to Kargil via Hall of Fame, Magnetic Hill & Lamayuru [230 km / 7-8 hrs]',
         description: [
+          'Transfer: Leh to Kargil via Lamayuru & Fotu La Pass (230 km, 7-8 hrs)',
           'Post-breakfast departure from Leh towards Kargil via the Leh-Srinagar Highway.',
           'Visit the Hall of Fame Museum, honoring the heroic soldiers of Ladakh.',
           'Seek blessings at Gurudwara Pathar Sahib, maintained by the Indian Army.',
@@ -2662,6 +3605,7 @@ Long scenic drives, simple mountain stays, and raw landscapes make this journey 
         day: 11,
         title: 'Kargil to Srinagar via Drass, Kargil War Memorial & Zoji La Pass [200 km / 8-9 hrs]',
         description: [
+          'Transfer: Kargil to Srinagar via Drass, Zoji La Pass & Sonamarg (200 km, 8-9 hrs)',
           'Early morning departure from Kargil towards Srinagar.',
           'Stop at Drass – the second coldest inhabited place in the world and visit the Kargil War Memorial.',
           'Conquer the legendary, thrilling hairpin switchbacks of Zoji La Pass (3,528 m).',
@@ -2676,6 +3620,7 @@ Long scenic drives, simple mountain stays, and raw landscapes make this journey 
         day: 12,
         title: 'Departure from Srinagar | Trip Concludes',
         description: [
+          'Transfer: Hotel in Srinagar to Srinagar Airport (SXR)',
           'Post-breakfast check-out from your Srinagar hotel.',
           'Optional morning Shikara ride on the tranquil Dal Lake.',
           'Transfer to Srinagar Airport for your return flight.',
@@ -2849,30 +3794,138 @@ The real highlight is the drive to Umling La, where the air feels thin and the v
 Long scenic drives, simple mountain stays, and raw landscapes make this journey special. If you are looking for a complete Ladakh trip package that covers Srinagar, Leh, Umling La, Tso Moriri, and Manali in one route, this adventure gives you the full Himalayan experience in its purest form.`,
     duration: 12,
     nights: 11,
+    route: '1N Srinagar - 1N Kargil - 1N Leh - 1N Nubra - 1N Pangong - 2N Hanle - 1N Leh - 1N Jispa - 1N Manali',
     price: 0,
     rating: 4.9,
     difficulty: 'Moderate',
     groupSize: 12,
     tripType: 'India',
     highlights: [
-      'Srinagar',
-      'Kargil',
-      'Khardung La',
-      'Leh',
-      'Nubra Valley',
-      'Pangong Lake',
-      'Hanle',
-      'Umling La',
-      'Demchok',
-      'Tso Moriri',
-      'Sarchu',
-      'Manali'
+      'Umling La Pass (19,024 ft / 5,798 m — World’s Highest Motorable Road)',
+      'Hanle Dark Sky Sanctuary & Indian Astronomical Observatory',
+      'Tso Moriri High-Altitude Sapphire Lake (14,836 ft)',
+      'Pangong Tso Lake & 3-Idiots Point',
+      'Khardung La Pass (17,582 ft / 5,359 m)',
+      'Zoji La Pass (3,528 m) & Kargil War Memorial Drass',
+      'Baralacha La, Tanglang La & Gata Loops',
+      'Atal Tunnel (9.02 km) & Sissu Waterfall',
+      'Dal Lake Srinagar & Sonamarg Meadows',
+      'Diskit Monastery & 106 ft Maitreya Buddha'
     ],
+    inclusionsSummary: {
+      hotels: 8,
+      transfers: 10,
+      experiences: 33,
+      meals: 20
+    },
+    summaryDetails: {
+      transfers: [
+        'Meet Wanderphilia representative & private transfer from Srinagar Airport to hotel/houseboat',
+        'Scenic mountain ride from Srinagar to Kargil via Sonamarg, Zoji La Pass & Drass (200 km, 8-9 hrs)',
+        'Highway ride from Kargil to Leh via Fotu La, Lamayuru, Magnetic Hill & Sangam (230 km, 7-8 hrs)',
+        'Scenic ride from Leh to Nubra Valley via Khardung La Pass (125 km, 5-6 hrs)',
+        'Off-road ride from Nubra Valley to Pangong Lake via rugged Shyok River route (160 km, 5-6 hrs)',
+        'Trans-Himalayan ride from Pangong Lake to Hanle via Chushul & Rezang La (165 km, 8-9 hrs)',
+        'Full-day excursion to Umling La Pass (19,024 ft) & Demchok Border (200 km roundtrip, 7-8 hrs)',
+        'Scenic long-distance ride from Hanle to Leh via Tso Moriri Lake & Chumathang (289 km, 7-8 hrs)',
+        'High-pass ride from Leh to Jispa via Tanglang La, Moore Plains & Baralacha La (260 km, 8-9 hrs)',
+        'Scenic ride from Jispa to Manali via Sissu & Atal Tunnel (135 km, 4-5 hrs)',
+        'Overnight AC Volvo coach transfer from Manali to Delhi'
+      ],
+      activities: [
+        {
+          city: 'Kashmir Valley & Kargil',
+          title: 'Dal Lake, Zoji La & War Memorial',
+          items: [
+            'Dal Lake boulevard stroll & scenic Shikara ride in Srinagar',
+            'Sonamarg alpine meadows & Thajiwas glacier vistas',
+            'Conquering legendary Zoji La Pass (3,528 m)',
+            'Drass town & Kargil War Memorial homage (Operation Vijay)',
+            'Lamayuru Monastery & ancient moonland terrain'
+          ]
+        },
+        {
+          city: 'Leh & Around',
+          title: 'Sightseeing & Heritage',
+          items: [
+            'Magnetic Hill gravity-defying optical phenomenon',
+            'Gurudwara Pathar Sahib & Sangam river confluence',
+            'Hall of Fame War Memorial & Military Museum visit',
+            'Shanti Stupa panoramic sunset view over Leh Valley',
+            'Leh Main Bazaar & Tibetan market cultural walk'
+          ]
+        },
+        {
+          city: 'Nubra Valley',
+          title: 'High Passes, Dunes & Monasteries',
+          items: [
+            'Crossing Khardung La Pass (17,582 ft / 5,359 m)',
+            'Diskit Monastery & giant 106 ft Maitreya Buddha Statue',
+            'Double-humped Bactrian camel safari on Hunder Sand Dunes',
+            'ATV quad biking on Hunder cold desert dunes',
+            'Evening bonfire night under starry skies at Nubra camp'
+          ]
+        },
+        {
+          city: 'Pangong Lake',
+          title: 'High-Altitude Lake & Photography',
+          items: [
+            'Pangong Tso Lake (14,270 ft) multi-hued blue water viewing',
+            'Iconic 3-Idiots movie point photography session',
+            'Lakeside sunset & sunrise reflections photography',
+            'Lakeside stargazing under crystal-clear night skies'
+          ]
+        },
+        {
+          city: 'Hanle, Umling La & Tso Moriri',
+          title: 'World Record Pass, Dark Sky & Sapphire Lake',
+          items: [
+            'Conquering Umling La Pass (19,024 ft / 5,640 m) — World’s Highest Motorable Road',
+            'World record milestone photoshoot at Umling La summit',
+            'Demchok village & Indo-China border post exploration',
+            'Rezang La War Memorial homage (1962 heroics)',
+            'Hanle Monastery (17th century) & Indian Astronomical Observatory',
+            'Pristine Dark Sky Reserve stargazing & Milky Way spotting',
+            'Tso Moriri high-altitude lake (14,836 ft) exploration',
+            'Chumathang natural mineral hot springs visit'
+          ]
+        },
+        {
+          city: 'Manali & Lahaul Valley',
+          title: 'High Passes & Gateway',
+          items: [
+            'Conquering 21 hairpin bends of Gata Loops (4,669 m)',
+            'Crossing Tanglang La (17,480 ft) & Baralacha La (16,043 ft) passes',
+            'Cruising across the vast 50 km Moore Plains',
+            'Passing through Atal Tunnel (9.02 km engineering marvel)',
+            'Sissu Waterfall view in Lahaul Valley',
+            'Hadimba Devi Temple, Jogini Waterfalls & Old Manali cafes'
+          ]
+        }
+      ],
+      accommodation: [
+        { city: 'Srinagar (1 Night)', hotel: 'Deluxe Hotel / Premium Houseboat in Srinagar' },
+        { city: 'Kargil (1 Night)', hotel: 'Deluxe Hotel in Kargil' },
+        { city: 'Leh (2 Nights)', hotel: 'Standard / Deluxe Hotel with modern amenities' },
+        { city: 'Nubra Valley (1 Night)', hotel: 'Deluxe Swiss Camps / Resort in Hunder' },
+        { city: 'Pangong Tso (1 Night)', hotel: 'Deluxe Lakeside Cottages / Camps' },
+        { city: 'Hanle (2 Nights)', hotel: 'Traditional Stargazing Homestay / Guesthouse' },
+        { city: 'Jispa (1 Night)', hotel: 'Riverside Camps / Hotel in Jispa' },
+        { city: 'Manali (1 Night)', hotel: 'Standard / Deluxe Hotel in Manali' }
+      ],
+      meals: [
+        'Daily buffet breakfast and dinner as per itinerary',
+        '10 Dinners (Day 1 to Day 10)',
+        '10 Breakfasts (Day 2 to Day 11)',
+        'Welcome tea and morning / evening tea during stays'
+      ]
+    },
     itinerary: [
       {
         day: 1,
         title: 'Arrival in Srinagar | Acclimatization & Dal Lake Exploration',
         description: [
+          'Transfer: Srinagar Airport to hotel/houseboat in Srinagar',
           'Arrive at Srinagar Airport and transfer to your hotel/houseboat.',
           'Check-in, relax, and unpack amidst the scenic Kashmir valley.',
           'Optional serene Shikara ride on Dal Lake and stroll through local markets.',
@@ -2885,6 +3938,7 @@ Long scenic drives, simple mountain stays, and raw landscapes make this journey 
         day: 2,
         title: 'Srinagar to Kargil via Sonamarg, Zoji La Pass & Drass [200 km / 8-9 hrs]',
         description: [
+          'Transfer: Srinagar to Kargil via Sonamarg, Zoji La Pass & Drass (200 km, 8-9 hrs)',
           'Morning departure from Srinagar towards Kargil.',
           'Ride through the lush green Sindh Valley and picturesque meadows of Sonamarg.',
           'Ascend and conquer the legendary Zoji La Pass (3,528 m).',
@@ -2899,6 +3953,7 @@ Long scenic drives, simple mountain stays, and raw landscapes make this journey 
         day: 3,
         title: 'Kargil to Leh via Lamayuru, Fotu La, Magnetic Hill & Sangam [230 km / 7-8 hrs]',
         description: [
+          'Transfer: Kargil to Leh via Lamayuru & Fotu La Pass (230 km, 7-8 hrs)',
           'Post-breakfast ride from Kargil to Leh via NH1.',
           'Cross the high-altitude passes: Fotu La (4,108 m) and Namika La (3,700 m).',
           'Marvel at the lunar-like landscapes of Lamayuru and visit Lamayuru Monastery.',
@@ -2914,6 +3969,7 @@ Long scenic drives, simple mountain stays, and raw landscapes make this journey 
         day: 4,
         title: 'Leh to Nubra Valley via Khardung La & Diskit Monastery [125 km / 5-6 hrs]',
         description: [
+          'Transfer: Leh to Nubra Valley via Khardung La Pass (125 km, 5-6 hrs)',
           'Morning visit to Shanti Stupa for sweeping panoramic views of Leh town.',
           'Ride north to Nubra Valley via the world-renowned Khardung La Pass (5,359 m / 17,582 ft).',
           'Descend into Shyok Valley and visit the 14th-century Diskit Monastery with its 106 ft Maitreya Buddha.',
@@ -2928,6 +3984,7 @@ Long scenic drives, simple mountain stays, and raw landscapes make this journey 
         day: 5,
         title: 'Nubra Valley to Pangong Tso via Shyok River Route [160 km / 5-6 hrs]',
         description: [
+          'Transfer: Nubra Valley to Pangong Lake via Shyok River route (160 km, 5-6 hrs)',
           'Morning departure from Nubra Valley towards Pangong Tso.',
           'Ride along the rugged Shyok River route via Agham and Shyok villages.',
           'First glimpse of the magnificent, multi-hued Pangong Lake (4,350 m / 14,270 ft).',
@@ -2942,6 +3999,7 @@ Long scenic drives, simple mountain stays, and raw landscapes make this journey 
         day: 6,
         title: 'Pangong Tso to Hanle via Rezang La War Memorial [165 km / 8-9 hrs]',
         description: [
+          'Transfer: Pangong Lake to Hanle via Chushul & Rezang La War Memorial (165 km, 8-9 hrs)',
           'Witness an unforgettable sunrise over the crystalline blue waters of Pangong Lake.',
           'Post-breakfast journey towards the remote astronomical wonderland of Hanle.',
           'Pass Chushul village and pay homage at the Rezang La War Memorial.',
@@ -2955,6 +4013,7 @@ Long scenic drives, simple mountain stays, and raw landscapes make this journey 
         day: 7,
         title: 'Hanle to Umling La Pass (19,024 ft) & Demchok Frontier Excursion [200 km / 7-8 hrs]',
         description: [
+          'Transfer: Hanle to Umling La Pass & Demchok Frontier excursion roundtrip (200 km, 7-8 hrs)',
           'Post-breakfast adventure to summit the world’s highest motorable pass.',
           'Ascend through Photi La Pass (5,524 m) across lunar mountain terrains.',
           'Summit Umling La Pass at a record-shattering 19,024 ft (5,640 m).',
@@ -2970,6 +4029,7 @@ Long scenic drives, simple mountain stays, and raw landscapes make this journey 
         day: 8,
         title: 'Hanle to Leh via Tso Moriri Lake [289 km / 7-8 hrs]',
         description: [
+          'Transfer: Hanle to Leh via Tso Moriri Lake & Chumathang (289 km, 7-8 hrs)',
           'Morning departure from Hanle towards the pristine Tso Moriri Lake.',
           'Ride via Loma Bridge and Mahe along the turquoise Indus and Chumathang hot springs.',
           'Arrive at the majestic Tso Moriri (4,522 m / 14,836 ft), India’s highest and largest saltwater lake.',
@@ -2984,6 +4044,7 @@ Long scenic drives, simple mountain stays, and raw landscapes make this journey 
         day: 9,
         title: 'Leh to Jispa via Tanglang La, Moore Plains & Baralacha La [260 km / 8-9 hrs]',
         description: [
+          'Transfer: Leh to Jispa via Tanglang La, Moore Plains & Baralacha La Pass (260 km, 8-9 hrs)',
           'Morning departure from Leh on the return leg towards Jispa.',
           'Cross Tanglang La Pass (5,328 m) and cruise the vast 50 km stretch of Moore Plains.',
           'Traverse Lachung La (5,065 m) and Nakee La (4,738 m).',
@@ -2998,6 +4059,7 @@ Long scenic drives, simple mountain stays, and raw landscapes make this journey 
         day: 10,
         title: 'Jispa to Manali via Atal Tunnel & Solang Valley [135 km / 4-5 hrs]',
         description: [
+          'Transfer: Jispa to Manali via Sissu & Atal Tunnel (135 km, 4-5 hrs)',
           'Post-breakfast scenic ride from Jispa towards Manali.',
           'Drive through Keylong, Sissu waterfalls, and cross the engineering marvel of Atal Tunnel.',
           'Pass through Solang Valley and arrive in Manali by afternoon.',
@@ -3011,6 +4073,7 @@ Long scenic drives, simple mountain stays, and raw landscapes make this journey 
         day: 11,
         title: 'Manali Local Exploration | Overnight Volvo to Delhi',
         description: [
+          'Transfer: Manali bus stand to Delhi via overnight AC Volvo coach (530 km, 12-14 hrs)',
           'Morning at leisure in Manali.',
           'Explore Hadimba Devi Temple, Jogini Waterfalls, or Vashisht hot springs on your own.',
           'Stroll through Mall Road for last-minute souvenir shopping and dining.',
@@ -6793,36 +7856,122 @@ The trip takes you next to the stunning Pangong Tso Lake, where the water change
 Throughout these 10 days, you will travel on thrilling roads, stay in simple and comfortable places, share stories around a bonfire, and see landscapes that change from green valleys to rocky mountains and blue lakes. This tour gives you the real feel of Ladakh’s nature and open roads, without extra frills - just great routes, great views and great memories.`,
     duration: 10,
     nights: 9,
+    route: '2N Leh - 2N Nubra - 1N Pangong - 2N Hanle - 1N Tso Moriri - 1N Leh',
     price: 28499,
     rating: 4.9,
     difficulty: 'Moderate',
     groupSize: 15,
     tripType: 'India',
     highlights: [
-      'Khardung La',
-      'Nubra Valley',
-      'Turtuk',
-      'Pangong Lake',
-      'Hanle',
-      'Umling La',
-      'Tso Moriri'
+      'Umling La Pass (19,024 ft / 5,798 m — World’s Highest Motorable Road)',
+      'Hanle Dark Sky Reserve & Indian Astronomical Observatory',
+      'Turtuk Village & Tyakshi Indo-Pak Border',
+      'Tso Moriri High-Altitude Sapphire Lake (14,836 ft)',
+      'Pangong Tso Lake & 3-Idiots Point',
+      'Khardung La Pass (17,582 ft / 5,359 m)',
+      'Puga Valley Geothermal Sulphur Springs & Chumathang',
+      'Rezang La War Memorial & Changthang Wildlife',
+      'Diskit Monastery & 106 ft Maitreya Buddha',
+      'Magnetic Hill, Hall of Fame & Sangam Point'
     ],
-    overviewPoints: [
-      'Route: Leh → Sham Valley → Khardung la → Nubra Valley → Turtuk → Pangong → Hanle → Umingla → Demchok → Tso Moriri - Leh',
-      'Duration: 9 Nights / 10 Days.',
-      'Trip Start: Leh.',
-      'Bike Ride Starts From: Leh.',
-      'Trip End: Leh.',
-      'Highest Point: Umling La (19,038 ft).',
-      'Difficulty Level: Moderate - Difficult.',
-      'Best Time to Visit: May to September.',
-      'Major Highlights: Khardung La, Nubra Valley, Turtuk, Pangong Lake, Hanle, Uming la, Tso Moriri.'
-    ],
+    inclusionsSummary: {
+      hotels: 5,
+      transfers: 9,
+      experiences: 27,
+      meals: 18
+    },
+    summaryDetails: {
+      transfers: [
+        'Meet Wanderphilia representative & private airport transfer to hotel in Leh',
+        'Leh local sightseeing excursion to Sham Valley, Magnetic Hill, Gurudwara & Sangam',
+        'Scenic mountain drive from Leh to Nubra Valley via Khardung La Pass (125 km, 5-6 hrs)',
+        'Full-day excursion to Turtuk Village & Tyakshi Indo-Pak Border along Shyok River (200 km, 7-8 hrs)',
+        'Drive from Nubra Valley to Pangong Lake via rugged Shyok River route (160 km, 5-6 hrs)',
+        'Trans-Himalayan drive from Pangong Lake to Hanle via Chushul & Rezang La (165 km, 8-9 hrs)',
+        'Full-day excursion to Umling La Pass (19,024 ft) & Demchok Border (200 km roundtrip, 7-8 hrs)',
+        'Scenic high-altitude drive from Hanle to Tso Moriri via Mahe Bridge (160 km, 5-6 hrs)',
+        'Scenic drive from Tso Moriri back to Leh via Puga Valley, Chumathang & Upshi (220 km, 6-7 hrs)',
+        'Hotel check-out and private transfer to Leh Airport as per flight schedule'
+      ],
+      activities: [
+        {
+          city: 'Leh & Around',
+          title: 'Sightseeing & Heritage',
+          items: [
+            'Hall of Fame War Memorial & Military Museum visit',
+            'Magnetic Hill gravity-defying optical phenomenon',
+            'Sacred Gurudwara Pathar Sahib shrine visit',
+            'Sangam Point — Confluence of Indus & Zanskar rivers',
+            'Shanti Stupa panoramic sunset view over Leh Valley',
+            'Leh Main Bazaar & Tibetan market cultural walk'
+          ]
+        },
+        {
+          city: 'Nubra Valley & Turtuk',
+          title: 'High Passes, Dunes & Balti Heritage',
+          items: [
+            'Crossing Khardung La Pass (17,582 ft / 5,359 m)',
+            'Diskit Monastery & giant 106 ft Maitreya Buddha Statue',
+            'Double-humped Bactrian camel safari on Hunder Sand Dunes',
+            'ATV quad biking on Hunder cold desert dunes',
+            'Turtuk Village heritage walk & ancient wooden houses',
+            'Balti cultural interaction & organic apricot tasting',
+            'Turtuk Yabgo Royal Palace & Shyok War Memorial'
+          ]
+        },
+        {
+          city: 'Pangong Lake',
+          title: 'High-Altitude Lake & Sunset',
+          items: [
+            'Pangong Tso Lake (14,270 ft) turquoise-to-blue water viewing',
+            'Iconic 3-Idiots movie point photography session',
+            'Lakeside sunset & sunrise reflections photography',
+            'Lakeside stargazing under crystal-clear night skies'
+          ]
+        },
+        {
+          city: 'Hanle & Umling La',
+          title: 'World Record Pass & Dark Sky',
+          items: [
+            'Conquering Umling La Pass (19,024 ft / 5,640 m) — World’s Highest Motorable Road',
+            'World record milestone photoshoot at Umling La summit',
+            'Demchok village & Indo-China border post exploration',
+            'Rezang La War Memorial homage (1962 heroics)',
+            'Hanle Monastery (17th century) & Indian Astronomical Observatory',
+            'Pristine Dark Sky Reserve stargazing & Milky Way spotting'
+          ]
+        },
+        {
+          city: 'Tso Moriri & Puga Valley',
+          title: 'Pristine Sapphire Lake & Geothermal Vents',
+          items: [
+            'Tso Moriri high-altitude lake (14,836 ft) & Korzok village walk',
+            'Puga Valley bubbling geothermal sulphur vents & steam geysers',
+            'Chumathang natural mineral hot springs visit',
+            'Changthang wildlife spotting (Tibetan Wild Ass / Kiang, Marmots)'
+          ]
+        }
+      ],
+      accommodation: [
+        { city: 'Leh (3 Nights)', hotel: 'Standard / Deluxe Hotel with modern amenities' },
+        { city: 'Nubra Valley (2 Nights)', hotel: 'Deluxe Swiss Camps / Resort in Hunder' },
+        { city: 'Pangong Tso (1 Night)', hotel: 'Deluxe Lakeside Cottages / Camps' },
+        { city: 'Hanle (2 Nights)', hotel: 'Traditional Stargazing Homestay / Guesthouse' },
+        { city: 'Tso Moriri (1 Night)', hotel: 'Deluxe Lake View Camps / Guesthouse in Korzok' }
+      ],
+      meals: [
+        'Daily buffet breakfast and dinner as per itinerary',
+        '9 Dinners (Day 1 to Day 9)',
+        '9 Breakfasts (Day 2 to Day 10)',
+        'Welcome tea and morning / evening tea during stays'
+      ]
+    },
     itinerary: [
       {
         day: 1,
         title: 'Arrival in Leh | Acclimatization & Evening Market Walk',
         description: [
+          'Transfer: Kushok Bakula Rimpochee Airport (IXL) to hotel in Leh',
           'Arrive at Kushok Bakula Rimpochee Airport (Leh) with spectacular views over the snow-clad Himalayas.',
           'Meet our representative and transfer to your hotel in Leh.',
           'Check-in and rest for complete acclimatization to high altitude (3,500 m).',
@@ -6836,6 +7985,7 @@ Throughout these 10 days, you will travel on thrilling roads, stay in simple and
         day: 2,
         title: 'Leh to Sham Valley Excursion | Sangam, Magnetic Hill & Hall of Fame',
         description: [
+          'Transfer: Leh local sightseeing excursion circuit (approx 70 km roundtrip)',
           'Morning drive towards Sham Valley for local sightseeing along the Indus River.',
           'Visit the peaceful Shanti Stupa for panoramic 360-degree views of Leh valley.',
           'Witness the dramatic Sangam – confluence of the emerald Indus and muddy Zanskar rivers.',
@@ -6851,6 +8001,7 @@ Throughout these 10 days, you will travel on thrilling roads, stay in simple and
         day: 3,
         title: 'Leh to Nubra Valley via Khardung La & Diskit Monastery [125 km / 5-6 hrs]',
         description: [
+          'Transfer: Leh to Nubra Valley via Khardung La Pass (125 km, 5-6 hrs)',
           'Morning departure from Leh towards the stunning Nubra Valley.',
           'Scale the legendary Khardung La Pass (5,359 m / 17,582 ft) – among the world’s highest motorable roads.',
           'Descend into the scenic Shyok Valley to arrive at Diskit.',
@@ -6866,6 +8017,7 @@ Throughout these 10 days, you will travel on thrilling roads, stay in simple and
         day: 4,
         title: 'Nubra Valley to Turtuk Village Excursion [200 km / 7-8 hrs]',
         description: [
+          'Transfer: Nubra Valley to Turtuk Village & Tyakshi Border excursion (200 km, 7-8 hrs)',
           'Morning scenic ride along the Shyok River towards Turtuk Village.',
           'Explore India’s northernmost border village, steeped in unique Balti culture and traditions.',
           'Walk through ancient stone alleys, lush apricot orchards, and traditional wooden homes.',
@@ -6880,6 +8032,7 @@ Throughout these 10 days, you will travel on thrilling roads, stay in simple and
         day: 5,
         title: 'Nubra Valley to Pangong Tso via Shyok River Route [160 km / 5-6 hrs]',
         description: [
+          'Transfer: Nubra Valley to Pangong Lake via Shyok River route (160 km, 5-6 hrs)',
           'Morning departure from Nubra Valley towards the iconic Pangong Tso.',
           'Ride along the offbeat Shyok River route through Agham and Shyok villages.',
           'Behold the breathtaking first view of Pangong Lake (4,350 m / 14,270 ft) changing colors from turquoise to deep blue.',
@@ -6894,6 +8047,7 @@ Throughout these 10 days, you will travel on thrilling roads, stay in simple and
         day: 6,
         title: 'Pangong Tso to Hanle via Rezang La War Memorial [165 km / 8-9 hrs]',
         description: [
+          'Transfer: Pangong Lake to Hanle via Chushul & Rezang La War Memorial (165 km, 8-9 hrs)',
           'Witness a magical sunrise over the tranquil waters of Pangong Tso.',
           'Post-breakfast journey towards the remote astronomical hub of Hanle.',
           'Pass Chushul village and pay homage at the Rezang La War Memorial.',
@@ -6908,6 +8062,7 @@ Throughout these 10 days, you will travel on thrilling roads, stay in simple and
         day: 7,
         title: 'Hanle to Umling La Pass (19,024 ft) & Demchok Frontier Excursion [200 km / 7-8 hrs]',
         description: [
+          'Transfer: Hanle to Umling La Pass & Demchok Frontier excursion roundtrip (200 km, 7-8 hrs)',
           'Early morning expedition to conquer the highest motorable road on Earth.',
           'Ascend through Photi La Pass (5,524 m) across rugged, moon-like high-altitude desert.',
           'Summit Umling La Pass at an astounding 19,024 ft (5,640 m) – higher than Everest Base Camp.',
@@ -6923,6 +8078,7 @@ Throughout these 10 days, you will travel on thrilling roads, stay in simple and
         day: 8,
         title: 'Hanle to Tso Moriri Lake via Mahe Bridge [160 km / 5-6 hrs]',
         description: [
+          'Transfer: Hanle to Tso Moriri Lake via Mahe Bridge (160 km, 5-6 hrs)',
           'Morning departure from Hanle towards the remote high-altitude gem, Tso Moriri.',
           'Ride across the pristine Changthang plateau via Mahe Bridge.',
           'Arrive at the spellbinding Tso Moriri Lake (4,522 m / 14,836 ft), surrounded by snow-capped peaks.',
@@ -6937,6 +8093,7 @@ Throughout these 10 days, you will travel on thrilling roads, stay in simple and
         day: 9,
         title: 'Tso Moriri to Leh via Puga Geothermal Valley & Chumathang [220 km / 6-7 hrs]',
         description: [
+          'Transfer: Tso Moriri to Leh via Puga Valley, Chumathang & Upshi (220 km, 6-7 hrs)',
           'Post-breakfast ride from Tso Moriri back to Leh via Puga Valley and Chumathang.',
           'Witness the surreal geothermal landscape of Puga Valley with bubbling sulphur mud pools and hot geysers.',
           'Stop at Chumathang hot springs along the Indus River.',
@@ -6951,6 +8108,7 @@ Throughout these 10 days, you will travel on thrilling roads, stay in simple and
         day: 10,
         title: 'Departure from Leh | Trip Concludes',
         description: [
+          'Transfer: Hotel in Leh to Kushok Bakula Rimpochee Airport (IXL)',
           'Post-breakfast check-out from your Leh hotel.',
           'Transfer to Kushok Bakula Rimpochee Airport for your return flight.',
           'Trip concludes with lifelong memories of the ultimate Leh-Ladakh, Umling La & Changthang grand expedition.',
@@ -7126,36 +8284,119 @@ The trip takes you next to the stunning Pangong Tso Lake, where the water change
 Throughout these 7 days, you will travel on thrilling roads, stay in simple and comfortable places, share stories around a bonfire, and see landscapes that change from green valleys to rocky mountains and blue lakes. This tour gives you the real feel of Ladakh’s nature and open roads, without extra frills - just great routes, great views and great memories.`,
     duration: 9,
     nights: 8,
+    route: '2N Leh - 2N Nubra - 1N Pangong - 2N Hanle - 1N Leh',
     price: 26499,
     rating: 4.9,
     difficulty: 'Moderate',
     groupSize: 15,
     tripType: 'India',
     highlights: [
-      'Khardung La',
-      'Nubra Valley',
-      'Turtuk',
-      'Pangong Lake',
-      'Hanle',
-      'Umling La',
-      'Tso Moriri'
+      'Umling La Pass (19,024 ft / 5,798 m — World’s Highest Motorable Road)',
+      'Hanle Dark Sky Reserve & Indian Astronomical Observatory',
+      'Turtuk Village & Tyakshi Indo-Pak Border',
+      'Tso Moriri High-Altitude Sapphire Lake (14,836 ft)',
+      'Pangong Tso Lake & 3-Idiots Point',
+      'Khardung La Pass (17,582 ft / 5,359 m)',
+      'Rezang La War Memorial & Changthang Wildlife',
+      'Diskit Monastery & 106 ft Maitreya Buddha',
+      'Hunder Sand Dunes Bactrian Camel Safari',
+      'Magnetic Hill, Hall of Fame & Sangam Point'
     ],
-    overviewPoints: [
-      'Route: Leh → Sham Valley → Khardung la → Nubra Valley → Turtuk → Pangong → Hanle  → Umingla → Demchok  → Tso Moriri -  Leh',
-      'Duration: 8 Nights / 9 Days.',
-      'Trip Start: Leh.',
-      'Bike Ride Starts From: Leh.',
-      'Trip End: Leh.',
-      'Highest Point: Umling La (19,038 ft).',
-      'Difficulty Level: Moderate - Difficult.',
-      'Best Time to Visit: May to September.',
-      'Major Highlights: Khardung La, Nubra Valley, Turtuk, Pangong Lake, Hanle, Uming la, Tso Moriri.'
-    ],
+    inclusionsSummary: {
+      hotels: 4,
+      transfers: 8,
+      experiences: 26,
+      meals: 16
+    },
+    summaryDetails: {
+      transfers: [
+        'Meet Wanderphilia representative & transfer to hotel in Leh',
+        'Leh local sightseeing ride to Sham Valley, Magnetic Hill, Gurudwara & Sangam',
+        'High-altitude mountain ride from Leh to Nubra Valley via Khardung La Pass (125 km, 5-6 hrs)',
+        'Full-day ride to Turtuk Village & Tyakshi Indo-Pak Border along Shyok River (200 km, 7-8 hrs)',
+        'Off-road ride from Nubra Valley to Pangong Lake via rugged Shyok River route (160 km, 5-6 hrs)',
+        'Trans-Himalayan ride from Pangong Lake to Hanle via Chushul & Rezang La (165 km, 8-9 hrs)',
+        'Full-day excursion to Umling La Pass (19,024 ft) & Demchok Border (200 km roundtrip, 7-8 hrs)',
+        'Scenic long-distance ride from Hanle to Leh via Tso Moriri Lake & Chumathang (289 km, 7-8 hrs)',
+        'Hotel check-out and private transfer to Leh Airport as per flight schedule'
+      ],
+      activities: [
+        {
+          city: 'Leh & Around',
+          title: 'Sightseeing & Heritage',
+          items: [
+            'Hall of Fame War Memorial & Military Museum visit',
+            'Magnetic Hill gravity-defying optical phenomenon',
+            'Sacred Gurudwara Pathar Sahib shrine visit',
+            'Sangam Point — Confluence of Indus & Zanskar rivers',
+            'Shanti Stupa panoramic sunset view over Leh Valley',
+            'Leh Main Bazaar & Tibetan market cultural walk'
+          ]
+        },
+        {
+          city: 'Nubra Valley & Turtuk',
+          title: 'High Passes, Dunes & Balti Heritage',
+          items: [
+            'Crossing Khardung La Pass (17,582 ft / 5,359 m)',
+            'Diskit Monastery & giant 106 ft Maitreya Buddha Statue',
+            'Double-humped Bactrian camel safari on Hunder Sand Dunes',
+            'ATV quad biking on Hunder cold desert dunes',
+            'Turtuk Village heritage walk & ancient wooden homes',
+            'Balti cultural interaction & organic apricot tasting',
+            'Turtuk Yabgo Royal Palace & Shyok War Memorial'
+          ]
+        },
+        {
+          city: 'Pangong Lake',
+          title: 'High-Altitude Lake & Sunset',
+          items: [
+            'Pangong Tso Lake (14,270 ft) turquoise-to-blue water viewing',
+            'Iconic 3-Idiots movie point photography session',
+            'Lakeside sunset & sunrise reflections photography',
+            'Lakeside stargazing under crystal-clear night skies'
+          ]
+        },
+        {
+          city: 'Hanle & Umling La',
+          title: 'World Record Pass & Dark Sky',
+          items: [
+            'Conquering Umling La Pass (19,024 ft / 5,640 m) — World’s Highest Motorable Road',
+            'World record milestone photoshoot at Umling La summit',
+            'Demchok village & Indo-China border post exploration',
+            'Rezang La War Memorial homage (1962 heroics)',
+            'Hanle Monastery (17th century) & Indian Astronomical Observatory',
+            'Pristine Dark Sky Reserve stargazing & Milky Way spotting'
+          ]
+        },
+        {
+          city: 'Tso Moriri & Changthang',
+          title: 'Pristine Sapphire Lake & Hot Springs',
+          items: [
+            'Tso Moriri high-altitude lake (14,836 ft) exploration',
+            'Chumathang natural mineral hot springs visit',
+            'Changthang wildlife spotting (Tibetan Wild Ass / Kiang, Marmots)'
+          ]
+        }
+      ],
+      accommodation: [
+        { city: 'Leh (3 Nights)', hotel: 'Standard / Deluxe Hotel with modern amenities' },
+        { city: 'Nubra Valley (2 Nights)', hotel: 'Deluxe Swiss Camps / Resort in Hunder' },
+        { city: 'Pangong Tso (1 Night)', hotel: 'Deluxe Lakeside Cottages / Camps' },
+        { city: 'Hanle (2 Nights)', hotel: 'Traditional Stargazing Homestay / Guesthouse' }
+      ],
+      meals: [
+        'Daily buffet breakfast and dinner as per itinerary',
+        '8 Dinners (Day 1 to Day 8)',
+        '8 Breakfasts (Day 2 to Day 9)',
+        'Welcome tea and morning / evening tea during stays'
+      ]
+    },
     itinerary: [
       {
         day: 1,
         title: 'Arrival in Leh | Acclimatization & Evening Market Walk',
         description: [
+          'Transfer: Leh Airport to hotel in Leh',
           'Arrive at Leh Airport with stunning aerial views of the snow-capped Himalayan ranges.',
           'Meet our tour executive and transfer to your hotel in Leh.',
           'Check-in, relax, and rest for full acclimatization to high altitude (3,500 m).',
@@ -7169,6 +8410,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
         day: 2,
         title: 'Leh to Sham Valley Excursion | Sangam, Magnetic Hill & Hall of Fame',
         description: [
+          'Transfer: Leh local sightseeing ride circuit (approx 70 km roundtrip)',
           'Morning ride towards Sham Valley along the Indus River.',
           'Visit the peaceful Shanti Stupa for panoramic 360-degree views of Leh valley.',
           'Witness the dramatic Sangam – confluence of the emerald Indus and muddy Zanskar rivers.',
@@ -7184,6 +8426,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
         day: 3,
         title: 'Leh to Nubra Valley via Khardung La & Diskit Monastery [125 km / 5-6 hrs]',
         description: [
+          'Transfer: Leh to Nubra Valley via Khardung La Pass (125 km, 5-6 hrs)',
           'Morning departure from Leh towards the magical Nubra Valley.',
           'Scale the legendary Khardung La Pass (5,359 m / 17,582 ft).',
           'Descend into the scenic Shyok Valley to arrive at Diskit.',
@@ -7199,6 +8442,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
         day: 4,
         title: 'Nubra Valley to Turtuk Village Excursion [200 km / 7-8 hrs]',
         description: [
+          'Transfer: Nubra Valley to Turtuk Village & Tyakshi Border excursion (200 km, 7-8 hrs)',
           'Morning scenic ride along the Shyok River towards Turtuk Village.',
           'Explore India’s northernmost frontier village, steeped in unique Balti heritage.',
           'Walk through stone alleys, apricot orchards, and traditional wooden homes.',
@@ -7213,6 +8457,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
         day: 5,
         title: 'Nubra Valley to Pangong Tso via Shyok River Route [160 km / 5-6 hrs]',
         description: [
+          'Transfer: Nubra Valley to Pangong Lake via Shyok River route (160 km, 5-6 hrs)',
           'Morning departure from Nubra Valley towards the iconic Pangong Tso.',
           'Ride along the offbeat Shyok River route through Agham and Shyok villages.',
           'First glimpse of the magnificent, multi-hued Pangong Lake (4,350 m / 14,270 ft).',
@@ -7227,6 +8472,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
         day: 6,
         title: 'Pangong Tso to Hanle via Rezang La War Memorial [165 km / 8-9 hrs]',
         description: [
+          'Transfer: Pangong Lake to Hanle via Chushul & Rezang La War Memorial (165 km, 8-9 hrs)',
           'Witness a magical sunrise over the tranquil blue waters of Pangong Tso.',
           'Post-breakfast journey towards the remote astronomical hub of Hanle.',
           'Pass Chushul village and pay homage at the Rezang La War Memorial.',
@@ -7241,6 +8487,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
         day: 7,
         title: 'Hanle to Umling La Pass (19,024 ft) & Demchok Frontier Excursion [200 km / 7-8 hrs]',
         description: [
+          'Transfer: Hanle to Umling La Pass & Demchok Frontier excursion roundtrip (200 km, 7-8 hrs)',
           'Early morning expedition to conquer the highest motorable road on Earth.',
           'Ascend through Photi La Pass (5,524 m) across raw, lunar-like high-altitude desert.',
           'Summit Umling La Pass at a record-shattering 19,024 ft (5,640 m).',
@@ -7256,6 +8503,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
         day: 8,
         title: 'Hanle to Leh via Tso Moriri Lake & Chumathang [289 km / 7-8 hrs]',
         description: [
+          'Transfer: Hanle to Leh via Tso Moriri Lake & Chumathang (289 km, 7-8 hrs)',
           'Morning departure from Hanle towards the pristine Tso Moriri Lake.',
           'Ride via Loma Bridge and Mahe along the turquoise Indus and Chumathang hot springs.',
           'Arrive at the majestic Tso Moriri (4,522 m / 14,836 ft), India’s highest and largest saltwater lake.',
@@ -7270,6 +8518,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
         day: 9,
         title: 'Departure from Leh | Trip Concludes',
         description: [
+          'Transfer: Hotel in Leh to Leh Airport (IXL)',
           'Post-breakfast check-out from your Leh hotel.',
           'Transfer to Kushok Bakula Rimpochee Airport for your return flight.',
           'Trip concludes with unforgettable memories of the Leh-Ladakh, Umling La & Changthang expedition.',

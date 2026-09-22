@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react'
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { X, Calendar, Phone, FileText, CheckCircle2, User } from 'lucide-react'
+import { getUpcomingBatchDates } from '@/lib/data'
 
 interface DownloadTourPdfDialogProps {
   open: boolean
@@ -29,8 +30,9 @@ export function DownloadTourPdfDialog({
   // Generate dynamic upcoming months list including trip batch dates if available
   const monthOptions = useMemo(() => {
     const list: string[] = []
-    if (trip?.batchDates && Array.isArray(trip.batchDates) && trip.batchDates.length > 0) {
-      trip.batchDates.forEach((b: any) => {
+    const upcomingBatches = getUpcomingBatchDates(trip?.batchDates)
+    if (upcomingBatches.length > 0) {
+      upcomingBatches.forEach((b: any) => {
         if (b.month && !list.includes(b.month)) {
           list.push(b.month)
         }

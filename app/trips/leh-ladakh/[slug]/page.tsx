@@ -13,7 +13,7 @@ import { Card } from '@/components/ui/card'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { TripHeroCarousel } from '@/components/trip-hero-carousel'
 import { RequestCallbackDialog } from '@/components/request-callback-dialog'
-import { trips } from '@/lib/data'
+import { trips, getUpcomingBatchDates } from '@/lib/data'
 import { destinationItineraryImages } from '@/lib/section-mappings'
 import { MapPin, Calendar, Users, Star, Phone, MessageCircle, ChevronDown, Download, X, ChevronLeft, ChevronRight } from 'lucide-react'
 import { contactEmail, contactPhone, contactPhoneDisplay, instagramUrl } from '@/lib/contact'
@@ -33,6 +33,7 @@ export default function PackageDetailPage() {
   const params = useParams()
   const slug = params?.slug as string
   const trip = useMemo(() => trips.find(t => t.slug === slug), [slug])
+  const upcomingBatchDates = useMemo(() => getUpcomingBatchDates(trip?.batchDates), [trip?.batchDates])
 
   // Calculate lowest price from costing table
   const lowestPrice = useMemo(() => {
@@ -488,19 +489,23 @@ export default function PackageDetailPage() {
               <section id="batches">
                 <h2 className="text-2xl font-bold mb-4">Batch Dates</h2>
                 <Card className="p-6 space-y-4">
-                  {trip.batchDates?.map((batch, idx) => (
-                    <div key={idx} className="rounded-3xl bg-slate-50 p-4 border border-slate-200">
-                      <p className="text-base font-semibold text-slate-900">{batch.month}</p>
-                      <ul className="mt-3 space-y-2 text-slate-700">
-                        {batch.ranges.map((range, rangeIdx) => (
-                          <li key={rangeIdx} className="flex gap-3">
-                            <span className="text-slate-400">•</span>
-                            <span>{range}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
+                  {upcomingBatchDates.length > 0 ? (
+                    upcomingBatchDates.map((batch, idx) => (
+                      <div key={idx} className="rounded-3xl bg-slate-50 p-4 border border-slate-200">
+                        <p className="text-base font-semibold text-slate-900">{batch.month}</p>
+                        <ul className="mt-3 space-y-2 text-slate-700">
+                          {batch.ranges.map((range, rangeIdx) => (
+                            <li key={rangeIdx} className="flex gap-3">
+                              <span className="text-slate-400">•</span>
+                              <span>{range}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-slate-600">No upcoming batch dates currently scheduled. Please enquire for custom dates.</p>
+                  )}
                 </Card>
               </section>
 

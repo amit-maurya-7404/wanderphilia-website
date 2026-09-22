@@ -25,7 +25,8 @@ import Image from 'next/image'
 
 function cleanLocation(loc: string): string {
   let clean = loc.trim()
-    .replace(/^(in|at|near|stay in|stay at|stay near|camps near|camp near|hotel in|hotel at|homestay in|homestay at|campsite near|resort in|resort at)\s+/i, '')
+    .replace(/^(in|at|near|into|stay in|stay at|stay near|camps near|camp near|hotel in|hotel at|homestay in|homestay at|campsite near|resort in|resort at|camps in|camps at|camp at|camp in|hotels in|hotels at)\s+/i, '')
+    .replace(/\s+(camps?|hotels?|resorts?|homestays?|cottages?|deluxe camps?)$/i, '')
     .replace(/\.$/, '')
     .trim();
 
@@ -45,7 +46,7 @@ function cleanLocation(loc: string): string {
   if (lower.includes('tirthan')) return 'Tirthan';
   if (lower.includes('jibhi')) return 'Jibhi';
   if (lower.includes('tosh')) return 'Tosh';
-  if (lower.includes('bir')) return 'Bir';
+  if (/\bbir\b/i.test(lower)) return 'Bir';
   if (lower.includes('shangarh')) return 'Shangarh';
   if (lower.includes('shimla')) return 'Shimla';
   if (lower.includes('kalpa')) return 'Kalpa';
@@ -87,7 +88,7 @@ function cleanLocation(loc: string): string {
   if (lower.includes('jaisalmer')) return 'Jaisalmer';
   if (lower.includes('jaipur')) return 'Jaipur';
   if (lower.includes('pushkar')) return 'Pushkar';
-  if (lower.includes('port blair') || lower.includes('port')) return 'Port Blair';
+  if (lower.includes('port blair')) return 'Port Blair';
   if (lower.includes('havelock')) return 'Havelock';
   if (lower.includes('neil')) return 'Neil Island';
   if (lower.includes('dharamshala') || lower.includes('dharmshala')) return 'Dharamshala';
@@ -120,12 +121,12 @@ function cleanLocation(loc: string): string {
   if (lower.includes('bangkok')) return 'Bangkok';
   if (lower.includes('phuket')) return 'Phuket';
   if (lower.includes('krabi')) return 'Krabi';
-  if (lower.includes('koh phangan') || lower.includes('koh')) return 'Koh Phangan';
+  if (lower.includes('koh phangan') || lower === 'koh') return 'Koh Phangan';
   if (lower.includes('singapore')) return 'Singapore';
   if (lower.includes('gushaini')) return 'Gushaini';
   if (lower.includes('chitkul')) return 'Chitkul';
   if (lower.includes('nako')) return 'Nako';
-  if (lower.includes('tso moriri') || lower.includes('tso')) return 'Tso Moriri';
+  if (lower.includes('tso moriri')) return 'Tso Moriri';
   if (lower.includes('aritar')) return 'Aritar';
   if (lower.includes('rishikhola')) return 'Rishikhola';
 
@@ -155,38 +156,39 @@ function getStaySummary(itinerary: any[]): string {
     }
 
     let stayFound = false;
+    // 1. Primary rule: check for "Overnight in / at / stay in / stay at {location}" in description lines
     for (const line of descLines) {
-      const match = line.match(/Overnight stay\s+(?:in|at|near|into)?\s+([^.]+)/i);
+      const match = line.match(/(?:overnight\s*(?:stay)?|night\s*stay|stay\s*overnight)\s*(?:in|at|near|into|to|hotel in|hotel at|camp in|camps at|camps in)?\s+([^.]+)/i);
       if (match) {
         const loc = cleanLocation(match[1]);
-        if (loc && loc.toLowerCase() !== 'the' && loc.toLowerCase() !== 'your' && loc.toLowerCase() !== 'hotel' && loc.toLowerCase() !== 'camp') {
+        if (loc && !['the', 'your', 'hotel', 'camp', 'camps', 'resort', 'homestay', 'similar'].includes(loc.toLowerCase())) {
           stays.push(loc);
           stayFound = true;
           break;
         }
       }
     }
+    // 2. Check title for "Overnight in / stay in {location}"
     if (!stayFound) {
-      const titleMatch = day.title.match(/Overnight stay\s+(?:in|at|near|into)?\s+([^.]+)/i);
+      const titleMatch = day.title.match(/(?:overnight\s*(?:stay)?|night\s*stay|stay\s*overnight)\s*(?:in|at|near|into|to|hotel in|hotel at)?\s+([^.]+)/i);
       if (titleMatch) {
         const loc = cleanLocation(titleMatch[1]);
-        if (loc && loc.toLowerCase() !== 'the' && loc.toLowerCase() !== 'your' && loc.toLowerCase() !== 'hotel' && loc.toLowerCase() !== 'camp') {
+        if (loc && !['the', 'your', 'hotel', 'camp', 'camps', 'resort', 'homestay', 'similar'].includes(loc.toLowerCase())) {
           stays.push(loc);
           stayFound = true;
         }
       }
     }
-    if (!stayFound) {
+    // 3. Fallback for itineraries that don't have explicit "Overnight" line (except last day)
+    if (!stayFound && index < itinerary.length - 1) {
       for (const line of descLines) {
-        const match = line.match(/(?:check in to your hotel in|check-in to your hotel in|check in to|check-in to|reach|arrive in|arrive at)\s+([^.]+)/i);
+        const match = line.match(/(?:check[- ]?in\s+(?:to|at)\s+(?:your\s+)?(?:hotel\s+in|hotel\s+at|camp\s+in|resort\s+in)?|reach|arrive\s+in)\s+([^.]+)/i);
         if (match) {
           const loc = cleanLocation(match[1]);
-          if (loc && loc.toLowerCase() !== 'the' && loc.toLowerCase() !== 'your' && loc.toLowerCase() !== 'hotel' && loc.toLowerCase() !== 'camp') {
-            if (index < itinerary.length - 1) {
-              stays.push(loc);
-              stayFound = true;
-              break;
-            }
+          if (loc && !['the', 'your', 'hotel', 'camp', 'camps', 'resort', 'homestay', 'airport'].includes(loc.toLowerCase())) {
+            stays.push(loc);
+            stayFound = true;
+            break;
           }
         }
       }
@@ -336,11 +338,11 @@ function parseDayItinerarySummary(day: { day: number; title: string; description
     // Skip highlights header
     if (lower.startsWith('highlights of the')) return
 
-    // Skip hotels / accommodation completely
+    // Skip hotels / accommodation / overnight lines completely
     if (
       lower.startsWith('accommodation:') || lower.startsWith('accommodation :') ||
       lower.startsWith('hotel:') || lower.startsWith('hotels:') || lower.startsWith('stay:') ||
-      lower.startsWith('stay in') || lower.startsWith('overnight stay')
+      lower.startsWith('stay in') || lower.startsWith('overnight')
     ) {
       return
     }
@@ -358,7 +360,11 @@ function parseDayItinerarySummary(day: { day: number; title: string; description
       lower.includes('airport transfer') || lower.includes('private transfer') ||
       lower.includes('sleeper bus transfer') || lower.includes('overnight train to') ||
       lower.includes('pick you up') || lower.includes('drop off at') ||
-      lower.startsWith('drive to') || lower.startsWith('drive from') || lower.startsWith('travel to')
+      lower.startsWith('drive to') || lower.startsWith('drive from') || lower.startsWith('travel to') ||
+      lower.startsWith('scenic drive') || lower.startsWith('scenic mountain drive') ||
+      lower.includes('drive towards') || lower.includes('drive back to') ||
+      lower.includes('transfer to hotel') || lower.includes('transfer to leh airport') ||
+      lower.includes('transfer to airport')
     ) {
       const clean = trimmed
         .replace(/^(transfer|transfers|pickup|drop|flight|train)\s*:\s*/i, '')
@@ -374,13 +380,23 @@ function parseDayItinerarySummary(day: { day: number; title: string; description
       .replace(/^(sightseeing(?:\s*&\s*experiences)?|activities|experiences|activity|experience)\s*:\s*/i, '')
       .trim()
 
-    if (
-      clean &&
-      !lower.startsWith('overnight stay') &&
-      !lower.startsWith('check-in') &&
-      !lower.startsWith('check in') &&
-      !experiences.includes(clean)
-    ) {
+    const isNonSightseeingLogistics =
+      lower.startsWith('overnight') ||
+      lower.startsWith('hotel check-in') ||
+      lower.startsWith('check-in') ||
+      lower.startsWith('check in') ||
+      lower.startsWith('hotel check-out') ||
+      lower.startsWith('check-out') ||
+      lower.startsWith('trip briefing') ||
+      lower.startsWith('fly to') ||
+      lower.startsWith('board flight') ||
+      lower.startsWith('board departure flight') ||
+      lower.startsWith('arrive at kushok') ||
+      lower.startsWith('enjoy morning breakfast') ||
+      lower.startsWith('enjoy final breakfast') ||
+      lower.startsWith('wake up early');
+
+    if (clean && !isNonSightseeingLogistics && !experiences.includes(clean)) {
       experiences.push(clean)
     }
   })

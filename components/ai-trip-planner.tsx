@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { MessageSquare, X, Sparkles, Send, ArrowRight, Compass } from 'lucide-react'
-import { trips, getLowestPriceForTrip, getLowestPriceForTrips } from '@/lib/data'
+import { trips, getLowestPriceForTrip, getLowestPriceForTrips, getUpcomingBatchDates } from '@/lib/data'
 import { sectionMappings } from '@/lib/section-mappings'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -396,8 +396,9 @@ export function AITripPlanner() {
     if (month) {
       const selectedMonthLower = month.toLowerCase()
       const withMonth = candidates.filter(trip => {
-        if (!trip.batchDates || trip.batchDates.length === 0) return true
-        return trip.batchDates.some(bd => 
+        const upcomingBatches = getUpcomingBatchDates(trip.batchDates)
+        if (upcomingBatches.length === 0) return true
+        return upcomingBatches.some(bd => 
           bd.month.toLowerCase().includes(selectedMonthLower) || 
           selectedMonthLower.includes(bd.month.toLowerCase())
         )

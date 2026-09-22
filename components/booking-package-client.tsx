@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Trip } from '@/lib/data'
+import { Trip, getUpcomingBatchDates, getUpcomingTripDates, parseBatchDateRange } from '@/lib/data'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
 import { Button } from '@/components/ui/button'
@@ -35,11 +35,18 @@ export default function BookingPackageClient({ trip, slug }: BookingPackageClien
     : [{ label: 'Package Price', value: `₹${(trip.price || 0).toLocaleString('en-IN')}` }]
 
   const [costingQuantities, setCostingQuantities] = useState<number[]>(() => {
-    return costingItems.map((_, idx) => (idx === 0 ? 1 : 0))
+    if (trip.costingDetails && trip.costingDetails.length > 0) {
+      return trip.costingDetails.map((_, idx) => (idx === 0 ? 1 : 0))
+    }
+    return [1]
   })
 
   useEffect(() => {
-    setCostingQuantities(costingItems.map((_, idx) => (idx === 0 ? 1 : 0)))
+    if (trip.costingDetails && trip.costingDetails.length > 0) {
+      setCostingQuantities(trip.costingDetails.map((_, idx) => (idx === 0 ? 1 : 0)))
+    } else {
+      setCostingQuantities([1])
+    }
   }, [trip])
 
   // Contact Form states
@@ -56,14 +63,24 @@ export default function BookingPackageClient({ trip, slug }: BookingPackageClien
     endDate?: string
   }
 
-  const bookingDateOptions: BookingDateOption[] = trip.batchDates && trip.batchDates.length > 0
-    ? trip.batchDates.flatMap((batch) =>
-        batch.ranges.map((range) => ({
-          month: batch.month,
-          label: range,
-        }))
+  const upcomingBatchDates = getUpcomingBatchDates(trip.batchDates)
+  const upcomingDates = getUpcomingTripDates(trip.dates)
+
+  const bookingDateOptions: BookingDateOption[] = upcomingBatchDates.length > 0
+    ? upcomingBatchDates.flatMap((batch) =>
+        batch.ranges.map((range) => {
+          const parsed = parseBatchDateRange(range, batch.month)
+          const formatIso = (d: Date) =>
+            `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+          return {
+            month: batch.month,
+            label: range,
+            startDate: parsed ? formatIso(parsed.startDate) : undefined,
+            endDate: parsed ? formatIso(parsed.endDate) : undefined,
+          }
+        })
       )
-    : trip.dates.map((date) => ({
+    : upcomingDates.map((date) => ({
         month: new Date(date.startDate).toLocaleString('default', { month: 'short' }),
         label: `${date.startDate} - ${date.endDate}`,
         startDate: date.startDate,
