@@ -170,11 +170,11 @@ export function MobileNavbar() {
                 Honeymoon
               </Link>
               <Link
-                href="/blog"
-                className="px-4 py-4 text-base font-medium text-gray-700 hover:bg-gray-100 transition-colors"
+                href="/christmas-new-year"
+                className="px-4 py-4 text-base font-bold text-primary bg-primary/5 hover:bg-primary/10 transition-colors border-t border-primary/10 flex items-center justify-between"
                 onClick={() => setIsMobileOpen(false)}
               >
-                Blog
+                <span>Christmas & New Year</span>
               </Link>
               <Link
                 href="/about"

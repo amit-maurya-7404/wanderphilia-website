@@ -72,13 +72,13 @@ export function Navbar({ forceWhiteDesktop }: NavbarProps) {
             <img src="/images/Made_LOGO.png" alt="Wanderphilia Logo" className="w-50 h-22" />
           </Link>
 
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center gap-3 lg:gap-5 xl:gap-7">
             {/* <Link href="/" className={`text-sm font-semibold transition-colors cursor-pointer ${isScrolled || isAboutPage || forceWhiteDesktop ? 'text-gray-700 hover:text-primary' : 'text-white/80 hover:text-primary'}`}>
               Home
             </Link> */}
 
             <div className="relative group">
-              <button className={`text-sm font-semibold transition-colors flex items-center gap-1 ${isScrolled || isAboutPage || forceWhiteDesktop ? 'text-gray-700  hover:text-primary' : 'text-white  hover:text-primary'}`}>
+              <button className={`whitespace-nowrap text-sm font-semibold transition-colors flex items-center gap-1 ${isScrolled || isAboutPage || forceWhiteDesktop ? 'text-gray-700  hover:text-primary' : 'text-white  hover:text-primary'}`}>
                 India Trips
                 <ChevronDown size={16} className="group-hover:rotate-180 transition-transform" />
               </button>
@@ -101,7 +101,7 @@ export function Navbar({ forceWhiteDesktop }: NavbarProps) {
             </div>
 
             <div className="relative group">
-              <button className={`text-sm font-semibold transition-colors flex text-center gap-1 ${isScrolled || isAboutPage || forceWhiteDesktop ? 'text-gray-700  hover:text-primary' : 'text-white hover:text-primary'}`}>
+              <button className={`whitespace-nowrap text-sm font-semibold transition-colors flex items-center gap-1 ${isScrolled || isAboutPage || forceWhiteDesktop ? 'text-gray-700  hover:text-primary' : 'text-white hover:text-primary'}`}>
                 International Trips
                 <ChevronDown size={16} className="group-hover:rotate-180 transition-transform" />
               </button>
@@ -124,7 +124,7 @@ export function Navbar({ forceWhiteDesktop }: NavbarProps) {
             </div>
 
             <div className="relative group">
-              <button className={`text-sm font-semibold transition-colors flex items-center gap-1 ${isScrolled || isAboutPage || forceWhiteDesktop ? 'text-gray-700  hover:text-primary' : 'text-white  hover:text-primary'}`}>
+              <button className={`whitespace-nowrap text-sm font-semibold transition-colors flex items-center gap-1 ${isScrolled || isAboutPage || forceWhiteDesktop ? 'text-gray-700  hover:text-primary' : 'text-white  hover:text-primary'}`}>
                 Upcoming Group Trips
                 <ChevronDown size={16} className="group-hover:rotate-180 transition-transform" />
               </button>
@@ -186,7 +186,7 @@ export function Navbar({ forceWhiteDesktop }: NavbarProps) {
               </div>
             </div>
             <div className="relative group">
-              <button className={`text-sm font-semibold transition-colors flex items-center gap-1 ${isScrolled || isAboutPage || forceWhiteDesktop ? 'text-gray-700  hover:text-primary' : 'text-white  hover:text-primary'}`}>
+              <button className={`whitespace-nowrap text-sm font-semibold transition-colors flex items-center gap-1 ${isScrolled || isAboutPage || forceWhiteDesktop ? 'text-gray-700  hover:text-primary' : 'text-white  hover:text-primary'}`}>
                 Honeymoon Getaway
                 <ChevronDown size={16} className="group-hover:rotate-180 transition-transform" />
               </button>
@@ -248,16 +248,22 @@ export function Navbar({ forceWhiteDesktop }: NavbarProps) {
 
               </div>
             </div>
-            <Link href="/blog" className={`text-sm font-semibold transition-colors ${isScrolled || isAboutPage || forceWhiteDesktop ? 'text-gray-700   hover:text-primary' : 'text-white  hover:text-primary'}`}>
-              Blog
+            <Link
+              href="/christmas-new-year"
+              className={`whitespace-nowrap text-xs lg:text-sm font-bold transition-all px-3 py-1.5 rounded-full inline-flex items-center gap-0 shadow-xs shrink-0 ${isScrolled || isAboutPage || forceWhiteDesktop
+                ? 'bg-primary/10 text-primary hover:bg-primary/20 border border-primary/30'
+                : 'bg-primary/85 hover:bg-primary text-white border border-white/20 backdrop-blur-xs shadow-sm shadow-primary/30'
+                }`}
+            >
+              <span>Christmas & New Year</span>
             </Link>
-            <Link href="/about" className={`text-sm font-semibold transition-colors ${isScrolled || isAboutPage || forceWhiteDesktop ? 'text-gray-700  hover:text-primary' : 'text-white  hover:text-primary'}`}>
+            <Link href="/about" className={`whitespace-nowrap text-sm font-semibold transition-colors ${isScrolled || isAboutPage || forceWhiteDesktop ? 'text-gray-700  hover:text-primary' : 'text-white  hover:text-primary'}`}>
               About Us
             </Link>
           </div>
 
           <div className="hidden md:flex items-center gap-4">
-            <Button asChild className="px-6 py-2 rounded-lg font-semibold transition-all bg-primary hover:bg-primary/90 text-white">
+            <Button asChild className="whitespace-nowrap px-5 lg:px-2 py-2 rounded-lg font-semibold transition-all bg-primary hover:bg-primary/90 text-white shrink-0">
               <a href="tel:+919217664099">
                 Contact Us
               </a>
@@ -559,8 +565,12 @@ export function Navbar({ forceWhiteDesktop }: NavbarProps) {
                 </div>
               )}
             </div>
-            <Link href="/blog" className="px-4 py-4 text-base font-medium text-gray-700 hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
-              Blog
+            <Link
+              href="/christmas-new-year"
+              className="px-4 py-4 text-base font-bold text-primary bg-primary/5 hover:bg-primary/10 transition-colors border-t border-primary/10 flex items-center justify-between"
+              onClick={() => setIsMobileOpen(false)}
+            >
+              <span>Christmas & New Year</span>
             </Link>
             <Link href="/about" className="px-4 py-4 text-base font-medium text-gray-700 hover:bg-gray-100 transition-colors" onClick={() => setIsMobileOpen(false)}>
               About Us

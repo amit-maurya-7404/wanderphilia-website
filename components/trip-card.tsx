@@ -23,7 +23,10 @@ import {
   Download,
 } from 'lucide-react'
 
-type TripCardProps = Trip
+type TripCardProps = Trip & {
+  linkPrefix?: string
+  darkTheme?: boolean
+}
 
 function cleanLocation(loc: string): string {
   let clean = loc.trim()
@@ -244,7 +247,8 @@ export function TripCard(props: TripCardProps) {
 
   const handleShare = async (e: React.MouseEvent) => {
     e.stopPropagation()
-    const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/trips/${slug}` : ''
+    const targetPath = props.linkPrefix ? `${props.linkPrefix}/${slug}` : `/trips/${slug}`
+    const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}${targetPath}` : ''
     const shareText = `Check out ${title} on Wanderphilia.`
 
     if (typeof navigator !== 'undefined' && 'share' in navigator) {
@@ -391,6 +395,7 @@ export function TripCard(props: TripCardProps) {
   // }
 
   // Price calculations
+  const targetDetailPath = props.linkPrefix ? `${props.linkPrefix}/${slug}` : `/trips/${slug}`
   const originalPrice = displayPrice > 0 ? Math.round((displayPrice * 1.15) / 100) * 100 : 0
 
   return (
@@ -402,9 +407,13 @@ export function TripCard(props: TripCardProps) {
           category: 'Navigation',
           label: `Trip Card: ${title}`,
         })
-        window.open(`/trips/${slug}`, '_blank')
+        window.open(targetDetailPath, '_blank')
       }}
-      className="group flex flex-col h-[445px] md:h-[480px] bg-white rounded-2xl border border-orange-300 shadow-sm overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer w-full"
+      className={`group flex flex-col h-[445px] md:h-[480px] rounded-2xl shadow-sm overflow-hidden hover:shadow-2xl transition-all duration-300 cursor-pointer w-full ${
+        props.darkTheme
+          ? 'bg-slate-900/90 border border-slate-800 hover:border-orange-500/60 shadow-black/50 text-white'
+          : 'bg-white border border-orange-300 hover:shadow-lg'
+      }`}
     >
       {/* IMAGE / CAROUSEL */}
       <div className="relative w-full h-44 md:h-48 lg:h-52 overflow-hidden bg-gray-100 flex-shrink-0">
@@ -451,7 +460,11 @@ export function TripCard(props: TripCardProps) {
             target="_blank"
             rel="noopener noreferrer"
             title="Chat on WhatsApp"
-            className="w-7 h-7 md:w-7.5 md:h-7.5 rounded-full bg-white/95 backdrop-blur-xs shadow-md hover:shadow-lg border border-slate-200/90 flex items-center justify-center transition-all hover:scale-105 active:scale-95 cursor-pointer hover:border-emerald-400 text-[#25D366] hover:text-emerald-600"
+            className={`w-7 h-7 md:w-7.5 md:h-7.5 rounded-full backdrop-blur-xs shadow-md hover:shadow-lg border flex items-center justify-center transition-all hover:scale-105 active:scale-95 cursor-pointer hover:border-emerald-400 text-[#25D366] hover:text-emerald-400 ${
+              props.darkTheme
+                ? 'bg-slate-900/90 border-slate-700/80'
+                : 'bg-white/95 border-slate-200/90'
+            }`}
           >
             <RiWhatsappLine size={15} />
           </a>
@@ -461,7 +474,11 @@ export function TripCard(props: TripCardProps) {
             type="button"
             onClick={handleShare}
             title="Share Trip"
-            className="w-7 h-7 md:w-7.5 md:h-7.5 rounded-full bg-white/95 backdrop-blur-xs shadow-md hover:shadow-lg border border-slate-200/90 text-slate-700 hover:text-[#ff5d09] hover:border-orange-300 flex items-center justify-center transition-all hover:scale-105 active:scale-95 cursor-pointer"
+            className={`w-7 h-7 md:w-7.5 md:h-7.5 rounded-full backdrop-blur-xs shadow-md hover:shadow-lg border flex items-center justify-center transition-all hover:scale-105 active:scale-95 cursor-pointer ${
+              props.darkTheme
+                ? 'bg-slate-900/90 border-slate-700/80 text-slate-300 hover:text-orange-400 hover:border-orange-400'
+                : 'bg-white/95 border-slate-200/90 text-slate-700 hover:text-[#ff5d09] hover:border-orange-300'
+            }`}
           >
             <Share2 size={13} />
           </button>
@@ -474,7 +491,11 @@ export function TripCard(props: TripCardProps) {
               setDownloadPdfOpen(true)
             }}
             title="Download Itinerary PDF"
-            className="w-7 h-7 md:w-7.5 md:h-7.5 rounded-full bg-white/95 backdrop-blur-xs shadow-md hover:shadow-lg border border-slate-200/90 text-slate-700 hover:text-[#ff5d09] hover:border-orange-300 flex items-center justify-center transition-all hover:scale-105 active:scale-95 cursor-pointer"
+            className={`w-7 h-7 md:w-7.5 md:h-7.5 rounded-full backdrop-blur-xs shadow-md hover:shadow-lg border flex items-center justify-center transition-all hover:scale-105 active:scale-95 cursor-pointer ${
+              props.darkTheme
+                ? 'bg-slate-900/90 border-slate-700/80 text-slate-300 hover:text-orange-400 hover:border-orange-400'
+                : 'bg-white/95 border-slate-200/90 text-slate-700 hover:text-[#ff5d09] hover:border-orange-300'
+            }`}
           >
             <Download size={13} />
           </button>
@@ -487,36 +508,60 @@ export function TripCard(props: TripCardProps) {
         {/* TAGS & RATING */}
         <div className="flex items-center justify-between mb-2 gap-2 flex-shrink-0">
           <div className="flex flex-wrap gap-1">
-            <span className="text-[2.6vw] md:text-[10px] font-semibold px-1.5 py-0.5 rounded bg-gray-50 border border-gray-200 text-gray-600">
+            <span className={`text-[2.6vw] md:text-[10px] font-semibold px-1.5 py-0.5 rounded border ${
+              props.darkTheme
+                ? 'bg-slate-800/80 border-slate-700/80 text-slate-300'
+                : 'bg-gray-50 border-gray-200 text-gray-600'
+            }`}>
               {duration - 1}N/{duration}D
             </span>
-            <span className="text-[2.6vw] md:text-[10px] font-semibold px-1.5 py-0.5 rounded bg-orange-50 border border-orange-100 text-[#ff6e0b]">
+            <span className={`text-[2.6vw] md:text-[10px] font-semibold px-1.5 py-0.5 rounded border ${
+              props.darkTheme
+                ? 'bg-orange-500/20 border-orange-500/40 text-orange-300'
+                : 'bg-orange-50 border-orange-100 text-[#ff6e0b]'
+            }`}>
               {isGroup ? 'Group Tour' : 'Customised Tour'}
             </span>
-            <span className="text-[2.6vw] md:text-[10px] font-semibold px-1.5 py-0.5 rounded bg-gray-50 border border-gray-200 text-gray-600">
+            <span className={`text-[2.6vw] md:text-[10px] font-semibold px-1.5 py-0.5 rounded border ${
+              props.darkTheme
+                ? 'bg-slate-800/80 border-slate-700/80 text-slate-300'
+                : 'bg-gray-50 border-gray-200 text-gray-600'
+            }`}>
               {displayPrice > 40000 ? 'Premium' : displayPrice > 20000 ? 'Standard' : 'Value'}
             </span>
           </div>
 
-          <div className="flex items-center gap-0.5 text-[3vw] md:text-xs font-bold text-gray-700 flex-shrink-0">
+          <div className={`flex items-center gap-0.5 text-[3vw] md:text-xs font-bold flex-shrink-0 ${
+            props.darkTheme ? 'text-slate-200' : 'text-gray-700'
+          }`}>
             <Star size={12} className="fill-yellow-400 text-yellow-400" />
             <span>{rating.toFixed(1)}</span>
-            <span className="text-gray-400 font-normal">({rating >= 4.8 ? '1.5k' : rating >= 4.6 ? '1.2k' : '940'})</span>
+            <span className={props.darkTheme ? 'text-slate-400 font-normal' : 'text-gray-400 font-normal'}>
+              ({rating >= 4.8 ? '1.5k' : rating >= 4.6 ? '1.2k' : '940'})
+            </span>
           </div>
         </div>
 
         {/* TITLE */}
-        <h3 className="text-[4.2vw] md:text-base font-semibold text-gray-900 leading-snug line-clamp-2 min-h-[2.2rem] md:min-h-[2.5rem] mb-1 group-hover:text-[#ff6e0b] transition-colors flex-shrink-0">
+        <h3 className={`text-[4.2vw] md:text-base font-semibold leading-snug line-clamp-2 min-h-[2.2rem] md:min-h-[2.5rem] mb-1 transition-colors flex-shrink-0 ${
+          props.darkTheme
+            ? 'text-white group-hover:text-orange-400'
+            : 'text-gray-900 group-hover:text-[#ff6e0b]'
+        }`}>
           {title}
         </h3>
 
         {/* ROUTE / STOPS */}
-        <p className="text-[3.4vw] md:text-xs text-gray-500 leading-normal mb-2 flex-shrink-0">
+        <p className={`text-[3.4vw] md:text-xs leading-normal mb-2 flex-shrink-0 ${
+          props.darkTheme ? 'text-slate-400' : 'text-gray-500'
+        }`}>
           {staySummary ? formatStaySummary(staySummary) : destination}
         </p>
 
         {/* DYNAMIC INCLUSIONS */}
-        <div className="flex items-center justify-between mt-auto pt-2 border-t border-gray-100 flex-shrink-0 gap-1">
+        <div className={`flex items-center justify-between mt-auto pt-2 border-t flex-shrink-0 gap-1 ${
+          props.darkTheme ? 'border-slate-800' : 'border-gray-100'
+        }`}>
           {inclusions.map((inc) => {
             const match = inc.label ? inc.label.match(/^(\d+)\s*(.*)$/) : null
             const count = match ? match[1] : null
@@ -529,7 +574,9 @@ export function TripCard(props: TripCardProps) {
                 title={inc.label}
               >
                 {/* FULL LABEL ON TOP */}
-                <span className="text-[9px] sm:text-[9.5px] md:text-[10px] text-gray-500 font-semibold text-center leading-none whitespace-nowrap mb-1">
+                <span className={`text-[9px] sm:text-[9.5px] md:text-[10px] font-semibold text-center leading-none whitespace-nowrap mb-1 ${
+                  props.darkTheme ? 'text-slate-400' : 'text-gray-500'
+                }`}>
                   {text}
                 </span>
 
@@ -540,7 +587,11 @@ export function TripCard(props: TripCardProps) {
                       {count}
                     </span>
                   )}
-                  <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-gray-50 border border-gray-100 flex items-center justify-center transition-transform group-hover:scale-105 flex-shrink-0 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
+                  <div className={`w-6 h-6 sm:w-7 sm:h-7 rounded-lg border flex items-center justify-center transition-transform group-hover:scale-105 flex-shrink-0 shadow-[0_1px_2px_rgba(0,0,0,0.03)] ${
+                    props.darkTheme
+                      ? 'bg-slate-800/80 border-slate-700/80'
+                      : 'bg-gray-50 border-gray-100'
+                  }`}>
                     {inc.icon}
                   </div>
                 </div>
@@ -550,27 +601,43 @@ export function TripCard(props: TripCardProps) {
         </div>
 
         {/* DASHED LINE DIVIDER */}
-        <div className="border-t border-dashed border-gray-200 my-3 flex-shrink-0" />
+        <div className={`border-t border-dashed my-3 flex-shrink-0 ${
+          props.darkTheme ? 'border-slate-800' : 'border-gray-200'
+        }`} />
 
         {/* PRICING & BUTTON */}
         <div className="flex items-center justify-between mt-auto pt-1 flex-shrink-0 gap-2">
           <div>
             {showGetQuoteOnly || displayPrice === 0 ? (
               <div>
-                <span className="text-sm md:text-base font-extrabold text-gray-900 block leading-tight">Price on Request</span>
-                <span className="text-[8px] md:text-[9px] text-gray-400 block font-medium">Starting price per adult</span>
+                <span className={`text-sm md:text-base font-extrabold block leading-tight ${
+                  props.darkTheme ? 'text-white' : 'text-gray-900'
+                }`}>
+                  Price on Request
+                </span>
+                <span className={props.darkTheme ? 'text-[8px] md:text-[9px] text-slate-400 block font-medium' : 'text-[8px] md:text-[9px] text-gray-400 block font-medium'}>
+                  Starting price per adult
+                </span>
               </div>
             ) : (
               <div>
                 {originalPrice > 0 && (
                   <div className="flex items-center gap-1 leading-none mb-0.5">
-                    <span className="text-[9px] md:text-xs text-gray-400 line-through">₹{originalPrice.toLocaleString('en-IN')}</span>
+                    <span className={props.darkTheme ? 'text-[9px] md:text-xs text-slate-400 line-through' : 'text-[9px] md:text-xs text-gray-400 line-through'}>
+                      ₹{originalPrice.toLocaleString('en-IN')}
+                    </span>
                     <span className="bg-[#ff6e0b] text-white text-[8px] md:text-[9px] font-bold px-1 rounded">15% OFF</span>
                   </div>
                 )}
                 <div className="flex flex-col md:flex-row md:items-baseline gap-0.5 leading-tight">
-                  <span className="text-sm md:text-base lg:text-lg font-extrabold text-gray-900">₹{displayPrice.toLocaleString('en-IN')}</span>
-                  <span className="text-[7px] md:text-[9px] text-gray-400 font-medium">Starting price per adult</span>
+                  <span className={`text-sm md:text-base lg:text-lg font-extrabold ${
+                    props.darkTheme ? 'text-white' : 'text-gray-900'
+                  }`}>
+                    ₹{displayPrice.toLocaleString('en-IN')}
+                  </span>
+                  <span className={props.darkTheme ? 'text-[7px] md:text-[9px] text-slate-400 font-medium' : 'text-[7px] md:text-[9px] text-gray-400 font-medium'}>
+                    Starting price per adult
+                  </span>
                 </div>
               </div>
             )}

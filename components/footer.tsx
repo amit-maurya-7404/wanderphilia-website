@@ -40,6 +40,12 @@ export function Footer() {
                   All Trips
                 </Link>
               </li>
+              <li>
+                <Link href="/christmas-new-year" className="text-amber-400 hover:text-amber-300 transition-colors text-sm font-medium flex items-center gap-1.5">
+                  <span>🎄</span>
+                  <span>Christmas & New Year</span>
+                </Link>
+              </li>
 
               <li>
                 <Link href="/about" className="text-gray-400 hover:text-primary transition-colors text-sm">

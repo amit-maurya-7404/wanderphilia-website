@@ -8,6 +8,7 @@ import { DestinationsSection } from '@/components/destinations-section'
 import { TestimonialsSection } from '@/components/testimonials-section'
 import { CTASection } from '@/components/cta-section'
 import { UpcomingGroupToursSection } from '@/components/upcoming-group-tours-section'
+import { ChristmasHomeBanner } from '@/components/christmas-home-banner'
 import { PromotionalBanners } from '@/components/promotional-banners'
 import { HoneymoonPackagesSection } from '@/components/honeymoon-packages-section'
 import { UnexpectedSupportSection } from '@/components/unexpected-support-section'
@@ -32,6 +33,10 @@ export default function Home() {
         <div className="block md:hidden">
           <MobileHeroSection />
         </div>
+
+        {/* Festive Christmas & New Year Banner */}
+        <ChristmasHomeBanner />
+
         <section id="upcoming-tours">
           <UpcomingGroupToursSection />
         </section>

@@ -12,6 +12,7 @@ interface ReviewCardProps {
   profilePhotoUrl?: string
   relativeTime?: string
   images?: string[]
+  darkTheme?: boolean
 }
 
 export function ReviewCard({
@@ -23,6 +24,7 @@ export function ReviewCard({
   profilePhotoUrl,
   relativeTime,
   images,
+  darkTheme = false,
 }: ReviewCardProps) {
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
 
@@ -76,11 +78,11 @@ export function ReviewCard({
   }
 
   return (
-    <div className="bg-white/80 backdrop-blur-md rounded-2xl p-6 shadow-md hover:shadow-xl border border-gray-100 hover:border-primary/20 transition-all duration-300 flex flex-col h-full group">
+    <div className={`${darkTheme ? 'bg-slate-900/90 text-slate-100 border-slate-800 hover:border-amber-500/30' : 'bg-white/80 border-gray-100 hover:border-primary/20'} backdrop-blur-md rounded-2xl p-6 shadow-md hover:shadow-xl border transition-all duration-300 flex flex-col h-full group`}>
       {/* Top Header */}
       <div className="flex items-center gap-4 mb-4">
         {profilePhotoUrl ? (
-          <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-gray-100 shadow-inner group-hover:border-primary/30 transition-colors">
+          <div className={`relative w-12 h-12 rounded-full overflow-hidden border-2 ${darkTheme ? 'border-slate-700' : 'border-gray-100'} shadow-inner group-hover:border-primary/30 transition-colors`}>
             <img
               src={profilePhotoUrl}
               alt={name}
@@ -95,11 +97,11 @@ export function ReviewCard({
         )}
 
         <div className="min-w-0 flex-1">
-          <h4 className="font-bold text-gray-900 text-base truncate group-hover:text-primary transition-colors">
+          <h4 className={`font-bold ${darkTheme ? 'text-white group-hover:text-amber-400' : 'text-gray-900 group-hover:text-primary'} text-base truncate transition-colors`}>
             {name}
           </h4>
           <div className="flex items-center gap-1.5 mt-0.5">
-            <span className={`inline-flex items-center text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider ${platformColors[platform] || 'bg-gray-100 text-gray-700'}`}>
+            <span className={`inline-flex items-center text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider ${platformColors[platform] || (darkTheme ? 'bg-slate-800 text-slate-300' : 'bg-gray-100 text-gray-700')}`}>
               {platformIcons[platform]}
               {platform}
             </span>
@@ -113,13 +115,13 @@ export function ReviewCard({
           <Star
             key={i}
             size={16}
-            className={`${i < rating ? 'fill-amber-400 text-amber-400' : 'text-gray-200'}`}
+            className={`${i < rating ? 'fill-amber-400 text-amber-400' : darkTheme ? 'text-slate-700' : 'text-gray-200'}`}
           />
         ))}
       </div>
 
       {/* Review Text */}
-      <p className="text-gray-600 text-sm leading-relaxed mb-4 grow line-clamp-4 group-hover:text-gray-800 transition-colors font-medium">
+      <p className={`${darkTheme ? 'text-slate-300 group-hover:text-slate-100' : 'text-gray-600 group-hover:text-gray-800'} text-sm leading-relaxed mb-4 grow line-clamp-4 transition-colors font-medium`}>
         &ldquo;{comment}&rdquo;
       </p>
 
@@ -134,7 +136,7 @@ export function ReviewCard({
                 e.stopPropagation()
                 setSelectedImage(imgUrl)
               }}
-              className="relative w-12 h-12 rounded-lg overflow-hidden border border-slate-200 shadow-2xs hover:scale-105 transition duration-200 cursor-zoom-in"
+              className={`relative w-12 h-12 rounded-lg overflow-hidden border ${darkTheme ? 'border-slate-700' : 'border-slate-200'} shadow-2xs hover:scale-105 transition duration-200 cursor-zoom-in`}
             >
               <img
                 src={imgUrl}
@@ -147,7 +149,7 @@ export function ReviewCard({
       )}
 
       {/* Footer Info */}
-      <div className="flex items-center justify-between pt-3 border-t border-gray-50 text-[11px] text-gray-400 font-medium">
+      <div className={`flex items-center justify-between pt-3 border-t ${darkTheme ? 'border-slate-800 text-slate-500' : 'border-gray-50 text-gray-400'} text-[11px] font-medium`}>
         <span>Verified Customer</span>
         <span>
           {relativeTime ||

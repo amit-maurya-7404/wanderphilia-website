@@ -14,9 +14,10 @@ interface GalleryImage {
 interface TripGallerySectionProps {
   categoryId: string
   categoryName: string
+  darkTheme?: boolean
 }
 
-export function TripGallerySection({ categoryId, categoryName }: TripGallerySectionProps) {
+export function TripGallerySection({ categoryId, categoryName, darkTheme = false }: TripGallerySectionProps) {
   const [images, setImages] = useState<GalleryImage[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -31,9 +32,6 @@ export function TripGallerySection({ categoryId, categoryName }: TripGallerySect
         const data = await response.json()
         // Filter images for this category
         const filtered = data.filter((img: any) => img.category === categoryId)
-        // If no images found for this category, maybe show some generic ones or nothing?
-        // For now, let's show filtered if any, else nothing or fallback to all?
-        // User said "category ke hisab se add krna hai", so we should show only those.
         setImages(filtered)
       } catch (error) {
         setError((error as Error).message)
@@ -47,16 +45,16 @@ export function TripGallerySection({ categoryId, categoryName }: TripGallerySect
 
   if (loading) {
     return (
-      <section className="py-16 md:py-24 bg-linear-to-b from-white to-gray-50 overflow-hidden">
+      <section className={`py-16 md:py-24 ${darkTheme ? 'bg-slate-950 text-slate-100 border-t border-slate-800/80' : 'bg-linear-to-b from-white to-gray-50'} overflow-hidden`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <span className="inline-block px-4 py-2 rounded-full bg-primary/10 text-primary font-semibold text-sm mb-4">
+          <span className={`inline-block px-4 py-2 rounded-full ${darkTheme ? 'bg-amber-500/15 text-amber-300 border border-amber-500/30' : 'bg-primary/10 text-primary'} font-semibold text-sm mb-4`}>
             📸 Visual Stories
           </span>
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-12">
+          <h2 className={`text-4xl md:text-5xl font-bold ${darkTheme ? 'text-white' : 'text-gray-900'} mb-12`}>
             {categoryName} Gallery
           </h2>
           <div className="py-12">
-            <p className="text-gray-500 animate-pulse">Loading gallery images...</p>
+            <p className={`${darkTheme ? 'text-slate-400' : 'text-gray-500'} animate-pulse`}>Loading gallery images...</p>
           </div>
         </div>
       </section>
@@ -68,16 +66,16 @@ export function TripGallerySection({ categoryId, categoryName }: TripGallerySect
   }
 
   return (
-    <section className="py-16 md:py-24 bg-linear-to-b from-white to-gray-50 overflow-hidden">
+    <section className={`py-16 md:py-24 ${darkTheme ? 'bg-slate-950 text-slate-100 border-t border-slate-800/80' : 'bg-linear-to-b from-white to-gray-50'} overflow-hidden`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <span className="inline-block px-4 py-2 rounded-full bg-primary/10 text-primary font-semibold text-sm mb-4">
+          <span className={`inline-block px-4 py-2 rounded-full ${darkTheme ? 'bg-amber-500/15 text-amber-300 border border-amber-500/30' : 'bg-primary/10 text-primary'} font-semibold text-sm mb-4`}>
             📸 Visual Stories
           </span>
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+          <h2 className={`text-4xl md:text-5xl font-bold ${darkTheme ? 'text-white' : 'text-gray-900'} mb-4`}>
             {categoryName} Gallery
           </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className={`text-xl ${darkTheme ? 'text-slate-400' : 'text-gray-600'} max-w-2xl mx-auto`}>
             Explore breathtaking moments from {categoryName} captured by our travelers.
           </p>
         </div>
