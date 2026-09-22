@@ -10857,20 +10857,16 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     ],
     batchDates: [
       {
-        month: 'September',
-        ranges: ['19th - 26th September']
-      },
-      {
         month: 'October',
         ranges: ['2nd - 9th Oct']
       },
       {
         month: 'November',
-        ranges: ['14th - 21st Nov']
+        ranges: ['14th - 21st Nov', '24th - 30th Nov']
       },
       {
         month: 'December',
-        ranges: ['12th - 19th December']
+        ranges: ['12th - 19th December', '19th - 25th Dec', '27th Dec - 2nd Jan']
       }
     ],
     dates: [],
@@ -10961,232 +10957,199 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     ]
   },
   {
-    id: '40',
-    title: '9 Days Exclusive Vietnam with Phu Quoc Group Trip',
-    slug: 'vietnam-phu-quoc-group-trip',
+    id: '62',
+    title: 'Simply Epic Vietnam Group Trip 6 Nights / 7 Days',
+    slug: 'simply-epic-vietnam-group-trip-6n-7d',
     image: '/images/vietnam.png',
+    images: [
+      '/images/vietnam.png',
+      '/images/vietnam2.jpg',
+      '/images/vietnam3.jpg',
+      '/images/vietnam4.jpg',
+      '/images/vietnam-sapa.png'
+    ],
     destination: 'Vietnam',
     category: 'Vietnam',
-    description: "Experience the ultimate 9-day journey through the wonders of Vietnam and the tropical paradise of Phu Quoc. Discover the historic charm of Hanoi, cruise through the breathtaking limestone karsts of Ha Long Bay, marvel at the Golden Bridge and Ba Na Hills in Da Nang, step back in time at Hoi An Ancient Town, and unwind on the pristine beaches of Phu Quoc. A perfect blend of culture, history, adventure, and relaxation.",
-    duration: 9,
-    nights: 8,
-    price: 64999,
+    description: "Discover the vibrant essence of Vietnam on this epic 7-day journey connecting Hanoi, Da Nang, Hoi An, and Ho Chi Minh City. Cruise through the breathtaking emerald waters of Ha Long Bay, ride the famous cyclos in Hanoi Old Quarter, experience the thrills of Ba Na Hills and Golden Bridge, paddle through coconut waterways in Hoi An, crawl into the historic Cu Chi Tunnels with live AK-47 shooting, and explore the peaceful floating waterways of the Mekong Delta.",
+    duration: 7,
+    nights: 6,
+    price: 57499,
     rating: 4.9,
+    route: '2N Hanoi - 2N Danang - 2N Ho Chi Minh',
     difficulty: 'Easy',
     groupSize: 16,
     tripType: 'International',
     showGetQuoteOnly: false,
     inclusionsSummary: {
-      hotels: 4,
-      transfers: 14,
-      experiences: 9,
+      hotels: 3,
+      transfers: 9,
+      experiences: 8,
       meals: 8,
       visa: true,
       tripGuide: true,
     },
     highlights: [
-      'Hanoi',
-      'Ha Long Bay Luxury Cruise',
-      'Danang',
-      'Golden Bridge',
-      'Fantasy Park',
-      'Hoi An',
-      'Bana Hills',
-      'Phu Quoc'
+      'Hanoi Old Quarter & Train Street',
+      'Halong Bay Day Cruise with Lunch & High Tea',
+      'Hanoi Cyclo Tour & Ta Hien Beer Street',
+      'Hoi An Ancient Town, Coconut Basket Ride & Lantern Boat',
+      'Ba Na Hills, Golden Bridge & Fantasy Park',
+      'Dragon Bridge & Danang City Exploration',
+      'Cu Chi Tunnels with AK-47 Shooting Experience',
+      'Apartment Cafe & Egg Coffee at Poo Cafe',
+      'Bui Vien Walking Street Nightlife',
+      'Guided Mekong Delta Excursion'
     ],
     overviewPoints: [
-      'Route: Hanoi → Ha Long Bay → Da Nang → Hoi An → Ba Na Hills → Phu Quoc',
-      'Duration: 8 Nights / 9 Days.',
+      'Route: 2N Hanoi - 2N Danang - 2N Ho Chi Minh',
+      'Duration: 6 Nights / 7 Days.',
       'Trip Start: Hanoi.',
-      'Trip End: Phu Quoc.',
-      'Major Highlights: Hanoi Train Street, Ha Long Bay Luxury Cruise with Kayaking, Ba Na Hills & Golden Bridge, Coconut Forest, Hoi An Ancient Town with Lantern Boat ride, and Phu Quoc island hopping.'
+      'Trip End: Ho Chi Minh City.',
+      'Summary: 3 Cities, 9 Transfers, 8 Experiences, 8 Meals (6 Breakfast, 1 Lunch, 1 High Tea), Visa, Trip Guide.',
+      'Major Highlights: Hanoi Guided City Tour & Cyclo ride, Halong Bay Day Cruise, Hoi An Coconut Basket Boat & Lanterns, Ba Na Hills & Golden Bridge, Cu Chi Tunnels with AK-47 Shooting, Mekong Delta Tour & Saigon Nightlife.'
     ],
     itinerary: [
       {
         day: 1,
-        title: 'Arrival in Hanoi - Half-Day City Tour',
+        title: 'Hanoi Arrival, Hanoi City Tour, Evening visit Train Street & Beer Street',
         description: [
-          'Arrive at Noi Bai International Airport, complete customs & immigration, and meet our tour representative.',
-          'Transfer to your hotel in central Hanoi, check in, and refresh.',
-          'Visit Tran Quoc Pagoda, Hanoi’s oldest Buddhist temple set on the picturesque West Lake.',
-          'Experience the excitement of Hanoi Train Street, sipping Vietnamese egg coffee as the train passes inches away.',
-          'Pass by the historic Ho Chi Minh Mausoleum complex and visit the iconic One Pillar Pagoda.',
-          'Explore the lively 36 Guilds of the Hanoi Old Quarter and immerse in the buzzing nightlife of Ta Hien Beer Street.',
+          'Arrive at Noi Bai International Airport in Hanoi, meet your tour representative, and transfer to your hotel in central Hanoi Old Quarter.',
+          'Check in at Babylon Grand Hotel / Similar and refresh.',
+          'Embark on a guided city tour of Hanoi Old Quarters.',
+          'Experience Hanoi on a traditional Cyclo tour through bustling French-colonial streets.',
+          'Visit the iconic Hanoi Train Street and experience famous Vietnamese coffee / drinks.',
+          'Experience the most lively street of Hanoi - Ta Hien Beer Street in the evening.',
           'Overnight stay in Hanoi.',
           'Meals: Not Included.'
         ]
       },
       {
         day: 2,
-        title: 'Ha Long Bay Luxury Cruise - Kayaking & Sunset Party',
+        title: 'Halong Bay Day Cruise Experience',
         description: [
-          'Enjoy breakfast at the hotel and depart on a scenic highway drive to Tuan Chau Marina.',
-          'Board a luxury day cruise and glide through UNESCO-listed Ha Long Bay surrounded by thousands of limestone karsts.',
-          'Relish a sumptuous Vietnamese seafood buffet lunch while cruising past iconic rock formations.',
-          'Kayak or take a bamboo boat through hidden emerald lagoons and sea caves.',
-          'Enjoy an energetic upper-deck sunset party with music, refreshments, and panoramic views of the bay.',
-          'Disembark at Tuan Chau Marina and transfer back to Hanoi in the evening.',
+          'Enjoy an early morning breakfast at the hotel.',
+          'Depart on a full-day excursion to UNESCO-listed Halong Bay.',
+          'Board a premium day cruise and glide through breathtaking limestone karsts and emerald waters.',
+          'Relish a delicious seafood buffet lunch on board with afternoon sunset high tea.',
+          'Enjoy kayaking or bamboo boat rowing through hidden lagoons and sea caves.',
+          'Return to Hanoi in the evening for leisure.',
           'Overnight stay in Hanoi.',
-          'Meals: Breakfast & Lunch.'
+          'Meals: Breakfast, Lunch & Evening High Tea.'
         ]
       },
       {
         day: 3,
-        title: 'Transfer from Hanoi to Da Nang. Day at Leisure.',
+        title: 'Hanoi to Da Nang Flight, Hoi An Ancient Town Exploration',
         description: [
-          'Have breakfast at the hotel, complete check-out, and transfer to Noi Bai Airport.',
-          'Board your short 1.5-hour domestic flight to the coastal city of Da Nang.',
-          'Meet your local representative on arrival and transfer to your beachfront hotel.',
-          'Spend the afternoon relaxing on My Khe Beach or exploring Da Nang’s trendy seaside cafes.',
-          'In the evening, take a leisurely stroll along the Han River to view the iconic Dragon Bridge.',
+          'Enjoy early morning packed breakfast and transfer to Noi Bai Airport for your flight to Da Nang.',
+          'Arrive in Da Nang and board your transfer for Hoi An (most iconic ancient town of Vietnam).',
+          'Enjoy the iconic Coconut Basket Boat ride in Cam Thanh water coconut forest.',
+          'Experience Hoi An Lantern Village paddling on bicycle past centuries-old merchant houses.',
+          'In the evening, take a magical lantern boat ride along the Hoai River.',
+          'Transfer and check-in to Merry Hotel / Similar in Da Nang.',
           'Overnight stay in Da Nang.',
           'Meals: Breakfast.'
         ]
       },
       {
         day: 4,
-        title: 'Full Day Trip to Marble Mountain, Hoi An Ancient Town and Lantern on Boat Tour.',
+        title: 'Visit Ba Na Hills Cable Car, Golden Bridge, Fantasy Park, French Village & Dragon Bridge',
         description: [
-          'Savor breakfast at the hotel and head to the sacred Marble Mountains (Thuy Son).',
-          'Explore hidden cave sanctuaries including Huyen Khong Cave and visit ancient Tam Thai Pagoda.',
-          'Stop at Non Nuoc Stone Carving Village to observe local sculptors at work.',
-          'Head to Cam Thanh Coconut Village for an exciting spinning bamboo basket boat ride through water coconut waterways.',
-          'Proceed to the UNESCO World Heritage town of Hoi An to explore the 17th-century Japanese Covered Bridge and Chinese Assembly Halls.',
-          'Board a traditional wooden boat on the Hoai River at dusk to release glowing flower lanterns onto the water.',
-          'Return to Da Nang in the evening.',
+          'Relaxing morning breakfast at the hotel.',
+          'Visit Ba Na Hills via two-way world-record cable car ride.',
+          'Walk across the world-famous Golden Bridge held aloft by giant stone hands.',
+          'Explore Fantasy Park, French Village, Le Jardin D’Amour flower gardens, and Debay Wine Cellar.',
+          'Visit the iconic Dragon Bridge and Danang city sights.',
+          'Relaxing evening on the beach; explore cafes and nightlife.',
           'Overnight stay in Da Nang.',
           'Meals: Breakfast.'
         ]
       },
       {
         day: 5,
-        title: 'Ba Na Hills Day Trip - Golden Bridge, Fantasy Park & French Village',
+        title: 'Early Morning Flight Da Nang to Ho Chi Minh, Cu Chi Tunnel & Cafe Hopping',
         description: [
-          'Enjoy breakfast at the hotel and transfer to the base of the Truong Son Mountains at Ba Na Hills.',
-          'Ascend via the world-record cable car system offering breathtaking forest canopy views.',
-          'Walk across the world-famous Golden Hands Bridge perched high above the mist.',
-          'Explore the European-inspired French Village, Debay Wine Cellar, and Le Jardin D’Amour flower gardens.',
-          'Enjoy indoor rides, 4D/5D theaters, and games at Fantasy Park.',
-          'Descend via cable car and return to your Da Nang hotel for an evening at leisure.',
-          'Overnight stay in Da Nang.',
+          'After breakfast, transfer to Da Nang Airport for your flight to Ho Chi Minh City (Saigon).',
+          'Arrive in Ho Chi Minh and transfer to visit the historic Cu Chi Tunnels.',
+          'Crawl through the historic underground military network and experience live AK-47 / rifle shooting.',
+          'Enjoy cafe hopping in Saigon, visit the famous Apartment Cafe, and experience authentic Egg Coffee at Poo Cafe.',
+          'Evening at leisure to immerse in the electrifying nightlife at Bui Vien Walking Street.',
+          'Check in at Liberty Green Hotel / Similar.',
+          'Overnight stay in Ho Chi Minh.',
           'Meals: Breakfast.'
         ]
       },
       {
         day: 6,
-        title: 'Transfer to Phu Quoc. Leisure Day. Optional Visit to Grand World.',
+        title: 'Mekong Delta Excursion - Ho Chi Minh City Exploration & Leisure',
         description: [
-          'Have breakfast at the hotel, check out, and transfer to Da Nang Airport.',
-          'Board your domestic flight to the tropical paradise island of Phu Quoc.',
-          'Arrive at Phu Quoc International Airport, transfer to your beach resort, and check in.',
-          'Spend the afternoon unwinding on powdery sands or relaxing by the resort pool.',
-          'In the evening, optionally visit Grand World Phu Quoc—"The Sleepless City"—to stroll Venice-style canals and watch the water fountain spectacle.',
-          'Overnight stay in Phu Quoc.',
+          'Enjoy a relaxing early morning breakfast at the hotel.',
+          'Embark on a guided tour to the fertile Mekong Delta, cruising through lush tropical canals and orchards.',
+          'Experience local fruit orchards, honey farms, and traditional folk music.',
+          'Return to Ho Chi Minh City for a guided city tour and leisure time for shopping at Ben Thanh Market.',
+          'Evening at leisure to enjoy Saigon’s vibrant rooftop lounges and street food.',
+          'Overnight stay in Ho Chi Minh.',
           'Meals: Breakfast.'
         ]
       },
       {
         day: 7,
-        title: '4 Islands Tour with Cable Car and Aquatopia Water Park.',
+        title: 'Departure from Ho Chi Minh - Amazing Adventure Concludes',
         description: [
-          'Enjoy a tropical breakfast at the resort before morning pickup.',
-          'Board a high-speed speedboat to explore south Phu Quoc’s islands: Gam Ghi, Xuong, May Rut, and Thom Island.',
-          'Snorkel among pristine coral reefs in crystal-clear waters and relax on May Rut Beach.',
-          'Relish a delicious island lunch with fresh local specialties.',
-          'Arrive at Thom Island to enjoy thrilling water slides and rides at Aquatopia Water Park.',
-          'Experience the world’s longest over-sea cable car ride back to An Thoi harbour with spectacular 360-degree ocean panoramas.',
-          'Transfer back to your resort for evening leisure.',
-          'Overnight stay in Phu Quoc.',
-          'Meals: Breakfast & Lunch.'
-        ]
-      },
-      {
-        day: 8,
-        title: 'Day at Leisure. Optional Tour to Vin Wonders and Vinpearl Safari Park.',
-        description: [
-          'Wake up to a leisurely breakfast at the resort with the day free to explore at your own pace.',
-          'Optionally visit Vinpearl Safari, Vietnam’s premier semi-wild animal conservation sanctuary.',
-          'Ride open safari vehicles to spot lions, rhinos, giraffes, and Bengal tigers roaming freely.',
-          'Optionally spend the afternoon at VinWonders theme park experiencing thrilling coasters and the giant sea-shell aquarium.',
-          'Visit Duong Dong Night Market in the evening to taste fresh grilled seafood and shop for Phu Quoc black pepper and pearls.',
-          'Overnight stay in Phu Quoc.',
-          'Meals: Breakfast.'
-        ]
-      },
-      {
-        day: 9,
-        title: 'Departure from Phu Quoc. Depart with a lot of happy memories.',
-        description: [
-          'Enjoy your final tropical breakfast at the resort and complete check-out.',
-          'Board your scheduled private transfer to Phu Quoc International Airport for your departure flight.',
-          'Depart Vietnam with incredible memories, photos, and stories of your northern, central, and island adventure.',
+          'Enjoy breakfast at the hotel and complete check-out.',
+          'Airport transfer at scheduled group departure timing.',
+          'Fly back home with unforgettable memories and stories of an epic Vietnam journey.',
           'Meals: Breakfast.'
         ]
       }
     ],
     included: [
-      '08 Nights Accommodation based on double/twin sharing room with daily buffet breakfast.',
-      'A total of 9 meals included Breakfast from Day 2 to Day 9 and Lunch on Day 2.',
-      'Half-day Hanoi City tour',
-      'Halong Bay day tour with Sunset party and Kayaking',
-      'Marble Mountains Tour',
-      'Coconut Village Tour with Basket Boat ride',
-      'Hoi An Ancient Town Tour',
-      'Lantern boat ride on Hoai River',
-      'Full Day Bana Hill Tour with Cable Car and tickets to Golden Bridge, French Village, Fantasy Park (with rides)',
-      '4 Island Hopping Tour (cable car ticket and speedboat included) + Aquatopia waterpark',
-      'Sightseeing as mentioned in the program',
-      'Transportation by vehicle with A/C as per the program',
-      'Local English-speaking guides in Vietnam',
-      'Bottles of mineral water on the tour day',
-      'Fixed Airport Pickup & Drop.'
+      'Ground transfer by Private minibus as mentioned in the program',
+      'Wanderphilia Guide plus local English-speaking guide',
+      'Guided Hanoi city tour of Old Quarters',
+      'Hanoi Cycle Tour (Cyclo)',
+      'Full Day Halong Bay Day Cruise with Lunch & Sunset High Tea',
+      'Hoi An Coconut basket ride, explore Hoi An by bicycle, and evening lantern boat ride experience',
+      'Visit Ba Na Hills Cable Car, Golden Bridge, Fantasy Park & French Village & Visit Dragon Bridge',
+      'Cu Chi Tunnel Tour with AK-47 Shooting experience',
+      'Guided Mekong Delta Tour',
+      'Bottles of water on tours (2 bottles/pax/day)',
+      '06 Nights Hotel accommodation with daily Breakfast (Double & Triple Sharing)',
+      'Vietnam E-Visa',
+      'Fixed Airport Pickup & Drop transfers as per group timings'
     ],
     notIncluded: [
-      'Single Supplement. Early check-in and late check-out. Hotel/Room upgrade.',
-      'Visa Service to Vietnam.',
-      'Tours which are not included in the package.',
-      'Meals not mentioned in the program.',
-      'Any International Flight and airport tax.',
-      'Drinks, personal expenses and any services not clearly mentioned in the program.',
-      'Travel Insurance.',
-      'GST & TCS as applicable extra.',
-      'Wax Museum, cotton animal game, and carnival skill tickets at Fantasy Park are not included.',
-      'Tips for Guide and Driver extra @ $3/- per adult per day'
+      'Meals other than those mentioned above (Lunch & Dinner)',
+      'Compulsory tipping for guide & driver: $3 USD/pax/day',
+      'Government Taxes & Charges (GST & TCS as applicable extra)',
+      'Domestic flights (Hanoi to Da Nang & Da Nang to Ho Chi Minh) and International airfare',
+      'Visa stamping / embassy fees if applicable beyond standard e-visa service',
+      'Single supplement for solo room occupancy',
+      'Personal expenses, laundry, telephone calls, drinks, and other items not mentioned above'
     ],
     stays: [
-      'Hanoi: Hotel / Similar',
-      'Da Nang: Hotel / Similar',
-      'Phu Quoc: Hotel / Similar'
+      'Hanoi: Babylon Grand Hotel / Similar',
+      'Da Nang: Merry Hotel / Similar',
+      'Ho Chi Minh: Liberty Green Hotel / Similar'
     ],
     batchDates: [
       {
-        month: 'July',
-        ranges: ['12th July - 20th July', '26th July - 3rd Aug']
-      },
-      {
-        month: 'August',
-        ranges: ['15th Aug - 23rd Aug', '23rd - 31st Aug']
-      },
-      {
-        month: 'September',
-        ranges: ['13th Sept - 21st Sept', '27th Sept - 5th Oct']
-      },
-      {
         month: 'October',
-        ranges: ['4th Oct - 12th Oct', '18th Oct - 26th Oct']
+        ranges: ['2nd Oct - 8th Oct']
       },
       {
         month: 'November',
-        ranges: ['7th Nov - 15th Nov', '15th Nov - 23rd Nov', '22nd Nov - 30th Nov']
+        ranges: ['14th Nov - 20th Nov', '24th Nov - 29th Nov']
       },
       {
         month: 'December',
-        ranges: ['5th Dec - 13th Dec', '13th - 21st Dec']
+        ranges: ['12th Dec - 18th Dec', '19th Dec - 24th Dec', '28th Dec - 3rd Jan']
       }
     ],
     dates: [],
     costingDetails: [
-      { label: 'Double Sharing Rate', value: '₹64,999' }
+      { label: 'Double Sharing Rate', value: '₹57,499' },
+      { label: 'Triple Sharing Rate', value: '₹57,499' }
     ],
     thingsToCarry: [
       'Passport with minimum 6 months validity from the date of departure from India',
@@ -11242,7 +11205,774 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
         ]
       }
     ],
+    cancellationPolicy: [
+      'More than 30 days before departure – Cancellation charges as per actual expenses incurred and supplier policies.',
+      '30 to 16 days before departure – 50% of the total package cost.',
+      '15 to 08 days before departure – 75% of the total package cost.',
+      '07 days or less before departure / No Show – 100% of the total package cost.'
+    ],
     note: [
+      '50% advance payment is required to confirm the booking and secure all travel services.',
+      'Balance 50% payment must be received at least 15 days prior to departure.',
+      'All bookings are subject to availability and confirmation from respective suppliers at the time of payment.',
+      'Any increase in taxes, government levies, fuel surcharges, or currency fluctuations before final payment may be charged additionally.',
+      'Normal Check-in and Check-out time is 03:00 PM and 12:00 noon respectively in Vietnam. Early check-in with breakfast is available at an extra cost of 30 USD/ per person.',
+      'Airport transfer is at fixed time (depending on the majority of arrival and departure time of the group) - Any early or late transfer will be charged extra.',
+      'The age limit of our group departures is 18 to 42 years due to the power packed itineraries that we provide to our travellers. We can customize trips for travellers beyond the mentioned age bracket.',
+      'Every traveler is required to be holding a valid passport with an expiry date at least 6 months post the date of entering Vietnam.'
+    ]
+  },
+  {
+    id: '63',
+    title: 'Vietnam Beyond Amazing Group Trip 9 Nights / 10 Days',
+    slug: 'vietnam-beyond-amazing-group-trip-9n-10d',
+    image: '/images/vietnam.png',
+    gallery: [
+      '/images/vietnam.png',
+      '/images/vietnam-sapa.png',
+      '/images/vietnam2.jpg',
+      '/images/vietnam3.jpg',
+      '/images/vietnam4.jpg'
+    ],
+    destination: 'Vietnam',
+    category: 'Vietnam',
+    description: "Embark on an unforgettable 10-day journey across Vietnam's most iconic destinations: Hanoi, Sapa, Da Nang, Hoi An, Ho Chi Minh City, and Phu Quoc Island. From the misty heights of Fansipan and Rong May Glass Bridge to the sun-kissed beaches, Venice canal rides, and cable cars of Phu Quoc, experience the perfect blend of adventure, culture, theme parks, and tropical bliss.",
+    duration: 10,
+    nights: 9,
+    price: 71499,
+    rating: 4.9,
+    route: '2N Hanoi - 2N Sapa - 2N Danang - 1N Ho Chi Minh - 2N Phu Quoc',
+    difficulty: 'Easy to Moderate',
+    groupSize: 16,
+    tripType: 'International',
+    showGetQuoteOnly: false,
+    inclusionsSummary: {
+      hotels: 5,
+      transfers: 20,
+      experiences: 14,
+      meals: 9,
+      visa: true,
+      tripGuide: true,
+    },
+    highlights: [
+      'Hanoi Guided Old Quarter Tour & Cyclo Experience',
+      'Ninh Binh Trang An Boat Ride, Mua Cave & Hoa Lu Capital',
+      'SP3 Overnight Luxury Train from Hanoi to Sapa',
+      'Rong May Glass Bridge, Ziplining, Rainbow Slide & Alpine Coaster',
+      'Cat Cat Village Cultural Trail',
+      'Fansipan Peak Summit with Muong Hoa Mountain Train & Cable Car',
+      'Hoi An Ancient Town, Coconut Basket Boat & Evening Lantern Boat',
+      'Ba Na Hills Two-Way Cable Car, Golden Hands Bridge & French Village',
+      'Cu Chi Tunnels with AK-47 Rifle Shooting Experience',
+      'Saigon Apartment Cafe & Bui Vien Walking Street',
+      'Phu Quoc 3-Island Speedboat Tour (Gam Ghi, Xuong & May Rut)',
+      'Hon Thom Longest Over-Sea Cable Car & Aquatopia Water Park',
+      'VinWonders Premier Theme Park & Grand World Venice Boat Ride',
+      'Kiss Bridge & Sunset Town'
+    ],
+    overviewPoints: [
+      'Route: 2N Hanoi - 2N Sapa - 2N Danang - 1N Ho Chi Minh - 2N Phu Quoc',
+      'Duration: 9 Nights / 10 Days.',
+      'Trip Start: Hanoi.',
+      'Trip End: Phu Quoc.',
+      'Summary: 5 Cities, 20 Transfers, 14 Experiences, 9 Meals (9 Breakfast), Vietnam E-Visa, Trip Guide.',
+      'Major Highlights: Ninh Binh Trang An & Mua Cave, Overnight Train to Sapa, Rong May Glass Bridge & Alpine Coaster, Fansipan Peak, Ba Na Hills & Golden Bridge, Hoi An Basket Boat & Lanterns, Cu Chi Tunnels with AK-47 Shooting, Phu Quoc 3-Island Speedboat Tour, Hon Thom Cable Car, VinWonders & Grand World Venice.'
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Hanoi Arrival, Hanoi City Tour, Evening visit Train Street & Beer Street',
+        description: [
+          'Arrive at Noi Bai International Airport in Hanoi, meet your tour representative, and transfer to your hotel in central Hanoi Old Quarter.',
+          'Check in at La Siene / Babylon Grand Hotel / Similar and refresh.',
+          'Embark on a guided city tour of Hanoi Old Quarters.',
+          'Experience Hanoi on a traditional Cyclo tour (Hanoi Cyclo Tour) through bustling streets.',
+          'Visit the iconic Hanoi Train Street and enjoy famous Vietnamese coffee/drinks.',
+          'Experience the most lively street of Hanoi - Ta Hien Beer Street in the evening.',
+          'Overnight stay in Hanoi.',
+          'Meals: Not Included.'
+        ]
+      },
+      {
+        day: 2,
+        title: 'Ninh Binh - Trang An - Mua Cave, Overnight Train to Sapa',
+        description: [
+          'Enjoy an early morning breakfast at the hotel.',
+          'Depart on a scenic day trip to Ninh Binh, often called the "Ha Long Bay on land".',
+          'Experience the iconic Trang An boat ride through mystical limestone caves and emerald waterways.',
+          'Visit the ancient capital of Hoa Lu and learn about Vietnam\'s royal history.',
+          'Climb up to Mua Cave viewpoint to witness a stunning panoramic sunset over Tam Coc.',
+          'Return to Hanoi and transfer to Hanoi Railway Station.',
+          'Board the SP3 Luxury Overnight Train to Sapa (22:00 - 05:55 hrs, 4-berth shared cabin).',
+          'Overnight journey on the train.',
+          'Meals: Breakfast.'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Sapa Rong May Glass Bridge, Rainbow Slide, Alpine Coaster & Cat Cat Village',
+        description: [
+          'Arrive early morning around 5:00 AM at Lao Cai / Sapa.',
+          'Transfer and early check-in at Sapa Village Hotel / Similar to relax and rest.',
+          'Enjoy breakfast at the hotel.',
+          'In the afternoon, visit the Rong May Glass Bridge suspended above breathtaking mountain valleys with optional ziplining.',
+          'Experience the thrilling Rainbow Slide and the exhilarating Alpine Coaster ride.',
+          'Explore the picturesque Cat Cat Village cultural trail, water wheels, and H\'Mong artisan shops.',
+          'Spend the evening at leisure exploring Sapa town\'s vibrant cafe and shopping streets.',
+          'Overnight stay in Sapa.',
+          'Meals: Breakfast.'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Fansipan Peak with Muong Hoa Train & Cable Car, Sleeper Bus Transfer to Hanoi',
+        description: [
+          'Enjoy an early morning breakfast with mountain views.',
+          'Board the Muong Hoa mountain train and scenic Cable Car up to Fansipan Peak (the "Roof of Indochina" at 3,143m).',
+          'Explore the cloud-kissed pagoda complex, giant Buddha statue, and panoramic summit viewpoints.',
+          'Descend back to Sapa town and prepare for departure.',
+          'Board your comfortable Single Cabin Sleeper Bus for the journey back to Hanoi.',
+          'Arrive in Hanoi by evening, check into your hotel (La Siene / Similar), and enjoy the buzzing Hanoi nightlife at leisure.',
+          'Overnight stay in Hanoi.',
+          'Meals: Breakfast.'
+        ]
+      },
+      {
+        day: 5,
+        title: 'Hanoi to Da Nang Flight, Hoi An Ancient Town Exploration',
+        description: [
+          'Enjoy early morning packed breakfast and transfer to Noi Bai Airport for your flight to Da Nang.',
+          'Arrive in Da Nang and board your transfer to Hoi An (Vietnam\'s most iconic UNESCO ancient town).',
+          'Enjoy the world-famous Coconut Basket Boat ride with spinning boat performances in Cam Thanh water coconut forest.',
+          'Experience Hoi An Ancient Town and Lantern Village paddling on a bicycle.',
+          'In the evening, take a magical lantern boat ride along the illuminated Hoai River and release a wish lantern.',
+          'Transfer and check-in to Sepon Blue Hotel / Similar in Da Nang.',
+          'Overnight stay in Da Nang.',
+          'Meals: Breakfast.'
+        ]
+      },
+      {
+        day: 6,
+        title: 'Ba Na Hills Cable Car, Golden Hands Bridge, Fantasy Park & French Village, Dragon Bridge',
+        description: [
+          'Enjoy a hearty morning breakfast at your hotel.',
+          'Depart for Ba Na Hills and ride the world-record two-way cable car offering breathtaking rainforest views.',
+          'Walk across the world-famous Golden Hands Bridge held aloft by colossal stone hands.',
+          'Explore the romantic French Village, European-style gardens, and enjoy rides at Fantasy Park.',
+          'Return to Da Nang in the evening. Visit the iconic Dragon Bridge and relax on My Khe Beach with cafes and nightlife.',
+          'Overnight stay in Da Nang.',
+          'Meals: Breakfast.'
+        ]
+      },
+      {
+        day: 7,
+        title: 'Early Morning Flight Da Nang to Ho Chi Minh City, Cu Chi Tunnels & Saigon Exploration',
+        description: [
+          'Enjoy breakfast and transfer to Da Nang International Airport for your flight to Ho Chi Minh City (Saigon).',
+          'Arrive in Ho Chi Minh City and proceed on an excursion to the historic Cu Chi Tunnels network.',
+          'Explore secret trap doors, underground living bunkers, and experience live AK-47 rifle shooting.',
+          'Return to the city for cafe hopping at the trendy 9-story Apartment Cafe and savor authentic Vietnamese egg coffee at Poo Cafe.',
+          'Check in at Liberty Green Park Hotel / Similar.',
+          'Spend the vibrant night at leisure soaking in the energy of Bui Vien Walking Street.',
+          'Overnight stay in Ho Chi Minh City.',
+          'Meals: Breakfast.'
+        ]
+      },
+      {
+        day: 8,
+        title: 'Flight from Ho Chi Minh to Phu Quoc Island, 3-Island Speedboat Tour & Hon Thom Cable Car',
+        description: [
+          'Enjoy breakfast and transfer to Tan Son Nhat Airport for your morning flight to tropical Phu Quoc Island.',
+          'Arrive in Phu Quoc and check in at Gaia Hotel / Similar.',
+          'Embark on an exhilarating 3-Island Speedboat Tour visiting Gam Ghi Island, Xuong Island, and May Rut Island for snorkeling and crystal-clear waters.',
+          'Ride the Hon Thom Cable Car - the world\'s longest 3-wire over-sea cable car with panoramic ocean views.',
+          'Have fun at Aquatopia Water Park on Pineapple Island.',
+          'In the evening, take stunning sunset photos on the architectural marvel Kiss Bridge and explore Mediterranean Sunset Town.',
+          'Overnight stay in Phu Quoc.',
+          'Meals: Breakfast.'
+        ]
+      },
+      {
+        day: 9,
+        title: 'Adventure Filled Day in Phu Quoc: VinWonders & Grand World Venice Experience',
+        description: [
+          'Enjoy a relaxing morning breakfast at the hotel.',
+          'Spend the day exploring VinWonders Phu Quoc - Vietnam\'s largest and premier world-class theme park featuring thrilling roller coasters, water parks, and Neptune Palace Aquarium.',
+          'In the evening, visit Grand World Phu Quoc (the "Sleepless City").',
+          'Experience a romantic Venice Gondola Boat Ride along the charming canals, visit the Teddy Bear Museum, and watch the spectacular Tinh Hoa Vietnam cultural live show.',
+          'Explore local night markets and vibrant seaside nightlife at leisure.',
+          'Overnight stay in Phu Quoc.',
+          'Meals: Breakfast.'
+        ]
+      },
+      {
+        day: 10,
+        title: 'Phu Quoc Departure - Unforgettable Memories',
+        description: [
+          'Enjoy your final breakfast in tropical paradise.',
+          'Check out from the hotel and enjoy some leisure time for last-minute souvenir shopping or beach relaxation.',
+          'Transfer to Phu Quoc International Airport as per fixed group departure timing for your flight back home.',
+          'Your amazing Vietnam adventure concludes with unforgettable memories and lifelong friendships!',
+          'Meals: Breakfast.'
+        ]
+      }
+    ],
+    inclusions: [
+      'Ground transfers by Private Minibus for airport and sightseeing in each city',
+      'Hanoi to Sapa Luxury SP3 Overnight Train Ticket (4-berth shared AC cabin)',
+      'Sapa to Hanoi Single Cabin Sleeper Bus transfer',
+      'Wanderphilia Trip Guide plus professional local English-speaking guides throughout',
+      'Guided Hanoi City Tour (Old Quarter & French Quarter)',
+      'Traditional Hanoi Cyclo Tour experience',
+      'Ninh Binh full-day tour: Trang An boat ride, Mua Cave viewpoint, and Hoa Lu ancient capital',
+      'Sapa Rong May Glass Bridge ticket with ziplining experience',
+      'Rainbow Slide & Alpine Coaster rides in Sapa',
+      'Cat Cat Village cultural trail & entry fee',
+      'Fansipan Peak Cable Car round-trip tickets & Muong Hoa Mountain Train ticket',
+      'Hoi An Ancient Town tour, Cam Thanh Coconut Basket Boat ride, and bicycle paddling',
+      'Magical evening Lantern Boat ride in Hoi An with flower lantern release',
+      'Ba Na Hills round-trip Cable Car, Golden Hands Bridge, French Village & Fantasy Park entry',
+      'Da Nang city tour with Dragon Bridge visit',
+      'Cu Chi Tunnels guided tour with AK-47 live rifle shooting experience',
+      'Saigon Cafe Hopping at Apartment Cafe with signature Egg Coffee',
+      'Phu Quoc South Island 3-Island Speedboat Tour (Gam Ghi, Xuong & May Rut) with snorkeling gear',
+      'Hon Thom longest over-sea Cable Car ride & Aquatopia Water Park entry ticket',
+      'Kiss Bridge entry & Sunset Town Mediterranean exploration',
+      'VinWonders Phu Quoc Theme Park all-access entry ticket',
+      'Grand World Phu Quoc Venice Gondola Boat Ride & Tinh Hoa Vietnam show experience',
+      '9 Nights Hotel Accommodation (Double & Triple Sharing): 2N Hanoi, 2N Sapa, 2N Da Nang, 1N Ho Chi Minh, 2N Phu Quoc',
+      'Daily Breakfast (9 Breakfasts)',
+      'Complimentary 2 bottles of mineral water per person per day during sightseeing',
+      'Vietnam Single-Entry Tourist E-Visa assistance & processing fee'
+    ],
+    exclusions: [
+      'Domestic flights (Hanoi to Da Nang, Da Nang to Ho Chi Minh, Ho Chi Minh to Phu Quoc)',
+      'International flight tickets to/from Vietnam',
+      'Lunch and Dinner (except where specified)',
+      'Mandatory tipping for guide & driver: 3 USD per person per day',
+      '5% GST + TCS as applicable on international bookings',
+      'Personal expenses like laundry, room service, drinks, shopping, telephone charges',
+      'Any optional activities, water sports, or camera fees not specified in inclusions',
+      'Travel insurance (highly recommended)'
+    ],
+    accommodations: [
+      {
+        city: 'Hanoi',
+        hotel: 'La Siene Hotel / Babylon Grand Hotel / Similar',
+        nights: '2 Nights'
+      },
+      {
+        city: 'Sapa',
+        hotel: 'Sapa Village Hotel / Similar',
+        nights: '2 Nights'
+      },
+      {
+        city: 'Da Nang',
+        hotel: 'Sepon Blue Hotel / Similar',
+        nights: '2 Nights'
+      },
+      {
+        city: 'Ho Chi Minh City',
+        hotel: 'Liberty Green Park Hotel / Similar',
+        nights: '1 Night'
+      },
+      {
+        city: 'Phu Quoc',
+        hotel: 'Gaia Hotel Phu Quoc / Similar',
+        nights: '2 Nights'
+      }
+    ],
+    sharingPrices: [
+      {
+        type: 'Triple Sharing',
+        price: 71499
+      },
+      {
+        type: 'Double Sharing',
+        price: 71499
+      }
+    ],
+    batches: [
+      {
+        date: '01 Oct - 10 Oct',
+        year: '2026',
+        available: true,
+        status: 'Available'
+      },
+      {
+        date: '13 Nov - 22 Nov',
+        year: '2026',
+        available: true,
+        status: 'Available'
+      },
+      {
+        date: '20 Nov - 29 Nov',
+        year: '2026',
+        available: true,
+        status: 'Available'
+      },
+      {
+        date: '11 Dec - 20 Dec',
+        year: '2026',
+        available: true,
+        status: 'Available'
+      },
+      {
+        date: '18 Dec - 28 Dec',
+        year: '2026',
+        available: true,
+        status: 'Available'
+      },
+      {
+        date: '26 Dec - 04 Jan',
+        year: '2026-27',
+        available: true,
+        status: 'Available'
+      }
+    ],
+    included: [
+      'Ground transfer by Private minibus, joining sleeping bus & luxury train as mentioned',
+      'Wanderphilia Guide plus local guide',
+      'Guided Hanoi city tour of Old Quarters',
+      'Hanoi Cycle Tour (Cyclo)',
+      'Ninh Binh Trang An boat trip, Mua Cave, Hoa Lu Ancient Capital',
+      'Rong May Glass bridge, Cat Cat village, slide & Alpine Coaster in Sapa',
+      'Cable car Fansipan with roundtrip Muong Hoa train',
+      'Hoi An Coconut basket ride, explore Hoi An by cycle, evening lantern boat ride experience',
+      'Visit Bana Hill Cable Car, Golden Bridge, Fantasy Park & French Village & Visit Dragon Bridge',
+      'Visit Cu Chi Tunnel with AK-47 rifle shooting experience',
+      'Ho Chi Minh City Tour & Cafe Hopping at Apartment Cafe',
+      '3 Island Tour in Phu Quoc by Speedboat',
+      'Hon Thom Cable Car Experience & visit Aquatopia Water Park',
+      'Kiss Bridge & Sunset Town',
+      'VinWonders Entry Ticket & Grand World Venice Boat Ride',
+      'Water on tours (2 bottles/pax/day)',
+      'Hotels accommodation with Breakfast (Double & Triple Sharing)',
+      'One way train ticket for overnight (4 berth/cabin)',
+      'One way by sleeping day bus from Sapa to Hanoi (single cabin)',
+      'Vietnam E-Visa',
+      'Fixed Airport transfers as per group departure timing'
+    ],
+    notIncluded: [
+      'Meals as mentioned above (Lunches & Dinners unless specified)',
+      'Compulsory tipping for guide & driver: 3 USD/pax/day',
+      'Government Taxes & Charges (5% GST + TCS as applicable)',
+      'Domestic flights (Hanoi to Da Nang, Da Nang to Ho Chi Minh, Ho Chi Minh to Phu Quoc) & International airfare',
+      'Visa stamping / entry fees beyond standard e-visa support',
+      'Other items and personal expenses not mentioned above'
+    ],
+    stays: [
+      'Hanoi: La Siene / Babylon Grand Hotel / Similar',
+      'Sapa: Sapa Village / Similar',
+      'Da Nang: Sepon Blue / Similar',
+      'Ho Chi Minh: Liberty Green Park / Similar',
+      'Phu Quoc: Gaia / Similar'
+    ],
+    batchDates: [
+      {
+        month: 'October',
+        ranges: ['1st Oct - 10th Oct']
+      },
+      {
+        month: 'November',
+        ranges: ['13th Nov - 22nd Nov', '20th Nov - 29th Nov']
+      },
+      {
+        month: 'December',
+        ranges: ['11th Dec - 20th Dec', '18th Dec - 28th Dec', '26th Dec - 4th Jan']
+      }
+    ],
+    dates: [],
+    costingDetails: [
+      { label: 'Double Sharing Rate', value: '₹71,499' },
+      { label: 'Triple Sharing Rate', value: '₹71,499' }
+    ],
+    thingsToCarry: [
+      'Passport with minimum 6 months validity from the date of departure from India',
+      'Sunscreen & lip balm, Good U/V protection sunglasses',
+      'Swimwear for Phu Quoc & Aquatopia water park',
+      'Warm layer / light jacket for Fansipan & Sapa',
+      'Personal Medicines (if any)'
+    ],
+    travelEssentials: [
+      {
+        title: 'Gears',
+        items: [
+          'A medium size trolley or backpack (40-60L) with one cabin bag',
+          'Daypack (15-20L) for day excursions',
+          'Waterproof phone pouch for boat rides & snorkeling'
+        ]
+      },
+      {
+        title: 'Clothes',
+        items: [
+          'Sun cap and UV protected sunglasses',
+          'Breathable cotton shirts and shorts',
+          'Light jacket / fleece for Sapa & Fansipan peak',
+          'Swimwear / beachwear for Phu Quoc',
+          'Modest clothing covering shoulders and knees for temples and Pagodas',
+          'Rain poncho or compact umbrella'
+        ]
+      },
+      {
+        title: 'Footwear',
+        items: [
+          'Comfortable walking shoes or sneakers',
+          'Water sandals or flip-flops for beach & boat rides'
+        ]
+      },
+      {
+        title: 'Medication',
+        items: [
+          'Personal prescribed medication',
+          'Motion sickness pills, headache and pain relief',
+          'Oral rehydration salts (ORS)',
+          'Bandages and antiseptic cream'
+        ]
+      },
+      {
+        title: 'Personal Accessories',
+        items: [
+          'Toothpaste, toothbrush & toiletries',
+          'Hand sanitizer or paper soap',
+          'Sunscreen SPF 50+, moisturizer, insect repellent spray',
+          'Universal travel adapter and high-capacity power bank'
+        ]
+      }
+    ],
+    thingsToPack: [
+      {
+        category: 'Luggage & Bags',
+        items: [
+          'Backpack (40-60L) or Trolley Bag',
+          'Daypack (15-20L) for daily excursions & boat trips',
+          'Waterproof cover for backpack / dry bag'
+        ]
+      },
+      {
+        category: 'Clothing & Footwear',
+        items: [
+          'Comfortable breathable cotton t-shirts and shorts',
+          'Light jacket / fleece & layers for cooler Sapa weather and Fansipan Peak',
+          'Modest clothing covering knees and shoulders for temple & cave visits',
+          'Swimwear / beachwear for Phu Quoc & Aquatopia water park',
+          'Comfortable walking/trekking shoes & sandals'
+        ]
+      },
+      {
+        category: 'Electronics & Essentials',
+        items: [
+          'Universal power adapter & power bank',
+          'Waterproof phone pouch for basket boat & island speedboat tours',
+          'Personal medication & first aid kit',
+          'Sunscreen (SPF 50+), sunglasses, and sun hat',
+          'Insect repellent'
+        ]
+      }
+    ],
+    cancellationPolicy: [
+      'More than 30 days before departure – Cancellation charges as per actual expenses incurred and supplier policies.',
+      '30 to 16 days before departure – 50% of the total package cost.',
+      '15 to 08 days before departure – 75% of the total package cost.',
+      '07 days or less before departure / No Show – 100% of the total package cost.'
+    ],
+    note: [
+      '50% advance payment is required to confirm the booking and secure all travel services.',
+      'Balance 50% payment must be received at least 15 days prior to departure.',
+      'All bookings are subject to availability and confirmation from respective suppliers at the time of payment.',
+      'Any increase in taxes, government levies, fuel surcharges, or currency fluctuations before final payment may be charged additionally.',
+      'Normal Check-in and Check-out time is 03:00 PM and 12:00 noon respectively in Vietnam. Early check-in with breakfast is available at an extra cost of 30 USD/ per person.',
+      'Airport transfer is at fixed time (depending on the majority of arrival and departure time of the group) - Any early or late transfer will be charged extra.',
+      'The age limit of our group departures is 18 to 42 years due to the power packed itineraries that we provide to our travellers. We can customize trips for travellers beyond the mentioned age bracket.',
+      'Every traveler is required to be holding a valid passport with an expiry date at least 6 months post the date of entering Vietnam.'
+    ]
+  },
+  {
+    id: '40',
+    title: '9 Days Exclusive Vietnam with Phu Quoc Group Trip',
+    slug: 'vietnam-phu-quoc-group-trip',
+    image: '/images/vietnam.png',
+    destination: 'Vietnam',
+    category: 'Vietnam',
+    description: "Experience the ultimate 9-day journey through the wonders of Vietnam and the tropical paradise of Phu Quoc. Discover the historic charm of Hanoi, explore the misty peaks and glass bridges of Sapa, marvel at the Golden Bridge and Ba Na Hills in Da Nang, step back in time at Hoi An Ancient Town, and unwind with theme parks and island hopping on the pristine beaches of Phu Quoc.",
+    duration: 9,
+    nights: 8,
+    price: 62499,
+    rating: 4.9,
+    route: '2N Hanoi - 2N Sapa - 2N Danang - 2N Phu Quoc',
+    difficulty: 'Easy',
+    groupSize: 16,
+    tripType: 'International',
+    showGetQuoteOnly: false,
+    inclusionsSummary: {
+      hotels: 4,
+      transfers: 17,
+      experiences: 11,
+      meals: 8,
+      visa: true,
+      tripGuide: true,
+    },
+    highlights: [
+      'Hanoi Old Quarter & Train Street',
+      'Ninh Binh Trang An Boat Ride & Mua Cave',
+      'SP3 Luxury Overnight Train to Sapa',
+      'Rong May Glass Bridge, Rainbow Slide & Alpine Coaster',
+      'Cat Cat Village & Fansipan Peak Cable Car',
+      'Hoi An Ancient Town, Coconut Basket Ride & Lantern Boat',
+      'Ba Na Hills, Golden Bridge, Fantasy Park & French Village',
+      'South Phu Quoc 3 Island Tour by Speed Boat',
+      'Hon Thom Longest Cable Car & Aquatopia Water Park',
+      'Kiss Bridge & Sunset Town',
+      'VinWonders Theme Park & Grand World Venice Boat Ride'
+    ],
+    overviewPoints: [
+      'Route: 2N Hanoi - 2N Sapa - 2N Danang - 2N Phu Quoc',
+      'Duration: 8 Nights / 9 Days.',
+      'Trip Start: Hanoi.',
+      'Trip End: Phu Quoc.',
+      'Summary: 4 Cities, 17 Transfers, 11 Experiences, 8 Meals, Visa, Trip Guide.',
+      'Major Highlights: Hanoi Train Street & Beer Street, Ninh Binh Trang An & Mua Cave, Sapa Glass Bridge & Alpine Coaster, Fansipan Peak, Hoi An Ancient Town & Lantern Boat, Ba Na Hills & Golden Bridge, Phu Quoc 3-Island Speedboat, Hon Thom Cable Car, Kiss Bridge, VinWonders & Grand World.'
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Hanoi Arrival, Hanoi City Tour, Evening visit Train Street & Beer Street',
+        description: [
+          'Arrive at Noi Bai International Airport in Hanoi, meet your tour representative, and transfer to your hotel in central Hanoi Old Quarter.',
+          'Check in at Babylon Grand Hotel / Similar and refresh.',
+          'Embark on a guided city tour of Hanoi Old Quarters.',
+          'Experience Hanoi on a traditional Cyclo tour through bustling French-colonial streets.',
+          'Visit the iconic Hanoi Train Street and experience famous Vietnamese coffee / drinks.',
+          'Experience the most lively nightlife street of Hanoi - Ta Hien Beer Street.',
+          'Overnight stay in Hanoi.',
+          'Meals: Not Included.'
+        ]
+      },
+      {
+        day: 2,
+        title: 'Ninh Binh - Trang An - Mua Cave, Overnight Train to Sapa',
+        description: [
+          'Enjoy an early morning breakfast at the hotel.',
+          'Embark on a full-day excursion to Ninh Binh, often called the "Ha Long Bay on Land".',
+          'Experience the iconic Trang An boat ride through emerald waterways and majestic karst caves.',
+          'Visit the ancient capital of Hoa Lu and learn about Vietnam’s royal dynasties.',
+          'Hike up to the panoramic viewpoint at Mua Cave to capture a breathtaking sunset.',
+          'Later, transfer back to Hanoi and board the SP3 Luxury Overnight Train to Sapa (22:00 – 05:55 hrs).',
+          'Overnight journey in 4-berth air-conditioned sleeper train cabin.',
+          'Meals: Breakfast.'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Sapa Rong May Glass Bridge, Rainbow Slide, Alpine Coaster & Cat Cat Village',
+        description: [
+          'Arrive early morning around 5:00 AM in Sapa, transfer to hotel, early check-in, relax & rest.',
+          'After breakfast, visit the thrilling Rong May Glass Bridge with optional ziplining.',
+          'Experience the iconic Rainbow Slide & Alpine Coaster ride amidst the misty mountains.',
+          'Trek down the scenic trail to Cat Cat Village, home to the Black H’mong ethnic community, with traditional water wheels and waterfalls.',
+          'Evening at leisure to explore Sapa shopping streets, night cafes, and markets.',
+          'Overnight stay in Sapa.',
+          'Meals: Breakfast.'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Fansipan Peak with Muong Hoa Train & Cable Car, Sleeper Bus Transfer from Sapa to Hanoi',
+        description: [
+          'Enjoy an early morning breakfast with mountain views.',
+          'After breakfast, visit Fansipan Peak ("Roof of Indochina" at 3,143m) taking the Muong Hoa mountain train & Sun World cable car.',
+          'Marvel at the giant Buddha statue, cloud ocean, and sweeping views of Hoang Lien Son range.',
+          'Later, board your sleeper bus transfer from Sapa to Hanoi.',
+          'Reach Hanoi by evening and spend time at leisure enjoying nightlife in Hanoi.',
+          'Overnight stay in Hanoi.',
+          'Meals: Breakfast.'
+        ]
+      },
+      {
+        day: 5,
+        title: 'Hanoi to Da Nang Flight, Hoi An Ancient Town Exploration',
+        description: [
+          'Enjoy early morning packed breakfast and transfer to Noi Bai Airport for your flight to Da Nang.',
+          'Arrive in Da Nang and board your transfer for Hoi An (most iconic ancient town of Vietnam).',
+          'Enjoy the iconic Coconut Basket Boat ride in Cam Thanh water coconut forest.',
+          'Experience Hoi An Lantern Village paddling on bicycle past centuries-old merchant houses.',
+          'In the evening, take a magical lantern boat ride along the Hoai River.',
+          'Transfer and check-in to your hotel in Da Nang.',
+          'Overnight stay in Da Nang.',
+          'Meals: Breakfast.'
+        ]
+      },
+      {
+        day: 6,
+        title: 'Visit Ba Na Hills Cable Car, Golden Bridge, Fantasy Park, French Village & Dragon Bridge',
+        description: [
+          'Relaxing morning breakfast at the hotel.',
+          'Visit Ba Na Hills via two-way world-record cable car ride.',
+          'Walk across the world-famous Golden Bridge held aloft by giant stone hands.',
+          'Explore Fantasy Park, French Village, Le Jardin D’Amour flower gardens, and Debay Wine Cellar.',
+          'Visit the iconic Dragon Bridge in Da Nang.',
+          'Relaxing evening on the beach; explore cafes and nightlife.',
+          'Overnight stay in Da Nang.',
+          'Meals: Breakfast.'
+        ]
+      },
+      {
+        day: 7,
+        title: 'Flight to Phu Quoc Island, 3 Island Speedboat Tour, Hon Thom Cable Car & Kiss Bridge',
+        description: [
+          'After breakfast, transfer to Da Nang Airport for your flight to Phu Quoc Island.',
+          'Arrive in Phu Quoc and embark on the South Island 3-Island Speedboat Tour (Gam Ghi Island, Xuong Island & May Rut Island).',
+          'Snorkel pristine coral reefs, swim, and relax on white sand beaches.',
+          'Experience the world’s longest over-sea cable car — Hon Thom Cable Car — and visit Aquatopia Water Park.',
+          'In the evening, visit and take photos on the iconic Kiss Bridge.',
+          'Spend time at leisure exploring Sunset Town.',
+          'Overnight stay in Phu Quoc.',
+          'Meals: Breakfast.'
+        ]
+      },
+      {
+        day: 8,
+        title: 'Adventure in Phu Quoc: VinWonders Theme Park & Grand World',
+        description: [
+          'After a relaxing morning breakfast at the resort.',
+          'Visit VinWonders, Vietnam’s premier theme park with thrilling coasters, water park, and giant aquarium.',
+          'In the evening, visit Grand World Phu Quoc—"The Sleepless City".',
+          'Experience the Venice Gondola Boat Ride, Teddy Bear Museum, and watch the Tinh Hoa Vietnam / Fountain Show.',
+          'Explore local nightlife and enjoy the evening at leisure.',
+          'Overnight stay in Phu Quoc.',
+          'Meals: Breakfast.'
+        ]
+      },
+      {
+        day: 9,
+        title: 'Departure from Phu Quoc - Amazing Adventure Concludes',
+        description: [
+          'Enjoy your final breakfast at the resort and complete check-out.',
+          'Board scheduled airport transfer as per group departure timing.',
+          'Depart Vietnam with unforgettable memories and stories to take home.',
+          'Meals: Breakfast.'
+        ]
+      }
+    ],
+    included: [
+      'Ground transfer by Private minibus, joining sleeping bus & luxury train as mentioned',
+      'Wanderphilia Guide plus local guide',
+      'Guided Hanoi city tour of Old Quarters',
+      'Hanoi Cycle Tour (Cyclo)',
+      'Ninh Binh Trang An boat trip, Mua Cave & Hoa Lu Ancient Capital',
+      'Rong May Glass Bridge, Cat Cat Village trail, slide & Alpine Coaster in Sapa',
+      'Cable car Fansipan with roundtrip Muong Hoa train',
+      'Hoi An Coconut basket ride, explore Hoi An by cycle, and evening lantern boat ride experience',
+      'Visit Ba Na Hills Cable Car, Golden Bridge, Fantasy Park & French Village & Visit Dragon Bridge',
+      '3 Island Tour in Phu Quoc by Speed Boat (Gam Ghi Island, Xuong Island & May Rut Island)',
+      'Hon Thom Cable Car Experience & visit Aquatopia Water Park',
+      'Kiss Bridge visit & Sunset Town exploration',
+      'VinWonders Theme Park entry ticket',
+      'Grand World Phu Quoc visit with Venice Boat Ride & Tinh Hoa Show experience',
+      'Bottles of water on tours (2 bottles/pax/day)',
+      'Hotels accommodation with daily Breakfast (Double & Triple Sharing)',
+      'One way train ticket for overnight (4-berth/cabin SP3)',
+      'One way by sleeping day bus from Sapa to Hanoi (single cabin)',
+      'Vietnam E-Visa'
+    ],
+    notIncluded: [
+      'Meals other than those mentioned in the itinerary (Lunch & Dinner)',
+      'Compulsory tipping for guide & driver: $3 USD/pax/day',
+      'Government Taxes & Charges (GST & TCS as applicable extra)',
+      'Domestic flights (Hanoi to Da Nang & Da Nang to Phu Quoc) and International flights',
+      'Visa stamping / embassy fees if applicable beyond standard e-visa service',
+      'Single supplement for solo room occupancy',
+      'Personal expenses, laundry, telephone calls, drinks, and other items not mentioned above'
+    ],
+    stays: [
+      'Hanoi: La Siene / Babylon Grand Hotel / Similar',
+      'Sapa: Sapa Village / Similar',
+      'Da Nang: Sepon Blue / Similar',
+      'Phu Quoc: Gaia / Similar'
+    ],
+    batchDates: [
+      {
+        month: 'October',
+        ranges: ['2nd Oct - 10th Oct']
+      },
+      {
+        month: 'November',
+        ranges: ['14th Nov - 22nd Nov', '21st Nov - 29th Nov']
+      },
+      {
+        month: 'December',
+        ranges: ['12th Dec - 20th Dec', '19th Dec - 27th Dec', '26th Dec - 3rd Jan']
+      }
+    ],
+    dates: [],
+    costingDetails: [
+      { label: 'Double Sharing Rate', value: '₹62,499' }
+    ],
+    thingsToCarry: [
+      'Passport with minimum 6 months validity from the date of departure from India',
+      'Sunscreen & lip balm, Good U/V protection sunglasses',
+      'Personal Medicines (if any)'
+    ],
+    travelEssentials: [
+      {
+        title: 'Gears',
+        items: [
+          'A medium size trolley with one cabin bag',
+          'Reusable water bladder or water bottle'
+        ]
+      },
+      {
+        title: 'Clothes',
+        items: [
+          'a sun cap',
+          'UV protected sunglasses',
+          'Cotton Shirts and T-shirts',
+          'Jeans, Shorts and cotton pants',
+          'Sets of undergarments',
+          'Pair of socks',
+          'A small towel or Beach Towel',
+          'A rain jacket or a poncho'
+        ]
+      },
+      {
+        title: 'Footwear',
+        items: [
+          'Sport Shoes or Sneakers',
+          'Flip flops/sandals'
+        ]
+      },
+      {
+        title: 'Medication',
+        items: [
+          'Glucose powder',
+          'Medicines for headaches, diarrhoea, motion sickness',
+          'Dettol',
+          'Bandages',
+          'Cotton'
+        ]
+      },
+      {
+        title: 'Personal Accessories',
+        items: [
+          'toothpaste, toothbrush',
+          'Paper soap, or sanitizer',
+          'Sunscreen minimum of spf40 , lip balm, cold creams',
+          'Body spray',
+          'LED torch light'
+        ]
+      }
+    ],
+    cancellationPolicy: [
+      'More than 30 days before departure – Cancellation charges as per actual expenses incurred and supplier policies.',
+      '30 to 16 days before departure – 50% of the total package cost.',
+      '15 to 08 days before departure – 75% of the total package cost.',
+      '07 days or less before departure / No Show – 100% of the total package cost.'
+    ],
+    note: [
+      '50% advance payment is required to confirm the booking and secure all travel services.',
+      'Balance 50% payment must be received at least 15 days prior to departure.',
+      'All bookings are subject to availability and confirmation from respective suppliers at the time of payment.',
+      'Any increase in taxes, government levies, fuel surcharges, or currency fluctuations before final payment may be charged additionally.',
       'Normal Check-in and Check-out time is 03:00 PM and 12:00 noon respectively in Vietnam. Early check-in with breakfast is available at an extra cost of 30 USD/ per person.',
       'Airport transfer is at fixed time (depending on the majority of arrival and departure time of the group) - Any early or late transfer will be charged extra.',
       'The age limit of our group departures is 18 to 42 years due to the power packed itineraries that we provide to our travellers. We can customize trips for travellers beyond the mentioned age bracket.',
