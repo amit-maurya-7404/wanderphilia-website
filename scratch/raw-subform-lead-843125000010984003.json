@@ -1,0 +1,221 @@
+[
+  {
+    "Modified_Time": "2026-09-23T20:13:26+05:30",
+    "No_of_Guests": null,
+    "Inclusions_Description_4": null,
+    "Inclusions_Description_3": null,
+    "$field_states": null,
+    "Created_Time": "2026-09-23T20:13:26+05:30",
+    "Parent_Id": {
+      "name": "Bhavin Thakker",
+      "id": "843125000010984003"
+    },
+    "Rate_per_person": null,
+    "Inclusions_Description_2": null,
+    "$layout_id": {
+      "display_label": "Standard",
+      "name": "Standard",
+      "id": "843125000010337186"
+    },
+    "City": "Jaipur",
+    "Inclusions_Description_1": "Nahgarh sits on the Aravalli ridge overlooking jaipur and offers spectacular city views.",
+    "Experiences_and_activities": {
+      "name": "Nahagarh Sunset Experience",
+      "id": "843125000010993061"
+    },
+    "City_2": null,
+    "En_route_Experiences": null,
+    "$in_merge": false,
+    "Days": "Day 1",
+    "Total_Cost": null,
+    "id": "843125000011057001",
+    "Experiences_2": null,
+    "$zia_visions": null,
+    "Experiences_3": null,
+    "Experiences_4": null
+  },
+  {
+    "Modified_Time": "2026-09-23T20:13:26+05:30",
+    "No_of_Guests": null,
+    "Inclusions_Description_4": null,
+    "Inclusions_Description_3": "Social Food Local Interaction",
+    "$field_states": null,
+    "Created_Time": "2026-09-23T20:13:26+05:30",
+    "Parent_Id": {
+      "name": "Bhavin Thakker",
+      "id": "843125000010984003"
+    },
+    "Rate_per_person": null,
+    "Inclusions_Description_2": "Can enjoy elephant Feeding,baithing & painting",
+    "$layout_id": {
+      "display_label": "Standard",
+      "name": "Standard",
+      "id": "843125000010337186"
+    },
+    "City": "Jaipur",
+    "Inclusions_Description_1": "Hawa Mahal, City Palace, Amber Fort",
+    "Experiences_and_activities": {
+      "name": "Jaipur City Tour",
+      "id": "843125000010993063"
+    },
+    "City_2": null,
+    "En_route_Experiences": null,
+    "$in_merge": false,
+    "Days": "Day 2",
+    "Total_Cost": null,
+    "id": "843125000011057002",
+    "Experiences_2": {
+      "name": "Elephant Village Experience",
+      "id": "843125000010846127"
+    },
+    "$zia_visions": null,
+    "Experiences_3": {
+      "name": "Jaipur Pink City Bazaar Tour",
+      "id": "843125000010993065"
+    },
+    "Experiences_4": null
+  },
+  {
+    "Modified_Time": "2026-09-23T20:13:26+05:30",
+    "No_of_Guests": null,
+    "Inclusions_Description_4": null,
+    "Inclusions_Description_3": null,
+    "$field_states": null,
+    "Created_Time": "2026-09-23T20:13:26+05:30",
+    "Parent_Id": {
+      "name": "Bhavin Thakker",
+      "id": "843125000010984003"
+    },
+    "Rate_per_person": null,
+    "Inclusions_Description_2": null,
+    "$layout_id": {
+      "display_label": "Standard",
+      "name": "Standard",
+      "id": "843125000010337186"
+    },
+    "City": "Jaipur",
+    "Inclusions_Description_1": "Enjoy the peaceful surrounding, soak in the tranquil wilderness of Ranthambore",
+    "Experiences_and_activities": {
+      "name": "Evening Leisure",
+      "id": "843125000010993109"
+    },
+    "City_2": "Ranthambore",
+    "En_route_Experiences": null,
+    "$in_merge": false,
+    "Days": "Day 3",
+    "Total_Cost": null,
+    "id": "843125000011057003",
+    "Experiences_2": null,
+    "$zia_visions": null,
+    "Experiences_3": null,
+    "Experiences_4": null
+  },
+  {
+    "Modified_Time": "2026-09-23T20:13:26+05:30",
+    "No_of_Guests": null,
+    "Inclusions_Description_4": null,
+    "Inclusions_Description_3": null,
+    "$field_states": null,
+    "Created_Time": "2026-09-23T20:13:26+05:30",
+    "Parent_Id": {
+      "name": "Bhavin Thakker",
+      "id": "843125000010984003"
+    },
+    "Rate_per_person": null,
+    "Inclusions_Description_2": null,
+    "$layout_id": {
+      "display_label": "Standard",
+      "name": "Standard",
+      "id": "843125000010337186"
+    },
+    "City": "Ranthambore",
+    "Inclusions_Description_1": "Enjoy the peaceful surrounding, soak in the tranquil wilderness of Ranthambore",
+    "Experiences_and_activities": {
+      "name": "Evening Leisure",
+      "id": "843125000010993109"
+    },
+    "City_2": "Agra",
+    "En_route_Experiences": null,
+    "$in_merge": false,
+    "Days": "Day 4",
+    "Total_Cost": null,
+    "id": "843125000011057004",
+    "Experiences_2": null,
+    "$zia_visions": null,
+    "Experiences_3": null,
+    "Experiences_4": null
+  },
+  {
+    "Modified_Time": "2026-09-23T20:13:26+05:30",
+    "No_of_Guests": null,
+    "Inclusions_Description_4": null,
+    "Inclusions_Description_3": null,
+    "$field_states": null,
+    "Created_Time": "2026-09-23T20:13:26+05:30",
+    "Parent_Id": {
+      "name": "Bhavin Thakker",
+      "id": "843125000010984003"
+    },
+    "Rate_per_person": null,
+    "Inclusions_Description_2": null,
+    "$layout_id": {
+      "display_label": "Standard",
+      "name": "Standard",
+      "id": "843125000010337186"
+    },
+    "City": "Agra",
+    "Inclusions_Description_1": "Guided Taj Mahal and city Tour",
+    "Experiences_and_activities": {
+      "name": "Taj Mahal Visit with City Tour",
+      "id": "843125000010993748"
+    },
+    "City_2": null,
+    "En_route_Experiences": null,
+    "$in_merge": false,
+    "Days": "Day 5",
+    "Total_Cost": null,
+    "id": "843125000011057005",
+    "Experiences_2": {
+      "name": "Evening Sunset at Mehta Bagh",
+      "id": "843125000010993750"
+    },
+    "$zia_visions": null,
+    "Experiences_3": null,
+    "Experiences_4": null
+  },
+  {
+    "Modified_Time": "2026-09-23T20:13:26+05:30",
+    "No_of_Guests": null,
+    "Inclusions_Description_4": null,
+    "Inclusions_Description_3": null,
+    "$field_states": null,
+    "Created_Time": "2026-09-23T20:13:26+05:30",
+    "Parent_Id": {
+      "name": "Bhavin Thakker",
+      "id": "843125000010984003"
+    },
+    "Rate_per_person": null,
+    "Inclusions_Description_2": null,
+    "$layout_id": {
+      "display_label": "Standard",
+      "name": "Standard",
+      "id": "843125000010337186"
+    },
+    "City": "Agra",
+    "Inclusions_Description_1": null,
+    "Experiences_and_activities": null,
+    "City_2": "Delhi",
+    "En_route_Experiences": {
+      "name": "Vrindavan Darshan",
+      "id": "843125000010993475"
+    },
+    "$in_merge": false,
+    "Days": "Day 6",
+    "Total_Cost": null,
+    "id": "843125000011057006",
+    "Experiences_2": null,
+    "$zia_visions": null,
+    "Experiences_3": null,
+    "Experiences_4": null
+  }
+]

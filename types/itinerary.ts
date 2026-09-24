@@ -9,6 +9,10 @@ export interface ItineraryLeadDetails {
   startDate?: string;
   endDate?: string;
   duration?: string;
+  noOfDays?: number;
+  noOfNights?: number;
+  travelStyle?: string;
+  tripType?: string;
   sharingType?: string;
   budget?: string | number;
   notes?: string;
@@ -41,11 +45,16 @@ export interface ItineraryDocument {
   _id?: string;
   id: string; // Public unique slug/ID (e.g. wp-x7k9q2)
   slug: string;
-  subTitle: string; // AI-generated 1-3 words (e.g. "Desert Tent", "Luxury Suite")
-  description: string; // AI-generated clean one-liner luxury description
+  subTitle?: string; // AI-generated 1-3 words or travel style
+  description?: string; // AI-generated clean one-liner luxury description
   title?: string;
   destination: string;
   stateOrCountry?: string;
+  travelStyle?: string; // e.g. "Family Trip", "Couple Trip" from Zoho Leads.Travel Style
+  tripType?: string;
+  noOfDays?: number; // e.g. from Zoho Leads.No. of Days
+  noOfNights?: number; // e.g. from Zoho Leads.No. of Nights
+  inquiryId?: string;
   leadDetails?: ItineraryLeadDetails;
   stay?: ItineraryStayDetails;
   hotelName?: string;

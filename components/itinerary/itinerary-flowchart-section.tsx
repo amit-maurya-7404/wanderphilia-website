@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { ItineraryDayPlan } from '@/types/itinerary';
-import { ChevronDown, ChevronUp, Utensils, MapPin } from 'lucide-react';
+import { ChevronDown, ChevronUp, Utensils, MapPin, Hotel as HotelIcon } from 'lucide-react';
 
 interface ItineraryFlowchartSectionProps {
   dayPlans: ItineraryDayPlan[];
@@ -120,17 +120,35 @@ export function ItineraryFlowchartSection({
                   
                   {/* LEFT: Dotted Flowchart Line & Step Nodes */}
                   <div className="md:col-span-7 space-y-5 relative pl-7 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:border-l-2 before:border-dashed before:border-sky-300">
-                    {milestones.map((milestone, mIdx) => (
-                      <div key={mIdx} className="relative group">
-                        {/* Circular Step Node Dot */}
-                        <div className="absolute -left-[27px] top-1 w-3.5 h-3.5 rounded-full bg-white border-3 border-sky-500 group-hover:scale-125 group-hover:border-orange-500 transition-all shadow-xs" />
+                    {milestones.map((milestone, mIdx) => {
+                      // Check for **Bold Title**: Description format
+                      const boldMatch = milestone.match(/^\*\*(.*?)\*\*:\s*(.*)$/);
+                      const colonIdx = !boldMatch ? milestone.indexOf(': ') : -1;
 
-                        {/* Milestone Narrative Text */}
-                        <p className="text-xs sm:text-sm font-semibold text-stone-700 leading-relaxed group-hover:text-stone-950 transition-colors">
-                          {milestone}
-                        </p>
-                      </div>
-                    ))}
+                      return (
+                        <div key={mIdx} className="relative group">
+                          {/* Circular Step Node Dot */}
+                          <div className="absolute -left-[27px] top-1 w-3.5 h-3.5 rounded-full bg-white border-3 border-sky-500 group-hover:scale-125 group-hover:border-orange-500 transition-all shadow-xs" />
+
+                          {/* Milestone Narrative Text */}
+                          <p className="text-xs sm:text-sm font-semibold text-stone-700 leading-relaxed group-hover:text-stone-950 transition-colors">
+                            {boldMatch ? (
+                              <>
+                                <strong className="text-stone-900 font-bold">{boldMatch[1]}: </strong>
+                                <span>{boldMatch[2]}</span>
+                              </>
+                            ) : colonIdx > 0 ? (
+                              <>
+                                <strong className="text-stone-900 font-bold">{milestone.slice(0, colonIdx)}: </strong>
+                                <span>{milestone.slice(colonIdx + 2)}</span>
+                              </>
+                            ) : (
+                              milestone
+                            )}
+                          </p>
+                        </div>
+                      );
+                    })}
                   </div>
 
                   {/* RIGHT: Photo Card */}
@@ -147,18 +165,17 @@ export function ItineraryFlowchartSection({
 
                 </div>
 
-                {/* Meals & Overnight Summary Strip */}
-                {day.meals && (
-                  <div className="pt-4 border-t border-stone-100 flex items-center justify-between flex-wrap gap-2 text-xs font-bold text-[#6E1E14]">
-                    <div className="flex items-center gap-1.5">
-                      <Utensils className="w-4 h-4 text-orange-600" />
-                      <span>Included Meals: {day.meals}</span>
-                    </div>
-                    <span className="text-[11px] text-stone-500 font-semibold">
-                      Overnight: {day.stayLocation || destination}
-                    </span>
+                {/* Meals & Hotel Summary Strip */}
+                <div className="pt-4 border-t border-stone-100 flex items-center justify-between flex-wrap gap-3 text-xs font-bold text-[#6E1E14]">
+                  <div className="flex items-center gap-1.5">
+                    <Utensils className="w-4 h-4 text-orange-600 shrink-0" />
+                    <span>Meals: <strong className="text-stone-900">{day.meals || 'Breakfast & Dinner'}</strong></span>
                   </div>
-                )}
+                  <div className="flex items-center gap-1.5 text-stone-700">
+                    <HotelIcon className="w-3.5 h-3.5 text-orange-600 shrink-0" />
+                    <span>Hotel: <strong className="text-stone-900">{day.stayLocation || destination}</strong></span>
+                  </div>
+                </div>
 
               </div>
             )}

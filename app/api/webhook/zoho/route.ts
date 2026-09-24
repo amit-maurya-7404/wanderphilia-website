@@ -30,20 +30,26 @@ function normalizeZohoPayload(body: any): Record<string, any> {
     raw = body;
   }
 
-  // Extract common Zoho CRM fields with sensible fallbacks
+  // Extract common Zoho CRM fields dynamically
   const firstName = raw.First_Name || raw.firstName || raw.first_name || '';
   const lastName = raw.Last_Name || raw.lastName || raw.last_name || '';
   const fullName = raw.Full_Name || raw.name || raw.Name || [firstName, lastName].filter(Boolean).join(' ') || 'Valued Guest';
 
-  const destination = raw.Destination || raw.Destinations || raw.destination || raw.City || raw.city || raw.State || 'Exotic Luxury Destination';
-  const hotelName = raw.Hotel_Name || raw.Hotel || raw.hotelName || raw.hotel || raw.Property_Name || raw.stay || 'Curated 5-Star Luxury Resort';
-  const roomCategory = raw.Room_Category || raw.Room_Type || raw.roomCategory || raw.room_type || raw.Room || 'Royal Luxury Suite';
-  const mealPlan = raw.Meal_Plan || raw.mealPlan || raw.meal_plan || 'Breakfast & Dinner (MAP)';
+  const destination = raw.Destination || raw.Destinations || raw.destination || raw.City || raw.city || raw.State || '';
+  const hotelName = raw.Hotel_Name || raw.Hotel || raw.hotelName || raw.hotel || raw.Property_Name || raw.stay || '';
+  const roomCategory = raw.Room_Category || raw.Room_Type || raw.preferredRoomCategory || raw.roomCategory || raw.room_type || raw.Room || '';
+  const mealPlan = raw.Meal_Plan || raw.mealPlan || raw.meal_plan || '';
 
   const guests = parseInt(String(raw.Number_Of_Guest || raw.Number_Of_Guests || raw.guests || raw.Guest_Count || 2), 10) || 2;
   const startDate = raw.Preferred_Start_date || raw.Start_Date || raw.startDate || raw.start_date || raw.Check_In || '';
   const endDate = raw.Travel_End_Date || raw.End_Date || raw.endDate || raw.end_date || raw.Check_Out || '';
-  const duration = raw.Duration || raw.duration || raw.Days || raw.days || (startDate && endDate ? `${startDate} to ${endDate}` : '4 Days / 3 Nights');
+  const duration = raw.Duration || raw.duration || raw.Days || raw.days || (startDate && endDate ? `${startDate} to ${endDate}` : '');
+
+  const travelStyle = raw.Travel_Style || raw.travelStyle || raw.Travel_style || 'Family Trip';
+  const tripType = raw.Trip_Type || raw.tripType || raw.Trip_type || 'Customised Trip';
+  const noOfDays = parseInt(String(raw.No_of_Days || raw.noOfDays || raw.Days || raw.days || 0), 10) || 0;
+  const noOfNights = parseInt(String(raw.No_of_Nights || raw.noOfNights || raw.Nights || raw.nights || 0), 10) || 0;
+  const inquiryId = raw.Inquiry_ID || raw.inquiryId || '';
 
   const email = raw.Email || raw.email || '';
   const phone = raw.Mobile || raw.mobile || raw.Phone || raw.phone || '';
@@ -65,6 +71,11 @@ function normalizeZohoPayload(body: any): Record<string, any> {
       startDate,
       endDate,
       duration,
+      travelStyle,
+      tripType,
+      noOfDays,
+      noOfNights,
+      inquiryId,
       notes
     }
   };
@@ -103,10 +114,15 @@ export async function POST(req: NextRequest) {
     const itineraryDoc: ItineraryDocument = {
       id: uniqueId,
       slug: uniqueId,
-      title: aiContent.title || `Exclusive Luxury Escape to ${details.destination}`,
-      subTitle: aiContent.subTitle, // 1-3 words (e.g., "Desert Tent", "Luxury Suite")
+      title: aiContent.title || `${details.noOfNights || 4} Nights / ${details.noOfDays || 5} Days Royal ${details.destination} Escape`,
+      subTitle: details.travelStyle || aiContent.subTitle, // Zoho Travel Style
       description: aiContent.description, // Strict one-liner luxury description (NO prices/durations)
       destination: details.destination || aiContent.destination,
+      travelStyle: details.travelStyle || aiContent.travelStyle || 'Family Trip',
+      tripType: details.tripType || aiContent.tripType || 'Customised Trip',
+      noOfDays: details.noOfDays || aiContent.noOfDays || aiContent.dayPlans?.length || 5,
+      noOfNights: details.noOfNights || aiContent.noOfNights || ((details.noOfDays || 5) > 1 ? (details.noOfDays || 5) - 1 : 1),
+      inquiryId: details.inquiryId,
       hotelName: details.hotelName || aiContent.hotelName,
       roomCategory: details.roomCategory || aiContent.roomCategory,
       mealPlan: details.mealPlan || aiContent.mealPlan,
@@ -121,6 +137,10 @@ export async function POST(req: NextRequest) {
         startDate: details.startDate,
         endDate: details.endDate,
         duration: details.duration,
+        noOfDays: details.noOfDays || aiContent.noOfDays,
+        noOfNights: details.noOfNights || aiContent.noOfNights,
+        travelStyle: details.travelStyle,
+        tripType: details.tripType,
         notes: details.notes
       },
       stay: {

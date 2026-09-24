@@ -89,11 +89,17 @@ export default async function ItineraryPage({ params }: PageProps) {
     notFound();
   }
 
-  const leadName = itinerary.leadDetails?.name || 'Valued Traveler';
-  const destination = itinerary.destination || 'Exotic Journey';
-  const numDays = itinerary.dayPlans?.length || 5;
-  const numNights = numDays > 1 ? numDays - 1 : 1;
+  const leadName = itinerary.leadDetails?.name || itinerary.rawZohoData?.Full_Name || (itinerary.rawZohoData?.First_Name ? `${itinerary.rawZohoData.First_Name} ${itinerary.rawZohoData.Last_Name || ''}`.trim() : '') || 'Valued Traveler';
+  const destination = itinerary.destination || itinerary.rawZohoData?.Destinations || itinerary.rawZohoData?.Destination || 'Rajasthan';
+  const numDays = itinerary.noOfDays || (itinerary.rawZohoData?.No_of_Days ? Number(itinerary.rawZohoData.No_of_Days) : (itinerary.dayPlans?.length || 5));
+  const numNights = itinerary.noOfNights || (itinerary.rawZohoData?.No_of_Nights ? Number(itinerary.rawZohoData.No_of_Nights) : (numDays > 1 ? numDays - 1 : 1));
+  const travelStyle = itinerary.travelStyle || itinerary.leadDetails?.travelStyle || itinerary.rawZohoData?.Travel_Style || 'Family Trip';
+  const tripType = itinerary.tripType || itinerary.leadDetails?.tripType || itinerary.rawZohoData?.Trip_Type || 'Customised Trip';
+  const guests = itinerary.leadDetails?.guests || itinerary.rawZohoData?.Number_Of_Guest || itinerary.rawZohoData?.Number_Of_Guests || 2;
   const heroImage = itinerary.heroImage || '/images/about_hero4.jpg';
+
+  // Format: «Leads.No. of Nights» Nights / «Leads.No. of Days» Days Royal «Leads.Destinations» Escape
+  const proposalTitle = `${numNights} Nights / ${numDays} Days Royal ${destination} Escape`;
 
   // Extract cities list for route pill (e.g. Paro ➔ Thimphu ➔ Punakha)
   const routeCities: string[] = [];
@@ -114,23 +120,23 @@ export default async function ItineraryPage({ params }: PageProps) {
   const collageImages = itinerary.galleryImages && itinerary.galleryImages.length >= 6
     ? itinerary.galleryImages.slice(0, 6)
     : [
-        heroImage,
-        '/images/about_hero4.jpg',
-        '/images/about_hero5.jpg',
-        '/images/himachal.jpg',
-        '/images/kashmir.jpg',
-        '/images/bali.jpg',
-        '/images/bhutan1.jpg',
-        '/images/bhutan2.jpg',
-        '/images/singapore1.jpg',
-        '/images/gallery1.jpeg',
-        '/images/gallery4.jpg',
-        '/images/gallery11.jpg'
-      ];
+      heroImage,
+      '/images/about_hero4.jpg',
+      '/images/about_hero5.jpg',
+      '/images/himachal.jpg',
+      '/images/kashmir.jpg',
+      '/images/bali.jpg',
+      '/images/bhutan1.jpg',
+      '/images/bhutan2.jpg',
+      '/images/singapore1.jpg',
+      '/images/gallery1.jpeg',
+      '/images/gallery4.jpg',
+      '/images/gallery11.jpg'
+    ];
 
   return (
     <div className="min-h-screen bg-[#ECE8E1] text-slate-900 font-sans selection:bg-[#6E1E14] selection:text-white pb-16">
-      
+
       {/* Top Floating Control Bar */}
       <header className="bg-white/95 backdrop-blur-md border-b border-stone-200 sticky top-0 z-50 py-3 px-4 sm:px-8 shadow-xs print:hidden">
         <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
@@ -146,7 +152,7 @@ export default async function ItineraryPage({ params }: PageProps) {
 
           <ItineraryClientActions
             itineraryId={itinerary.id}
-            title={itinerary.title || `${destination} Itinerary`}
+            title={itinerary.title || proposalTitle}
             leadName={leadName}
             destination={destination}
           />
@@ -157,56 +163,60 @@ export default async function ItineraryPage({ params }: PageProps) {
       <main className="max-w-4xl mx-auto px-2 sm:px-4 pt-6 space-y-10">
 
         {/* ========================================================= */}
-        {/* PAGE 1: CANVA COVER PAGE                                  */}
+        {/* PAGE 1: COVER PAGE (EXACT ZOHO PROPOSAL TEMPLATE MATCH)   */}
         {/* ========================================================= */}
         <section className="bg-[#FAF8F5] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border border-stone-200/80 min-h-[900px] flex flex-col justify-between relative print:shadow-none print:border-0 print:rounded-none print:m-0 print:p-0 page-break-after">
-          
-          {/* Top Decorative Banner & Header */}
-          <div className="pt-8 pb-6 px-6 sm:px-12 text-center relative">
-            {/* Top Prayer Flags Motif (SVG) */}
-            <div className="flex justify-center items-center gap-1.5 mb-5 opacity-90">
-              <span className="w-5 h-6 bg-amber-400 rotate-6 rounded-xs shadow-xs" />
-              <span className="w-5 h-6 bg-red-600 -rotate-3 rounded-xs shadow-xs" />
-              <span className="w-5 h-6 bg-emerald-600 rotate-3 rounded-xs shadow-xs" />
-              <span className="w-5 h-6 bg-blue-600 -rotate-6 rounded-xs shadow-xs" />
-              <span className="w-5 h-6 bg-orange-500 rotate-4 rounded-xs shadow-xs" />
-            </div>
 
-            {/* Logo */}
-            <div className="flex flex-col items-center justify-center mb-6">
+          {/* Top Header & Zoho Merge Fields Section */}
+          <div className="pt-10 pb-6 px-6 sm:px-12 text-center relative space-y-3">
+
+            {/* Logo: Location Pin + Wanderphilia + Subtitle */}
+            <div className="flex flex-col items-center justify-center mb-4">
               <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-full bg-[#FF6E0B] flex items-center justify-center text-white font-black text-xl shadow-md">
-                  W
+                <div className="w-9 h-9 rounded-full bg-[#FF6E0B] flex items-center justify-center text-white shadow-md">
+                  <MapPin className="w-5 h-5 fill-white text-[#FF6E0B]" />
                 </div>
-                <span className="text-2xl sm:text-3xl font-black tracking-tight text-[#FF6E0B]">
+                <span className="text-3xl sm:text-4xl font-black tracking-tight text-[#FF6E0B]">
                   Wanderphilia
                 </span>
               </div>
-              <span className="text-[10px] sm:text-[11px] uppercase tracking-widest text-[#6E1E14] font-extrabold mt-0.5">
+              <span className="text-xs sm:text-sm text-stone-600 font-semibold mt-1">
                 India&apos;s most trusted travel community
               </span>
             </div>
 
-            {/* Main Destination Title */}
-            <h1 className="text-3xl sm:text-5xl font-black text-[#5C1810] tracking-tight uppercase font-serif mt-2">
-              {destination} Itinerary
-            </h1>
+            {/* Subheader: Wanderphilia Exclusive */}
+            <div className="pt-2">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-[#7A2B20] tracking-tight">
+                Wanderphilia Exclusive
+              </h2>
+            </div>
 
-            {/* Subtitle */}
-            <p className="text-xs sm:text-sm font-bold text-[#7A2B20] uppercase tracking-wider mt-2.5">
-              {itinerary.subTitle || 'The Soul of ' + destination} | Wanderphilia Exclusive
-            </p>
+            {/* Main Proposal Heading: «Leads.No. of Nights» Nights / «Leads.No. of Days» Days Royal «Leads.Destinations» Escape */}
+            <div className="px-2 sm:px-6 pt-1">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-[#7A2B20] tracking-tight leading-snug">
+                {proposalTitle}
+              </h1>
+            </div>
 
+            {/* Travel Style: «Leads.Travel Style» */}
+            <div className="pt-0.5">
+              <p className="text-sm sm:text-base font-bold text-[#7A2B20]/90">
+                {travelStyle}
+              </p>
+            </div>
+
+            {/* Specially Curated For Badge */}
             {leadName && (
-              <div className="inline-block mt-3 bg-[#6E1E14]/10 text-[#6E1E14] border border-[#6E1E14]/20 text-xs font-bold px-4 py-1 rounded-full">
+              <div className="inline-block mt-2 bg-[#6E1E14]/10 text-[#6E1E14] border border-[#6E1E14]/20 text-xs font-bold px-4 py-1 rounded-full">
                 Specially Curated For: <span className="font-extrabold">{leadName}</span>
               </div>
             )}
           </div>
 
-          {/* Arched Architectural Photo Framing */}
-          <div className="px-6 sm:px-14 grow flex items-center justify-center my-4">
-            <div className="relative w-full max-w-lg h-[400px] sm:h-[480px] rounded-t-[140px] sm:rounded-t-[180px] rounded-b-2xl overflow-hidden shadow-2xl border-4 border-white">
+          {/* Full-Width / Clean Rectangular Destination Hero Photo (Matching Zoho Image 2) */}
+          <div className="px-6 sm:px-12 grow flex items-center justify-center my-3">
+            <div className="relative w-full max-w-2xl h-[380px] sm:h-[450px] rounded-2xl overflow-hidden shadow-2xl border-4 border-white">
               <Image
                 src={heroImage}
                 alt={destination}
@@ -214,8 +224,8 @@ export default async function ItineraryPage({ params }: PageProps) {
                 priority
                 className="object-cover object-center"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-              
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+
               {itinerary.description && (
                 <div className="absolute bottom-4 left-4 right-4 bg-black/60 backdrop-blur-md p-3.5 rounded-xl text-white text-xs sm:text-sm font-medium leading-relaxed italic border border-white/20">
                   &ldquo;{itinerary.description}&rdquo;
@@ -238,16 +248,16 @@ export default async function ItineraryPage({ params }: PageProps) {
         {/* PAGE 2: TRIP OVERVIEW & HIGHLIGHTS COLLAGE                 */}
         {/* ========================================================= */}
         <section className="bg-[#FAF8F5] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border border-stone-200/80 min-h-[900px] flex flex-col justify-between relative print:shadow-none print:border-0 print:rounded-none page-break-after">
-          
+
           {/* Top Rust Bar Accent */}
           <div className="h-3.5 bg-[#6E1E14] w-full" />
 
           <div className="p-6 sm:p-12 grow flex flex-col justify-between">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-              
+
               {/* LEFT COLUMN: Big Days + Route + Details */}
               <div className="space-y-6">
-                
+
                 {/* Big Days Badge */}
                 <div className="flex items-baseline gap-3">
                   <span className="text-6xl sm:text-8xl font-black text-[#5C1810] font-serif leading-none">
@@ -270,8 +280,11 @@ export default async function ItineraryPage({ params }: PageProps) {
                       Route:
                     </div>
                     <div className="text-xs sm:text-sm font-bold text-stone-900 mt-0.5">
-                      {routeCities.join(' → ')}
+                      {itinerary.rawZohoData?.hotels && itinerary.rawZohoData.hotels.length > 0
+                        ? itinerary.rawZohoData.hotels.map((h: any) => `${h.nights}N ${h.city || h.hotelName}`).join(' | ')
+                        : `${numNights} Nights Curated Luxury Stay`}
                     </div>
+
                   </div>
 
                   <div>
@@ -279,20 +292,28 @@ export default async function ItineraryPage({ params }: PageProps) {
                       Stay:
                     </div>
                     <div className="text-xs sm:text-sm font-bold text-stone-900 mt-0.5">
-                      {itinerary.rawZohoData?.hotels && itinerary.rawZohoData.hotels.length > 0
-                        ? itinerary.rawZohoData.hotels.map((h: any) => `${h.nights}N ${h.city || h.hotelName}`).join(' | ')
-                        : `${numNights} Nights Curated Luxury Stay`}
+                      {routeCities.join(' → ')}
                     </div>
+
                   </div>
 
                   <div>
                     <div className="text-[10px] uppercase font-extrabold text-stone-500 tracking-wider">
-                      Style:
+                      Style & Guests:
                     </div>
                     <div className="text-xs sm:text-sm font-bold text-stone-900 mt-0.5">
-                      Private Vehicle + Private Guide | Relaxed Pace | Unwind Experiences
+                      {travelStyle} • {guests} Guests • {tripType}
                     </div>
                   </div>
+
+                  {/* <div>
+                    <div className="text-[10px] uppercase font-extrabold text-stone-500 tracking-wider">
+                      Vehicle & Chauffeur:
+                    </div>
+                    <div className="text-xs sm:text-sm font-bold text-stone-900 mt-0.5">
+                      Private AC Vehicle + Dedicated Tour Chauffeur | Relaxed Pace
+                    </div>
+                  </div> */}
                 </div>
 
                 {/* Theme Highlights Pills */}
@@ -330,22 +351,21 @@ export default async function ItineraryPage({ params }: PageProps) {
         {/* PAGE 3 & 4: FLOWCHART DAY-BY-DAY ITINERARY               */}
         {/* ========================================================= */}
         <section className="bg-[#FAF8F5] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border border-stone-200/80 p-6 sm:p-10 space-y-8 relative print:shadow-none print:border-0 print:rounded-none page-break-after">
-          
+
           {/* Centered Travel Itinerary Header */}
           <div className="text-center space-y-2 border-b-2 border-[#6E1E14]/20 pb-6">
             <h2 className="text-2xl sm:text-4xl font-black text-[#5C1810] tracking-tight uppercase font-serif underline decoration-[#6E1E14]/40 decoration-2 underline-offset-8">
               Detailed Flow-Chart Itinerary
             </h2>
-            
+
             {/* Route Arrows Badges */}
             <div className="flex flex-wrap items-center justify-center gap-2 pt-2 text-xs sm:text-sm font-extrabold text-stone-800">
-              <span className="text-[#6E1E14] font-black">{numNights} Nights {numDays} Days</span>
-              {routeCities.map((city, cIdx) => (
-                <span key={cIdx} className="inline-flex items-center gap-1.5 uppercase bg-white border border-stone-300 px-2.5 py-0.5 rounded-md shadow-2xs">
-                  <span>{city}</span>
-                  {cIdx < routeCities.length - 1 && <span className="text-[#6E1E14] font-black">➔</span>}
-                </span>
-              ))}
+              <span className="text-[#6E1E14] font-black">{numNights} Nights {numDays} Days → </span>
+              <div className="text-xs sm:text-sm font-bold text-stone-900 mt-0.5">
+                {itinerary.rawZohoData?.hotels && itinerary.rawZohoData.hotels.length > 0
+                  ? itinerary.rawZohoData.hotels.map((h: any) => `${h.nights}N ${h.city || h.hotelName}`).join(' | ')
+                  : `${numNights} Nights Curated Luxury Stay`}
+              </div>
             </div>
           </div>
 
@@ -364,7 +384,7 @@ export default async function ItineraryPage({ params }: PageProps) {
         {/* PAGE 5: HOTEL & STAY DETAILS (CANVA TABLE STYLE)          */}
         {/* ========================================================= */}
         <section className="bg-[#FAF8F5] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border border-stone-200/80 p-6 sm:p-12 space-y-8 relative print:shadow-none print:border-0 print:rounded-none page-break-after">
-          
+
           <div className="text-center space-y-2 border-b-2 border-[#6E1E14]/20 pb-4">
             <h2 className="text-2xl sm:text-4xl font-black text-[#5C1810] tracking-tight uppercase font-serif">
               Hotel & Stay Details
