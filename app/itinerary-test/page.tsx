@@ -50,7 +50,13 @@ export default function ItineraryTestPage() {
     setFetchSuccess(false);
 
     try {
-      const res = await fetch(`/api/zoho/fetch-lead?query=${encodeURIComponent(leadQuery.trim())}`);
+      const res = await fetch(`/api/zoho/fetch-lead?query=${encodeURIComponent(leadQuery.trim())}&_t=${Date.now()}`, {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache'
+        }
+      });
       const data = await res.json();
 
       if (!res.ok || !data.success) {

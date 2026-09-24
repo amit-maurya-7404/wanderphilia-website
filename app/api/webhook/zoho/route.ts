@@ -5,6 +5,10 @@ import { generateItineraryContentWithAI } from '@/lib/ai-itinerary';
 import { getLuxuryImagesForDestination } from '@/lib/itinerary-images';
 import { ItineraryDocument } from '@/types/itinerary';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+export const fetchCache = 'force-no-store';
+
 /**
  * Helper to generate a clean, collision-resistant unique slug/ID (e.g., "wp-k8m9x2a4")
  */
@@ -164,28 +168,55 @@ export async function POST(req: NextRequest) {
       updatedAt: new Date()
     };
 
-    // 6. Save to MongoDB in "itineraries" collection
+    // 6. Save or Update in MongoDB "itineraries" collection
     const db = await getDb();
     const collection = db.collection<ItineraryDocument>('itineraries');
 
-    await collection.insertOne(itineraryDoc);
+    let targetId = uniqueId;
+    let existingDoc: ItineraryDocument | null = null;
 
-    console.log(`[Zoho Webhook] Successfully created luxury itinerary with ID: ${uniqueId}`);
+    if (details.inquiryId && details.inquiryId.trim()) {
+      existingDoc = await collection.findOne({
+        $or: [
+          { inquiryId: details.inquiryId.trim() },
+          { 'rawZohoData.Inquiry_ID': details.inquiryId.trim() },
+          { 'rawZohoData.inquiryId': details.inquiryId.trim() }
+        ]
+      });
+    }
+
+    if (existingDoc) {
+      targetId = existingDoc.id || existingDoc.slug;
+      itineraryDoc.id = targetId;
+      itineraryDoc.slug = targetId;
+      itineraryDoc.createdAt = existingDoc.createdAt || new Date();
+      itineraryDoc.updatedAt = new Date();
+
+      await collection.replaceOne(
+        { _id: existingDoc._id },
+        itineraryDoc
+      );
+      console.log(`[Zoho Webhook] Successfully UPDATED existing luxury itinerary with ID: ${targetId} for Inquiry: ${details.inquiryId}`);
+    } else {
+      await collection.insertOne(itineraryDoc);
+      console.log(`[Zoho Webhook] Successfully created new luxury itinerary with ID: ${uniqueId}`);
+    }
 
     // 7. Resolve Site Origin URL
     const origin = req.headers.get('origin') || process.env.NEXT_PUBLIC_BASE_URL || 'https://wanderphilia.com';
     const cleanOrigin = origin.replace(/\/$/, '');
-    const relativeUrl = `/itinerary/${uniqueId}`;
+    const relativeUrl = `/itinerary/${targetId}`;
     const publicUrl = `${cleanOrigin}${relativeUrl}`;
 
     return NextResponse.json(
       {
         success: true,
-        message: 'Luxury Itinerary created and processed successfully via AI.',
-        id: uniqueId,
-        slug: uniqueId,
+        message: existingDoc ? 'Luxury Itinerary UPDATED successfully with latest Zoho data.' : 'Luxury Itinerary created and processed successfully via AI.',
+        id: targetId,
+        slug: targetId,
         url: relativeUrl,
         publicUrl: publicUrl,
+        updated: !!existingDoc,
         data: {
           title: itineraryDoc.title,
           subTitle: itineraryDoc.subTitle,

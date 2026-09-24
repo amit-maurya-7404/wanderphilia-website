@@ -62,13 +62,22 @@ export async function fetchZohoLeadById(leadIdOrQuery: string): Promise<Normaliz
 
   const token = await getZohoAccessToken();
   let rawLead: Record<string, any> | null = null;
+  const timestamp = Date.now();
+
+  const fetchHeaders = {
+    'Authorization': `Zoho-oauthtoken ${token}`,
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
+    'Pragma': 'no-cache',
+    'Expires': '0'
+  };
 
   if (/^\d{15,22}$/.test(cleanQuery)) {
     try {
       const url = getZohoApiUrl(`/crm/v3/Leads/${cleanQuery}`);
       const res = await fetch(url, {
-        headers: { 'Authorization': `Zoho-oauthtoken ${token}` },
-        cache: 'no-store'
+        headers: fetchHeaders,
+        cache: 'no-store',
+        next: { revalidate: 0 }
       });
       if (res.ok) {
         const json = await res.json();
@@ -85,17 +94,20 @@ export async function fetchZohoLeadById(leadIdOrQuery: string): Promise<Normaliz
     try {
       const searchUrl = getZohoApiUrl(`/crm/v3/Leads/search?criteria=((Inquiry_ID:equals:${encodeURIComponent(cleanQuery)})or(Email:equals:${encodeURIComponent(cleanQuery)})or(Mobile:equals:${encodeURIComponent(cleanQuery)}))`);
       const searchRes = await fetch(searchUrl, {
-        headers: { 'Authorization': `Zoho-oauthtoken ${token}` },
-        cache: 'no-store'
+        headers: fetchHeaders,
+        cache: 'no-store',
+        next: { revalidate: 0 }
       });
 
       if (searchRes.ok) {
         const searchJson = await searchRes.json();
         if (searchJson.data && searchJson.data[0]) {
           const foundId = searchJson.data[0].id;
-          const fullRes = await fetch(getZohoApiUrl(`/crm/v3/Leads/${foundId}`), {
-            headers: { 'Authorization': `Zoho-oauthtoken ${token}` },
-            cache: 'no-store'
+          const fullUrl = getZohoApiUrl(`/crm/v3/Leads/${foundId}`);
+          const fullRes = await fetch(fullUrl, {
+            headers: fetchHeaders,
+            cache: 'no-store',
+            next: { revalidate: 0 }
           });
           if (fullRes.ok) {
             const fullJson = await fullRes.json();

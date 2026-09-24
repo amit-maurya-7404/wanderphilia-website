@@ -4,6 +4,10 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { getDb } from '@/lib/mongodb';
 import { ItineraryDocument } from '@/types/itinerary';
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+export const fetchCache = 'force-no-store';
 import { ItineraryClientActions } from '@/components/itinerary/itinerary-client-actions';
 import { ItineraryFlowchartSection } from '@/components/itinerary/itinerary-flowchart-section';
 import {
