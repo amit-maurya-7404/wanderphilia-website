@@ -1,6 +1,62 @@
 {
   "gallery": [
     {
+      "_id": "gallery-raj-1",
+      "image": "/images/Rajasthan/rajasthan1.jpeg",
+      "category": "rajasthan",
+      "title": "Amber Fort Jaipur",
+      "alt": "Amber Fort Jaipur",
+      "createdAt": "2026-01-01T10:00:00Z"
+    },
+    {
+      "_id": "gallery-raj-2",
+      "image": "/images/Rajasthan/rajasthan2.jpeg",
+      "category": "rajasthan",
+      "title": "Jaipur Fort View",
+      "alt": "Jaipur Fort View",
+      "createdAt": "2026-01-01T10:01:00Z"
+    },
+    {
+      "_id": "gallery-raj-3",
+      "image": "/images/Rajasthan/rajasthan3.jpeg",
+      "category": "rajasthan",
+      "title": "Rajasthan Heritage",
+      "alt": "Rajasthan Heritage",
+      "createdAt": "2026-01-01T10:02:00Z"
+    },
+    {
+      "_id": "gallery-raj-4",
+      "image": "/images/Rajasthan/rajasthan4.jpeg",
+      "category": "rajasthan",
+      "title": "Amber Palace",
+      "alt": "Amber Palace",
+      "createdAt": "2026-01-01T10:03:00Z"
+    },
+    {
+      "_id": "gallery-raj-5",
+      "image": "/images/Rajasthan/rajasthan5.jpg",
+      "category": "rajasthan",
+      "title": "Rajasthan Sunset",
+      "alt": "Rajasthan Sunset",
+      "createdAt": "2026-01-01T10:04:00Z"
+    },
+    {
+      "_id": "gallery-raj-6",
+      "image": "/images/Rajasthan/rajasthan6.jpg",
+      "category": "rajasthan",
+      "title": "Taj Mahal & Agra",
+      "alt": "Taj Mahal & Agra",
+      "createdAt": "2026-01-01T10:05:00Z"
+    },
+    {
+      "_id": "gallery-raj-7",
+      "image": "/images/Rajasthan/rajasthan7.jpg",
+      "category": "rajasthan",
+      "title": "Rajasthan Palaces",
+      "alt": "Rajasthan Palaces",
+      "createdAt": "2026-01-01T10:06:00Z"
+    },
+    {
       "_id": "gallery-1",
       "image": "/images/gallery1.jpeg",
       "category": "mountains",

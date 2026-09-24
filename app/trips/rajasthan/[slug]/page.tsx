@@ -4,6 +4,7 @@ import { TripReviewsSection } from '@/components/trip-reviews-section'
 import { useState, useMemo, useEffect, useRef } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { notFound } from 'next/navigation'
+import Image from 'next/image'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
 import { Button } from '@/components/ui/button'
@@ -18,7 +19,6 @@ import { destinationItineraryImages } from '@/lib/section-mappings'
 import { MapPin, Calendar, Users, Star, Phone, MessageCircle, ChevronDown, Download, X, ChevronLeft, ChevronRight } from 'lucide-react'
 import { contactEmail, contactPhone, contactPhoneDisplay, instagramUrl } from '@/lib/contact'
 import { TripGallerySection } from '@/components/trip-gallery-section'
-
 
 export default function PackageDetailPage() {
   type SelectionItem = {
@@ -42,8 +42,13 @@ export default function PackageDetailPage() {
     }
 
     const prices = trip.costingDetails
+      .filter(item => {
+        const val = item.value.toLowerCase()
+        if (val.includes('included') || val.includes('free') || val.includes('complimentary')) return false
+        return val.includes('₹') || val.includes('inr') || val.includes('$') ||
+          item.label.toLowerCase().includes('rate') || item.label.toLowerCase().includes('cost') || item.label.toLowerCase().includes('price')
+      })
       .map(item => {
-        // Extract numeric value from price strings like "₹35,000"
         const match = item.value.match(/[\d,]+/)
         return match ? parseInt(match[0].replace(/,/g, ''), 10) : 0
       })
@@ -106,27 +111,30 @@ export default function PackageDetailPage() {
   const collageImages = useMemo(() => {
     if (!trip) return []
 
-    // Check if there are custom images for this destination in the section-mappings file
+    // If heroMedia has 5 or more images, use them directly as the collage
+    if (heroMedia && heroMedia.length >= 5) {
+      return heroMedia.slice(0, 5)
+    }
+
     const catId = trip.category?.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '-') || ''
     const customImages = destinationItineraryImages[catId]
 
     if (customImages && customImages.length >= 4) {
       const mainImg = heroMedia[0] || { type: 'image' as const, src: trip.image, alt: trip.title }
+      const otherImages = customImages.filter(img => img !== mainImg.src)
+      const secondaryList = otherImages.length >= 4 ? otherImages : customImages
       return [
         mainImg,
-        { type: 'image' as const, src: customImages[0], alt: `${trip.title} gallery 2` },
-        { type: 'image' as const, src: customImages[1], alt: `${trip.title} gallery 3` },
-        { type: 'image' as const, src: customImages[2], alt: `${trip.title} gallery 4` },
-        { type: 'image' as const, src: customImages[3], alt: `${trip.title} gallery 5` },
+        { type: 'image' as const, src: secondaryList[0], alt: `${trip.title} gallery 2` },
+        { type: 'image' as const, src: secondaryList[1], alt: `${trip.title} gallery 3` },
+        { type: 'image' as const, src: secondaryList[2], alt: `${trip.title} gallery 4` },
+        { type: 'image' as const, src: secondaryList[3], alt: `${trip.title} gallery 5` },
       ]
     }
 
     const list = []
-
-    // Add main image first
     list.push({ type: 'image' as const, src: trip.image, alt: trip.title })
 
-    // Add specific trip images
     if (trip.images && trip.images.length > 0) {
       trip.images.forEach((img) => {
         if (!list.some(item => item.src === img)) {
@@ -135,10 +143,7 @@ export default function PackageDetailPage() {
       })
     }
 
-    // Fallback: always use the trip's own card image
     const fallbacks = [trip.image]
-
-    // First, try to add unique fallbacks
     for (const src of fallbacks) {
       if (list.length >= 5) break
       if (!list.some(item => item.src === src)) {
@@ -146,7 +151,6 @@ export default function PackageDetailPage() {
       }
     }
 
-    // If still less than 5, fill with trip.image
     while (list.length < 5) {
       list.push({ type: 'image' as const, src: trip.image, alt: `${trip.title} gallery ${list.length + 1}` })
     }
@@ -171,8 +175,6 @@ export default function PackageDetailPage() {
         : [...prev, dayNum]
     )
   }
-
-
 
   const scrollToSection = (id: string) => {
     if (typeof window === 'undefined') return
@@ -249,46 +251,11 @@ export default function PackageDetailPage() {
 
       <main className="grow">
         {/* HERO */}
-        <div className="relative h-[50vh] sm:h-[45vh] md:h-[70vh]  overflow-hidden pt-20">
+        <div className="relative h-[50vh] sm:h-[45vh] md:h-[70vh] overflow-hidden pt-20">
           <TripHeroCarousel media={heroMedia} />
-
           <div className="absolute inset-0 bg-linear-to-r from-slate-950/90 via-slate-950/40 to-transparent" />
           <div className="absolute inset-x-0 bottom-0 flex items-end">
-            <div className="w-full max-w-6xl mx-auto px-4 sm:px-5 md:px-6 pb-6 sm:pb-8 lg:pb-10">
-              {/* <div className="rounded-4xl bg-slate-950/20 backdrop-blur-xl border border-white/10 p-5 sm:p-7 md:p-8 lg:p-10 text-white shadow-2xl shadow-slate-950/40">
-                <div className="max-w-2xl">
-                  <div className="mb-4 inline-flex items-center rounded-full bg-amber-400/15 px-3 py-1 text-sm font-semibold text-amber-200 ring-1 ring-amber-300/20">
-                    Starting Price
-<span className="ml-2 text-white">₹{lowestPrice.toLocaleString('en-IN')} / person</span>
-                  </div>
-
-                  <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight leading-tight">
-                    {trip.title}
-                  </h1>
-
-                  <p className="mt-4 text-sm sm:text-base md:text-lg max-w-2xl text-slate-100 leading-7">
-                    {trip.description}
-                  </p>
-
-                  <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
-                    <Button
-                      size="lg"
-                      className="min-w-45 bg-amber-400 text-slate-950 hover:bg-amber-300"
-                      onClick={() => setCallbackOpen(true)}
-                    >
-                      <Phone size={18} className="mr-2" /> Request a Callback
-                    </Button>
-                    <Button
-                      size="lg"
-                      variant="outline"
-                      className="min-w-45 border-white/60 text-white hover:border-white hover:bg-white/10"
-                    >
-                      <MessageCircle size={18} className="mr-2" /> Chat With Us
-                    </Button>
-                  </div>
-                </div>
-              </div> */}
-            </div>
+            <div className="w-full max-w-6xl mx-auto px-4 sm:px-5 md:px-6 pb-6 sm:pb-8 lg:pb-10" />
           </div>
         </div>
 
@@ -434,7 +401,7 @@ export default function PackageDetailPage() {
                     >
                       <button
                         onClick={() => toggleDay(day.day)}
-                        className="w-full flex items-start justify-between p-[3vw] sm:p-0 bg-white hover:bg-slate-50 transition-colors"
+                        className="w-full flex items-start justify-between p-[3vw] sm:p-4 bg-white hover:bg-slate-50 transition-colors"
                       >
                         <div className="flex items-start gap-3 text-left grow">
                           <div className="shrink-0">
@@ -463,13 +430,13 @@ export default function PackageDetailPage() {
                       {expandedDays.includes(day.day) && (
                         <div className="px-4 sm:px-5 pb-4 sm:pb-5 bg-slate-50 border-t">
                           {Array.isArray(day.description) ? (
-                            <ul className="list-disc list-inside space-y-2 text-sm sm:text-base text-slate-700 leading-relaxed">
+                            <ul className="list-disc list-inside space-y-2 text-sm sm:text-base text-slate-700 leading-relaxed pt-3">
                               {day.description.map((point, idx) => (
                                 <li key={idx}>{point}</li>
                               ))}
                             </ul>
                           ) : (
-                            <p className="text-sm sm:text-base text-slate-700 leading-relaxed">
+                            <p className="text-sm sm:text-base text-slate-700 leading-relaxed pt-3">
                               {day.description}
                             </p>
                           )}
@@ -484,8 +451,7 @@ export default function PackageDetailPage() {
                 </div>
               </section>
 
-
-
+              {/* BATCHES */}
               <section id="batches">
                 <h2 className="text-2xl font-bold mb-4">Batch Dates</h2>
                 <Card className="p-6 space-y-4">
@@ -504,11 +470,12 @@ export default function PackageDetailPage() {
                       </div>
                     ))
                   ) : (
-                    <p className="text-slate-600">No upcoming batch dates currently scheduled. Please enquire for custom dates.</p>
+                    <p className="text-slate-600">Weekly and customized private departures available. Please enquire for your preferred travel dates.</p>
                   )}
                 </Card>
               </section>
 
+              {/* COSTING */}
               <section id="costing">
                 <h2 className="text-2xl font-bold mb-4">Costing Table</h2>
                 <Card className="p-6">
@@ -533,36 +500,42 @@ export default function PackageDetailPage() {
                 </Card>
               </section>
 
-              <section id="note">
-                <h2 className="text-2xl font-bold mb-4">Note</h2>
-                <Card className="p-6">
-                  {Array.isArray(trip.note) ? (
-                    <ul className="list-disc list-inside space-y-3 text-sm sm:text-base text-slate-700 leading-relaxed">
-                      {trip.note.map((item, idx) => (
-                        <li key={idx}>{item}</li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p className="text-sm sm:text-base text-slate-700 leading-relaxed">
-                      {trip.note}
-                    </p>
-                  )}
-                </Card>
-              </section>
+              {/* NOTE */}
+              {trip.note && (
+                <section id="note">
+                  <h2 className="text-2xl font-bold mb-4">Note</h2>
+                  <Card className="p-6">
+                    {Array.isArray(trip.note) ? (
+                      <ul className="list-disc list-inside space-y-3 text-sm sm:text-base text-slate-700 leading-relaxed">
+                        {trip.note.map((item, idx) => (
+                          <li key={idx}>{item}</li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-sm sm:text-base text-slate-700 leading-relaxed">
+                        {trip.note}
+                      </p>
+                    )}
+                  </Card>
+                </section>
+              )}
 
-              <section id="stays">
-                <h2 className="text-2xl font-bold mb-4">Stays</h2>
-                <Card className="p-6">
-                  <div className="space-y-3">
-                    {trip.stays?.map((item, idx) => (
-                      <div key={idx} className="flex gap-3">
-                        <span className="text-lg shrink-0">•</span>
-                        <span className="text-sm sm:text-base text-slate-700">{item}</span>
-                      </div>
-                    ))}
-                  </div>
-                </Card>
-              </section>
+              {/* STAYS */}
+              {trip.stays && trip.stays.length > 0 && (
+                <section id="stays">
+                  <h2 className="text-2xl font-bold mb-4">Stays</h2>
+                  <Card className="p-6">
+                    <div className="space-y-3">
+                      {trip.stays.map((item, idx) => (
+                        <div key={idx} className="flex gap-3">
+                          <span className="text-lg shrink-0">•</span>
+                          <span className="text-sm sm:text-base text-slate-700">{item}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </Card>
+                </section>
+              )}
 
               <Accordion type="single" collapsible defaultValue="inclusions" className="space-y-4">
                 <section id="inclusions">
@@ -597,75 +570,83 @@ export default function PackageDetailPage() {
                   </AccordionItem>
                 </section>
 
-                <section id="payment">
-                  <AccordionItem value="payment">
-                    <AccordionTrigger>Payment Policy</AccordionTrigger>
-                    <AccordionContent>
-                      <div className="space-y-3">
-                        {trip.paymentPolicy?.map((item, idx) => (
-                          <div key={idx} className="flex gap-3">
-                            <span className="text-lg shrink-0">•</span>
-                            <span className="text-sm sm:text-base text-slate-700">{item}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                </section>
-
-                <section id="cancellation">
-                  <AccordionItem value="cancellation">
-                    <AccordionTrigger>Cancellation Policy</AccordionTrigger>
-                    <AccordionContent>
-                      <div className="space-y-3">
-                        {trip.cancellationPolicy?.map((item, idx) => (
-                          <div key={idx} className="flex gap-3">
-                            <span className="text-lg shrink-0">•</span>
-                            <span className="text-sm sm:text-base text-slate-700">{item}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                </section>
-
-                <section id="things-to-carry">
-                  <AccordionItem value="things-to-carry">
-                    <AccordionTrigger>Things To Carry</AccordionTrigger>
-                    <AccordionContent>
-                      <div className="space-y-3">
-                        {trip.thingsToCarry?.map((item, idx) => (
-                          <div key={idx} className="flex gap-3">
-                            <span className="text-lg shrink-0">•</span>
-                            <span className="text-sm sm:text-base text-slate-700">{item}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                </section>
-
-                <section id="travel-essentials">
-                  <AccordionItem value="travel-essentials">
-                    <AccordionTrigger>Travel Essentials</AccordionTrigger>
-                    <AccordionContent>
-                      <div className="space-y-6">
-                        {trip.travelEssentials?.map((group, idx) => (
-                          <div key={idx}>
-                            <h3 className="font-semibold text-base text-slate-900 mb-2">{group.title}</h3>
-                            <div className="grid sm:grid-cols-2 gap-2">
-                              {group.items.map((item, itemIdx) => (
-                                <div key={itemIdx} className="rounded-2xl bg-slate-100 px-3 py-2 text-sm text-slate-700">
-                                  {item}
-                                </div>
-                              ))}
+                {trip.paymentPolicy && trip.paymentPolicy.length > 0 && (
+                  <section id="payment">
+                    <AccordionItem value="payment">
+                      <AccordionTrigger>Payment Policy</AccordionTrigger>
+                      <AccordionContent>
+                        <div className="space-y-3">
+                          {trip.paymentPolicy.map((item, idx) => (
+                            <div key={idx} className="flex gap-3">
+                              <span className="text-lg shrink-0">•</span>
+                              <span className="text-sm sm:text-base text-slate-700">{item}</span>
                             </div>
-                          </div>
-                        ))}
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                </section>
+                          ))}
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </section>
+                )}
+
+                {trip.cancellationPolicy && trip.cancellationPolicy.length > 0 && (
+                  <section id="cancellation">
+                    <AccordionItem value="cancellation">
+                      <AccordionTrigger>Cancellation Policy</AccordionTrigger>
+                      <AccordionContent>
+                        <div className="space-y-3">
+                          {trip.cancellationPolicy.map((item, idx) => (
+                            <div key={idx} className="flex gap-3">
+                              <span className="text-lg shrink-0">•</span>
+                              <span className="text-sm sm:text-base text-slate-700">{item}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </section>
+                )}
+
+                {trip.thingsToCarry && trip.thingsToCarry.length > 0 && (
+                  <section id="things-to-carry">
+                    <AccordionItem value="things-to-carry">
+                      <AccordionTrigger>Things To Carry</AccordionTrigger>
+                      <AccordionContent>
+                        <div className="space-y-3">
+                          {trip.thingsToCarry.map((item, idx) => (
+                            <div key={idx} className="flex gap-3">
+                              <span className="text-lg shrink-0">•</span>
+                              <span className="text-sm sm:text-base text-slate-700">{item}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </section>
+                )}
+
+                {trip.travelEssentials && trip.travelEssentials.length > 0 && (
+                  <section id="travel-essentials">
+                    <AccordionItem value="travel-essentials">
+                      <AccordionTrigger>Travel Essentials</AccordionTrigger>
+                      <AccordionContent>
+                        <div className="space-y-6">
+                          {trip.travelEssentials.map((group, idx) => (
+                            <div key={idx}>
+                              <h3 className="font-semibold text-base text-slate-900 mb-2">{group.title}</h3>
+                              <div className="grid sm:grid-cols-2 gap-2">
+                                {group.items.map((item, itemIdx) => (
+                                  <div key={itemIdx} className="rounded-2xl bg-slate-100 px-3 py-2 text-sm text-slate-700">
+                                    {item}
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </section>
+                )}
               </Accordion>
 
               {/* MOBILE CTA */}
@@ -777,7 +758,7 @@ export default function PackageDetailPage() {
       {/* ADD BOTTOM PADDING FOR MOBILE */}
       <div className="h-[12vh] lg:h-0 min-h-20 lg:min-h-0" />
 
-            {/* REVIEWS SECTION */}
+      {/* REVIEWS SECTION */}
       <TripReviewsSection 
         tripSlug={trip.slug} 
         categoryId={trip.category.toLowerCase()} 

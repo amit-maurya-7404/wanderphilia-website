@@ -28,11 +28,18 @@ const categoryFallbackImages: Record<string, string> = {
   'singapore': '/images/singapore.png',
   'sikkim': '/images/sikkim.png',
   'vietnam': '/images/vietnam.png',
+  'rajasthan': '/images/Rajasthan/rajasthan1.jpeg',
 }
 
 function getTripLowestPrice(trip: Trip): number {
   const lowestPrice = trip.costingDetails?.length
     ? trip.costingDetails
+        .filter((item) => {
+          const val = item.value.toLowerCase()
+          if (val.includes('included') || val.includes('free') || val.includes('complimentary')) return false
+          return val.includes('₹') || val.includes('inr') || val.includes('$') ||
+            item.label.toLowerCase().includes('rate') || item.label.toLowerCase().includes('cost') || item.label.toLowerCase().includes('price')
+        })
         .map((item) => {
           const match = item.value.match(/[\d,]+/)
           return match ? parseInt(match[0].replace(/,/g, ''), 10) : NaN
@@ -111,14 +118,15 @@ function DurationCard({
   )
 }
 
-export function DurationFilter({ trips, selectedDuration, onChange }: DurationFilterProps) {
+export function DurationFilter({ trips = [], selectedDuration, onChange }: DurationFilterProps) {
   // Compute cheapest trip for each nights duration dynamically for range 5 to 11 nights
   const durationItems = useMemo(() => {
     const fixedNights = [5, 6, 7, 8, 9, 10, 11]
+    const safeTrips = Array.isArray(trips) ? trips : []
 
     return fixedNights.map((nightCount) => {
       // Find trips matching this night count
-      const matchingTrips = trips.filter((trip) => {
+      const matchingTrips = safeTrips.filter((trip) => {
         const tripNights = trip.nights !== undefined ? trip.nights : (trip.duration ? trip.duration - 1 : 0)
         return tripNights === nightCount
       })

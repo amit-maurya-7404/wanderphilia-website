@@ -287,6 +287,12 @@ export function getLowestPriceForTrip(trip: Trip): number {
     return trip.price || 0;
   }
   const prices = trip.costingDetails
+    .filter(item => {
+      const val = item.value.toLowerCase();
+      if (val.includes('included') || val.includes('free') || val.includes('complimentary')) return false;
+      return val.includes('₹') || val.includes('inr') || val.includes('$') ||
+        item.label.toLowerCase().includes('rate') || item.label.toLowerCase().includes('cost') || item.label.toLowerCase().includes('price');
+    })
     .map(item => {
       const match = item.value.match(/[\d,]+/);
       return match ? parseInt(match[0].replace(/,/g, ''), 10) : 0;
@@ -17010,10 +17016,274 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
       { label: 'Double Sharing Rate', value: '₹35,999/- per person' }
     ],
     dates: []
+  },
+  {
+    id: 'WNDPI-RAJ-001',
+    title: '5 Nights / 6 Days Royal Rajasthan & Taj Mahal Escape',
+    slug: '5-nights-6-days-royal-rajasthan-escape',
+    image: '/images/Rajasthan/rajasthan1.jpeg',
+    destination: 'Rajasthan',
+    region: 'North India',
+    category: 'rajasthan',
+    tripType: 'India',
+    description: 'Experience the regal charm of Rajasthan with curated stays, cultural encounters, and unforgettable wildlife and heritage tours. Explore the Pink City of Jaipur with its magnificent Amber Fort, Hawa Mahal, and lively bazaars, embark on a scenic drive to Ranthambore for tranquil wilderness, marvel at the timeless beauty of the Taj Mahal in Agra, and seek divine blessings at Vrindavan Darshan before your departure transfer in Delhi.',
+    duration: 6,
+    nights: 5,
+    route: '2N Jaipur • 1N Ranthambore • 2N Agra • Delhi',
+    staySummary: '2N Jaipur | 1N Ranthambore | 2N Agra',
+    price: 19000,
+    rating: 4.9,
+    difficulty: 'Easy',
+    groupSize: 12,
+    showGetQuoteOnly: true,
+    images: [
+      '/images/Rajasthan/rajasthan1.jpeg',
+      '/images/Rajasthan/rajasthan2.jpeg',
+      '/images/Rajasthan/rajasthan3.jpeg',
+      '/images/Rajasthan/rajasthan4.jpeg',
+      '/images/Rajasthan/rajasthan5.jpg',
+      '/images/Rajasthan/rajasthan6.jpg',
+      '/images/Rajasthan/rajasthan7.jpg'
+    ],
+    highlights: [
+      'Nahagarh Sunset Experience on the Aravalli ridge overlooking Jaipur',
+      'Comprehensive Jaipur City Tour: Amber Fort, Hawa Mahal, and City Palace',
+      'Exclusive Elephant Village Experience with feeding, bathing & painting',
+      'Jaipur Pink City Bazaar walk with local food and street culture',
+      'Scenic drive through Ranthambore wilderness with leisure stay',
+      'Guided Taj Mahal visit & stunning sunset at Mehtab Bagh',
+      'En-route visit to holy Vrindavan Darshan before Delhi departure'
+    ],
+    heroMedia: createHeroMedia([
+      { src: '/images/Rajasthan/rajasthan1.jpeg', alt: 'Royal Rajasthan Heritage' },
+      { src: '/images/Rajasthan/rajasthan2.jpeg', alt: 'Jaipur Fort View' },
+      { src: '/images/Rajasthan/rajasthan3.jpeg', alt: 'Rajasthan Culture' },
+      { src: '/images/Rajasthan/rajasthan4.jpeg', alt: 'Amber Palace' },
+      { src: '/images/Rajasthan/rajasthan5.jpg', alt: 'Rajasthan Sunset' },
+      { src: '/images/Rajasthan/rajasthan6.jpg', alt: 'Taj Mahal & Agra' },
+      { src: '/images/Rajasthan/rajasthan7.jpg', alt: 'Rajasthan Palaces' }
+    ]),
+    itinerary: [
+      {
+        day: 1,
+        title: 'Jaipur — Arrival, Nahagarh Sunset Experience',
+        description: [
+          'Arrival at Jaipur Airport / Railway Station, meet our tour representative, and transfer to Hotel Sarang Palace or similar.',
+          'Complete smooth hotel check-in formalities and refresh at Hotel Sarang Palace or similar, Jaipur.',
+          'Nahagarh Sunset Experience: Nahargarh sits on the Aravalli ridge overlooking Jaipur and offers spectacular panoramic sunset views of the Pink City.',
+          'Enjoy dinner and a comfortable overnight stay at Hotel Sarang Palace or similar, Jaipur.'
+        ],
+        image: '/images/Rajasthan/rajasthan1.jpeg'
+      },
+      {
+        day: 2,
+        title: 'Jaipur — Jaipur City Tour, Elephant Village & Pink City Bazaar Tour',
+        description: [
+          'Enjoy breakfast at Hotel Sarang Palace or similar before proceeding for the day\'s curated sightseeing in Jaipur.',
+          'Jaipur City Tour: Explore iconic royal monuments including Hawa Mahal, City Palace, and the majestic Amber Fort.',
+          'Elephant Village Experience: Enjoy interactive elephant feeding, bathing, and traditional organic painting.',
+          'Jaipur Pink City Bazaar Tour: Stroll through vibrant historic markets, savor authentic local street delicacies, and interact with Rajasthani artisans.',
+          'Enjoy dinner and a comfortable overnight stay at Hotel Sarang Palace or similar, Jaipur.'
+        ],
+        image: '/images/Rajasthan/rajasthan2.jpeg'
+      },
+      {
+        day: 3,
+        title: 'Jaipur to Ranthambore — Scenic Drive & Wilderness Leisure (Approx. 160 KM | 3.5 - 4 Hrs Drive)',
+        description: [
+          'Enjoy a wholesome breakfast and complete check-out formalities at Hotel Sarang Palace or similar, Jaipur.',
+          'Depart from Jaipur and proceed on a scenic drive towards Ranthambore (Approx. 160 KM | 3.5 - 4 Hrs Drive).',
+          'Arrive in Ranthambore and complete check-in formalities at Ginger Ranthambore or similar.',
+          'Evening Leisure: Enjoy the peaceful surroundings, soak in the tranquil wilderness and birdlife of Ranthambore.',
+          'Enjoy dinner and a comfortable overnight stay at Ginger Ranthambore or similar.'
+        ],
+        image: '/images/Rajasthan/rajasthan3.jpeg'
+      },
+      {
+        day: 4,
+        title: 'Ranthambore to Agra — En-Route Drive & Heritage Leisure (Approx. 260 KM | 5.5 - 6 Hrs Drive)',
+        description: [
+          'Enjoy a wholesome breakfast and complete check-out formalities at Ginger Ranthambore or similar.',
+          'Depart from Ranthambore and proceed on a scenic drive towards Agra (Approx. 260 KM | 5.5 - 6 Hrs Drive).',
+          'Arrive in Agra and complete check-in formalities at Bhawna Clarks or similar, Agra.',
+          'Evening Leisure: Relax at your hotel and enjoy the heritage Mughal ambiance of Agra.',
+          'Enjoy dinner and a comfortable overnight stay at Bhawna Clarks or similar, Agra.'
+        ],
+        image: '/images/Rajasthan/rajasthan4.jpeg'
+      },
+      {
+        day: 5,
+        title: 'Agra — Taj Mahal Visit with City Tour & Evening Sunset at Mehtab Bagh',
+        description: [
+          'Enjoy breakfast at Bhawna Clarks or similar before proceeding for the day\'s curated sightseeing in Agra.',
+          'Taj Mahal Visit with City Tour: Guided morning exploration of the world-famous Taj Mahal and Agra Fort.',
+          'Evening Sunset at Mehtab Bagh: Witness the breathtaking sunset views of the Taj Mahal reflecting across the serene Yamuna River.',
+          'Enjoy dinner and a comfortable overnight stay at Bhawna Clarks or similar, Agra.'
+        ],
+        image: '/images/Rajasthan/rajasthan5.jpg'
+      },
+      {
+        day: 6,
+        title: 'Agra to Delhi via Vrindavan Darshan — En-Route Visit & Departure Transfer (Approx. 230 KM | 3.5 - 4 Hrs Drive)',
+        description: [
+          'Enjoy a wholesome breakfast and complete check-out formalities at Bhawna Clarks or similar, Agra.',
+          'Depart from Agra and proceed on a scenic drive towards Delhi via holy Vrindavan Darshan (Approx. 230 KM | 3.5 - 4 Hrs Drive).',
+          'En-Route Visit: Vrindavan Darshan — Stop at holy Vrindavan to seek divine blessings at iconic temples and experience the sacred spiritual ambiance.',
+          'Arrive in Delhi and transfer directly to the Airport / Railway Station for your onward departure journey home with unforgettable memories.'
+        ],
+        image: '/images/Rajasthan/rajasthan6.jpg'
+      }
+    ],
+    included: [
+      'Private AC Sedan / SUV for the complete Rajasthan & Agra itinerary and Airport Transfers.',
+      'Accommodation for 5 Nights: 2N Jaipur (Hotel Sarang Palace or similar), 1N Ranthambore (Ginger Ranthambore or similar), 2N Agra (Bhawna Clarks or similar).',
+      'Daily Breakfast & Dinner as per curated meal plan (Breakfast except 1st Day, Dinner on last night).',
+      'Dedicated private vehicle driver allowance, fuel, toll taxes, parking charges, and interstate road taxes.',
+      'All transfers, excursion drives, and guided sightseeing as per the day-wise itinerary.',
+      'Nahagarh Sunset Experience on Aravalli ridge.',
+      'Jaipur City Tour (Amber Fort, City Palace & Hawa Mahal).',
+      'Elephant Village Experience.',
+      'Jaipur Pink City Bazaar Street Tour.',
+      'Guided Taj Mahal Visit and City Tour in Agra.',
+      'Evening Sunset Experience at Mehtab Bagh.',
+      'En-Route Visit to holy Vrindavan Darshan.',
+      'Assistance during hotel check-in and check-out.',
+      '24/7 Dedicated Trip Manager Support.'
+    ],
+    notIncluded: [
+      '5% GST.',
+      'Early check-in (Before 1:00 PM) & Late Check-out (After 11:00 AM) at hotels.',
+      'Monument entry tickets, camera fees, and safari permit fees during sightseeing unless explicitly mentioned.',
+      'Any Airfare / Rail fare to Jaipur and from Delhi.',
+      'Any lunch and personal expenses (laundry, telephone calls, room service, alcoholic beverages).',
+      'Additional costs incurred due to flight delays, train cancellations, roadblocks, or natural calamities.',
+      'Any services not specified in the inclusions.'
+    ],
+    accommodations: [
+      {
+        city: 'Jaipur',
+        hotel: 'Hotel Sarang Palace or similar',
+        nights: '2 Nights'
+      },
+      {
+        city: 'Ranthambore',
+        hotel: 'Ginger Ranthambore or similar',
+        nights: '1 Night'
+      },
+      {
+        city: 'Agra',
+        hotel: 'Bhawna Clarks or similar',
+        nights: '2 Nights'
+      }
+    ],
+    summaryDetails: {
+      accommodation: [
+        { city: 'Jaipur', hotel: 'Hotel Sarang Palace or similar' },
+        { city: 'Ranthambore', hotel: 'Ginger Ranthambore or similar' },
+        { city: 'Agra', hotel: 'Bhawna Clarks or similar' }
+      ],
+      meals: ['Breakfast (Days 2 to 6)', 'Dinner (Days 1 to 5)'],
+      transfers: [
+        'Jaipur Airport / Railway Station Pickup & Hotel Transfer',
+        'Jaipur Full-Day Sightseeing (Private AC Cab)',
+        'Jaipur to Ranthambore Intercity Transfer',
+        'Ranthambore to Agra Intercity Highway Drive',
+        'Agra City Sightseeing & Taj Mahal Excursion',
+        'Agra to Delhi Airport / Railway Station via Vrindavan Darshan'
+      ],
+      activities: [
+        'Nahagarh Sunset Experience',
+        'Amber Fort & City Palace Tour',
+        'Hawa Mahal & Jal Mahal Views',
+        'Elephant Village Interactive Session',
+        'Pink City Heritage Bazaar Walk',
+        'Ranthambore Wilderness Leisure',
+        'Taj Mahal Guided Sunrise / Sightseeing Tour',
+        'Mehtab Bagh Sunset Riverfront Experience',
+        'Holy Vrindavan Darshan'
+      ]
+    },
+    costingDetails: [
+      { label: 'Package Cost (Per Person on Double Sharing)', value: '₹19,000/-' },
+      { label: 'Private AC Cab + Sightseeing', value: 'Included' },
+      { label: 'Hotel Stays (Hotel Sarang Palace, Ginger Ranthambore, Bhawna Clarks or similar)', value: 'Included (5 Nights)' },
+      { label: 'Breakfast & Dinner Plan', value: 'Included' }
+    ],
+    paymentPolicy: [
+      '50% booking advance payment is required to confirm the booking and secure hotel reservations.',
+      'Balance 50% payment must be received at least 15 days prior to travel departure.'
+    ],
+    cancellationPolicy: [
+      'More than 30 days before departure: Cancellation charges as per actual supplier policies.',
+      '30 to 16 days before departure: 50% of the total package cost.',
+      '15 to 08 days before departure: 75% of the total package cost.',
+      '07 days or less / No Show: 100% of the total package cost.'
+    ],
+    thingsToCarry: [
+      'Valid Government-issued Photo ID (Aadhar Card, Driving License, or Passport).',
+      'Comfortable cotton wear for daytime sightseeing and a light jacket for AC travel and evenings.',
+      'Comfortable walking shoes / sneakers for forts, palaces, and bazaar tours.',
+      'Sunscreen, sunglasses, sun hat, and reusable water bottle.',
+      'Camera or smartphone with chargers and power bank.'
+    ],
+    stays: [
+      'Jaipur (2 Nights): Hotel Sarang Palace or similar',
+      'Ranthambore (1 Night): Ginger Ranthambore or similar',
+      'Agra (2 Nights): Bhawna Clarks or similar'
+    ],
+    note: [
+      'Private AC Cab is dedicated exclusively for your group throughout the itinerary with all driver allowances, fuel, toll, and state taxes included.',
+      'Hotel standard check-in time is 01:00 PM and check-out time is 11:00 AM. Early check-in or late check-out is subject to availability.',
+      'Breakfast is included from Day 2 to Day 6, and Dinner is included on all nights.',
+      'Monument entrance tickets, elephant activities, and jungle safaris can be pre-arranged on request.'
+    ],
+    batchDates: [
+      {
+        month: 'October',
+        ranges: ['03 Oct - 08 Oct', '10 Oct - 15 Oct', '17 Oct - 22 Oct', '24 Oct - 29 Oct']
+      },
+      {
+        month: 'November',
+        ranges: ['07 Nov - 12 Nov', '14 Nov - 19 Nov', '21 Nov - 26 Nov', '28 Nov - 03 Dec']
+      },
+      {
+        month: 'December',
+        ranges: ['05 Dec - 10 Dec', '12 Dec - 17 Dec', '19 Dec - 24 Dec', '26 Dec - 31 Dec']
+      },
+      {
+        month: 'January',
+        ranges: ['02 Jan - 07 Jan', '09 Jan - 14 Jan', '16 Jan - 21 Jan', '23 Jan - 28 Jan']
+      },
+      {
+        month: 'February',
+        ranges: ['06 Feb - 11 Feb', '13 Feb - 18 Feb', '20 Feb - 25 Feb', '27 Feb - 04 Mar']
+      },
+      {
+        month: 'March',
+        ranges: ['06 Mar - 11 Mar', '13 Mar - 18 Mar', '20 Mar - 25 Mar', '27 Mar - 01 Apr']
+      }
+    ],
+    dates: [
+      { startDate: '2026-10-03', endDate: '2026-10-08', spots: 12 },
+      { startDate: '2026-10-10', endDate: '2026-10-15', spots: 10 },
+      { startDate: '2026-10-17', endDate: '2026-10-22', spots: 12 },
+      { startDate: '2026-10-24', endDate: '2026-10-29', spots: 8 },
+      { startDate: '2026-11-07', endDate: '2026-11-12', spots: 12 },
+      { startDate: '2026-11-14', endDate: '2026-11-19', spots: 12 },
+      { startDate: '2026-12-05', endDate: '2026-12-10', spots: 12 },
+      { startDate: '2026-12-26', endDate: '2026-12-31', spots: 6 }
+    ]
   }
 ];
 
 export const destinations: Destination[] = [
+  {
+    title: 'Rajasthan',
+    slug: 'rajasthan',
+    image: '/images/Rajasthan/rajasthan1.jpeg',
+    description: 'Experience royal palaces, towering desert forts, rich heritage, and royal hospitality.',
+    tripCount: 1,
+  },
   {
     title: 'Leh Ladakh',
     slug: 'leh-ladakh',

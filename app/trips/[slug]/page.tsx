@@ -869,6 +869,12 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
     }
 
     const prices = trip.costingDetails
+      .filter(item => {
+        const val = item.value.toLowerCase()
+        if (val.includes('included') || val.includes('free') || val.includes('complimentary')) return false
+        return val.includes('₹') || val.includes('inr') || val.includes('$') ||
+          item.label.toLowerCase().includes('rate') || item.label.toLowerCase().includes('cost') || item.label.toLowerCase().includes('price')
+      })
       .map(item => {
         // Extract numeric value from price strings like "₹35,000"
         const match = item.value.match(/[\d,]+/)
@@ -1061,19 +1067,26 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
   const collageImages = useMemo(() => {
     if (!trip) return []
 
+    // If heroMedia has 5 or more images, use them directly as the collage
+    if (heroMedia && heroMedia.length >= 5) {
+      return heroMedia.slice(0, 5)
+    }
+
     // Check if there are custom images for this destination in the section-mappings file
     const catId = trip.category?.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '-') || ''
     const customImages = destinationItineraryImages[catId]
 
     if (customImages && customImages.length >= 4) {
-      // Use the trip's main image as the first large image, and the 4 custom mapped images on the right
+      // Use the trip's main image as the first large image, and 4 distinct custom mapped images on the right
       const mainImg = heroMedia[0] || { type: 'image' as const, src: trip.image, alt: trip.title }
+      const otherImages = customImages.filter(img => img !== mainImg.src)
+      const secondaryList = otherImages.length >= 4 ? otherImages : customImages
       return [
         mainImg,
-        { type: 'image' as const, src: customImages[0], alt: `${trip.title} gallery 2` },
-        { type: 'image' as const, src: customImages[1], alt: `${trip.title} gallery 3` },
-        { type: 'image' as const, src: customImages[2], alt: `${trip.title} gallery 4` },
-        { type: 'image' as const, src: customImages[3], alt: `${trip.title} gallery 5` },
+        { type: 'image' as const, src: secondaryList[0], alt: `${trip.title} gallery 2` },
+        { type: 'image' as const, src: secondaryList[1], alt: `${trip.title} gallery 3` },
+        { type: 'image' as const, src: secondaryList[2], alt: `${trip.title} gallery 4` },
+        { type: 'image' as const, src: secondaryList[3], alt: `${trip.title} gallery 5` },
       ]
     }
 
@@ -2445,13 +2458,23 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
 
                   <div className="grid gap-3">
                     {trip.showGetQuoteOnly ? (
-                      <Button
-                        size="lg"
-                        className="w-full justify-center bg-primary hover:bg-primary/95 text-white font-bold"
-                        onClick={() => setCallbackOpen(true)}
-                      >
-                        <MessageCircle size={18} /> Get Quote
-                      </Button>
+                      <>
+                        <Button
+                          size="lg"
+                          className="w-full justify-center font-extrabold bg-gradient-to-r from-orange-600 via-[#ff5d09] to-orange-500 hover:from-orange-500 hover:to-orange-600 text-white shadow-lg shadow-orange-500/20 hover:shadow-orange-500/35 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+                          onClick={() => setCallbackOpen(true)}
+                        >
+                          <Phone size={18} className="animate-pulse" /> Get a Quote
+                        </Button>
+                        <Button
+                          size="lg"
+                          variant="outline"
+                          className="w-full justify-center font-bold"
+                          onClick={() => setCallbackOpen(true)}
+                        >
+                          <MessageCircle size={18} /> Request Callback
+                        </Button>
+                      </>
                     ) : (
                       <>
                         <Button
@@ -2630,8 +2653,8 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
             )}
           </div>
           {trip.showGetQuoteOnly ? (
-            <Button onClick={() => setCallbackOpen(true)} className="shrink-0 bg-primary hover:bg-primary/95 text-white font-bold rounded-2xl h-12">
-              Get Quote
+            <Button onClick={() => setCallbackOpen(true)} className="shrink-0 bg-gradient-to-r from-orange-600 via-[#ff5d09] to-orange-500 hover:from-orange-500 hover:to-orange-600 text-white font-bold rounded-2xl h-12 shadow-md">
+              <Phone size={16} className="mr-1.5 animate-pulse" /> Get a Quote
             </Button>
           ) : (
             <div className="grow min-w-0">

@@ -1,6 +1,10 @@
-// Central mapping system for trip sections by category
-// This controls which trips appear in which sections on category pages
 export const sectionMappings: Record<string, Record<string, string[]>> = {
+  'rajasthan': {
+    available: ['WNDPI-RAJ-001'],
+    family: ['WNDPI-RAJ-001'],
+    custom: ['WNDPI-RAJ-001'],
+    related: ['22', '19', '1']
+  },
   'leh-ladakh': {
     available: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '29', '30'], // Available Packages - Leh Ladakh trips
     family: ['1', '2', '3', '4', '5', '6', '29', '30'], // Family Packages
@@ -117,7 +121,7 @@ export const sectionMappings: Record<string, Record<string, string[]>> = {
 
 // Page-specific trip card mappings for standalone pages
 export const pageSectionMappings: Record<string, string[]> = {
-  upcomingTours: ['61', '62', '63', '1', '2', '3', '4', '5', '6', '7', '8', '9', '29', '30', '31', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56'],
+  upcomingTours: ['WNDPI-RAJ-001', '61', '62', '63', '1', '2', '3', '4', '5', '6', '7', '8', '9', '29', '30', '31', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56'],
   honeymoonPackages: ['2', '6', '21', '22', '25', '32', '33', '34', '35', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56'],
   featured: ['61', '62', '63', '1', '9', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56']
 }
@@ -157,6 +161,15 @@ export const destinationItineraryImages: Record<string, string[]> = {
     '/images/bhutan2.jpg',
     '/images/bhutan3.jpg',
     '/images/bhutan-cover3.PNG'
+  ],
+  'rajasthan': [
+    '/images/Rajasthan/rajasthan1.jpeg',
+    '/images/Rajasthan/rajasthan2.jpeg',
+    '/images/Rajasthan/rajasthan3.jpeg',
+    '/images/Rajasthan/rajasthan4.jpeg',
+    '/images/Rajasthan/rajasthan5.jpg',
+    '/images/Rajasthan/rajasthan6.jpg',
+    '/images/Rajasthan/rajasthan7.jpg'
   ],
   'singapore': [
     '/images/singapore1.jpg',

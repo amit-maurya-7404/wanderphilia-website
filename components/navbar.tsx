@@ -144,6 +144,13 @@ export function Navbar({ forceWhiteDesktop }: NavbarProps) {
                   Spiti
                 </Link>
                 <Link
+                  href="/trips/rajasthan"
+
+                  className="block px-4 py-3 text-gray-700 hover:bg-primary/10 hover:text-primary font-medium text-sm rounded-lg mx-2 transition-colors"
+                >
+                  Rajasthan
+                </Link>
+                <Link
                   href="/trips/vietnam"
 
                   className="block px-4 py-3 text-gray-700 hover:bg-primary/10 hover:text-primary font-medium text-sm rounded-lg mx-2 transition-colors"
@@ -392,6 +399,17 @@ export function Navbar({ forceWhiteDesktop }: NavbarProps) {
                     }}
                   >
                     Spiti
+                  </Link>
+                  <Link
+                    href="/trips/rajasthan"
+
+                    className="block px-6 py-3 text-sm text-gray-600 hover:text-primary hover:bg-gray-100 transition-colors"
+                    onClick={() => {
+                      setIsMobileOpen(false)
+                      setOpenDropdown(null)
+                    }}
+                  >
+                    Rajasthan
                   </Link>
                   <Link
                     href="/trips/vietnam"

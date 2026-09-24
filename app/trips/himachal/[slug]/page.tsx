@@ -885,10 +885,10 @@ export default function PackageDetailPage() {
                       <>
                         <Button
                           size="lg"
-                          className="w-full justify-center"
-                          onClick={handleBookNow}
+                          className="w-full justify-center bg-[#ff6e0b] hover:bg-[#e05f00] text-white"
+                          onClick={() => setCallbackOpen(true)}
                         >
-                          <Phone size={18} /> Book Now
+                          <Phone size={18} /> Get a Quote
                         </Button>
                         <Button
                           size="lg"
@@ -965,15 +965,9 @@ export default function PackageDetailPage() {
               <p className="text-md font-bold text-slate-700">Price on Request</p>
             )}
           </div>
-          {trip.showGetQuoteOnly ? (
-            <Button onClick={() => setCallbackOpen(true)} className="shrink-0 bg-primary hover:bg-primary/95 text-white">
-              Get Quote
-            </Button>
-          ) : (
-            <Button onClick={handleBookNow} className="shrink-0">
-              Book Now
-            </Button>
-          )}
+          <Button onClick={() => setCallbackOpen(true)} className="shrink-0 bg-[#ff6e0b] hover:bg-[#e05f00] text-white">
+            Get a Quote
+          </Button>
         </div>
       </div>
 

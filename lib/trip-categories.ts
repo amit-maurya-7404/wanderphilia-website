@@ -18,6 +18,7 @@ const categoryImageMap: Record<string, string> = {
   Japan: '/images/japan.jpg',
   Ladakh: '/images/leh-ladakh.jpg',
   Spiti: '/images/spiti-valley.jpg',
+  Rajasthan: '/images/Rajasthan/rajasthan1.jpeg',
   Kashmir: '/images/kashmir.jpg',
   Meghalaya: '/images/meghalaya.jpg',
   Himachal: '/images/himachal.jpg',
@@ -29,6 +30,7 @@ const categoryImageMap: Record<string, string> = {
 const categoryOrder: string[] = [
   'Ladakh',
   'Spiti',
+  'Rajasthan',
   'Vietnam',
   'Bhutan',
   'Singapore',

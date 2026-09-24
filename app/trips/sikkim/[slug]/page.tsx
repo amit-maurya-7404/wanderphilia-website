@@ -675,10 +675,10 @@ export default function PackageDetailPage() {
                   <div className="grid gap-3">
                     <Button
                       size="lg"
-                      className="w-full justify-center"
-                      onClick={handleBookNow}
+                      className="w-full justify-center bg-[#ff6e0b] hover:bg-[#e05f00] text-white"
+                      onClick={() => setCallbackOpen(true)}
                     >
-                      <Phone size={18} /> Book Now
+                      <Phone size={18} /> Get a Quote
                     </Button>
                     <Button
                       size="lg"
@@ -747,8 +747,8 @@ export default function PackageDetailPage() {
             </p>
             <p className="text-lg font-bold">₹{(selections.length > 0 ? total : lowestPrice).toLocaleString('en-IN')}</p>
           </div>
-          <Button onClick={handleBookNow} className="shrink-0">
-            Book Now
+          <Button onClick={() => setCallbackOpen(true)} className="shrink-0 bg-[#ff6e0b] hover:bg-[#e05f00] text-white">
+            Get a Quote
           </Button>
         </div>
       </div>

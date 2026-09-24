@@ -25,29 +25,31 @@ export const availableDummyImages: string[] = [
 
 export const destinationLuxuryImages: Record<string, string[]> = {
   rajasthan: [
-    '/images/about_hero4.jpg',
-    '/images/about_hero5.jpg',
-    '/images/about_hero3.jpg',
-    '/images/gallery1.jpeg',
-    '/images/gallery4.jpg',
-    '/images/gallery11.jpg'
+    '/images/Rajasthan/rajasthan1.jpeg',
+    '/images/Rajasthan/rajasthan2.jpeg',
+    '/images/Rajasthan/rajasthan3.jpeg',
+    '/images/Rajasthan/rajasthan4.jpeg',
+    '/images/Rajasthan/rajasthan5.jpg',
+    '/images/Rajasthan/rajasthan6.jpg',
+    '/images/Rajasthan/rajasthan7.jpg'
   ],
   jodhpur: [
-    '/images/about_hero4.jpg',
-    '/images/about_hero5.jpg',
-    '/images/gallery1.jpeg',
-    '/images/gallery11.jpg'
+    '/images/Rajasthan/rajasthan1.jpeg',
+    '/images/Rajasthan/rajasthan2.jpeg',
+    '/images/Rajasthan/rajasthan3.jpeg',
+    '/images/Rajasthan/rajasthan4.jpeg'
   ],
   jaipur: [
-    '/images/about_hero3.jpg',
-    '/images/about_hero4.jpg',
-    '/images/gallery4.jpg',
-    '/images/gallery15.JPG'
+    '/images/Rajasthan/rajasthan1.jpeg',
+    '/images/Rajasthan/rajasthan2.jpeg',
+    '/images/Rajasthan/rajasthan3.jpeg',
+    '/images/Rajasthan/rajasthan4.jpeg'
   ],
   jaisalmer: [
-    '/images/about_hero4.jpg',
-    '/images/about_hero5.jpg',
-    '/images/gallery1.jpeg'
+    '/images/Rajasthan/rajasthan1.jpeg',
+    '/images/Rajasthan/rajasthan2.jpeg',
+    '/images/Rajasthan/rajasthan3.jpeg',
+    '/images/Rajasthan/rajasthan4.jpeg'
   ],
   bhutan: [
     '/images/bhutan1.jpg',
