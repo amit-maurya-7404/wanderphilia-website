@@ -265,6 +265,17 @@ export default async function ItineraryPage({ params }: PageProps) {
     `Any other services not specified above in inclusions.`
   ];
 
+  // Pricing & Quotation Details
+  const finalQuotationAmount = itinerary.finalQuotationAmount ?? itinerary.rawZohoData?.finalQuotationAmount ?? (itinerary.rawZohoData?.Final_Quotation_Amount ? Number(itinerary.rawZohoData.Final_Quotation_Amount) : (itinerary.rawZohoData?.Total_Package_Cost ? Number(itinerary.rawZohoData.Total_Package_Cost) : (itinerary.rawZohoData?.Quotation_Amount ? Number(itinerary.rawZohoData.Quotation_Amount) : (itinerary.rawZohoData?.Expected_Revenue ? Number(itinerary.rawZohoData.Expected_Revenue) : undefined))));
+
+  const adults = Number(itinerary.adults ?? itinerary.rawZohoData?.adults ?? itinerary.rawZohoData?.Adults ?? guests) || 2;
+  const kids = Number(itinerary.kids ?? itinerary.rawZohoData?.kids ?? itinerary.rawZohoData?.Kids ?? itinerary.rawZohoData?.Children ?? 0);
+  const totalTravelers = (adults + kids > 0) ? (adults + kids) : (Number(guests) || 2);
+
+  const perAdultPrice = itinerary.perAdultPrice ?? itinerary.rawZohoData?.perAdultPrice ?? (itinerary.rawZohoData?.Per_Adult_Price ? Number(itinerary.rawZohoData.Per_Adult_Price) : (finalQuotationAmount && adults > 0 ? Math.round(finalQuotationAmount / adults) : undefined));
+
+  const perKidPrice = itinerary.perKidPrice ?? itinerary.rawZohoData?.perKidPrice ?? (itinerary.rawZohoData?.Per_Kid_Price ? Number(itinerary.rawZohoData.Per_Kid_Price) : (itinerary.rawZohoData?.Per_Child_Price ? Number(itinerary.rawZohoData.Per_Child_Price) : undefined));
+
   return (
     <div className={`${sansBody.className} min-h-screen bg-[#ECE8E1] text-stone-900 selection:bg-[#6E1E14] selection:text-white pb-16`}>
 
@@ -511,16 +522,16 @@ export default async function ItineraryPage({ params }: PageProps) {
         </section>
 
         {/* ========================================================= */}
-        {/* PAGE 5: HOTEL & STAY DETAILS + INCLUSIONS & EXCLUSIONS    */}
+        {/* PAGE 5: HOTEL & QUOTATION DETAILS + INCLUSIONS & EXCLUSIONS */}
         {/* ========================================================= */}
         <section className="bg-[#FAF8F5] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border border-stone-200/80 p-6 sm:p-10 space-y-8 relative print:shadow-none print:border-0 print:rounded-none page-break-after">
 
           <div className="text-center space-y-2 border-b-2 border-[#6E1E14]/20 pb-4">
             <h2 className={`${playfair.className} text-2xl sm:text-4xl font-black text-[#5C1810] tracking-tight uppercase`}>
-              Hotel & Stay Details
+              Hotel & Quotation Details
             </h2>
             <p className="text-xs font-bold text-stone-500 uppercase tracking-widest">
-              Handpicked Luxury Accommodations & Inclusions
+              Handpicked Luxury Accommodations, Package Quotation & Inclusions
             </p>
           </div>
 
@@ -569,6 +580,95 @@ export default async function ItineraryPage({ params }: PageProps) {
                   )}
                 </tbody>
               </table>
+            </div>
+          </div>
+
+          {/* PACKAGE QUOTATION & INVESTMENT BREAKDOWN SECTION */}
+          <div className="space-y-3 pt-1">
+            <h3 className="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-[#6E1E14] flex items-center gap-1.5">
+              <CreditCard className="w-4 h-4 text-[#6E1E14]" /> Package Quotation
+            </h3>
+
+            <div className="bg-gradient-to-br from-[#6E1E14] via-[#5C1810] to-[#3D0F0A] text-white p-5 sm:p-6 rounded-2xl shadow-md border-2 border-amber-500/30 space-y-4">
+              
+              {/* Header Bar within Card */}
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/15 pb-3">
+                <div className="flex items-center gap-2">
+                  <span className="bg-amber-400 text-stone-950 text-[10px] sm:text-xs font-black px-3 py-0.5 rounded-full uppercase tracking-wider shadow-2xs">
+                    Official Quotation
+                  </span>
+                  <span className="text-xs font-bold text-amber-200/90">
+                    {totalTravelers} Travelers ({adults} Adults{kids > 0 ? `, ${kids} Children` : ''})
+                  </span>
+                </div>
+                <div className="text-[11px] sm:text-xs font-semibold text-white/80 flex items-center gap-1.5">
+                  <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                  <span>Transparent Fixed Pricing</span>
+                </div>
+              </div>
+
+              {/* Main Numbers: Grand Total + Per Adult / Per Kid */}
+              <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 items-center">
+                
+                {/* Total Package Cost */}
+                <div className="sm:col-span-6 space-y-1">
+                  <div className="text-[11px] uppercase font-extrabold text-amber-300 tracking-wider">
+                    Total Quoted Package Price
+                  </div>
+                  <div className="flex items-baseline gap-2">
+                    <span className={`${playfair.className} text-3xl sm:text-5xl font-black text-white tracking-tight`}>
+                      {finalQuotationAmount ? `₹${finalQuotationAmount.toLocaleString('en-IN')}` : 'Quotation On Request'}
+                    </span>
+                    {finalQuotationAmount && (
+                      <span className="text-[11px] font-semibold text-white/70">
+                        Total Cost
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[11px] text-stone-200/90 leading-tight pt-0.5">
+                    For complete {numNights}N / {numDays}D tour with private {vehicleType}.
+                  </p>
+                </div>
+
+                {/* Per Adult / Per Kid Cards */}
+                <div className="sm:col-span-6 grid grid-cols-2 gap-3">
+                  
+                  {/* Per Adult Rate Box */}
+                  <div className="bg-white/10 backdrop-blur-md rounded-xl p-3 border border-white/15 space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-black uppercase tracking-wider text-amber-300">
+                        Per Adult Rate
+                      </span>
+                      <Users className="w-3.5 h-3.5 text-amber-300" />
+                    </div>
+                    <div className="text-base sm:text-xl font-black text-white">
+                      {perAdultPrice ? `₹${perAdultPrice.toLocaleString('en-IN')}` : 'Included'}
+                    </div>
+                    <div className="text-[10px] text-white/80 font-medium">
+                      {adults} Adult(s)
+                    </div>
+                  </div>
+
+                  {/* Per Kid Rate Box */}
+                  <div className="bg-white/10 backdrop-blur-md rounded-xl p-3 border border-white/15 space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-black uppercase tracking-wider text-amber-300">
+                        Per Child Rate
+                      </span>
+                      <Users className="w-3.5 h-3.5 text-amber-300" />
+                    </div>
+                    <div className="text-base sm:text-xl font-black text-white">
+                      {perKidPrice ? `₹${perKidPrice.toLocaleString('en-IN')}` : (kids > 0 ? 'Complimentary' : 'As per plan')}
+                    </div>
+                    <div className="text-[10px] text-white/80 font-medium">
+                      {kids > 0 ? `${kids} Child(ren)` : 'On Request'}
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+
             </div>
           </div>
 

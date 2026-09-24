@@ -18,6 +18,13 @@ export interface ItineraryLeadDetails {
   mealPlan?: string;
   sharingType?: string;
   budget?: string | number;
+  finalQuotationAmount?: number;
+  perAdultPrice?: number;
+  perKidPrice?: number;
+  adults?: number;
+  kids?: number;
+  advanceAmountPaid?: number;
+  balancePendingAmount?: number;
   notes?: string;
 }
 
@@ -64,6 +71,13 @@ export interface ItineraryDocument {
   hotelName?: string;
   roomCategory?: string;
   mealPlan?: string;
+  finalQuotationAmount?: number;
+  perAdultPrice?: number;
+  perKidPrice?: number;
+  adults?: number;
+  kids?: number;
+  advanceAmountPaid?: number;
+  balancePendingAmount?: number;
   dayPlans?: ItineraryDayPlan[];
   highlights?: string[];
   inclusions?: string[];

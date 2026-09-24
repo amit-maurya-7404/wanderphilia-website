@@ -3,9 +3,10 @@ import fs from 'fs';
 
 async function run() {
   const lead = await fetchZohoLeadById('843125000010984003');
-  const subform = lead?.rawLeadData?.Activities_and_Experiences_1 || [];
-  fs.writeFileSync('scratch/raw-subform-lead-843125000010984003.json', JSON.stringify(subform, null, 2));
-  console.log('Saved raw subform rows count:', subform.length);
+  const raw = lead?.rawLeadData || {};
+  const priceKeys = Object.keys(raw).filter(k => /cost|quote|quotation|price|amount|budget|revenue|adult|kid|child|pax|rate|guest/i.test(k));
+  console.log('Price/Quotation/Guest related keys in raw Zoho Lead:');
+  priceKeys.forEach(k => console.log(`  ${k}:`, raw[k]));
 }
 
 run().catch(console.error);

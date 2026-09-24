@@ -47,6 +47,12 @@ export interface NormalizedZohoLead {
   tripType: string;
   travelStyle: string;
   finalQuotationAmount?: number;
+  perAdultPrice?: number;
+  perKidPrice?: number;
+  adults?: number;
+  kids?: number;
+  advanceAmountPaid?: number;
+  balancePendingAmount?: number;
   costingRequestStatus?: string;
   hotels: ZohoHotelStay[];
   dayActivities: ZohoDayActivity[];
@@ -211,12 +217,18 @@ export async function fetchZohoLeadById(leadIdOrQuery: string): Promise<Normaliz
     noOfDays: Number(rawLead.No_of_Days) || (dayActivities.length > 0 ? dayActivities.length : 0),
     noOfNights: Number(rawLead.No_of_Nights) || 0,
     numberOfGuests: Number(rawLead.Number_Of_Guest || rawLead.Adults) || 2,
+    adults: Number(rawLead.Adults || rawLead.Number_Of_Guest) || 2,
+    kids: Number(rawLead.Kids || rawLead.Children || rawLead.Number_Of_Children || 0),
     preferredRoomCategory: String(rawLead.Preferred_Room_Category || 'Standard'),
     mealPlan: String(rawLead.Meal_Plan || rawLead.mealPlan || rawLead.MealPlan || ''),
     vehicleType: String(rawLead.Vehicle_Type || rawLead.Vehicle || rawLead.vehicleType || rawLead.Cab_Type || 'AC Vehicle'),
     tripType: String(rawLead.Trip_Type || 'Customised Trip'),
     travelStyle: String(rawLead.Travel_Style || 'Family Trip'),
-    finalQuotationAmount: rawLead.Final_Quotation_Amount ? Number(rawLead.Final_Quotation_Amount) : undefined,
+    finalQuotationAmount: rawLead.Final_Quotation_Amount ? Number(rawLead.Final_Quotation_Amount) : (rawLead.Total_Package_Cost ? Number(rawLead.Total_Package_Cost) : (rawLead.Quotation_Amount ? Number(rawLead.Quotation_Amount) : (rawLead.Expected_Revenue ? Number(rawLead.Expected_Revenue) : (rawLead.Amount ? Number(rawLead.Amount) : undefined)))),
+    perAdultPrice: rawLead.Per_Adult_Price ? Number(rawLead.Per_Adult_Price) : (rawLead.Per_Adult_Cost ? Number(rawLead.Per_Adult_Cost) : (rawLead.Price_Per_Adult ? Number(rawLead.Price_Per_Adult) : (rawLead.Adult_Price ? Number(rawLead.Adult_Price) : undefined))),
+    perKidPrice: rawLead.Per_Kid_Price ? Number(rawLead.Per_Kid_Price) : (rawLead.Per_Child_Price ? Number(rawLead.Per_Child_Price) : (rawLead.Price_Per_Kid ? Number(rawLead.Price_Per_Kid) : (rawLead.Child_Price ? Number(rawLead.Child_Price) : undefined))),
+    advanceAmountPaid: rawLead.Advance_Amount_Paid ? Number(rawLead.Advance_Amount_Paid) : undefined,
+    balancePendingAmount: rawLead.Balance_Pending_Amount ? Number(rawLead.Balance_Pending_Amount) : undefined,
     costingRequestStatus: String(rawLead.Costing_Request_Status || ''),
     hotels,
     dayActivities,

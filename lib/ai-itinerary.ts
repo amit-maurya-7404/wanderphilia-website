@@ -13,6 +13,13 @@ export interface GeneratedItineraryContent {
   hotelName: string;
   roomCategory: string;
   mealPlan: string;
+  finalQuotationAmount?: number;
+  perAdultPrice?: number;
+  perKidPrice?: number;
+  adults?: number;
+  kids?: number;
+  advanceAmountPaid?: number;
+  balancePendingAmount?: number;
   highlights: string[];
   dayPlans: ItineraryDayPlan[];
   inclusions: string[];
@@ -867,6 +874,14 @@ export function generateLuxuryFallback(raw: Record<string, any>): GeneratedItine
     `Any other services not specified above in inclusions.`
   ];
 
+  const finalQuotationAmount = raw.finalQuotationAmount !== undefined ? Number(raw.finalQuotationAmount) : (raw.Final_Quotation_Amount ? Number(raw.Final_Quotation_Amount) : (raw.Total_Package_Cost ? Number(raw.Total_Package_Cost) : (raw.Quotation_Amount ? Number(raw.Quotation_Amount) : (raw.Expected_Revenue ? Number(raw.Expected_Revenue) : (raw.Amount ? Number(raw.Amount) : undefined)))));
+  const perAdultPrice = raw.perAdultPrice !== undefined ? Number(raw.perAdultPrice) : (raw.Per_Adult_Price ? Number(raw.Per_Adult_Price) : (raw.Per_Adult_Cost ? Number(raw.Per_Adult_Cost) : (raw.Price_Per_Adult ? Number(raw.Price_Per_Adult) : (raw.Adult_Price ? Number(raw.Adult_Price) : undefined))));
+  const perKidPrice = raw.perKidPrice !== undefined ? Number(raw.perKidPrice) : (raw.Per_Kid_Price ? Number(raw.Per_Kid_Price) : (raw.Per_Child_Price ? Number(raw.Per_Child_Price) : (raw.Price_Per_Kid ? Number(raw.Price_Per_Kid) : (raw.Child_Price ? Number(raw.Child_Price) : undefined))));
+  const adults = Number(raw.adults || raw.Adults || raw.Number_Of_Guest || raw.numberOfGuests) || 2;
+  const kids = Number(raw.kids || raw.Kids || raw.Children || raw.Number_Of_Children || 0);
+  const advanceAmountPaid = raw.advanceAmountPaid !== undefined ? Number(raw.advanceAmountPaid) : (raw.Advance_Amount_Paid ? Number(raw.Advance_Amount_Paid) : undefined);
+  const balancePendingAmount = raw.balancePendingAmount !== undefined ? Number(raw.balancePendingAmount) : (raw.Balance_Pending_Amount ? Number(raw.Balance_Pending_Amount) : undefined);
+
   return {
     title: standardTitle,
     subTitle: defaultSubTitle,
@@ -879,6 +894,13 @@ export function generateLuxuryFallback(raw: Record<string, any>): GeneratedItine
     hotelName: hotel,
     roomCategory: room,
     mealPlan: mealPlan,
+    finalQuotationAmount,
+    perAdultPrice,
+    perKidPrice,
+    adults,
+    kids,
+    advanceAmountPaid,
+    balancePendingAmount,
     highlights: [
       hotel ? `Accommodation at ${hotel} (${room})` : `Curated accommodation in ${dest}`,
       `Dedicated private vehicle for all transfers and sightseeing`,
@@ -1092,6 +1114,13 @@ Generate the clean itinerary JSON now.`;
       hotelName: hotel,
       roomCategory: room,
       mealPlan: mealPlan,
+      finalQuotationAmount: fallback.finalQuotationAmount,
+      perAdultPrice: fallback.perAdultPrice,
+      perKidPrice: fallback.perKidPrice,
+      adults: fallback.adults,
+      kids: fallback.kids,
+      advanceAmountPaid: fallback.advanceAmountPaid,
+      balancePendingAmount: fallback.balancePendingAmount,
       highlights: Array.isArray(parsed.highlights) && parsed.highlights.length > 0 ? parsed.highlights : fallback.highlights,
       dayPlans: cleanDayPlans, // STRICT: ALWAYS uses the genuine Zoho-mapped day plans
       inclusions: Array.isArray(parsed.inclusions) && parsed.inclusions.length > 0 ? parsed.inclusions : fallback.inclusions,
