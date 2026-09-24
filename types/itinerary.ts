@@ -13,6 +13,9 @@ export interface ItineraryLeadDetails {
   noOfNights?: number;
   travelStyle?: string;
   tripType?: string;
+  vehicleType?: string;
+  preferredRoomCategory?: string;
+  mealPlan?: string;
   sharingType?: string;
   budget?: string | number;
   notes?: string;
@@ -52,6 +55,7 @@ export interface ItineraryDocument {
   stateOrCountry?: string;
   travelStyle?: string; // e.g. "Family Trip", "Couple Trip" from Zoho Leads.Travel Style
   tripType?: string;
+  vehicleType?: string; // e.g. "Sedan / Innova / Tempo Traveller" from Zoho Leads.Vehicle Type
   noOfDays?: number; // e.g. from Zoho Leads.No. of Days
   noOfNights?: number; // e.g. from Zoho Leads.No. of Nights
   inquiryId?: string;
@@ -67,6 +71,9 @@ export interface ItineraryDocument {
   amenities?: string[];
   packingTips?: string[];
   importantNotes?: string[];
+  paymentTerms?: string[];
+  cancellationPolicy?: string[];
+  forceMajeurePolicy?: string[];
   heroImage?: string;
   galleryImages?: string[];
   status: 'active' | 'draft' | 'archived';

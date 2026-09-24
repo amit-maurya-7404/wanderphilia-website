@@ -107,8 +107,8 @@ export function ItineraryFlowchartSection({
             {isExpanded && (
               <div className="px-6 sm:px-8 pb-8 pt-2 border-t border-stone-100 space-y-6">
                 
-                {/* Stay / Location Sub-bar */}
-                {day.stayLocation && (
+                {/* Stay / Location Sub-bar - Only shown when hotel/stay is booked */}
+                {day.stayLocation && day.stayLocation.trim().length > 0 && (
                   <div className="flex items-center gap-2 text-xs font-bold text-stone-500 pb-1">
                     <MapPin className="w-3.5 h-3.5 text-orange-600" />
                     <span>Location: <strong className="text-stone-800">{day.stayLocation}</strong></span>
@@ -171,10 +171,12 @@ export function ItineraryFlowchartSection({
                     <Utensils className="w-4 h-4 text-orange-600 shrink-0" />
                     <span>Meals: <strong className="text-stone-900">{day.meals || 'Breakfast & Dinner'}</strong></span>
                   </div>
-                  <div className="flex items-center gap-1.5 text-stone-700">
-                    <HotelIcon className="w-3.5 h-3.5 text-orange-600 shrink-0" />
-                    <span>Hotel: <strong className="text-stone-900">{day.stayLocation || destination}</strong></span>
-                  </div>
+                  {day.stayLocation && day.stayLocation.trim().length > 0 && (
+                    <div className="flex items-center gap-1.5 text-stone-700">
+                      <HotelIcon className="w-3.5 h-3.5 text-orange-600 shrink-0" />
+                      <span>Hotel: <strong className="text-stone-900">{day.stayLocation}</strong></span>
+                    </div>
+                  )}
                 </div>
 
               </div>

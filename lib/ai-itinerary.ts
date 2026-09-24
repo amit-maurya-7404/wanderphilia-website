@@ -432,34 +432,56 @@ export function buildCleanDayPlansFromZoho(
   const isIntl = isInternationalTrip(destination, destinationType);
   const totalCount = Math.max(dayActivities.length, totalDays || 0, 1);
 
+  const totalHotelNights = hotels.reduce((sum, h) => sum + (Number(h.nights) || 0), 0);
+
   // Helper to determine stay location for each day based on hotel list or city
-  const getStayForDay = (dayNum: number, currentCity: string): string => {
-    // 1. Exact city match from Zoho hotels list
-    if (currentCity) {
-      const match = hotels.find(
-        h => h.city && h.city.toLowerCase().trim() === currentCity.toLowerCase().trim()
-      );
-      if (match && match.hotelName) {
-        return `${match.hotelName}, ${match.city || currentCity}`;
+  const getStayForDay = (dayNum: number, currentCity: string): string | undefined => {
+    // 1. If hotel nights are specified:
+    if (totalHotelNights > 0) {
+      if (dayNum > totalHotelNights) {
+        return undefined; // No hotel stay on this day (e.g. Departure Day)
       }
-    }
-    // 2. Cumulative nights match if city matches or hotel city is unspecified
-    if (hotels.length > 0) {
+
       let cumulativeNights = 0;
       for (const h of hotels) {
-        cumulativeNights += (h.nights || 0);
-        if (dayNum <= cumulativeNights && h.hotelName) {
-          if (!h.city || !currentCity || h.city.toLowerCase().trim() === currentCity.toLowerCase().trim()) {
-            return `${h.hotelName}, ${h.city || currentCity || destination}`;
+        const n = Number(h.nights) || 0;
+        if (n > 0) {
+          if (dayNum > cumulativeNights && dayNum <= cumulativeNights + n) {
+            if (h.hotelName) {
+              return `${h.hotelName}, ${h.city || currentCity || destination}`;
+            } else if (h.city) {
+              return `Selected Hotel, ${h.city}`;
+            }
           }
+          cumulativeNights += n;
         }
       }
-      // If single hotel with no city specified
-      if (hotels.length === 1 && !hotels[0].city && hotels[0].hotelName) {
+    }
+
+    // 2. If hotels exist without explicit nights:
+    if (hotels.length > 0) {
+      if (dayNum >= totalCount && totalCount > 1) {
+        return undefined; // Departure day on multi-day trip
+      }
+      if (currentCity) {
+        const match = hotels.find(
+          h => h.city && h.city.toLowerCase().trim() === currentCity.toLowerCase().trim()
+        );
+        if (match && match.hotelName) {
+          return `${match.hotelName}, ${match.city || currentCity}`;
+        }
+      }
+      if (hotels.length === 1 && hotels[0].hotelName) {
         return `${hotels[0].hotelName}, ${currentCity || destination}`;
       }
     }
-    return currentCity ? `Selected Hotel, ${currentCity}` : destination || 'Selected Hotel';
+
+    // 3. Fallback when no hotels entered:
+    if (dayNum >= totalCount && totalCount > 1) {
+      return undefined; // Departure day on multi-day trip
+    }
+
+    return currentCity ? `Selected Hotel, ${currentCity}` : (destination ? `Selected Hotel, ${destination}` : undefined);
   };
 
   if (!dayActivities || dayActivities.length === 0) {
@@ -481,8 +503,12 @@ export function buildCleanDayPlansFromZoho(
             ? `Arrival at ${destination} International Airport, meet our local representative, and transfer to your hotel.`
             : `Arrival at ${destination} Airport / Railway Station, meet our tour representative, and transfer to your hotel.`
         );
-        timeline.push(`Complete smooth hotel check-in formalities and refresh at ${stayLocation}.`);
-        timeline.push(isIntl ? `Spend the evening at leisure and overnight stay at ${stayLocation}.` : `Enjoy dinner and an overnight stay at ${stayLocation}.`);
+        if (stayLocation) {
+          timeline.push(`Complete smooth hotel check-in formalities and refresh at ${stayLocation}.`);
+          timeline.push(isIntl ? `Spend the evening at leisure and overnight stay at ${stayLocation}.` : `Enjoy dinner and an overnight stay at ${stayLocation}.`);
+        } else {
+          timeline.push(`Complete smooth check-in formalities and spend the evening at leisure.`);
+        }
       } else if (isLast) {
         timeline.push(`Enjoy breakfast at the accommodation and complete check-out formalities.`);
         timeline.push(
@@ -493,7 +519,11 @@ export function buildCleanDayPlansFromZoho(
       } else {
         timeline.push(`Enjoy breakfast at the hotel before proceeding for local sightseeing in ${destination}.`);
         timeline.push(`Explore prime attractions and scenic cultural landmarks across ${destination}.`);
-        timeline.push(isIntl ? `Return to the hotel for an overnight stay at ${stayLocation}.` : `Return to the hotel for dinner and an overnight stay at ${stayLocation}.`);
+        if (stayLocation) {
+          timeline.push(isIntl ? `Return to the hotel for an overnight stay at ${stayLocation}.` : `Return to the hotel for dinner and an overnight stay at ${stayLocation}.`);
+        } else {
+          timeline.push(`Enjoy your evening at leisure in ${destination}.`);
+        }
       }
 
       plans.push({
@@ -663,7 +693,11 @@ export function buildCleanDayPlansFromZoho(
           ? `Arrival at ${city1} International Airport, meet our local representative after immigration, and transfer to your hotel.`
           : `Arrival at ${city1} Airport / Railway Station, meet our tour representative, and transfer to your hotel.`
       );
-      timeline.push(`Complete smooth hotel check-in formalities and refresh at ${stayLocation}.`);
+      if (stayLocation) {
+        timeline.push(`Complete smooth hotel check-in formalities and refresh at ${stayLocation}.`);
+      } else {
+        timeline.push(`Complete smooth check-in formalities and refresh.`);
+      }
     } else if (isInterCityTravel) {
       timeline.push(`Enjoy a wholesome breakfast and complete check-out formalities in ${fromCity}.`);
       timeline.push(
@@ -680,7 +714,11 @@ export function buildCleanDayPlansFromZoho(
 
     // Step 3: Destination Hotel Check-in (if intercity and not departure day)
     if (isInterCityTravel && !isLastDay) {
-      timeline.push(`Arrive in ${toCity} and complete check-in formalities at ${stayLocation}.`);
+      if (stayLocation) {
+        timeline.push(`Arrive in ${toCity} and complete check-in formalities at ${stayLocation}.`);
+      } else {
+        timeline.push(`Arrive in ${toCity} and complete check-in formalities.`);
+      }
     }
 
     // Step 4: Zoho Experiences with proper sentence framing explaining what is happening
@@ -691,7 +729,7 @@ export function buildCleanDayPlansFromZoho(
       }
     });
 
-    // Step 4: Evening & Overnight / Departure
+    // Step 5: Evening & Overnight / Departure
     if (isLastDay) {
       if (!isInterCityTravel) {
         timeline.push(
@@ -707,10 +745,18 @@ export function buildCleanDayPlansFromZoho(
         );
       }
     } else {
-      if (isIntl) {
-        timeline.push(`Spend the evening at leisure followed by an overnight stay at ${stayLocation}.`);
+      if (stayLocation) {
+        if (isIntl) {
+          timeline.push(`Spend the evening at leisure followed by an overnight stay at ${stayLocation}.`);
+        } else {
+          timeline.push(`Enjoy dinner and a comfortable overnight stay at ${stayLocation}.`);
+        }
       } else {
-        timeline.push(`Enjoy dinner and a comfortable overnight stay at ${stayLocation}.`);
+        if (isIntl) {
+          timeline.push(`Spend the evening at leisure.`);
+        } else {
+          timeline.push(`Enjoy dinner and spend the evening relaxing at your leisure.`);
+        }
       }
     }
 
@@ -772,6 +818,55 @@ export function generateLuxuryFallback(raw: Record<string, any>): GeneratedItine
 
   const standardTitle = `${noOfNights} Nights / ${noOfDays} Days Royal ${dest} Escape`;
 
+  const vehicle = (raw.vehicleType || raw.Vehicle_Type || raw.vehicle || raw.Cab_Type || 'AC Vehicle').trim();
+
+  // Extract all unique experience names and en-route experiences from the day activities
+  const uniqueExpList: string[] = [];
+  const seenExp = new Set<string>();
+
+  (dayActivities || []).forEach(d => {
+    // 1. En-route experiences
+    if (d.enRouteExperiences) {
+      const er = String(d.enRouteExperiences).trim();
+      if (er && !seenExp.has(er.toLowerCase())) {
+        seenExp.add(er.toLowerCase());
+        uniqueExpList.push(er.toLowerCase().startsWith('en-route') ? er : `En-route Experience: ${er}`);
+      }
+    }
+
+    // 2. Experiences 1, 2, 3, 4...
+    (d.experiences || []).forEach(e => {
+      const n = (e.name || '').trim();
+      if (n && !seenExp.has(n.toLowerCase())) {
+        seenExp.add(n.toLowerCase());
+        uniqueExpList.push(n);
+      }
+    });
+  });
+
+  const exactInclusions: string[] = [
+    `Private ${vehicle} for the complete ${dest} itinerary and Airport Transfers.`,
+    `Accomodation in ${room} Properties For ${noOfNights} Nights.`,
+    `Meals ${mealPlan ? mealPlan : 'Breakfast & Dinner'} ( Breakfast Except 1st Day , Dinner Last Day )`,
+    `Driver allowance, fuel, toll taxes, parking charges and applicable road taxes.`,
+    `All transfers and sightseeing as per the day-wise itinerary. Entry fees are excluded unless specifically mentioned.`,
+    ...uniqueExpList,
+    `Assistance during hotel check-in and check-out.`,
+    `Applicable taxes included in the quoted package, wherever applicable.`
+  ];
+
+  const exactExclusions: string[] = [
+    `5% GST.`,
+    `Early check-in (Before 1:00 PM) & Late Check-out (After 11:00 AM) at the hotel.`,
+    `Any additional expenses of personal nature.`,
+    `Additional accommodation/food costs incurred due to any delayed travel.`,
+    `Any lunch and other meals not mentioned in Package Inclusions.`,
+    `Any Airfare / Rail fare other than what is mentioned in "Inclusions" or any type of transportation.`,
+    `Monument entry fees during Sightseeing.`,
+    `Additional Costs due to Flight Cancellations, Landslides, Roadblocks, and other natural calamities.`,
+    `Any other services not specified above in inclusions.`
+  ];
+
   return {
     title: standardTitle,
     subTitle: defaultSubTitle,
@@ -791,20 +886,8 @@ export function generateLuxuryFallback(raw: Record<string, any>): GeneratedItine
       `Verified local guidance and 24/7 dedicated trip support`
     ],
     dayPlans,
-    inclusions: [
-      `Accommodation in ${room} at ${hotel}`,
-      mealPlan ? `Meal Plan: ${mealPlan}` : `Daily breakfast as per hotel plan`,
-      `Private vehicle for all transfers and sightseeing as per itinerary`,
-      `All toll taxes, parking fees, fuel charges, and driver allowances`,
-      `24/7 dedicated Wanderphilia concierge support on WhatsApp`
-    ],
-    exclusions: [
-      `Airfare or train fare unless explicitly booked`,
-      `Personal expenses (laundry, telephone calls, alcoholic beverages, room service)`,
-      `Entry tickets or monument fees not mentioned in inclusions`,
-      `Any travel insurance or medical expenses`,
-      `Anything not explicitly listed in the inclusions`
-    ],
+    inclusions: exactInclusions,
+    exclusions: exactExclusions,
     amenities: [
       'High-Speed Wi-Fi',
       'Front Desk & In-Dining Service',

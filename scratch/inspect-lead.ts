@@ -1,4 +1,4 @@
-import { fetchZohoLeadById } from '../lib/zoho-fetch.ts';
+import { fetchZohoLeadById } from '../lib/zoho-fetch';
 import fs from 'fs';
 
 async function run() {

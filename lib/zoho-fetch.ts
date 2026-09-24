@@ -43,6 +43,7 @@ export interface NormalizedZohoLead {
   numberOfGuests: number;
   preferredRoomCategory: string;
   mealPlan?: string;
+  vehicleType?: string;
   tripType: string;
   travelStyle: string;
   finalQuotationAmount?: number;
@@ -212,6 +213,7 @@ export async function fetchZohoLeadById(leadIdOrQuery: string): Promise<Normaliz
     numberOfGuests: Number(rawLead.Number_Of_Guest || rawLead.Adults) || 2,
     preferredRoomCategory: String(rawLead.Preferred_Room_Category || 'Standard'),
     mealPlan: String(rawLead.Meal_Plan || rawLead.mealPlan || rawLead.MealPlan || ''),
+    vehicleType: String(rawLead.Vehicle_Type || rawLead.Vehicle || rawLead.vehicleType || rawLead.Cab_Type || 'AC Vehicle'),
     tripType: String(rawLead.Trip_Type || 'Customised Trip'),
     travelStyle: String(rawLead.Travel_Style || 'Family Trip'),
     finalQuotationAmount: rawLead.Final_Quotation_Amount ? Number(rawLead.Final_Quotation_Amount) : undefined,

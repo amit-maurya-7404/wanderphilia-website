@@ -1,9 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
 import { RequestCallbackDialog } from '@/components/request-callback-dialog';
-import { Share2, Download, Phone, Check, Copy, MessageCircle, Sparkles } from 'lucide-react';
+import { Share2, Download, Phone, Check } from 'lucide-react';
 import { RiWhatsappLine } from 'react-icons/ri';
 import { contactPhoneDisplay } from '@/lib/contact';
 
@@ -58,91 +57,56 @@ export function ItineraryClientActions({
 
   return (
     <>
-      <div className="flex flex-wrap items-center gap-2.5 print:hidden">
-        {/* Share Button */}
-        <Button
+      {/* Top Navbar: 4 Icons Only (Share, Download, Call, WhatsApp) */}
+      <div className="flex items-center gap-2 sm:gap-2.5 print:hidden">
+        {/* 1. Share Icon */}
+        <button
           onClick={handleShare}
-          variant="outline"
-          size="sm"
-          className="bg-white/90 backdrop-blur-md border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold rounded-xl text-xs shadow-sm transition cursor-pointer"
+          type="button"
+          aria-label="Share Itinerary"
+          title={copied ? "Link Copied!" : "Share Itinerary"}
+          className="w-9 h-9 rounded-full bg-white hover:bg-stone-100 text-stone-700 border border-stone-300/80 shadow-2xs flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer relative"
         >
           {copied ? (
-            <>
-              <Check className="w-3.5 h-3.5 text-emerald-600 mr-1.5" />
-              <span className="text-emerald-700 font-bold">Link Copied!</span>
-            </>
+            <Check className="w-4 h-4 text-emerald-600" />
           ) : (
-            <>
-              <Share2 className="w-3.5 h-3.5 mr-1.5 text-slate-500" />
-              <span>Share Itinerary</span>
-            </>
+            <Share2 className="w-4 h-4 text-stone-700" />
           )}
-        </Button>
+        </button>
 
-        {/* Print / Save PDF Button */}
-        <Button
+        {/* 2. Download / Save PDF Icon */}
+        <button
           onClick={handlePrint}
-          variant="outline"
-          size="sm"
-          className="bg-white/90 backdrop-blur-md border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold rounded-xl text-xs shadow-sm transition cursor-pointer"
+          type="button"
+          aria-label="Download PDF"
+          title="Save as PDF"
+          className="w-9 h-9 rounded-full bg-white hover:bg-stone-100 text-stone-700 border border-stone-300/80 shadow-2xs flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
         >
-          <Download className="w-3.5 h-3.5 mr-1.5 text-slate-500" />
-          <span>Save as PDF</span>
-        </Button>
+          <Download className="w-4 h-4 text-stone-700" />
+        </button>
 
-        {/* Request Callback / Customization Button */}
-        <Button
+        {/* 3. Call Icon */}
+        <button
           onClick={() => setCallbackOpen(true)}
-          size="sm"
-          className="bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl text-xs shadow-sm transition cursor-pointer"
+          type="button"
+          aria-label="Request Callback"
+          title="Request a Call"
+          className="w-9 h-9 rounded-full bg-white hover:bg-orange-50 text-orange-600 border border-stone-300/80 hover:border-orange-300 shadow-2xs flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
         >
-          <Phone className="w-3.5 h-3.5 mr-1.5 text-orange-400" />
-          <span>Request Callback</span>
-        </Button>
+          <Phone className="w-4 h-4 text-[#FF6E0B]" />
+        </button>
 
-        {/* Direct WhatsApp Concierge Button */}
+        {/* 4. WhatsApp Icon */}
         <a
           href={whatsappUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center justify-center gap-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs px-3.5 py-2 rounded-xl shadow-md shadow-emerald-500/20 transition hover:scale-[1.02] active:scale-[0.98]"
+          aria-label="WhatsApp Specialist"
+          title="Chat on WhatsApp"
+          className="w-9 h-9 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm shadow-emerald-600/20 flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
         >
-          <RiWhatsappLine className="w-4 h-4" />
-          <span>WhatsApp Specialist</span>
+          <RiWhatsappLine className="w-5 h-5 text-white" />
         </a>
-      </div>
-
-      {/* Floating Bottom Action Bar for Mobile & Quick Booking */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-lg border-t border-slate-200/80 p-3.5 shadow-2xl md:hidden print:hidden">
-        <div className="flex items-center justify-between gap-3 max-w-lg mx-auto">
-          <div className="min-w-0 flex-1">
-            <div className="text-[10px] uppercase tracking-wider font-extrabold text-orange-600">
-              Ref: {itineraryId}
-            </div>
-            <div className="text-xs font-bold text-slate-900 truncate">
-              {destination}
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button
-              onClick={() => setCallbackOpen(true)}
-              size="sm"
-              variant="outline"
-              className="text-xs font-bold rounded-xl border-slate-300 py-4 px-3"
-            >
-              Call Me
-            </Button>
-            <a
-              href={whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold text-xs px-3.5 py-2.5 rounded-xl shadow-md"
-            >
-              <RiWhatsappLine className="w-4 h-4" />
-              <span>WhatsApp</span>
-            </a>
-          </div>
-        </div>
       </div>
 
       {/* Callback Dialog Modal */}

@@ -20,6 +20,11 @@ const nextConfig = {
         destination: '/upcoming-tours',
         permanent: true,
       },
+      {
+        source: '/itinerary',
+        destination: '/',
+        permanent: false,
+      },
     ]
   },
 }
