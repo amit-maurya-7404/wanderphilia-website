@@ -20,6 +20,12 @@ import { MapPin, Calendar, Users, Star, Phone, MessageCircle, ChevronDown, Downl
 import { contactEmail, contactPhone, contactPhoneDisplay, instagramUrl } from '@/lib/contact'
 import { TripGallerySection } from '@/components/trip-gallery-section'
 
+type MediaItem = {
+  type: 'image' | 'video'
+  src: string
+  alt?: string
+}
+
 export default function PackageDetailPage() {
   type SelectionItem = {
     name: string
@@ -80,11 +86,11 @@ export default function PackageDetailPage() {
     if (typeof window === 'undefined' || !tabContainerRef.current) return
 
     const container = tabContainerRef.current
-    const activeTab = container.querySelector(`[data-tab-id="${tabId}"]`) as HTMLElement
+    const activeTabEl = container.querySelector(`[data-tab-id="${tabId}"]`) as HTMLElement
 
-    if (activeTab) {
+    if (activeTabEl) {
       const containerRect = container.getBoundingClientRect()
-      const tabRect = activeTab.getBoundingClientRect()
+      const tabRect = activeTabEl.getBoundingClientRect()
 
       const isTabVisible = tabRect.left >= containerRect.left &&
         tabRect.right <= containerRect.right
@@ -104,11 +110,11 @@ export default function PackageDetailPage() {
       trip.difficulty === 'Moderate' ? 'bg-amber-100 text-amber-700' :
         'bg-rose-100 text-rose-700'
 
-  const heroMedia = trip.heroMedia || [{ type: 'image' as const, src: trip.image, alt: trip.title }]
+  const heroMedia: MediaItem[] = trip.heroMedia || [{ type: 'image' as const, src: trip.image, alt: trip.title }]
 
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
 
-  const collageImages = useMemo(() => {
+  const collageImages: MediaItem[] = useMemo(() => {
     if (!trip) return []
 
     // If heroMedia has 5 or more images, use them directly as the collage
@@ -132,7 +138,7 @@ export default function PackageDetailPage() {
       ]
     }
 
-    const list = []
+    const list: MediaItem[] = []
     list.push({ type: 'image' as const, src: trip.image, alt: trip.title })
 
     if (trip.images && trip.images.length > 0) {
@@ -285,7 +291,7 @@ export default function PackageDetailPage() {
                     key={tab.id}
                     data-tab-id={tab.id}
                     onClick={() => scrollToSection(tab.id)}
-                    className={`px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${activeTab === tab.id
+                    className={`px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors cursor-pointer ${activeTab === tab.id
                       ? 'border-primary text-primary'
                       : 'border-transparent text-slate-600 hover:text-slate-900'
                       }`}
@@ -359,7 +365,7 @@ export default function PackageDetailPage() {
 
                       <button
                         onClick={() => setShowFullDesc(!showFullDesc)}
-                        className="mt-2 text-primary font-medium text-sm hover:underline"
+                        className="mt-2 text-primary font-medium text-sm hover:underline cursor-pointer"
                       >
                         {showFullDesc ? 'Show Less' : 'Show More'}
                       </button>
@@ -401,7 +407,7 @@ export default function PackageDetailPage() {
                     >
                       <button
                         onClick={() => toggleDay(day.day)}
-                        className="w-full flex items-start justify-between p-[3vw] sm:p-4 bg-white hover:bg-slate-50 transition-colors"
+                        className="w-full flex items-start justify-between p-[3vw] sm:p-4 bg-white hover:bg-slate-50 transition-colors cursor-pointer"
                       >
                         <div className="flex items-start gap-3 text-left grow">
                           <div className="shrink-0">
@@ -651,7 +657,7 @@ export default function PackageDetailPage() {
 
               {/* MOBILE CTA */}
               <div className="lg:hidden space-y-3">
-                <Button size="lg" className="w-full" onClick={() => setCallbackOpen(true)}>
+                <Button size="lg" className="w-full cursor-pointer" onClick={() => setCallbackOpen(true)}>
                   <Phone size={18} /> Enquire Now
                 </Button>
               </div>
@@ -677,7 +683,7 @@ export default function PackageDetailPage() {
                   <div className="grid gap-3">
                     <Button
                       size="lg"
-                      className="w-full justify-center bg-[#ff6e0b] hover:bg-[#e05f00] text-white"
+                      className="w-full justify-center bg-[#ff6e0b] hover:bg-[#e05f00] text-white cursor-pointer"
                       onClick={() => setCallbackOpen(true)}
                     >
                       <Phone size={18} /> Get a Quote
@@ -685,7 +691,7 @@ export default function PackageDetailPage() {
                     <Button
                       size="lg"
                       variant="outline"
-                      className="w-full justify-center"
+                      className="w-full justify-center cursor-pointer"
                       onClick={() => setCallbackOpen(true)}
                     >
                       <MessageCircle size={18} /> Request Callback
@@ -729,7 +735,7 @@ export default function PackageDetailPage() {
                 {/* DOWNLOAD ITINERARY */}
                 <Button
                   variant="outline"
-                  className="w-full mt-[3vh] justify-center"
+                  className="w-full mt-[3vh] justify-center cursor-pointer"
                   onClick={() => alert('Download feature coming soon!')}
                 >
                   <Download size={18} /> Download Itinerary
@@ -749,7 +755,7 @@ export default function PackageDetailPage() {
             </p>
             <p className="text-lg font-bold">₹{(selections.length > 0 ? total : lowestPrice).toLocaleString('en-IN')}</p>
           </div>
-          <Button onClick={() => setCallbackOpen(true)} className="shrink-0 bg-[#ff6e0b] hover:bg-[#e05f00] text-white">
+          <Button onClick={() => setCallbackOpen(true)} className="shrink-0 bg-[#ff6e0b] hover:bg-[#e05f00] text-white cursor-pointer">
             Get a Quote
           </Button>
         </div>
@@ -761,13 +767,13 @@ export default function PackageDetailPage() {
       {/* REVIEWS SECTION */}
       <TripReviewsSection 
         tripSlug={trip.slug} 
-        categoryId={trip.category.toLowerCase()} 
+        categoryId={trip.category?.toLowerCase() || 'rajasthan'} 
       />
 
       {/* GALLERY SECTION */}
       <TripGallerySection 
-        categoryId={trip.category.toLowerCase()} 
-        categoryName={trip.destination} 
+        categoryId={trip.category?.toLowerCase() || 'rajasthan'} 
+        categoryName={trip.destination || 'Rajasthan'} 
       />
 
       <Footer />
