@@ -3,7 +3,8 @@
 import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Sparkles, Phone, Mail, CheckCircle } from 'lucide-react'
+import { Phone, Mail, CheckCircle } from 'lucide-react'
+import { Parachute } from '@/components/parachute-icon'
 
 interface NoPackagesCallbackFormProps {
   nights: number | null
@@ -79,7 +80,7 @@ export function NoPackagesCallbackForm({ nights, destinationName }: NoPackagesCa
 
       <div className="flex items-center gap-2 mb-3">
         <span className="p-1 rounded-md bg-orange-50 text-[#ff6e0b]">
-          <Sparkles size={16} className="fill-[#ff6e0b]/10" />
+          <Parachute size={16} />
         </span>
         <span className="text-xs font-black uppercase tracking-widest text-[#ff6e0b]">
           Custom Holiday

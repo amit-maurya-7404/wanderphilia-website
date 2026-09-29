@@ -3,7 +3,8 @@
 import { useState, useRef, useMemo } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Sparkles, ChevronLeft, ChevronRight, ArrowRight, MapPin, Compass, Globe, Gift } from 'lucide-react'
+import { ChevronLeft, ChevronRight, ArrowRight, MapPin, Compass, Globe, Gift } from 'lucide-react'
+import { Parachute } from '@/components/parachute-icon'
 import { trips, getLowestPriceForTrips } from '@/lib/data'
 import { getAllCategories } from '@/lib/trip-categories'
 import { getChristmasNewYearTrips } from '@/lib/christmas-filter'
@@ -174,12 +175,12 @@ export function ChristmasHomeBanner() {
         <div className="absolute -bottom-24 -right-24 w-80 h-80 bg-amber-200/40 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute top-1/2 right-1/4 w-60 h-60 bg-rose-200/30 rounded-full blur-3xl pointer-events-none" />
 
-        {/* Ambient Subtle Festive Sparkles in Background */}
+        {/* Ambient Subtle Festive Parachutes in Background */}
         <div className="absolute top-4 right-12 text-amber-400/80 animate-pulse hidden sm:block">
-          <Sparkles size={24} />
+          <Parachute size={24} />
         </div>
         <div className="absolute bottom-6 left-10 text-orange-400/60 animate-pulse hidden md:block" style={{ animationDelay: '1.2s' }}>
-          <Sparkles size={20} />
+          <Parachute size={20} />
         </div>
 
         {/* Top Header Section */}
@@ -188,7 +189,7 @@ export function ChristmasHomeBanner() {
             {/* Wanderphilia Branded Pill */}
             <div className="inline-flex items-center gap-2 rounded-full bg-orange-100/90 border border-orange-200/90 px-3.5 py-1 text-xs font-bold text-orange-700 backdrop-blur-md mb-2 shadow-xs">
               <span className="flex h-2 w-2 rounded-full bg-orange-500 animate-ping" />
-              <Sparkles size={13} className="text-amber-600" />
+              <Parachute size={14} className="text-amber-600" />
               <span className="tracking-wide uppercase text-[11px] sm:text-xs">Wanderphilia Festive Expeditions</span>
             </div>
 

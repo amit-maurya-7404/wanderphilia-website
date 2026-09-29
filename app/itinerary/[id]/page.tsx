@@ -36,7 +36,6 @@ import {
   Calendar,
   Users,
   Hotel,
-  Sparkles,
   ShieldCheck,
   CheckCircle2,
   XCircle,

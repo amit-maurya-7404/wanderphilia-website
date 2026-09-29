@@ -4,6 +4,7 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { ArrowRight, Award, Headphones, Star, Users } from 'lucide-react'
+import { Parachute } from '@/components/parachute-icon'
 import Image from 'next/image'
 
 
@@ -17,8 +18,9 @@ export function CTASection() {
       <div className="relative z-10 max-w-4xl mx-auto text-center">
         {/* Accent Label */}
         <div className="inline-block mb-6">
-          <span className="px-4 py-2 bg-white/20 backdrop-blur-sm border border-white/30 text-white text-sm font-semibold rounded-full">
-            ✨ Your Journey Awaits
+          <span className="inline-flex items-center gap-1.5 px-4 py-2 bg-white/20 backdrop-blur-sm border border-white/30 text-white text-sm font-semibold rounded-full">
+            <Parachute size={15} />
+            Your Journey Awaits
           </span>
         </div>
 

@@ -17,7 +17,6 @@ import { getChristmasNewYearTrips } from '@/lib/christmas-filter'
 import { gtag } from '@/lib/gtag'
 import { useRef, useEffect } from 'react'
 import {
-  Sparkles,
   Phone,
   MessageCircle,
   Compass,
@@ -32,6 +31,7 @@ import {
   MapPin,
   Globe,
 } from 'lucide-react'
+import { Parachute } from '@/components/parachute-icon'
 
 const heroMedia: TripMediaItem[] = [
   { type: 'image', src: '/images/kashmir.jpg', alt: 'Snowy winter wonderland in Kashmir' },
@@ -295,7 +295,7 @@ export default function ChristmasNewYearPage() {
               <div className="text-white max-w-2xl">
                 {/* Festive Badge */}
                 <div className="mb-3.5 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-amber-500/20 via-primary/25 to-red-500/20 px-3.5 py-1.5 text-xs sm:text-sm font-bold text-amber-300 ring-1 ring-amber-400/40 backdrop-blur-md shadow-lg shadow-amber-950/30">
-                  <Sparkles size={15} className="text-amber-300 animate-spin" style={{ animationDuration: '6s' }} />
+                  <Parachute size={15} className="text-amber-300 animate-pulse" />
                   <span>Christmas & New Year Holiday Specials</span>
                 </div>
 
@@ -389,8 +389,9 @@ export default function ChristmasNewYearPage() {
             {matchingTrips.length > 0 && (
               <div>
                 <div className="text-center max-w-2xl mx-auto mb-10">
-                  <span className="inline-block px-4 py-1 rounded-full bg-primary/15 border border-primary/30 text-primary font-semibold text-xs tracking-wider uppercase mb-3">
-                    ✨ Featured Holiday Departures
+                  <span className="inline-flex items-center gap-1.5 px-4 py-1 rounded-full bg-primary/15 border border-primary/30 text-primary font-semibold text-xs tracking-wider uppercase mb-3">
+                    <Parachute size={13} className="text-primary" />
+                    Featured Holiday Departures
                   </span>
                   <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-white">
                     Special Holiday Itineraries
@@ -416,7 +417,7 @@ export default function ChristmasNewYearPage() {
 
                 <div className="relative z-10 max-w-2xl mx-auto text-center">
                   <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-amber-500/20 border border-amber-500/40 text-amber-400 mx-auto flex items-center justify-center mb-5 shadow-inner">
-                    <Sparkles size={30} className="animate-bounce" />
+                    <Parachute size={30} className="animate-bounce" />
                   </div>
 
                   <h3 className="text-xl sm:text-3xl font-black text-white">

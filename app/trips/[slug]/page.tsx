@@ -17,7 +17,8 @@ import { DownloadTourPdfDialog } from '@/components/download-tour-pdf-dialog'
 import { RiWhatsappLine } from 'react-icons/ri'
 import { trips } from '@/lib/data'
 import { destinationItineraryImages } from '@/lib/section-mappings'
-import { MapPin, Calendar, Users, Star, Phone, MessageCircle, ChevronDown, Download, X, Check, ChevronLeft, ChevronRight, Car, Hotel, Camera, Utensils, Plane, Building2, FileText, User, Share2, Sparkles, Compass } from 'lucide-react'
+import { MapPin, Calendar, Users, Star, Phone, MessageCircle, ChevronDown, Download, X, Check, ChevronLeft, ChevronRight, Car, Hotel, Camera, Utensils, Plane, Building2, FileText, User, Share2, Compass } from 'lucide-react'
+import { Parachute } from '@/components/parachute-icon'
 import { contactEmail, contactPhone, contactPhoneDisplay, instagramUrl } from '@/lib/contact'
 import { TripGallerySection } from '@/components/trip-gallery-section'
 import Image from 'next/image'
@@ -1989,7 +1990,7 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
                               }`}
                           >
                             <div className="flex items-center gap-1.5 min-w-0">
-                              <Sparkles size={13} className={`shrink-0 ${activeSummaryDropdown === 'activities' ? 'text-white' : 'text-[#ff5d09]'}`} />
+                              <Parachute size={13} className={`shrink-0 ${activeSummaryDropdown === 'activities' ? 'text-white' : 'text-[#ff5d09]'}`} />
                               <span className="truncate">{activitiesCount} Activities</span>
                             </div>
                             <ChevronDown size={11} className={`shrink-0 transition-transform duration-200 ${activeSummaryDropdown === 'activities' ? 'rotate-180' : ''}`} />
@@ -2051,7 +2052,7 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
                               <div className="flex items-center gap-2">
                                 {activeSummaryDropdown === 'activities' && (
                                   <>
-                                    <Sparkles size={15} className="text-[#ff5d09]" />
+                                    <Parachute size={15} className="text-[#ff5d09]" />
                                     <h4 className="font-extrabold text-xs sm:text-sm text-slate-900 uppercase tracking-wide">
                                       Activities & Experiences ({activitiesCount})
                                     </h4>
@@ -2244,7 +2245,7 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
                                   {dayData.experiences.length > 0 && (
                                     <div className="space-y-1.5">
                                       <div className="flex items-center gap-1.5 text-[#ff5d09] font-extrabold text-[11px] uppercase tracking-wider">
-                                        <Sparkles size={13} className="text-[#ff5d09] shrink-0" />
+                                        <Parachute size={13} className="text-[#ff5d09] shrink-0" />
                                         <span>Sightseeing & Experiences</span>
                                       </div>
                                       <div className="bg-orange-50/30 rounded-xl p-3 border border-orange-100/60 space-y-0 relative pl-2.5">
@@ -2358,7 +2359,7 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
                     <div className="rounded-2xl overflow-hidden border-2 border-[#ff5d09] bg-white shadow-2xs">
                       {/* White Header Bar with Orange Border */}
                       <div className="flex items-center gap-2.5 px-5 py-3.5 bg-white text-slate-900 font-extrabold text-sm uppercase tracking-wider border-b border-orange-100">
-                        <Sparkles size={18} className="text-[#ff5d09]" />
+                        <Parachute size={18} className="text-[#ff5d09]" />
                         <span>Activities & Experiences</span>
                       </div>
 

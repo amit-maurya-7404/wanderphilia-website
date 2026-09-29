@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { Parachute } from '@/components/parachute-icon'
 import { trips, getLowestPriceForTrips } from '@/lib/data'
 import { getAllCategories } from '@/lib/trip-categories'
 import { sectionMappings } from '@/lib/section-mappings'
@@ -146,8 +147,9 @@ export function UpcomingGroupToursSection() {
 
           {/* Header Content */}
           <div className="relative z-10">
-            <span className="z-1000 inline-block px-4 py-2 rounded-full bg-primary/10 text-primary font-semibold text-sm mb-4">
-              ✨ Limited Spots Available
+            <span className="z-1000 inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-primary/10 text-primary font-semibold text-sm mb-4">
+              <Parachute size={15} />
+              Limited Spots Available
             </span>
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
               Upcoming Group Tours

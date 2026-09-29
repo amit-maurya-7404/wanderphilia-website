@@ -57,12 +57,14 @@ export interface Trip {
   duration: number
   price: number
   rating: number
-  difficulty: 'Easy' | 'Moderate' | 'Hard'
+  difficulty: 'Easy' | 'Moderate' | 'Hard' | 'Easy to Moderate'
   groupSize: number
   region?: string
   category: string
   tripType: 'India' | 'International'
   highlights: string[]
+  gallery?: string[]
+  accommodations?: Array<{ city: string; hotel: string; nights?: string }> | string[]
   heroMedia?: TripMediaItem[]
   itinerary: {
     day: number
@@ -72,6 +74,8 @@ export interface Trip {
   }[]
   included: string[]
   notIncluded: string[]
+  inclusions?: string[]
+  exclusions?: string[]
   optionalActivities?: string[]
   importantInformation?: string[]
   paymentTerms?: string[]
@@ -86,6 +90,7 @@ export interface Trip {
   paymentPolicy?: string[]
   cancellationPolicy?: string[]
   thingsToCarry?: string[]
+  thingsToPack?: Array<{ title?: string; category?: string; items: string[] }> | string[]
   travelEssentials?: {
     title: string
     items: string[]
@@ -93,6 +98,16 @@ export interface Trip {
   costingDetails?: {
     label: string
     value: string
+  }[]
+  sharingPrices?: {
+    type: string
+    price: number
+  }[]
+  batches?: {
+    date: string
+    year: string
+    available: boolean
+    status: string
   }[]
   batchDates?: {
     month: string
@@ -11423,7 +11438,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
         ]
       }
     ],
-    inclusions: [
+    included: [
       'Ground transfers by Private Minibus for airport and sightseeing in each city',
       'Hanoi to Sapa Luxury SP3 Overnight Train Ticket (4-berth shared AC cabin)',
       'Sapa to Hanoi Single Cabin Sleeper Bus transfer',
@@ -11451,7 +11466,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
       'Complimentary 2 bottles of mineral water per person per day during sightseeing',
       'Vietnam Single-Entry Tourist E-Visa assistance & processing fee'
     ],
-    exclusions: [
+    notIncluded: [
       'Domestic flights (Hanoi to Da Nang, Da Nang to Ho Chi Minh, Ho Chi Minh to Phu Quoc)',
       'International flight tickets to/from Vietnam',
       'Lunch and Dinner (except where specified)',
@@ -11535,37 +11550,6 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
         available: true,
         status: 'Available'
       }
-    ],
-    included: [
-      'Ground transfer by Private minibus, joining sleeping bus & luxury train as mentioned',
-      'Wanderphilia Guide plus local guide',
-      'Guided Hanoi city tour of Old Quarters',
-      'Hanoi Cycle Tour (Cyclo)',
-      'Ninh Binh Trang An boat trip, Mua Cave, Hoa Lu Ancient Capital',
-      'Rong May Glass bridge, Cat Cat village, slide & Alpine Coaster in Sapa',
-      'Cable car Fansipan with roundtrip Muong Hoa train',
-      'Hoi An Coconut basket ride, explore Hoi An by cycle, evening lantern boat ride experience',
-      'Visit Bana Hill Cable Car, Golden Bridge, Fantasy Park & French Village & Visit Dragon Bridge',
-      'Visit Cu Chi Tunnel with AK-47 rifle shooting experience',
-      'Ho Chi Minh City Tour & Cafe Hopping at Apartment Cafe',
-      '3 Island Tour in Phu Quoc by Speedboat',
-      'Hon Thom Cable Car Experience & visit Aquatopia Water Park',
-      'Kiss Bridge & Sunset Town',
-      'VinWonders Entry Ticket & Grand World Venice Boat Ride',
-      'Water on tours (2 bottles/pax/day)',
-      'Hotels accommodation with Breakfast (Double & Triple Sharing)',
-      'One way train ticket for overnight (4 berth/cabin)',
-      'One way by sleeping day bus from Sapa to Hanoi (single cabin)',
-      'Vietnam E-Visa',
-      'Fixed Airport transfers as per group departure timing'
-    ],
-    notIncluded: [
-      'Meals as mentioned above (Lunches & Dinners unless specified)',
-      'Compulsory tipping for guide & driver: 3 USD/pax/day',
-      'Government Taxes & Charges (5% GST + TCS as applicable)',
-      'Domestic flights (Hanoi to Da Nang, Da Nang to Ho Chi Minh, Ho Chi Minh to Phu Quoc) & International airfare',
-      'Visa stamping / entry fees beyond standard e-visa support',
-      'Other items and personal expenses not mentioned above'
     ],
     stays: [
       'Hanoi: La Siene / Babylon Grand Hotel / Similar',

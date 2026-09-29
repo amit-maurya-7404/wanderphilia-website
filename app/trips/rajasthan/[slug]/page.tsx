@@ -14,17 +14,14 @@ import { Card } from '@/components/ui/card'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { TripHeroCarousel } from '@/components/trip-hero-carousel'
 import { RequestCallbackDialog } from '@/components/request-callback-dialog'
-import { trips, getUpcomingBatchDates } from '@/lib/data'
+import { trips, getUpcomingBatchDates, TripMediaItem } from '@/lib/data'
 import { destinationItineraryImages } from '@/lib/section-mappings'
 import { MapPin, Calendar, Users, Star, Phone, MessageCircle, ChevronDown, Download, X, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Parachute } from '@/components/parachute-icon'
 import { contactEmail, contactPhone, contactPhoneDisplay, instagramUrl } from '@/lib/contact'
 import { TripGallerySection } from '@/components/trip-gallery-section'
 
-type MediaItem = {
-  type: 'image' | 'video'
-  src: string
-  alt?: string
-}
+type MediaItem = TripMediaItem
 
 export default function PackageDetailPage() {
   type SelectionItem = {
@@ -387,8 +384,8 @@ export default function PackageDetailPage() {
 
                   <div className="grid sm:grid-cols-2 gap-3 pt-4">
                     {trip.highlights.map((item, i) => (
-                      <div key={i} className="flex gap-3">
-                        <span className="text-lg shrink-0">✨</span>
+                      <div key={i} className="flex items-start gap-2.5">
+                        <Parachute size={16} className="text-orange-500 shrink-0 mt-1" />
                         <span className="text-sm sm:text-base text-slate-700">{item}</span>
                       </div>
                     ))}

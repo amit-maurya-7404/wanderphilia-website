@@ -4,7 +4,8 @@ import { useState } from 'react'
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { User, Phone, Mail, X, Check, Compass, Sparkles, ShieldCheck } from 'lucide-react'
+import { User, Phone, Mail, X, Check, Compass, ShieldCheck } from 'lucide-react'
+import { Parachute } from '@/components/parachute-icon'
 
 interface RequestCallbackDialogProps {
   open: boolean
@@ -122,7 +123,7 @@ export function RequestCallbackDialog({ open, onOpenChange, title, price, isQuot
 
               <div className="space-y-3 pt-2">
                 {[
-                  { text: 'Customized bespoke itineraries tailored to you', icon: <Sparkles size={13} className="text-orange-400" /> },
+                  { text: 'Customized bespoke itineraries tailored to you', icon: <Parachute size={13} className="text-orange-400" /> },
                   { text: '24/7 dedicated support from trip curators', icon: <ShieldCheck size={13} className="text-orange-400" /> },
                   { text: 'Exclusive access to direct local rates & deals', icon: <Compass size={13} className="text-orange-400" /> }
                 ].map((item, i) => (

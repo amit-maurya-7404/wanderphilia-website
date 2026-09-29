@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { MessageSquare, X, Sparkles, Send, ArrowRight, Compass } from 'lucide-react'
+import { MessageSquare, X, Send, ArrowRight, Compass } from 'lucide-react'
+import { Parachute } from '@/components/parachute-icon'
 import { trips, getLowestPriceForTrip, getLowestPriceForTrips, getUpcomingBatchDates } from '@/lib/data'
 import { sectionMappings } from '@/lib/section-mappings'
 import Link from 'next/link'
@@ -522,7 +523,7 @@ export function AITripPlanner() {
           <div className="bg-linear-to-r from-orange-500 via-primary to-orange-500 p-4 text-white flex items-center justify-between shadow-md">
             <div className="flex items-center gap-2">
               <div className="w-9 h-9 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/10">
-                <Sparkles size={18} className="text-yellow-300" />
+                <Parachute size={18} className="text-yellow-300" />
               </div>
               <div>
                 <h4 className="text-sm font-black tracking-tight leading-none">Wanderphilia Assistant</h4>

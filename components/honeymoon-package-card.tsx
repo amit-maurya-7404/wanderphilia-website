@@ -1,6 +1,7 @@
 'use client'
 
 import { Heart, MapPin, Calendar, Users, Star } from 'lucide-react'
+import { Parachute } from '@/components/parachute-icon'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
@@ -83,7 +84,7 @@ export function HoneymoonPackageCard({
           <ul className="space-y-1">
             {highlights.slice(0, 3).map((highlight, idx) => (
               <li key={idx} className="text-sm text-gray-600 flex items-start gap-2">
-                <span className="text-pink-500 mt-1">✨</span>
+                <Parachute size={14} className="text-pink-500 mt-0.5 shrink-0" />
                 <span>{highlight}</span>
               </li>
             ))}

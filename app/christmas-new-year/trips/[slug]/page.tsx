@@ -34,10 +34,10 @@ import {
   Hotel,
   Utensils,
   Share2,
-  Sparkles,
   ArrowLeft,
   Gift,
 } from 'lucide-react'
+import { Parachute } from '@/components/parachute-icon'
 
 function cleanLocation(loc: string): string {
   let clean = loc
@@ -1373,7 +1373,7 @@ export default function ChristmasNewYearTripDetailPage({ params }: PageProps = {
               <ArrowLeft size={16} /> Back to Christmas & New Year Trips
             </Link>
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-amber-500/20 to-primary/20 border border-amber-400/40 text-amber-300 text-xs font-bold shadow-xs">
-              <Sparkles size={13} className="text-amber-300" />
+              <Parachute size={13} className="text-amber-300" />
               <span>Holiday Special</span>
             </div>
           </div>
@@ -1693,7 +1693,7 @@ export default function ChristmasNewYearTripDetailPage({ params }: PageProps = {
                               }`}
                             >
                               <div className="flex items-center gap-1.5 min-w-0">
-                                <Sparkles
+                                <Parachute
                                   size={13}
                                   className={`shrink-0 ${
                                     activeSummaryDropdown === 'activities'
@@ -1818,7 +1818,7 @@ export default function ChristmasNewYearTripDetailPage({ params }: PageProps = {
                                 <div className="flex items-center gap-2">
                                   {activeSummaryDropdown === 'activities' && (
                                     <>
-                                      <Sparkles size={16} className="text-[#ff5d09]" />
+                                      <Parachute size={16} className="text-[#ff5d09]" />
                                       <h4 className="font-extrabold text-xs sm:text-sm text-white uppercase tracking-wide">
                                         Activities & Experiences ({activitiesCount})
                                       </h4>
@@ -2027,7 +2027,7 @@ export default function ChristmasNewYearTripDetailPage({ params }: PageProps = {
                                     {dayData.experiences.length > 0 && (
                                       <div className="space-y-1.5">
                                         <div className="flex items-center gap-1.5 text-amber-400 font-extrabold text-[11px] uppercase tracking-wider">
-                                          <Sparkles size={13} className="shrink-0" />
+                                          <Parachute size={13} className="shrink-0" />
                                           <span>Sightseeing & Experiences</span>
                                         </div>
                                         <div className="bg-amber-950/20 rounded-xl p-3 border border-amber-900/40 space-y-0 relative pl-2.5">
@@ -2220,7 +2220,7 @@ export default function ChristmasNewYearTripDetailPage({ params }: PageProps = {
                     <div className="space-y-6 animate-in fade-in duration-300">
                       <div className="rounded-2xl overflow-hidden border-2 border-[#ff5d09] bg-slate-900 shadow-xl">
                         <div className="flex items-center gap-2.5 px-5 py-3.5 bg-slate-900 text-white font-extrabold text-sm uppercase tracking-wider border-b border-orange-500/30">
-                          <Sparkles size={18} className="text-[#ff5d09]" />
+                          <Parachute size={18} className="text-[#ff5d09]" />
                           <span>Activities & Experiences</span>
                         </div>
 

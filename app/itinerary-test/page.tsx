@@ -5,7 +5,8 @@ import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Sparkles, Loader2, CheckCircle2, ExternalLink, Download, Search, Hotel, Calendar, Users, MapPin } from 'lucide-react';
+import { Loader2, CheckCircle2, ExternalLink, Download, Search, Hotel, Calendar, Users, MapPin } from 'lucide-react';
+import { Parachute } from '@/components/parachute-icon';
 
 export default function ItineraryTestPage() {
   const [leadQuery, setLeadQuery] = useState('');
@@ -202,7 +203,7 @@ export default function ItineraryTestPage() {
         {/* Header */}
         <div className="text-center space-y-3 mb-8">
           <span className="inline-flex items-center gap-1.5 bg-orange-100 text-orange-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-            <Sparkles className="w-3.5 h-3.5 text-orange-600" />
+            <Parachute className="w-3.5 h-3.5 text-orange-600" />
             Zoho CRM Direct Integration
           </span>
           <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
@@ -268,7 +269,7 @@ export default function ItineraryTestPage() {
         {/* 2. FORM DETAILS PREVIEW & GENERATE (CATEGORIZED ZOHO FIELDS) */}
         <div className="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200/80 shadow-xl mb-8">
           <div className="text-xs uppercase font-extrabold text-orange-600 tracking-wider mb-6 flex items-center gap-1.5 border-b border-slate-100 pb-3">
-            <Sparkles className="w-4 h-4" /> Step 2: Review All Zoho CRM Fields & Generate Itinerary
+            <Parachute className="w-4 h-4" /> Step 2: Review All Zoho CRM Fields & Generate Itinerary
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-8">
@@ -547,7 +548,7 @@ export default function ItineraryTestPage() {
                 </span>
               ) : (
                 <span className="flex items-center gap-2">
-                  <Sparkles className="w-4 h-4" />
+                  <Parachute className="w-4 h-4" />
                   Generate Itinerary with AI ↗
                 </span>
               )}
