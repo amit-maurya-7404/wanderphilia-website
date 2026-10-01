@@ -7,11 +7,13 @@ import { getAllCategories } from '@/lib/trip-categories'
 import { trips } from '@/lib/data'
 import { getPageSectionMapping } from '@/lib/section-mappings'
 import { TripCard } from '@/components/trip-card'
+import { HeroSearchDialog } from './hero-search-dialog'
 import Link from 'next/link'
 import Image from 'next/image'
 
 export function MobileHeroSection() {
     const [destination, setDestination] = useState('')
+    const [isSearchOpen, setIsSearchOpen] = useState(false)
     const [banners] = useState<any[]>([
         { _id: '1', title: "Bali's Zamna Fest", image: '/images/mobile-hero-bali-zamna.png', link: '/trips/bali' },
         { _id: '2', title: "Spiti Winter Expedition", image: '/images/mobile-hero-spiti-winter.png', link: '/trips/spiti' },
@@ -55,38 +57,36 @@ export function MobileHeroSection() {
 
                 {/* SEARCH */}
                 <div className="relative">
-                    <div className="bg-white/90 backdrop-blur-xl rounded-full mt-4 pl-4 shadow-lg">
-                        <div className="flex items-center gap-3">
-                            <MapPin className="text-primary" size={24} />
-                            <input
-                                type="text"
-                                placeholder="Explore Best Itineraries"
-                                value={destination}
-                                onChange={(e) => setDestination(e.target.value)}
-                                className="w-full outline-none bg-transparent text-black"
-                            />
-                            <button className="h-12 w-16 flex items-center justify-center text-primary">
-                                <Search size={20} />
-                            </button>
-                        </div>
+                    <div
+                        onClick={() => setIsSearchOpen(true)}
+                        className="bg-white rounded-full mt-4 pl-4 pr-1.5 py-1 shadow-lg border border-orange-100 flex items-center gap-3 cursor-pointer"
+                    >
+                        <MapPin className="text-primary shrink-0" size={22} />
+                        <input
+                            type="text"
+                            readOnly
+                            placeholder="Explore Best Itineraries"
+                            value={destination}
+                            onFocus={() => setIsSearchOpen(true)}
+                            className="w-full outline-none bg-transparent text-gray-900 placeholder:text-gray-400 text-sm font-medium cursor-pointer"
+                        />
+                        <button
+                            type="button"
+                            onClick={(e) => {
+                                e.stopPropagation()
+                                setIsSearchOpen(true)
+                            }}
+                            className="h-10 w-10 flex items-center justify-center rounded-full bg-linear-to-br from-[#FF8713] via-[#FF6E0B] to-[#FF5D09] text-white shrink-0 shadow-xs"
+                        >
+                            <Search size={18} />
+                        </button>
                     </div>
 
-                    {destination && (
-                        <div className="absolute w-full bg-slate-800 text-white rounded-xl mt-2 z-50">
-                            {filteredCategories.map(cat => (
-                                <div
-                                    key={cat.id}
-                                    onClick={() => {
-                                        setDestination('')
-                                        router.push(`/trips/${cat.id}`)
-                                    }}
-                                    className="p-3 border-b border-slate-700"
-                                >
-                                    {cat.name}
-                                </div>
-                            ))}
-                        </div>
-                    )}
+                    <HeroSearchDialog
+                        isOpen={isSearchOpen}
+                        onClose={() => setIsSearchOpen(false)}
+                        initialQuery={destination}
+                    />
                 </div>
 
                 <div className="flex gap-3">

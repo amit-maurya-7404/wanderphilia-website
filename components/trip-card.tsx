@@ -3,7 +3,7 @@
 import { useRef, useState } from 'react'
 import Image from 'next/image'
 import type { Trip } from '@/lib/data'
-import { getTripInclusionDetails, cleanLocation } from '@/lib/data'
+import { getTripInclusionDetails, cleanLocation, getLowestPriceForTrip } from '@/lib/data'
 import { gtag } from '@/lib/gtag'
 import { DownloadTourPdfDialog } from '@/components/download-tour-pdf-dialog'
 import { RiWhatsappLine } from 'react-icons/ri'
@@ -193,17 +193,7 @@ export function TripCard(props: TripCardProps) {
     }
   }
 
-  const lowestPrice = costingDetails?.length
-    ? costingDetails
-      .map((item) => {
-        const match = item.value.match(/[\d,]+/)
-        return match ? parseInt(match[0].replace(/,/g, ''), 10) : NaN
-      })
-      .filter((value) => !Number.isNaN(value) && value > 0)
-      .reduce((min, value) => Math.min(min, value), Infinity)
-    : price
-
-  const displayPrice = Number.isFinite(lowestPrice) ? lowestPrice : price
+  const displayPrice = getLowestPriceForTrip(props)
   const staySummary = props.route || props.staySummary || props.customRoute || getStaySummary(itinerary)
 
   // Construct images array

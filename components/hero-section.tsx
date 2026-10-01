@@ -1,31 +1,31 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
-import Link from 'next/link'
+import { useState } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { MapPin, ArrowRight, Search, Star, Users, Headphones, Award } from 'lucide-react'
+import { MapPin, Search, Star } from 'lucide-react'
 import { MobileHeroSection } from './mobile-hero-section'
-import { getAllCategories } from '@/lib/trip-categories'
+import { HeroSearchDialog } from './hero-search-dialog'
 import { gtag } from '@/lib/gtag'
 
 export function HeroSection() {
   const [destination, setDestination] = useState('')
+  const [isSearchOpen, setIsSearchOpen] = useState(false)
   const router = useRouter()
 
-  const categories = useMemo(() => getAllCategories(), [])
-
-  // Filter categories based on destination input
-  const filteredCategories = useMemo(() => {
-    if (!destination.trim()) return []
-    return categories.filter(cat =>
-      cat.name.toLowerCase().includes(destination.toLowerCase())
-    )
-  }, [destination, categories])
-
   const heroVideo = '/images/hero-video.mp4'
+
+  const handleOpenSearch = (initialVal?: string) => {
+    if (typeof initialVal === 'string') {
+      setDestination(initialVal)
+    }
+    setIsSearchOpen(true)
+    gtag.event({
+      action: 'click',
+      category: 'CTA',
+      label: 'Hero Search Bar Opened',
+    })
+  }
 
   return (
     <section className="relative overflow-hidden pt-26 md:pt-10 md:min-h-screen">
@@ -47,85 +47,54 @@ export function HeroSection() {
 
       {/* Desktop Hero */}
       <div className="relative z-10 hidden md:flex items-center justify-center min-h-screen px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col justify-center items-center min-h-screen  text-center pb-32">
+        <div className="flex flex-col justify-center items-center min-h-screen text-center pb-32">
           <div className="mb-4 flex items-center justify-center gap-3">
             <div className="w-12 h-1 bg-primary rounded-full" />
             <span className="text-primary font-semibold text-sm tracking-widest uppercase">
               Wanderphilia Experience
             </span>
             <div className="w-12 h-1 bg-primary rounded-full" />
-
           </div>
+
           <h1 className="text-4xl md:text-4xl lg:text-5xl font-bold text-white mb-2 leading-tight max-w-4xl">
             Wanderphilia A Global Community of explorers discovering world Together
           </h1>
-          {/* <p className="text-sm md:text-lg text-gray-200 mb-6 max-w-3xl leading-relaxed">
-            Discover curated adventures that redefine travel. From snow-capped peaks to pristine beaches, we craft unforgettable journeys for the modern explorer.
-          </p> */}
-
-
 
           <div className="pt-20 max-w-2xl w-full relative">
-            <div className="flex flex-col sm:flex-row gap-3 bg-white/10 backdrop-blur-md p-2 rounded-2xl border border-white/20 hover:border-white/40 transition-all">
-              <div className="flex-1 relative">
-                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-primary" size={20} />
-                <Input
+            <div
+              onClick={() => handleOpenSearch()}
+              className="flex flex-col sm:flex-row gap-3 bg-white shadow-2xl p-2 rounded-full border border-white/80 hover:border-orange-300 hover:shadow-orange-500/10 transition-all cursor-pointer group"
+            >
+              <div className="flex-1 relative flex items-center">
+                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-primary group-hover:scale-110 transition-transform" size={20} />
+                <input
                   type="text"
+                  readOnly
                   placeholder="Where do you want to explore?"
                   value={destination}
-                  onChange={(e) => setDestination(e.target.value)}
-                  className="pl-12 py-3 leading-6 bg-transparent border-0 text-white placeholder:text-gray-300 placeholder:leading-6 focus:ring-0 focus:outline-none"
+                  onFocus={() => handleOpenSearch()}
+                  className="w-full pl-12 py-3 leading-6 bg-transparent border-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 focus:outline-none text-base cursor-pointer"
                 />
               </div>
               <button
                 type="button"
-                onClick={() => {
-                  if (filteredCategories.length > 0) {
-                    const selectedCat = filteredCategories[0]
-                    setDestination('')
-                    router.push(`/trips/${selectedCat.id}`)
-                  } else if (destination.trim()) {
-                    router.push(`/trips?destination=${destination}`)
-                  }
-                  // Track search action
-                  gtag.event({
-                    action: 'click',
-                    category: 'CTA',
-                    label: 'Hero Search Button',
-                  });
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handleOpenSearch()
                 }}
-                className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-linear-to-br from-[#FF8713] via-[#FF6E0B] to-[#FF5D09] hover:from-[#FFA033] hover:via-[#FF7E1A] hover:to-[#FF6A1A] transition-all duration-300 text-white font-semibold shrink-0"
+                className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-linear-to-br from-[#FF8713] via-[#FF6E0B] to-[#FF5D09] hover:from-[#FFA033] hover:via-[#FF7E1A] hover:to-[#FF6A1A] transition-all duration-300 text-white font-semibold shrink-0 cursor-pointer shadow-sm hover:shadow-md"
               >
                 <Search size={20} />
               </button>
             </div>
-
-            {/* Suggestions Dropdown */}
-            {destination && filteredCategories.length > 0 && (
-              <div className="absolute left-0 right-0 top-full mt-2 bg-slate-800/90 backdrop-blur-md border border-slate-700 rounded-2xl shadow-lg max-h-48 overflow-y-auto z-50">
-                {filteredCategories.map(cat => (
-                  <div
-                    key={cat.id}
-                    onClick={() => {
-                      setDestination('')
-                      router.push(`/trips/${cat.id}`)
-                      gtag.event({
-                        action: 'click',
-                        category: 'Navigation',
-                        label: `Search Suggestion: ${cat.name}`,
-                      });
-                    }}
-                    className="p-3 hover:bg-slate-700 cursor-pointer text-white border-b border-slate-600 last:border-b-0"
-                  >
-                    {cat.name}
-                  </div>
-                ))}
-              </div>
-            )}
           </div>
 
-
-
+          {/* Search Popup Modal */}
+          <HeroSearchDialog
+            isOpen={isSearchOpen}
+            onClose={() => setIsSearchOpen(false)}
+            initialQuery={destination}
+          />
         </div>
       </div>
 
