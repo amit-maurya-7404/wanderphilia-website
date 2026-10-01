@@ -47,7 +47,8 @@ export async function POST(req: Request) {
       endDate,
       subtotal,
       gst,
-      totalAmount
+      totalAmount,
+      countryCode = '+91'
     } = body;
 
     // Validate essential request payload
@@ -83,6 +84,7 @@ export async function POST(req: Request) {
     const exactId = trip ? trip.id : tripSlug.trim();
     const guestCount = (numberOfGuests && numberOfGuests > 0) ? numberOfGuests : 1;
     const formattedAmount = totalAmount ? `₹${Number(totalAmount).toLocaleString('en-IN')}` : 'Custom / Quote';
+    const fullPhoneDisplay = `${countryCode} ${mobileNumber}`.trim();
 
     // 1. Submit Lead to Zoho CRM
     let zohoLeadId: string | undefined;
@@ -91,6 +93,7 @@ export async function POST(req: Request) {
         name: fullName.trim(),
         email: email.trim(),
         phone: mobileNumber.trim(),
+        countryCode: countryCode,
         leadSource: 'Website',
         leadStatus: 'Query',
         tripTitle: displayTripTitle,
@@ -149,7 +152,7 @@ export async function POST(req: Request) {
         </tr>
         <tr>
           <td class="label">Mobile Number</td>
-          <td class="value"><a href="tel:${mobileNumber}" style="color: #ff5d09; text-decoration: none;">${mobileNumber}</a></td>
+          <td class="value"><a href="tel:${fullPhoneDisplay}" style="color: #ff5d09; text-decoration: none;">${fullPhoneDisplay}</a></td>
         </tr>
         <tr>
           <td class="label">Email Address</td>

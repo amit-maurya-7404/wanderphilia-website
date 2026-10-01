@@ -8,6 +8,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const name = body.name || 'Traveler'
     const phone = body.phone
+    const countryCode = body.countryCode || '+91'
     const cleanPhone = (phone || '').replace(/\D/g, '')
     const email = body.email || (cleanPhone ? `${cleanPhone}@wanderphilia.com` : 'info@wanderphilia.com')
     const tripSlug = body.tripSlug || body.slug || ''
@@ -27,6 +28,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    const fullPhoneDisplay = `${countryCode} ${phone}`.trim()
+
     // 1. Submit to Zoho CRM
     let zohoLeadId: string | undefined
     try {
@@ -34,6 +37,7 @@ export async function POST(request: NextRequest) {
         name,
         email,
         phone,
+        countryCode,
         leadSource: source,
         leadStatus: 'New Enquiry',
         tripTitle: title,
@@ -86,7 +90,8 @@ export async function POST(request: NextRequest) {
       <div class="section">
         <h3>Customer Details</h3>
         <div class="field"><strong>Name:</strong> ${name}</div>
-        <div class="field"><strong>Phone:</strong> <a href="tel:${phone}" style="color: #ff5e00; text-decoration: none;">${phone}</a></div>
+        <div class="field"><strong>Phone:</strong> <a href="tel:${fullPhoneDisplay}" style="color: #ff5e00; text-decoration: none;">${fullPhoneDisplay}</a></div>
+        <div class="field"><strong>Country Code:</strong> ${countryCode}</div>
         <div class="field"><strong>Email:</strong> <a href="mailto:${email}" style="color: #ff5e00; text-decoration: none;">${email}</a></div>
       </div>
 
@@ -137,7 +142,7 @@ export async function POST(request: NextRequest) {
       <div class="content">
         <p style="font-size: 15px; line-height: 1.6; margin-top: 0;">Hi <strong>${name}</strong>,</p>
         <p style="font-size: 14px; line-height: 1.6; color: #475569;">
-          We've received your callback request for <strong>${title}</strong>. Our dedicated travel experts will call you shortly on <strong>${phone}</strong> to help design and finalize your perfect trip.
+          We've received your callback request for <strong>${title}</strong>. Our dedicated travel experts will call you shortly on <strong>${fullPhoneDisplay}</strong> to help design and finalize your perfect trip.
         </p>
         
         <div class="trip-box">

@@ -4,6 +4,8 @@ import { useState, useMemo } from 'react'
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { X, Calendar, Phone, FileText, CheckCircle2, User } from 'lucide-react'
 import { getUpcomingBatchDates } from '@/lib/data'
+import { CountryCodeSelect } from '@/components/ui/country-code-select'
+import { DEFAULT_COUNTRY_CODE } from '@/lib/country-codes'
 
 interface DownloadTourPdfDialogProps {
   open: boolean
@@ -23,6 +25,7 @@ export function DownloadTourPdfDialog({
   const [fromDate, setFromDate] = useState('')
   const [toDate, setToDate] = useState('')
   const [phone, setPhone] = useState('')
+  const [countryCode, setCountryCode] = useState(DEFAULT_COUNTRY_CODE)
   const [errors, setErrors] = useState<{ name?: string; month?: string; dateRange?: string; phone?: string }>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
@@ -91,6 +94,7 @@ export function DownloadTourPdfDialog({
       const payload = {
         name: name.trim(),
         phone: cleanPhone,
+        countryCode: countryCode,
         email: `${cleanPhone}@wanderphilia.com`,
         tripTitle: trip?.title || 'Trip Package',
         tripSlug: trip?.slug || '',
@@ -99,7 +103,7 @@ export function DownloadTourPdfDialog({
         startDate: fromDate || selectedMonth || '',
         endDate: toDate || '',
         source: `PDF Download${selectedMonth ? ` (Month: ${selectedMonth})` : ''}${fromDate && toDate ? ` (Dates: ${fromDate} to ${toDate})` : ''}`,
-        message: `Itinerary PDF Download Request.\nTraveler Name: ${name.trim()}\nMobile: ${cleanPhone}\nSelected Month: ${selectedMonth || 'Not selected'}\nTravel Dates: ${fromDate && toDate ? `${fromDate} to ${toDate}` : 'Not selected'}`,
+        message: `Itinerary PDF Download Request.\nTraveler Name: ${name.trim()}\nMobile: ${countryCode} ${cleanPhone}\nSelected Month: ${selectedMonth || 'Not selected'}\nTravel Dates: ${fromDate && toDate ? `${fromDate} to ${toDate}` : 'Not selected'}`,
       }
 
       fetch('/api/callback', {
@@ -287,27 +291,29 @@ export function DownloadTourPdfDialog({
               <div className="space-y-1">
                 <label className="text-xs font-semibold text-slate-700 flex items-center justify-between">
                   <span>Mobile Number <span className="text-rose-500">*</span></span>
-                  <span className="text-[10px] text-slate-400 font-normal">10-digit number</span>
+                  <span className="text-[10px] text-slate-400 font-normal">Phone number</span>
                 </label>
-                <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
-                    <Phone size={14} />
-                  </span>
+                <div className={`flex rounded-lg border bg-white overflow-hidden transition-all ${
+                  errors.phone
+                    ? 'border-rose-400 ring-1 ring-rose-200'
+                    : 'border-slate-300 focus-within:border-[#ff5d09] focus-within:ring-1 focus-within:ring-[#ff5d09]/20'
+                }`}>
+                  <CountryCodeSelect
+                    value={countryCode}
+                    onChange={setCountryCode}
+                    disabled={isSubmitting}
+                  />
                   <input
                     type="tel"
                     required
                     value={phone}
                     maxLength={13}
-                    placeholder="Enter your mobile number"
+                    placeholder="Enter mobile number"
                     onChange={(e) => {
                       setPhone(e.target.value.replace(/[^\d+]/g, ''))
                       if (errors.phone) setErrors(prev => ({ ...prev, phone: undefined }))
                     }}
-                    className={`w-full pl-9 pr-3 py-2 rounded-lg border text-xs sm:text-sm bg-white text-slate-800 transition-all focus:outline-none ${
-                      errors.phone
-                        ? 'border-rose-400 focus:border-rose-500 focus:ring-1 focus:ring-rose-200'
-                        : 'border-slate-300 focus:border-[#ff5d09] focus:ring-1 focus:ring-[#ff5d09]/20'
-                    }`}
+                    className="w-full px-3 py-2 text-xs sm:text-sm bg-transparent text-slate-800 outline-none flex-1 font-medium"
                   />
                 </div>
                 {errors.phone && (

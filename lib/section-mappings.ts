@@ -190,10 +190,10 @@ export const destinationItineraryImages: Record<string, string[]> = {
     '/images/honeymoon-special-bali.png'
   ],
   'thailand': [
+    '/images/tomorrowland-thailand.jpg',
     '/images/thailand.jpg',
-    '/images/thailand-couple-leisure.png',
-    '/images/thailand-family-getaway.png',
-    '/images/thailand-honeymoon.png'
+    '/images/tomorrowland-thailand-mobile.jpg',
+    '/images/thailand-couple-leisure.png'
   ],
   'kashmir': [
     '/images/kashmir.jpg',

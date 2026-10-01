@@ -13,6 +13,8 @@ import { AuthUtils } from '@/lib/auth-utils'
 import { ChevronDown, CreditCard, User, Mail, Phone, Lock } from 'lucide-react'
 import { gtag } from '@/lib/gtag'
 import { RequestCallbackDialog } from '@/components/request-callback-dialog'
+import { CountryCodeSelect } from '@/components/ui/country-code-select'
+import { DEFAULT_COUNTRY_CODE } from '@/lib/country-codes'
 
 interface BookingPackageClientProps {
   trip: Trip
@@ -52,6 +54,7 @@ export default function BookingPackageClient({ trip, slug }: BookingPackageClien
   // Contact Form states
   const [fullName, setFullName] = useState('')
   const [mobileNumber, setMobileNumber] = useState('')
+  const [countryCode, setCountryCode] = useState(DEFAULT_COUNTRY_CODE)
   const [emailAddress, setEmailAddress] = useState('')
   const [errors, setErrors] = useState<{ fullName?: string; mobileNumber?: string; emailAddress?: string }>({})
   const [isProcessing, setIsProcessing] = useState(false)
@@ -193,6 +196,7 @@ export default function BookingPackageClient({ trip, slug }: BookingPackageClien
           body: JSON.stringify({
             fullName: fullName,
             mobileNumber: mobileNumber,
+            countryCode: countryCode,
             email: emailAddress,
             tripSlug: slug,
             tripTitle: trip.title,
@@ -466,18 +470,25 @@ export default function BookingPackageClient({ trip, slug }: BookingPackageClien
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Mobile Number <span className="text-red-500">*</span></label>
-                    <Input
-                      type="tel"
-                      placeholder="Enter 10-digit number"
-                      value={mobileNumber}
-                      maxLength={10}
-                      onChange={(e) => {
-                        const val = e.target.value.replace(/\D/g, '')
-                        setMobileNumber(val)
-                        if (errors.mobileNumber) setErrors(prev => ({ ...prev, mobileNumber: undefined }))
-                      }}
-                      className={`rounded-xl border-slate-200 h-11 ${errors.mobileNumber ? 'border-red-500 focus-visible:ring-red-500/20' : 'focus-visible:ring-primary/20'}`}
-                    />
+                    <div className={`flex rounded-xl border bg-white overflow-hidden h-11 transition ${errors.mobileNumber ? 'border-red-500 ring-1 ring-red-500/20' : 'border-slate-200 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20'}`}>
+                      <CountryCodeSelect
+                        value={countryCode}
+                        onChange={setCountryCode}
+                        disabled={isProcessing}
+                      />
+                      <Input
+                        type="tel"
+                        placeholder="Enter phone number"
+                        value={mobileNumber}
+                        maxLength={15}
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/\D/g, '')
+                          setMobileNumber(val)
+                          if (errors.mobileNumber) setErrors(prev => ({ ...prev, mobileNumber: undefined }))
+                        }}
+                        className="border-0 shadow-none focus-visible:ring-0 rounded-none h-full flex-1 text-sm font-medium"
+                      />
+                    </div>
                     {errors.mobileNumber && (
                       <p className="text-xs text-red-500 mt-1 font-medium">{errors.mobileNumber}</p>
                     )}

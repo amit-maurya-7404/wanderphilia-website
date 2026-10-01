@@ -8,11 +8,14 @@ import { Input } from '@/components/ui/input'
 import { MapPin, Phone, Mail, Clock, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react'
 import { contactEmail, contactPhoneDisplayInternational } from '@/lib/contact'
 import { gtag } from '@/lib/gtag'
+import { CountryCodeSelect } from '@/components/ui/country-code-select'
+import { DEFAULT_COUNTRY_CODE } from '@/lib/country-codes'
 
 export default function ContactPage() {
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
+  const [countryCode, setCountryCode] = useState(DEFAULT_COUNTRY_CODE)
   const [subject, setSubject] = useState('')
   const [message, setMessage] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -44,6 +47,7 @@ export default function ContactPage() {
           name: fullName.trim(),
           email: email.trim(),
           phone: phone.trim(),
+          countryCode: countryCode,
           subject: subject.trim(),
           message: message.trim(),
         }),
@@ -199,13 +203,20 @@ export default function ContactPage() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Phone Number
                     </label>
-                    <Input
-                      type="tel"
-                      placeholder="+91 98765 43210"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      className="w-full"
-                    />
+                    <div className="flex rounded-md border border-input bg-transparent overflow-hidden focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
+                      <CountryCodeSelect
+                        value={countryCode}
+                        onChange={setCountryCode}
+                        disabled={isSubmitting}
+                      />
+                      <Input
+                        type="tel"
+                        placeholder="98765 43210"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        className="border-0 shadow-none focus-visible:ring-0 rounded-none flex-1"
+                      />
+                    </div>
                   </div>
 
                   <div>

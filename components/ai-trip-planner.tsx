@@ -5,6 +5,8 @@ import { MessageSquare, X, Send, ArrowRight, Compass } from 'lucide-react'
 import { Parachute } from '@/components/parachute-icon'
 import { trips, getLowestPriceForTrip, getLowestPriceForTrips, getUpcomingBatchDates } from '@/lib/data'
 import { sectionMappings } from '@/lib/section-mappings'
+import { CountryCodeSelect } from '@/components/ui/country-code-select'
+import { DEFAULT_COUNTRY_CODE } from '@/lib/country-codes'
 import Link from 'next/link'
 import Image from 'next/image'
 
@@ -170,7 +172,7 @@ export function AITripPlanner() {
     }, 1000)
   }
 
-  const handleContactFormSubmit = async (details: { name: string; email: string; phone: string }) => {
+  const handleContactFormSubmit = async (details: { name: string; email: string; phone: string; countryCode?: string }) => {
     const newMessages = [...messages]
     if (newMessages.length > 0) {
       const last = { ...newMessages[newMessages.length - 1] }
@@ -180,12 +182,14 @@ export function AITripPlanner() {
       }
     }
 
+    const cCode = details.countryCode || DEFAULT_COUNTRY_CODE
+
     setMessages([
       ...newMessages,
       {
         id: `user-contact-${Date.now()}`,
         sender: 'user',
-        text: `Name: ${details.name}\nEmail: ${details.email}\nPhone: ${details.phone}`
+        text: `Name: ${details.name}\nEmail: ${details.email}\nPhone: ${cCode} ${details.phone}`
       }
     ])
 
@@ -202,6 +206,7 @@ export function AITripPlanner() {
           name: details.name,
           email: details.email,
           phone: details.phone,
+          countryCode: cCode,
           destination: selections.destination,
           travelDate: selections.travelDate
         })
@@ -836,12 +841,13 @@ function ContactForm({
   onSubmit, 
   loading 
 }: { 
-  onSubmit: (details: { name: string; email: string; phone: string }) => void
+  onSubmit: (details: { name: string; email: string; phone: string; countryCode: string }) => void
   loading: boolean
 }) {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
+  const [countryCode, setCountryCode] = useState(DEFAULT_COUNTRY_CODE)
   const [error, setError] = useState('')
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -854,12 +860,12 @@ function ContactForm({
       setError('Please enter a valid email address.')
       return
     }
-    if (phone.trim().length < 10) {
+    if (phone.trim().length < 7) {
       setError('Please enter a valid phone number.')
       return
     }
     setError('')
-    onSubmit({ name: name.trim(), email: email.trim(), phone: phone.trim() })
+    onSubmit({ name: name.trim(), email: email.trim(), phone: phone.trim(), countryCode })
   }
 
   return (
@@ -888,14 +894,21 @@ function ContactForm({
       </div>
       <div>
         <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Phone Number</label>
-        <input
-          type="tel"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          placeholder="E.g., +91 9876543210"
-          className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:border-primary text-slate-800 bg-white"
-          required
-        />
+        <div className="flex rounded-xl border border-slate-200 bg-white overflow-hidden focus-within:border-primary transition">
+          <CountryCodeSelect
+            value={countryCode}
+            onChange={setCountryCode}
+            disabled={loading}
+          />
+          <input
+            type="tel"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            placeholder="9876543210"
+            className="w-full px-2 py-2 text-xs outline-none text-slate-800 bg-transparent flex-1"
+            required
+          />
+        </div>
       </div>
 
       {error && <p className="text-[11px] font-bold text-red-500 leading-tight">{error}</p>}

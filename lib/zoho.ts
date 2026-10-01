@@ -164,6 +164,7 @@ export interface ZohoLeadData {
   email: string
   phone?: string
   mobile?: string
+  countryCode?: string
   message?: string
   leadSource: string
   leadStatus?: string
@@ -192,6 +193,7 @@ export async function submitToZohoCRM(data: ZohoLeadData) {
   const exactTrip = trips.find(t => t.slug === (data.tripSlug || '').trim() || t.title === (data.tripTitle || '').trim());
   const itineraryId = data.itineraryId || (exactTrip ? exactTrip.id : data.tripSlug || data.tripTitle || '');
   const contactNumber = data.mobile || data.phone || '';
+  const countryCode = data.countryCode || '+91';
 
   // Try direct API V3 first (most reliable, bypasses Web-to-Lead approvals & captchas)
   try {
@@ -224,6 +226,7 @@ export async function submitToZohoCRM(data: ZohoLeadData) {
       Lead_Status: data.leadStatus || 'New Enquiry',
       Event_Category: itineraryId || data.tripTitle || '',
       Destinations: destination || '',
+      watiwhatsappintegrationforzohocrm__Country_Code: countryCode,
     }
 
     if (itineraryId) {
@@ -316,6 +319,7 @@ export async function submitToZohoCRM(data: ZohoLeadData) {
   if (destination) {
     formData.append('Destinations', destination)
   }
+  formData.append('watiwhatsappintegrationforzohocrm__Country_Code', countryCode)
 
   try {
     const response = await fetch(url, {

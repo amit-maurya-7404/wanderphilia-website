@@ -29,6 +29,17 @@ export function PromotionalBanners() {
   const slides: SlideItem[] = [
     {
       id: 1,
+      title: "Tomorrowland Thailand 2026",
+      highlight: "THE WORLD'S GREATEST EDM FESTIVAL IN ASIA",
+      subtitle: "Join the historic Tomorrowland debut in Thailand with official passes, luxury 4-star stays in Pattaya & Bangkok, Coral Island chill, and community pre-parties.",
+      price: "₹64,999/-",
+      duration: "5N-6D",
+      image: "/images/tomorrowland-thailand.jpg",
+      link: "/trips/thailand",
+      themeColor: "from-amber-400 to-purple-500"
+    },
+    {
+      id: 2,
       title: "Bali's ZAMNA FEST",
       highlight: "WHERE TECHNO leads the night",
       subtitle: "Join the legendary techno festival under the Balinese palm trees with a premium group experience.",
@@ -39,7 +50,7 @@ export function PromotionalBanners() {
       themeColor: "from-amber-400 to-amber-500"
     },
     {
-      id: 2,
+      id: 3,
       title: "Spiti Winter Expedition",
       highlight: "WHITE MAGIC OF THE HIMALAYAS",
       subtitle: "Embark on an extreme winter journey through frozen landscapes, monasteries, and snow valleys.",
@@ -50,7 +61,7 @@ export function PromotionalBanners() {
       themeColor: "from-blue-400 to-blue-600"
     },
     {
-      id: 3,
+      id: 4,
       title: "Ladakh Bike Odyssey",
       highlight: "CONQUER THE HIGHEST PASSES",
       subtitle: "Ride across majestic dry mountains and alongside pristine blue waters of Pangong Tso.",
@@ -61,7 +72,7 @@ export function PromotionalBanners() {
       themeColor: "from-cyan-400 to-cyan-600"
     },
     {
-      id: 4,
+      id: 5,
       title: "Vietnam Wonders Cruise",
       highlight: "SAIL THROUGH HALONG BAY",
       subtitle: "Explore vibrant street food in Hanoi, cruise limestone karsts, and experience lantern-lit Hoi An.",

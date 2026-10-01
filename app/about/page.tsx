@@ -16,9 +16,11 @@ import { Autoplay, Navigation, Pagination } from 'swiper/modules'
 import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
+import { CountryCodeSelect } from '@/components/ui/country-code-select'
+import { DEFAULT_COUNTRY_CODE } from '@/lib/country-codes'
 
 export default function AboutPage() {
-  const [formValues, setFormValues] = useState({ name: '', email: '', phone: '', message: '' })
+  const [formValues, setFormValues] = useState({ name: '', email: '', phone: '', countryCode: DEFAULT_COUNTRY_CODE, message: '' })
   const [submitted, setSubmitted] = useState(false)
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -42,7 +44,7 @@ export default function AboutPage() {
         setSubmitted(true)
         // Reset form after 3 seconds
         setTimeout(() => {
-          setFormValues({ name: '', email: '', phone: '', message: '' })
+          setFormValues({ name: '', email: '', phone: '', countryCode: DEFAULT_COUNTRY_CODE, message: '' })
           setSubmitted(false)
         }, 3000)
       } else {
@@ -713,14 +715,21 @@ export default function AboutPage() {
                             <label htmlFor="phone" className="text-sm font-medium text-slate-900">
                               Phone number
                             </label>
-                            <Input
-                              id="phone"
-                              name="phone"
-                              type="tel"
-                              value={formValues.phone}
-                              onChange={handleChange}
-                              placeholder="92176 64099"
-                            />
+                            <div className="flex rounded-md border border-input bg-transparent overflow-hidden focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
+                              <CountryCodeSelect
+                                value={formValues.countryCode}
+                                onChange={(code) => setFormValues((prev) => ({ ...prev, countryCode: code }))}
+                              />
+                              <Input
+                                id="phone"
+                                name="phone"
+                                type="tel"
+                                value={formValues.phone}
+                                onChange={handleChange}
+                                placeholder="92176 64099"
+                                className="border-0 shadow-none focus-visible:ring-0 rounded-none flex-1"
+                              />
+                            </div>
                           </div>
                           <div>
                             <label htmlFor="message" className="text-sm font-medium text-slate-900">

@@ -9,6 +9,8 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Lock, CheckCircle, CreditCard, ChevronRight } from 'lucide-react'
 import { trips, Trip } from '@/lib/data'
+import { CountryCodeSelect } from '@/components/ui/country-code-select'
+import { DEFAULT_COUNTRY_CODE } from '@/lib/country-codes'
 
 export default function PaymentPage() {
   const router = useRouter()
@@ -27,6 +29,7 @@ export default function PaymentPage() {
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
   const [phoneState, setPhoneState] = useState('')
+  const [countryCode, setCountryCode] = useState(DEFAULT_COUNTRY_CODE)
   const [isProcessing, setIsProcessing] = useState(false)
   const [agreeTerms, setAgreeTerms] = useState(true)
 
@@ -119,6 +122,7 @@ export default function PaymentPage() {
           body: JSON.stringify({
             fullName: `${firstName} ${lastName}`.trim(),
             mobileNumber: phoneState.trim(),
+            countryCode: countryCode,
             email: email.trim(),
             tripSlug: trip.slug,
             tripTitle: trip.title,
@@ -326,14 +330,21 @@ export default function PaymentPage() {
 
                   <div>
                     <label className="block text-xs font-semibold text-slate-500 mb-1">MOBILE NUMBER</label>
-                    <Input
-                      type="tel"
-                      placeholder="9876543210"
-                      value={phoneState}
-                      onChange={(e) => setPhoneState(e.target.value)}
-                      required
-                      className="rounded-xl border-slate-200"
-                    />
+                    <div className="flex rounded-xl border border-slate-200 bg-white overflow-hidden focus-within:border-amber-500 focus-within:ring-2 focus-within:ring-amber-500/20 transition">
+                      <CountryCodeSelect
+                        value={countryCode}
+                        onChange={setCountryCode}
+                        disabled={isProcessing}
+                      />
+                      <Input
+                        type="tel"
+                        placeholder="9876543210"
+                        value={phoneState}
+                        onChange={(e) => setPhoneState(e.target.value)}
+                        required
+                        className="border-0 shadow-none focus-visible:ring-0 rounded-none flex-1 text-sm font-medium"
+                      />
+                    </div>
                   </div>
                 </form>
               </div>

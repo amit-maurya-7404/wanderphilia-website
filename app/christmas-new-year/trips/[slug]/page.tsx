@@ -38,6 +38,8 @@ import {
   Gift,
 } from 'lucide-react'
 import { Parachute } from '@/components/parachute-icon'
+import { CountryCodeSelect } from '@/components/ui/country-code-select'
+import { DEFAULT_COUNTRY_CODE } from '@/lib/country-codes'
 
 function cleanLocation(loc: string): string {
   let clean = loc
@@ -1030,6 +1032,7 @@ export default function ChristmasNewYearTripDetailPage({ params }: PageProps = {
 
   // Sidebar Callback Form
   const [inquiryPhone, setInquiryPhone] = useState('')
+  const [inquiryCountryCode, setInquiryCountryCode] = useState(DEFAULT_COUNTRY_CODE)
   const [inquiryEmail, setInquiryEmail] = useState('')
   const [inquiryAgreed, setInquiryAgreed] = useState(false)
   const [inquirySubmitting, setInquirySubmitting] = useState(false)
@@ -1045,6 +1048,7 @@ export default function ChristmasNewYearTripDetailPage({ params }: PageProps = {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           phone: inquiryPhone,
+          countryCode: inquiryCountryCode,
           email: inquiryEmail,
           tripTitle: trip?.title,
           tripSlug: trip?.slug,
@@ -2792,17 +2796,19 @@ export default function ChristmasNewYearTripDetailPage({ params }: PageProps = {
                         <label className="text-[9px] uppercase font-bold text-slate-400 tracking-wider">
                           Mobile Number
                         </label>
-                        <div className="flex rounded-xl border border-slate-800 bg-slate-950 overflow-hidden">
-                          <span className="bg-slate-900 border-r border-slate-800 px-3 py-2 text-xs font-bold text-slate-400 flex items-center">
-                            +91
-                          </span>
+                        <div className="flex rounded-xl border border-slate-800 bg-slate-950 overflow-hidden focus-within:border-amber-400/50 transition">
+                          <CountryCodeSelect
+                            value={inquiryCountryCode}
+                            onChange={setInquiryCountryCode}
+                            disabled={inquirySubmitting}
+                            variant="dark"
+                          />
                           <input
                             type="tel"
                             required
-                            placeholder="Enter 10-digit number"
-                            pattern="[0-9]{10}"
+                            placeholder="Enter phone number"
                             value={inquiryPhone}
-                            onChange={(e) => setInquiryPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
+                            onChange={(e) => setInquiryPhone(e.target.value.replace(/\D/g, '').slice(0, 15))}
                             className="px-3 py-1.5 text-xs w-full outline-hidden bg-transparent font-medium text-white placeholder:text-slate-500"
                           />
                         </div>

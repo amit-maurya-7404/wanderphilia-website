@@ -5,7 +5,7 @@ import { submitToZohoCRM } from '@/lib/zoho'
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { name, email, phone, subject, message } = body
+    const { name, email, phone, countryCode = '+91', subject, message } = body
 
     if (!name || !email || !message) {
       return NextResponse.json(
@@ -14,6 +14,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    const fullPhoneDisplay = phone ? `${countryCode} ${phone}`.trim() : ''
     const fullMessage = subject ? `Subject: ${subject}\n\n${message}` : message
 
     // 1. Submit to Zoho CRM
@@ -23,6 +24,7 @@ export async function POST(request: NextRequest) {
         name,
         email,
         phone,
+        countryCode,
         message: fullMessage,
         leadSource: 'Website Contact Us',
         leadStatus: 'New Enquiry'
@@ -62,7 +64,8 @@ export async function POST(request: NextRequest) {
         <h3>Customer Information</h3>
         <div class="field"><strong>Name:</strong> ${name}</div>
         <div class="field"><strong>Email:</strong> <a href="mailto:${email}" style="color: #ff5e00; text-decoration: none;">${email}</a></div>
-        <div class="field"><strong>Phone:</strong> ${phone ? `<a href="tel:${phone}" style="color: #ff5e00; text-decoration: none;">${phone}</a>` : 'Not provided'}</div>
+        <div class="field"><strong>Phone:</strong> ${fullPhoneDisplay ? `<a href="tel:${fullPhoneDisplay}" style="color: #ff5e00; text-decoration: none;">${fullPhoneDisplay}</a>` : 'Not provided'}</div>
+        ${countryCode ? `<div class="field"><strong>Country Code:</strong> ${countryCode}</div>` : ''}
         ${subject ? `<div class="field"><strong>Subject:</strong> ${subject}</div>` : ''}
         ${zohoLeadId ? `<div class="field"><strong>Zoho Lead ID:</strong> <code>${zohoLeadId}</code></div>` : ''}
       </div>

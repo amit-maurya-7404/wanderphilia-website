@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Phone, Mail, CheckCircle } from 'lucide-react'
 import { Parachute } from '@/components/parachute-icon'
+import { CountryCodeSelect } from '@/components/ui/country-code-select'
+import { DEFAULT_COUNTRY_CODE } from '@/lib/country-codes'
 
 interface NoPackagesCallbackFormProps {
   nights: number | null
@@ -14,6 +16,7 @@ interface NoPackagesCallbackFormProps {
 export function NoPackagesCallbackForm({ nights, destinationName }: NoPackagesCallbackFormProps) {
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
+  const [countryCode, setCountryCode] = useState(DEFAULT_COUNTRY_CODE)
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
@@ -37,6 +40,7 @@ export function NoPackagesCallbackForm({ nights, destinationName }: NoPackagesCa
         body: JSON.stringify({
           name,
           phone,
+          countryCode,
           email,
           title: `Custom Request: ${nights ? `${nights} Nights` : 'Custom Duration'} in ${destinationName}`,
           price: 0,
@@ -116,16 +120,23 @@ export function NoPackagesCallbackForm({ nights, destinationName }: NoPackagesCa
             <label htmlFor="custom-phone" className="text-[10px] md:text-xs font-bold text-gray-500 mb-1.5">
               Phone Number
             </label>
-            <Input
-              id="custom-phone"
-              type="tel"
-              placeholder="98765 43210"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              required
-              disabled={loading}
-              className="rounded-xl border-gray-200 focus:border-[#ff6e0b] focus:ring-1 focus:ring-[#ff6e0b]"
-            />
+            <div className="flex rounded-xl border border-gray-200 bg-white overflow-hidden focus-within:border-[#ff6e0b] focus-within:ring-1 focus-within:ring-[#ff6e0b] transition">
+              <CountryCodeSelect
+                value={countryCode}
+                onChange={setCountryCode}
+                disabled={loading}
+              />
+              <Input
+                id="custom-phone"
+                type="tel"
+                placeholder="98765 43210"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                required
+                disabled={loading}
+                className="border-0 shadow-none focus-visible:ring-0 rounded-none flex-1 text-xs md:text-sm font-semibold"
+              />
+            </div>
           </div>
 
           <div className="flex flex-col">

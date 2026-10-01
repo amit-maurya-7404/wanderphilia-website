@@ -21,6 +21,8 @@ import { MapPin, Calendar, Users, Star, Phone, MessageCircle, ChevronDown, Downl
 import { Parachute } from '@/components/parachute-icon'
 import { contactEmail, contactPhone, contactPhoneDisplay, instagramUrl } from '@/lib/contact'
 import { TripGallerySection } from '@/components/trip-gallery-section'
+import { CountryCodeSelect } from '@/components/ui/country-code-select'
+import { DEFAULT_COUNTRY_CODE } from '@/lib/country-codes'
 import Image from 'next/image'
 
 
@@ -919,6 +921,7 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
 
   // Sidebar Callback Form States
   const [inquiryPhone, setInquiryPhone] = useState('')
+  const [inquiryCountryCode, setInquiryCountryCode] = useState(DEFAULT_COUNTRY_CODE)
   const [inquiryEmail, setInquiryEmail] = useState('')
   const [inquiryAgreed, setInquiryAgreed] = useState(false)
   const [inquirySubmitting, setInquirySubmitting] = useState(false)
@@ -934,6 +937,7 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           phone: inquiryPhone,
+          countryCode: inquiryCountryCode,
           email: inquiryEmail,
           tripTitle: trip?.title,
           tripSlug: trip?.slug,
@@ -2531,15 +2535,18 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
                     <form onSubmit={handleInquirySubmit} className="space-y-3">
                       <div className="space-y-1">
                         <label className="text-[9px] uppercase font-bold text-slate-400 tracking-wider">Mobile Number</label>
-                        <div className="flex rounded-xl border border-slate-200 bg-white overflow-hidden shadow-2xs">
-                          <span className="bg-slate-50 border-r border-slate-200 px-3 py-2 text-xs font-bold text-slate-500 flex items-center">+91</span>
+                        <div className="flex rounded-xl border border-slate-200 bg-white overflow-hidden shadow-2xs focus-within:border-primary focus-within:ring-1 focus-within:ring-primary/20 transition">
+                          <CountryCodeSelect
+                            value={inquiryCountryCode}
+                            onChange={setInquiryCountryCode}
+                            disabled={inquirySubmitting}
+                          />
                           <input
                             type="tel"
                             required
-                            placeholder="Enter 10-digit number"
-                            pattern="[0-9]{10}"
+                            placeholder="Enter phone number"
                             value={inquiryPhone}
-                            onChange={(e) => setInquiryPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
+                            onChange={(e) => setInquiryPhone(e.target.value.replace(/\D/g, '').slice(0, 15))}
                             className="px-3 py-1.5 text-xs w-full outline-hidden bg-transparent font-medium"
                           />
                         </div>

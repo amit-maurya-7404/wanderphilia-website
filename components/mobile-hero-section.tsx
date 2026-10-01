@@ -15,10 +15,11 @@ export function MobileHeroSection() {
     const [destination, setDestination] = useState('')
     const [isSearchOpen, setIsSearchOpen] = useState(false)
     const [banners] = useState<any[]>([
-        { _id: '1', title: "Bali's Zamna Fest", image: '/images/mobile-hero-bali-zamna.png', link: '/trips/bali' },
-        { _id: '2', title: "Spiti Winter Expedition", image: '/images/mobile-hero-spiti-winter.png', link: '/trips/spiti' },
-        { _id: '3', title: "Ladakh Bike Odyssey", image: '/images/mobile-hero-ladakh-bike.png', link: '/trips/leh-ladakh' },
-        { _id: '4', title: "Vietnam Wonders Cruise", image: '/images/mobile-hero-vietnam-cruise.png', link: '/trips/vietnam' }
+        { _id: '1', title: "Tomorrowland Thailand 2026", image: '/images/tomorrowland-thailand-mobile.jpg', link: '/trips/thailand' },
+        { _id: '2', title: "Bali's Zamna Fest", image: '/images/mobile-hero-bali-zamna.png', link: '/trips/bali' },
+        { _id: '3', title: "Spiti Winter Expedition", image: '/images/mobile-hero-spiti-winter.png', link: '/trips/spiti' },
+        { _id: '4', title: "Ladakh Bike Odyssey", image: '/images/mobile-hero-ladakh-bike.png', link: '/trips/leh-ladakh' },
+        { _id: '5', title: "Vietnam Wonders Cruise", image: '/images/mobile-hero-vietnam-cruise.png', link: '/trips/vietnam' }
     ])
 
     const categories = useMemo(() => getAllCategories(), [])

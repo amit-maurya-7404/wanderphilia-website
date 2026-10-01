@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { User, Phone, Mail, X, Check, Compass, ShieldCheck } from 'lucide-react'
 import { Parachute } from '@/components/parachute-icon'
+import { CountryCodeSelect } from '@/components/ui/country-code-select'
+import { DEFAULT_COUNTRY_CODE } from '@/lib/country-codes'
 
 interface RequestCallbackDialogProps {
   open: boolean
@@ -18,6 +20,7 @@ interface RequestCallbackDialogProps {
 export function RequestCallbackDialog({ open, onOpenChange, title, price, isQuote }: RequestCallbackDialogProps) {
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
+  const [countryCode, setCountryCode] = useState(DEFAULT_COUNTRY_CODE)
   const [email, setEmail] = useState('')
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
@@ -31,8 +34,8 @@ export function RequestCallbackDialog({ open, onOpenChange, title, price, isQuot
       return
     }
 
-    if (phone.replace(/\D/g, '').length < 10) {
-      setError('Please enter a valid 10-digit phone number.')
+    if (phone.replace(/\D/g, '').length < 7) {
+      setError('Please enter a valid phone number.')
       return
     }
 
@@ -48,6 +51,7 @@ export function RequestCallbackDialog({ open, onOpenChange, title, price, isQuot
         body: JSON.stringify({
           name,
           phone,
+          countryCode,
           email,
           title,
           price,
@@ -213,25 +217,29 @@ export function RequestCallbackDialog({ open, onOpenChange, title, price, isQuot
                       </div>
                     </div>
 
-                    {/* Phone Input */}
+                    {/* Phone Input with Country Code */}
                     <div className="space-y-1.5">
                       <label htmlFor="callback-phone" className="text-[10px] uppercase font-black text-slate-400 tracking-wider">
                         Phone Number
                       </label>
-                      <div className="relative group">
-                        <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-orange-500 transition-colors">
-                          <Phone size={15} />
-                        </span>
-                        <Input
-                          id="callback-phone"
-                          type="tel"
-                          required
+                      <div className="flex rounded-xl border border-slate-200 bg-white overflow-hidden focus-within:border-orange-500 focus-within:ring-2 focus-within:ring-orange-500/20 transition">
+                        <CountryCodeSelect
+                          value={countryCode}
+                          onChange={setCountryCode}
                           disabled={loading}
-                          value={phone}
-                          onChange={(e) => setPhone(e.target.value.replace(/[^\d+-\s]/g, ''))}
-                          placeholder="Enter your phone number"
-                          className="pl-10.5 py-5 w-full rounded-xl border border-slate-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-xs font-semibold placeholder:text-slate-400/80 transition"
                         />
+                        <div className="relative flex-1">
+                          <Input
+                            id="callback-phone"
+                            type="tel"
+                            required
+                            disabled={loading}
+                            value={phone}
+                            onChange={(e) => setPhone(e.target.value.replace(/[^\d+-\s]/g, ''))}
+                            placeholder="Enter phone number"
+                            className="border-0 shadow-none focus-visible:ring-0 text-xs font-semibold placeholder:text-slate-400/80 h-10 px-3"
+                          />
+                        </div>
                       </div>
                     </div>
 

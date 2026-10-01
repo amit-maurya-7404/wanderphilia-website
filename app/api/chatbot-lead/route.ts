@@ -4,7 +4,7 @@ import { sendEmail, ADMIN_NOTIFICATION_EMAIL } from '@/lib/email'
 
 export async function POST(request: NextRequest) {
   try {
-    const { name, phone, email, destination, travelDate } = await request.json()
+    const { name, phone, email, destination, travelDate, countryCode = '+91' } = await request.json()
 
     if (!name || !phone || !email) {
       return NextResponse.json(
@@ -13,6 +13,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    const fullPhoneDisplay = `${countryCode} ${phone}`.trim()
+
     // 1. Submit to Zoho CRM
     let zohoLeadId: string | undefined
     try {
@@ -20,6 +22,7 @@ export async function POST(request: NextRequest) {
         name,
         email,
         phone,
+        countryCode,
         leadSource: 'chatbot of website',
         leadStatus: 'New Enquiry',
         destination: destination || '',
@@ -67,7 +70,8 @@ export async function POST(request: NextRequest) {
       <div class="section">
         <h3>Customer Information</h3>
         <div class="field"><strong>Name:</strong> ${name}</div>
-        <div class="field"><strong>Phone:</strong> <a href="tel:${phone}" style="color: #f97316; text-decoration: none;">${phone}</a></div>
+        <div class="field"><strong>Phone:</strong> <a href="tel:${fullPhoneDisplay}" style="color: #f97316; text-decoration: none;">${fullPhoneDisplay}</a></div>
+        <div class="field"><strong>Country Code:</strong> ${countryCode}</div>
         <div class="field"><strong>Email:</strong> <a href="mailto:${email}" style="color: #f97316; text-decoration: none;">${email}</a></div>
       </div>
 
