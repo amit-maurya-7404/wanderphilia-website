@@ -318,11 +318,11 @@ function getFirstNarrativeParagraph(description: string | string[]): string {
 
   return description[0]
     ? description[0]
-        .replace(
-          /^(transfer|transfers|accommodation|hotels?|sightseeing(?:\s*&\s*experiences)?|activities|experiences|meals?)\s*:\s*/i,
-          ''
-        )
-        .trim()
+      .replace(
+        /^(transfer|transfers|accommodation|hotels?|sightseeing(?:\s*&\s*experiences)?|activities|experiences|meals?)\s*:\s*/i,
+        ''
+      )
+      .trim()
     : ''
 }
 
@@ -737,9 +737,8 @@ function renderItineraryDescription(
         if (typeof stayItem === 'string') {
           accommodation = stayItem
         } else if (typeof stayItem === 'object' && stayItem !== null && (stayItem as any).hotel) {
-          accommodation = `${(stayItem as any).hotel}${
-            (stayItem as any).city ? ` (${(stayItem as any).city})` : ''
-          }`
+          accommodation = `${(stayItem as any).hotel}${(stayItem as any).city ? ` (${(stayItem as any).city})` : ''
+            }`
         }
       }
     }
@@ -1365,7 +1364,7 @@ export default function ChristmasNewYearTripDetailPage({ params }: PageProps = {
         {/* ================= HERO IMAGE / COLLAGE SECTION ================= */}
         <div className="relative max-w-6xl mx-auto px-4 sm:px-5 md:px-6 pt-24">
           {/* Back to Christmas & New Year link */}
-          <div className="flex items-center justify-between gap-3 mb-4">
+          {/* <div className="flex items-center justify-between gap-3 mb-4">
             <Link
               href="/christmas-new-year"
               className="inline-flex items-center gap-1.5 text-xs sm:text-sm text-amber-300 hover:text-amber-200 transition-colors font-semibold"
@@ -1376,7 +1375,7 @@ export default function ChristmasNewYearTripDetailPage({ params }: PageProps = {
               <Parachute size={13} className="text-amber-300" />
               <span>Holiday Special</span>
             </div>
-          </div>
+          </div> */}
 
           {(() => {
             const catId =
@@ -1538,11 +1537,10 @@ export default function ChristmasNewYearTripDetailPage({ params }: PageProps = {
                         key={tab.id}
                         data-tab-id={tab.id}
                         onClick={() => setActiveTab(tab.id)}
-                        className={`px-2.5 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm md:text-base font-semibold whitespace-nowrap border-b-2 transition-all cursor-pointer ${
-                          activeTab === tab.id
+                        className={`px-2.5 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm md:text-base font-semibold whitespace-nowrap border-b-2 transition-all cursor-pointer ${activeTab === tab.id
                             ? 'border-[#ff5d09] text-amber-400 font-bold'
                             : 'border-transparent text-slate-400 hover:text-slate-200'
-                        }`}
+                          }`}
                       >
                         {tab.label}
                       </button>
@@ -1686,28 +1684,25 @@ export default function ChristmasNewYearTripDetailPage({ params }: PageProps = {
                                   prev === 'activities' ? null : 'activities'
                                 )
                               }
-                              className={`w-full sm:w-auto flex items-center justify-between sm:justify-start gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer shadow-sm ${
-                                activeSummaryDropdown === 'activities'
+                              className={`w-full sm:w-auto flex items-center justify-between sm:justify-start gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer shadow-sm ${activeSummaryDropdown === 'activities'
                                   ? 'bg-[#ff5d09] text-white border border-[#ff5d09]'
                                   : 'bg-slate-900 text-slate-200 border border-slate-800 hover:border-amber-400/60 hover:text-amber-300'
-                              }`}
+                                }`}
                             >
                               <div className="flex items-center gap-1.5 min-w-0">
                                 <Parachute
                                   size={13}
-                                  className={`shrink-0 ${
-                                    activeSummaryDropdown === 'activities'
+                                  className={`shrink-0 ${activeSummaryDropdown === 'activities'
                                       ? 'text-white'
                                       : 'text-[#ff5d09]'
-                                  }`}
+                                    }`}
                                 />
                                 <span className="truncate">{activitiesCount} Activities</span>
                               </div>
                               <ChevronDown
                                 size={11}
-                                className={`shrink-0 transition-transform duration-200 ${
-                                  activeSummaryDropdown === 'activities' ? 'rotate-180' : ''
-                                }`}
+                                className={`shrink-0 transition-transform duration-200 ${activeSummaryDropdown === 'activities' ? 'rotate-180' : ''
+                                  }`}
                               />
                             </button>
 
@@ -1719,28 +1714,25 @@ export default function ChristmasNewYearTripDetailPage({ params }: PageProps = {
                                   prev === 'transfers' ? null : 'transfers'
                                 )
                               }
-                              className={`w-full sm:w-auto flex items-center justify-between sm:justify-start gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer shadow-sm ${
-                                activeSummaryDropdown === 'transfers'
+                              className={`w-full sm:w-auto flex items-center justify-between sm:justify-start gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer shadow-sm ${activeSummaryDropdown === 'transfers'
                                   ? 'bg-blue-600 text-white border border-blue-600'
                                   : 'bg-slate-900 text-slate-200 border border-slate-800 hover:border-blue-400/60 hover:text-blue-300'
-                              }`}
+                                }`}
                             >
                               <div className="flex items-center gap-1.5 min-w-0">
                                 <Car
                                   size={13}
-                                  className={`shrink-0 ${
-                                    activeSummaryDropdown === 'transfers'
+                                  className={`shrink-0 ${activeSummaryDropdown === 'transfers'
                                       ? 'text-white'
                                       : 'text-blue-400'
-                                  }`}
+                                    }`}
                                 />
                                 <span className="truncate">{transfersCount} Transfers</span>
                               </div>
                               <ChevronDown
                                 size={11}
-                                className={`shrink-0 transition-transform duration-200 ${
-                                  activeSummaryDropdown === 'transfers' ? 'rotate-180' : ''
-                                }`}
+                                className={`shrink-0 transition-transform duration-200 ${activeSummaryDropdown === 'transfers' ? 'rotate-180' : ''
+                                  }`}
                               />
                             </button>
 
@@ -1752,28 +1744,25 @@ export default function ChristmasNewYearTripDetailPage({ params }: PageProps = {
                                   prev === 'meals' ? null : 'meals'
                                 )
                               }
-                              className={`w-full sm:w-auto flex items-center justify-between sm:justify-start gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer shadow-sm ${
-                                activeSummaryDropdown === 'meals'
+                              className={`w-full sm:w-auto flex items-center justify-between sm:justify-start gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer shadow-sm ${activeSummaryDropdown === 'meals'
                                   ? 'bg-emerald-600 text-white border border-emerald-600'
                                   : 'bg-slate-900 text-slate-200 border border-slate-800 hover:border-emerald-400/60 hover:text-emerald-300'
-                              }`}
+                                }`}
                             >
                               <div className="flex items-center gap-1.5 min-w-0">
                                 <Utensils
                                   size={13}
-                                  className={`shrink-0 ${
-                                    activeSummaryDropdown === 'meals'
+                                  className={`shrink-0 ${activeSummaryDropdown === 'meals'
                                       ? 'text-white'
                                       : 'text-emerald-400'
-                                  }`}
+                                    }`}
                                 />
                                 <span className="truncate">{mealsCount} Meals</span>
                               </div>
                               <ChevronDown
                                 size={11}
-                                className={`shrink-0 transition-transform duration-200 ${
-                                  activeSummaryDropdown === 'meals' ? 'rotate-180' : ''
-                                }`}
+                                className={`shrink-0 transition-transform duration-200 ${activeSummaryDropdown === 'meals' ? 'rotate-180' : ''
+                                  }`}
                               />
                             </button>
 
@@ -1785,28 +1774,25 @@ export default function ChristmasNewYearTripDetailPage({ params }: PageProps = {
                                   prev === 'hotels' ? null : 'hotels'
                                 )
                               }
-                              className={`w-full sm:w-auto flex items-center justify-between sm:justify-start gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer shadow-sm ${
-                                activeSummaryDropdown === 'hotels'
+                              className={`w-full sm:w-auto flex items-center justify-between sm:justify-start gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer shadow-sm ${activeSummaryDropdown === 'hotels'
                                   ? 'bg-indigo-600 text-white border border-indigo-600'
                                   : 'bg-slate-900 text-slate-200 border border-slate-800 hover:border-indigo-400/60 hover:text-indigo-300'
-                              }`}
+                                }`}
                             >
                               <div className="flex items-center gap-1.5 min-w-0">
                                 <Hotel
                                   size={13}
-                                  className={`shrink-0 ${
-                                    activeSummaryDropdown === 'hotels'
+                                  className={`shrink-0 ${activeSummaryDropdown === 'hotels'
                                       ? 'text-white'
                                       : 'text-indigo-400'
-                                  }`}
+                                    }`}
                                 />
                                 <span className="truncate">{hotelsCount} Hotels</span>
                               </div>
                               <ChevronDown
                                 size={11}
-                                className={`shrink-0 transition-transform duration-200 ${
-                                  activeSummaryDropdown === 'hotels' ? 'rotate-180' : ''
-                                }`}
+                                className={`shrink-0 transition-transform duration-200 ${activeSummaryDropdown === 'hotels' ? 'rotate-180' : ''
+                                  }`}
                               />
                             </button>
                           </div>
@@ -1861,8 +1847,8 @@ export default function ChristmasNewYearTripDetailPage({ params }: PageProps = {
                               {activeSummaryDropdown === 'activities' && (
                                 <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
                                   {summaryOverview.activities.length > 0 &&
-                                  typeof summaryOverview.activities[0] === 'object' &&
-                                  'items' in (summaryOverview.activities[0] as any) ? (
+                                    typeof summaryOverview.activities[0] === 'object' &&
+                                    'items' in (summaryOverview.activities[0] as any) ? (
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                       {(summaryOverview.activities as any[]).map((group, gIdx) => (
                                         <div
@@ -1987,9 +1973,8 @@ export default function ChristmasNewYearTripDetailPage({ params }: PageProps = {
                                   </div>
                                   <ChevronDown
                                     size={15}
-                                    className={`shrink-0 text-slate-400 transition-transform duration-200 ${
-                                      isDayOpen ? 'rotate-180 text-amber-400' : ''
-                                    }`}
+                                    className={`shrink-0 text-slate-400 transition-transform duration-200 ${isDayOpen ? 'rotate-180 text-amber-400' : ''
+                                      }`}
                                   />
                                 </button>
 
@@ -2142,11 +2127,10 @@ export default function ChristmasNewYearTripDetailPage({ params }: PageProps = {
                         <button
                           key={day.day}
                           onClick={() => handleDayClick(day.day)}
-                          className={`w-full text-left py-2 px-3 text-xs font-bold rounded-lg transition-all duration-200 cursor-pointer ${
-                            activeDay === day.day
+                          className={`w-full text-left py-2 px-3 text-xs font-bold rounded-lg transition-all duration-200 cursor-pointer ${activeDay === day.day
                               ? 'bg-amber-500/20 text-amber-300 border-l-4 border-[#ff5d09] pl-2'
                               : 'text-slate-400 hover:bg-slate-900 hover:text-white'
-                          }`}
+                            }`}
                         >
                           Day {day.day}
                         </button>
@@ -2160,11 +2144,10 @@ export default function ChristmasNewYearTripDetailPage({ params }: PageProps = {
                           <div
                             key={day.day}
                             id={`itinerary-day-${day.day}`}
-                            className={`border rounded-2xl overflow-hidden hover:shadow-md transition-all duration-300 bg-slate-900 min-w-0 w-full max-w-full ${
-                              activeDay === day.day
+                            className={`border rounded-2xl overflow-hidden hover:shadow-md transition-all duration-300 bg-slate-900 min-w-0 w-full max-w-full ${activeDay === day.day
                                 ? 'border-amber-500/50 shadow-amber-950/30'
                                 : 'border-slate-800'
-                            }`}
+                              }`}
                           >
                             <button
                               onClick={() => toggleDay(day.day)}
@@ -2189,9 +2172,8 @@ export default function ChristmasNewYearTripDetailPage({ params }: PageProps = {
                               </div>
                               <ChevronDown
                                 size={18}
-                                className={`shrink-0 ml-2 mt-1 text-slate-400 transition-transform ${
-                                  expandedDays.includes(day.day) ? 'rotate-180 text-amber-400' : ''
-                                }`}
+                                className={`shrink-0 ml-2 mt-1 text-slate-400 transition-transform ${expandedDays.includes(day.day) ? 'rotate-180 text-amber-400' : ''
+                                  }`}
                               />
                             </button>
 
@@ -2226,8 +2208,8 @@ export default function ChristmasNewYearTripDetailPage({ params }: PageProps = {
 
                         <div className="p-4 sm:p-6 bg-slate-950/60">
                           {summaryOverview.activities.length > 0 &&
-                          typeof summaryOverview.activities[0] === 'object' &&
-                          'items' in (summaryOverview.activities[0] as any) ? (
+                            typeof summaryOverview.activities[0] === 'object' &&
+                            'items' in (summaryOverview.activities[0] as any) ? (
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
                               {(summaryOverview.activities as any[]).map((group, gIdx) => (
                                 <div
@@ -2392,11 +2374,10 @@ export default function ChristmasNewYearTripDetailPage({ params }: PageProps = {
                             <button
                               key={cat.id}
                               onClick={() => setActiveInclCat(cat.id)}
-                              className={`w-full text-left px-4 py-2.5 text-sm font-semibold border-l-2 transition-all cursor-pointer ${
-                                activeInclCat === cat.id
+                              className={`w-full text-left px-4 py-2.5 text-sm font-semibold border-l-2 transition-all cursor-pointer ${activeInclCat === cat.id
                                   ? 'border-[#ff5d09] text-amber-300 bg-amber-500/10'
                                   : 'border-transparent text-slate-400 hover:text-white hover:bg-slate-900'
-                              }`}
+                                }`}
                             >
                               {cat.label}
                             </button>
@@ -2438,9 +2419,8 @@ export default function ChristmasNewYearTripDetailPage({ params }: PageProps = {
                                   </span>
                                   <ChevronDown
                                     size={18}
-                                    className={`text-slate-400 shrink-0 transition-transform duration-200 ${
-                                      isExpanded ? 'rotate-180 text-amber-400' : ''
-                                    }`}
+                                    className={`text-slate-400 shrink-0 transition-transform duration-200 ${isExpanded ? 'rotate-180 text-amber-400' : ''
+                                      }`}
                                   />
                                 </button>
 

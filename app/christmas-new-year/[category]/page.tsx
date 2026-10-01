@@ -443,9 +443,8 @@ export default function ChristmasNewYearCategoryPage() {
                     <span>{faq.q}</span>
                     <ChevronRight
                       size={18}
-                      className={`text-slate-400 transition-transform duration-300 shrink-0 ml-2 ${
-                        selectedFaq === idx ? 'rotate-90 text-amber-400' : ''
-                      }`}
+                      className={`text-slate-400 transition-transform duration-300 shrink-0 ml-2 ${selectedFaq === idx ? 'rotate-90 text-amber-400' : ''
+                        }`}
                     />
                   </button>
                   {selectedFaq === idx && (

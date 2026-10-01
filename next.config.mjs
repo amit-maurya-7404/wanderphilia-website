@@ -12,7 +12,16 @@ const nextConfig = {
       },
     ],
   },
-  allowedDevOrigins: ['192.168.1.109', '*'],
+  allowedDevOrigins: [
+    'localhost',
+    'localhost:3000',
+    '127.0.0.1',
+    '127.0.0.1:3000',
+    '192.168.1.106',
+    '192.168.1.106:3000',
+    '192.168.1.109',
+    '192.168.1.109:3000',
+  ],
   async redirects() {
     return [
       {

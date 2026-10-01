@@ -21,6 +21,7 @@ export function createHeroMedia(items: Array<{
 }
 
 export interface TripInclusionCounts {
+  cities?: number | string
   hotels?: number | string
   transfers?: number | string
   experiences?: number | string
@@ -122,13 +123,242 @@ export interface Trip {
   images?: string[]
   inclusionsSummary?: TripInclusionCounts
   inclusionsCount?: TripInclusionCounts
+  citiesCount?: number | string
   hotelsCount?: number | string
   transfersCount?: number | string
   experiencesCount?: number | string
   mealsCount?: number | string
 }
 
+export function cleanLocation(loc: string): string {
+  let clean = (loc || '').trim()
+    .replace(/^(in|at|near|into|stay in|stay at|stay near|camps near|camp near|hotel in|hotel at|homestay in|homestay at|campsite near|resort in|resort at|camps in|camps at|camp at|camp in|hotels in|hotels at)\s+/i, '')
+    .replace(/\s+(camps?|hotels?|resorts?|homestays?|cottages?|deluxe camps?)$/i, '')
+    .replace(/\.$/, '')
+    .trim()
+
+  const lower = clean.toLowerCase()
+
+  if (lower.includes('leh')) return 'Leh'
+  if (lower.includes('nubra')) return 'Nubra'
+  if (lower.includes('pangong')) return 'Pangong'
+  if (lower.includes('turtuk')) return 'Turtuk'
+  if (lower.includes('kargil')) return 'Kargil'
+  if (lower.includes('srinagar')) return 'Srinagar'
+  if (lower.includes('jispa')) return 'Jispa'
+  if (lower.includes('sarchu')) return 'Sarchu'
+  if (lower.includes('manali')) return 'Manali'
+  if (lower.includes('kasol')) return 'Kasol'
+  if (lower.includes('kheerganga')) return 'Kheerganga'
+  if (lower.includes('tirthan')) return 'Tirthan'
+  if (lower.includes('jibhi')) return 'Jibhi'
+  if (lower.includes('tosh')) return 'Tosh'
+  if (/\bbir\b/i.test(lower)) return 'Bir'
+  if (lower.includes('shangarh')) return 'Shangarh'
+  if (lower.includes('shimla')) return 'Shimla'
+  if (lower.includes('kalpa')) return 'Kalpa'
+  if (lower.includes('kaza')) return 'Kaza'
+  if (lower.includes('chandra') || lower.includes('chandratal')) return 'Chandratal'
+  if (lower.includes('rampur')) return 'Rampur'
+  if (lower.includes('tabo')) return 'Tabo'
+  if (lower.includes('guwahati')) return 'Guwahati'
+  if (lower.includes('cherrapunji')) return 'Cherrapunji'
+  if (lower.includes('shnongpdeng')) return 'Shnongpdeng'
+  if (lower.includes('shillong')) return 'Shillong'
+  if (lower.includes('hanoi')) return 'Hanoi'
+  if (lower.includes('ha long') || lower.includes('halong')) return 'Ha Long Bay'
+  if (lower.includes('da nang') || lower.includes('danang')) return 'Da Nang'
+  if (lower.includes('ho chi minh') || lower.includes('saigon')) return 'Ho Chi Minh'
+  if (lower.includes('hoi an')) return 'Hoi An'
+  if (lower.includes('phu quoc') || lower === 'phu') return 'Phu Quoc'
+  if (lower.includes('sapa')) return 'Sapa'
+  if (lower.includes('ubud')) return 'Ubud'
+  if (lower.includes('seminyak')) return 'Seminyak'
+  if (lower.includes('nusa penida') || lower.includes('nusa')) return 'Nusa Penida'
+  if (lower.includes('thimphu')) return 'Thimphu'
+  if (lower.includes('punakha')) return 'Punakha'
+  if (lower.includes('paro')) return 'Paro'
+  if (lower.includes('lataguri')) return 'Lataguri'
+  if (lower.includes('gangtok')) return 'Gangtok'
+  if (lower.includes('lachen')) return 'Lachen'
+  if (lower.includes('lachung')) return 'Lachung'
+  if (lower.includes('gulmarg')) return 'Gulmarg'
+  if (lower.includes('pahalgam')) return 'Pahalgam'
+  if (lower.includes('munnar')) return 'Munnar'
+  if (lower.includes('thekkady')) return 'Thekkady'
+  if (lower.includes('alleppey')) return 'Alleppey'
+  if (lower.includes('kovalam')) return 'Kovalam'
+  if (lower.includes('cochin') || lower.includes('kochi')) return 'Kochi'
+  if (lower.includes('udaipur')) return 'Udaipur'
+  if (lower.includes('jodhpur')) return 'Jodhpur'
+  if (lower.includes('jaisalmer')) return 'Jaisalmer'
+  if (lower.includes('jaipur')) return 'Jaipur'
+  if (lower.includes('pushkar')) return 'Pushkar'
+  if (lower.includes('port blair')) return 'Port Blair'
+  if (lower.includes('havelock')) return 'Havelock'
+  if (lower.includes('neil')) return 'Neil Island'
+  if (lower.includes('dharamshala') || lower.includes('dharmshala')) return 'Dharamshala'
+  if (lower.includes('dalhousie')) return 'Dalhousie'
+  if (lower.includes('amritsar')) return 'Amritsar'
+  if (lower.includes('rishikesh')) return 'Rishikesh'
+  if (lower.includes('chopta')) return 'Chopta'
+  if (lower.includes('joshimath')) return 'Joshimath'
+  if (lower.includes('mussoorie')) return 'Mussoorie'
+  if (lower.includes('haridwar')) return 'Haridwar'
+  if (lower.includes('barkot')) return 'Barkot'
+  if (lower.includes('uttarkashi')) return 'Uttarkashi'
+  if (lower.includes('guptkashi')) return 'Guptkashi'
+  if (lower.includes('kedarnath')) return 'Kedarnath'
+  if (lower.includes('badrinath')) return 'Badrinath'
+  if (lower.includes('ooty')) return 'Ooty'
+  if (lower.includes('kodaikanal')) return 'Kodaikanal'
+  if (lower.includes('coimbatore')) return 'Coimbatore'
+  if (lower.includes('north goa')) return 'North Goa'
+  if (lower.includes('south goa')) return 'South Goa'
+  if (lower.includes('goa')) return 'Goa'
+  if (lower.includes('pelling')) return 'Pelling'
+  if (lower.includes('darjeeling')) return 'Darjeeling'
+  if (lower.includes('hanle')) return 'Hanle'
+  if (lower.includes('phuentsholing') || lower.includes('phuntsholing')) return 'Phuentsholing'
+  if (lower.includes('siliguri')) return 'Siliguri'
+  if (lower.includes('gili')) return 'Gili Island'
+  if (lower.includes('kuta')) return 'Kuta'
+  if (lower.includes('pattaya')) return 'Pattaya'
+  if (lower.includes('bangkok')) return 'Bangkok'
+  if (lower.includes('phuket')) return 'Phuket'
+  if (lower.includes('krabi')) return 'Krabi'
+  if (lower.includes('koh phangan') || lower === 'koh') return 'Koh Phangan'
+  if (lower.includes('singapore')) return 'Singapore'
+  if (lower.includes('gushaini')) return 'Gushaini'
+  if (lower.includes('chitkul')) return 'Chitkul'
+  if (lower.includes('nako')) return 'Nako'
+  if (lower.includes('tso moriri')) return 'Tso Moriri'
+  if (lower.includes('aritar')) return 'Aritar'
+  if (lower.includes('rishikhola')) return 'Rishikhola'
+
+  if (clean.length < 20) {
+    return clean.charAt(0).toUpperCase() + clean.slice(1)
+  }
+  return clean.split(' ')[0]
+}
+
+export function extractTripCityCount(trip: Partial<Trip>): number {
+  const custom = trip.inclusionsSummary || trip.inclusionsCount || {}
+
+  if (custom.cities !== undefined && custom.cities !== null) {
+    if (typeof custom.cities === 'number') return custom.cities
+    const match = String(custom.cities).match(/\d+/)
+    if (match) return parseInt(match[0], 10)
+  }
+
+  if (trip.citiesCount !== undefined) {
+    if (typeof trip.citiesCount === 'number') return trip.citiesCount
+    const match = String(trip.citiesCount).match(/\d+/)
+    if (match) return parseInt(match[0], 10)
+  }
+
+  if (custom.hotels !== undefined && custom.hotels !== null) {
+    if (typeof custom.hotels === 'string' && /cit(y|ies)/i.test(custom.hotels)) {
+      const match = custom.hotels.match(/\d+/)
+      if (match) return parseInt(match[0], 10)
+    }
+  }
+
+  const stopWords = new Set(['the', 'your', 'hotel', 'camp', 'camps', 'resort', 'homestay', 'similar', 'airport', 'overnight', 'transit', 'journey', 'arrival', 'departure'])
+  const uniqueCities = new Set<string>()
+
+  const routeStr = trip.route || trip.staySummary || trip.customRoute
+  if (routeStr) {
+    const parts = routeStr.split(/[-•|,+]/)
+    for (const part of parts) {
+      const cleaned = part.replace(/^\s*\d+\s*N(?:ights?)?\s*/i, '').trim()
+      if (cleaned) {
+        const loc = cleanLocation(cleaned)
+        if (loc && !stopWords.has(loc.toLowerCase()) && loc.length > 1) {
+          uniqueCities.add(loc)
+        }
+      }
+    }
+  }
+
+  if (uniqueCities.size === 0 && trip.stays && trip.stays.length > 0) {
+    trip.stays.forEach((stay) => {
+      const cityName = stay.includes(':') ? stay.split(':')[0] : stay
+      const loc = cleanLocation(cityName)
+      if (loc && !stopWords.has(loc.toLowerCase()) && loc.length > 1) {
+        uniqueCities.add(loc)
+      }
+    })
+  }
+
+  if (uniqueCities.size === 0 && trip.summaryDetails && trip.summaryDetails.accommodation) {
+    trip.summaryDetails.accommodation.forEach((item) => {
+      if (typeof item === 'object' && item && item.city) {
+        const loc = cleanLocation(item.city)
+        if (loc && !stopWords.has(loc.toLowerCase()) && loc.length > 1) {
+          uniqueCities.add(loc)
+        }
+      }
+    })
+  }
+
+  if (uniqueCities.size === 0 && trip.itinerary && trip.itinerary.length > 0) {
+    trip.itinerary.forEach((day, index) => {
+      const descLines = Array.isArray(day.description) ? day.description : [day.description || '']
+      const hasOvernightJourney = descLines.some((line) => /overnight journey|overnight travel|overnight transit|overnight volvo/i.test(line)) ||
+        /overnight journey|overnight travel|overnight transit|overnight volvo/i.test(day.title)
+      if (hasOvernightJourney) return
+
+      let stayFound = false
+      for (const line of descLines) {
+        const match = line.match(/(?:overnight\s*(?:stay)?|night\s*stay|stay\s*overnight)\s*(?:in|at|near|into|to|hotel in|hotel at|camp in|camps at|camps in)?\s+([^.]+)/i)
+        if (match) {
+          const loc = cleanLocation(match[1])
+          if (loc && !stopWords.has(loc.toLowerCase()) && loc.length > 1) {
+            uniqueCities.add(loc)
+            stayFound = true
+            break
+          }
+        }
+      }
+      if (!stayFound) {
+        const titleMatch = day.title.match(/(?:overnight\s*(?:stay)?|night\s*stay|stay\s*overnight)\s*(?:in|at|near|into|to|hotel in|hotel at)?\s+([^.]+)/i)
+        if (titleMatch) {
+          const loc = cleanLocation(titleMatch[1])
+          if (loc && !stopWords.has(loc.toLowerCase()) && loc.length > 1) {
+            uniqueCities.add(loc)
+            stayFound = true
+          }
+        }
+      }
+      if (!stayFound && index < trip.itinerary.length - 1) {
+        for (const line of descLines) {
+          const match = line.match(/(?:check[- ]?in\s+(?:to|at)\s+(?:your\s+)?(?:hotel\s+in|hotel\s+at|camp\s+in|resort\s+in)?|reach|arrive\s+in)\s+([^.]+)/i)
+          if (match) {
+            const loc = cleanLocation(match[1])
+            if (loc && !stopWords.has(loc.toLowerCase()) && loc.length > 1) {
+              uniqueCities.add(loc)
+              break
+            }
+          }
+        }
+      }
+    })
+  }
+
+  if (uniqueCities.size > 0) {
+    return uniqueCities.size
+  }
+
+  if (typeof custom.hotels === 'number' && custom.hotels > 0) {
+    return custom.hotels
+  }
+
+  return 1
+}
+
 export function getTripInclusionDetails(trip: Partial<Trip>): {
+  cities: string
   hotels: string
   transfers: string
   experiences: string
@@ -140,7 +370,11 @@ export function getTripInclusionDetails(trip: Partial<Trip>): {
   const duration = trip.duration || 1
   const itinerary = trip.itinerary || []
 
-  // 1. HOTELS
+  // 1. CITIES
+  const cityCount = extractTripCityCount(trip)
+  const citiesStr = `${cityCount} ${cityCount === 1 ? 'City' : 'Cities'}`
+
+  // 2. HOTELS (maintained for backwards compatibility)
   let hotelsStr = ''
   if (custom.hotels !== undefined && custom.hotels !== null) {
     if (typeof custom.hotels === 'number') {
@@ -152,29 +386,7 @@ export function getTripInclusionDetails(trip: Partial<Trip>): {
   } else if (trip.hotelsCount !== undefined) {
     hotelsStr = typeof trip.hotelsCount === 'number' ? `${trip.hotelsCount} ${trip.hotelsCount === 1 ? 'Hotel' : 'Hotels'}` : String(trip.hotelsCount)
   } else {
-    let stayCount = 0
-    if (trip.stays && trip.stays.length > 0) {
-      stayCount = trip.stays.length
-    } else if (itinerary.length > 0) {
-      const locations = new Set<string>()
-      itinerary.forEach((day) => {
-        const descLines = Array.isArray(day.description) ? day.description : [day.description || '']
-        for (const line of descLines) {
-          const match = line.match(/(?:overnight stay (?:in|at|near)?|check-in (?:to your hotel in|to|at)?)\s+([^.,]+)/i)
-          if (match && match[1]) {
-            const loc = match[1].trim().toLowerCase()
-            if (loc && !['hotel', 'camp', 'resort', 'the', 'your'].includes(loc)) {
-              locations.add(loc)
-            }
-          }
-        }
-      })
-      stayCount = locations.size
-    }
-    if (stayCount <= 0) {
-      stayCount = Math.max(1, Math.min(duration - 1, Math.max(2, Math.round(duration / 2.2))))
-    }
-    hotelsStr = `${stayCount} ${stayCount === 1 ? 'Hotel' : 'Hotels'}`
+    hotelsStr = `${cityCount} ${cityCount === 1 ? 'Hotel' : 'Hotels'}`
   }
 
   // 2. TRANSFERS
@@ -287,6 +499,7 @@ export function getTripInclusionDetails(trip: Partial<Trip>): {
   }
 
   return {
+    cities: citiesStr,
     hotels: hotelsStr,
     transfers: transfersStr,
     experiences: experiencesStr,
@@ -10658,7 +10871,8 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
     tripType: 'International',
     showGetQuoteOnly: false,
     inclusionsSummary: {
-      hotels: '4 Cities',
+      cities: 4,
+      hotels: 4,
       transfers: 14,
       experiences: 9,
       meals: 8,
