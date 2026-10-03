@@ -42,16 +42,26 @@ function createEmailTransporter() {
 
 export const ADMIN_NOTIFICATION_EMAIL = process.env.ADMIN_EMAIL || 'wanderphiliaexperiences@gmail.com'
 
+export interface EmailAttachment {
+  filename: string
+  content?: Buffer | string
+  path?: string
+  contentType?: string
+  encoding?: string
+}
+
 export async function sendEmail({
   to,
   subject,
   html,
   replyTo,
+  attachments,
 }: {
   to: string
   subject: string
   html: string
   replyTo?: string
+  attachments?: EmailAttachment[]
 }) {
   const emailUser = process.env.SMTP_USER || process.env.EMAIL_USER || 'wanderphiliaexperiences@gmail.com'
   const emailPass = process.env.SMTP_PASS || process.env.EMAIL_PASS || ''
@@ -74,6 +84,10 @@ export async function sendEmail({
       subject,
       html,
       replyTo: replyTo || ADMIN_NOTIFICATION_EMAIL,
+    } as any
+
+    if (attachments && attachments.length > 0) {
+      mailOptions.attachments = attachments
     }
 
     const info = await transporter.sendMail(mailOptions)
@@ -84,3 +98,4 @@ export async function sendEmail({
     return { success: false, error }
   }
 }
+

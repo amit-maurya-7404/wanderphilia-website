@@ -3,6 +3,7 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  serverExternalPackages: ['jspdf', 'fflate'],
   images: {
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [

@@ -6,9 +6,11 @@
 interface SendWhatsAppParams {
   to: string; // Mobile number with country code (e.g., 91XXXXXXXXXX)
   message: string;
+  documentUrl?: string;
+  documentFileName?: string;
 }
 
-export async function sendWhatsApp({ to, message }: SendWhatsAppParams) {
+export async function sendWhatsApp({ to, message, documentUrl, documentFileName }: SendWhatsAppParams) {
   // Format the number to ensure 91 prefix if it's 10 digits
   let formattedTo = to.replace(/\D/g, '');
   if (formattedTo.length === 10) {
@@ -20,6 +22,9 @@ export async function sendWhatsApp({ to, message }: SendWhatsAppParams) {
 
   console.log(`[WHATSAPP NOTIFICATION] Sending to: ${formattedTo}`);
   console.log(`[WHATSAPP NOTIFICATION] Message:\n${message}`);
+  if (documentUrl) {
+    console.log(`[WHATSAPP NOTIFICATION] Document URL: ${documentUrl} (${documentFileName || 'document.pdf'})`);
+  }
 
   // 1. Try MSG91 WhatsApp API if configured
   if (authKey) {
@@ -52,21 +57,41 @@ export async function sendWhatsApp({ to, message }: SendWhatsAppParams) {
   const ultramsgToken = process.env.ULTRAMSG_TOKEN;
   if (ultramsgInstance && ultramsgToken) {
     try {
-      const response = await fetch(`https://api.ultramsg.com/${ultramsgInstance}/messages/chat`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-          token: ultramsgToken,
-          to: `+${formattedTo}`,
-          body: message,
-        }).toString(),
-      });
+      if (documentUrl) {
+        // Send document PDF
+        const docRes = await fetch(`https://api.ultramsg.com/${ultramsgInstance}/messages/document`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: new URLSearchParams({
+            token: ultramsgToken,
+            to: `+${formattedTo}`,
+            filename: documentFileName || 'Tax_Invoice.pdf',
+            document: documentUrl,
+            caption: message,
+          }).toString(),
+        });
+        const docData = await docRes.json();
+        console.log('[WHATSAPP API] UltraMsg Document response:', docData);
+        return { success: true, provider: 'ultramsg-doc', response: docData };
+      } else {
+        const response = await fetch(`https://api.ultramsg.com/${ultramsgInstance}/messages/chat`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: new URLSearchParams({
+            token: ultramsgToken,
+            to: `+${formattedTo}`,
+            body: message,
+          }).toString(),
+        });
 
-      const data = await response.json();
-      console.log('[WHATSAPP API] UltraMsg response:', data);
-      return { success: true, provider: 'ultramsg', response: data };
+        const data = await response.json();
+        console.log('[WHATSAPP API] UltraMsg response:', data);
+        return { success: true, provider: 'ultramsg', response: data };
+      }
     } catch (err) {
       console.error('[WHATSAPP API] UltraMsg error:', err);
     }

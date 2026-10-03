@@ -341,3 +341,196 @@ export async function submitToZohoCRM(data: ZohoLeadData) {
     return { success: false, error: (error as Error).message }
   }
 }
+
+/**
+ * Uploads a file (e.g. Invoice PDF Buffer) as an Attachment to a Zoho CRM Lead record
+ */
+export async function uploadZohoLeadAttachment(
+  leadId: string,
+  fileBuffer: Buffer,
+  fileName: string
+): Promise<{ success: boolean; attachmentId?: string; error?: string }> {
+  try {
+    const accessToken = await getZohoAccessToken();
+    const url = getZohoApiUrl(`/crm/v3/Leads/${leadId}/Attachments`);
+
+    const blob = new Blob([fileBuffer], { type: 'application/pdf' });
+    const formData = new FormData();
+    formData.append('file', blob, fileName);
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Zoho-oauthtoken ${accessToken}`,
+      },
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`[Zoho CRM Attachment Error]: Status ${response.status}:`, errorText);
+      return { success: false, error: `Upload failed: ${response.statusText}` };
+    }
+
+    const data = await response.json();
+    if (data.data && data.data[0] && data.data[0].status === 'success') {
+      console.log(`[Zoho CRM Attachment Success] Uploaded ${fileName} to Lead ${leadId}`);
+      return { success: true, attachmentId: data.data[0].details?.id };
+    }
+
+    return { success: false, error: JSON.stringify(data) };
+  } catch (err: any) {
+    console.error(`[Zoho CRM Attachment Exception]:`, err);
+    return { success: false, error: err?.message || String(err) };
+  }
+}
+
+/**
+ * Adds a Note to a Zoho CRM Lead record
+ */
+export async function addZohoLeadNote(
+  leadId: string,
+  title: string,
+  content: string
+): Promise<{ success: boolean; noteId?: string; error?: string }> {
+  try {
+    const accessToken = await getZohoAccessToken();
+    const url = getZohoApiUrl(`/crm/v3/Notes`);
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Zoho-oauthtoken ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        data: [
+          {
+            Note_Title: title,
+            Note_Content: content,
+            Parent_Id: leadId,
+            $se_module: 'Leads',
+          },
+        ],
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`[Zoho CRM Note Error]: Status ${response.status}:`, errorText);
+      return { success: false, error: errorText };
+    }
+
+    const data = await response.json();
+    if (data.data && data.data[0] && data.data[0].status === 'success') {
+      console.log(`[Zoho CRM Note Success] Added note to Lead ${leadId}`);
+      return { success: true, noteId: data.data[0].details?.id };
+    }
+
+    return { success: false, error: JSON.stringify(data) };
+  } catch (err: any) {
+    console.error(`[Zoho CRM Note Exception]:`, err);
+    return { success: false, error: err?.message || String(err) };
+  }
+}
+
+/**
+ * Updates payment status and amounts for a Zoho CRM Lead record
+ */
+export async function updateZohoLeadPaymentStatus(
+  leadId: string,
+  paymentData: {
+    leadStatus?: string;
+    advanceAmountPaid?: number;
+    balancePendingAmount?: number;
+  }
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const accessToken = await getZohoAccessToken();
+    const url = getZohoApiUrl(`/crm/v3/Leads/${leadId}`);
+
+    const record: Record<string, any> = {};
+    if (paymentData.leadStatus) {
+      record.Lead_Status = paymentData.leadStatus;
+    }
+    if (paymentData.advanceAmountPaid !== undefined) {
+      record.Advance_Amount_Paid = paymentData.advanceAmountPaid;
+    }
+    if (paymentData.balancePendingAmount !== undefined) {
+      record.Balance_Pending_Amount = paymentData.balancePendingAmount;
+    }
+
+    const response = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Zoho-oauthtoken ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        data: [record],
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`[Zoho CRM Lead Update Error]: Status ${response.status}:`, errorText);
+      return { success: false, error: errorText };
+    }
+
+    const data = await response.json();
+    if (data.data && data.data[0] && data.data[0].status === 'success') {
+      console.log(`[Zoho CRM Lead Update Success] Updated payment fields for Lead ${leadId}`);
+      return { success: true };
+    }
+
+    return { success: false, error: JSON.stringify(data) };
+  } catch (err: any) {
+    console.error(`[Zoho CRM Lead Update Exception]:`, err);
+    return { success: false, error: err?.message || String(err) };
+  }
+}
+
+/**
+ * Search for a Zoho CRM Lead ID by inquiry ID, email, or mobile
+ */
+export async function findZohoLeadId(query: {
+  inquiryId?: string;
+  email?: string;
+  mobile?: string;
+}): Promise<string | null> {
+  try {
+    const accessToken = await getZohoAccessToken();
+    let criteria = '';
+
+    if (query.inquiryId) {
+      criteria = `(Inquiry_ID:equals:${encodeURIComponent(query.inquiryId.trim())})`;
+    } else if (query.email && query.mobile) {
+      criteria = `((Email:equals:${encodeURIComponent(query.email.trim())})or(Mobile:equals:${encodeURIComponent(query.mobile.trim())}))`;
+    } else if (query.email) {
+      criteria = `(Email:equals:${encodeURIComponent(query.email.trim())})`;
+    } else if (query.mobile) {
+      criteria = `(Mobile:equals:${encodeURIComponent(query.mobile.trim())})`;
+    }
+
+    if (!criteria) return null;
+
+    const searchUrl = getZohoApiUrl(`/crm/v3/Leads/search?criteria=${criteria}`);
+    const response = await fetch(searchUrl, {
+      headers: { 'Authorization': `Zoho-oauthtoken ${accessToken}` },
+      cache: 'no-store',
+    });
+
+    if (response.status === 204) return null;
+    if (!response.ok) return null;
+
+    const json = await response.json();
+    if (json.data && json.data[0] && json.data[0].id) {
+      return String(json.data[0].id);
+    }
+    return null;
+  } catch (err) {
+    console.error(`[findZohoLeadId Error]:`, err);
+    return null;
+  }
+}
+

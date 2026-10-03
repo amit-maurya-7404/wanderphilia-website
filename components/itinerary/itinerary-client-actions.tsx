@@ -2,25 +2,45 @@
 
 import { useState } from 'react';
 import { RequestCallbackDialog } from '@/components/request-callback-dialog';
-import { Share2, Download, Phone, Check } from 'lucide-react';
+import { Share2, Download, Phone, Check, CreditCard, Sparkles } from 'lucide-react';
 import { RiWhatsappLine } from 'react-icons/ri';
 import { contactPhoneDisplay } from '@/lib/contact';
+import { ItineraryBookModal } from './itinerary-book-modal';
 
 interface ItineraryClientActionsProps {
   itineraryId: string;
   title: string;
   leadName?: string;
   destination: string;
+  totalQuotationAmount?: number;
+  email?: string;
+  mobile?: string;
+  zohoLeadId?: string;
+  inquiryId?: string;
+  numDays?: number;
+  numNights?: number;
+  travelStartDate?: string;
+  travelEndDate?: string;
 }
 
 export function ItineraryClientActions({
   itineraryId,
   title,
   leadName = 'Valued Traveler',
-  destination
+  destination,
+  totalQuotationAmount = 0,
+  email = '',
+  mobile = '',
+  zohoLeadId,
+  inquiryId,
+  numDays,
+  numNights,
+  travelStartDate,
+  travelEndDate,
 }: ItineraryClientActionsProps) {
   const [copied, setCopied] = useState(false);
   const [callbackOpen, setCallbackOpen] = useState(false);
+  const [bookModalOpen, setBookModalOpen] = useState(false);
 
   const handleShare = async () => {
     const url = typeof window !== 'undefined' ? window.location.href : '';
@@ -57,15 +77,26 @@ export function ItineraryClientActions({
 
   return (
     <>
-      {/* Top Navbar: 4 Icons Only (Share, Download, Call, WhatsApp) */}
       <div className="flex items-center gap-2 sm:gap-2.5 print:hidden">
+        {/* Primary Book Now Button (if quotation amount exists) */}
+        {totalQuotationAmount > 0 && (
+          <button
+            onClick={() => setBookModalOpen(true)}
+            type="button"
+            className="inline-flex items-center gap-1.5 bg-[#6E1E14] hover:bg-[#5C1810] text-white text-[11px] sm:text-xs font-black px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full shadow-sm hover:shadow-md transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer uppercase tracking-wider"
+          >
+            <CreditCard className="w-3.5 h-3.5 text-amber-300" />
+            <span>Book Now</span>
+          </button>
+        )}
+
         {/* 1. Share Icon */}
         <button
           onClick={handleShare}
           type="button"
           aria-label="Share Itinerary"
           title={copied ? "Link Copied!" : "Share Itinerary"}
-          className="w-9 h-9 rounded-full bg-white hover:bg-stone-100 text-stone-700 border border-stone-300/80 shadow-2xs flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer relative"
+          className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white hover:bg-stone-100 text-stone-700 border border-stone-300/80 shadow-2xs flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer relative"
         >
           {copied ? (
             <Check className="w-4 h-4 text-emerald-600" />
@@ -80,7 +111,7 @@ export function ItineraryClientActions({
           type="button"
           aria-label="Download PDF"
           title="Save as PDF"
-          className="w-9 h-9 rounded-full bg-white hover:bg-stone-100 text-stone-700 border border-stone-300/80 shadow-2xs flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
+          className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white hover:bg-stone-100 text-stone-700 border border-stone-300/80 shadow-2xs flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
         >
           <Download className="w-4 h-4 text-stone-700" />
         </button>
@@ -91,7 +122,7 @@ export function ItineraryClientActions({
           type="button"
           aria-label="Request Callback"
           title="Request a Call"
-          className="w-9 h-9 rounded-full bg-white hover:bg-orange-50 text-orange-600 border border-stone-300/80 hover:border-orange-300 shadow-2xs flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
+          className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white hover:bg-orange-50 text-orange-600 border border-stone-300/80 hover:border-orange-300 shadow-2xs flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
         >
           <Phone className="w-4 h-4 text-[#FF6E0B]" />
         </button>
@@ -103,11 +134,32 @@ export function ItineraryClientActions({
           rel="noopener noreferrer"
           aria-label="WhatsApp Specialist"
           title="Chat on WhatsApp"
-          className="w-9 h-9 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm shadow-emerald-600/20 flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
+          className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm shadow-emerald-600/20 flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
         >
-          <RiWhatsappLine className="w-5 h-5 text-white" />
+          <RiWhatsappLine className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
         </a>
       </div>
+
+      {/* Booking & Online Payment Modal (Advance 50% vs Full 100%) */}
+      {totalQuotationAmount > 0 && (
+        <ItineraryBookModal
+          open={bookModalOpen}
+          onOpenChange={setBookModalOpen}
+          itineraryId={itineraryId}
+          destination={destination}
+          proposalTitle={title}
+          totalQuotationAmount={totalQuotationAmount}
+          initialLeadName={leadName !== 'Valued Traveler' ? leadName : ''}
+          initialEmail={email}
+          initialPhone={mobile}
+          zohoLeadId={zohoLeadId}
+          inquiryId={inquiryId}
+          numDays={numDays}
+          numNights={numNights}
+          travelStartDate={travelStartDate}
+          travelEndDate={travelEndDate}
+        />
+      )}
 
       {/* Callback Dialog Modal */}
       <RequestCallbackDialog

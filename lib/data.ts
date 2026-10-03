@@ -331,7 +331,7 @@ export function extractTripCityCount(trip: Partial<Trip>): number {
           }
         }
       }
-      if (!stayFound && index < trip.itinerary.length - 1) {
+      if (!stayFound && trip.itinerary && index < trip.itinerary.length - 1) {
         for (const line of descLines) {
           const match = line.match(/(?:check[- ]?in\s+(?:to|at)\s+(?:your\s+)?(?:hotel\s+in|hotel\s+at|camp\s+in|resort\s+in)?|reach|arrive\s+in)\s+([^.]+)/i)
           if (match) {

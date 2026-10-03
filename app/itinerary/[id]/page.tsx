@@ -31,6 +31,7 @@ export const fetchCache = 'force-no-store';
 import { ItineraryClientActions } from '@/components/itinerary/itinerary-client-actions';
 import { ItineraryFlowchartSection } from '@/components/itinerary/itinerary-flowchart-section';
 import { ItineraryPaymentSection } from '@/components/itinerary/itinerary-payment-section';
+import { ItineraryQuotationBookButton } from '@/components/itinerary/itinerary-quotation-book-button';
 import {
   MapPin,
   Calendar,
@@ -296,6 +297,15 @@ export default async function ItineraryPage({ params }: PageProps) {
             title={itinerary.title || proposalTitle}
             leadName={leadName}
             destination={destination}
+            totalQuotationAmount={finalQuotationAmount || 0}
+            email={itinerary.leadDetails?.email || itinerary.rawZohoData?.Email || ''}
+            mobile={itinerary.leadDetails?.mobile || itinerary.leadDetails?.phone || itinerary.rawZohoData?.Mobile || itinerary.rawZohoData?.Phone || ''}
+            zohoLeadId={itinerary.rawZohoData?.id ? String(itinerary.rawZohoData.id) : undefined}
+            inquiryId={itinerary.inquiryId || itinerary.rawZohoData?.Inquiry_ID || undefined}
+            numDays={numDays}
+            numNights={numNights}
+            travelStartDate={itinerary.leadDetails?.startDate || itinerary.rawZohoData?.Preferred_Start_date}
+            travelEndDate={itinerary.leadDetails?.endDate || itinerary.rawZohoData?.Travel_End_Date}
           />
         </div>
       </header>
@@ -668,6 +678,25 @@ export default async function ItineraryPage({ params }: PageProps) {
 
               </div>
 
+              {/* Instant Book Now & Pay Online CTA Card within Quotation */}
+              {finalQuotationAmount && finalQuotationAmount > 0 ? (
+                <ItineraryQuotationBookButton
+                  variant="card"
+                  itineraryId={itinerary.id}
+                  destination={destination}
+                  totalQuotationAmount={finalQuotationAmount}
+                  leadName={leadName}
+                  email={itinerary.leadDetails?.email || itinerary.rawZohoData?.Email || ''}
+                  mobile={itinerary.leadDetails?.mobile || itinerary.leadDetails?.phone || itinerary.rawZohoData?.Mobile || itinerary.rawZohoData?.Phone || ''}
+                  zohoLeadId={itinerary.rawZohoData?.id ? String(itinerary.rawZohoData.id) : undefined}
+                  inquiryId={itinerary.inquiryId || itinerary.rawZohoData?.Inquiry_ID || undefined}
+                  numDays={numDays}
+                  numNights={numNights}
+                  travelStartDate={itinerary.leadDetails?.startDate || itinerary.rawZohoData?.Preferred_Start_date}
+                  travelEndDate={itinerary.leadDetails?.endDate || itinerary.rawZohoData?.Travel_End_Date}
+                />
+              ) : null}
+
             </div>
           </div>
 
@@ -840,7 +869,20 @@ export default async function ItineraryPage({ params }: PageProps) {
               <Building2 className="w-4 h-4 text-[#6E1E14]" />
               <span>Payment Process</span>
             </h3>
-            <ItineraryPaymentSection />
+            <ItineraryPaymentSection
+              itineraryId={itinerary.id}
+              destination={destination}
+              totalQuotationAmount={finalQuotationAmount || 0}
+              leadName={leadName}
+              email={itinerary.leadDetails?.email || itinerary.rawZohoData?.Email || ''}
+              mobile={itinerary.leadDetails?.mobile || itinerary.leadDetails?.phone || itinerary.rawZohoData?.Mobile || itinerary.rawZohoData?.Phone || ''}
+              zohoLeadId={itinerary.rawZohoData?.id ? String(itinerary.rawZohoData.id) : undefined}
+              inquiryId={itinerary.inquiryId || itinerary.rawZohoData?.Inquiry_ID || undefined}
+              numDays={numDays}
+              numNights={numNights}
+              travelStartDate={itinerary.leadDetails?.startDate || itinerary.rawZohoData?.Preferred_Start_date}
+              travelEndDate={itinerary.leadDetails?.endDate || itinerary.rawZohoData?.Travel_End_Date}
+            />
           </div>
 
           {/* 5. THANK YOU & FOUNDER SIGN-OFF */}
@@ -894,6 +936,25 @@ export default async function ItineraryPage({ params }: PageProps) {
         </section>
 
       </main>
+
+      {/* Floating Sticky Book Now for Mobile / Tablet */}
+      {finalQuotationAmount && finalQuotationAmount > 0 ? (
+        <ItineraryQuotationBookButton
+          variant="floating"
+          itineraryId={itinerary.id}
+          destination={destination}
+          totalQuotationAmount={finalQuotationAmount}
+          leadName={leadName}
+          email={itinerary.leadDetails?.email || itinerary.rawZohoData?.Email || ''}
+          mobile={itinerary.leadDetails?.mobile || itinerary.leadDetails?.phone || itinerary.rawZohoData?.Mobile || itinerary.rawZohoData?.Phone || ''}
+          zohoLeadId={itinerary.rawZohoData?.id ? String(itinerary.rawZohoData.id) : undefined}
+          inquiryId={itinerary.inquiryId || itinerary.rawZohoData?.Inquiry_ID || undefined}
+          numDays={numDays}
+          numNights={numNights}
+          travelStartDate={itinerary.leadDetails?.startDate || itinerary.rawZohoData?.Preferred_Start_date}
+          travelEndDate={itinerary.leadDetails?.endDate || itinerary.rawZohoData?.Travel_End_Date}
+        />
+      ) : null}
 
       {/* Print Specific CSS to ensure clean multi-page A4 PDF output */}
       <style>{`

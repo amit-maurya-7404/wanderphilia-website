@@ -8,6 +8,7 @@ export const dynamic = 'force-dynamic';
 interface InitiateRequest {
   fullName?: string;
   mobileNumber?: string;
+  countryCode?: string;
   email?: string;
   tripSlug?: string;
   tripTitle?: string;
