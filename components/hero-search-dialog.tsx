@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { Search, MapPin, X, Star, ArrowRight, Sparkles, Compass } from 'lucide-react'
+import { Search, MapPin, X, Star, ArrowRight, TrendingUp, Compass } from 'lucide-react'
 import { trips, Trip, getLowestPriceForTrip } from '@/lib/data'
 import { getAllCategories } from '@/lib/trip-categories'
 import { gtag } from '@/lib/gtag'
@@ -293,7 +293,7 @@ export function HeroSearchDialog({ isOpen, onClose, initialQuery = '' }: HeroSea
                 <>Suggested Itineraries ({matchingTrips.length})</>
               ) : (
                 <>
-                  <Sparkles size={12} className="text-[#ff5d09]" /> Popular Itineraries
+                  <TrendingUp size={13} className="text-[#ff5d09]" /> Popular Itineraries
                 </>
               )}
             </span>
