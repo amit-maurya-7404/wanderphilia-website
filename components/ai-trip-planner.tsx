@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import { usePathname } from 'next/navigation'
 import { MessageSquare, X, Send, ArrowRight, Compass } from 'lucide-react'
 import { Parachute } from '@/components/parachute-icon'
 import { trips, getLowestPriceForTrip, getLowestPriceForTrips, getUpcomingBatchDates } from '@/lib/data'
@@ -26,6 +27,14 @@ interface ChatMessage {
 }
 
 export function AITripPlanner() {
+  const pathname = usePathname() || ''
+  const isExcluded =
+    pathname.startsWith('/itinerary') ||
+    pathname.startsWith('/booking') ||
+    pathname.startsWith('/payment') ||
+    pathname.startsWith('/checkout') ||
+    pathname.startsWith('/admin')
+
   const [isOpen, setIsOpen] = useState(false)
   const [hasPulse, setHasPulse] = useState(true)
   const [messages, setMessages] = useState<ChatMessage[]>([])
@@ -47,12 +56,17 @@ export function AITripPlanner() {
 
   // Track window scroll coordinates for positioning animation
   useEffect(() => {
+    if (isExcluded) return
     const handleScroll = () => {
       setShowScrollToTop(window.scrollY > 300)
     }
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  }, [isExcluded])
+
+  if (isExcluded) {
+    return null
+  }
 
   const messagesEndRef = useRef<HTMLDivElement>(null)
 

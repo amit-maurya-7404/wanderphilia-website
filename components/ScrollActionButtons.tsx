@@ -1,6 +1,7 @@
 "use client";
 import { MdWhatsapp } from "react-icons/md";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import { IoCall } from "react-icons/io5";
 import { contactPhone, whatsAppUrl } from '@/lib/contact'
 
@@ -11,21 +12,6 @@ const buttons = [
         href: `tel:${contactPhone}`,
         bg: "bg-gradient-to-t from-secondary to-primary",
     },
-    // {
-    //   icon: <MdEmail size={24} />,
-    //   text: "Email Now",
-    //   href: "mailto:leaderplumbing25@gmail.com",
-    //   bg: "bg-gradient-to-t from-[#0246ee] to-[#3eb4f1]",
-    // },
-    //   {
-    //     icon: <MdEmail size={24} />,
-    //     text: "Email Now",
-    //     // href: "mailto:", - removed or comment out
-    //     bg: "bg-gradient-to-t from-[#0246ee] to-[#3eb4f1]",
-    //     className: "pointer-events-none cursor-default",
-    //     onClick: (e: React.MouseEvent<HTMLElement>) => e.preventDefault(),
-    //     disabled: true,
-    // },
     {
         icon: <MdWhatsapp size={30} />,
         text: "Chat Now",
@@ -35,7 +21,19 @@ const buttons = [
 ];
 
 export default function ScrollActionButtons() {
+    const pathname = usePathname() || "";
+    const isExcluded =
+        pathname.startsWith("/itinerary") ||
+        pathname.startsWith("/booking") ||
+        pathname.startsWith("/payment") ||
+        pathname.startsWith("/checkout") ||
+        pathname.startsWith("/admin");
+
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+
+    if (isExcluded) {
+        return null;
+    }
 
     return (
         <div className="fixed right-0 top-1/2 -translate-y-1/2 z-50 space-y-4 flex flex-col items-end">

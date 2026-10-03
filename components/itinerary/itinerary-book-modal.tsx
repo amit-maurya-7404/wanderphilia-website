@@ -76,6 +76,7 @@ export function ItineraryBookModal({
   const [errors, setErrors] = useState<{ fullName?: string; email?: string; mobileNumber?: string }>({});
   const [isProcessing, setIsProcessing] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
+  const [isRazorpayOpen, setIsRazorpayOpen] = useState(false);
   const [paymentSuccessData, setPaymentSuccessData] = useState<{
     invoiceNumber: string;
     paidAmount: number;
@@ -160,6 +161,7 @@ export function ItineraryBookModal({
         image: '/images/Made_LOGO.png',
         order_id: orderData.orderId,
         handler: async function (response: any) {
+          setIsRazorpayOpen(false);
           setIsProcessing(false);
           setIsVerifying(true);
           try {
@@ -213,12 +215,15 @@ export function ItineraryBookModal({
         },
         modal: {
           ondismiss: function () {
+            setIsRazorpayOpen(false);
             setIsProcessing(false);
           },
         },
       };
 
-      // 4. Open Razorpay Modal
+      // 4. Open Razorpay Modal & temporarily hide background booking dialog
+      setIsRazorpayOpen(true);
+
       if (!(window as any).Razorpay) {
         const script = document.createElement('script');
         script.src = 'https://checkout.razorpay.com/v1/checkout.js';
@@ -235,6 +240,7 @@ export function ItineraryBookModal({
       console.error('Itinerary checkout error:', err);
       alert(err.message || 'An error occurred initiating checkout.');
       setIsProcessing(false);
+      setIsRazorpayOpen(false);
     }
   };
 
@@ -270,7 +276,7 @@ export function ItineraryBookModal({
   const whatsappUrl = `https://wa.me/91${contactPhoneDisplay}?text=${whatsappMsg}`;
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open && !isRazorpayOpen} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl p-0 overflow-hidden bg-[#FAF8F5] border border-stone-300 rounded-3xl shadow-2xl max-h-[92vh] flex flex-col">
         
         {/* MODAL HEADER */}
