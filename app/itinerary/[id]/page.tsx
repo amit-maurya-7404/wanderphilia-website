@@ -30,6 +30,7 @@ export const revalidate = 0;
 export const fetchCache = 'force-no-store';
 import { ItineraryClientActions } from '@/components/itinerary/itinerary-client-actions';
 import { ItineraryFlowchartSection } from '@/components/itinerary/itinerary-flowchart-section';
+import { ManualItineraryTemplate } from '@/components/itinerary/manual-itinerary-template';
 import { ItineraryPaymentSection } from '@/components/itinerary/itinerary-payment-section';
 import { ItineraryQuotationBookButton } from '@/components/itinerary/itinerary-quotation-book-button';
 import {
@@ -56,16 +57,25 @@ import {
   Building2,
   FileText,
   HeartHandshake,
-  ExternalLink
+  ExternalLink,
+  Luggage
 } from 'lucide-react';
 import { RiWhatsappLine } from 'react-icons/ri';
 import { contactPhoneDisplay, contactEmail } from '@/lib/contact';
+
+import { getManualItinerary, manualItineraryToDocument } from '@/data/manual-itineraries';
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
 
 async function getItinerary(id: string): Promise<ItineraryDocument | null> {
+  // 1. Check local manual itineraries first
+  const manual = getManualItinerary(id);
+  if (manual) {
+    return manualItineraryToDocument(manual);
+  }
+
   try {
     const db = await getDb();
     const collection = db.collection<ItineraryDocument>('itineraries');
@@ -74,7 +84,9 @@ async function getItinerary(id: string): Promise<ItineraryDocument | null> {
       $or: [{ id: id }, { slug: id }]
     });
 
-    if (!itinerary) return null;
+    if (!itinerary) {
+      return null;
+    }
 
     return {
       ...itinerary,
@@ -115,6 +127,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function ItineraryPage({ params }: PageProps) {
   const { id } = await params;
+  
+  // Directly render duplicate manual itinerary template if matched
+  const manual = getManualItinerary(id);
+  if (manual) {
+    return <ManualItineraryTemplate itinerary={manual} />;
+  }
+
   const itinerary = await getItinerary(id);
 
   if (!itinerary) {
@@ -241,29 +260,33 @@ export default async function ItineraryPage({ params }: PageProps) {
   }
 
   // Exact Inclusions List constructed in strict Zoho Mail-Merge order
-  const displayInclusions: string[] = [
-    `Private ${vehicleType} for the complete ${destination} itinerary and Airport Transfers.`,
-    `Accomodation in ${roomCategory} Properties For ${numNights} Nights.`,
-    `Meals ${mealPlan} ( Breakfast Except 1st Day , Dinner Last Day )`,
-    `Driver allowance, fuel, toll taxes, parking charges and applicable road taxes.`,
-    `All transfers and sightseeing as per the day-wise itinerary. Entry fees are excluded unless specifically mentioned.`,
-    ...dynamicExperiences,
-    `Assistance during hotel check-in and check-out.`,
-    `Applicable taxes included in the quoted package, wherever applicable.`
-  ];
+  const displayInclusions: string[] = (itinerary.inclusions && itinerary.inclusions.length > 0)
+    ? itinerary.inclusions
+    : [
+      `Private ${vehicleType} for the complete ${destination} itinerary and Airport Transfers.`,
+      `Accomodation in ${roomCategory} Properties For ${numNights} Nights.`,
+      `Meals ${mealPlan} ( Breakfast Except 1st Day , Dinner Last Day )`,
+      `Driver allowance, fuel, toll taxes, parking charges and applicable road taxes.`,
+      `All transfers and sightseeing as per the day-wise itinerary. Entry fees are excluded unless specifically mentioned.`,
+      ...dynamicExperiences,
+      `Assistance during hotel check-in and check-out.`,
+      `Applicable taxes included in the quoted package, wherever applicable.`
+    ];
 
   // Exact Exclusions List as per Zoho Proposal Template
-  const displayExclusions: string[] = [
-    `5% GST.`,
-    `Early check-in (Before 1:00 PM) & Late Check-out (After 11:00 AM) at the hotel.`,
-    `Any additional expenses of personal nature.`,
-    `Additional accommodation/food costs incurred due to any delayed travel.`,
-    `Any lunch and other meals not mentioned in Package Inclusions.`,
-    `Any Airfare / Rail fare other than what is mentioned in "Inclusions" or any type of transportation.`,
-    `Monument entry fees during Sightseeing.`,
-    `Additional Costs due to Flight Cancellations, Landslides, Roadblocks, and other natural calamities.`,
-    `Any other services not specified above in inclusions.`
-  ];
+  const displayExclusions: string[] = (itinerary.exclusions && itinerary.exclusions.length > 0)
+    ? itinerary.exclusions
+    : [
+      `5% GST.`,
+      `Early check-in (Before 1:00 PM) & Late Check-out (After 11:00 AM) at the hotel.`,
+      `Any additional expenses of personal nature.`,
+      `Additional accommodation/food costs incurred due to any delayed travel.`,
+      `Any lunch and other meals not mentioned in Package Inclusions.`,
+      `Any Airfare / Rail fare other than what is mentioned in "Inclusions" or any type of transportation.`,
+      `Monument entry fees during Sightseeing.`,
+      `Additional Costs due to Flight Cancellations, Landslides, Roadblocks, and other natural calamities.`,
+      `Any other services not specified above in inclusions.`
+    ];
 
   // Pricing & Quotation Details
   const finalQuotationAmount = itinerary.finalQuotationAmount ?? itinerary.rawZohoData?.finalQuotationAmount ?? (itinerary.rawZohoData?.Final_Quotation_Amount ? Number(itinerary.rawZohoData.Final_Quotation_Amount) : (itinerary.rawZohoData?.Total_Package_Cost ? Number(itinerary.rawZohoData.Total_Package_Cost) : (itinerary.rawZohoData?.Quotation_Amount ? Number(itinerary.rawZohoData.Quotation_Amount) : (itinerary.rawZohoData?.Expected_Revenue ? Number(itinerary.rawZohoData.Expected_Revenue) : undefined))));
@@ -740,6 +763,24 @@ export default async function ItineraryPage({ params }: PageProps) {
             </div>
 
           </div>
+
+          {/* 🎒 IMPORTANT THINGS TO CARRY */}
+          {itinerary.packingTips && itinerary.packingTips.length > 0 && (
+            <div className="bg-amber-50/70 p-6 rounded-2xl border-2 border-amber-300/80 shadow-xs space-y-3">
+              <div className="text-xs sm:text-sm uppercase font-black tracking-wider text-amber-950 flex items-center gap-2 pb-2 border-b border-amber-200">
+                <Luggage className="w-4 h-4 text-amber-700" />
+                <span>🎒 Important Things to Carry:</span>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pt-1">
+                {itinerary.packingTips.map((item, idx) => (
+                  <div key={idx} className="flex items-center gap-2 bg-white/80 backdrop-blur-xs p-3 rounded-xl border border-amber-200/80 shadow-2xs">
+                    <span className="text-emerald-600 font-bold">✔</span>
+                    <span className="text-xs font-bold text-stone-800">{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Bottom Rust Bar */}
           <div className="bg-[#6E1E14] text-white py-3 px-6 text-center text-[10px] sm:text-xs font-bold tracking-wide rounded-xl">
