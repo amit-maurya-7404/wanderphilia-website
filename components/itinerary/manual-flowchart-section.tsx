@@ -19,6 +19,39 @@ const playfair = Playfair_Display({
   display: 'swap',
 });
 
+function SafeImage({
+  src,
+  alt,
+  fill,
+  priority,
+  className,
+  fallback = '/images/himachal.jpg'
+}: {
+  src: string;
+  alt: string;
+  fill?: boolean;
+  priority?: boolean;
+  className?: string;
+  fallback?: string;
+}) {
+  const [imgSrc, setImgSrc] = useState(src || fallback);
+
+  return (
+    <Image
+      src={imgSrc || fallback}
+      alt={alt}
+      fill={fill}
+      priority={priority}
+      className={className}
+      onError={() => {
+        if (imgSrc !== fallback) {
+          setImgSrc(fallback);
+        }
+      }}
+    />
+  );
+}
+
 interface ManualFlowchartSectionProps {
   dayPlans: ManualDayPlan[];
   destination?: string;
@@ -26,7 +59,7 @@ interface ManualFlowchartSectionProps {
 }
 
 const fallbackImages = [
-  '/images/himachal1.jpg',
+  '/images/himachal.jpg',
   '/images/himachal2.jpg',
   '/images/himachal3.jpg',
   '/images/himachal4.jpg',
@@ -34,7 +67,8 @@ const fallbackImages = [
   '/images/himachal6.jpg',
   '/images/himachal7.jpg',
   '/images/himachal8.jpg',
-  '/images/himachal9.jpg'
+  '/images/himachal9.jpg',
+  '/images/himachal_hero.jpg'
 ];
 
 export function ManualFlowchartSection({
@@ -211,10 +245,10 @@ export function ManualFlowchartSection({
 
                   </div>
 
-                  {/* RIGHT: High Quality Destination Photo Card */}
+                    {/* RIGHT: High Quality Destination Photo Card */}
                   <div className="md:col-span-5 flex flex-col items-center">
                     <div className="relative w-full h-60 sm:h-72 rounded-2xl overflow-hidden shadow-md border-2 border-white bg-stone-100 group">
-                      <Image
+                      <SafeImage
                         src={dayImage}
                         alt={day.title || 'Day highlight'}
                         fill

@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ManualItinerary } from '@/types/manual-itinerary';
@@ -48,6 +49,39 @@ const cursiveFont = Dancing_Script({
   weight: ['700'],
   display: 'swap',
 });
+
+function SafeImage({
+  src,
+  alt,
+  fill,
+  priority,
+  className,
+  fallback = '/images/himachal.jpg'
+}: {
+  src: string;
+  alt: string;
+  fill?: boolean;
+  priority?: boolean;
+  className?: string;
+  fallback?: string;
+}) {
+  const [imgSrc, setImgSrc] = useState(src || fallback);
+
+  return (
+    <Image
+      src={imgSrc || fallback}
+      alt={alt}
+      fill={fill}
+      priority={priority}
+      className={className}
+      onError={() => {
+        if (imgSrc !== fallback) {
+          setImgSrc(fallback);
+        }
+      }}
+    />
+  );
+}
 
 interface ManualItineraryTemplateProps {
   itinerary: ManualItinerary;
@@ -111,7 +145,7 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
       </header>
 
       {/* DOCUMENT CONTAINER (A4 / Canva Sheet Style Pages) */}
-      <main className="max-w-4xl mx-auto px-2 sm:px-4 pt-6 space-y-10">
+      <main className="max-w-4xl mx-auto px-0 sm:px-4 pt-6 space-y-10">
 
         {/* ========================================================= */}
         {/* PAGE 1: COVER PAGE (DUPLICATE PROPOSAL TEMPLATE MATCH)    */}
@@ -131,7 +165,7 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                 <img
                   src="/images/Made_LOGO.png"
                   alt="Wanderphilia Logo"
-                  className="h-14 sm:h-36 w-auto object-contain"
+                  className="h-20 sm:h-36 w-auto object-contain"
                 />
               </Link>
             </div>
@@ -167,7 +201,7 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
           {/* Destination Hero Photo */}
           <div className="px-6 sm:px-12 grow flex items-center justify-center my-3">
             <div className="relative w-full max-w-2xl h-[380px] sm:h-[450px] rounded-2xl overflow-hidden shadow-2xl border-4 border-white">
-              <Image
+              <SafeImage
                 src={heroImage}
                 alt={destination}
                 fill
@@ -272,7 +306,7 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
               <div className="grid grid-cols-2 gap-2.5 bg-stone-100 p-2.5 rounded-2xl border border-stone-200 shadow-inner">
                 {collageImages.map((img, i) => (
                   <div key={i} className="relative h-28 sm:h-36 rounded-xl overflow-hidden border-2 border-white shadow-sm">
-                    <Image
+                    <SafeImage
                       src={img}
                       alt={`Highlight ${i + 1}`}
                       fill
@@ -294,7 +328,7 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
         {/* ========================================================= */}
         {/* PAGE 3 & 4: FLOWCHART DAY-BY-DAY ITINERARY               */}
         {/* ========================================================= */}
-        <section className="bg-[#FAF8F5] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border border-stone-200/80 p-6 sm:p-10 space-y-8 relative print:shadow-none print:border-0 print:rounded-none page-break-after">
+        <section className="bg-[#FAF8F5] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border border-stone-200/80 p-3 sm:p-10 space-y-8 relative print:shadow-none print:border-0 print:rounded-none page-break-after">
 
           {/* Centered Travel Itinerary Header */}
           <div className="text-center space-y-2 border-b-2 border-[#6E1E14]/20 pb-6">

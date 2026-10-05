@@ -80,7 +80,7 @@ async function seed() {
           'Sunset at Naddi View Point',
           'Tibetan Market stroll'
         ],
-        image: '/images/himachal1.jpg',
+        image: '/images/himachal.jpg',
         meals: 'Dinner'
       },
       {
@@ -287,7 +287,7 @@ async function seed() {
           'En-route mountain & riverside stops',
           'Drop at Chandigarh — Trip Ends'
         ],
-        image: '/images/himachal1.jpg',
+        image: '/images/himachal_hero.jpg',
         meals: 'Breakfast'
       }
     ],
@@ -313,7 +313,7 @@ async function seed() {
       'Power Bank & Chargers',
       'Snacks & Essentials for Kids'
     ],
-    heroImage: '/images/himachal1.jpg',
+    heroImage: '/images/himachal.jpg',
     galleryImages: [
       '/images/himachal.jpg',
       '/images/himachal2.jpg',

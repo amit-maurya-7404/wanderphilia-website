@@ -18,7 +18,7 @@ export const himachalExplorerManualItinerary: ManualItinerary = {
   leadName: 'Valued Traveler',
   vehicleType: '17 Seater Tempo Traveller',
   mealPlan: 'Breakfast & Dinner (Breakfast except for Day 1 & Dinner for day 10)',
-  heroImage: '/images/himachal1.jpg',
+  heroImage: '/images/himachal.jpg',
   galleryImages: [
     '/images/himachal.jpg',
     '/images/himachal2.jpg',
@@ -55,7 +55,7 @@ export const himachalExplorerManualItinerary: ManualItinerary = {
         'Tibetan Market stroll'
       ],
       stayLocation: 'Dharamshala',
-      image: '/images/himachal1.jpg',
+      image: '/images/himachal.jpg',
       meals: 'Dinner'
     },
     {
@@ -331,7 +331,7 @@ export const himachalExplorerManualItinerary: ManualItinerary = {
         'Drop at Chandigarh'
       ],
       stayLocation: 'Trip Ends: Chandigarh',
-      image: '/images/himachal1.jpg',
+      image: '/images/himachal_hero.jpg',
       meals: 'Breakfast',
       signOff: 'Until the next adventure — Wanderphilia style.'
     }
