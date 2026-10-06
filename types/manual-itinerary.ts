@@ -64,4 +64,8 @@ export interface ManualItinerary {
   tcsPercentage?: number;
   gstAmount?: number;
   tcsAmount?: number;
+  advanceAmountPaid?: number;
+  balancePendingAmount?: number;
+  paymentStage?: 'unpaid' | 'token_paid' | 'advance_paid' | 'fully_paid';
+  payments?: any[];
 }

@@ -131,8 +131,12 @@ export async function POST(req: NextRequest) {
     const timestamp = Date.now().toString().slice(-6);
     const receiptId = `rcpt_${cleanId}_${timestamp}`.slice(0, 40);
 
+    // Handle Razorpay Test Mode limit (Razorpay test accounts have a 5,00,000 INR single-transaction limit)
+    const isTestMode = razorpayKeyId.startsWith('rzp_test_');
+    const orderChargeAmount = isTestMode && payableAmount > 500000 ? 500000 : payableAmount;
+
     const order = await razorpay.orders.create({
-      amount: Math.round(payableAmount * 100), // amount in paise
+      amount: Math.round(orderChargeAmount * 100), // amount in paise
       currency: 'INR',
       receipt: receiptId,
       notes: {
@@ -141,6 +145,7 @@ export async function POST(req: NextRequest) {
         paymentType: String(paymentType),
         totalPackageAmount: String(totalQuotation),
         payableAmount: String(payableAmount),
+        isTestMode: isTestMode ? 'true' : 'false',
         customerName: String(customerName || itinerary?.leadDetails?.name || ''),
         customerEmail: String(customerEmail || itinerary?.leadDetails?.email || ''),
         customerMobile: String(customerMobile || itinerary?.leadDetails?.mobile || ''),
@@ -171,8 +176,9 @@ export async function POST(req: NextRequest) {
     });
   } catch (error: any) {
     console.error('[POST /api/itinerary/payment/order Error]:', error);
+    const detailedMessage = error?.error?.description || error?.message || 'Failed to create Razorpay order';
     return NextResponse.json(
-      { error: error?.message || 'Failed to create Razorpay order' },
+      { error: detailedMessage, rawError: error?.error || error },
       { status: 500 }
     );
   }

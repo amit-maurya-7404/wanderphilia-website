@@ -128,9 +128,22 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function ItineraryPage({ params }: PageProps) {
   const { id } = await params;
   
-  // Directly render duplicate manual itinerary template if matched
+  // Directly render manual itinerary template if matched (with live DB payment state)
   const manual = getManualItinerary(id);
   if (manual) {
+    try {
+      const db = await getDb();
+      const collection = db.collection<ItineraryDocument>('itineraries');
+      const dbDoc = await collection.findOne({ $or: [{ id: id }, { slug: id }] });
+      if (dbDoc) {
+        manual.advanceAmountPaid = dbDoc.advanceAmountPaid ?? dbDoc.rawZohoData?.Advance_Amount_Paid ?? manual.advanceAmountPaid;
+        manual.balancePendingAmount = dbDoc.balancePendingAmount ?? dbDoc.rawZohoData?.Balance_Pending_Amount ?? manual.balancePendingAmount;
+        manual.paymentStage = dbDoc.paymentStage ?? manual.paymentStage;
+        manual.payments = dbDoc.payments ?? manual.payments;
+      }
+    } catch (e) {
+      console.warn('[Manual Itinerary DB Fetch Error]:', e);
+    }
     return <ManualItineraryTemplate itinerary={manual} />;
   }
 
@@ -808,24 +821,24 @@ export default async function ItineraryPage({ params }: PageProps) {
           <div className="bg-white rounded-2xl border border-amber-200 p-6 shadow-xs space-y-3">
             <div className="flex items-center gap-2 text-xs sm:text-sm font-black uppercase tracking-wider text-amber-900 border-b border-amber-100 pb-2.5">
               <CreditCard className="w-4 h-4 text-amber-700" />
-              <span>Payment Terms</span>
+              <span>Payment Terms & Timelines</span>
             </div>
             <ul className="space-y-2 text-xs font-semibold text-stone-700 leading-relaxed">
               <li className="flex items-start gap-2.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-amber-600 shrink-0 mt-1.5" />
-                <span>50% booking advance payment is required to confirm the booking and secure all travel services.</span>
+                <span><b>10% Token Amount:</b> Locks your itinerary proposal, travel dates and begins slot reservations.</span>
               </li>
               <li className="flex items-start gap-2.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-amber-600 shrink-0 mt-1.5" />
-                <span>Balance 50% payment must be received at least 15 days prior to departure.</span>
+                <span><b>50% Advance Payment:</b> Payable within <b>7 days</b> of token payment to confirm luxury hotel stays, cruise cabins and private transport.</span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-600 shrink-0 mt-1.5" />
+                <span><b>Final Balance Payment:</b> Must be received at least <b>15 days prior to departure</b> to release final confirmation vouchers and chauffeur allocation.</span>
               </li>
               <li className="flex items-start gap-2.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-amber-600 shrink-0 mt-1.5" />
                 <span>All bookings are subject to availability and confirmation from respective suppliers at the time of payment.</span>
-              </li>
-              <li className="flex items-start gap-2.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-600 shrink-0 mt-1.5" />
-                <span>Any increase in taxes, government levies, fuel surcharges, or currency fluctuations before final payment may be charged additionally.</span>
               </li>
             </ul>
           </div>

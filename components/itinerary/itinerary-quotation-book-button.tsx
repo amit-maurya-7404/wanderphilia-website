@@ -135,14 +135,14 @@ export function ItineraryQuotationBookButton({
           >
             <CreditCard className="w-4 h-4 text-stone-950" />
             <span>
-              {isTokenPaid ? 'Pay Remaining Advance' : (isAdvancePaid ? 'Pay Remaining Balance' : 'Book & Pay Online')}
+              {isTokenPaid ? 'Pay Remaining Advance' : (isAdvancePaid ? 'Complete Full Payment' : 'Book & Pay Online')}
             </span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>
       ) : variant === 'floating' ? (
         /* Floating Sticky Bottom Bar for Mobile & Quick Actions */
-        <div className="fixed bottom-4 left-4 right-4 z-40 max-w-lg mx-auto bg-stone-950/90 backdrop-blur-lg border border-amber-500/30 text-white p-3 sm:p-3.5 rounded-2xl shadow-2xl flex items-center justify-between gap-3 print:hidden animate-fade-in">
+        <div className="fixed bottom-4 left-4 right-4 z-40 max-w-lg mx-auto bg-stone-950/95 backdrop-blur-lg border border-amber-500/30 text-white p-3 sm:p-3.5 rounded-2xl shadow-2xl flex items-center justify-between gap-3 print:hidden animate-fade-in">
           <div className="space-y-0.5 pl-1">
             <span className="text-[10px] uppercase font-black text-amber-400 tracking-wider block">
               {alreadyPaid > 0 ? `Pending Balance` : `Total Quotation`}
@@ -150,6 +150,11 @@ export function ItineraryQuotationBookButton({
             <div className="text-base sm:text-lg font-black text-white leading-none">
               ₹{(remainingBalanceAmount > 0 ? remainingBalanceAmount : totalQuotationAmount).toLocaleString('en-IN')}
             </div>
+            {alreadyPaid > 0 && (
+              <span className="text-[9px] text-emerald-400 font-bold block pt-0.5">
+                ✓ ₹{alreadyPaid.toLocaleString('en-IN')} Paid
+              </span>
+            )}
           </div>
 
           <button
@@ -159,7 +164,7 @@ export function ItineraryQuotationBookButton({
           >
             <CreditCard className="w-4 h-4 text-stone-950" />
             <span>
-              {isTokenPaid ? 'Pay Advance' : (isAdvancePaid ? 'Pay Balance' : 'Book Now')}
+              {isTokenPaid ? 'Pay Advance' : (isAdvancePaid ? 'Complete Full Payment' : 'Book Now')}
             </span>
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
@@ -172,7 +177,7 @@ export function ItineraryQuotationBookButton({
         >
           <CreditCard className="w-4 h-4 text-amber-300" />
           <span>
-            {isTokenPaid ? 'Pay Remaining Advance' : (isAdvancePaid ? 'Pay Remaining 50% Balance' : 'Book Now & Pay Online')}
+            {isTokenPaid ? 'Pay Remaining Advance' : (isAdvancePaid ? 'Complete Full Payment' : 'Book Now & Pay Online')}
           </span>
           <ArrowRight className="w-4 h-4" />
         </button>

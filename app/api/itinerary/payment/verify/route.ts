@@ -96,7 +96,13 @@ export async function POST(req: NextRequest) {
     });
 
     const payment = await razorpay.payments.fetch(razorpay_payment_id);
-    const paidAmount = Number(payment.amount) / 100;
+    let paidAmount = Number(payment.amount) / 100;
+    if (razorpayKeyId.startsWith('rzp_test_') && (payment as any)?.notes?.payableAmount) {
+      const notePayable = Number((payment as any).notes.payableAmount);
+      if (notePayable > 0) {
+        paidAmount = notePayable;
+      }
+    }
 
     if (payment.status === 'authorized') {
       try {

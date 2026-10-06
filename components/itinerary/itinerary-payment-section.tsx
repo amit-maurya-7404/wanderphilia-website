@@ -32,6 +32,7 @@ interface ItineraryPaymentSectionProps {
   totalQuotationAmount?: number;
   advanceAmountPaid?: number;
   balancePendingAmount?: number;
+  paymentStage?: string;
   payments?: ItineraryPaymentRecord[];
   leadName?: string;
   email?: string;
@@ -56,6 +57,7 @@ export function ItineraryPaymentSection({
   totalQuotationAmount = 0,
   advanceAmountPaid = 0,
   balancePendingAmount,
+  paymentStage,
   payments = [],
   leadName = '',
   email = '',

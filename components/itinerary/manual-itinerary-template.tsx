@@ -119,6 +119,16 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
       '/images/himachal5.jpg'
     ];
 
+  // Payment stage calculations
+  const alreadyPaid = Number(itinerary.advanceAmountPaid || 0);
+  const totalQuotationAmount = Number(itinerary.finalQuotationAmount || 853860);
+  const remainingBalanceAmount = Math.max(0, totalQuotationAmount - alreadyPaid);
+  const tenPercentAmount = Math.round(totalQuotationAmount * 0.1);
+  const fiftyPercentAmount = Math.round(totalQuotationAmount * 0.5);
+  const isFullyPaid = alreadyPaid >= totalQuotationAmount && totalQuotationAmount > 0;
+  const isAdvancePaid = alreadyPaid >= fiftyPercentAmount && !isFullyPaid;
+  const isTokenPaid = alreadyPaid > 0 && alreadyPaid < fiftyPercentAmount;
+
   return (
     <div className={`${sansBody.className} min-h-screen bg-[#ECE8E1] text-stone-900 selection:bg-[#6E1E14] selection:text-white pb-16`}>
 
@@ -133,6 +143,13 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
             <span className="text-[11px] sm:text-xs font-bold text-stone-600 hidden sm:inline">
               Ref: <span className="text-[#6E1E14] font-mono font-black">{itinerary.id}</span>
             </span>
+
+            {alreadyPaid > 0 && (
+              <span className="inline-flex items-center gap-1 bg-emerald-100 text-emerald-900 border border-emerald-300 text-[10px] font-black px-2 py-0.5 rounded-full shadow-2xs">
+                <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                <span>{isFullyPaid ? '✓ 100% Fully Paid' : (isAdvancePaid ? '✓ 50% Advance Paid' : '✓ 10% Token Paid')}</span>
+              </span>
+            )}
           </div>
 
           <ItineraryClientActions
@@ -527,6 +544,45 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                   </div>
                 </div>
               </div>
+
+              {/* LIVE VERIFIED PAYMENT STATUS CARD (IF ALREADY PAID) */}
+              {alreadyPaid > 0 && (
+                <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-emerald-400/40 space-y-2 mt-3">
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/15 pb-2">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+                      <span className="text-xs font-black uppercase tracking-wider text-emerald-300">
+                        {isFullyPaid ? '✓ 100% Tour Confirmed & Cleared' : (isAdvancePaid ? '✓ 50% Advance Paid & Locked' : '✓ 10% Token Paid & Proposal Locked')}
+                      </span>
+                    </div>
+                    <span className="text-[11px] bg-emerald-500/20 text-emerald-300 font-extrabold px-2.5 py-0.5 rounded-full border border-emerald-400/30">
+                      Payment Verified
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 text-xs">
+                    <div className="bg-emerald-950/50 p-3 rounded-xl border border-emerald-500/30 flex items-center justify-between">
+                      <span className="text-stone-300 font-semibold">Total Paid to Date:</span>
+                      <span className="font-black text-emerald-300 text-sm sm:text-base">₹{alreadyPaid.toLocaleString('en-IN')}/-</span>
+                    </div>
+
+                    <div className="bg-amber-950/50 p-3 rounded-xl border border-amber-500/30 flex items-center justify-between">
+                      <span className="text-stone-300 font-semibold">Remaining Balance:</span>
+                      <span className="font-black text-amber-300 text-sm sm:text-base">₹{remainingBalanceAmount.toLocaleString('en-IN')}/-</span>
+                    </div>
+                  </div>
+
+                  <p className="text-[11px] text-amber-200/90 font-medium pt-0.5">
+                    {isTokenPaid ? (
+                      <>Next Stage: <b>₹{(fiftyPercentAmount - alreadyPaid).toLocaleString('en-IN')} Advance</b> payable within 7 days. Final balance due 15 days before travel.</>
+                    ) : isAdvancePaid ? (
+                      <>Next Stage: <b>Final Balance ₹{remainingBalanceAmount.toLocaleString('en-IN')}</b> payable 15 days before departure.</>
+                    ) : (
+                      <>All luxury hotel stays, cruise cabin & private chauffeur transport are fully confirmed. Zero pending dues!</>
+                    )}
+                  </p>
+                </div>
+              )}
             </div>
           )}
 
@@ -668,6 +724,9 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
               gstPercentage={itinerary.gstPercentage || 5}
               tcsPercentage={itinerary.tcsPercentage || 2}
               totalQuotationAmount={itinerary.finalQuotationAmount || 853860}
+              advanceAmountPaid={alreadyPaid}
+              balancePendingAmount={remainingBalanceAmount}
+              paymentStage={itinerary.paymentStage}
               leadName={leadName}
               numDays={numDays}
               numNights={numNights}
@@ -739,6 +798,8 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
           gstPercentage={itinerary.gstPercentage || 5}
           tcsPercentage={itinerary.tcsPercentage || 2}
           totalQuotationAmount={itinerary.finalQuotationAmount}
+          advanceAmountPaid={alreadyPaid}
+          balancePendingAmount={remainingBalanceAmount}
           leadName={leadName}
           numDays={numDays}
           numNights={numNights}
