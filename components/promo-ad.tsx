@@ -11,6 +11,8 @@ export function PromoAdCard() {
   // Disable completely on all itinerary pages, booking, checkout, payment, and admin
   const isExcluded =
     pathname.startsWith('/itinerary') ||
+    pathname.startsWith('/manual-itinerary') ||
+    pathname.startsWith('/itinerary-custom') ||
     pathname.startsWith('/booking') ||
     pathname.startsWith('/payment') ||
     pathname.startsWith('/checkout') ||

@@ -843,6 +843,442 @@ export const vietnamAneeshManualItinerary: ManualItinerary = {
   ]
 };
 
+export const vietnamYashManualItinerary: ManualItinerary = {
+  id: 'vietnam-yash',
+  slug: 'vietnam-luxury-honeymoon-expedition',
+  title: 'Grand Vietnam & Ha Long Bay Luxury Honeymoon Expedition',
+  subtitle: '4-Star Luxury Hotels & 5-Star Cruise Honeymoon Expedition • North to South Vietnam',
+  duration: '10 Nights / 11 Days | 25 November – 05 December',
+  numNights: 10,
+  numDays: 11,
+  dates: '25 November – 05 December',
+  route: 'Ha Noi → Ha Long Bay → Ninh Binh → Sapa → Fansipan → Da Nang → Ba Na Hills → Hoi An → Phu Quoc',
+  routeSummary: '1N Cruise | 1N Ha Noi | 1N Sleeper Train | 2N Sapa | 2N Da Nang | 1N Ba Na Hills | 2N Phu Quoc',
+  destination: 'Vietnam',
+  travelStyle: '4-Star Luxury Private Honeymoon Tour',
+  tripType: 'Customised Private Honeymoon Tour (2 Adults)',
+  leadName: 'Valued Traveler',
+  adults: 2,
+  kids: 0,
+  perAdultPrice: 127890,
+  baseAmount: 255780,
+  gstPercentage: 5,
+  gstAmount: 12789,
+  tcsPercentage: 2,
+  tcsAmount: 5116,
+  finalQuotationAmount: 273685,
+  vehicleType: 'Private 7-Seater AC Car / Van with Dedicated Chauffeurs & English-Speaking Tour Guides',
+  mealPlan: 'Daily Breakfast at Hotels (except Day 1) & Full Board Meals (B/L/D) on Ha Long Bay Cruise',
+  heroImage: '/images/banner-vietnam-cruise.png',
+  galleryImages: [
+    '/images/banner-vietnam-cruise.png',
+    '/images/vietnam.png',
+    '/images/vietnam-wonders.png',
+    '/images/vietnam-sapa.png',
+    '/images/vietnam-highlights.png',
+    '/images/vietnam-beauty.png',
+    '/images/vietnam-best.png',
+    '/images/vietnam-mesmerising.png',
+    '/images/vietnam-exotic.png',
+    '/images/vietnam-dreamy.png'
+  ],
+  accommodations: [
+    { city: 'Ha Long Bay', nights: 1, hotelName: 'AURORA CRUISE (5-Star Luxury)', roomCategory: 'Executive Cabin' },
+    { city: 'Ha Noi', nights: 1, hotelName: 'FTE HOTEL (4-Star Superior)', roomCategory: 'Superior Room' },
+    { city: 'Overnight Train', nights: 1, hotelName: 'Hanoi to Sapa AC Sleeper Train', roomCategory: 'Comfortable Sleeper Berth' },
+    { city: 'Sapa', nights: 2, hotelName: 'DE SAPA HOTEL (4-Star Luxury)', roomCategory: 'Premier Deluxe Room' },
+    { city: 'Da Nang', nights: 2, hotelName: 'CANVAS HOTEL (4-Star Beachfront)', roomCategory: 'Classic King Room' },
+    { city: 'Ba Na Hills', nights: 1, hotelName: 'Mercure Danang French Village Bana Hills (4-Star Superior)', roomCategory: 'Standard Room' },
+    { city: 'Phu Quoc', nights: 2, hotelName: 'TAHITI BEACH HOTEL (4-Star Beachfront)', roomCategory: 'Deluxe Partial Sea View Room' }
+  ],
+  dayPlans: [
+    {
+      day: 1,
+      date: '25 Nov',
+      title: 'Day 1 | 25 Nov Ha Noi Arrival → Ha Long Bay 5-Star Luxury Overnight Cruise',
+      route: 'Noi Bai Airport / Ha Noi → Ha Long Bay',
+      durationNote: 'Arrival Day (Driver + Cruise)',
+      intro: 'Welcome to Vietnam! Arrive early morning in Hanoi, where your driver meets you to transfer directly to Ha Long Bay, a UNESCO World Heritage Site, to board your luxury overnight cruise.',
+      timeline: [
+        'Early morning flight arrival at Noi Bai International Airport in Ha Noi',
+        'Warm airport welcome by your private chauffeur and scenic transfer to Ha Long Bay',
+        'Embark on the 5-Star Aurora Cruise to discover emerald waters, towering limestone karsts, and tranquil hidden lagoons',
+        'Check-in to your Executive Cabin with private ocean view',
+        'Sumptuous welcome buffet lunch served onboard while cruising past scenic limestone karsts',
+        'Afternoon cave exploration, kayaking / bamboo boat ride, and swimming at Titop Island beach',
+        'Romantic sunset party on the sundeck with panoramic bay views',
+        'Gourmet multi-course dinner onboard, followed by evening squid fishing and relaxation'
+      ],
+      sections: [
+        {
+          title: 'Ha Long Bay Cruise Inclusions:',
+          items: [
+            '1 Night Executive Cabin on 5-Star Aurora Cruise with full board gourmet meals (L/D).',
+            'Guided cave excursions, island viewpoint climb & sunset deck party.',
+            'Private comfortable 7-seater transfer from Hanoi to Ha Long Bay.'
+          ],
+          type: 'signature'
+        }
+      ],
+      stayLocation: 'Ha Long Bay (On Cruise)',
+      image: '/images/banner-vietnam-cruise.png',
+      meals: 'Lunch & Gourmet Dinner (L/D)'
+    },
+    {
+      day: 2,
+      date: '26 Nov',
+      title: 'Day 2 | 26 Nov Ha Long Bay Cruise Disembarkation → Hanoi City Heritage Tour & 30-Min Cyclo Ride',
+      route: 'Ha Long Bay → Ha Noi City Sightseeing',
+      durationNote: 'Cruise + Hanoi City Tour (Driver + Guide)',
+      intro: 'Wake up to serene bay waters, enjoy morning Tai Chi and a farewell brunch onboard before traveling back to Hanoi for an immersive cultural city tour and traditional cyclo ride.',
+      timeline: [
+        'Morning sunrise Tai Chi session on the sundeck and light refreshments',
+        '11:30 AM: Disembark from Aurora Cruise after delicious brunch and transfer back to Hanoi in your private vehicle',
+        'Meet your dedicated local English-speaking guide upon arrival in Hanoi',
+        'Visit the sacred Temple of Literature (Van Mieu), Vietnam’s first royal university dating back to 1070',
+        'Stroll around scenic Hoan Kiem Lake and cross the scarlet bridge to Ngoc Son Temple',
+        'Experience an authentic 30-minute traditional Cyclo Tour weaving through the bustling 36 Guild Streets of Hanoi Old Quarter',
+        'Check-in at FTE Hotel Hanoi (Superior Room) and enjoy the evening at leisure exploring street cafés and night markets'
+      ],
+      sections: [
+        {
+          title: 'Hanoi Highlights Included:',
+          items: [
+            'Temple of Literature, Hoan Kiem Lake & Ngoc Son Temple entry tickets.',
+            'Authentic 30-Minute Cyclo Tour through Hanoi Old Quarter.',
+            'Private comfortable 7-seater transfer & dedicated English-speaking tour guide.'
+          ],
+          type: 'normal'
+        }
+      ],
+      stayLocation: 'Ha Noi',
+      image: '/images/vietnam.png',
+      meals: 'Brunch (B)'
+    },
+    {
+      day: 3,
+      date: '27 Nov',
+      title: 'Day 3 | 27 Nov Full-Day Ninh Binh Tour (Hoa Lu, Tam Coc Caves & Mua Cave) → Overnight Train to Sapa',
+      route: 'Ha Noi ↔ Ninh Binh (Hoa Lu, Tam Coc, Mua Cave) → Sapa Sleeper Train',
+      durationNote: 'Full Day Tour (SIC Tour + Overnight Train)',
+      intro: 'Explore the "Ha Long Bay on Land" in Ninh Binh with ancient royal temples, scenic rural cycling, Tam Coc boat ride, and Mua Cave viewpoint before boarding the overnight train to Sapa.',
+      timeline: [
+        'Breakfast at FTE Hotel Hanoi; check out and leave luggage safely with hotel reception',
+        '07:00 – 07:45 AM: Guide meets you for the 110km scenic journey through lush countryside to Ninh Binh',
+        '10:30 AM: Visit Hoa Lu Ancient Royal Citadel with historic Dinh King Temple and Le King Temple',
+        '11:30 AM: Leisure cycling on rural country roads alongside scenic canals and limestone mountain backdrops',
+        '12:00 PM: Enjoy a delicious buffet lunch at a local restaurant featuring authentic regional dishes',
+        '13:30 PM: Board a traditional sampan rowboat to cruise Tam Coc ("Three Caves" 1.5-hr ride) through karst caves and emerald rice paddies',
+        '15:30 PM: Arrive at Mua Cave and hike up Ngoa Long Mountain (Dragon Peak) for breathtaking panoramic views of the entire valley',
+        '16:30 PM: Board bus and return to Hanoi (drop-off around 18:30 PM); collect luggage and relax at hotel lobby / café',
+        'Late evening: Private driver transfer to Hanoi Railway Station to board the AC Overnight Sleeper Train to Lao Cai / Sapa'
+      ],
+      sections: [
+        {
+          title: 'Ninh Binh Inclusions & Note:',
+          note: 'Hotel room in Hanoi is not included for this night as you will be sleeping aboard the overnight AC sleeper train to Sapa.',
+          items: [
+            'Hoa Lu Ancient Citadel, Tam Coc 1.5-Hr Sampan Rowboat ride & Mua Cave Dragon Peak entry.',
+            'Rural village cycling experience & authentic Vietnamese buffet lunch.',
+            'Hanoi to Sapa Overnight AC Sleeper Train Ticket.'
+          ],
+          type: 'normal'
+        }
+      ],
+      stayLocation: 'On Overnight Sleeper Train (Hanoi → Lao Cai / Sapa)',
+      image: '/images/vietnam-wonders.png',
+      meals: 'Breakfast (B) & Local Buffet Lunch'
+    },
+    {
+      day: 4,
+      date: '28 Nov',
+      title: 'Day 4 | 28 Nov Sapa Arrival → Rong May Glass Bridge, Swing Sapa, Alpine Coaster & Cat Cat Village',
+      route: 'Lao Cai Station → Sapa Town → Glass Bridge & Cat Cat',
+      durationNote: 'Full Day Tour (Driver + Guide)',
+      intro: 'Arrive early morning in misty Sapa, marvel at thrilling glass bridge views and alpine coasters made for couples, and immerse in ethnic Black H’mong culture at Cat Cat Village.',
+      timeline: [
+        'Early morning arrival at Lao Cai Railway Station; private chauffeur meets you and drives up the mountain pass to Sapa',
+        'Arrive at De Sapa Hotel to freshen up and leave luggage (early check-in subject to room readiness)',
+        'Meet your local guide and head to Rong May Sapa Glass Bridge suspended high above the misty mountain pass',
+        'Experience the thrilling Swing Sapa with Rainbow Slide and Ban Mong Alpine Coaster ride',
+        'Continue to picturesque Cat Cat Village, a traditional Black H’mong settlement with cascading streams, wooden houses, and waterwheels',
+        'Check in to De Sapa Hotel (Premier Deluxe Room) and enjoy an evening at leisure sampling hot pot and strolling through misty Sapa town'
+      ],
+      sections: [
+        {
+          title: 'Sapa Adventure Inclusions:',
+          items: [
+            'Rong May Sapa Glass Bridge & Ban Mong Alpine Coaster experience.',
+            'Swing Sapa photo experience with Rainbow Slide.',
+            'Cat Cat Village cultural entry and guided ethnic walking tour.'
+          ],
+          type: 'signature'
+        }
+      ],
+      stayLocation: 'Sapa',
+      image: '/images/vietnam-sapa.png',
+      meals: 'Breakfast on own / In-town'
+    },
+    {
+      day: 5,
+      date: '29 Nov',
+      title: 'Day 5 | 29 Nov Fansipan Legend Peak ("Roof of Indochina") & Sapa City Tour',
+      route: 'Sapa Town ↔ Fansipan Legend Summit (3,143m)',
+      durationNote: 'Peak Excursion (Driver + Guide)',
+      intro: 'Ascend to the highest peak in Indochina via mountain funicular and world-record cable car, touch the summit milestone, and explore Sapa’s cultural landmarks.',
+      timeline: [
+        'Breakfast at De Sapa Hotel',
+        'Board the scenic 2-Way Muong Hoa Mountain Train through terraced flower valleys',
+        'Glide across the clouds on the 2-Way Fansipan Legend High-Altitude Cable Car over Hoang Lien Son mountain range',
+        'Take the 1-Way Summit Funicular Train to the top of Fansipan Peak (3,143m) above the sea of clouds',
+        'Touch the iconic summit milestone and admire the monumental Grand Buddha statue on the sacred mountain',
+        'In the afternoon, enjoy a Sapa City Tour including the iconic Gothic Stone Church and central cultural square',
+        'Return to De Sapa Hotel for leisure and relaxation'
+      ],
+      sections: [
+        {
+          title: 'Fansipan Highlights Included:',
+          items: [
+            '2-Way Muong Hoa Funicular Mountain Train Ticket.',
+            '2-Way Fansipan Legend Cable Car Ticket.',
+            '1-Way Summit Funicular to the peak of Fansipan (3,143m).',
+            'Sapa Stone Church & Central Square heritage tour.'
+          ],
+          type: 'signature'
+        }
+      ],
+      stayLocation: 'Sapa',
+      image: '/images/vietnam-highlights.png',
+      meals: 'Breakfast (B)'
+    },
+    {
+      day: 6,
+      date: '30 Nov',
+      title: 'Day 6 | 30 Nov Sapa to Hanoi Airport by Sleeper Bus → Flight to Da Nang',
+      route: 'Sapa → Hanoi Noi Bai Airport (Sleeper Bus) ✈ Flight to Da Nang',
+      durationNote: 'Transfer Day (Sleeper Bus + Driver)',
+      intro: 'Descend from the highlands on a comfortable sleeper bus to Hanoi Airport, and fly to the coastal city of Da Nang for beachfront relaxation.',
+      timeline: [
+        'Breakfast at De Sapa Hotel and leisurely morning packing',
+        'Transfer to Sapa bus station and board comfortable AC Sleeper Bus back to Hanoi Noi Bai Airport',
+        'Board domestic flight to Da Nang (recommended flight after 17:30 PM - flight ticket not included)',
+        'Upon arrival at Da Nang Airport, private chauffeur warmly welcomes you and transfers to Canvas Hotel Da Nang',
+        'Check-in to your Classic King Room and spend a romantic evening walking along My Khe Beach'
+      ],
+      sections: [
+        {
+          title: 'Highland to Coast Transfer:',
+          items: [
+            'Comfortable AC Sleeper Bus ticket from Sapa to Hanoi Airport.',
+            'Private Da Nang Airport pickup and hotel transfer.',
+            'Overnight at 4-Star Canvas Hotel Da Nang.'
+          ],
+          type: 'normal'
+        }
+      ],
+      stayLocation: 'Da Nang',
+      image: '/images/vietnam-beauty.png',
+      meals: 'Breakfast (B)'
+    },
+    {
+      day: 7,
+      date: '01 Dec',
+      title: 'Day 7 | 01 Dec Ba Na Hills Cable Car, Golden Bridge & Romantic French Village Overnight Stay',
+      route: 'Da Nang → Ba Na Hills Mountain Resort',
+      durationNote: 'Mountain Resort Stay (Driver)',
+      intro: 'Journey up Ba Na Hills on a scenic cable car, walk hand-in-hand across the iconic Golden Bridge held by giant stone hands, and enjoy an enchanting overnight stay in the European French Village.',
+      timeline: [
+        'Breakfast at Canvas Hotel Da Nang and check-out',
+        'Private driver transfer from Da Nang to Ba Na Hills station',
+        'Take the world-renowned scenic cable car ride offering breathtaking waterfall and mountain views',
+        'Walk across the world-famous Golden Bridge (Cau Vang) held by giant stone hands surrounded by clouds',
+        'Stroll through the romantic cobblestone lanes and Gothic architecture of the French Village',
+        'Enjoy exciting amusement rides, 4D/5D cinema, and games at Fantasy Park',
+        'Check-in at Mercure Danang French Village Bana Hills (Standard Room) for a magical evening high above the clouds'
+      ],
+      sections: [
+        {
+          title: 'Ba Na Hills Inclusions:',
+          items: [
+            'Round-trip Ba Na Hills Cable Car Ticket & Fantasy Park amusement access.',
+            'Golden Bridge (Cau Vang) giant hands walk.',
+            'Overnight stay atop Ba Na Hills at Mercure French Village.'
+          ],
+          type: 'signature'
+        }
+      ],
+      stayLocation: 'Ba Na Hills',
+      image: '/images/vietnam-best.png',
+      meals: 'Breakfast (B)'
+    },
+    {
+      day: 8,
+      date: '02 Dec',
+      title: 'Day 8 | 02 Dec Ba Na Hills → Cam Thanh Coconut Basket Boat → Hoi An Lantern Town & Lantern Boat Ride',
+      route: 'Ba Na Hills → Cam Thanh → Hoi An Ancient Town → Da Nang',
+      durationNote: 'Full Day Tour (Driver + Guide)',
+      intro: 'Descend Ba Na Hills and journey to Cam Thanh Coconut Forest for a thrilling basket boat ride, followed by a walking tour through lantern-lit Hoi An Ancient Town and a lantern boat ride on the Hoai River.',
+      timeline: [
+        'Breakfast at Mercure French Village Bana Hills and leisure morning photography',
+        'Check-out, descend by cable car, and meet your private guide and chauffeur',
+        'Head to Cam Thanh Coconut Forest for a fun bamboo basket boat ride with traditional spinning',
+        'Arrive in UNESCO World Heritage Hoi An Ancient Town for a guided walking tour through historic lantern-lit streets, Japanese Covered Bridge, and ancient Chinese assembly halls',
+        'Board a wooden boat for a romantic candle-lit lantern boat ride on the Hoai River, releasing floating paper lanterns for good fortune',
+        'Evening transfer back to Da Nang; check in at Canvas Hotel and enjoy the rest of the evening at leisure'
+      ],
+      sections: [
+        {
+          title: 'Hoi An Highlights Included:',
+          items: [
+            'Cam Thanh Coconut Forest bamboo basket boat adventure.',
+            'Hoi An Ancient Town UNESCO World Heritage walking tour ticket.',
+            'Romantic Hoai River lantern boat ride with floating paper lanterns.'
+          ],
+          type: 'signature'
+        }
+      ],
+      stayLocation: 'Da Nang',
+      image: '/images/vietnam-mesmerising.png',
+      meals: 'Breakfast (B)'
+    },
+    {
+      day: 9,
+      date: '03 Dec',
+      title: 'Day 9 | 03 Dec Flight to Tropical Phu Quoc Island & Sunset Beachfront Relaxation',
+      route: 'Da Nang Airport ✈ Flight to Phu Quoc Island',
+      durationNote: 'Flight & Island Transfer (Driver)',
+      intro: 'Fly to Vietnam’s premier tropical island, Phu Quoc, check-in to your beachfront resort, and unwind with white sands, swaying palms, and golden sunsets.',
+      timeline: [
+        'Breakfast at Canvas Hotel Da Nang and check-out',
+        'Private driver transfer to Da Nang Airport for your flight to Phu Quoc Island (flight ticket not included)',
+        'Warm airport greeting by your private driver upon landing in Phu Quoc',
+        'Transfer to Tahiti Beach Hotel and check in to your Deluxe Partial Sea View Room',
+        'Spend a romantic afternoon swimming in crystal-clear waters or enjoying tropical cocktails by the beach',
+        'Evening at leisure to explore the vibrant Phu Quoc Night Market with fresh grilled seafood'
+      ],
+      sections: [
+        {
+          title: 'Tropical Island Gateway:',
+          items: [
+            'Private Da Nang Airport departure transfer & Phu Quoc Airport arrival transfer.',
+            'Deluxe Partial Sea View Room at Tahiti Beach Hotel.',
+            'Sunset beachfront relaxation & night market exploration.'
+          ],
+          type: 'normal'
+        }
+      ],
+      stayLocation: 'Phu Quoc Island',
+      image: '/images/vietnam-exotic.png',
+      meals: 'Breakfast (B)'
+    },
+    {
+      day: 10,
+      date: '04 Dec',
+      title: 'Day 10 | 04 Dec VinWonders Theme Park & Grand World ("The Sleepless City") Phu Quoc',
+      route: 'Phu Quoc Resort ↔ VinWonders & Grand World',
+      durationNote: 'Full Day Theme Park Excursion (Driver)',
+      intro: 'Enjoy an exhilarating day of world-class rides, giant waterpark slides, and Neptune Aquarium at VinWonders, followed by colorful evening strolls in Grand World.',
+      timeline: [
+        'Breakfast at Tahiti Beach Hotel',
+        'Set out for a full day of excitement at VinWonders Phu Quoc, the island’s largest world-class theme park',
+        'Explore 6 themed zones: Typhoon World waterpark, Adventure World rollercoasters, European Avenue, and Giant Turtle Sea Shell Aquarium',
+        'In the afternoon/evening, continue to Grand World ("The Sleepless City"), the vibrant entertainment and cultural complex with European canals and colorful architecture',
+        '(Note: Tinh Hoa Show, Venice boat trip, and Teddy Bear Museum are optional on own)',
+        'Return to Tahiti Beach Hotel for a restful overnight stay'
+      ],
+      sections: [
+        {
+          title: 'Phu Quoc Theme Park Inclusions:',
+          items: [
+            'VinWonders Phu Quoc Full-Day All-Access Entry Ticket.',
+            'Grand World European complex visit & entertainment.',
+            'Private comfortable vehicle transfer with dedicated chauffeur.'
+          ],
+          type: 'normal'
+        }
+      ],
+      stayLocation: 'Phu Quoc Island',
+      image: '/images/vietnam-dreamy.png',
+      meals: 'Breakfast (B)'
+    },
+    {
+      day: 11,
+      date: '05 Dec',
+      title: 'Day 11 | 05 Dec Vinpearl Safari Adventure & Airport Departure Flight',
+      route: 'Phu Quoc Island → Vinpearl Safari → Airport Departure',
+      durationNote: 'Safari & Airport Departure (Driver)',
+      intro: 'Experience Vietnam’s premier semi-wildlife open safari park with over 150 species from around the world, before transferring to the airport for your flight home.',
+      timeline: [
+        'Breakfast at Tahiti Beach Hotel and check-out (luggage stored securely in vehicle)',
+        'Embark on an adventure at Vinpearl Safari, Vietnam’s largest semi-wildlife conservation park',
+        'Board a specialized safari tram through open habitats where lions, giraffes, rhinos, zebras, and tigers roam freely',
+        'Watch the live animal conservation presentation and take memorable photos with exotic birds and animals',
+        'Afternoon transfer to Phu Quoc / Hanoi Noi Bai Airport for your flight back home (recommended flight after 17:30 PM)',
+        'Board your flight home carrying unforgettable honeymoon memories of Vietnam!'
+      ],
+      sections: [
+        {
+          title: 'Safari & Departure Inclusions:',
+          items: [
+            'Vinpearl Safari Open Conservation Park Entry & Tram Tour Ticket.',
+            'Private chauffeur transfer from safari to airport.'
+          ],
+          type: 'normal'
+        }
+      ],
+      stayLocation: 'Departure',
+      image: '/images/vietnam-beauty.png',
+      meals: 'Breakfast (B)'
+    }
+  ],
+  inclusions: [
+    'Transfer on private comfortable 07-seater AC car/van throughout the tour',
+    'Transfer from Ha Noi to Sapa by overnight AC sleeper train',
+    'Transfer from Sapa to Ha Noi Airport by comfortable AC sleeper bus',
+    'Daily breakfast at the hotel (except Day 1)',
+    '2D1N Ha Long Bay 5-Star Luxury Overnight Cruise (Aurora Cruise - Executive Cabin) with full board meals (Lunch, Gourmet Dinner, Brunch)',
+    'Ha Noi City Tour (Temple of Literature, Hoan Kiem Lake, Ngoc Son Temple)',
+    '30-Minute Traditional Cyclo Tour in Hanoi Old Quarter',
+    'Ninh Binh Full Day SIC Tour (Hoa Lu Ancient Citadel, Tam Coc 1.5-Hr Boat Ride, Mua Cave Dragon Peak & Buffet Lunch)',
+    'Rong May Sapa Glass Bridge Experience',
+    'Swing Sapa with Rainbow Slide',
+    'Ban Mong Alpine Coaster',
+    'Fansipan Legend Peak including 2-Way Muong Hoa Train, 2-Way Cable Car & 1-Way Summit Funicular to the top of Fansipan (3,143m)',
+    'Sapa City Tour (Gothic Stone Church & Central Square)',
+    'Ba Na Hills Cable Car Ticket & Fantasy Park Admission',
+    'Overnight stay atop Ba Na Hills at Mercure Danang French Village',
+    'Cam Thanh Coconut Forest traditional bamboo basket boat ride',
+    'Hoi An Ancient Town UNESCO World Heritage guided walking tour',
+    'Romantic Hoai River candle-lit lantern boat ride',
+    'VinWonders Phu Quoc Full-Day Theme Park Ticket',
+    'Vinpearl Safari Phu Quoc Semi-Wildlife Park Ticket',
+    'Professional English-speaking tour guides as mentioned in the itinerary',
+    'Complimentary drinking water on tour (2 bottles/pax/day)',
+    'All government taxes & service charges'
+  ],
+  exclusions: [
+    'All Flight tickets (International flights & Domestic flights: Hanoi → Da Nang, Da Nang → Phu Quoc) and meals NOT mentioned in the itinerary',
+    'Compulsory tipping for driver and guide: 5 USD / 1 PAX / 1 DAY WITH TOUR GUIDE',
+    'Lunches and Dinners (except where mentioned on cruise and Ninh Binh tour)',
+    'Dinner with transfer',
+    'Vietnam E-Visa fees',
+    'Personal expenses, laundry, telephone calls, mini-bar, alcoholic drinks',
+    'Optional shows & attractions (Tinh Hoa Show, Venice boat trip, Teddy Bear Museum in Grand World)',
+    'Any other items or services not mentioned in the inclusions'
+  ],
+  thingsToCarry: [
+    'Passports with at least 6 months validity & printed Vietnam E-Visas',
+    'Light Summer Clothes for Phu Quoc, Da Nang & Hoi An',
+    'Warm Jacket / Fleece Layer for Sapa & Fansipan Peak (3,143m)',
+    'Swimwear & Beach Towel for Ha Long Bay Cruise & Phu Quoc',
+    'Comfortable Walking Shoes / Sneakers for trekking and temples',
+    'Sunscreen (SPF 50+), Sunglasses & Sun Hat',
+    'Personal First Aid & Travel Medicines',
+    'Power Bank, Universal Travel Adapter & Phone Chargers',
+    'Vietnam Dong (VND) / USD & Forex Cards'
+  ]
+};
+
 export const manualItinerariesRegistry: Record<string, ManualItinerary> = {
   'himachal-explorer': himachalExplorerManualItinerary,
   'wanderphilia-signature-himachal-explorer': himachalExplorerManualItinerary,
@@ -855,7 +1291,18 @@ export const manualItinerariesRegistry: Record<string, ManualItinerary> = {
   'mr-aneesh-x5-vietnam-trip': vietnamAneeshManualItinerary,
   'vietnam-aneesh-x4': vietnamAneeshManualItinerary,
   'vietnam-aneesh-x5': vietnamAneeshManualItinerary,
-  'wp-vietnam-aneesh': vietnamAneeshManualItinerary
+  'wp-vietnam-aneesh': vietnamAneeshManualItinerary,
+  'vietnam-yash': vietnamYashManualItinerary,
+  'vietnam-honeymoon': vietnamYashManualItinerary,
+  'vietnam-luxury-honeymoon': vietnamYashManualItinerary,
+  'vietnam-luxury-honeymoon-expedition': vietnamYashManualItinerary,
+  'vietnam-honeymoon-yash': vietnamYashManualItinerary,
+  'mr-yash-vietnam': vietnamYashManualItinerary,
+  'mr-yash-x2-vietnam-trip': vietnamYashManualItinerary,
+  'mr-yash-x2-vietnam-honeymoon-trip': vietnamYashManualItinerary,
+  'mr-yash-x2-vietnam-honeymoon-trip-8-days': vietnamYashManualItinerary,
+  'vietnam-yash-honeymoon': vietnamYashManualItinerary,
+  'wp-vietnam-yash': vietnamYashManualItinerary
 };
 
 export function getManualItinerary(idOrSlug: string): ManualItinerary | null {
@@ -867,7 +1314,7 @@ export function getManualItinerary(idOrSlug: string): ManualItinerary | null {
 }
 
 export function getAllManualItineraries(): ManualItinerary[] {
-  return [himachalExplorerManualItinerary, vietnamAneeshManualItinerary];
+  return [himachalExplorerManualItinerary, vietnamAneeshManualItinerary, vietnamYashManualItinerary];
 }
 
 /**

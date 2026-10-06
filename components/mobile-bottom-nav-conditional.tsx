@@ -15,7 +15,9 @@ export function MobileBottomNavConditional() {
     /^\/christmas-and-new-year\/[^/]+\/[^/]+/.test(pathname) ||
     /^\/category\/[^/]+\/[^/]+/.test(pathname) ||
     pathname.startsWith('/booking') ||
-    pathname.startsWith('/itinerary/') ||
+    pathname.startsWith('/itinerary') ||
+    pathname.startsWith('/manual-itinerary') ||
+    pathname.startsWith('/itinerary-custom') ||
     pathname.startsWith('/admin')
 
   return <>{!hideMobileNav && <MobileBottomNav />}</>

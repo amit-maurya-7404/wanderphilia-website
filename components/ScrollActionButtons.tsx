@@ -24,6 +24,8 @@ export default function ScrollActionButtons() {
     const pathname = usePathname() || "";
     const isExcluded =
         pathname.startsWith("/itinerary") ||
+        pathname.startsWith("/manual-itinerary") ||
+        pathname.startsWith("/itinerary-custom") ||
         pathname.startsWith("/booking") ||
         pathname.startsWith("/payment") ||
         pathname.startsWith("/checkout") ||
