@@ -28,6 +28,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const title = `${itinerary.title.toUpperCase()} | Wanderphilia Exclusive`;
   const description = `${itinerary.duration} - ${itinerary.route}. Curated luxury mountain expedition by Wanderphilia.`;
+  const teamImageUrl = 'https://wanderphilia.com/images/team5.jpg';
 
   return {
     title,
@@ -35,7 +36,23 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     openGraph: {
       title,
       description,
-      images: itinerary.heroImage ? [{ url: itinerary.heroImage }] : [],
+      url: `https://wanderphilia.com/itinerary-custom/${slug}`,
+      siteName: 'Wanderphilia',
+      images: [
+        {
+          url: teamImageUrl,
+          width: 1200,
+          height: 630,
+          alt: 'Wanderphilia Team',
+        },
+      ],
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [teamImageUrl],
     },
   };
 }

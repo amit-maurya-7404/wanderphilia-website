@@ -112,6 +112,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const title = `${itinerary.destination?.toUpperCase()} ITINERARY | Wanderphilia Exclusive`;
   const description = itinerary.description || `Custom luxury travel itinerary for ${itinerary.destination} curated by Wanderphilia.`;
+  const teamImageUrl = 'https://wanderphilia.com/images/team5.jpg';
 
   return {
     title,
@@ -119,7 +120,23 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     openGraph: {
       title,
       description,
-      images: itinerary.heroImage ? [{ url: itinerary.heroImage }] : [],
+      url: `https://wanderphilia.com/itinerary/${id}`,
+      siteName: 'Wanderphilia',
+      images: [
+        {
+          url: teamImageUrl,
+          width: 1200,
+          height: 630,
+          alt: 'Wanderphilia Team',
+        },
+      ],
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [teamImageUrl],
     },
   };
 }

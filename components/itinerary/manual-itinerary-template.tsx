@@ -501,48 +501,77 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5">
-                {/* Per Adult Rate (Total Cost ÷ 4) */}
-                <div className="bg-white/10 backdrop-blur-md rounded-xl p-3.5 sm:p-4 border border-white/15 space-y-1">
-                  <div className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-amber-300 flex items-center justify-between">
-                    <span>Cost Per Guest</span>
-                    <Users className="w-4 h-4 text-amber-300" />
-                  </div>
-                  <div className="text-xl sm:text-2xl font-black text-white">
-                    ₹{(itinerary.perAdultPrice || Math.round((itinerary.finalQuotationAmount || 683088) / (itinerary.adults || 4))).toLocaleString('en-IN')}/-
-                  </div>
-                  <div className="text-[10px] text-white/80 font-medium">
-                    (₹{(itinerary.finalQuotationAmount || 683088).toLocaleString('en-IN')} ÷ {itinerary.adults || 4} Guests All-Inclusive)
-                  </div>
-                </div>
+              {/* Pricing calculations */}
+              {(() => {
+                const adultsCount = itinerary.adults || 4;
+                const baseTotal = itinerary.baseAmount || 638400;
+                const basePerGuest = Math.round(baseTotal / adultsCount);
+                const gstTotal = itinerary.gstAmount || Math.round(baseTotal * ((itinerary.gstPercentage || 5) / 100));
+                const tcsTotal = itinerary.tcsAmount || Math.round(baseTotal * ((itinerary.tcsPercentage || 2) / 100));
+                const gstPerGuest = Math.round(gstTotal / adultsCount);
+                const tcsPerGuest = Math.round(tcsTotal / adultsCount);
+                const grandTotal = totalQuotationAmount || (baseTotal + gstTotal + tcsTotal);
+                const grandTotalPerGuest = Math.round(grandTotal / adultsCount);
 
-                {/* Total Quotation with Taxes */}
-                <div className="bg-white/10 backdrop-blur-md rounded-xl p-3.5 sm:p-4 border border-white/15 space-y-1">
-                  <div className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-amber-300 flex items-center justify-between">
-                    <span>Total Package Cost</span>
-                    <Parachute size={16} className="w-4 h-4 text-amber-300" />
-                  </div>
-                  <div className="text-xl sm:text-2xl font-black text-white">
-                    ₹{(itinerary.finalQuotationAmount || 683088).toLocaleString('en-IN')}/-
-                  </div>
-                  <div className="text-[10px] text-amber-200 font-semibold">
-                    Incl. 5% GST (₹{(itinerary.gstAmount || 31920).toLocaleString('en-IN')}) + 2% TCS (₹{(itinerary.tcsAmount || 12768).toLocaleString('en-IN')})
-                  </div>
-                </div>
+                return (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5">
+                    {/* 1. Cost Per Guest (Base + Taxes + Grand Total) */}
+                    <div className="bg-white/10 backdrop-blur-md rounded-xl p-3.5 sm:p-4 border border-white/15 flex flex-col justify-between space-y-2">
+                      <div className="space-y-1">
+                        <div className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-amber-300 flex items-center justify-between">
+                          <span>Cost Per Guest</span>
+                          <Users className="w-4 h-4 text-amber-300" />
+                        </div>
+                        <div className="text-xl sm:text-2xl font-black text-white">
+                          ₹{basePerGuest.toLocaleString('en-IN')}/-
+                        </div>
+                        <div className="space-y-0.5 pt-0.5 text-[11px] text-amber-200/95 font-semibold leading-tight">
+                          <div>+ 5% GST: ₹{gstPerGuest.toLocaleString('en-IN')}/-</div>
+                          <div>+ 2% TCS: ₹{tcsPerGuest.toLocaleString('en-IN')}/-</div>
+                        </div>
+                      </div>
+                      <div className="pt-2 border-t border-white/15 text-[11px] text-white/90 font-medium flex items-center justify-between">
+                        <span className="text-white/70">Grand Total:</span>
+                        <span className="text-amber-300 font-black text-xs sm:text-sm">₹{grandTotalPerGuest.toLocaleString('en-IN')}/-</span>
+                      </div>
+                    </div>
 
-                {/* Booking Options Note */}
-                <div className="bg-white/10 backdrop-blur-md rounded-xl p-3.5 sm:p-4 border border-white/15 space-y-1 sm:col-span-2 md:col-span-1">
-                  <div className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-emerald-300 flex items-center justify-between">
-                    <span>Flexible Payment Stages</span>
-                    <CreditCard className="w-4 h-4 text-emerald-300" />
+                    {/* 2. Total Package Cost (Base + Taxes + Grand Total) */}
+                    <div className="bg-white/10 backdrop-blur-md rounded-xl p-3.5 sm:p-4 border border-white/15 flex flex-col justify-between space-y-2">
+                      <div className="space-y-1">
+                        <div className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-amber-300 flex items-center justify-between">
+                          <span>Total Package Cost</span>
+                          <Parachute size={16} className="w-4 h-4 text-amber-300" />
+                        </div>
+                        <div className="text-xl sm:text-2xl font-black text-white">
+                          ₹{baseTotal.toLocaleString('en-IN')}/-
+                        </div>
+                        <div className="space-y-0.5 pt-0.5 text-[11px] text-amber-200/95 font-semibold leading-tight">
+                          <div>+ 5% GST: ₹{gstTotal.toLocaleString('en-IN')}/-</div>
+                          <div>+ 2% TCS: ₹{tcsTotal.toLocaleString('en-IN')}/-</div>
+                        </div>
+                      </div>
+                      <div className="pt-2 border-t border-white/15 text-[11px] text-white/90 font-medium flex items-center justify-between">
+                        <span className="text-white/70">Grand Total:</span>
+                        <span className="text-amber-300 font-black text-xs sm:text-sm">₹{grandTotal.toLocaleString('en-IN')}/-</span>
+                      </div>
+                    </div>
+
+                    {/* 3. Flexible Payment Stages */}
+                    <div className="bg-white/10 backdrop-blur-md rounded-xl p-3.5 sm:p-4 border border-white/15 space-y-1 sm:col-span-2 md:col-span-1">
+                      <div className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-emerald-300 flex items-center justify-between">
+                        <span>Flexible Payment Stages</span>
+                        <CreditCard className="w-4 h-4 text-emerald-300" />
+                      </div>
+                      <div className="text-[11px] text-white/90 space-y-0.5 pt-0.5 font-semibold">
+                        <div>• 10% Token: ₹{Math.round(grandTotal * 0.10).toLocaleString('en-IN')}/- (Locks dates & proposal)</div>
+                        <div>• 50% Advance: ₹{Math.round(grandTotal * 0.50).toLocaleString('en-IN')}/- (Due in 7 days)</div>
+                        <div>• Final Balance: Due 15 days before departure</div>
+                      </div>
+                    </div>
                   </div>
-                  <div className="text-[11px] text-white/90 space-y-0.5 pt-0.5 font-semibold">
-                    <div>• 10% Token: ₹{Math.round(((itinerary.finalQuotationAmount || 683088) * 0.10)).toLocaleString('en-IN')}/- (Locks dates & proposal)</div>
-                    <div>• 50% Advance: ₹{Math.round(((itinerary.finalQuotationAmount || 683088) * 0.50)).toLocaleString('en-IN')}/- (Due in 7 days)</div>
-                    <div>• Final Balance: Due 15 days before departure</div>
-                  </div>
-                </div>
-              </div>
+                );
+              })()}
 
               {/* LIVE VERIFIED PAYMENT STATUS CARD (IF ALREADY PAID) */}
               {alreadyPaid > 0 && (
