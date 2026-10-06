@@ -59,6 +59,8 @@ export interface ManualItinerary {
   perKidPrice?: number;
   adults?: number;
   kids?: number;
+  childPricingNote?: string;
+  kidsDetails?: string;
   baseAmount?: number;
   gstPercentage?: number;
   tcsPercentage?: number;

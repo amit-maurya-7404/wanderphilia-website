@@ -497,20 +497,122 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                   </h3>
                 </div>
                 <div className="bg-amber-400/20 text-amber-300 border border-amber-400/40 text-[11px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
-                  {itinerary.adults || 4} Adults Included
+                  {itinerary.kids && itinerary.kids > 0 
+                    ? `${itinerary.adults || 2} Adults + ${itinerary.kids} Kids (Family Tour)` 
+                    : `${itinerary.adults || 4} Adults Included`}
                 </div>
               </div>
 
               {/* Pricing calculations */}
               {(() => {
-                const adultsCount = itinerary.adults || 4;
+                const adultsCount = itinerary.adults || 2;
                 const baseTotal = itinerary.baseAmount || 638400;
+                const gstPct = itinerary.gstPercentage || 5;
+                const tcsPct = itinerary.tcsPercentage || 2;
+                const gstTotal = itinerary.gstAmount || Math.round(baseTotal * (gstPct / 100));
+                const tcsTotal = itinerary.tcsAmount || Math.round(baseTotal * (tcsPct / 100));
+                const grandTotal = totalQuotationAmount || (baseTotal + gstTotal + tcsTotal);
+
+                const hasKidPrice = Boolean(itinerary.perKidPrice && itinerary.perKidPrice > 0);
+                const adultBase = itinerary.perAdultPrice || Math.round(baseTotal / adultsCount);
+                const adultGst = Math.round(adultBase * (gstPct / 100));
+                const adultTcs = Math.round(adultBase * (tcsPct / 100));
+                const adultGrand = adultBase + adultGst + adultTcs;
+
+                const kidBase = itinerary.perKidPrice || 0;
+                const kidGst = Math.round(kidBase * (gstPct / 100));
+                const kidTcs = Math.round(kidBase * (tcsPct / 100));
+                const kidGrand = kidBase + kidGst + kidTcs;
+
+                if (hasKidPrice) {
+                  return (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+                      {/* 1. Per Adult Cost */}
+                      <div className="bg-white/10 backdrop-blur-md rounded-xl p-3.5 sm:p-4 border border-white/15 flex flex-col justify-between space-y-2">
+                        <div className="space-y-1">
+                          <div className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-amber-300 flex items-center justify-between">
+                            <span>Cost Per Adult</span>
+                            <Users className="w-4 h-4 text-amber-300" />
+                          </div>
+                          <div className="text-lg sm:text-xl font-black text-white">
+                            ₹{adultBase.toLocaleString('en-IN')}/-
+                          </div>
+                          <div className="space-y-0.5 pt-0.5 text-[10px] sm:text-[11px] text-amber-200/95 font-semibold leading-tight">
+                            <div>+ 5% GST: ₹{adultGst.toLocaleString('en-IN')}/-</div>
+                            <div>+ 2% TCS: ₹{adultTcs.toLocaleString('en-IN')}/-</div>
+                          </div>
+                        </div>
+                        <div className="pt-2 border-t border-white/15 text-[11px] text-white/90 font-medium flex items-center justify-between">
+                          <span className="text-white/70">Grand Total:</span>
+                          <span className="text-amber-300 font-black text-xs sm:text-sm">₹{adultGrand.toLocaleString('en-IN')}/-</span>
+                        </div>
+                      </div>
+
+                      {/* 2. Child Cost (5 Yrs) */}
+                      <div className="bg-white/10 backdrop-blur-md rounded-xl p-3.5 sm:p-4 border border-white/15 flex flex-col justify-between space-y-2">
+                        <div className="space-y-1">
+                          <div className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-amber-300 flex items-center justify-between">
+                            <span>Child Cost (5 Yrs)</span>
+                            <Users className="w-4 h-4 text-amber-300" />
+                          </div>
+                          <div className="text-lg sm:text-xl font-black text-white">
+                            ₹{kidBase.toLocaleString('en-IN')}/-
+                          </div>
+                          <div className="space-y-0.5 pt-0.5 text-[10px] sm:text-[11px] text-amber-200/95 font-semibold leading-tight">
+                            <div>+ 5% GST: ₹{kidGst.toLocaleString('en-IN')}/-</div>
+                            <div>+ 2% TCS: ₹{kidTcs.toLocaleString('en-IN')}/-</div>
+                          </div>
+                          <div className="text-[10px] text-emerald-300 font-bold pt-1 leading-tight">
+                            Without Extra Bed • 2.5 Yrs Child FREE
+                          </div>
+                        </div>
+                        <div className="pt-2 border-t border-white/15 text-[11px] text-white/90 font-medium flex items-center justify-between">
+                          <span className="text-white/70">Grand Total:</span>
+                          <span className="text-amber-300 font-black text-xs sm:text-sm">₹{kidGrand.toLocaleString('en-IN')}/-</span>
+                        </div>
+                      </div>
+
+                      {/* 3. Total Package Cost */}
+                      <div className="bg-white/10 backdrop-blur-md rounded-xl p-3.5 sm:p-4 border border-white/15 flex flex-col justify-between space-y-2">
+                        <div className="space-y-1">
+                          <div className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-amber-300 flex items-center justify-between">
+                            <span>Total Family Cost</span>
+                            <Parachute size={16} className="w-4 h-4 text-amber-300" />
+                          </div>
+                          <div className="text-lg sm:text-xl font-black text-white">
+                            ₹{baseTotal.toLocaleString('en-IN')}/-
+                          </div>
+                          <div className="space-y-0.5 pt-0.5 text-[10px] sm:text-[11px] text-amber-200/95 font-semibold leading-tight">
+                            <div>+ 5% GST: ₹{gstTotal.toLocaleString('en-IN')}/-</div>
+                            <div>+ 2% TCS: ₹{tcsTotal.toLocaleString('en-IN')}/-</div>
+                          </div>
+                        </div>
+                        <div className="pt-2 border-t border-white/15 text-[11px] text-white/90 font-medium flex items-center justify-between">
+                          <span className="text-white/70">Grand Total:</span>
+                          <span className="text-amber-300 font-black text-xs sm:text-sm">₹{grandTotal.toLocaleString('en-IN')}/-</span>
+                        </div>
+                      </div>
+
+                      {/* 4. Flexible Payment Stages */}
+                      <div className="bg-white/10 backdrop-blur-md rounded-xl p-3.5 sm:p-4 border border-white/15 space-y-1">
+                        <div className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-emerald-300 flex items-center justify-between">
+                          <span>Flexible Payment Stages</span>
+                          <CreditCard className="w-4 h-4 text-emerald-300" />
+                        </div>
+                        <div className="text-[11px] text-white/90 space-y-0.5 pt-0.5 font-semibold">
+                          <div>• 10% Token: ₹{Math.round(grandTotal * 0.10).toLocaleString('en-IN')}/- (Locks proposal)</div>
+                          <div>• 50% Advance: ₹{Math.round(grandTotal * 0.50).toLocaleString('en-IN')}/- (Due in 7 days)</div>
+                          <div>• Final Balance: Due 15 days before travel</div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }
+
+                // Standard Per Guest layout when no kid price
                 const basePerGuest = Math.round(baseTotal / adultsCount);
-                const gstTotal = itinerary.gstAmount || Math.round(baseTotal * ((itinerary.gstPercentage || 5) / 100));
-                const tcsTotal = itinerary.tcsAmount || Math.round(baseTotal * ((itinerary.tcsPercentage || 2) / 100));
                 const gstPerGuest = Math.round(gstTotal / adultsCount);
                 const tcsPerGuest = Math.round(tcsTotal / adultsCount);
-                const grandTotal = totalQuotationAmount || (baseTotal + gstTotal + tcsTotal);
                 const grandTotalPerGuest = Math.round(grandTotal / adultsCount);
 
                 return (
