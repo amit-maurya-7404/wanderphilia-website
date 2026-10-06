@@ -7,7 +7,6 @@ import { ManualItinerary } from '@/types/manual-itinerary';
 import { ManualFlowchartSection } from './manual-flowchart-section';
 import { ItineraryClientActions } from './itinerary-client-actions';
 import { ItineraryPaymentSection } from './itinerary-payment-section';
-import { ItineraryQuotationBookButton } from './itinerary-quotation-book-button';
 import {
   MapPin,
   Calendar,
@@ -121,7 +120,7 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
 
   // Payment stage calculations
   const alreadyPaid = Number(itinerary.advanceAmountPaid || 0);
-  const totalQuotationAmount = Number(itinerary.finalQuotationAmount || 853860);
+  const totalQuotationAmount = Number(itinerary.finalQuotationAmount || 683088);
   const remainingBalanceAmount = Math.max(0, totalQuotationAmount - alreadyPaid);
   const tenPercentAmount = Math.round(totalQuotationAmount * 0.1);
   const fiftyPercentAmount = Math.round(totalQuotationAmount * 0.5);
@@ -498,22 +497,22 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                   </h3>
                 </div>
                 <div className="bg-amber-400/20 text-amber-300 border border-amber-400/40 text-[11px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
-                  {itinerary.adults || 5} Adults Included
+                  {itinerary.adults || 4} Adults Included
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5">
-                {/* Per Adult Rate */}
+                {/* Per Adult Rate (Total Cost ÷ 4) */}
                 <div className="bg-white/10 backdrop-blur-md rounded-xl p-3.5 sm:p-4 border border-white/15 space-y-1">
                   <div className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-amber-300 flex items-center justify-between">
                     <span>Cost Per Guest</span>
                     <Users className="w-4 h-4 text-amber-300" />
                   </div>
                   <div className="text-xl sm:text-2xl font-black text-white">
-                    ₹{(itinerary.perAdultPrice || 170772).toLocaleString('en-IN')}/-
+                    ₹{(itinerary.perAdultPrice || Math.round((itinerary.finalQuotationAmount || 683088) / (itinerary.adults || 4))).toLocaleString('en-IN')}/-
                   </div>
                   <div className="text-[10px] text-white/80 font-medium">
-                    (₹{(itinerary.finalQuotationAmount || 853860).toLocaleString('en-IN')} ÷ {itinerary.adults || 5} Guests All-Inclusive)
+                    (₹{(itinerary.finalQuotationAmount || 683088).toLocaleString('en-IN')} ÷ {itinerary.adults || 4} Guests All-Inclusive)
                   </div>
                 </div>
 
@@ -524,10 +523,10 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                     <Parachute size={16} className="w-4 h-4 text-amber-300" />
                   </div>
                   <div className="text-xl sm:text-2xl font-black text-white">
-                    ₹{(itinerary.finalQuotationAmount || 853860).toLocaleString('en-IN')}/-
+                    ₹{(itinerary.finalQuotationAmount || 683088).toLocaleString('en-IN')}/-
                   </div>
                   <div className="text-[10px] text-amber-200 font-semibold">
-                    Incl. 5% GST (₹{(itinerary.gstAmount || 39900).toLocaleString('en-IN')}) + 2% TCS (₹{(itinerary.tcsAmount || 15960).toLocaleString('en-IN')})
+                    Incl. 5% GST (₹{(itinerary.gstAmount || 31920).toLocaleString('en-IN')}) + 2% TCS (₹{(itinerary.tcsAmount || 12768).toLocaleString('en-IN')})
                   </div>
                 </div>
 
@@ -538,8 +537,8 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                     <CreditCard className="w-4 h-4 text-emerald-300" />
                   </div>
                   <div className="text-[11px] text-white/90 space-y-0.5 pt-0.5 font-semibold">
-                    <div>• 10% Token: ₹{Math.round(((itinerary.finalQuotationAmount || 853860) * 0.10)).toLocaleString('en-IN')}/- (Locks dates & proposal)</div>
-                    <div>• 50% Advance: ₹{Math.round(((itinerary.finalQuotationAmount || 853860) * 0.50)).toLocaleString('en-IN')}/- (Due in 7 days)</div>
+                    <div>• 10% Token: ₹{Math.round(((itinerary.finalQuotationAmount || 683088) * 0.10)).toLocaleString('en-IN')}/- (Locks dates & proposal)</div>
+                    <div>• 50% Advance: ₹{Math.round(((itinerary.finalQuotationAmount || 683088) * 0.50)).toLocaleString('en-IN')}/- (Due in 7 days)</div>
                     <div>• Final Balance: Due 15 days before departure</div>
                   </div>
                 </div>
@@ -719,11 +718,11 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
               destination={destination}
               proposalTitle={itinerary.title}
               perAdultPrice={itinerary.perAdultPrice || 170772}
-              adults={itinerary.adults || 5}
-              baseAmount={itinerary.baseAmount || 798000}
+              adults={itinerary.adults || 4}
+              baseAmount={itinerary.baseAmount || 638400}
               gstPercentage={itinerary.gstPercentage || 5}
               tcsPercentage={itinerary.tcsPercentage || 2}
-              totalQuotationAmount={itinerary.finalQuotationAmount || 853860}
+              totalQuotationAmount={itinerary.finalQuotationAmount || 683088}
               advanceAmountPaid={alreadyPaid}
               balancePendingAmount={remainingBalanceAmount}
               paymentStage={itinerary.paymentStage}
@@ -784,27 +783,6 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
         </section>
 
       </main>
-
-      {/* Floating Action CTA on mobile/desktop */}
-      {itinerary.finalQuotationAmount && itinerary.finalQuotationAmount > 0 ? (
-        <ItineraryQuotationBookButton
-          variant="floating"
-          itineraryId={itinerary.id}
-          destination={destination}
-          proposalTitle={itinerary.title}
-          perAdultPrice={itinerary.perAdultPrice || 170772}
-          adults={itinerary.adults || 5}
-          baseAmount={itinerary.baseAmount || 798000}
-          gstPercentage={itinerary.gstPercentage || 5}
-          tcsPercentage={itinerary.tcsPercentage || 2}
-          totalQuotationAmount={itinerary.finalQuotationAmount}
-          advanceAmountPaid={alreadyPaid}
-          balancePendingAmount={remainingBalanceAmount}
-          leadName={leadName}
-          numDays={numDays}
-          numNights={numNights}
-        />
-      ) : null}
 
       {/* Print Specific CSS */}
       <style>{`

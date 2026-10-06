@@ -32,7 +32,6 @@ import { ItineraryClientActions } from '@/components/itinerary/itinerary-client-
 import { ItineraryFlowchartSection } from '@/components/itinerary/itinerary-flowchart-section';
 import { ManualItineraryTemplate } from '@/components/itinerary/manual-itinerary-template';
 import { ItineraryPaymentSection } from '@/components/itinerary/itinerary-payment-section';
-import { ItineraryQuotationBookButton } from '@/components/itinerary/itinerary-quotation-book-button';
 import {
   MapPin,
   Calendar,
@@ -1001,33 +1000,6 @@ export default async function ItineraryPage({ params }: PageProps) {
         </section>
 
       </main>
-
-      {/* Floating Sticky Book Now for Mobile / Tablet */}
-      {finalQuotationAmount && finalQuotationAmount > 0 ? (
-        <ItineraryQuotationBookButton
-          variant="floating"
-          itineraryId={itinerary.id}
-          destination={destination}
-          proposalTitle={itinerary.title || proposalTitle}
-          perAdultPrice={perAdultPrice}
-          adults={adults}
-          baseAmount={itinerary.baseAmount}
-          gstPercentage={itinerary.gstPercentage || 5}
-          tcsPercentage={itinerary.tcsPercentage || 2}
-          totalQuotationAmount={finalQuotationAmount}
-          advanceAmountPaid={advanceAmountPaid}
-          balancePendingAmount={balancePendingAmount}
-          leadName={leadName}
-          email={itinerary.leadDetails?.email || itinerary.rawZohoData?.Email || ''}
-          mobile={itinerary.leadDetails?.mobile || itinerary.leadDetails?.phone || itinerary.rawZohoData?.Mobile || itinerary.rawZohoData?.Phone || ''}
-          zohoLeadId={itinerary.rawZohoData?.id ? String(itinerary.rawZohoData.id) : undefined}
-          inquiryId={itinerary.inquiryId || itinerary.rawZohoData?.Inquiry_ID || undefined}
-          numDays={numDays}
-          numNights={numNights}
-          travelStartDate={itinerary.leadDetails?.startDate || itinerary.rawZohoData?.Preferred_Start_date}
-          travelEndDate={itinerary.leadDetails?.endDate || itinerary.rawZohoData?.Travel_End_Date}
-        />
-      ) : null}
 
       {/* Print Specific CSS to ensure clean multi-page A4 PDF output */}
       <style>{`

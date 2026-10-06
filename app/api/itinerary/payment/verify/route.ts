@@ -115,17 +115,28 @@ export async function POST(req: NextRequest) {
       console.warn(`[Razorpay Payment Status]: ${payment.status} for ${razorpay_payment_id}`);
     }
 
-    // 3. Retrieve Itinerary from MongoDB
+    // 3. Retrieve Itinerary from MongoDB or Manual Itineraries
     const db = await getDb();
     const collection = db.collection<ItineraryDocument>('itineraries');
     const itinerary = itineraryId
       ? await collection.findOne({ $or: [{ id: itineraryId }, { slug: itineraryId }] })
       : null;
 
+    let manualItinerary: any = null;
+    if (itineraryId) {
+      try {
+        const { getManualItinerary } = await import('@/data/manual-itineraries');
+        manualItinerary = getManualItinerary(itineraryId);
+      } catch (e) {
+        console.warn('[Manual Itinerary Lookup Error]:', e);
+      }
+    }
+
     // Resolve details
     const customerName =
       passedCustomerName ||
       itinerary?.leadDetails?.name ||
+      manualItinerary?.leadName ||
       itinerary?.rawZohoData?.Full_Name ||
       [itinerary?.rawZohoData?.First_Name, itinerary?.rawZohoData?.Last_Name].filter(Boolean).join(' ') ||
       'Valued Traveler';
@@ -148,26 +159,20 @@ export async function POST(req: NextRequest) {
     const destination =
       passedDestination ||
       itinerary?.destination ||
+      manualItinerary?.destination ||
       itinerary?.rawZohoData?.Destinations ||
       itinerary?.rawZohoData?.Destination ||
-      'India';
+      'Vietnam';
 
     let totalQuotationAmount = Number(
       itinerary?.finalQuotationAmount ??
+      manualItinerary?.finalQuotationAmount ??
       itinerary?.rawZohoData?.finalQuotationAmount ??
       itinerary?.rawZohoData?.Final_Quotation_Amount ??
       itinerary?.rawZohoData?.Total_Package_Cost ??
       itinerary?.rawZohoData?.Quotation_Amount ??
-      0
+      683088
     );
-
-    if (totalQuotationAmount === 0 && itineraryId) {
-      const { getManualItinerary } = await import('@/data/manual-itineraries');
-      const manual = getManualItinerary(itineraryId);
-      if (manual && manual.finalQuotationAmount) {
-        totalQuotationAmount = Number(manual.finalQuotationAmount);
-      }
-    }
 
     if (totalQuotationAmount === 0 && paidAmount > 0) {
       totalQuotationAmount = paymentType === 'token' ? paidAmount * 10 : (paymentType === 'advance' ? paidAmount * 2 : paidAmount);
@@ -175,6 +180,7 @@ export async function POST(req: NextRequest) {
 
     const previousPaid = Number(
       itinerary?.advanceAmountPaid ??
+      manualItinerary?.advanceAmountPaid ??
       itinerary?.rawZohoData?.Advance_Amount_Paid ??
       itinerary?.rawZohoData?.advanceAmountPaid ??
       0
@@ -210,6 +216,26 @@ export async function POST(req: NextRequest) {
     const customerGstNo = body.customerGstNo || body.gstNo || (payment as any)?.notes?.customerGstNo || undefined;
     const customerPanNo = body.customerPanNo || body.panNo || (payment as any)?.notes?.customerPanNo || undefined;
 
+    // Resolve Trip & Guest Meta
+    const adults = itinerary?.adults || manualItinerary?.adults || itinerary?.rawZohoData?.Adults || 4;
+    const kids = itinerary?.kids || manualItinerary?.kids || itinerary?.rawZohoData?.Kids || 0;
+    const numberOfGuests = itinerary?.leadDetails?.guests || manualItinerary?.guests || (adults + kids) || 4;
+    const noOfNights = itinerary?.noOfNights || manualItinerary?.numNights || 14;
+    const noOfDays = itinerary?.noOfDays || manualItinerary?.numDays || (noOfNights ? noOfNights + 1 : 15);
+    const travelStartDate = itinerary?.leadDetails?.startDate || (manualItinerary?.dates ? manualItinerary.dates.split('–')[0].trim() : undefined) || itinerary?.rawZohoData?.Preferred_Start_date || '25 Oct 2026';
+    const travelEndDate = itinerary?.leadDetails?.endDate || (manualItinerary?.dates ? manualItinerary.dates.split('–')[1].trim() : undefined) || itinerary?.rawZohoData?.Travel_End_Date || '08 Nov 2026';
+    const tripTitle = itinerary?.title || manualItinerary?.title || `${noOfNights}N / ${noOfDays}D Grand ${destination} Luxury Expedition`;
+    const vehicleType = itinerary?.vehicleType || manualItinerary?.vehicleType || itinerary?.rawZohoData?.Vehicle_Type || 'Private AC Van with Dedicated Chauffeur & English-Speaking Guide';
+    const roomCategory = itinerary?.roomCategory || (manualItinerary?.accommodations ? manualItinerary.accommodations[0]?.roomCategory : undefined) || itinerary?.rawZohoData?.Preferred_Room_Category || '5-Star Luxury Handpicked';
+
+    // Financial Breakdown
+    const baseAmount = manualItinerary?.baseAmount || (itinerary?.rawZohoData?.Base_Amount ? Number(itinerary.rawZohoData.Base_Amount) : Math.round(totalQuotationAmount / 1.07));
+    const gstPercentage = manualItinerary?.gstPercentage || 5;
+    const gstAmount = manualItinerary?.gstAmount || Math.round(baseAmount * (gstPercentage / 100));
+    const tcsPercentage = manualItinerary?.tcsPercentage || 2;
+    const tcsAmount = manualItinerary?.tcsAmount || Math.round(baseAmount * (tcsPercentage / 100));
+    const perAdultPrice = manualItinerary?.perAdultPrice || Math.round(totalQuotationAmount / (adults || 4));
+
     // 4. Construct Invoice Data Structure
     const invoiceData: InvoiceData = {
       invoiceNumber,
@@ -225,22 +251,25 @@ export async function POST(req: NextRequest) {
       customerGstNo,
       customerPanNo,
       destination,
-      tripTitle: itinerary?.title || `${itinerary?.noOfNights || 4}N / ${itinerary?.noOfDays || 5}D Royal ${destination} Tour`,
-      travelStartDate: itinerary?.leadDetails?.startDate || itinerary?.rawZohoData?.Preferred_Start_date || undefined,
-      travelEndDate: itinerary?.leadDetails?.endDate || itinerary?.rawZohoData?.Travel_End_Date || undefined,
-      noOfDays: itinerary?.noOfDays || itinerary?.dayPlans?.length || 5,
-      noOfNights: itinerary?.noOfNights || (itinerary?.noOfDays ? itinerary.noOfDays - 1 : 4),
-      numberOfGuests: itinerary?.leadDetails?.guests || itinerary?.rawZohoData?.Number_Of_Guest || 2,
-      adults: itinerary?.adults || itinerary?.rawZohoData?.Adults || 2,
-      kids: itinerary?.kids || itinerary?.rawZohoData?.Kids || 0,
-      vehicleType: itinerary?.vehicleType || itinerary?.rawZohoData?.Vehicle_Type || 'Private AC Vehicle',
-      roomCategory: itinerary?.roomCategory || itinerary?.rawZohoData?.Preferred_Room_Category || 'Luxury Handpicked',
+      tripTitle,
+      travelStartDate,
+      travelEndDate,
+      noOfDays,
+      noOfNights,
+      numberOfGuests,
+      adults,
+      kids,
+      vehicleType,
+      roomCategory,
       paymentType: paymentType || 'advance',
       totalPackageAmount: totalQuotationAmount,
       paidAmount,
       balanceDue: newBalanceDue,
-      gstPercentage: 5,
-      tcsPercentage: 2,
+      baseAmount,
+      gstPercentage,
+      gstAmount,
+      tcsPercentage,
+      tcsAmount,
     };
 
     // 5. Generate Official Tax Invoice PDF Buffer (Server-Side)
@@ -261,7 +290,7 @@ export async function POST(req: NextRequest) {
 
     // 15 days before travel start date for balance
     let balanceDueDateStr = '15 Days Before Departure';
-    const rawStartDate = itinerary?.leadDetails?.startDate || itinerary?.rawZohoData?.Preferred_Start_date || (itinerary?.dayPlans && (itinerary.dayPlans[0] as any)?.date ? `${(itinerary.dayPlans[0] as any).date} 2026` : undefined);
+    const rawStartDate = travelStartDate || itinerary?.leadDetails?.startDate || itinerary?.rawZohoData?.Preferred_Start_date;
     
     if (rawStartDate) {
       const parsedStart = new Date(rawStartDate);
@@ -279,9 +308,9 @@ export async function POST(req: NextRequest) {
     if (newBalanceDue <= 0) {
       nextPaymentSummary = '✓ 100% Fully Cleared (No Pending Dues)';
       nextPaymentDetailsHtml = `
-        <div style="background: #f0fdf4; border: 1.5px solid #bbf7d0; padding: 14px 18px; border-radius: 12px; margin: 18px 0;">
-          <p style="margin: 0; font-size: 13px; color: #166534; font-weight: bold;">
-            ✓ 100% Tour Cleared: All luxury hotel stays, cruise cabin and private chauffeur transport are fully confirmed. No pending balance!
+        <div style="background: #f0fdf4; border: 1.5px solid #bbf7d0; padding: 16px 20px; border-radius: 12px; margin: 18px 0;">
+          <p style="margin: 0; font-size: 14px; color: #166534; font-weight: bold;">
+            ✓ 100% Tour Confirmed & Cleared: All luxury hotel stays, cruise cabin and private chauffeur transport are fully locked. Zero pending balance!
           </p>
         </div>
       `;
@@ -311,7 +340,7 @@ export async function POST(req: NextRequest) {
             </tr>
           </table>
           <p style="margin: 10px 0 0 0; font-size: 12px; color: #a16207; line-height: 1.4;">
-            * You can pay online anytime using your official proposal link or via direct bank transfer / UPI.
+            * You can pay online anytime using your proposal link or via direct bank transfer / UPI.
           </p>
         </div>
       `;
@@ -333,7 +362,7 @@ export async function POST(req: NextRequest) {
             </tr>
           </table>
           <p style="margin: 10px 0 0 0; font-size: 12px; color: #a16207; line-height: 1.4;">
-            * Due 15 days before departure to release your final hotel vouchers & transport allotment.
+            * Due 15 days before departure to release your final luxury hotel vouchers & transport allotment.
           </p>
         </div>
       `;
@@ -343,7 +372,6 @@ export async function POST(req: NextRequest) {
     let zohoAttachmentSuccess = false;
     let zohoLeadId = passedLeadId || (itinerary?.rawZohoData?.id ? String(itinerary.rawZohoData.id) : null);
 
-    // If no direct Zoho Lead ID, attempt to search lead in Zoho CRM
     if (!zohoLeadId) {
       zohoLeadId = await findZohoLeadId({
         inquiryId: itinerary?.inquiryId || itinerary?.rawZohoData?.Inquiry_ID,
@@ -351,7 +379,6 @@ export async function POST(req: NextRequest) {
         mobile: customerMobile,
       });
     }
-
 
     if (zohoLeadId && /^\d+$/.test(zohoLeadId)) {
       console.log(`[Zoho CRM Integration] Processing Lead ID: ${zohoLeadId}`);
@@ -380,6 +407,10 @@ export async function POST(req: NextRequest) {
         const noteTitle = `${installmentLabel} via Razorpay (₹${paidAmount.toLocaleString('en-IN')})`;
         const noteContent =
           `Online Payment of ₹${paidAmount.toLocaleString('en-IN')} received successfully via Razorpay.\n\n` +
+          `• Client Name: ${customerName}\n` +
+          `• Number of Guests: ${numberOfGuests} (${adults} Adults${kids > 0 ? `, ${kids} Kids` : ', 0 Kids'})\n` +
+          `• Duration: ${noOfNights} Nights / ${noOfDays} Days\n` +
+          `• Travel Dates: ${travelStartDate} to ${travelEndDate}\n` +
           `• Payment ID: ${razorpay_payment_id}\n` +
           `• Order ID: ${razorpay_order_id}\n` +
           `• Invoice Number: ${invoiceNumber}\n` +
@@ -387,6 +418,7 @@ export async function POST(req: NextRequest) {
           `• Amount Paid in this Installment: ₹${paidAmount.toLocaleString('en-IN')}\n` +
           `• Total Paid So Far: ₹${newTotalPaid.toLocaleString('en-IN')}\n` +
           `• Total Package Cost: ₹${totalQuotationAmount.toLocaleString('en-IN')}\n` +
+          `• Cost Per Guest: ₹${perAdultPrice.toLocaleString('en-IN')}\n` +
           `• Remaining Balance: ₹${newBalanceDue.toLocaleString('en-IN')}\n` +
           `• Date & Time: ${formattedDate}\n\n` +
           `📅 Payment Timeline:\n${nextPaymentSummary}\n\n` +
@@ -462,42 +494,87 @@ export async function POST(req: NextRequest) {
 <head>
   <style>
     body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8fafc; padding: 20px; color: #1e293b; margin: 0; }
-    .card { max-width: 620px; margin: 0 auto; background: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+    .card { max-width: 640px; margin: 0 auto; background: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
     .header { background: linear-gradient(135deg, #6E1E14 0%, #8A261A 100%); color: #ffffff; padding: 32px 24px; text-align: center; }
     .content { padding: 32px 24px; }
     .badge { display: inline-block; background: #22c55e; color: #ffffff; font-size: 11px; font-weight: 800; padding: 4px 12px; border-radius: 20px; text-transform: uppercase; margin-bottom: 10px; }
-    .table { width: 100%; border-collapse: collapse; margin: 18px 0; }
-    .table td { padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
-    .table td.label { color: #64748b; font-weight: 600; width: 40%; }
+    .section-title { font-size: 13px; font-weight: 800; text-transform: uppercase; color: #6E1E14; letter-spacing: 0.5px; margin: 20px 0 8px 0; border-bottom: 1.5px solid #fee2e2; padding-bottom: 6px; }
+    .table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+    .table td { padding: 9px 0; border-bottom: 1px solid #f1f5f9; font-size: 13.5px; }
+    .table td.label { color: #64748b; font-weight: 600; width: 42%; }
     .table td.value { color: #0f172a; font-weight: 700; text-align: right; }
+    .highlight-row td { background: #fdf2f2; font-weight: 800; padding: 10px 8px; border-radius: 6px; }
     .alert-box { background: #f0fdf4; border: 1px solid #bbf7d0; padding: 16px; border-radius: 12px; margin-top: 20px; }
-    .footer { text-align: center; padding: 20px; font-size: 12px; color: #94a3b8; border-top: 1px solid #f1f5f9; }
+    .footer { text-align: center; padding: 20px; font-size: 12px; color: #94a3b8; border-top: 1px solid #f1f5f9; background: #f8fafc; }
   </style>
 </head>
 <body>
   <div class="card">
     <div class="header">
-      <div class="badge">✓ Payment Received & Booking Secured</div>
-      <h2 style="margin: 0; font-size: 24px; font-weight: 800; color: #ffffff;">Booking Confirmed! ✈️</h2>
+      <div class="badge">✓ Booking Confirmed & Payment Received</div>
+      <h2 style="margin: 0; font-size: 24px; font-weight: 800; color: #ffffff;">Your Luxury Tour is Confirmed! ✈️</h2>
       <p style="margin: 8px 0 0 0; font-size: 14px; opacity: 0.95;">Thank you for choosing Wanderphilia, ${customerName}!</p>
     </div>
     
     <div class="content">
       <p style="font-size: 15px; line-height: 1.6; margin-top: 0;">
-        Hi <strong>${customerName}</strong>,
+        Dear <strong>${customerName}</strong>,
       </p>
       <p style="font-size: 14px; line-height: 1.6; color: #475569;">
-        We have successfully received your payment of <strong style="color: #16a34a; font-size: 16px;">₹${paidAmount.toLocaleString('en-IN')}</strong> for your luxury tour to <strong>${destination}</strong>. Your official payment receipt / tax invoice is attached with this email.
+        We have successfully received and verified your payment of <strong style="color: #16a34a; font-size: 16px;">₹${paidAmount.toLocaleString('en-IN')}</strong> for your luxury tour to <strong>${destination}</strong>. Your official Tax Invoice & Booking Confirmation kit is attached with this email.
       </p>
 
+      <!-- 1. GUEST & TRAVEL DETAILS -->
+      <div class="section-title">📋 Traveler & Trip Overview</div>
       <table class="table">
         <tr>
-          <td class="label">Invoice Number</td>
-          <td class="value" style="color: #6E1E14; font-family: monospace;">${invoiceNumber}</td>
+          <td class="label">Client / Lead Name</td>
+          <td class="value">${customerName}</td>
+        </tr>
+        <tr>
+          <td class="label">No. of Guests</td>
+          <td class="value">${numberOfGuests} Guests (${adults} Adults${kids > 0 ? `, ${kids} Kids` : ', 0 Kids'})</td>
+        </tr>
+        <tr>
+          <td class="label">Trip Duration</td>
+          <td class="value">${noOfNights} Nights / ${noOfDays} Days</td>
+        </tr>
+        <tr>
+          <td class="label">Start & End Date</td>
+          <td class="value" style="color: #6E1E14;">${travelStartDate} – ${travelEndDate}</td>
         </tr>
         <tr>
           <td class="label">Destination</td>
           <td class="value">${destination}</td>
+        </tr>
+        <tr>
+          <td class="label">Vehicle / Transport</td>
+          <td class="value" style="font-size: 12px;">${vehicleType}</td>
+        </tr>
+      </table>
+
+      <!-- 2. FULL COSTING SUMMARY -->
+      <div class="section-title">💰 Complete Costing & Payment Summary</div>
+      <table class="table">
+        <tr>
+          <td class="label">Cost Per Guest</td>
+          <td class="value">₹${perAdultPrice.toLocaleString('en-IN')} <span style="font-size: 11px; color: #64748b; font-weight: normal;">(for ${adults} Adults)</span></td>
+        </tr>
+        <tr>
+          <td class="label">Base Package Cost</td>
+          <td class="value">₹${baseAmount.toLocaleString('en-IN')}</td>
+        </tr>
+        <tr>
+          <td class="label">GST (${gstPercentage}%)</td>
+          <td class="value">₹${gstAmount.toLocaleString('en-IN')}</td>
+        </tr>
+        <tr>
+          <td class="label">TCS (${tcsPercentage}%)</td>
+          <td class="value">₹${tcsAmount.toLocaleString('en-IN')}</td>
+        </tr>
+        <tr class="highlight-row">
+          <td class="label" style="color: #6E1E14;">Total Package Quotation</td>
+          <td class="value" style="color: #6E1E14; font-size: 16px;">₹${totalQuotationAmount.toLocaleString('en-IN')}</td>
         </tr>
         <tr>
           <td class="label">Payment Installment</td>
@@ -505,7 +582,7 @@ export async function POST(req: NextRequest) {
         </tr>
         <tr>
           <td class="label">Amount Paid Today</td>
-          <td class="value" style="color: #16a34a; font-size: 16px;">₹${paidAmount.toLocaleString('en-IN')}</td>
+          <td class="value" style="color: #16a34a; font-size: 15px;">₹${paidAmount.toLocaleString('en-IN')}</td>
         </tr>
         <tr>
           <td class="label">Total Paid So Far</td>
@@ -513,21 +590,25 @@ export async function POST(req: NextRequest) {
         </tr>
         ${newBalanceDue > 0 ? `
         <tr>
-          <td class="label">Remaining Balance</td>
-          <td class="value" style="color: #6E1E14;">₹${newBalanceDue.toLocaleString('en-IN')}</td>
+          <td class="label">Remaining Balance Due</td>
+          <td class="value" style="color: #6E1E14; font-size: 15px;">₹${newBalanceDue.toLocaleString('en-IN')}</td>
         </tr>
         ` : `
         <tr>
           <td class="label">Payment Status</td>
-          <td class="value" style="color: #16a34a;">100% Fully Cleared</td>
+          <td class="value" style="color: #16a34a;">100% Fully Cleared & Confirmed</td>
         </tr>
         `}
         <tr>
-          <td class="label">Razorpay Payment ID</td>
+          <td class="label">Official Invoice No.</td>
+          <td class="value" style="color: #6E1E14; font-family: monospace;">${invoiceNumber}</td>
+        </tr>
+        <tr>
+          <td class="label">Payment Reference ID</td>
           <td class="value" style="font-family: monospace; font-size: 12px;">${razorpay_payment_id}</td>
         </tr>
         <tr>
-          <td class="label">Payment Date</td>
+          <td class="label">Transaction Date</td>
           <td class="value">${formattedDate}</td>
         </tr>
       </table>
@@ -536,14 +617,14 @@ export async function POST(req: NextRequest) {
 
       <div class="alert-box">
         <p style="margin: 0; font-size: 13px; color: #166534; line-height: 1.6;">
-          <strong>Next Steps:</strong><br>
-          • Your hotel stays and chauffeur transport are now being locked in with our luxury partners.<br>
-          • Your personal Wanderphilia trip coordinator will reach out to you on <strong>${customerMobile}</strong> shortly with your full day-by-day confirmation kit.
+          <strong>What happens next?</strong><br>
+          • 5-Star luxury hotel reservations, cruise cabins and private transport are being secured.<br>
+          • Your dedicated Wanderphilia travel coordinator will connect with you on <strong>${customerMobile}</strong> to assist with vouchers, luggage tips, and visa coordination.
         </p>
       </div>
 
       <p style="font-size: 13px; color: #64748b; margin-top: 24px; line-height: 1.5;">
-        Please find your official Tax Invoice attached as a PDF (<strong>${invoiceFileName}</strong>). For any immediate questions, reply to this email or chat with us on WhatsApp at <strong>+91 ${contactPhoneDisplay}</strong>.
+        Attached PDF: <strong>${invoiceFileName}</strong> (Official Tax Invoice with Seal). For any questions or instant support, reply to this email or reach us on WhatsApp at <strong>+91 ${contactPhoneDisplay}</strong>.
       </p>
     </div>
 
@@ -572,7 +653,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // B. Admin Alert Email with Invoice Attached
+    // B. Admin Alert Email with Complete Details & Invoice Attached
     try {
       const adminEmailHtml = `
 <!DOCTYPE html>
@@ -580,56 +661,88 @@ export async function POST(req: NextRequest) {
 <head>
   <style>
     body { font-family: Arial, sans-serif; background-color: #f8fafc; padding: 20px; }
-    .card { max-width: 600px; margin: 0 auto; background: white; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden; }
+    .card { max-width: 620px; margin: 0 auto; background: white; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden; }
     .header { background: #6E1E14; color: white; padding: 24px; }
     .content { padding: 24px; }
-    .field { margin-bottom: 12px; border-bottom: 1px solid #f1f5f9; padding-bottom: 8px; }
+    .field { margin-bottom: 10px; border-bottom: 1px solid #f1f5f9; padding-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
     .label { font-size: 12px; color: #64748b; font-weight: bold; }
-    .value { font-size: 14px; color: #0f172a; font-weight: 600; }
+    .value { font-size: 13.5px; color: #0f172a; font-weight: 600; text-align: right; }
+    .section-head { font-size: 12px; font-weight: 800; text-transform: uppercase; color: #6E1E14; margin: 16px 0 8px 0; border-bottom: 1px solid #fee2e2; padding-bottom: 4px; }
   </style>
 </head>
 <body>
   <div class="card">
     <div class="header">
       <h2 style="margin: 0; font-size: 20px;">💰 ${installmentLabel} Received via Itinerary</h2>
-      <p style="margin: 4px 0 0 0; font-size: 12px; opacity: 0.85;">Customer completed payment on itinerary page</p>
+      <p style="margin: 4px 0 0 0; font-size: 12px; opacity: 0.85;">Client completed payment on proposal link</p>
     </div>
     <div class="content">
+      <div class="section-head">Client & Travel Details</div>
       <div class="field">
-        <div class="label">Customer Name</div>
+        <div class="label">Client Name</div>
         <div class="value">${customerName}</div>
+      </div>
+      <div class="field">
+        <div class="label">No. of Guests</div>
+        <div class="value">${numberOfGuests} Guests (${adults} Adults, ${kids} Kids)</div>
+      </div>
+      <div class="field">
+        <div class="label">Duration</div>
+        <div class="value">${noOfNights} Nights / ${noOfDays} Days</div>
+      </div>
+      <div class="field">
+        <div class="label">Travel Dates</div>
+        <div class="value" style="color: #6E1E14;">${travelStartDate} – ${travelEndDate}</div>
       </div>
       <div class="field">
         <div class="label">Destination</div>
         <div class="value">${destination}</div>
       </div>
       <div class="field">
-        <div class="label">Amount Paid in this Installment</div>
-        <div class="value" style="color: #16a34a; font-size: 16px;">₹${paidAmount.toLocaleString('en-IN')}</div>
+        <div class="label">Contact Phone</div>
+        <div class="value">${customerMobile || 'N/A'}</div>
       </div>
       <div class="field">
-        <div class="label">Total Paid To Date</div>
-        <div class="value" style="font-weight: bold; font-size: 15px;">₹${newTotalPaid.toLocaleString('en-IN')}</div>
+        <div class="label">Contact Email</div>
+        <div class="value">${customerEmail || 'N/A'}</div>
+      </div>
+
+      <div class="section-head">Costing & Financial Summary</div>
+      <div class="field">
+        <div class="label">Cost Per Guest</div>
+        <div class="value">₹${perAdultPrice.toLocaleString('en-IN')} (for ${adults} Adults)</div>
       </div>
       <div class="field">
-        <div class="label">Total Package Cost</div>
-        <div class="value">₹${totalQuotationAmount.toLocaleString('en-IN')}</div>
+        <div class="label">Base Amount</div>
+        <div class="value">₹${baseAmount.toLocaleString('en-IN')}</div>
+      </div>
+      <div class="field">
+        <div class="label">GST (5%) + TCS (2%)</div>
+        <div class="value">₹${gstAmount.toLocaleString('en-IN')} + ₹${tcsAmount.toLocaleString('en-IN')}</div>
+      </div>
+      <div class="field">
+        <div class="label">Total Package Quotation</div>
+        <div class="value" style="font-weight: 800; color: #6E1E14;">₹${totalQuotationAmount.toLocaleString('en-IN')}</div>
+      </div>
+      <div class="field">
+        <div class="label">Amount Paid Today</div>
+        <div class="value" style="color: #16a34a; font-size: 15px; font-weight: 800;">₹${paidAmount.toLocaleString('en-IN')}</div>
+      </div>
+      <div class="field">
+        <div class="label">Total Paid So Far</div>
+        <div class="value" style="font-weight: 800;">₹${newTotalPaid.toLocaleString('en-IN')}</div>
       </div>
       <div class="field">
         <div class="label">Remaining Balance Due</div>
-        <div class="value" style="color: #6E1E14;">₹${newBalanceDue.toLocaleString('en-IN')}</div>
+        <div class="value" style="color: #6E1E14; font-weight: 800;">₹${newBalanceDue.toLocaleString('en-IN')}</div>
       </div>
       <div class="field">
         <div class="label">Payment Type</div>
         <div class="value">${installmentLabel}</div>
       </div>
       <div class="field">
-        <div class="label">Customer Mobile</div>
-        <div class="value">${customerMobile || 'N/A'}</div>
-      </div>
-      <div class="field">
-        <div class="label">Customer Email</div>
-        <div class="value">${customerEmail || 'N/A'}</div>
+        <div class="label">Invoice No</div>
+        <div class="value" style="font-family: monospace;">${invoiceNumber}</div>
       </div>
       <div class="field">
         <div class="label">Razorpay Payment ID</div>
@@ -637,11 +750,7 @@ export async function POST(req: NextRequest) {
       </div>
       <div class="field">
         <div class="label">Zoho CRM Lead ID</div>
-        <div class="value" style="font-family: monospace;">${zohoLeadId || 'Not matched'} (Attachment status: ${zohoAttachmentSuccess ? 'Uploaded' : 'Pending'})</div>
-      </div>
-      <div class="field">
-        <div class="label">Invoice No</div>
-        <div class="value" style="font-family: monospace;">${invoiceNumber}</div>
+        <div class="value" style="font-family: monospace;">${zohoLeadId || 'Not matched'} (Attachment: ${zohoAttachmentSuccess ? 'Uploaded' : 'Pending'})</div>
       </div>
     </div>
   </div>
