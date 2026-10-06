@@ -499,29 +499,29 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                 <div className="bg-amber-400/20 text-amber-300 border border-amber-400/40 text-[11px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
                   {itinerary.kids && itinerary.kids > 0 
                     ? `${itinerary.adults || 2} Adults + ${itinerary.kids} Kids (Family Tour)` 
-                    : `${itinerary.adults || 4} Adults Included`}
+                    : `${itinerary.adults || 2} Adults Included`}
                 </div>
               </div>
 
               {/* Pricing calculations */}
               {(() => {
                 const adultsCount = itinerary.adults || 2;
-                const baseTotal = itinerary.baseAmount || 638400;
-                const gstPct = itinerary.gstPercentage || 5;
-                const tcsPct = itinerary.tcsPercentage || 2;
-                const gstTotal = itinerary.gstAmount || Math.round(baseTotal * (gstPct / 100));
-                const tcsTotal = itinerary.tcsAmount || Math.round(baseTotal * (tcsPct / 100));
-                const grandTotal = totalQuotationAmount || (baseTotal + gstTotal + tcsTotal);
+                const baseTotal = itinerary.baseAmount || (itinerary.finalQuotationAmount ? Math.round(itinerary.finalQuotationAmount / (itinerary.tcsPercentage ? 1.07 : 1.05)) : 638400);
+                const gstPct = itinerary.gstPercentage !== undefined ? itinerary.gstPercentage : 5;
+                const tcsPct = itinerary.tcsPercentage !== undefined ? itinerary.tcsPercentage : 0;
+                const gstTotal = itinerary.gstAmount !== undefined ? itinerary.gstAmount : Math.round(baseTotal * (gstPct / 100));
+                const tcsTotal = itinerary.tcsAmount !== undefined ? itinerary.tcsAmount : (tcsPct > 0 ? Math.round(baseTotal * (tcsPct / 100)) : 0);
+                const grandTotal = totalQuotationAmount || itinerary.finalQuotationAmount || (baseTotal + gstTotal + tcsTotal);
 
                 const hasKidPrice = Boolean(itinerary.perKidPrice && itinerary.perKidPrice > 0);
                 const adultBase = itinerary.perAdultPrice || Math.round(baseTotal / adultsCount);
                 const adultGst = Math.round(adultBase * (gstPct / 100));
-                const adultTcs = Math.round(adultBase * (tcsPct / 100));
+                const adultTcs = tcsPct > 0 ? Math.round(adultBase * (tcsPct / 100)) : 0;
                 const adultGrand = adultBase + adultGst + adultTcs;
 
                 const kidBase = itinerary.perKidPrice || 0;
                 const kidGst = Math.round(kidBase * (gstPct / 100));
-                const kidTcs = Math.round(kidBase * (tcsPct / 100));
+                const kidTcs = tcsPct > 0 ? Math.round(kidBase * (tcsPct / 100)) : 0;
                 const kidGrand = kidBase + kidGst + kidTcs;
 
                 if (hasKidPrice) {
@@ -538,8 +538,8 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                             ₹{adultBase.toLocaleString('en-IN')}/-
                           </div>
                           <div className="space-y-0.5 pt-0.5 text-[10px] sm:text-[11px] text-amber-200/95 font-semibold leading-tight">
-                            <div>+ 5% GST: ₹{adultGst.toLocaleString('en-IN')}/-</div>
-                            <div>+ 2% TCS: ₹{adultTcs.toLocaleString('en-IN')}/-</div>
+                            <div>+ {gstPct}% GST: ₹{adultGst.toLocaleString('en-IN')}/-</div>
+                            {tcsTotal > 0 && <div>+ {tcsPct}% TCS: ₹{adultTcs.toLocaleString('en-IN')}/-</div>}
                           </div>
                         </div>
                         <div className="pt-2 border-t border-white/15 text-[11px] text-white/90 font-medium flex items-center justify-between">
@@ -559,8 +559,8 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                             ₹{kidBase.toLocaleString('en-IN')}/-
                           </div>
                           <div className="space-y-0.5 pt-0.5 text-[10px] sm:text-[11px] text-amber-200/95 font-semibold leading-tight">
-                            <div>+ 5% GST: ₹{kidGst.toLocaleString('en-IN')}/-</div>
-                            <div>+ 2% TCS: ₹{kidTcs.toLocaleString('en-IN')}/-</div>
+                            <div>+ {gstPct}% GST: ₹{kidGst.toLocaleString('en-IN')}/-</div>
+                            {tcsTotal > 0 && <div>+ {tcsPct}% TCS: ₹{kidTcs.toLocaleString('en-IN')}/-</div>}
                           </div>
                           <div className="text-[10px] text-emerald-300 font-bold pt-1 leading-tight">
                             Without Extra Bed • 2.5 Yrs Child FREE
@@ -583,8 +583,8 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                             ₹{baseTotal.toLocaleString('en-IN')}/-
                           </div>
                           <div className="space-y-0.5 pt-0.5 text-[10px] sm:text-[11px] text-amber-200/95 font-semibold leading-tight">
-                            <div>+ 5% GST: ₹{gstTotal.toLocaleString('en-IN')}/-</div>
-                            <div>+ 2% TCS: ₹{tcsTotal.toLocaleString('en-IN')}/-</div>
+                            <div>+ {gstPct}% GST: ₹{gstTotal.toLocaleString('en-IN')}/-</div>
+                            {tcsTotal > 0 && <div>+ {tcsPct}% TCS: ₹{tcsTotal.toLocaleString('en-IN')}/-</div>}
                           </div>
                         </div>
                         <div className="pt-2 border-t border-white/15 text-[11px] text-white/90 font-medium flex items-center justify-between">
@@ -612,7 +612,7 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                 // Standard Per Guest layout when no kid price
                 const basePerGuest = Math.round(baseTotal / adultsCount);
                 const gstPerGuest = Math.round(gstTotal / adultsCount);
-                const tcsPerGuest = Math.round(tcsTotal / adultsCount);
+                const tcsPerGuest = tcsTotal > 0 ? Math.round(tcsTotal / adultsCount) : 0;
                 const grandTotalPerGuest = Math.round(grandTotal / adultsCount);
 
                 return (
@@ -628,8 +628,8 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                           ₹{basePerGuest.toLocaleString('en-IN')}/-
                         </div>
                         <div className="space-y-0.5 pt-0.5 text-[11px] text-amber-200/95 font-semibold leading-tight">
-                          <div>+ 5% GST: ₹{gstPerGuest.toLocaleString('en-IN')}/-</div>
-                          <div>+ 2% TCS: ₹{tcsPerGuest.toLocaleString('en-IN')}/-</div>
+                          <div>+ {gstPct}% GST: ₹{gstPerGuest.toLocaleString('en-IN')}/-</div>
+                          {tcsTotal > 0 && <div>+ {tcsPct}% TCS: ₹{tcsPerGuest.toLocaleString('en-IN')}/-</div>}
                         </div>
                       </div>
                       <div className="pt-2 border-t border-white/15 text-[11px] text-white/90 font-medium flex items-center justify-between">
@@ -649,8 +649,8 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                           ₹{baseTotal.toLocaleString('en-IN')}/-
                         </div>
                         <div className="space-y-0.5 pt-0.5 text-[11px] text-amber-200/95 font-semibold leading-tight">
-                          <div>+ 5% GST: ₹{gstTotal.toLocaleString('en-IN')}/-</div>
-                          <div>+ 2% TCS: ₹{tcsTotal.toLocaleString('en-IN')}/-</div>
+                          <div>+ {gstPct}% GST: ₹{gstTotal.toLocaleString('en-IN')}/-</div>
+                          {tcsTotal > 0 && <div>+ {tcsPct}% TCS: ₹{tcsTotal.toLocaleString('en-IN')}/-</div>}
                         </div>
                       </div>
                       <div className="pt-2 border-t border-white/15 text-[11px] text-white/90 font-medium flex items-center justify-between">

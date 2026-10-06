@@ -18,6 +18,11 @@ export interface GeneratedItineraryContent {
   perKidPrice?: number;
   adults?: number;
   kids?: number;
+  baseAmount?: number;
+  gstPercentage?: number;
+  tcsPercentage?: number;
+  gstAmount?: number;
+  tcsAmount?: number;
   advanceAmountPaid?: number;
   balancePendingAmount?: number;
   highlights: string[];
@@ -421,6 +426,138 @@ export function parseRawSubformToDayActivities(rawSubform: any[]): ZohoDayActivi
 }
 
 /**
+ * Parses user-edited hotel strings (e.g. "Hotel Kalyan (Jaipur) - 2N + Standard Hotel (Jaisalmer) - 1N") into ZohoHotelStay array
+ */
+export function parseHotelStringToStays(hotelStr: string, defaultCity: string = '', defaultNights: number = 1): ZohoHotelStay[] {
+  if (!hotelStr || !hotelStr.trim()) return [];
+
+  const segments = hotelStr.split(/(?:\+|\n|\|)/g).map(s => s.trim()).filter(Boolean);
+  if (segments.length === 0) return [];
+
+  const stays: ZohoHotelStay[] = [];
+
+  segments.forEach((seg, idx) => {
+    let clean = seg.trim();
+    let nights = 0;
+
+    const nightMatch = clean.match(/(?:[-–:]\s*|\(\s*)?(\d+)\s*(?:N|Nights?|night|nights|D|Days?)(?:\s*\))?/i);
+    if (nightMatch) {
+      nights = parseInt(nightMatch[1], 10) || 0;
+      clean = clean.replace(nightMatch[0], '').trim();
+    }
+
+    let city = defaultCity;
+    const parenCityMatch = clean.match(/\(([^)]+)\)/);
+    if (parenCityMatch) {
+      city = parenCityMatch[1].trim();
+      clean = clean.replace(parenCityMatch[0], '').trim();
+    } else {
+      const commaParts = clean.split(',');
+      if (commaParts.length > 1) {
+        city = commaParts[commaParts.length - 1].trim();
+        clean = commaParts.slice(0, -1).join(',').trim();
+      }
+    }
+
+    const hotelName = clean.replace(/^[-–:\s]+|[-–:\s]+$/g, '').trim() || 'Selected Hotel';
+
+    stays.push({
+      index: idx + 1,
+      hotelName,
+      city: city || defaultCity,
+      nights: nights || defaultNights,
+      stayDates: ''
+    });
+  });
+
+  return stays;
+}
+
+/**
+ * Parses user-edited activities text block into ZohoDayActivity array
+ */
+export function parseActivitiesTextToDayActivities(text: string, defaultCity: string = ''): ZohoDayActivity[] {
+  if (!text || !text.trim()) return [];
+
+  const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+  const dayActivities: ZohoDayActivity[] = [];
+
+  let currentDayNum = 0;
+
+  lines.forEach((line) => {
+    const dayMatch = line.match(/^\[?\s*Day\s*(\d+)(?:\s*[-:]\s*([^\]:]+))?\]?\s*:\s*(.*)$/i);
+
+    if (dayMatch) {
+      const dayNumber = parseInt(dayMatch[1], 10);
+      currentDayNum = dayNumber;
+      const routeSection = (dayMatch[2] || '').trim();
+      const contentSection = (dayMatch[3] || '').trim();
+
+      let city1 = defaultCity;
+      let city2: string | undefined = undefined;
+      let enRouteExperiences: string | undefined = undefined;
+
+      if (routeSection) {
+        const viaParts = routeSection.split(/\s+via\s+/i);
+        const mainRoute = viaParts[0].trim();
+        if (viaParts.length > 1) {
+          enRouteExperiences = viaParts[1].trim();
+        }
+
+        const toParts = mainRoute.split(/\s+to\s+/i);
+        if (toParts.length > 1) {
+          city1 = toParts[0].trim();
+          city2 = toParts[1].trim();
+        } else {
+          city1 = mainRoute;
+        }
+      }
+
+      const experiences: ZohoExperienceItem[] = [];
+      const expParts = contentSection.split(/\s*\|\s*/g).map(p => p.trim()).filter(Boolean);
+
+      expParts.forEach((part) => {
+        const nameDescMatch = part.match(/^([^(]+)(?:\(([^)]+)\))?$/);
+        if (nameDescMatch) {
+          const name = nameDescMatch[1].trim();
+          const desc = (nameDescMatch[2] || '').trim();
+
+          if (name.toLowerCase().startsWith('en-route') && !enRouteExperiences) {
+            enRouteExperiences = name.replace(/^en-route\s+(?:visit\s+to\s+|stop\s+at\s+)?/i, '').trim();
+          } else {
+            experiences.push({
+              name,
+              inclusionDescription: desc || undefined,
+              description: desc || undefined
+            });
+          }
+        } else {
+          experiences.push({ name: part });
+        }
+      });
+
+      dayActivities.push({
+        dayNumber,
+        dayText: `Day ${dayNumber}`,
+        city: city1 || defaultCity,
+        city2,
+        enRouteExperiences,
+        experiences,
+        pdfDescription: experiences.length === 0 ? contentSection : undefined
+      });
+    } else if (currentDayNum > 0 && dayActivities.length > 0) {
+      const last = dayActivities[dayActivities.length - 1];
+      const name = line.replace(/^[•\-\*]\s*/, '').trim();
+      if (name) {
+        last.experiences.push({ name });
+      }
+    }
+  });
+
+  return dayActivities;
+}
+
+/**
  * Builds accurate, clean, professional day plans directly from Zoho CRM subform data.
  * Adheres strictly to:
  * 1. Indian vs International meal plan rules (Indian: D1 dinner only, middle B+D, last B only; Intl: D1 no meals, D2..N B only).
@@ -667,8 +804,8 @@ export function buildCleanDayPlansFromZoho(
     } else {
       description = isFirstDay
         ? (isIntl
-            ? `Arrive at ${city1} International Airport, meet your representative, and transfer to your hotel.`
-            : `Arrive at ${city1} Airport / Railway Station, meet your representative, and transfer to your hotel.`)
+          ? `Arrive at ${city1} International Airport, meet your representative, and transfer to your hotel.`
+          : `Arrive at ${city1} Airport / Railway Station, meet your representative, and transfer to your hotel.`)
         : (isLastDay ? `Enjoy breakfast before completing check-out and transferring for your departure journey.` : `Spend the day discovering key attractions and cultural highlights in ${city1}.`);
     }
 
@@ -792,12 +929,21 @@ export function generateLuxuryFallback(raw: Record<string, any>): GeneratedItine
   const duration = raw.duration || raw.noOfDays || raw.Days || raw.days || 0;
   const mealPlan = (raw.mealPlan || raw.Meal_Plan || '').trim() || (isInternationalTrip(dest, destType) ? 'Breakfast Only' : 'Breakfast & Dinner');
 
-  // Extract dayActivities if present
-  let dayActivities: ZohoDayActivity[] = raw.dayActivities || [];
-  if (dayActivities.length === 0 && Array.isArray(raw.rawLeadData?.Activities_and_Experiences_1)) {
-    dayActivities = parseRawSubformToDayActivities(raw.rawLeadData.Activities_and_Experiences_1);
-  } else if (dayActivities.length === 0 && Array.isArray(raw.Activities_and_Experiences_1)) {
-    dayActivities = parseRawSubformToDayActivities(raw.Activities_and_Experiences_1);
+  // Extract dayActivities from all possible locations (prioritizing manual edited activities text)
+  const activitiesText = raw.activitiesText || raw.Special_Requirements || raw.specialRequirements;
+  let dayActivities: ZohoDayActivity[] = [];
+
+  if (activitiesText && typeof activitiesText === 'string' && activitiesText.includes('Day')) {
+    dayActivities = parseActivitiesTextToDayActivities(activitiesText, dest);
+  }
+
+  if (dayActivities.length === 0) {
+    dayActivities = raw.dayActivities || [];
+    if (dayActivities.length === 0 && Array.isArray(raw.rawLeadData?.Activities_and_Experiences_1)) {
+      dayActivities = parseRawSubformToDayActivities(raw.rawLeadData.Activities_and_Experiences_1);
+    } else if (dayActivities.length === 0 && Array.isArray(raw.Activities_and_Experiences_1)) {
+      dayActivities = parseRawSubformToDayActivities(raw.Activities_and_Experiences_1);
+    }
   }
 
   const rawDays = Number(raw.noOfDays || raw.No_of_Days || raw.Days || raw.days || duration) || 0;
@@ -807,7 +953,17 @@ export function generateLuxuryFallback(raw: Record<string, any>): GeneratedItine
   const travelStyle = (raw.travelStyle || raw.Travel_Style || 'Family Trip').trim();
   const tripType = (raw.tripType || raw.Trip_Type || 'Customised Trip').trim();
 
-  const hotels: ZohoHotelStay[] = raw.hotels || (hotel ? [{ index: 1, hotelName: hotel, city: dest, nights: noOfNights, stayDates: '' }] : []);
+  // Extract hotels (prioritizing manual edited hotel string)
+  let hotels: ZohoHotelStay[] = [];
+  if (hotel && (hotel.includes('+') || hotel.includes('(') || hotel.includes(' - ') || hotel.includes('|'))) {
+    hotels = parseHotelStringToStays(hotel, dest, 1);
+  }
+  if (hotels.length === 0 && Array.isArray(raw.hotels) && raw.hotels.length > 0) {
+    hotels = raw.hotels;
+  }
+  if (hotels.length === 0 && hotel) {
+    hotels = [{ index: 1, hotelName: hotel, city: dest, nights: noOfNights, stayDates: '' }];
+  }
 
   const defaultSubTitle = travelStyle || sanitizeSubTitle(room || hotel || 'Royal Retreat');
   const defaultDesc = sanitizeLuxuryDescription(
@@ -875,10 +1031,36 @@ export function generateLuxuryFallback(raw: Record<string, any>): GeneratedItine
   ];
 
   const finalQuotationAmount = raw.finalQuotationAmount !== undefined ? Number(raw.finalQuotationAmount) : (raw.Final_Quotation_Amount ? Number(raw.Final_Quotation_Amount) : (raw.Total_Package_Cost ? Number(raw.Total_Package_Cost) : (raw.Quotation_Amount ? Number(raw.Quotation_Amount) : (raw.Expected_Revenue ? Number(raw.Expected_Revenue) : (raw.Amount ? Number(raw.Amount) : undefined)))));
-  const perAdultPrice = raw.perAdultPrice !== undefined ? Number(raw.perAdultPrice) : (raw.Per_Adult_Price ? Number(raw.Per_Adult_Price) : (raw.Per_Adult_Cost ? Number(raw.Per_Adult_Cost) : (raw.Price_Per_Adult ? Number(raw.Price_Per_Adult) : (raw.Adult_Price ? Number(raw.Adult_Price) : undefined))));
-  const perKidPrice = raw.perKidPrice !== undefined ? Number(raw.perKidPrice) : (raw.Per_Kid_Price ? Number(raw.Per_Kid_Price) : (raw.Per_Child_Price ? Number(raw.Per_Child_Price) : (raw.Price_Per_Kid ? Number(raw.Price_Per_Kid) : (raw.Child_Price ? Number(raw.Child_Price) : undefined))));
+
+  const isIntl = isInternationalTrip(dest, destType);
+  const gstPercentage = raw.gstPercentage !== undefined ? Number(raw.gstPercentage) : 5;
+  const tcsPercentage = raw.tcsPercentage !== undefined ? Number(raw.tcsPercentage) : (isIntl ? 2 : 0);
+
+  let baseAmount = raw.baseAmount !== undefined ? Number(raw.baseAmount) : (raw.Base_Amount ? Number(raw.Base_Amount) : undefined);
+  if (baseAmount === undefined && finalQuotationAmount) {
+    const taxMultiplier = 1 + (gstPercentage + tcsPercentage) / 100;
+    baseAmount = Math.round(finalQuotationAmount / taxMultiplier);
+  }
+
+  let gstAmount = raw.gstAmount !== undefined ? Number(raw.gstAmount) : (raw.GST_Amount ? Number(raw.GST_Amount) : undefined);
+  if (gstAmount === undefined && baseAmount) {
+    gstAmount = Math.round(baseAmount * (gstPercentage / 100));
+  }
+
+  let tcsAmount = raw.tcsAmount !== undefined ? Number(raw.tcsAmount) : (raw.TCS_Amount ? Number(raw.TCS_Amount) : undefined);
+  if (tcsAmount === undefined && baseAmount && tcsPercentage > 0) {
+    tcsAmount = Math.round(baseAmount * (tcsPercentage / 100));
+  } else if (tcsPercentage === 0) {
+    tcsAmount = 0;
+  }
+
   const adults = Number(raw.adults || raw.Adults || raw.Number_Of_Guest || raw.numberOfGuests) || 2;
   const kids = Number(raw.kids || raw.Kids || raw.Children || raw.Number_Of_Children || 0);
+
+  const perAdultPrice = raw.perAdultPrice !== undefined ? Number(raw.perAdultPrice) : (raw.Per_Adult_Price ? Number(raw.Per_Adult_Price) : (raw.Per_Adult_Cost ? Number(raw.Per_Adult_Cost) : (raw.Price_Per_Adult ? Number(raw.Price_Per_Adult) : (raw.Adult_Price ? Number(raw.Adult_Price) : (finalQuotationAmount && adults > 0 ? Math.round(finalQuotationAmount / adults) : undefined)))));
+
+  const perKidPrice = raw.perKidPrice !== undefined ? Number(raw.perKidPrice) : (raw.Per_Kid_Price ? Number(raw.Per_Kid_Price) : (raw.Per_Child_Price ? Number(raw.Per_Child_Price) : (raw.Price_Per_Kid ? Number(raw.Price_Per_Kid) : (raw.Child_Price ? Number(raw.Child_Price) : undefined))));
+
   const advanceAmountPaid = raw.advanceAmountPaid !== undefined ? Number(raw.advanceAmountPaid) : (raw.Advance_Amount_Paid ? Number(raw.Advance_Amount_Paid) : undefined);
   const balancePendingAmount = raw.balancePendingAmount !== undefined ? Number(raw.balancePendingAmount) : (raw.Balance_Pending_Amount ? Number(raw.Balance_Pending_Amount) : undefined);
 
@@ -899,6 +1081,11 @@ export function generateLuxuryFallback(raw: Record<string, any>): GeneratedItine
     perKidPrice,
     adults,
     kids,
+    baseAmount,
+    gstPercentage,
+    tcsPercentage,
+    gstAmount,
+    tcsAmount,
     advanceAmountPaid,
     balancePendingAmount,
     highlights: [
@@ -942,15 +1129,34 @@ export async function generateItineraryContentWithAI(rawZohoData: Record<string,
   const mealPlan = (rawZohoData.mealPlan || rawZohoData.Meal_Plan || '').trim() || (isInternationalTrip(dest, destType) ? 'Breakfast Only' : 'Breakfast & Dinner');
   const totalDays = Number(rawZohoData.noOfDays || rawZohoData.Days || rawZohoData.days) || 0;
 
-  // Extract dayActivities from all possible locations
-  let dayActivities: ZohoDayActivity[] = rawZohoData.dayActivities || [];
-  if (dayActivities.length === 0 && Array.isArray(rawZohoData.rawLeadData?.Activities_and_Experiences_1)) {
-    dayActivities = parseRawSubformToDayActivities(rawZohoData.rawLeadData.Activities_and_Experiences_1);
-  } else if (dayActivities.length === 0 && Array.isArray(rawZohoData.Activities_and_Experiences_1)) {
-    dayActivities = parseRawSubformToDayActivities(rawZohoData.Activities_and_Experiences_1);
+  // Extract dayActivities from all possible locations (prioritizing manual edited activities text)
+  const activitiesText = rawZohoData.activitiesText || rawZohoData.Special_Requirements || rawZohoData.specialRequirements;
+  let dayActivities: ZohoDayActivity[] = [];
+
+  if (activitiesText && typeof activitiesText === 'string' && activitiesText.includes('Day')) {
+    dayActivities = parseActivitiesTextToDayActivities(activitiesText, dest);
   }
 
-  const hotels: ZohoHotelStay[] = rawZohoData.hotels || (hotel ? [{ index: 1, hotelName: hotel, city: dest, nights: totalDays || 3, stayDates: '' }] : []);
+  if (dayActivities.length === 0) {
+    dayActivities = rawZohoData.dayActivities || [];
+    if (dayActivities.length === 0 && Array.isArray(rawZohoData.rawLeadData?.Activities_and_Experiences_1)) {
+      dayActivities = parseRawSubformToDayActivities(rawZohoData.rawLeadData.Activities_and_Experiences_1);
+    } else if (dayActivities.length === 0 && Array.isArray(rawZohoData.Activities_and_Experiences_1)) {
+      dayActivities = parseRawSubformToDayActivities(rawZohoData.Activities_and_Experiences_1);
+    }
+  }
+
+  // Extract hotels (prioritizing manual edited hotel string)
+  let hotels: ZohoHotelStay[] = [];
+  if (hotel && (hotel.includes('+') || hotel.includes('(') || hotel.includes(' - ') || hotel.includes('|'))) {
+    hotels = parseHotelStringToStays(hotel, dest, 1);
+  }
+  if (hotels.length === 0 && Array.isArray(rawZohoData.hotels) && rawZohoData.hotels.length > 0) {
+    hotels = rawZohoData.hotels;
+  }
+  if (hotels.length === 0 && hotel) {
+    hotels = [{ index: 1, hotelName: hotel, city: dest, nights: totalDays || 3, stayDates: '' }];
+  }
 
   // ALWAYS generate clean, accurate day plans directly from Zoho CRM subform adhering to Indian vs Intl rules
   const cleanDayPlans = buildCleanDayPlansFromZoho(
@@ -1119,6 +1325,11 @@ Generate the clean itinerary JSON now.`;
       perKidPrice: fallback.perKidPrice,
       adults: fallback.adults,
       kids: fallback.kids,
+      baseAmount: fallback.baseAmount,
+      gstPercentage: fallback.gstPercentage,
+      tcsPercentage: fallback.tcsPercentage,
+      gstAmount: fallback.gstAmount,
+      tcsAmount: fallback.tcsAmount,
       advanceAmountPaid: fallback.advanceAmountPaid,
       balancePendingAmount: fallback.balancePendingAmount,
       highlights: Array.isArray(parsed.highlights) && parsed.highlights.length > 0 ? parsed.highlights : fallback.highlights,

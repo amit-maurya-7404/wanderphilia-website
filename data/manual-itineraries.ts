@@ -1641,6 +1641,274 @@ export const vietnamNaushadManualItinerary: ManualItinerary = {
   ]
 };
 
+export const rajasthanRoyalEscapeManualItinerary: ManualItinerary = {
+  id: 'wp-4002b3f4',
+  slug: 'wp-4002b3f4',
+  title: '9 Nights / 10 Days Royal Rajasthan Escape',
+  subtitle: 'Family Trip',
+  duration: '9 Nights / 10 Days | 30 October – 8 November',
+  numNights: 9,
+  numDays: 10,
+  dates: '30 October – 8 November',
+  route: 'Jaipur (2N) → Jaisalmer (1N) → Jodhpur (2N) → Jawai (1N) → Mount Abu (1N) → Udaipur (2N)',
+  routeSummary: '2N Jaipur | 1N Jaisalmer | 2N Jodhpur | 1N Jawai | 1N Mount Abu | 2N Udaipur',
+  destination: 'Rajasthan',
+  travelStyle: 'Family Trip',
+  tripType: 'Customised Trip',
+  leadName: 'Valued Traveler',
+  vehicleType: 'Private AC Vehicle with Dedicated Tour Chauffeur',
+  mealPlan: 'Breakfast & Dinner (MAP Plan) (Breakfast except Day 1 & Dinner on last day)',
+  heroImage: '/images/gallery1.jpeg',
+  galleryImages: [
+    '/images/gallery1.jpeg',
+    '/images/gallery4.jpg',
+    '/images/gallery11.jpg',
+    '/images/about_hero4.jpg',
+    '/images/about_hero5.jpg',
+    '/images/gallery2.jpg'
+  ],
+  accommodations: [
+    { city: 'Jaipur', nights: 2, hotelName: 'Hotel Kalyan', roomCategory: 'Deluxe Room' },
+    { city: 'Jaisalmer', nights: 1, hotelName: 'Lakhmana Dessert Camp', roomCategory: 'Luxury Desert Tent' },
+    { city: 'Jodhpur', nights: 2, hotelName: 'Krishna Prakash Heritage Haveli', roomCategory: 'Heritage Deluxe Room' },
+    { city: 'Jawai', nights: 1, hotelName: 'Thar Resort', roomCategory: 'Deluxe Safari Resort' },
+    { city: 'Mount Abu', nights: 1, hotelName: 'Hotel Rock Regency', roomCategory: 'Deluxe Room' },
+    { city: 'Udaipur', nights: 2, hotelName: 'Mewar haveli', roomCategory: 'Heritage Lake View Room' }
+  ],
+  dayPlans: [
+    {
+      day: 1,
+      date: '30 Oct',
+      title: 'Day 1 | 30 Oct Jaipur — Arrival & Hotel Check-in',
+      route: 'Arrival in Jaipur',
+      intro: 'Welcome to the Pink City of Jaipur! Arrive at Jaipur Airport / Railway Station and begin your royal Rajasthan journey.',
+      timeline: [
+        'Arrival at Jaipur Airport / Railway Station & warm meet and greet',
+        'Private transfer and check-in at Hotel Kalyan, Jaipur',
+        'Freshen up and relax after your journey',
+        'Evening stroll through vibrant Jaipur local bazaars (Johari & Bapu Bazaar)',
+        'Witness the illuminated Albert Hall Museum from outside',
+        'Dinner and comfortable overnight stay at Hotel Kalyan'
+      ],
+      stayLocation: 'Hotel Kalyan, Jaipur',
+      image: '/images/gallery1.jpeg',
+      meals: 'Dinner Only'
+    },
+    {
+      day: 2,
+      date: '31 Oct',
+      title: 'Day 2 | 31 Oct Jaipur Sightseeing — Royal Heritage, Forts & Palaces',
+      route: 'Jaipur Full Day Sightseeing',
+      intro: 'A full day dedicated to exploring the majestic hilltop forts, ornate palaces, and UNESCO heritage monuments of Jaipur.',
+      timeline: [
+        'Breakfast at Hotel Kalyan',
+        'Explore the colossal Amber Fort with panoramic hill views',
+        'Photo stop at the scenic Jal Mahal (Water Palace)',
+        'Explore the iconic Hawa Mahal (Palace of Winds)',
+        'Visit City Palace, royal museum and courtyards',
+        'Discover Jantar Mantar (UNESCO World Heritage Astronomical Observatory)',
+        'Evening leisure and traditional shopping for handicrafts and gemstones',
+        'Dinner and overnight stay at Hotel Kalyan, Jaipur'
+      ],
+      stayLocation: 'Hotel Kalyan, Jaipur',
+      image: '/images/gallery4.jpg',
+      meals: 'Breakfast & Dinner'
+    },
+    {
+      day: 3,
+      date: '01 Nov',
+      title: 'Day 3 | 01 Nov Jaipur to Jaisalmer — Thar Desert Safari, Sunset & Cultural Camping',
+      route: 'Jaipur → Jaisalmer',
+      intro: 'Journey into the golden desert heart of Rajasthan for an authentic Thar Desert glamping and cultural safari experience.',
+      timeline: [
+        'Breakfast at Hotel Kalyan and scenic morning journey towards Jaisalmer',
+        'Arrive at Lakhmana Dessert Camp in the golden Thar Desert & royal traditional welcome with tikka and dhol',
+        'Check-in to luxury Swiss desert tents and freshen up',
+        'Experience the Jaisalmer Thar Desert with sunsets, camel safaris, dunes, culture, camping and Rajasthani cuisine',
+        'Thrilling camel safari and dune exploration amidst the golden sand dunes of Thar',
+        'Witness a breathtaking golden sunset over the desert horizon',
+        'Evening cultural folk music, Kalbeliya dance performance & DJ around the campfire',
+        'Authentic Rajasthani buffet dinner under the starlit desert sky',
+        'Overnight glamping stay at Lakhmana Dessert Camp'
+      ],
+      stayLocation: 'Lakhmana Dessert Camp, Jaisalmer',
+      image: '/images/gallery11.jpg',
+      meals: 'Breakfast & Dinner'
+    },
+    {
+      day: 4,
+      date: '02 Nov',
+      title: 'Day 4 | 02 Nov Jaisalmer Fort to Jodhpur — Golden Fort & Blue City Transfer',
+      route: 'Jaisalmer → Jodhpur',
+      intro: 'Explore the living golden fortress of Jaisalmer before traveling to the historic Sun City of Jodhpur.',
+      timeline: [
+        'Breakfast at the desert camp and check-out',
+        'Visit the UNESCO World Heritage Jaisalmer Living Fort (Sonar Qila)',
+        'Explore the exquisitely carved Patwon Ki Haveli and Salim Singh Ki Haveli',
+        'Scenic drive towards Jodhpur (The Blue City)',
+        'Arrive in Jodhpur and check-in at Krishna Prakash Heritage Haveli',
+        'Evening leisure walk around the heritage clock tower (Ghanta Ghar) and Sadar Market',
+        'Dinner and comfortable overnight stay at Krishna Prakash Heritage Haveli, Jodhpur'
+      ],
+      stayLocation: 'Krishna Prakash Heritage Haveli, Jodhpur',
+      image: '/images/about_hero4.jpg',
+      meals: 'Breakfast & Dinner'
+    },
+    {
+      day: 5,
+      date: '03 Nov',
+      title: 'Day 5 | 03 Nov Jodhpur Heritage, Panchatiya Hill Sunset & Gadisar Lake Cultural Show',
+      route: 'Jodhpur City Sightseeing',
+      intro: 'Discover Mehrangarh Fort, Jaswant Thada, royal heritage and an enchanting evening cultural show.',
+      timeline: [
+        'Breakfast at Krishna Prakash Heritage Haveli',
+        'Explore the colossal Mehrangarh Fort towering above the blue city',
+        'Visit Jaswant Thada, the serene white-marble royal cenotaph with peaceful surroundings',
+        'Enjoy panoramic sunset views over Jodhpur from Panchatiya Hills',
+        'Enjoy Gadisar Lake, followed by an entertaining cultural sound and light show',
+        'Explore traditional handicrafts, bandhej textiles and local Jodhpuri sweets',
+        'Dinner and comfortable overnight stay at Krishna Prakash Heritage Haveli, Jodhpur'
+      ],
+      stayLocation: 'Krishna Prakash Heritage Haveli, Jodhpur',
+      image: '/images/about_hero5.jpg',
+      meals: 'Breakfast & Dinner'
+    },
+    {
+      day: 6,
+      date: '04 Nov',
+      title: 'Day 6 | 04 Nov Jodhpur to Jawai — Umaid Bhawan Palace & Wildlife Leopard Safari',
+      route: 'Jodhpur → Jawai',
+      intro: 'Visit the grand Umaid Bhawan Palace before heading to Jawai\'s granite hills for an exhilarating wildlife leopard safari.',
+      timeline: [
+        'Breakfast at hotel and check-out',
+        'Visit Umaid Bhawan Palace, showcasing royal architecture, grand museum and vintage heritage',
+        'Scenic drive from Jodhpur towards the granite wonderland of Jawai',
+        'Arrive in Jawai and check-in at Thar Resort',
+        'Explore the rugged Jawai landscape and experience wildlife and leopard safari in an open 4x4 gypsy',
+        'Spot wild leopards roaming freely amongst the ancient granite rock hills',
+        'Sunset over the scenic Jawai Dam and migratory bird watching',
+        'Evening bonfire, dinner and overnight stay at Thar Resort, Jawai'
+      ],
+      stayLocation: 'Thar Resort, Jawai',
+      image: '/images/gallery2.jpg',
+      meals: 'Breakfast & Dinner'
+    },
+    {
+      day: 7,
+      date: '05 Nov',
+      title: 'Day 7 | 05 Nov Jawai to Mount Abu — Dilwara Temples, Market & Nakki Lake Sunset Boat Ride',
+      route: 'Jawai → Mount Abu',
+      intro: 'Ascend to Rajasthan\'s premier hill station, Mount Abu, famous for intricate marble temples and tranquil lakes.',
+      timeline: [
+        'Breakfast at Thar Resort and scenic drive up the Aravalli hills to Mount Abu',
+        'Arrive in Mount Abu and check-in at Hotel Rock Regency',
+        'Freshen up and proceed for curated Mount Abu sightseeing',
+        'Dilwara Temples in Mount Abu are famous Jain temples known for their stunning marble carvings and intricate architecture',
+        'Mount Abu Market is a lively shopping area known for handicrafts, souvenirs, traditional Rajasthani items, and local snacks',
+        'Enjoy a peaceful boat ride on Nakki Lake while watching the beautiful sunset over the hills of Mount Abu',
+        'Evening stroll along Nakki Lake promenade and Toad Rock viewpoint',
+        'Delicious dinner and overnight stay at Hotel Rock Regency, Mount Abu'
+      ],
+      stayLocation: 'Hotel Rock Regency, Mount Abu',
+      image: '/images/gallery1.jpeg',
+      meals: 'Breakfast & Dinner'
+    },
+    {
+      day: 8,
+      date: '06 Nov',
+      title: 'Day 8 | 06 Nov Mount Abu to Udaipur via Kumbhalgarh Fort — Lake Pichola Boat Ride & Jag Mandir Palace',
+      route: 'Mount Abu → Kumbhalgarh → Udaipur',
+      intro: 'Visit the legendary Kumbhalgarh Fort before arriving in the romantic City of Lakes for sunset boating and palace exploration.',
+      timeline: [
+        'Breakfast at Hotel Rock Regency and check-out',
+        'Scenic drive through the Aravalli ranges towards Kumbhalgarh',
+        'En-Route visit to Kumbhalgarh Fort, exploring the massive hill fortress and world-famous continuous ramparts',
+        'Scenic onward journey to Udaipur (City of Lakes) and check-in at Mewar Haveli',
+        'Freshen up and proceed directly to Lake Pichola',
+        'Enjoy a scenic Udaipur Lake Pichola boat ride with sunset views',
+        'Enjoy Udaipur Jag Mandir Palace’s royal heritage, scenic lake views and beautiful sunsets',
+        'Evening view of illuminated ghats and palaces around Lake Pichola',
+        'Dinner and overnight stay at Mewar haveli, Udaipur'
+      ],
+      stayLocation: 'Mewar haveli, Udaipur',
+      image: '/images/gallery4.jpg',
+      meals: 'Breakfast & Dinner'
+    },
+    {
+      day: 9,
+      date: '07 Nov',
+      title: 'Day 9 | 07 Nov Udaipur Sightseeing — City Palace, Saheliyon Ki Bari, Monsoon Palace & Shilpgram',
+      route: 'Udaipur Full Day Sightseeing',
+      intro: 'Explore Udaipur\'s grand royal palaces, lakeside gardens, hilltop Monsoon Palace and traditional cultural artisans.',
+      timeline: [
+        'Breakfast at Mewar Haveli with tranquil lake views',
+        'Explore Udaipur City Palace, known for its grand architecture, royal history, and beautiful views of Lake Pichola',
+        'Visit Saheliyon Ki Bari (Garden of the Maidens) with marble elephants and lotus pools',
+        'Drive up to Sajjangarh Monsoon Palace for panoramic sunset views over Udaipur’s lakes and hills',
+        'Explore Shilpgram rural arts and crafts complex showcasing authentic regional heritage',
+        'Evening leisure shopping for traditional Mewari handicrafts and miniature paintings',
+        'Dinner and overnight stay at Mewar haveli, Udaipur'
+      ],
+      stayLocation: 'Mewar haveli, Udaipur',
+      image: '/images/gallery11.jpg',
+      meals: 'Breakfast & Dinner'
+    },
+    {
+      day: 10,
+      date: '08 Nov',
+      title: 'Day 10 | 08 Nov Udaipur — Jagdish Mandir & Departure Transfer',
+      route: 'Udaipur Departure',
+      intro: 'Seek divine blessings at Jagdish Mandir before transferring for your departure journey home with unforgettable royal memories.',
+      timeline: [
+        'Breakfast at Mewar Haveli and check-out',
+        'Visit the historic 17th-century Jagdish Mandir dedicated to Lord Vishnu',
+        'Last-minute shopping and photo opportunities around the old city',
+        'Private transfer to Udaipur Airport / Railway Station for your onward journey home with wonderful memories'
+      ],
+      stayLocation: 'Departure Transfer',
+      image: '/images/about_hero4.jpg',
+      meals: 'Breakfast Only'
+    }
+  ],
+  inclusions: [
+    'Private AC Vehicle with Dedicated Tour Chauffeur for all 10 Days (including all transfers, inter-city drives & sightseeing)',
+    'Accommodation for 9 Nights across Handpicked Properties (Hotel Kalyan, Lakhmana Dessert Camp, Krishna Prakash Heritage Haveli, Thar Resort, Hotel Rock Regency, Mewar Haveli)',
+    'Daily Buffet Breakfast & Dinner (MAP Plan) as per the detailed day-wise itinerary',
+    'Thar Desert Safari with Camel Ride, Sunset at Sand Dunes, Cultural Folk Dance & Campfire in Jaisalmer',
+    '4x4 Open Gypsy Wildlife & Leopard Safari in Jawai Hills',
+    'Sunset Boat Ride on Nakki Lake in Mount Abu',
+    'Scenic Sunset Boat Ride on Lake Pichola & Visit to Jag Mandir Palace in Udaipur',
+    'All Driver Allowances, Toll Taxes, State Border Permits, Parking Fees & Fuel Charges',
+    'Assistance during all hotel check-ins and check-outs',
+    '5% GST Included in the Total Package Quotation'
+  ],
+  exclusions: [
+    'Airfare / Train fare to Jaipur and from Udaipur',
+    'Monument entry tickets, camera fees, or audio guides unless specifically mentioned in inclusions',
+    'Any personal expenses (laundry, room service, telephone calls, alcoholic beverages)',
+    'Any meals or snacks other than the specified Breakfast & Dinner plan',
+    'Early check-in (before standard 2:00 PM) or late check-out (after 11:00 AM) subject to hotel policies',
+    'Any cost arising due to unforeseen circumstances like flight cancellations, landslides, or natural calamities'
+  ],
+  thingsToCarry: [
+    'Valid Government-Issued Photo ID Cards (Aadhaar / Passport / Driving License)',
+    'Comfortable cotton clothing for daytime sightseeing & light woollens / shawls for desert evenings',
+    'Comfortable walking shoes & sandals for fort and temple exploration',
+    'Sunglasses, Sunscreen Lotion & Sun Hat for daytime excursions',
+    'Camera / Smartphone with extra battery packs for desert and wildlife photography',
+    'Personal medicines and basic travel first-aid kit'
+  ],
+  finalQuotationAmount: 139020,
+  baseAmount: 132400,
+  gstPercentage: 5,
+  gstAmount: 6620,
+  tcsPercentage: 0,
+  tcsAmount: 0,
+  adults: 3,
+  kids: 0,
+  perAdultPrice: 46340
+};
+
 export const manualItinerariesRegistry: Record<string, ManualItinerary> = {
   'himachal-explorer': himachalExplorerManualItinerary,
   'wanderphilia-signature-himachal-explorer': himachalExplorerManualItinerary,
@@ -1673,7 +1941,14 @@ export const manualItinerariesRegistry: Record<string, ManualItinerary> = {
   'mr-naushad-vietnam': vietnamNaushadManualItinerary,
   'naushad-vietnam': vietnamNaushadManualItinerary,
   'vietnam-family-tour': vietnamNaushadManualItinerary,
-  'wp-vietnam-naushad': vietnamNaushadManualItinerary
+  'wp-vietnam-naushad': vietnamNaushadManualItinerary,
+  'wp-4002b3f4': rajasthanRoyalEscapeManualItinerary,
+  'rajasthan-royal-family-tour': rajasthanRoyalEscapeManualItinerary,
+  'rajasthan-family-tour': rajasthanRoyalEscapeManualItinerary,
+  'rajasthan-royal-escape': rajasthanRoyalEscapeManualItinerary,
+  'wp-rajasthan-royal-escape': rajasthanRoyalEscapeManualItinerary,
+  'rajasthan-10-days': rajasthanRoyalEscapeManualItinerary,
+  'rajasthan-10d9n': rajasthanRoyalEscapeManualItinerary
 };
 
 export function getManualItinerary(idOrSlug: string): ManualItinerary | null {
@@ -1685,7 +1960,13 @@ export function getManualItinerary(idOrSlug: string): ManualItinerary | null {
 }
 
 export function getAllManualItineraries(): ManualItinerary[] {
-  return [himachalExplorerManualItinerary, vietnamAneeshManualItinerary, vietnamYashManualItinerary, vietnamNaushadManualItinerary];
+  return [
+    himachalExplorerManualItinerary,
+    vietnamAneeshManualItinerary,
+    vietnamYashManualItinerary,
+    vietnamNaushadManualItinerary,
+    rajasthanRoyalEscapeManualItinerary
+  ];
 }
 
 /**
@@ -1693,6 +1974,7 @@ export function getAllManualItineraries(): ManualItinerary[] {
  */
 export function manualItineraryToDocument(manual: ManualItinerary): ItineraryDocument {
   const isVietnam = manual.destination.toLowerCase().includes('vietnam');
+  const isRajasthan = manual.destination.toLowerCase().includes('rajasthan') || manual.id.includes('4002b3f4');
   const defaultHighlights = isVietnam ? [
     'Ho Chi Minh City Highlights & Cu Chi Underground Tunnels',
     'Phu Quoc Island: 3 Islands Speedboat, VinWonders & Vinpearl Safari',
@@ -1702,6 +1984,14 @@ export function manualItineraryToDocument(manual: ManualItinerary): ItineraryDoc
     'Hanoi 1000-Year Heritage & Ninh Binh Tam Coc Karst Caves',
     'Sapa Valley H’mong Cat Cat Village & Fansipan Legend Peak (3,143m)',
     '2D1N Ha Long Bay 5-Star Luxury Overnight Cruise (Ambassador Cruise)'
+  ] : (isRajasthan ? [
+    'Pink City Heritage: Amber Fort, Hawa Mahal & City Palace',
+    'Thar Desert Camping, Camel Safari & Rajasthani Folk Dance in Jaisalmer',
+    'Colossal Mehrangarh Fort & White Marble Jaswant Thada in Jodhpur',
+    'Exciting 4x4 Wildlife & Leopard Safari in Jawai Granite Hills',
+    'Dilwara Marble Temples & Nakki Lake Sunset Boat Ride in Mount Abu',
+    'UNESCO Kumbhalgarh Fort Wall & Lake Pichola Sunset Boating in Udaipur',
+    'Grand Udaipur City Palace, Saheliyon Ki Bari & Sajjangarh Monsoon Palace'
   ] : [
     'Scenic drive through Kangra Valley & McLeod Ganj',
     'Dalai Lama Temple & Bhagsu Waterfall',
@@ -1711,7 +2001,7 @@ export function manualItineraryToDocument(manual: ManualItinerary): ItineraryDoc
     'Snow Activities in Solang Valley & New Year Party in Manali',
     'River Rafting Experience in Manali',
     'Kasol & Parvati Valley Exploration'
-  ];
+  ]);
 
   return {
     id: manual.id,
@@ -1720,7 +2010,7 @@ export function manualItineraryToDocument(manual: ManualItinerary): ItineraryDoc
     subTitle: manual.subtitle || `${manual.numNights} Nights / ${manual.numDays} Days Signature Experience`,
     description: `Custom ${manual.duration} expedition exploring ${manual.route}`,
     destination: manual.destination,
-    stateOrCountry: isVietnam ? 'Vietnam' : 'Himachal Pradesh, India',
+    stateOrCountry: isVietnam ? 'Vietnam' : (isRajasthan ? 'Rajasthan, India' : 'Himachal Pradesh, India'),
     travelStyle: manual.travelStyle || 'Signature Tour',
     tripType: manual.tripType || 'Customised Trip',
     vehicleType: manual.vehicleType || 'Private AC Van with Dedicated Driver',
