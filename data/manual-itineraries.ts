@@ -857,7 +857,7 @@ export const vietnamYashManualItinerary: ManualItinerary = {
   destination: 'Vietnam',
   travelStyle: '4-Star Luxury Private Honeymoon Tour',
   tripType: 'Customised Private Honeymoon Tour (2 Adults)',
-  leadName: 'Valued Traveler',
+  leadName: 'Yash',
   adults: 2,
   kids: 0,
   perAdultPrice: 127890,
