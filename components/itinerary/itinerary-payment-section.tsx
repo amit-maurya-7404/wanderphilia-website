@@ -10,19 +10,25 @@ import {
   Lock, 
   CheckCircle2,
   CreditCard,
-  Sparkles,
   ArrowRight,
   FileCheck,
   CheckCheck,
   Clock,
   Download
 } from 'lucide-react';
+import { Parachute } from '@/components/parachute-icon';
 import { ItineraryBookModal, ItineraryPaymentType } from './itinerary-book-modal';
 import { ItineraryPaymentRecord } from '@/types/itinerary';
 
 interface ItineraryPaymentSectionProps {
   itineraryId?: string;
   destination?: string;
+  proposalTitle?: string;
+  perAdultPrice?: number;
+  adults?: number;
+  baseAmount?: number;
+  gstPercentage?: number;
+  tcsPercentage?: number;
   totalQuotationAmount?: number;
   advanceAmountPaid?: number;
   balancePendingAmount?: number;
@@ -41,6 +47,12 @@ interface ItineraryPaymentSectionProps {
 export function ItineraryPaymentSection({
   itineraryId = '',
   destination = '',
+  proposalTitle,
+  perAdultPrice,
+  adults,
+  baseAmount,
+  gstPercentage,
+  tcsPercentage,
   totalQuotationAmount = 0,
   advanceAmountPaid = 0,
   balancePendingAmount,
@@ -229,7 +241,7 @@ export function ItineraryPaymentSection({
                   </div>
                 </div>
                 <p className="text-[10px] text-stone-300/90 leading-tight">
-                  Instantly locks your booking inquiry and proposal. Remaining advance payable next.
+                  Locks proposal & dates. 50% Advance payable within 7 days.
                 </p>
               </div>
 
@@ -255,7 +267,7 @@ export function ItineraryPaymentSection({
                   </div>
                 </div>
                 <p className="text-[10px] text-stone-300/90 leading-tight">
-                  Locks in luxury resort & private chauffeur. Balance ₹{fiftyPercentAmount.toLocaleString('en-IN')} due 15 days before departure.
+                  Locks in luxury resort, cruise & private chauffeur. Balance due 15 days before departure.
                 </p>
               </div>
 
@@ -462,7 +474,7 @@ export function ItineraryPaymentSection({
                 type="button"
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-amber-400 hover:bg-amber-300 text-stone-950 text-xs sm:text-sm font-black px-7 py-3.5 rounded-xl shadow-lg transition hover:scale-105 active:scale-95 cursor-pointer uppercase tracking-wider"
               >
-                <Sparkles className="w-4 h-4" />
+                <Parachute size={16} className="w-4 h-4 text-stone-950" />
                 <span>
                   {isTokenPaid ? 'Pay Remaining Advance (40%)' : (isAdvancePaid ? 'Pay Remaining 50% Balance' : 'Book & Pay Online (Razorpay)')}
                 </span>
@@ -663,6 +675,12 @@ export function ItineraryPaymentSection({
           onOpenChange={setBookModalOpen}
           itineraryId={itineraryId}
           destination={destination}
+          proposalTitle={proposalTitle}
+          perAdultPrice={perAdultPrice}
+          adults={adults}
+          baseAmount={baseAmount}
+          gstPercentage={gstPercentage}
+          tcsPercentage={tcsPercentage}
           totalQuotationAmount={totalQuotationAmount}
           advanceAmountPaid={alreadyPaid}
           balancePendingAmount={balancePendingAmount}

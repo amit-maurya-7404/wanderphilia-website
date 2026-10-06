@@ -141,8 +141,12 @@ export default async function ItineraryPage({ params }: PageProps) {
   }
 
   const leadName = itinerary.leadDetails?.name || itinerary.rawZohoData?.Full_Name || (itinerary.rawZohoData?.First_Name ? `${itinerary.rawZohoData.First_Name} ${itinerary.rawZohoData.Last_Name || ''}`.trim() : '') || 'Valued Traveler';
-  const firstName = itinerary.leadDetails?.firstName || itinerary.rawZohoData?.First_Name || (leadName && leadName !== 'Valued Traveler' ? leadName.split(' ')[0] : 'Your');
-  const possessiveName = firstName.endsWith('s') || firstName.endsWith('S') ? `${firstName}'` : `${firstName}'s`;
+  const cleanedLeadName = leadName.replace(/^(Mr\.|Mr|Mrs\.|Mrs|Ms\.|Ms|Dr\.|Dr|Shri)\s+/i, '').trim();
+  const rawFirstName = itinerary.leadDetails?.firstName || itinerary.rawZohoData?.First_Name || (cleanedLeadName && cleanedLeadName !== 'Valued Traveler' ? cleanedLeadName.split(' ')[0] : 'Your');
+  const firstName = rawFirstName.replace(/^(Mr\.|Mr|Mrs\.|Mrs|Ms\.|Ms|Dr\.|Dr|Shri)\s+/i, '').trim() || 'Your';
+  const possessiveName = firstName.toLowerCase() === 'your'
+    ? 'Your'
+    : (firstName.endsWith('s') || firstName.endsWith('S') ? `${firstName}'` : `${firstName}'s`);
   const destination = itinerary.destination || itinerary.rawZohoData?.Destinations || itinerary.rawZohoData?.Destination || 'Rajasthan';
   const numDays = itinerary.noOfDays || (itinerary.rawZohoData?.No_of_Days ? Number(itinerary.rawZohoData.No_of_Days) : (itinerary.dayPlans?.length || 5));
   const numNights = itinerary.noOfNights || (itinerary.rawZohoData?.No_of_Nights ? Number(itinerary.rawZohoData.No_of_Nights) : (numDays > 1 ? numDays - 1 : 1));
@@ -718,27 +722,6 @@ export default async function ItineraryPage({ params }: PageProps) {
 
               </div>
 
-              {/* Instant Book Now & Pay Online CTA Card within Quotation */}
-              {finalQuotationAmount && finalQuotationAmount > 0 ? (
-                <ItineraryQuotationBookButton
-                  variant="card"
-                  itineraryId={itinerary.id}
-                  destination={destination}
-                  totalQuotationAmount={finalQuotationAmount}
-                  advanceAmountPaid={advanceAmountPaid}
-                  balancePendingAmount={balancePendingAmount}
-                  leadName={leadName}
-                  email={itinerary.leadDetails?.email || itinerary.rawZohoData?.Email || ''}
-                  mobile={itinerary.leadDetails?.mobile || itinerary.leadDetails?.phone || itinerary.rawZohoData?.Mobile || itinerary.rawZohoData?.Phone || ''}
-                  zohoLeadId={itinerary.rawZohoData?.id ? String(itinerary.rawZohoData.id) : undefined}
-                  inquiryId={itinerary.inquiryId || itinerary.rawZohoData?.Inquiry_ID || undefined}
-                  numDays={numDays}
-                  numNights={numNights}
-                  travelStartDate={itinerary.leadDetails?.startDate || itinerary.rawZohoData?.Preferred_Start_date}
-                  travelEndDate={itinerary.leadDetails?.endDate || itinerary.rawZohoData?.Travel_End_Date}
-                />
-              ) : null}
-
             </div>
           </div>
 
@@ -932,6 +915,12 @@ export default async function ItineraryPage({ params }: PageProps) {
             <ItineraryPaymentSection
               itineraryId={itinerary.id}
               destination={destination}
+              proposalTitle={itinerary.title || proposalTitle}
+              perAdultPrice={perAdultPrice}
+              adults={adults}
+              baseAmount={itinerary.baseAmount}
+              gstPercentage={itinerary.gstPercentage || 5}
+              tcsPercentage={itinerary.tcsPercentage || 2}
               totalQuotationAmount={finalQuotationAmount || 0}
               advanceAmountPaid={advanceAmountPaid}
               balancePendingAmount={balancePendingAmount}
@@ -1006,6 +995,12 @@ export default async function ItineraryPage({ params }: PageProps) {
           variant="floating"
           itineraryId={itinerary.id}
           destination={destination}
+          proposalTitle={itinerary.title || proposalTitle}
+          perAdultPrice={perAdultPrice}
+          adults={adults}
+          baseAmount={itinerary.baseAmount}
+          gstPercentage={itinerary.gstPercentage || 5}
+          tcsPercentage={itinerary.tcsPercentage || 2}
           totalQuotationAmount={finalQuotationAmount}
           advanceAmountPaid={advanceAmountPaid}
           balancePendingAmount={balancePendingAmount}

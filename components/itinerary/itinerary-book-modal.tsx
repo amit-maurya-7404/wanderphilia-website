@@ -21,17 +21,14 @@ import {
   Phone,
   Mail,
   ArrowRight,
-  ExternalLink,
-  Sparkles,
-  Calendar,
-  MapPin,
   Check,
-  AlertCircle,
-  Clock
+  Building2,
+  FileText,
+  Calendar,
+  Users
 } from 'lucide-react';
+import { Parachute } from '@/components/parachute-icon';
 import { RiWhatsappLine } from 'react-icons/ri';
-import { CountryCodeSelect } from '@/components/ui/country-code-select';
-import { DEFAULT_COUNTRY_CODE } from '@/lib/country-codes';
 import { contactPhoneDisplay } from '@/lib/contact';
 
 export type ItineraryPaymentType = 'token' | 'advance' | 'remaining_advance' | 'remaining_balance' | 'full';
@@ -42,6 +39,11 @@ interface ItineraryBookModalProps {
   itineraryId: string;
   destination: string;
   proposalTitle?: string;
+  perAdultPrice?: number;
+  adults?: number;
+  baseAmount?: number;
+  gstPercentage?: number;
+  tcsPercentage?: number;
   totalQuotationAmount: number;
   advanceAmountPaid?: number;
   balancePendingAmount?: number;
@@ -64,17 +66,22 @@ export function ItineraryBookModal({
   itineraryId,
   destination,
   proposalTitle,
+  perAdultPrice = 170772,
+  adults = 5,
+  baseAmount,
+  gstPercentage = 5,
+  tcsPercentage = 2,
   totalQuotationAmount,
   advanceAmountPaid = 0,
   balancePendingAmount,
   initialPaymentType,
-  initialLeadName = '',
-  initialEmail = '',
-  initialPhone = '',
+  initialLeadName = 'Aneesh',
+  initialEmail = 'experiences@wanderphilia.com',
+  initialPhone = '9137290903',
   zohoLeadId,
   inquiryId,
-  numDays = 5,
-  numNights = 4,
+  numDays = 15,
+  numNights = 14,
   travelStartDate,
   travelEndDate,
   onPaymentSuccess,
@@ -90,17 +97,14 @@ export function ItineraryBookModal({
   // Compute default payment type based on current paid stage
   const getDefaultPaymentType = (): ItineraryPaymentType => {
     if (initialPaymentType) return initialPaymentType;
-    if (alreadyPaid <= 0) return 'token'; // Default to 10% Token for quick booking
+    if (alreadyPaid <= 0) return 'token'; // Default to 10% Token
     if (alreadyPaid > 0 && alreadyPaid < fiftyPercentAmount) return 'remaining_advance';
     return 'remaining_balance';
   };
 
   const [paymentType, setPaymentType] = useState<ItineraryPaymentType>(getDefaultPaymentType());
-  const [fullName, setFullName] = useState(initialLeadName);
-  const [email, setEmail] = useState(initialEmail);
-  const [mobileNumber, setMobileNumber] = useState(initialPhone);
-  const [countryCode, setCountryCode] = useState(DEFAULT_COUNTRY_CODE);
-  const [errors, setErrors] = useState<{ fullName?: string; email?: string; mobileNumber?: string }>({});
+  const [gstNumber, setGstNumber] = useState('');
+  const [panNumber, setPanNumber] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
   const [isRazorpayOpen, setIsRazorpayOpen] = useState(false);
@@ -157,24 +161,10 @@ export function ItineraryBookModal({
     postPaymentBalance = 0;
   }
 
-  const validateForm = () => {
-    const newErrors: typeof errors = {};
-    if (!fullName.trim()) {
-      newErrors.fullName = 'Please enter your full name';
-    }
-    if (!email.trim() || !/\S+@\S+\.\S+/.test(email.trim())) {
-      newErrors.email = 'Please enter a valid email address';
-    }
-    const cleanPhone = mobileNumber.replace(/\D/g, '');
-    if (!cleanPhone || cleanPhone.length < 10) {
-      newErrors.mobileNumber = 'Please enter a valid 10-digit mobile number';
-    }
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  const clientDisplayName = initialLeadName && initialLeadName !== 'Valued Traveler' ? initialLeadName : 'Aneesh';
+  const itineraryDisplayName = proposalTitle || `${destination} Signature Luxury Expedition`;
 
   const handlePayNow = async () => {
-    if (!validateForm()) return;
     if (payableAmount <= 0) {
       alert('Invalid package quotation amount or no balance due.');
       return;
@@ -191,9 +181,11 @@ export function ItineraryBookModal({
           itineraryId,
           leadId: zohoLeadId || inquiryId,
           paymentType,
-          customerName: fullName.trim(),
-          customerEmail: email.trim(),
-          customerMobile: `${countryCode} ${mobileNumber}`.trim(),
+          customerName: clientDisplayName,
+          customerEmail: initialEmail || 'experiences@wanderphilia.com',
+          customerMobile: initialPhone || '+91 9137290903',
+          customerGstNo: gstNumber.trim() ? gstNumber.trim().toUpperCase() : undefined,
+          customerPanNo: panNumber.trim() ? panNumber.trim().toUpperCase() : undefined,
           destination,
           customAmount: totalQuotationAmount,
         }),
@@ -222,7 +214,7 @@ export function ItineraryBookModal({
         amount: orderData.amountPaise,
         currency: orderData.currency || 'INR',
         name: 'Wanderphilia Experiences',
-        description: `${installmentLabel} for ${destination} Tour (${itineraryId})`,
+        description: `${installmentLabel} for ${itineraryDisplayName}`,
         image: '/images/Made_LOGO.png',
         order_id: orderData.orderId,
         handler: async function (response: any) {
@@ -241,9 +233,11 @@ export function ItineraryBookModal({
                 itineraryId,
                 leadId: zohoLeadId || inquiryId,
                 paymentType,
-                customerName: fullName.trim(),
-                customerEmail: email.trim(),
-                customerMobile: `${countryCode} ${mobileNumber}`.trim(),
+                customerName: clientDisplayName,
+                customerEmail: initialEmail || 'experiences@wanderphilia.com',
+                customerMobile: initialPhone || '+91 9137290903',
+                customerGstNo: gstNumber.trim() ? gstNumber.trim().toUpperCase() : undefined,
+                customerPanNo: panNumber.trim() ? panNumber.trim().toUpperCase() : undefined,
                 destination,
               }),
             });
@@ -284,9 +278,9 @@ export function ItineraryBookModal({
           }
         },
         prefill: {
-          name: fullName.trim(),
-          email: email.trim(),
-          contact: mobileNumber.replace(/\D/g, ''),
+          name: clientDisplayName,
+          email: initialEmail || 'experiences@wanderphilia.com',
+          contact: initialPhone ? initialPhone.replace(/\D/g, '') : '9137290903',
         },
         theme: {
           color: '#6E1E14', // Rust Brand Theme
@@ -358,50 +352,58 @@ export function ItineraryBookModal({
   const isTokenPaid = alreadyPaid > 0 && alreadyPaid < fiftyPercentAmount;
   const isAdvancePaid = alreadyPaid >= fiftyPercentAmount && !isFullyPaid;
 
+  if (!open) {
+    return null;
+  }
+
   return (
     <Dialog open={open && !isRazorpayOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl p-0 overflow-hidden bg-[#FAF8F5] border border-stone-300 rounded-3xl shadow-2xl max-h-[92vh] flex flex-col">
+      <DialogContent className="max-w-lg sm:max-w-xl p-0 overflow-hidden bg-[#FAF8F5] border border-stone-300 rounded-2xl sm:rounded-3xl shadow-2xl max-h-[92vh] sm:max-h-[88vh] flex flex-col w-[94vw] sm:w-full">
         
         {/* MODAL HEADER */}
-        <div className="bg-gradient-to-r from-[#6E1E14] via-[#5C1810] to-[#3D0F0A] text-white p-5 sm:p-6 shrink-0 relative overflow-hidden">
+        <div className="bg-gradient-to-r from-[#6E1E14] via-[#5C1810] to-[#3D0F0A] text-white p-4 sm:p-6 shrink-0 relative overflow-hidden">
           <div className="absolute right-0 top-0 translate-x-4 -translate-y-4 opacity-10 pointer-events-none">
-            <CreditCard className="w-40 h-40 text-amber-300" />
+            <CreditCard className="w-36 h-36 text-amber-300" />
           </div>
 
-          <div className="relative z-10 flex items-center justify-between">
-            <div className="space-y-1">
-              <div className="inline-flex items-center gap-1.5 bg-amber-400 text-stone-950 text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full tracking-wider">
-                <Sparkles className="w-3 h-3" /> Secure Online Booking
-              </div>
-              <DialogTitle className="text-xl sm:text-2xl font-black tracking-tight text-white">
-                {isFullyPaid ? 'Tour Booking Confirmed' : `Book Your ${destination} Escape`}
-              </DialogTitle>
-              <DialogDescription className="text-xs text-amber-100/90 font-medium">
-                Ref: <span className="font-mono font-bold text-amber-300">{itineraryId}</span> • Total Quotation: <span className="font-black text-white">₹{totalQuotationAmount.toLocaleString('en-IN')}</span>
-                {alreadyPaid > 0 && (
-                  <span className="text-emerald-300 ml-1 font-bold">
-                    (₹{alreadyPaid.toLocaleString('en-IN')} Paid)
-                  </span>
-                )}
-              </DialogDescription>
+          <div className="relative z-10 space-y-1.5">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <span className="inline-flex items-center gap-1.5 bg-amber-400 text-stone-950 text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full tracking-wider">
+                <Parachute size={13} className="w-3.5 h-3.5 text-stone-950" /> Secure Online Booking
+              </span>
+              <span className="text-[10px] font-mono font-bold text-amber-200/90 bg-white/10 px-2 py-0.5 rounded-md">
+                Ref: {itineraryId}
+              </span>
             </div>
+
+            <DialogTitle className="text-lg sm:text-xl md:text-2xl font-black tracking-tight text-white leading-snug">
+              {itineraryDisplayName}
+            </DialogTitle>
+
+            <DialogDescription className="text-xs text-amber-100/90 flex flex-wrap items-center gap-x-2 gap-y-1 font-medium">
+              <span>Guest: <strong className="text-white font-bold">{clientDisplayName}</strong></span>
+              <span>•</span>
+              <span>Rate: <strong className="text-white font-bold">₹{perAdultPrice.toLocaleString('en-IN')}/adult</strong> ({adults} Adults)</span>
+              <span>•</span>
+              <span className="text-amber-300 font-bold">5% GST & 2% TCS Included</span>
+            </DialogDescription>
           </div>
         </div>
 
         {/* MODAL BODY */}
-        <div className="p-5 sm:p-7 overflow-y-auto grow space-y-6">
+        <div className="p-4 sm:p-6 overflow-y-auto grow space-y-5">
 
           {/* === 0. VERIFYING & GENERATING INVOICE LOADING VIEW === */}
           {isVerifying ? (
-            <div className="py-16 px-4 text-center space-y-5">
-              <div className="w-16 h-16 rounded-full bg-amber-100 border-4 border-amber-500 text-amber-700 flex items-center justify-center mx-auto shadow-md animate-spin">
-                <Sparkles className="w-8 h-8" />
+            <div className="py-12 px-4 text-center space-y-4">
+              <div className="w-14 h-14 rounded-full bg-amber-100 border-4 border-amber-500 text-amber-700 flex items-center justify-center mx-auto shadow-md animate-spin">
+                <Parachute size={24} className="w-6 h-6 text-amber-700" />
               </div>
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 <div className="inline-flex items-center gap-1.5 bg-amber-100 text-amber-900 text-xs font-black uppercase px-3 py-1 rounded-full">
                   Processing Payment
                 </div>
-                <h3 className="text-2xl sm:text-3xl font-black text-stone-900">
+                <h3 className="text-xl sm:text-2xl font-black text-stone-900">
                   Verifying Transaction...
                 </h3>
                 <p className="text-xs sm:text-sm text-stone-600 max-w-md mx-auto leading-relaxed">
@@ -411,59 +413,73 @@ export function ItineraryBookModal({
             </div>
           ) : paymentSuccessData ? (
             /* === 1. SUCCESS VIEW IF PAYMENT COMPLETED === */
-            <div className="space-y-6 py-2 text-center">
+            <div className="space-y-5 py-2 text-center">
               
               {/* Green Animated Badge */}
-              <div className="w-16 h-16 rounded-full bg-emerald-100 border-4 border-emerald-500 text-emerald-600 flex items-center justify-center mx-auto shadow-md animate-bounce">
-                <Check className="w-9 h-9 stroke-[3]" />
+              <div className="w-14 h-14 rounded-full bg-emerald-100 border-4 border-emerald-500 text-emerald-600 flex items-center justify-center mx-auto shadow-md">
+                <Check className="w-8 h-8 stroke-[3]" />
               </div>
 
-              <div className="space-y-1.5">
+              <div className="space-y-1">
                 <span className="text-xs font-black uppercase tracking-widest text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
                   Payment Confirmed & Verified
                 </span>
-                <h3 className="text-2xl sm:text-3xl font-black text-stone-900">
+                <h3 className="text-xl sm:text-2xl font-black text-stone-900">
                   {paymentSuccessData.balanceDue <= 0 ? '100% Tour Confirmed! ✈️' : 'Payment Received! ✈️'}
                 </h3>
                 <p className="text-xs sm:text-sm text-stone-600 max-w-md mx-auto">
-                  Thank you, <b>{fullName}</b>! Your payment has been received and verified. Your hotel accommodations and chauffeur transport are now being secured.
+                  Thank you, <b>{clientDisplayName}</b>! Your payment has been received and verified. Your hotel accommodations and chauffeur transport are now being secured.
                 </p>
               </div>
 
               {/* Receipt Summary Card */}
-              <div className="bg-white rounded-2xl border-2 border-emerald-600/30 p-4 sm:p-5 text-left space-y-3 shadow-sm max-w-lg mx-auto">
-                <div className="flex items-center justify-between border-b border-stone-100 pb-2.5">
+              <div className="bg-white rounded-xl border-2 border-emerald-600/30 p-4 text-left space-y-2.5 shadow-xs max-w-lg mx-auto">
+                <div className="flex items-center justify-between border-b border-stone-100 pb-2">
                   <span className="text-xs text-stone-500 font-bold uppercase">Invoice Number</span>
                   <span className="text-sm font-mono font-black text-[#6E1E14]">
                     {paymentSuccessData.invoiceNumber}
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between border-b border-stone-100 pb-2.5">
+                <div className="flex items-center justify-between border-b border-stone-100 pb-2">
                   <span className="text-xs text-stone-500 font-bold uppercase">Amount Paid Today</span>
-                  <span className="text-lg font-black text-emerald-600">
+                  <span className="text-base font-black text-emerald-600">
                     ₹{paymentSuccessData.paidAmount.toLocaleString('en-IN')}
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between border-b border-stone-100 pb-2.5">
+                <div className="flex items-center justify-between border-b border-stone-100 pb-2">
                   <span className="text-xs text-stone-500 font-bold uppercase">Total Paid To Date</span>
-                  <span className="text-sm font-black text-stone-900">
+                  <span className="text-xs font-black text-stone-900">
                     ₹{paymentSuccessData.totalPaid.toLocaleString('en-IN')} / ₹{totalQuotationAmount.toLocaleString('en-IN')}
                   </span>
                 </div>
 
+                {gstNumber && (
+                  <div className="flex items-center justify-between border-b border-stone-100 pb-2 text-xs">
+                    <span className="text-stone-500 font-bold uppercase">GST Number</span>
+                    <span className="font-mono font-bold text-stone-800">{gstNumber.toUpperCase()}</span>
+                  </div>
+                )}
+
+                {panNumber && (
+                  <div className="flex items-center justify-between border-b border-stone-100 pb-2 text-xs">
+                    <span className="text-stone-500 font-bold uppercase">PAN Card</span>
+                    <span className="font-mono font-bold text-stone-800">{panNumber.toUpperCase()}</span>
+                  </div>
+                )}
+
                 {paymentSuccessData.balanceDue > 0 ? (
-                  <div className="flex items-center justify-between border-b border-stone-100 pb-2.5">
+                  <div className="flex items-center justify-between border-b border-stone-100 pb-2">
                     <span className="text-xs text-stone-500 font-bold uppercase">Remaining Balance</span>
-                    <span className="text-sm font-bold text-[#6E1E14]">
+                    <span className="text-xs font-bold text-[#6E1E14]">
                       ₹{paymentSuccessData.balanceDue.toLocaleString('en-IN')} (Due 15 days before departure)
                     </span>
                   </div>
                 ) : (
-                  <div className="flex items-center justify-between border-b border-stone-100 pb-2.5">
+                  <div className="flex items-center justify-between border-b border-stone-100 pb-2">
                     <span className="text-xs text-stone-500 font-bold uppercase">Payment Status</span>
-                    <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-300">
+                    <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-300">
                       ✓ 100% Fully Cleared
                     </span>
                   </div>
@@ -478,10 +494,10 @@ export function ItineraryBookModal({
               </div>
 
               {/* Action Buttons: Download PDF Invoice & WhatsApp */}
-              <div className="space-y-3 max-w-lg mx-auto pt-2">
+              <div className="space-y-2.5 max-w-lg mx-auto pt-1">
                 <Button
                   onClick={handleDownloadInvoice}
-                  className="w-full h-12 rounded-xl bg-[#6E1E14] hover:bg-[#5C1810] text-white font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2 shadow-md transition hover:scale-[1.02] cursor-pointer"
+                  className="w-full h-11 rounded-xl bg-[#6E1E14] hover:bg-[#5C1810] text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md transition hover:scale-[1.01] cursor-pointer"
                 >
                   <Download className="w-4 h-4" />
                   <span>Download Official Tax Invoice (PDF)</span>
@@ -491,31 +507,24 @@ export function ItineraryBookModal({
                   href={whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full h-11 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-sm transition hover:scale-[1.02] cursor-pointer"
+                  className="w-full h-10 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-xs transition hover:scale-[1.01] cursor-pointer"
                 >
                   <RiWhatsappLine className="w-4 h-4" />
                   <span>Connect with Tour Coordinator on WhatsApp</span>
                 </a>
               </div>
-
-              <div className="bg-emerald-50/70 border border-emerald-200 rounded-xl p-3 text-[11px] text-emerald-900 text-left max-w-lg mx-auto flex items-start gap-2">
-                <ShieldCheck className="w-4 h-4 text-emerald-700 shrink-0 mt-0.5" />
-                <span>
-                  A copy of this official invoice has been sent to <b>{email}</b> and saved directly to your booking record in Zoho CRM.
-                </span>
-              </div>
             </div>
           ) : isFullyPaid ? (
             /* === FULLY PAID INITIAL VIEW === */
-            <div className="space-y-6 py-6 text-center">
-              <div className="w-16 h-16 rounded-full bg-emerald-100 border-4 border-emerald-500 text-emerald-600 flex items-center justify-center mx-auto shadow-md">
-                <Check className="w-9 h-9 stroke-[3]" />
+            <div className="space-y-5 py-4 text-center">
+              <div className="w-14 h-14 rounded-full bg-emerald-100 border-4 border-emerald-500 text-emerald-600 flex items-center justify-center mx-auto shadow-md">
+                <Check className="w-8 h-8 stroke-[3]" />
               </div>
-              <div className="space-y-1.5">
+              <div className="space-y-1">
                 <span className="text-xs font-black uppercase tracking-widest text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
                   Booking 100% Cleared
                 </span>
-                <h3 className="text-2xl sm:text-3xl font-black text-stone-900">
+                <h3 className="text-xl sm:text-2xl font-black text-stone-900">
                   Tour Fully Paid & Confirmed! ✈️
                 </h3>
                 <p className="text-xs sm:text-sm text-stone-600 max-w-md mx-auto">
@@ -523,10 +532,10 @@ export function ItineraryBookModal({
                 </p>
               </div>
 
-              <div className="space-y-3 max-w-md mx-auto pt-2">
+              <div className="space-y-2.5 max-w-md mx-auto pt-1">
                 <Button
                   onClick={handleDownloadInvoice}
-                  className="w-full h-12 rounded-xl bg-[#6E1E14] hover:bg-[#5C1810] text-white font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2 shadow-md cursor-pointer"
+                  className="w-full h-11 rounded-xl bg-[#6E1E14] hover:bg-[#5C1810] text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md cursor-pointer"
                 >
                   <Download className="w-4 h-4" />
                   <span>Download Latest Tax Invoice (PDF)</span>
@@ -535,7 +544,7 @@ export function ItineraryBookModal({
                   href={`https://wa.me/91${contactPhoneDisplay}?text=Hi%20Wanderphilia,%20my%20${destination}%20booking%20(${itineraryId})%20is%20fully%20paid.%20Please%20share%20further%20updates.`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full h-11 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-sm"
+                  className="w-full h-10 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-xs"
                 >
                   <RiWhatsappLine className="w-4 h-4" />
                   <span>Chat with Trip Coordinator</span>
@@ -544,22 +553,22 @@ export function ItineraryBookModal({
             </div>
           ) : (
             /* === 2. PAYMENT SELECTION & CHECKOUT FORM === */
-            <div className="space-y-6">
+            <div className="space-y-5">
 
-              {/* PAYMENT OPTION SELECTOR (DYNAMICALLY RENDERED BASED ON CURRENT STAGE) */}
-              <div className="space-y-2.5">
+              {/* PAYMENT OPTION SELECTOR */}
+              <div className="space-y-2">
                 <label className="text-xs font-extrabold uppercase tracking-wider text-[#6E1E14] flex items-center gap-1.5">
                   <CreditCard className="w-3.5 h-3.5" /> Select Payment Option:
                 </label>
 
                 {/* CASE 1: 0% PAID (FRESH LINK) -> 3 OPTIONS */}
                 {alreadyPaid <= 0 && (
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                     
                     {/* OPTION 1: 10% TOKEN AMOUNT */}
                     <div
                       onClick={() => setPaymentType('token')}
-                      className={`p-3.5 rounded-2xl border-2 transition-all cursor-pointer relative flex flex-col justify-between ${
+                      className={`p-3 rounded-xl border-2 transition-all cursor-pointer relative flex flex-col justify-between ${
                         paymentType === 'token'
                           ? 'border-[#6E1E14] bg-white shadow-md ring-2 ring-[#6E1E14]/20'
                           : 'border-stone-200 bg-white/70 hover:border-stone-300 hover:bg-white'
@@ -580,11 +589,11 @@ export function ItineraryBookModal({
                         <h4 className="text-xs font-black text-stone-900">
                           Token Amount
                         </h4>
-                        <div className="text-lg sm:text-xl font-black text-[#6E1E14] pt-0.5">
+                        <div className="text-base sm:text-lg font-black text-[#6E1E14] pt-0.5">
                           ₹{tenPercentAmount.toLocaleString('en-IN')}
                         </div>
-                        <p className="text-[10px] text-stone-500 leading-tight pt-1">
-                          Fast token lock to secure your dates and proposal.
+                        <p className="text-[10px] text-stone-500 leading-tight pt-0.5">
+                          Locks proposal & dates. 50% Advance payable within 7 days.
                         </p>
                       </div>
                     </div>
@@ -592,7 +601,7 @@ export function ItineraryBookModal({
                     {/* OPTION 2: 50% ADVANCE AMOUNT */}
                     <div
                       onClick={() => setPaymentType('advance')}
-                      className={`p-3.5 rounded-2xl border-2 transition-all cursor-pointer relative flex flex-col justify-between ${
+                      className={`p-3 rounded-xl border-2 transition-all cursor-pointer relative flex flex-col justify-between ${
                         paymentType === 'advance'
                           ? 'border-[#6E1E14] bg-white shadow-md ring-2 ring-[#6E1E14]/20'
                           : 'border-stone-200 bg-white/70 hover:border-stone-300 hover:bg-white'
@@ -613,19 +622,19 @@ export function ItineraryBookModal({
                         <h4 className="text-xs font-black text-stone-900">
                           50% Advance
                         </h4>
-                        <div className="text-lg sm:text-xl font-black text-[#6E1E14] pt-0.5">
+                        <div className="text-base sm:text-lg font-black text-[#6E1E14] pt-0.5">
                           ₹{fiftyPercentAmount.toLocaleString('en-IN')}
                         </div>
-                        <p className="text-[10px] text-stone-500 leading-tight pt-1">
-                          Locks in luxury resort & private chauffeur.
+                        <p className="text-[10px] text-stone-500 leading-tight pt-0.5">
+                          Locks luxury hotels, cruise & transfers. Balance due 15 days before departure.
                         </p>
                       </div>
                     </div>
 
-                    {/* OPTION 3: 100% FULL PAYMENT */}
+                    {/* OPTION 3: FULL 100% PAYMENT */}
                     <div
                       onClick={() => setPaymentType('full')}
-                      className={`p-3.5 rounded-2xl border-2 transition-all cursor-pointer relative flex flex-col justify-between ${
+                      className={`p-3 rounded-xl border-2 transition-all cursor-pointer relative flex flex-col justify-between ${
                         paymentType === 'full'
                           ? 'border-[#6E1E14] bg-white shadow-md ring-2 ring-[#6E1E14]/20'
                           : 'border-stone-200 bg-white/70 hover:border-stone-300 hover:bg-white'
@@ -646,11 +655,11 @@ export function ItineraryBookModal({
                         <h4 className="text-xs font-black text-stone-900">
                           Full Payment
                         </h4>
-                        <div className="text-lg sm:text-xl font-black text-stone-900 pt-0.5">
+                        <div className="text-base sm:text-lg font-black text-stone-900 pt-0.5">
                           ₹{totalQuotationAmount.toLocaleString('en-IN')}
                         </div>
-                        <p className="text-[10px] text-stone-500 leading-tight pt-1">
-                          Zero pending dues, complete peace of mind.
+                        <p className="text-[10px] text-stone-500 leading-tight pt-0.5">
+                          Zero pending dues, instant confirmed booking.
                         </p>
                       </div>
                     </div>
@@ -658,55 +667,49 @@ export function ItineraryBookModal({
                   </div>
                 )}
 
-                {/* CASE 2: 10% TOKEN PAID -> SHOW 40% REMAINING ADVANCE & 90% REMAINING BALANCE */}
+                {/* CASE 2: 10% TOKEN PAID -> SHOW 2 OPTIONS */}
                 {isTokenPaid && (
-                  <div className="space-y-3">
-                    <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3 flex items-center justify-between text-xs text-emerald-900 font-bold">
+                  <div className="space-y-2.5">
+                    <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 flex items-center justify-between text-xs text-amber-950 font-bold">
                       <div className="flex items-center gap-2">
                         <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                        <span>10% Token Amount Paid: <b>₹{alreadyPaid.toLocaleString('en-IN')}</b></span>
+                        <span>10% Token Paid: <b>₹{alreadyPaid.toLocaleString('en-IN')}</b></span>
                       </div>
-                      <span className="text-[10px] bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded-full font-black">
-                        TOKEN CLEARED
+                      <span className="text-[10px] bg-amber-200 text-amber-900 px-2 py-0.5 rounded-full font-black">
+                        TOKEN ACTIVE
                       </span>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                      
-                      {/* OPTION A: REMAINING ADVANCE (40%) */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                      {/* OPTION A: REMAINING 40% ADVANCE */}
                       <div
                         onClick={() => setPaymentType('remaining_advance')}
-                        className={`p-4 rounded-2xl border-2 transition-all cursor-pointer relative flex flex-col justify-between ${
+                        className={`p-3.5 rounded-xl border-2 transition-all cursor-pointer relative flex flex-col justify-between ${
                           paymentType === 'remaining_advance'
                             ? 'border-[#6E1E14] bg-white shadow-md ring-2 ring-[#6E1E14]/20'
                             : 'border-stone-200 bg-white/70 hover:border-stone-300 hover:bg-white'
                         }`}
                       >
-                        <div className="flex items-start justify-between gap-2">
-                          <div className="space-y-0.5">
-                            <span className="bg-amber-400 text-stone-950 text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-wider">
-                              Next Step (Advance 50%)
-                            </span>
-                            <h4 className="text-sm font-black text-stone-900 pt-1">
-                              Pay Remaining Advance (40%)
-                            </h4>
-                          </div>
-                          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 ${
+                        <div className="flex items-start justify-between gap-1.5">
+                          <span className="bg-amber-400 text-stone-950 text-[9px] font-black px-1.5 py-0.5 rounded uppercase tracking-wider">
+                            Next Stage (40%)
+                          </span>
+                          <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 ${
                             paymentType === 'remaining_advance' ? 'border-[#6E1E14] bg-[#6E1E14]' : 'border-stone-300'
                           }`}>
-                            {paymentType === 'remaining_advance' && <div className="w-2 h-2 rounded-full bg-white" />}
+                            {paymentType === 'remaining_advance' && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
                           </div>
                         </div>
 
-                        <div className="pt-3 border-t border-stone-100 mt-3 space-y-1">
-                          <div className="flex items-baseline gap-1.5">
-                            <span className="text-xl sm:text-2xl font-black text-[#6E1E14]">
-                              ₹{remainingAdvanceAmount.toLocaleString('en-IN')}
-                            </span>
-                            <span className="text-[10px] text-stone-500 font-bold uppercase">Payable Today</span>
+                        <div className="pt-2">
+                          <h4 className="text-xs font-black text-stone-900">
+                            Pay Remaining Advance
+                          </h4>
+                          <div className="text-base sm:text-lg font-black text-[#6E1E14] pt-0.5">
+                            ₹{remainingAdvanceAmount.toLocaleString('en-IN')}
                           </div>
-                          <p className="text-[10px] text-stone-500 leading-tight">
-                            Completes 50% booking advance. Balance ₹{fiftyPercentAmount.toLocaleString('en-IN')} due 15 days before travel.
+                          <p className="text-[10px] text-stone-500 leading-tight pt-0.5">
+                            Completes 50% advance. Balance due 15 days before travel.
                           </p>
                         </div>
                       </div>
@@ -714,36 +717,31 @@ export function ItineraryBookModal({
                       {/* OPTION B: REMAINING FULL BALANCE (90%) */}
                       <div
                         onClick={() => setPaymentType('remaining_balance')}
-                        className={`p-4 rounded-2xl border-2 transition-all cursor-pointer relative flex flex-col justify-between ${
+                        className={`p-3.5 rounded-xl border-2 transition-all cursor-pointer relative flex flex-col justify-between ${
                           paymentType === 'remaining_balance'
                             ? 'border-[#6E1E14] bg-white shadow-md ring-2 ring-[#6E1E14]/20'
                             : 'border-stone-200 bg-white/70 hover:border-stone-300 hover:bg-white'
                         }`}
                       >
-                        <div className="flex items-start justify-between gap-2">
-                          <div className="space-y-0.5">
-                            <span className="bg-emerald-100 text-emerald-900 text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-wider">
-                              Clear All Dues
-                            </span>
-                            <h4 className="text-sm font-black text-stone-900 pt-1">
-                              Pay Remaining Balance (90%)
-                            </h4>
-                          </div>
-                          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 ${
+                        <div className="flex items-start justify-between gap-1.5">
+                          <span className="bg-emerald-100 text-emerald-900 text-[9px] font-black px-1.5 py-0.5 rounded uppercase tracking-wider">
+                            Clear All Dues
+                          </span>
+                          <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 ${
                             paymentType === 'remaining_balance' ? 'border-[#6E1E14] bg-[#6E1E14]' : 'border-stone-300'
                           }`}>
-                            {paymentType === 'remaining_balance' && <div className="w-2 h-2 rounded-full bg-white" />}
+                            {paymentType === 'remaining_balance' && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
                           </div>
                         </div>
 
-                        <div className="pt-3 border-t border-stone-100 mt-3 space-y-1">
-                          <div className="flex items-baseline gap-1.5">
-                            <span className="text-xl sm:text-2xl font-black text-stone-900">
-                              ₹{remainingBalanceAmount.toLocaleString('en-IN')}
-                            </span>
-                            <span className="text-[10px] text-emerald-700 font-bold uppercase">Full Settlement</span>
+                        <div className="pt-2">
+                          <h4 className="text-xs font-black text-stone-900">
+                            Pay Remaining Balance
+                          </h4>
+                          <div className="text-base sm:text-lg font-black text-stone-900 pt-0.5">
+                            ₹{remainingBalanceAmount.toLocaleString('en-IN')}
                           </div>
-                          <p className="text-[10px] text-stone-500 leading-tight">
+                          <p className="text-[10px] text-stone-500 leading-tight pt-0.5">
                             Clears 100% tour quotation immediately with 0 balance pending.
                           </p>
                         </div>
@@ -755,7 +753,7 @@ export function ItineraryBookModal({
 
                 {/* CASE 3: 50% ADVANCE PAID -> SHOW FINAL 50% REMAINING BALANCE */}
                 {isAdvancePaid && (
-                  <div className="space-y-3">
+                  <div className="space-y-2.5">
                     <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3 flex items-center justify-between text-xs text-emerald-900 font-bold">
                       <div className="flex items-center gap-2">
                         <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
@@ -766,33 +764,27 @@ export function ItineraryBookModal({
                       </span>
                     </div>
 
-                    {/* ONLY REMAINING 50% BALANCE CARD */}
                     <div
                       onClick={() => setPaymentType('remaining_balance')}
-                      className="p-4 rounded-2xl border-2 border-[#6E1E14] bg-white shadow-md ring-2 ring-[#6E1E14]/20 cursor-pointer relative flex flex-col justify-between"
+                      className="p-3.5 rounded-xl border-2 border-[#6E1E14] bg-white shadow-md ring-2 ring-[#6E1E14]/20 cursor-pointer relative flex flex-col justify-between"
                     >
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="space-y-0.5">
-                          <span className="bg-amber-400 text-stone-950 text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-wider">
-                            Final Payment
-                          </span>
-                          <h4 className="text-sm font-black text-stone-900 pt-1">
-                            Pay Remaining 50% Balance
-                          </h4>
-                        </div>
-                        <div className="w-5 h-5 rounded-full border-2 border-[#6E1E14] bg-[#6E1E14] flex items-center justify-center shrink-0 mt-0.5">
-                          <div className="w-2 h-2 rounded-full bg-white" />
+                      <div className="flex items-start justify-between gap-1.5">
+                        <span className="bg-amber-400 text-stone-950 text-[9px] font-black px-2 py-0.5 rounded uppercase tracking-wider">
+                          Final Payment
+                        </span>
+                        <div className="w-4 h-4 rounded-full border-2 border-[#6E1E14] bg-[#6E1E14] flex items-center justify-center shrink-0 mt-0.5">
+                          <div className="w-1.5 h-1.5 rounded-full bg-white" />
                         </div>
                       </div>
 
-                      <div className="pt-3 border-t border-stone-100 mt-3 space-y-1">
-                        <div className="flex items-baseline gap-1.5">
-                          <span className="text-2xl sm:text-3xl font-black text-[#6E1E14]">
-                            ₹{remainingBalanceAmount.toLocaleString('en-IN')}
-                          </span>
-                          <span className="text-[10px] text-stone-500 font-bold uppercase">Final Balance</span>
+                      <div className="pt-2">
+                        <h4 className="text-xs font-black text-stone-900">
+                          Pay Remaining 50% Balance
+                        </h4>
+                        <div className="text-lg sm:text-xl font-black text-[#6E1E14] pt-0.5">
+                          ₹{remainingBalanceAmount.toLocaleString('en-IN')}
                         </div>
-                        <p className="text-[11px] text-stone-600 leading-tight">
+                        <p className="text-[10px] text-stone-600 leading-tight pt-0.5">
                           Due 15 days before departure. Clears all travel services and issues final invoice.
                         </p>
                       </div>
@@ -802,89 +794,53 @@ export function ItineraryBookModal({
 
               </div>
 
-              {/* CONTACT DETAILS SECTION */}
-              <div className="bg-white rounded-2xl p-4 sm:p-5 border border-stone-200 shadow-xs space-y-4">
-                <div className="flex items-center gap-2 border-b border-stone-100 pb-2">
-                  <User className="w-4 h-4 text-[#6E1E14]" />
-                  <span className="text-xs font-black uppercase tracking-wider text-stone-800">
-                    Primary Traveler / Billing Details
-                  </span>
+              {/* OPTIONAL CORPORATE BILLING / TAX DETAILS */}
+              <div className="bg-white rounded-xl p-4 border border-stone-200 shadow-2xs space-y-3">
+                <div className="flex items-center justify-between border-b border-stone-100 pb-2">
+                  <div className="flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-stone-800">
+                    <Building2 className="w-3.5 h-3.5 text-[#6E1E14]" />
+                    <span>Billing & Tax Details (Optional)</span>
+                  </div>
+                  <span className="text-[10px] font-bold text-stone-400 uppercase">Optional</span>
                 </div>
 
-                <div className="space-y-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-[11px] font-bold text-stone-600 uppercase mb-1">
-                      Full Name <span className="text-rose-600">*</span>
+                    <label className="block text-[10px] font-extrabold text-stone-600 uppercase mb-1">
+                      GST Number (Optional)
                     </label>
                     <Input
-                      placeholder="e.g. Rahul Sharma"
-                      value={fullName}
-                      onChange={(e) => {
-                        setFullName(e.target.value);
-                        if (errors.fullName) setErrors(prev => ({ ...prev, fullName: undefined }));
-                      }}
-                      className={`h-10 text-xs bg-[#FAF8F5] border-stone-300 rounded-xl ${
-                        errors.fullName ? 'border-rose-500' : ''
-                      }`}
+                      type="text"
+                      placeholder="e.g. 07AAAAA0000A1Z5"
+                      value={gstNumber}
+                      maxLength={15}
+                      onChange={(e) => setGstNumber(e.target.value.toUpperCase())}
+                      className="h-9 text-xs uppercase font-mono bg-[#FAF8F5] border-stone-300 rounded-lg focus:border-[#6E1E14]"
                     />
-                    {errors.fullName && <p className="text-[10px] text-rose-600 font-bold mt-1">{errors.fullName}</p>}
+                    <p className="text-[9px] text-stone-400 mt-0.5">For corporate GST input credit invoice.</p>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-[11px] font-bold text-stone-600 uppercase mb-1">
-                        Email (for Invoice PDF) <span className="text-rose-600">*</span>
-                      </label>
-                      <Input
-                        type="email"
-                        placeholder="e.g. rahul@example.com"
-                        value={email}
-                        onChange={(e) => {
-                          setEmail(e.target.value);
-                          if (errors.email) setErrors(prev => ({ ...prev, email: undefined }));
-                        }}
-                        className={`h-10 text-xs bg-[#FAF8F5] border-stone-300 rounded-xl ${
-                          errors.email ? 'border-rose-500' : ''
-                        }`}
-                      />
-                      {errors.email && <p className="text-[10px] text-rose-600 font-bold mt-1">{errors.email}</p>}
-                    </div>
-
-                    <div>
-                      <label className="block text-[11px] font-bold text-stone-600 uppercase mb-1">
-                        Mobile Number <span className="text-rose-600">*</span>
-                      </label>
-                      <div className={`flex rounded-xl border bg-[#FAF8F5] overflow-hidden h-10 transition ${
-                        errors.mobileNumber ? 'border-rose-500' : 'border-stone-300'
-                      }`}>
-                        <CountryCodeSelect
-                          value={countryCode}
-                          onChange={setCountryCode}
-                          disabled={isProcessing}
-                        />
-                        <Input
-                          type="tel"
-                          placeholder="9876543210"
-                          value={mobileNumber}
-                          maxLength={15}
-                          onChange={(e) => {
-                            const val = e.target.value.replace(/\D/g, '');
-                            setMobileNumber(val);
-                            if (errors.mobileNumber) setErrors(prev => ({ ...prev, mobileNumber: undefined }));
-                          }}
-                          className="border-0 shadow-none focus-visible:ring-0 rounded-none h-full flex-1 text-xs font-semibold bg-transparent"
-                        />
-                      </div>
-                      {errors.mobileNumber && <p className="text-[10px] text-rose-600 font-bold mt-1">{errors.mobileNumber}</p>}
-                    </div>
+                  <div>
+                    <label className="block text-[10px] font-extrabold text-stone-600 uppercase mb-1">
+                      PAN Card Number (Optional)
+                    </label>
+                    <Input
+                      type="text"
+                      placeholder="e.g. ABCDE1234F"
+                      value={panNumber}
+                      maxLength={10}
+                      onChange={(e) => setPanNumber(e.target.value.toUpperCase())}
+                      className="h-9 text-xs uppercase font-mono bg-[#FAF8F5] border-stone-300 rounded-lg focus:border-[#6E1E14]"
+                    />
+                    <p className="text-[9px] text-stone-400 mt-0.5">For TCS record & formal billing.</p>
                   </div>
                 </div>
               </div>
 
               {/* PAYMENT SUMMARY BREAKDOWN CARD */}
-              <div className="bg-gradient-to-br from-stone-900 to-[#4A140D] text-white p-4 sm:p-5 rounded-2xl shadow-md space-y-3">
+              <div className="bg-gradient-to-br from-stone-900 via-[#4A140D] to-[#300B07] text-white p-4 rounded-xl shadow-md space-y-2.5">
                 <div className="flex items-center justify-between text-xs border-b border-white/10 pb-2 text-stone-300">
-                  <span>Total Tour Quotation Cost:</span>
+                  <span>Total Tour Package ({adults} Adults):</span>
                   <span className="font-bold text-white">₹{totalQuotationAmount.toLocaleString('en-IN')}</span>
                 </div>
 
@@ -895,25 +851,25 @@ export function ItineraryBookModal({
                   </div>
                 )}
 
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between pt-0.5">
                   <div className="space-y-0.5">
                     <span className="text-[10px] font-black uppercase tracking-wider text-amber-300">
                       Amount Payable Today ({installmentLabel})
                     </span>
-                    <div className="text-2xl sm:text-3xl font-black text-white">
+                    <div className="text-xl sm:text-2xl font-black text-white">
                       ₹{payableAmount.toLocaleString('en-IN')}
                     </div>
                   </div>
 
                   {postPaymentBalance > 0 ? (
-                    <div className="text-right text-[11px] text-stone-300">
-                      <span>Remaining Balance After Payment:</span>
-                      <div className="font-black text-amber-300 text-sm">
+                    <div className="text-right text-[10px] text-stone-300">
+                      <span>Remaining Balance:</span>
+                      <div className="font-black text-amber-300 text-xs sm:text-sm">
                         ₹{postPaymentBalance.toLocaleString('en-IN')}
                       </div>
                     </div>
                   ) : (
-                    <div className="text-right text-[10px] font-bold text-emerald-400 bg-emerald-950/60 px-2.5 py-1 rounded-lg border border-emerald-800">
+                    <div className="text-right text-[10px] font-bold text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded-lg border border-emerald-800">
                       ✓ 100% Cleared (0 Balance)
                     </div>
                   )}
@@ -921,11 +877,11 @@ export function ItineraryBookModal({
               </div>
 
               {/* PAY BUTTON & GATEWAY BADGE */}
-              <div className="space-y-3 pt-1">
+              <div className="space-y-2 pt-0.5">
                 <Button
                   onClick={handlePayNow}
                   disabled={isProcessing || payableAmount <= 0}
-                  className="w-full h-12 rounded-2xl bg-[#6E1E14] hover:bg-[#5C1810] text-white font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-[#6E1E14]/25 transition hover:scale-[1.01] active:scale-95 cursor-pointer"
+                  className="w-full h-11 sm:h-12 rounded-xl bg-[#6E1E14] hover:bg-[#5C1810] text-white font-black text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 shadow-md transition hover:scale-[1.01] active:scale-95 cursor-pointer"
                 >
                   {isProcessing ? (
                     <>
@@ -934,19 +890,19 @@ export function ItineraryBookModal({
                     </>
                   ) : (
                     <>
-                      <Lock className="w-4 h-4 text-amber-300" />
+                      <Lock className="w-3.5 h-3.5 text-amber-300" />
                       <span>Pay ₹{payableAmount.toLocaleString('en-IN')} Securely with Razorpay</span>
-                      <ArrowRight className="w-4 h-4 ml-1" />
+                      <ArrowRight className="w-3.5 h-3.5 ml-1" />
                     </>
                   )}
                 </Button>
 
-                <div className="flex flex-wrap items-center justify-between gap-2 text-[10px] text-stone-500 px-2">
+                <div className="flex flex-wrap items-center justify-between gap-1.5 text-[9px] sm:text-[10px] text-stone-500 px-1">
                   <span className="flex items-center gap-1">
                     <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                    <span>256-bit SSL Encrypted • Razorpay Certified Gateway</span>
+                    <span>256-bit SSL Encrypted • Razorpay Certified</span>
                   </span>
-                  <span>UPI • GPay • Cards • Netbanking • Wallets</span>
+                  <span>UPI • GPay • Cards • Netbanking</span>
                 </div>
               </div>
 

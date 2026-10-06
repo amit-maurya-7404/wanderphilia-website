@@ -83,6 +83,10 @@ export function RequestCallbackDialog({ open, onOpenChange, title, price, isQuot
     }
   }
 
+  if (!open) {
+    return null
+  }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       {open && (

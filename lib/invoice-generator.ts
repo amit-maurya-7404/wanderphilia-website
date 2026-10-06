@@ -16,6 +16,8 @@ export interface InvoiceData {
   customerAddress?: string;
   customerEmail?: string;
   customerMobile?: string;
+  customerGstNo?: string;
+  customerPanNo?: string;
 
   // Trip / Package Details
   destination: string;
@@ -35,7 +37,11 @@ export interface InvoiceData {
   totalPackageAmount: number;
   paidAmount: number;
   balanceDue: number;
+  baseAmount?: number;
+  gstPercentage?: number;
   gstAmount?: number;
+  tcsPercentage?: number;
+  tcsAmount?: number;
   sacCode?: string;
   gstId?: string;
 }
@@ -210,28 +216,38 @@ export function generateInvoicePDFDocument(data: InvoiceData): jsPDF {
 
   // Left Column: Client / Traveler Details
   doc.setFont('helvetica', 'bold');
-  doc.setFontSize(10);
+  doc.setFontSize(9.5);
   doc.setTextColor(...blackText);
-  const clientName = data.customerName || 'BSR&Co.LLP';
+  const clientName = data.customerName || 'Valued Traveler';
   doc.text(clientName, frameX + 4, metaY + 6.5);
 
   doc.setFont('helvetica', 'normal');
-  doc.setFontSize(8.5);
+  doc.setFontSize(8);
 
-  let clientY = metaY + 12;
+  let clientY = metaY + 11.5;
   if (data.customerAddress) {
     const splitAddr = doc.splitTextToSize(data.customerAddress, metaDividerX - frameX - 8);
     doc.text(splitAddr, frameX + 4, clientY);
-    clientY += splitAddr.length * 4.5;
+    clientY += splitAddr.length * 4;
   } else {
-    doc.text(`Phone: ${data.customerMobile || '+91 9137290903'}`, frameX + 4, clientY);
-    clientY += 4.5;
+    if (data.customerMobile) {
+      doc.text(`Phone: ${data.customerMobile}`, frameX + 4, clientY);
+      clientY += 4;
+    }
     if (data.customerEmail) {
       doc.text(`Email: ${data.customerEmail}`, frameX + 4, clientY);
-      clientY += 4.5;
+      clientY += 4;
     }
-    doc.text(`Destination: ${data.destination || 'Rajasthan Luxury Tour'}`, frameX + 4, clientY);
-    clientY += 4.5;
+    if (data.customerGstNo) {
+      doc.text(`Client GST: ${data.customerGstNo}`, frameX + 4, clientY);
+      clientY += 4;
+    }
+    if (data.customerPanNo) {
+      doc.text(`Client PAN: ${data.customerPanNo}`, frameX + 4, clientY);
+      clientY += 4;
+    }
+    doc.text(`Destination: ${data.destination || 'Luxury Tour'}`, frameX + 4, clientY);
+    clientY += 4;
     if (data.itineraryId) {
       doc.text(`Booking Ref: ${data.itineraryId}`, frameX + 4, clientY);
     }
@@ -322,17 +338,32 @@ export function generateInvoicePDFDocument(data: InvoiceData): jsPDF {
 
   // Amount column Row 1
   const isPartial = data.balanceDue > 0;
-  const baseCost = isPartial ? data.paidAmount : Math.round(data.totalPackageAmount / 1.18);
-  const formattedBaseCost = baseCost.toLocaleString('en-IN');
+  const gstPct = data.gstPercentage !== undefined ? data.gstPercentage : 5;
+  const tcsPct = data.tcsPercentage !== undefined ? data.tcsPercentage : 2;
+  const taxMultiplier = 1 + (gstPct + tcsPct) / 100;
+
+  const currentPay = data.paidAmount || data.totalPackageAmount;
+  const calculatedBase = data.baseAmount && !isPartial 
+    ? data.baseAmount 
+    : Math.round(currentPay / taxMultiplier);
+  const formattedBaseCost = calculatedBase.toLocaleString('en-IN');
   doc.text(formattedBaseCost, rightEdge - 5, tableHeaderY + tableHeaderHeight + 7, { align: 'right' });
 
-  // Table Row 2: GST
-  const gstRowY = tableHeaderY + tableHeaderHeight + 35;
-  doc.text('GST 18%', frameX + 4, gstRowY);
+  // Table Row 2: 5% GST
+  const gstRowY = tableHeaderY + tableHeaderHeight + 28;
+  doc.text(`GST (${gstPct}%)`, frameX + 4, gstRowY);
+  const calculatedGst = data.gstAmount !== undefined && !isPartial 
+    ? data.gstAmount 
+    : Math.round(calculatedBase * (gstPct / 100));
+  doc.text(calculatedGst.toLocaleString('en-IN'), rightEdge - 5, gstRowY, { align: 'right' });
 
-  const gstVal = isPartial ? 0 : data.totalPackageAmount - baseCost;
-  const gstValStr = gstVal > 0 ? gstVal.toLocaleString('en-IN') : 'Included';
-  doc.text(gstValStr, rightEdge - 5, gstRowY, { align: 'right' });
+  // Table Row 3: 2% TCS
+  const tcsRowY = tableHeaderY + tableHeaderHeight + 36;
+  doc.text(`TCS (${tcsPct}%)`, frameX + 4, tcsRowY);
+  const calculatedTcs = data.tcsAmount !== undefined && !isPartial 
+    ? data.tcsAmount 
+    : (currentPay - calculatedBase - calculatedGst > 0 ? (currentPay - calculatedBase - calculatedGst) : Math.round(calculatedBase * (tcsPct / 100)));
+  doc.text(calculatedTcs.toLocaleString('en-IN'), rightEdge - 5, tcsRowY, { align: 'right' });
 
   // ==========================================
   // 6. TOTAL PAYABLE ROW

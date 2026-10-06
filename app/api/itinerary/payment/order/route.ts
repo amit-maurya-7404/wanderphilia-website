@@ -144,6 +144,8 @@ export async function POST(req: NextRequest) {
         customerName: String(customerName || itinerary?.leadDetails?.name || ''),
         customerEmail: String(customerEmail || itinerary?.leadDetails?.email || ''),
         customerMobile: String(customerMobile || itinerary?.leadDetails?.mobile || ''),
+        customerGstNo: String(body.customerGstNo || body.gstNo || ''),
+        customerPanNo: String(body.customerPanNo || body.panNo || ''),
         destination: String(destination || itinerary?.destination || ''),
       },
     });

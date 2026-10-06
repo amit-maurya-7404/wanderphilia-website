@@ -2,10 +2,9 @@
 
 import { useState } from 'react';
 import { RequestCallbackDialog } from '@/components/request-callback-dialog';
-import { Share2, Download, Phone, Check, CreditCard, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Share2, Download, Phone, Check } from 'lucide-react';
 import { RiWhatsappLine } from 'react-icons/ri';
 import { contactPhoneDisplay } from '@/lib/contact';
-import { ItineraryBookModal, ItineraryPaymentType } from './itinerary-book-modal';
 
 interface ItineraryClientActionsProps {
   itineraryId: string;
@@ -30,27 +29,9 @@ export function ItineraryClientActions({
   title,
   leadName = 'Valued Traveler',
   destination,
-  totalQuotationAmount = 0,
-  advanceAmountPaid = 0,
-  balancePendingAmount,
-  email = '',
-  mobile = '',
-  zohoLeadId,
-  inquiryId,
-  numDays,
-  numNights,
-  travelStartDate,
-  travelEndDate,
 }: ItineraryClientActionsProps) {
   const [copied, setCopied] = useState(false);
   const [callbackOpen, setCallbackOpen] = useState(false);
-  const [bookModalOpen, setBookModalOpen] = useState(false);
-
-  const alreadyPaid = Number(advanceAmountPaid || 0);
-  const fiftyPercentAmount = Math.round(totalQuotationAmount * 0.5);
-  const isFullyPaid = alreadyPaid >= totalQuotationAmount && totalQuotationAmount > 0;
-  const isAdvancePaid = alreadyPaid >= fiftyPercentAmount && !isFullyPaid;
-  const isTokenPaid = alreadyPaid > 0 && alreadyPaid < fiftyPercentAmount;
 
   const handleShare = async () => {
     const url = typeof window !== 'undefined' ? window.location.href : '';
@@ -85,39 +66,9 @@ export function ItineraryClientActions({
   );
   const whatsappUrl = `https://wa.me/91${contactPhoneDisplay}?text=${whatsappMessage}`;
 
-  const defaultPaymentType: ItineraryPaymentType = alreadyPaid <= 0
-    ? 'token'
-    : (isTokenPaid ? 'remaining_advance' : 'remaining_balance');
-
   return (
     <>
       <div className="flex items-center gap-2 sm:gap-2.5 print:hidden">
-        {/* Primary Book / Pay Now Button (if quotation amount exists) */}
-        {totalQuotationAmount > 0 && (
-          isFullyPaid ? (
-            <a
-              href={`/api/itinerary/invoice?id=${encodeURIComponent(itineraryId)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 bg-emerald-700 hover:bg-emerald-800 text-white text-[11px] sm:text-xs font-black px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full shadow-sm hover:shadow-md transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer uppercase tracking-wider"
-            >
-              <CheckCircle2 className="w-3.5 h-3.5 text-white" />
-              <span>Invoice</span>
-            </a>
-          ) : (
-            <button
-              onClick={() => setBookModalOpen(true)}
-              type="button"
-              className="inline-flex items-center gap-1.5 bg-[#6E1E14] hover:bg-[#5C1810] text-white text-[11px] sm:text-xs font-black px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full shadow-sm hover:shadow-md transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer uppercase tracking-wider"
-            >
-              <CreditCard className="w-3.5 h-3.5 text-amber-300" />
-              <span>
-                {isTokenPaid ? 'Pay Advance' : (isAdvancePaid ? 'Pay Balance' : 'Book Now')}
-              </span>
-            </button>
-          )
-        )}
-
         {/* 1. Share Icon */}
         <button
           onClick={handleShare}
@@ -167,30 +118,6 @@ export function ItineraryClientActions({
           <RiWhatsappLine className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
         </a>
       </div>
-
-      {/* Booking & Online Payment Modal */}
-      {totalQuotationAmount > 0 && (
-        <ItineraryBookModal
-          open={bookModalOpen}
-          onOpenChange={setBookModalOpen}
-          itineraryId={itineraryId}
-          destination={destination}
-          proposalTitle={title}
-          totalQuotationAmount={totalQuotationAmount}
-          advanceAmountPaid={alreadyPaid}
-          balancePendingAmount={balancePendingAmount}
-          initialPaymentType={defaultPaymentType}
-          initialLeadName={leadName !== 'Valued Traveler' ? leadName : ''}
-          initialEmail={email}
-          initialPhone={mobile}
-          zohoLeadId={zohoLeadId}
-          inquiryId={inquiryId}
-          numDays={numDays}
-          numNights={numNights}
-          travelStartDate={travelStartDate}
-          travelEndDate={travelEndDate}
-        />
-      )}
 
       {/* Callback Dialog Modal */}
       <RequestCallbackDialog

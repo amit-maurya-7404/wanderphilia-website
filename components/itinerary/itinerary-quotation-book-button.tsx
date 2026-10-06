@@ -1,12 +1,18 @@
 'use client';
 
 import React, { useState } from 'react';
-import { CreditCard, Sparkles, ArrowRight, ShieldCheck, Check, CheckCircle2, Download } from 'lucide-react';
+import { CreditCard, ArrowRight, ShieldCheck, Check, CheckCircle2, Download } from 'lucide-react';
 import { ItineraryBookModal, ItineraryPaymentType } from './itinerary-book-modal';
 
 interface ItineraryQuotationBookButtonProps {
   itineraryId: string;
   destination: string;
+  proposalTitle?: string;
+  perAdultPrice?: number;
+  adults?: number;
+  baseAmount?: number;
+  gstPercentage?: number;
+  tcsPercentage?: number;
   totalQuotationAmount: number;
   advanceAmountPaid?: number;
   balancePendingAmount?: number;
@@ -25,6 +31,12 @@ interface ItineraryQuotationBookButtonProps {
 export function ItineraryQuotationBookButton({
   itineraryId,
   destination,
+  proposalTitle,
+  perAdultPrice,
+  adults,
+  baseAmount,
+  gstPercentage,
+  tcsPercentage,
   totalQuotationAmount,
   advanceAmountPaid = 0,
   balancePendingAmount,
@@ -171,6 +183,12 @@ export function ItineraryQuotationBookButton({
         onOpenChange={setModalOpen}
         itineraryId={itineraryId}
         destination={destination}
+        proposalTitle={proposalTitle}
+        perAdultPrice={perAdultPrice}
+        adults={adults}
+        baseAmount={baseAmount}
+        gstPercentage={gstPercentage}
+        tcsPercentage={tcsPercentage}
         totalQuotationAmount={totalQuotationAmount}
         advanceAmountPaid={alreadyPaid}
         balancePendingAmount={balancePendingAmount}

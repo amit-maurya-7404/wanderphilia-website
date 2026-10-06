@@ -25,9 +25,9 @@ import {
   HeartHandshake,
   Star,
   ExternalLink,
-  Luggage,
-  Sparkles
+  Luggage
 } from 'lucide-react';
+import { Parachute } from '@/components/parachute-icon';
 import { RiWhatsappLine } from 'react-icons/ri';
 import { contactPhoneDisplay, contactEmail } from '@/lib/contact';
 import { Playfair_Display, Plus_Jakarta_Sans, Dancing_Script } from 'next/font/google';
@@ -89,8 +89,11 @@ interface ManualItineraryTemplateProps {
 
 export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplateProps) {
   const leadName = itinerary.leadName || 'Valued Traveler';
-  const firstName = leadName !== 'Valued Traveler' ? leadName.split(' ')[0] : 'Your';
-  const possessiveName = firstName.endsWith('s') || firstName.endsWith('S') ? `${firstName}'` : `${firstName}'s`;
+  const cleanedName = leadName.replace(/^(Mr\.|Mr|Mrs\.|Mrs|Ms\.|Ms|Dr\.|Dr|Shri)\s+/i, '').trim();
+  const firstName = cleanedName && cleanedName !== 'Valued Traveler' ? cleanedName.split(' ')[0] : 'Your';
+  const possessiveName = firstName.toLowerCase() === 'your'
+    ? 'Your'
+    : (firstName.endsWith('s') || firstName.endsWith('S') ? `${firstName}'` : `${firstName}'s`);
   const destination = itinerary.destination || 'Himachal Pradesh';
   const numDays = itinerary.numDays;
   const numNights = itinerary.numNights;
@@ -297,7 +300,7 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                 {/* Theme Highlights Pills */}
                 <div className="pt-4 border-t border-[#6E1E14]/15">
                   <div className="text-xs sm:text-sm font-black text-[#6E1E14] uppercase tracking-wider leading-relaxed">
-                    {destination} — CULTURE • MOUNTAINS • CAFÉS • SNOW & ADVENTURE • NEW YEAR PARTY • RIVERSIDE VIBES
+                    {itinerary.subtitle ? itinerary.subtitle.toUpperCase() : `${destination.toUpperCase()} — EXCLUSIVE CURATED PRIVATE EXPEDITION`}
                   </div>
                 </div>
               </div>
@@ -465,6 +468,68 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
             </div>
           )}
 
+          {/* PACKAGE QUOTATION & INVESTMENT SUMMARY CARD */}
+          {(itinerary.finalQuotationAmount || itinerary.perAdultPrice) && (
+            <div className="bg-gradient-to-br from-[#6E1E14] via-[#5C1810] to-stone-900 rounded-2xl p-5 sm:p-8 text-white shadow-xl space-y-5 border border-amber-500/30">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-white/15 pb-4">
+                <div className="space-y-1">
+                  <span className="text-[11px] font-black uppercase tracking-widest text-amber-300">
+                    5-Star Luxury Private Tour Quotation
+                  </span>
+                  <h3 className={`${playfair.className} text-xl sm:text-2xl font-black text-white`}>
+                    Investment & Pricing Summary
+                  </h3>
+                </div>
+                <div className="bg-amber-400/20 text-amber-300 border border-amber-400/40 text-[11px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
+                  {itinerary.adults || 5} Adults Included
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5">
+                {/* Per Adult Rate */}
+                <div className="bg-white/10 backdrop-blur-md rounded-xl p-3.5 sm:p-4 border border-white/15 space-y-1">
+                  <div className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-amber-300 flex items-center justify-between">
+                    <span>Cost Per Guest</span>
+                    <Users className="w-4 h-4 text-amber-300" />
+                  </div>
+                  <div className="text-xl sm:text-2xl font-black text-white">
+                    ₹{(itinerary.perAdultPrice || 170772).toLocaleString('en-IN')}/-
+                  </div>
+                  <div className="text-[10px] text-white/80 font-medium">
+                    (₹{(itinerary.finalQuotationAmount || 853860).toLocaleString('en-IN')} ÷ {itinerary.adults || 5} Guests All-Inclusive)
+                  </div>
+                </div>
+
+                {/* Total Quotation with Taxes */}
+                <div className="bg-white/10 backdrop-blur-md rounded-xl p-3.5 sm:p-4 border border-white/15 space-y-1">
+                  <div className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-amber-300 flex items-center justify-between">
+                    <span>Total Package Cost</span>
+                    <Parachute size={16} className="w-4 h-4 text-amber-300" />
+                  </div>
+                  <div className="text-xl sm:text-2xl font-black text-white">
+                    ₹{(itinerary.finalQuotationAmount || 853860).toLocaleString('en-IN')}/-
+                  </div>
+                  <div className="text-[10px] text-amber-200 font-semibold">
+                    Incl. 5% GST (₹{(itinerary.gstAmount || 39900).toLocaleString('en-IN')}) + 2% TCS (₹{(itinerary.tcsAmount || 15960).toLocaleString('en-IN')})
+                  </div>
+                </div>
+
+                {/* Booking Options Note */}
+                <div className="bg-white/10 backdrop-blur-md rounded-xl p-3.5 sm:p-4 border border-white/15 space-y-1 sm:col-span-2 md:col-span-1">
+                  <div className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-emerald-300 flex items-center justify-between">
+                    <span>Flexible Payment Stages</span>
+                    <CreditCard className="w-4 h-4 text-emerald-300" />
+                  </div>
+                  <div className="text-[11px] text-white/90 space-y-0.5 pt-0.5 font-semibold">
+                    <div>• 10% Token: ₹{Math.round(((itinerary.finalQuotationAmount || 853860) * 0.10)).toLocaleString('en-IN')}/- (Locks dates & proposal)</div>
+                    <div>• 50% Advance: ₹{Math.round(((itinerary.finalQuotationAmount || 853860) * 0.50)).toLocaleString('en-IN')}/- (Due in 7 days)</div>
+                    <div>• Final Balance: Due 15 days before departure</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Bottom Rust Bar */}
           <div className="bg-[#6E1E14] text-white py-3 px-6 text-center text-[10px] sm:text-xs font-bold tracking-wide rounded-xl">
             Wanderphilia Exclusive Private Travel Proposal • Inclusions & Exclusions
@@ -489,24 +554,24 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
           <div className="bg-white rounded-2xl border border-amber-200 p-6 shadow-xs space-y-3">
             <div className="flex items-center gap-2 text-xs sm:text-sm font-black uppercase tracking-wider text-amber-900 border-b border-amber-100 pb-2.5">
               <CreditCard className="w-4 h-4 text-amber-700" />
-              <span>Payment Terms</span>
+              <span>Payment Terms & Timelines</span>
             </div>
             <ul className="space-y-2 text-xs font-semibold text-stone-700 leading-relaxed">
               <li className="flex items-start gap-2.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-amber-600 shrink-0 mt-1.5" />
-                <span>50% booking advance payment is required to confirm the booking and secure all travel services.</span>
+                <span><b>10% Token Amount:</b> Locks your itinerary proposal, dates and begins slot reservations.</span>
               </li>
               <li className="flex items-start gap-2.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-amber-600 shrink-0 mt-1.5" />
-                <span>Balance 50% payment must be received at least 15 days prior to departure.</span>
+                <span><b>50% Advance Payment:</b> Payable within <b>7 days</b> of token payment to confirm luxury hotel stays, cruise cabins and private transport.</span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-600 shrink-0 mt-1.5" />
+                <span><b>Final Balance Payment:</b> Must be received at least <b>15 days prior to departure</b> to release final confirmation vouchers and driver allocation.</span>
               </li>
               <li className="flex items-start gap-2.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-amber-600 shrink-0 mt-1.5" />
                 <span>All bookings are subject to availability and confirmation from respective suppliers at the time of payment.</span>
-              </li>
-              <li className="flex items-start gap-2.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-600 shrink-0 mt-1.5" />
-                <span>Any increase in taxes, government levies, fuel surcharges, or currency fluctuations before final payment may be charged additionally.</span>
               </li>
             </ul>
           </div>
@@ -596,7 +661,13 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
             <ItineraryPaymentSection
               itineraryId={itinerary.id}
               destination={destination}
-              totalQuotationAmount={itinerary.finalQuotationAmount || 0}
+              proposalTitle={itinerary.title}
+              perAdultPrice={itinerary.perAdultPrice || 170772}
+              adults={itinerary.adults || 5}
+              baseAmount={itinerary.baseAmount || 798000}
+              gstPercentage={itinerary.gstPercentage || 5}
+              tcsPercentage={itinerary.tcsPercentage || 2}
+              totalQuotationAmount={itinerary.finalQuotationAmount || 853860}
               leadName={leadName}
               numDays={numDays}
               numNights={numNights}
@@ -654,6 +725,25 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
         </section>
 
       </main>
+
+      {/* Floating Action CTA on mobile/desktop */}
+      {itinerary.finalQuotationAmount && itinerary.finalQuotationAmount > 0 ? (
+        <ItineraryQuotationBookButton
+          variant="floating"
+          itineraryId={itinerary.id}
+          destination={destination}
+          proposalTitle={itinerary.title}
+          perAdultPrice={itinerary.perAdultPrice || 170772}
+          adults={itinerary.adults || 5}
+          baseAmount={itinerary.baseAmount || 798000}
+          gstPercentage={itinerary.gstPercentage || 5}
+          tcsPercentage={itinerary.tcsPercentage || 2}
+          totalQuotationAmount={itinerary.finalQuotationAmount}
+          leadName={leadName}
+          numDays={numDays}
+          numNights={numNights}
+        />
+      ) : null}
 
       {/* Print Specific CSS */}
       <style>{`

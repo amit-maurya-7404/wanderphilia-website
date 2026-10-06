@@ -12,6 +12,8 @@ export interface ItineraryPaymentRecord {
   customerName?: string;
   customerEmail?: string;
   customerMobile?: string;
+  customerGstNo?: string;
+  customerPanNo?: string;
 }
 
 export interface ItineraryLeadDetails {
@@ -39,6 +41,11 @@ export interface ItineraryLeadDetails {
   perKidPrice?: number;
   adults?: number;
   kids?: number;
+  baseAmount?: number;
+  gstPercentage?: number;
+  tcsPercentage?: number;
+  gstAmount?: number;
+  tcsAmount?: number;
   advanceAmountPaid?: number;
   balancePendingAmount?: number;
   paymentStage?: 'unpaid' | 'token_paid' | 'advance_paid' | 'fully_paid';
@@ -93,6 +100,11 @@ export interface ItineraryDocument {
   perKidPrice?: number;
   adults?: number;
   kids?: number;
+  baseAmount?: number;
+  gstPercentage?: number;
+  tcsPercentage?: number;
+  gstAmount?: number;
+  tcsAmount?: number;
   advanceAmountPaid?: number;
   balancePendingAmount?: number;
   paymentStage?: 'unpaid' | 'token_paid' | 'advance_paid' | 'fully_paid';

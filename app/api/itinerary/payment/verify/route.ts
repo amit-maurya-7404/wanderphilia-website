@@ -201,6 +201,9 @@ export async function POST(req: NextRequest) {
     else if (paymentType === 'remaining_balance' || paymentType === 'balance') installmentLabel = 'Remaining Balance Payment';
     else if (paymentType === 'full') installmentLabel = '100% Full Tour Payment';
 
+    const customerGstNo = body.customerGstNo || body.gstNo || (payment as any)?.notes?.customerGstNo || undefined;
+    const customerPanNo = body.customerPanNo || body.panNo || (payment as any)?.notes?.customerPanNo || undefined;
+
     // 4. Construct Invoice Data Structure
     const invoiceData: InvoiceData = {
       invoiceNumber,
@@ -213,6 +216,8 @@ export async function POST(req: NextRequest) {
       customerName,
       customerEmail,
       customerMobile,
+      customerGstNo,
+      customerPanNo,
       destination,
       tripTitle: itinerary?.title || `${itinerary?.noOfNights || 4}N / ${itinerary?.noOfDays || 5}D Royal ${destination} Tour`,
       travelStartDate: itinerary?.leadDetails?.startDate || itinerary?.rawZohoData?.Preferred_Start_date || undefined,
@@ -228,13 +233,107 @@ export async function POST(req: NextRequest) {
       totalPackageAmount: totalQuotationAmount,
       paidAmount,
       balanceDue: newBalanceDue,
+      gstPercentage: 5,
+      tcsPercentage: 2,
     };
 
     // 5. Generate Official Tax Invoice PDF Buffer (Server-Side)
     const pdfBuffer = await generateInvoicePDFBuffer(invoiceData);
     const invoiceFileName = `Wanderphilia_Invoice_${safeInvoiceNum}.pdf`;
 
-    // 6. Push to Zoho CRM (Attachment, Field Updates & Note)
+    // 6. Compute Next Payment Schedule & Due Dates
+    const advanceFiftyPercent = Math.round(totalQuotationAmount * 0.5);
+    const advanceRemaining = Math.max(0, advanceFiftyPercent - newTotalPaid);
+    
+    // 7 days from payment date for token -> advance
+    const advanceDueDateObj = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+    const advanceDueDateStr = advanceDueDateObj.toLocaleDateString('en-IN', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+    });
+
+    // 15 days before travel start date for balance
+    let balanceDueDateStr = '15 Days Before Departure';
+    const rawStartDate = itinerary?.leadDetails?.startDate || itinerary?.rawZohoData?.Preferred_Start_date || (itinerary?.dayPlans && (itinerary.dayPlans[0] as any)?.date ? `${(itinerary.dayPlans[0] as any).date} 2026` : undefined);
+    
+    if (rawStartDate) {
+      const parsedStart = new Date(rawStartDate);
+      if (!isNaN(parsedStart.getTime())) {
+        const balanceDueObj = new Date(parsedStart.getTime() - 15 * 24 * 60 * 60 * 1000);
+        balanceDueDateStr = `${balanceDueObj.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })} (15 Days Before Departure)`;
+      } else {
+        balanceDueDateStr = `15 Days Before Departure (${rawStartDate})`;
+      }
+    }
+
+    let nextPaymentSummary = '';
+    let nextPaymentDetailsHtml = '';
+
+    if (newBalanceDue <= 0) {
+      nextPaymentSummary = '✓ 100% Fully Cleared (No Pending Dues)';
+      nextPaymentDetailsHtml = `
+        <div style="background: #f0fdf4; border: 1.5px solid #bbf7d0; padding: 14px 18px; border-radius: 12px; margin: 18px 0;">
+          <p style="margin: 0; font-size: 13px; color: #166534; font-weight: bold;">
+            ✓ 100% Tour Cleared: All luxury hotel stays, cruise cabin and private chauffeur transport are fully confirmed. No pending balance!
+          </p>
+        </div>
+      `;
+    } else if (newTotalPaid < advanceFiftyPercent) {
+      nextPaymentSummary = `• Next Stage (50% Advance): ₹${advanceRemaining.toLocaleString('en-IN')} Due within 7 Days by ${advanceDueDateStr}\n• Final Balance (50%): ₹${advanceFiftyPercent.toLocaleString('en-IN')} Due ${balanceDueDateStr}`;
+      nextPaymentDetailsHtml = `
+        <div style="background: #fffbeb; border: 1.5px solid #fde68a; padding: 18px; border-radius: 14px; margin: 20px 0;">
+          <h4 style="margin: 0 0 12px 0; font-size: 14px; font-weight: 800; color: #92400e; text-transform: uppercase; letter-spacing: 0.5px;">
+            📅 Upcoming Payment Schedule & Due Dates:
+          </h4>
+          <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+            <tr style="border-bottom: 1px solid #fef3c7;">
+              <td style="padding: 8px 0; color: #78350f; font-weight: 700;">1. Advance Payment (50% Stage):</td>
+              <td style="padding: 8px 0; text-align: right; font-weight: 800; color: #b45309;">₹${advanceRemaining.toLocaleString('en-IN')}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #fef3c7;">
+              <td style="padding: 6px 0; color: #92400e; font-size: 12px;">Due Date:</td>
+              <td style="padding: 6px 0; text-align: right; font-weight: 700; color: #92400e;"><strong>${advanceDueDateStr}</strong> (Within 7 Days)</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #fef3c7;">
+              <td style="padding: 8px 0 4px 0; color: #78350f; font-weight: 700;">2. Final Balance Payment:</td>
+              <td style="padding: 8px 0 4px 0; text-align: right; font-weight: 800; color: #6E1E14;">₹${advanceFiftyPercent.toLocaleString('en-IN')}</td>
+            </tr>
+            <tr>
+              <td style="padding: 4px 0 8px 0; color: #92400e; font-size: 12px;">Due Date:</td>
+              <td style="padding: 4px 0 8px 0; text-align: right; font-weight: 700; color: #92400e;"><strong>${balanceDueDateStr}</strong></td>
+            </tr>
+          </table>
+          <p style="margin: 10px 0 0 0; font-size: 12px; color: #a16207; line-height: 1.4;">
+            * You can pay online anytime using your official proposal link or via direct bank transfer / UPI.
+          </p>
+        </div>
+      `;
+    } else {
+      nextPaymentSummary = `• Final Balance: ₹${newBalanceDue.toLocaleString('en-IN')} Due ${balanceDueDateStr}`;
+      nextPaymentDetailsHtml = `
+        <div style="background: #fffbeb; border: 1.5px solid #fde68a; padding: 18px; border-radius: 14px; margin: 20px 0;">
+          <h4 style="margin: 0 0 12px 0; font-size: 14px; font-weight: 800; color: #92400e; text-transform: uppercase; letter-spacing: 0.5px;">
+            📅 Final Payment Schedule:
+          </h4>
+          <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+            <tr style="border-bottom: 1px solid #fef3c7;">
+              <td style="padding: 8px 0; color: #78350f; font-weight: 700;">Remaining 50% Balance:</td>
+              <td style="padding: 8px 0; text-align: right; font-weight: 800; color: #6E1E14;">₹${newBalanceDue.toLocaleString('en-IN')}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 0; color: #92400e; font-size: 12px;">Due Date:</td>
+              <td style="padding: 8px 0; text-align: right; font-weight: 700; color: #92400e;"><strong>${balanceDueDateStr}</strong></td>
+            </tr>
+          </table>
+          <p style="margin: 10px 0 0 0; font-size: 12px; color: #a16207; line-height: 1.4;">
+            * Due 15 days before departure to release your final hotel vouchers & transport allotment.
+          </p>
+        </div>
+      `;
+    }
+
+    // 7. Push to Zoho CRM (Attachment, Field Updates & Note)
     let zohoAttachmentSuccess = false;
     let zohoLeadId = passedLeadId || (itinerary?.rawZohoData?.id ? String(itinerary.rawZohoData.id) : null);
 
@@ -246,6 +345,7 @@ export async function POST(req: NextRequest) {
         mobile: customerMobile,
       });
     }
+
 
     if (zohoLeadId && /^\d+$/.test(zohoLeadId)) {
       console.log(`[Zoho CRM Integration] Processing Lead ID: ${zohoLeadId}`);
@@ -283,6 +383,7 @@ export async function POST(req: NextRequest) {
           `• Total Package Cost: ₹${totalQuotationAmount.toLocaleString('en-IN')}\n` +
           `• Remaining Balance: ₹${newBalanceDue.toLocaleString('en-IN')}\n` +
           `• Date & Time: ${formattedDate}\n\n` +
+          `📅 Payment Timeline:\n${nextPaymentSummary}\n\n` +
           `Official Invoice PDF "${invoiceFileName}" has been uploaded to this lead's Attachments.`;
 
         await addZohoLeadNote(zohoLeadId, noteTitle, noteContent);
@@ -308,6 +409,8 @@ export async function POST(req: NextRequest) {
       customerName,
       customerEmail,
       customerMobile,
+      customerGstNo,
+      customerPanNo,
     };
 
     if (itinerary) {
@@ -422,6 +525,8 @@ export async function POST(req: NextRequest) {
           <td class="value">${formattedDate}</td>
         </tr>
       </table>
+
+      ${nextPaymentDetailsHtml}
 
       <div class="alert-box">
         <p style="margin: 0; font-size: 13px; color: #166534; line-height: 1.6;">
