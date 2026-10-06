@@ -31,7 +31,7 @@ export interface InvoiceData {
   roomCategory?: string;
 
   // Financials
-  paymentType: 'advance' | 'full';
+  paymentType: 'token' | 'advance' | 'remaining_advance' | 'remaining_balance' | 'full' | string;
   totalPackageAmount: number;
   paidAmount: number;
   balanceDue: number;
@@ -299,7 +299,21 @@ export function generateInvoicePDFDocument(data: InvoiceData): jsPDF {
     doc.text(`Dates: ${datesStr} | Guests: ${data.adults || data.numberOfGuests || 2} Pax`, frameX + 4, itemY);
     itemY += 4.5;
   }
-  doc.text(`Payment: ${data.paymentType === 'advance' ? 'Advance Booking Amount (50%)' : 'Full Package Payment (100%)'}`, frameX + 4, itemY);
+
+  let paymentLabel = 'Tour Package Payment';
+  if (data.paymentType === 'token') {
+    paymentLabel = 'Token Booking Amount (10%)';
+  } else if (data.paymentType === 'advance') {
+    paymentLabel = 'Advance Booking Amount (50%)';
+  } else if (data.paymentType === 'remaining_advance') {
+    paymentLabel = 'Remaining Advance Payment (40%)';
+  } else if (data.paymentType === 'remaining_balance') {
+    paymentLabel = 'Remaining Balance Payment';
+  } else if (data.paymentType === 'full') {
+    paymentLabel = 'Full Package Payment (100%)';
+  }
+
+  doc.text(`Payment: ${paymentLabel}`, frameX + 4, itemY);
 
   if (data.paymentId) {
     itemY += 4.5;
@@ -307,7 +321,8 @@ export function generateInvoicePDFDocument(data: InvoiceData): jsPDF {
   }
 
   // Amount column Row 1
-  const baseCost = data.paymentType === 'advance' ? data.paidAmount : Math.round(data.totalPackageAmount / 1.18);
+  const isPartial = data.balanceDue > 0;
+  const baseCost = isPartial ? data.paidAmount : Math.round(data.totalPackageAmount / 1.18);
   const formattedBaseCost = baseCost.toLocaleString('en-IN');
   doc.text(formattedBaseCost, rightEdge - 5, tableHeaderY + tableHeaderHeight + 7, { align: 'right' });
 
@@ -315,7 +330,7 @@ export function generateInvoicePDFDocument(data: InvoiceData): jsPDF {
   const gstRowY = tableHeaderY + tableHeaderHeight + 35;
   doc.text('GST 18%', frameX + 4, gstRowY);
 
-  const gstVal = data.paymentType === 'advance' ? 0 : data.totalPackageAmount - baseCost;
+  const gstVal = isPartial ? 0 : data.totalPackageAmount - baseCost;
   const gstValStr = gstVal > 0 ? gstVal.toLocaleString('en-IN') : 'Included';
   doc.text(gstValStr, rightEdge - 5, gstRowY, { align: 'right' });
 

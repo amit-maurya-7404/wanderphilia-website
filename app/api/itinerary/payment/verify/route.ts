@@ -146,16 +146,39 @@ export async function POST(req: NextRequest) {
       itinerary?.rawZohoData?.Destination ||
       'India';
 
-    const totalQuotationAmount = Number(
+    let totalQuotationAmount = Number(
       itinerary?.finalQuotationAmount ??
       itinerary?.rawZohoData?.finalQuotationAmount ??
       itinerary?.rawZohoData?.Final_Quotation_Amount ??
       itinerary?.rawZohoData?.Total_Package_Cost ??
       itinerary?.rawZohoData?.Quotation_Amount ??
-      (paidAmount > 0 ? (paymentType === 'advance' ? paidAmount * 2 : paidAmount) : 0)
+      0
     );
 
-    const balanceDue = Math.max(0, totalQuotationAmount - paidAmount);
+    if (totalQuotationAmount === 0 && itineraryId) {
+      const { getManualItinerary } = await import('@/data/manual-itineraries');
+      const manual = getManualItinerary(itineraryId);
+      if (manual && manual.finalQuotationAmount) {
+        totalQuotationAmount = Number(manual.finalQuotationAmount);
+      }
+    }
+
+    if (totalQuotationAmount === 0 && paidAmount > 0) {
+      totalQuotationAmount = paymentType === 'token' ? paidAmount * 10 : (paymentType === 'advance' ? paidAmount * 2 : paidAmount);
+    }
+
+    const previousPaid = Number(
+      itinerary?.advanceAmountPaid ??
+      itinerary?.rawZohoData?.Advance_Amount_Paid ??
+      itinerary?.rawZohoData?.advanceAmountPaid ??
+      0
+    );
+
+    const newTotalPaid = previousPaid + paidAmount;
+    const newBalanceDue = Math.max(0, totalQuotationAmount - newTotalPaid);
+    const paymentStage = newBalanceDue <= 0
+      ? 'fully_paid'
+      : (newTotalPaid >= Math.round(totalQuotationAmount * 0.5) ? 'advance_paid' : 'token_paid');
 
     const now = new Date();
     const formattedDate = now.toLocaleDateString('en-IN', {
@@ -169,6 +192,14 @@ export async function POST(req: NextRequest) {
 
     const invoiceNumber = generateInvoiceNumber('CORP.');
     const safeInvoiceNum = invoiceNumber.replace(/[\/\\]/g, '_');
+
+    // Resolve human-readable installment label
+    let installmentLabel = 'Package Payment';
+    if (paymentType === 'token') installmentLabel = '10% Token Booking Amount';
+    else if (paymentType === 'advance') installmentLabel = '50% Booking Advance';
+    else if (paymentType === 'remaining_advance') installmentLabel = 'Remaining Advance (40%)';
+    else if (paymentType === 'remaining_balance' || paymentType === 'balance') installmentLabel = 'Remaining Balance Payment';
+    else if (paymentType === 'full') installmentLabel = '100% Full Tour Payment';
 
     // 4. Construct Invoice Data Structure
     const invoiceData: InvoiceData = {
@@ -193,10 +224,10 @@ export async function POST(req: NextRequest) {
       kids: itinerary?.kids || itinerary?.rawZohoData?.Kids || 0,
       vehicleType: itinerary?.vehicleType || itinerary?.rawZohoData?.Vehicle_Type || 'Private AC Vehicle',
       roomCategory: itinerary?.roomCategory || itinerary?.rawZohoData?.Preferred_Room_Category || 'Luxury Handpicked',
-      paymentType: (paymentType as 'advance' | 'full') || 'advance',
+      paymentType: paymentType || 'advance',
       totalPackageAmount: totalQuotationAmount,
       paidAmount,
-      balanceDue,
+      balanceDue: newBalanceDue,
     };
 
     // 5. Generate Official Tax Invoice PDF Buffer (Server-Side)
@@ -227,29 +258,30 @@ export async function POST(req: NextRequest) {
         console.error('[Zoho CRM Attachment Upload Error]:', attachErr);
       }
 
-      // B. Update Lead Status and Amounts
+      // B. Update Lead Status and Amounts in Zoho CRM
       try {
         await updateZohoLeadPaymentStatus(zohoLeadId, {
-          leadStatus: 'Booking',
-          advanceAmountPaid: paidAmount,
-          balancePendingAmount: balanceDue,
+          leadStatus: newBalanceDue <= 0 ? 'Confirmed' : 'Booking',
+          advanceAmountPaid: newTotalPaid,
+          balancePendingAmount: newBalanceDue,
         });
       } catch (updateErr) {
         console.error('[Zoho CRM Lead Update Error]:', updateErr);
       }
 
-      // C. Add Note to Lead Record
+      // C. Add Detailed Installment Note to Lead Record
       try {
-        const noteTitle = `Payment Received via Razorpay (₹${paidAmount.toLocaleString('en-IN')})`;
+        const noteTitle = `${installmentLabel} via Razorpay (₹${paidAmount.toLocaleString('en-IN')})`;
         const noteContent =
           `Online Payment of ₹${paidAmount.toLocaleString('en-IN')} received successfully via Razorpay.\n\n` +
           `• Payment ID: ${razorpay_payment_id}\n` +
           `• Order ID: ${razorpay_order_id}\n` +
           `• Invoice Number: ${invoiceNumber}\n` +
-          `• Payment Type: ${paymentType === 'advance' ? 'Booking Advance (50%)' : 'Full Payment (100%)'}\n` +
+          `• Payment Type: ${installmentLabel}\n` +
+          `• Amount Paid in this Installment: ₹${paidAmount.toLocaleString('en-IN')}\n` +
+          `• Total Paid So Far: ₹${newTotalPaid.toLocaleString('en-IN')}\n` +
           `• Total Package Cost: ₹${totalQuotationAmount.toLocaleString('en-IN')}\n` +
-          `• Amount Paid: ₹${paidAmount.toLocaleString('en-IN')}\n` +
-          `• Remaining Balance: ₹${balanceDue.toLocaleString('en-IN')}\n` +
+          `• Remaining Balance: ₹${newBalanceDue.toLocaleString('en-IN')}\n` +
           `• Date & Time: ${formattedDate}\n\n` +
           `Official Invoice PDF "${invoiceFileName}" has been uploaded to this lead's Attachments.`;
 
@@ -262,6 +294,22 @@ export async function POST(req: NextRequest) {
     }
 
     // 7. Update MongoDB Itinerary Record
+    const paymentRecord = {
+      paymentId: razorpay_payment_id,
+      orderId: razorpay_order_id,
+      paymentType: paymentType || 'advance',
+      amount: paidAmount,
+      totalPaidAfter: newTotalPaid,
+      balanceDueAfter: newBalanceDue,
+      paidAt: now.toISOString(),
+      invoiceNumber,
+      invoiceFileName,
+      status: 'paid',
+      customerName,
+      customerEmail,
+      customerMobile,
+    };
+
     if (itinerary) {
       try {
         await collection.updateOne(
@@ -269,20 +317,24 @@ export async function POST(req: NextRequest) {
           {
             $set: {
               status: 'active',
-              advanceAmountPaid: paidAmount,
-              balancePendingAmount: balanceDue,
+              advanceAmountPaid: newTotalPaid,
+              balancePendingAmount: newBalanceDue,
+              paymentStage,
               rawZohoData: {
                 ...(itinerary.rawZohoData || {}),
-                Lead_Status: 'Booking',
-                Advance_Amount_Paid: paidAmount,
-                Balance_Pending_Amount: balanceDue,
-                Payment_Status: 'Paid',
+                Lead_Status: newBalanceDue <= 0 ? 'Confirmed' : 'Booking',
+                Advance_Amount_Paid: newTotalPaid,
+                Balance_Pending_Amount: newBalanceDue,
+                Payment_Status: newBalanceDue <= 0 ? 'Fully Paid' : 'Partially Paid',
                 Last_Payment_Id: razorpay_payment_id,
                 Last_Order_Id: razorpay_order_id,
                 Invoice_Number: invoiceNumber,
                 Payment_Date: now.toISOString(),
               },
               updatedAt: now,
+            },
+            $push: {
+              payments: paymentRecord as any,
             },
           }
         );
@@ -339,17 +391,21 @@ export async function POST(req: NextRequest) {
           <td class="value">${destination}</td>
         </tr>
         <tr>
-          <td class="label">Payment Type</td>
-          <td class="value">${paymentType === 'advance' ? 'Booking Advance Payment (50%)' : 'Full Package Payment (100%)'}</td>
+          <td class="label">Payment Installment</td>
+          <td class="value">${installmentLabel}</td>
         </tr>
         <tr>
-          <td class="label">Amount Paid</td>
+          <td class="label">Amount Paid Today</td>
           <td class="value" style="color: #16a34a; font-size: 16px;">₹${paidAmount.toLocaleString('en-IN')}</td>
         </tr>
-        ${balanceDue > 0 ? `
+        <tr>
+          <td class="label">Total Paid So Far</td>
+          <td class="value" style="color: #0f172a; font-weight: 800;">₹${newTotalPaid.toLocaleString('en-IN')} / ₹${totalQuotationAmount.toLocaleString('en-IN')}</td>
+        </tr>
+        ${newBalanceDue > 0 ? `
         <tr>
           <td class="label">Remaining Balance</td>
-          <td class="value" style="color: #6E1E14;">₹${balanceDue.toLocaleString('en-IN')}</td>
+          <td class="value" style="color: #6E1E14;">₹${newBalanceDue.toLocaleString('en-IN')}</td>
         </tr>
         ` : `
         <tr>
@@ -424,7 +480,7 @@ export async function POST(req: NextRequest) {
 <body>
   <div class="card">
     <div class="header">
-      <h2 style="margin: 0; font-size: 20px;">💰 Payment Received via Itinerary Booking</h2>
+      <h2 style="margin: 0; font-size: 20px;">💰 ${installmentLabel} Received via Itinerary</h2>
       <p style="margin: 4px 0 0 0; font-size: 12px; opacity: 0.85;">Customer completed payment on itinerary page</p>
     </div>
     <div class="content">
@@ -437,8 +493,12 @@ export async function POST(req: NextRequest) {
         <div class="value">${destination}</div>
       </div>
       <div class="field">
-        <div class="label">Amount Paid</div>
+        <div class="label">Amount Paid in this Installment</div>
         <div class="value" style="color: #16a34a; font-size: 16px;">₹${paidAmount.toLocaleString('en-IN')}</div>
+      </div>
+      <div class="field">
+        <div class="label">Total Paid To Date</div>
+        <div class="value" style="font-weight: bold; font-size: 15px;">₹${newTotalPaid.toLocaleString('en-IN')}</div>
       </div>
       <div class="field">
         <div class="label">Total Package Cost</div>
@@ -446,11 +506,11 @@ export async function POST(req: NextRequest) {
       </div>
       <div class="field">
         <div class="label">Remaining Balance Due</div>
-        <div class="value" style="color: #6E1E14;">₹${balanceDue.toLocaleString('en-IN')}</div>
+        <div class="value" style="color: #6E1E14;">₹${newBalanceDue.toLocaleString('en-IN')}</div>
       </div>
       <div class="field">
         <div class="label">Payment Type</div>
-        <div class="value">${paymentType === 'advance' ? 'Booking Advance (50%)' : 'Full Payment (100%)'}</div>
+        <div class="value">${installmentLabel}</div>
       </div>
       <div class="field">
         <div class="label">Customer Mobile</div>
@@ -480,7 +540,7 @@ export async function POST(req: NextRequest) {
 
       await sendEmail({
         to: ADMIN_NOTIFICATION_EMAIL,
-        subject: `🔔 Payment Received: ${customerName} - ₹${paidAmount.toLocaleString('en-IN')} (${destination})`,
+        subject: `🔔 ${installmentLabel} Received: ${customerName} - ₹${paidAmount.toLocaleString('en-IN')} (${destination})`,
         html: adminEmailHtml,
         replyTo: customerEmail || undefined,
         attachments: [
@@ -507,12 +567,13 @@ export async function POST(req: NextRequest) {
     if (customerMobile) {
       const custMsg =
         `Hey *${customerName}*! 🌟\n\n` +
-        `Your payment of *₹${paidAmount.toLocaleString('en-IN')}* for your *${destination}* luxury tour has been received successfully!\n\n` +
+        `Your payment of *₹${paidAmount.toLocaleString('en-IN')}* (${installmentLabel}) for your *${destination}* luxury tour has been received successfully!\n\n` +
         `*Payment Summary:*\n` +
         `• *Invoice No:* ${invoiceNumber}\n` +
-        `• *Type:* ${paymentType === 'advance' ? 'Booking Advance (50%)' : 'Full Payment (100%)'}\n` +
-        `• *Amount Paid:* ₹${paidAmount.toLocaleString('en-IN')}\n` +
-        (balanceDue > 0 ? `• *Balance Due:* ₹${balanceDue.toLocaleString('en-IN')}\n` : `• *Status:* 100% Fully Paid\n`) +
+        `• *Type:* ${installmentLabel}\n` +
+        `• *Paid Today:* ₹${paidAmount.toLocaleString('en-IN')}\n` +
+        `• *Total Paid to Date:* ₹${newTotalPaid.toLocaleString('en-IN')} / ₹${totalQuotationAmount.toLocaleString('en-IN')}\n` +
+        (newBalanceDue > 0 ? `• *Remaining Balance:* ₹${newBalanceDue.toLocaleString('en-IN')}\n` : `• *Status:* 100% Fully Paid & Cleared 🎉\n`) +
         `• *Payment ID:* ${razorpay_payment_id}\n\n` +
         `📄 *Download Your Official Invoice PDF:* \n${invoiceDownloadUrl}\n\n` +
         `A copy has also been sent to your email (${customerEmail || 'provided email'}). Our tour coordinator will connect with you on this number to assist with travel preparations. Thank you for choosing Wanderphilia! ✈️`;
@@ -534,9 +595,10 @@ export async function POST(req: NextRequest) {
       `💰 *New Payment Received via Itinerary!*\n\n` +
       `• *Customer:* ${customerName}\n` +
       `• *Destination:* ${destination}\n` +
-      `• *Paid Amount:* ₹${paidAmount.toLocaleString('en-IN')}\n` +
-      `• *Type:* ${paymentType === 'advance' ? 'Advance 50%' : 'Full 100%'}\n` +
-      `• *Balance Due:* ₹${balanceDue.toLocaleString('en-IN')}\n` +
+      `• *Paid Today:* ₹${paidAmount.toLocaleString('en-IN')}\n` +
+      `• *Total Paid to Date:* ₹${newTotalPaid.toLocaleString('en-IN')}\n` +
+      `• *Type:* ${installmentLabel}\n` +
+      `• *Remaining Balance:* ₹${newBalanceDue.toLocaleString('en-IN')}\n` +
       `• *Phone:* ${customerMobile || 'N/A'}\n` +
       `• *Email:* ${customerEmail || 'N/A'}\n` +
       `• *Invoice No:* ${invoiceNumber}\n` +
@@ -563,7 +625,9 @@ export async function POST(req: NextRequest) {
       invoiceBase64: pdfBuffer.toString('base64'),
       invoiceFileName,
       paidAmount,
-      balanceDue,
+      totalPaid: newTotalPaid,
+      balanceDue: newBalanceDue,
+      paymentStage,
       totalPackageAmount: totalQuotationAmount,
       paymentId: razorpay_payment_id,
       orderId: razorpay_order_id,

@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   Dialog,
   DialogContent,
@@ -25,12 +26,15 @@ import {
   Calendar,
   MapPin,
   Check,
-  AlertCircle
+  AlertCircle,
+  Clock
 } from 'lucide-react';
 import { RiWhatsappLine } from 'react-icons/ri';
 import { CountryCodeSelect } from '@/components/ui/country-code-select';
 import { DEFAULT_COUNTRY_CODE } from '@/lib/country-codes';
 import { contactPhoneDisplay } from '@/lib/contact';
+
+export type ItineraryPaymentType = 'token' | 'advance' | 'remaining_advance' | 'remaining_balance' | 'full';
 
 interface ItineraryBookModalProps {
   open: boolean;
@@ -39,6 +43,9 @@ interface ItineraryBookModalProps {
   destination: string;
   proposalTitle?: string;
   totalQuotationAmount: number;
+  advanceAmountPaid?: number;
+  balancePendingAmount?: number;
+  initialPaymentType?: ItineraryPaymentType;
   initialLeadName?: string;
   initialEmail?: string;
   initialPhone?: string;
@@ -48,6 +55,7 @@ interface ItineraryBookModalProps {
   numNights?: number;
   travelStartDate?: string;
   travelEndDate?: string;
+  onPaymentSuccess?: (data: any) => void;
 }
 
 export function ItineraryBookModal({
@@ -57,6 +65,9 @@ export function ItineraryBookModal({
   destination,
   proposalTitle,
   totalQuotationAmount,
+  advanceAmountPaid = 0,
+  balancePendingAmount,
+  initialPaymentType,
   initialLeadName = '',
   initialEmail = '',
   initialPhone = '',
@@ -66,9 +77,25 @@ export function ItineraryBookModal({
   numNights = 4,
   travelStartDate,
   travelEndDate,
+  onPaymentSuccess,
 }: ItineraryBookModalProps) {
-  // Payment Type: 'advance' (50%) or 'full' (100%)
-  const [paymentType, setPaymentType] = useState<'advance' | 'full'>('advance');
+  const router = useRouter();
+
+  const alreadyPaid = Number(advanceAmountPaid || 0);
+  const tenPercentAmount = Math.round(totalQuotationAmount * 0.1);
+  const fiftyPercentAmount = Math.round(totalQuotationAmount * 0.5);
+  const remainingAdvanceAmount = Math.max(0, fiftyPercentAmount - alreadyPaid);
+  const remainingBalanceAmount = Math.max(0, totalQuotationAmount - alreadyPaid);
+
+  // Compute default payment type based on current paid stage
+  const getDefaultPaymentType = (): ItineraryPaymentType => {
+    if (initialPaymentType) return initialPaymentType;
+    if (alreadyPaid <= 0) return 'token'; // Default to 10% Token for quick booking
+    if (alreadyPaid > 0 && alreadyPaid < fiftyPercentAmount) return 'remaining_advance';
+    return 'remaining_balance';
+  };
+
+  const [paymentType, setPaymentType] = useState<ItineraryPaymentType>(getDefaultPaymentType());
   const [fullName, setFullName] = useState(initialLeadName);
   const [email, setEmail] = useState(initialEmail);
   const [mobileNumber, setMobileNumber] = useState(initialPhone);
@@ -80,17 +107,55 @@ export function ItineraryBookModal({
   const [paymentSuccessData, setPaymentSuccessData] = useState<{
     invoiceNumber: string;
     paidAmount: number;
+    totalPaid: number;
     balanceDue: number;
     paymentId: string;
     orderId: string;
+    paymentType: string;
     invoiceBase64?: string;
     invoiceFileName?: string;
   } | null>(null);
 
-  // Math Calculations
-  const advanceAmount = Math.round(totalQuotationAmount * 0.5);
-  const payableAmount = paymentType === 'advance' ? advanceAmount : totalQuotationAmount;
-  const balanceDue = Math.max(0, totalQuotationAmount - payableAmount);
+  // Reset payment type when initialPaymentType or open state changes
+  useEffect(() => {
+    if (open) {
+      setPaymentType(getDefaultPaymentType());
+    }
+  }, [open, alreadyPaid, initialPaymentType]);
+
+  // Determine payable amount and balance due based on chosen payment option
+  let payableAmount = 0;
+  let installmentLabel = 'Package Payment';
+  let postPaymentTotal = alreadyPaid;
+  let postPaymentBalance = remainingBalanceAmount;
+
+  if (paymentType === 'token') {
+    payableAmount = tenPercentAmount;
+    installmentLabel = '10% Token Booking Amount';
+    postPaymentTotal = alreadyPaid + tenPercentAmount;
+    postPaymentBalance = Math.max(0, totalQuotationAmount - postPaymentTotal);
+  } else if (paymentType === 'advance') {
+    payableAmount = fiftyPercentAmount;
+    installmentLabel = '50% Booking Advance';
+    postPaymentTotal = alreadyPaid + fiftyPercentAmount;
+    postPaymentBalance = Math.max(0, totalQuotationAmount - postPaymentTotal);
+  } else if (paymentType === 'remaining_advance') {
+    payableAmount = remainingAdvanceAmount;
+    installmentLabel = 'Remaining 40% Booking Advance';
+    postPaymentTotal = alreadyPaid + remainingAdvanceAmount;
+    postPaymentBalance = Math.max(0, totalQuotationAmount - postPaymentTotal);
+  } else if (paymentType === 'remaining_balance') {
+    payableAmount = remainingBalanceAmount;
+    installmentLabel = alreadyPaid >= fiftyPercentAmount ? 'Remaining 50% Balance' : 'Remaining Balance';
+    postPaymentTotal = totalQuotationAmount;
+    postPaymentBalance = 0;
+  } else {
+    // 'full'
+    payableAmount = remainingBalanceAmount > 0 ? remainingBalanceAmount : totalQuotationAmount;
+    installmentLabel = 'Full Package Payment (100%)';
+    postPaymentTotal = totalQuotationAmount;
+    postPaymentBalance = 0;
+  }
 
   const validateForm = () => {
     const newErrors: typeof errors = {};
@@ -111,7 +176,7 @@ export function ItineraryBookModal({
   const handlePayNow = async () => {
     if (!validateForm()) return;
     if (payableAmount <= 0) {
-      alert('Invalid package quotation amount.');
+      alert('Invalid package quotation amount or no balance due.');
       return;
     }
 
@@ -157,7 +222,7 @@ export function ItineraryBookModal({
         amount: orderData.amountPaise,
         currency: orderData.currency || 'INR',
         name: 'Wanderphilia Experiences',
-        description: `${paymentType === 'advance' ? '50% Advance Booking' : 'Full Payment'} for ${destination} Tour (${itineraryId})`,
+        description: `${installmentLabel} for ${destination} Tour (${itineraryId})`,
         image: '/images/Made_LOGO.png',
         order_id: orderData.orderId,
         handler: async function (response: any) {
@@ -189,12 +254,25 @@ export function ItineraryBookModal({
               setPaymentSuccessData({
                 invoiceNumber: verifyData.invoiceNumber,
                 paidAmount: verifyData.paidAmount,
+                totalPaid: verifyData.totalPaid || (alreadyPaid + verifyData.paidAmount),
                 balanceDue: verifyData.balanceDue,
                 paymentId: response.razorpay_payment_id,
                 orderId: response.razorpay_order_id,
+                paymentType,
                 invoiceBase64: verifyData.invoiceBase64,
                 invoiceFileName: verifyData.invoiceFileName,
               });
+
+              if (onPaymentSuccess) {
+                onPaymentSuccess(verifyData);
+              }
+
+              // Soft refresh page to re-render updated data from DB
+              try {
+                router.refresh();
+              } catch (rErr) {
+                console.log('Router refresh notice:', rErr);
+              }
             } else {
               alert(verifyData.error || 'Payment verification failed. Please contact support.');
             }
@@ -271,9 +349,14 @@ export function ItineraryBookModal({
     : `/api/itinerary/invoice?id=${encodeURIComponent(itineraryId)}`;
 
   const whatsappMsg = encodeURIComponent(
-    `Hi Wanderphilia! I have completed payment for my ${destination} tour (${itineraryId}).\n\n• Invoice No: ${paymentSuccessData?.invoiceNumber || ''}\n• Payment ID: ${paymentSuccessData?.paymentId || ''}\n• Download Invoice PDF: ${invoiceDownloadUrl}\n\nLooking forward to connecting with my trip coordinator!`
+    `Hi Wanderphilia! I have completed my payment of ₹${paymentSuccessData?.paidAmount?.toLocaleString('en-IN') || ''} (${installmentLabel}) for my ${destination} tour (${itineraryId}).\n\n• Invoice No: ${paymentSuccessData?.invoiceNumber || ''}\n• Payment ID: ${paymentSuccessData?.paymentId || ''}\n• Download Invoice PDF: ${invoiceDownloadUrl}\n\nLooking forward to connecting with my trip coordinator!`
   );
   const whatsappUrl = `https://wa.me/91${contactPhoneDisplay}?text=${whatsappMsg}`;
+
+  // Check which state we are in
+  const isFullyPaid = remainingBalanceAmount <= 0;
+  const isTokenPaid = alreadyPaid > 0 && alreadyPaid < fiftyPercentAmount;
+  const isAdvancePaid = alreadyPaid >= fiftyPercentAmount && !isFullyPaid;
 
   return (
     <Dialog open={open && !isRazorpayOpen} onOpenChange={onOpenChange}>
@@ -291,10 +374,15 @@ export function ItineraryBookModal({
                 <Sparkles className="w-3 h-3" /> Secure Online Booking
               </div>
               <DialogTitle className="text-xl sm:text-2xl font-black tracking-tight text-white">
-                Book Your {destination} Escape
+                {isFullyPaid ? 'Tour Booking Confirmed' : `Book Your ${destination} Escape`}
               </DialogTitle>
               <DialogDescription className="text-xs text-amber-100/90 font-medium">
-                Ref: <span className="font-mono font-bold text-amber-300">{itineraryId}</span> • Official Fixed Quotation: <span className="font-black text-white">₹{totalQuotationAmount.toLocaleString('en-IN')}</span>
+                Ref: <span className="font-mono font-bold text-amber-300">{itineraryId}</span> • Total Quotation: <span className="font-black text-white">₹{totalQuotationAmount.toLocaleString('en-IN')}</span>
+                {alreadyPaid > 0 && (
+                  <span className="text-emerald-300 ml-1 font-bold">
+                    (₹{alreadyPaid.toLocaleString('en-IN')} Paid)
+                  </span>
+                )}
               </DialogDescription>
             </div>
           </div>
@@ -317,7 +405,7 @@ export function ItineraryBookModal({
                   Verifying Transaction...
                 </h3>
                 <p className="text-xs sm:text-sm text-stone-600 max-w-md mx-auto leading-relaxed">
-                  Payment captured! We are now generating your official Wanderphilia Tax Invoice and attaching it to your booking in Zoho CRM. Please do not refresh.
+                  Payment captured! We are now generating your official Wanderphilia Tax Invoice and updating your booking record in Zoho CRM. Please do not refresh.
                 </p>
               </div>
             </div>
@@ -335,7 +423,7 @@ export function ItineraryBookModal({
                   Payment Confirmed & Verified
                 </span>
                 <h3 className="text-2xl sm:text-3xl font-black text-stone-900">
-                  Booking Confirmed! ✈️
+                  {paymentSuccessData.balanceDue <= 0 ? '100% Tour Confirmed! ✈️' : 'Payment Received! ✈️'}
                 </h3>
                 <p className="text-xs sm:text-sm text-stone-600 max-w-md mx-auto">
                   Thank you, <b>{fullName}</b>! Your payment has been received and verified. Your hotel accommodations and chauffeur transport are now being secured.
@@ -352,9 +440,16 @@ export function ItineraryBookModal({
                 </div>
 
                 <div className="flex items-center justify-between border-b border-stone-100 pb-2.5">
-                  <span className="text-xs text-stone-500 font-bold uppercase">Amount Paid</span>
+                  <span className="text-xs text-stone-500 font-bold uppercase">Amount Paid Today</span>
                   <span className="text-lg font-black text-emerald-600">
                     ₹{paymentSuccessData.paidAmount.toLocaleString('en-IN')}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between border-b border-stone-100 pb-2.5">
+                  <span className="text-xs text-stone-500 font-bold uppercase">Total Paid To Date</span>
+                  <span className="text-sm font-black text-stone-900">
+                    ₹{paymentSuccessData.totalPaid.toLocaleString('en-IN')} / ₹{totalQuotationAmount.toLocaleString('en-IN')}
                   </span>
                 </div>
 
@@ -368,8 +463,8 @@ export function ItineraryBookModal({
                 ) : (
                   <div className="flex items-center justify-between border-b border-stone-100 pb-2.5">
                     <span className="text-xs text-stone-500 font-bold uppercase">Payment Status</span>
-                    <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
-                      100% Fully Cleared
+                    <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-300">
+                      ✓ 100% Fully Cleared
                     </span>
                   </div>
                 )}
@@ -410,95 +505,301 @@ export function ItineraryBookModal({
                 </span>
               </div>
             </div>
+          ) : isFullyPaid ? (
+            /* === FULLY PAID INITIAL VIEW === */
+            <div className="space-y-6 py-6 text-center">
+              <div className="w-16 h-16 rounded-full bg-emerald-100 border-4 border-emerald-500 text-emerald-600 flex items-center justify-center mx-auto shadow-md">
+                <Check className="w-9 h-9 stroke-[3]" />
+              </div>
+              <div className="space-y-1.5">
+                <span className="text-xs font-black uppercase tracking-widest text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+                  Booking 100% Cleared
+                </span>
+                <h3 className="text-2xl sm:text-3xl font-black text-stone-900">
+                  Tour Fully Paid & Confirmed! ✈️
+                </h3>
+                <p className="text-xs sm:text-sm text-stone-600 max-w-md mx-auto">
+                  The entire package quotation of <b>₹{totalQuotationAmount.toLocaleString('en-IN')}</b> has been cleared.
+                </p>
+              </div>
+
+              <div className="space-y-3 max-w-md mx-auto pt-2">
+                <Button
+                  onClick={handleDownloadInvoice}
+                  className="w-full h-12 rounded-xl bg-[#6E1E14] hover:bg-[#5C1810] text-white font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2 shadow-md cursor-pointer"
+                >
+                  <Download className="w-4 h-4" />
+                  <span>Download Latest Tax Invoice (PDF)</span>
+                </Button>
+                <a
+                  href={`https://wa.me/91${contactPhoneDisplay}?text=Hi%20Wanderphilia,%20my%20${destination}%20booking%20(${itineraryId})%20is%20fully%20paid.%20Please%20share%20further%20updates.`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full h-11 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-sm"
+                >
+                  <RiWhatsappLine className="w-4 h-4" />
+                  <span>Chat with Trip Coordinator</span>
+                </a>
+              </div>
+            </div>
           ) : (
             /* === 2. PAYMENT SELECTION & CHECKOUT FORM === */
             <div className="space-y-6">
 
-              {/* PAYMENT OPTION SELECTOR (2 Options: 50% Advance vs 100% Full) */}
+              {/* PAYMENT OPTION SELECTOR (DYNAMICALLY RENDERED BASED ON CURRENT STAGE) */}
               <div className="space-y-2.5">
                 <label className="text-xs font-extrabold uppercase tracking-wider text-[#6E1E14] flex items-center gap-1.5">
-                  <CreditCard className="w-3.5 h-3.5" /> Select Payment Type:
+                  <CreditCard className="w-3.5 h-3.5" /> Select Payment Option:
                 </label>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                  
-                  {/* OPTION 1: 50% ADVANCE / BOOKING AMOUNT */}
-                  <div
-                    onClick={() => setPaymentType('advance')}
-                    className={`p-4 rounded-2xl border-2 transition-all cursor-pointer relative flex flex-col justify-between ${
-                      paymentType === 'advance'
-                        ? 'border-[#6E1E14] bg-white shadow-md ring-2 ring-[#6E1E14]/20'
-                        : 'border-stone-200 bg-white/70 hover:border-stone-300 hover:bg-white'
-                    }`}
-                  >
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="space-y-0.5">
-                        <span className="bg-amber-100 text-amber-900 text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-wider">
+                {/* CASE 1: 0% PAID (FRESH LINK) -> 3 OPTIONS */}
+                {alreadyPaid <= 0 && (
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    
+                    {/* OPTION 1: 10% TOKEN AMOUNT */}
+                    <div
+                      onClick={() => setPaymentType('token')}
+                      className={`p-3.5 rounded-2xl border-2 transition-all cursor-pointer relative flex flex-col justify-between ${
+                        paymentType === 'token'
+                          ? 'border-[#6E1E14] bg-white shadow-md ring-2 ring-[#6E1E14]/20'
+                          : 'border-stone-200 bg-white/70 hover:border-stone-300 hover:bg-white'
+                      }`}
+                    >
+                      <div className="flex items-start justify-between gap-1.5">
+                        <span className="bg-amber-100 text-amber-900 text-[9px] font-black px-1.5 py-0.5 rounded uppercase tracking-wider">
+                          10% Token
+                        </span>
+                        <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 ${
+                          paymentType === 'token' ? 'border-[#6E1E14] bg-[#6E1E14]' : 'border-stone-300'
+                        }`}>
+                          {paymentType === 'token' && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                        </div>
+                      </div>
+
+                      <div className="pt-2">
+                        <h4 className="text-xs font-black text-stone-900">
+                          Token Amount
+                        </h4>
+                        <div className="text-lg sm:text-xl font-black text-[#6E1E14] pt-0.5">
+                          ₹{tenPercentAmount.toLocaleString('en-IN')}
+                        </div>
+                        <p className="text-[10px] text-stone-500 leading-tight pt-1">
+                          Fast token lock to secure your dates and proposal.
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* OPTION 2: 50% ADVANCE AMOUNT */}
+                    <div
+                      onClick={() => setPaymentType('advance')}
+                      className={`p-3.5 rounded-2xl border-2 transition-all cursor-pointer relative flex flex-col justify-between ${
+                        paymentType === 'advance'
+                          ? 'border-[#6E1E14] bg-white shadow-md ring-2 ring-[#6E1E14]/20'
+                          : 'border-stone-200 bg-white/70 hover:border-stone-300 hover:bg-white'
+                      }`}
+                    >
+                      <div className="flex items-start justify-between gap-1.5">
+                        <span className="bg-amber-400 text-stone-950 text-[9px] font-black px-1.5 py-0.5 rounded uppercase tracking-wider">
                           Recommended
                         </span>
-                        <h4 className="text-sm font-black text-stone-900 pt-1">
-                          Pay Advance Amount (50%)
+                        <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 ${
+                          paymentType === 'advance' ? 'border-[#6E1E14] bg-[#6E1E14]' : 'border-stone-300'
+                        }`}>
+                          {paymentType === 'advance' && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                        </div>
+                      </div>
+
+                      <div className="pt-2">
+                        <h4 className="text-xs font-black text-stone-900">
+                          50% Advance
                         </h4>
-                      </div>
-                      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 ${
-                        paymentType === 'advance' ? 'border-[#6E1E14] bg-[#6E1E14]' : 'border-stone-300'
-                      }`}>
-                        {paymentType === 'advance' && <div className="w-2 h-2 rounded-full bg-white" />}
+                        <div className="text-lg sm:text-xl font-black text-[#6E1E14] pt-0.5">
+                          ₹{fiftyPercentAmount.toLocaleString('en-IN')}
+                        </div>
+                        <p className="text-[10px] text-stone-500 leading-tight pt-1">
+                          Locks in luxury resort & private chauffeur.
+                        </p>
                       </div>
                     </div>
 
-                    <div className="pt-3 border-t border-stone-100 mt-3 space-y-1">
-                      <div className="flex items-baseline gap-1.5">
-                        <span className="text-xl sm:text-2xl font-black text-[#6E1E14]">
-                          ₹{advanceAmount.toLocaleString('en-IN')}
-                        </span>
-                        <span className="text-[10px] text-stone-500 font-bold uppercase">Payable Today</span>
-                      </div>
-                      <p className="text-[10px] text-stone-500 leading-tight">
-                        Secures hotels & chauffeur instantly. Balance ₹{advanceAmount.toLocaleString('en-IN')} due 15 days before travel.
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* OPTION 2: 100% FULL AMOUNT */}
-                  <div
-                    onClick={() => setPaymentType('full')}
-                    className={`p-4 rounded-2xl border-2 transition-all cursor-pointer relative flex flex-col justify-between ${
-                      paymentType === 'full'
-                        ? 'border-[#6E1E14] bg-white shadow-md ring-2 ring-[#6E1E14]/20'
-                        : 'border-stone-200 bg-white/70 hover:border-stone-300 hover:bg-white'
-                    }`}
-                  >
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="space-y-0.5">
-                        <span className="bg-emerald-100 text-emerald-900 text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-wider">
+                    {/* OPTION 3: 100% FULL PAYMENT */}
+                    <div
+                      onClick={() => setPaymentType('full')}
+                      className={`p-3.5 rounded-2xl border-2 transition-all cursor-pointer relative flex flex-col justify-between ${
+                        paymentType === 'full'
+                          ? 'border-[#6E1E14] bg-white shadow-md ring-2 ring-[#6E1E14]/20'
+                          : 'border-stone-200 bg-white/70 hover:border-stone-300 hover:bg-white'
+                      }`}
+                    >
+                      <div className="flex items-start justify-between gap-1.5">
+                        <span className="bg-emerald-100 text-emerald-900 text-[9px] font-black px-1.5 py-0.5 rounded uppercase tracking-wider">
                           100% Cleared
                         </span>
-                        <h4 className="text-sm font-black text-stone-900 pt-1">
-                          Pay Full Package Amount
-                        </h4>
+                        <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 ${
+                          paymentType === 'full' ? 'border-[#6E1E14] bg-[#6E1E14]' : 'border-stone-300'
+                        }`}>
+                          {paymentType === 'full' && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                        </div>
                       </div>
-                      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 ${
-                        paymentType === 'full' ? 'border-[#6E1E14] bg-[#6E1E14]' : 'border-stone-300'
-                      }`}>
-                        {paymentType === 'full' && <div className="w-2 h-2 rounded-full bg-white" />}
+
+                      <div className="pt-2">
+                        <h4 className="text-xs font-black text-stone-900">
+                          Full Payment
+                        </h4>
+                        <div className="text-lg sm:text-xl font-black text-stone-900 pt-0.5">
+                          ₹{totalQuotationAmount.toLocaleString('en-IN')}
+                        </div>
+                        <p className="text-[10px] text-stone-500 leading-tight pt-1">
+                          Zero pending dues, complete peace of mind.
+                        </p>
                       </div>
                     </div>
 
-                    <div className="pt-3 border-t border-stone-100 mt-3 space-y-1">
-                      <div className="flex items-baseline gap-1.5">
-                        <span className="text-xl sm:text-2xl font-black text-stone-900">
-                          ₹{totalQuotationAmount.toLocaleString('en-IN')}
-                        </span>
-                        <span className="text-[10px] text-emerald-700 font-bold uppercase">Full Payment</span>
+                  </div>
+                )}
+
+                {/* CASE 2: 10% TOKEN PAID -> SHOW 40% REMAINING ADVANCE & 90% REMAINING BALANCE */}
+                {isTokenPaid && (
+                  <div className="space-y-3">
+                    <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3 flex items-center justify-between text-xs text-emerald-900 font-bold">
+                      <div className="flex items-center gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                        <span>10% Token Amount Paid: <b>₹{alreadyPaid.toLocaleString('en-IN')}</b></span>
                       </div>
-                      <p className="text-[10px] text-stone-500 leading-tight">
-                        Complete peace of mind with 0 remaining balance. Full package invoice issued instantly.
-                      </p>
+                      <span className="text-[10px] bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded-full font-black">
+                        TOKEN CLEARED
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                      
+                      {/* OPTION A: REMAINING ADVANCE (40%) */}
+                      <div
+                        onClick={() => setPaymentType('remaining_advance')}
+                        className={`p-4 rounded-2xl border-2 transition-all cursor-pointer relative flex flex-col justify-between ${
+                          paymentType === 'remaining_advance'
+                            ? 'border-[#6E1E14] bg-white shadow-md ring-2 ring-[#6E1E14]/20'
+                            : 'border-stone-200 bg-white/70 hover:border-stone-300 hover:bg-white'
+                        }`}
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="space-y-0.5">
+                            <span className="bg-amber-400 text-stone-950 text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-wider">
+                              Next Step (Advance 50%)
+                            </span>
+                            <h4 className="text-sm font-black text-stone-900 pt-1">
+                              Pay Remaining Advance (40%)
+                            </h4>
+                          </div>
+                          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 ${
+                            paymentType === 'remaining_advance' ? 'border-[#6E1E14] bg-[#6E1E14]' : 'border-stone-300'
+                          }`}>
+                            {paymentType === 'remaining_advance' && <div className="w-2 h-2 rounded-full bg-white" />}
+                          </div>
+                        </div>
+
+                        <div className="pt-3 border-t border-stone-100 mt-3 space-y-1">
+                          <div className="flex items-baseline gap-1.5">
+                            <span className="text-xl sm:text-2xl font-black text-[#6E1E14]">
+                              ₹{remainingAdvanceAmount.toLocaleString('en-IN')}
+                            </span>
+                            <span className="text-[10px] text-stone-500 font-bold uppercase">Payable Today</span>
+                          </div>
+                          <p className="text-[10px] text-stone-500 leading-tight">
+                            Completes 50% booking advance. Balance ₹{fiftyPercentAmount.toLocaleString('en-IN')} due 15 days before travel.
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* OPTION B: REMAINING FULL BALANCE (90%) */}
+                      <div
+                        onClick={() => setPaymentType('remaining_balance')}
+                        className={`p-4 rounded-2xl border-2 transition-all cursor-pointer relative flex flex-col justify-between ${
+                          paymentType === 'remaining_balance'
+                            ? 'border-[#6E1E14] bg-white shadow-md ring-2 ring-[#6E1E14]/20'
+                            : 'border-stone-200 bg-white/70 hover:border-stone-300 hover:bg-white'
+                        }`}
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="space-y-0.5">
+                            <span className="bg-emerald-100 text-emerald-900 text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-wider">
+                              Clear All Dues
+                            </span>
+                            <h4 className="text-sm font-black text-stone-900 pt-1">
+                              Pay Remaining Balance (90%)
+                            </h4>
+                          </div>
+                          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 ${
+                            paymentType === 'remaining_balance' ? 'border-[#6E1E14] bg-[#6E1E14]' : 'border-stone-300'
+                          }`}>
+                            {paymentType === 'remaining_balance' && <div className="w-2 h-2 rounded-full bg-white" />}
+                          </div>
+                        </div>
+
+                        <div className="pt-3 border-t border-stone-100 mt-3 space-y-1">
+                          <div className="flex items-baseline gap-1.5">
+                            <span className="text-xl sm:text-2xl font-black text-stone-900">
+                              ₹{remainingBalanceAmount.toLocaleString('en-IN')}
+                            </span>
+                            <span className="text-[10px] text-emerald-700 font-bold uppercase">Full Settlement</span>
+                          </div>
+                          <p className="text-[10px] text-stone-500 leading-tight">
+                            Clears 100% tour quotation immediately with 0 balance pending.
+                          </p>
+                        </div>
+                      </div>
+
                     </div>
                   </div>
+                )}
 
-                </div>
+                {/* CASE 3: 50% ADVANCE PAID -> SHOW FINAL 50% REMAINING BALANCE */}
+                {isAdvancePaid && (
+                  <div className="space-y-3">
+                    <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3 flex items-center justify-between text-xs text-emerald-900 font-bold">
+                      <div className="flex items-center gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                        <span>50% Advance Paid: <b>₹{alreadyPaid.toLocaleString('en-IN')}</b></span>
+                      </div>
+                      <span className="text-[10px] bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded-full font-black">
+                        ADVANCE CLEARED
+                      </span>
+                    </div>
+
+                    {/* ONLY REMAINING 50% BALANCE CARD */}
+                    <div
+                      onClick={() => setPaymentType('remaining_balance')}
+                      className="p-4 rounded-2xl border-2 border-[#6E1E14] bg-white shadow-md ring-2 ring-[#6E1E14]/20 cursor-pointer relative flex flex-col justify-between"
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="space-y-0.5">
+                          <span className="bg-amber-400 text-stone-950 text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-wider">
+                            Final Payment
+                          </span>
+                          <h4 className="text-sm font-black text-stone-900 pt-1">
+                            Pay Remaining 50% Balance
+                          </h4>
+                        </div>
+                        <div className="w-5 h-5 rounded-full border-2 border-[#6E1E14] bg-[#6E1E14] flex items-center justify-center shrink-0 mt-0.5">
+                          <div className="w-2 h-2 rounded-full bg-white" />
+                        </div>
+                      </div>
+
+                      <div className="pt-3 border-t border-stone-100 mt-3 space-y-1">
+                        <div className="flex items-baseline gap-1.5">
+                          <span className="text-2xl sm:text-3xl font-black text-[#6E1E14]">
+                            ₹{remainingBalanceAmount.toLocaleString('en-IN')}
+                          </span>
+                          <span className="text-[10px] text-stone-500 font-bold uppercase">Final Balance</span>
+                        </div>
+                        <p className="text-[11px] text-stone-600 leading-tight">
+                          Due 15 days before departure. Clears all travel services and issues final invoice.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
               </div>
 
               {/* CONTACT DETAILS SECTION */}
@@ -587,26 +888,33 @@ export function ItineraryBookModal({
                   <span className="font-bold text-white">₹{totalQuotationAmount.toLocaleString('en-IN')}</span>
                 </div>
 
+                {alreadyPaid > 0 && (
+                  <div className="flex items-center justify-between text-xs border-b border-white/10 pb-2 text-emerald-300 font-bold">
+                    <span>Already Paid So Far:</span>
+                    <span>₹{alreadyPaid.toLocaleString('en-IN')}</span>
+                  </div>
+                )}
+
                 <div className="flex items-center justify-between">
                   <div className="space-y-0.5">
                     <span className="text-[10px] font-black uppercase tracking-wider text-amber-300">
-                      Amount Payable Today ({paymentType === 'advance' ? '50% Advance' : '100% Full'})
+                      Amount Payable Today ({installmentLabel})
                     </span>
                     <div className="text-2xl sm:text-3xl font-black text-white">
                       ₹{payableAmount.toLocaleString('en-IN')}
                     </div>
                   </div>
 
-                  {balanceDue > 0 ? (
+                  {postPaymentBalance > 0 ? (
                     <div className="text-right text-[11px] text-stone-300">
-                      <span>Remaining Balance:</span>
+                      <span>Remaining Balance After Payment:</span>
                       <div className="font-black text-amber-300 text-sm">
-                        ₹{balanceDue.toLocaleString('en-IN')}
+                        ₹{postPaymentBalance.toLocaleString('en-IN')}
                       </div>
                     </div>
                   ) : (
                     <div className="text-right text-[10px] font-bold text-emerald-400 bg-emerald-950/60 px-2.5 py-1 rounded-lg border border-emerald-800">
-                      ✓ No Balance Due
+                      ✓ 100% Cleared (0 Balance)
                     </div>
                   )}
                 </div>

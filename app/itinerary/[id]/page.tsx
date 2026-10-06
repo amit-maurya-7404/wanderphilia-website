@@ -299,6 +299,21 @@ export default async function ItineraryPage({ params }: PageProps) {
 
   const perKidPrice = itinerary.perKidPrice ?? itinerary.rawZohoData?.perKidPrice ?? (itinerary.rawZohoData?.Per_Kid_Price ? Number(itinerary.rawZohoData.Per_Kid_Price) : (itinerary.rawZohoData?.Per_Child_Price ? Number(itinerary.rawZohoData.Per_Child_Price) : undefined));
 
+  const advanceAmountPaid = Number(
+    itinerary.advanceAmountPaid ??
+    itinerary.leadDetails?.advanceAmountPaid ??
+    itinerary.rawZohoData?.Advance_Amount_Paid ??
+    itinerary.rawZohoData?.advanceAmountPaid ??
+    0
+  );
+
+  const balancePendingAmount = Number(
+    itinerary.balancePendingAmount ??
+    itinerary.leadDetails?.balancePendingAmount ??
+    itinerary.rawZohoData?.Balance_Pending_Amount ??
+    (finalQuotationAmount ? Math.max(0, finalQuotationAmount - advanceAmountPaid) : undefined)
+  );
+
   return (
     <div className={`${sansBody.className} min-h-screen bg-[#ECE8E1] text-stone-900 selection:bg-[#6E1E14] selection:text-white pb-16`}>
 
@@ -321,6 +336,8 @@ export default async function ItineraryPage({ params }: PageProps) {
             leadName={leadName}
             destination={destination}
             totalQuotationAmount={finalQuotationAmount || 0}
+            advanceAmountPaid={advanceAmountPaid}
+            balancePendingAmount={balancePendingAmount}
             email={itinerary.leadDetails?.email || itinerary.rawZohoData?.Email || ''}
             mobile={itinerary.leadDetails?.mobile || itinerary.leadDetails?.phone || itinerary.rawZohoData?.Mobile || itinerary.rawZohoData?.Phone || ''}
             zohoLeadId={itinerary.rawZohoData?.id ? String(itinerary.rawZohoData.id) : undefined}
@@ -708,6 +725,8 @@ export default async function ItineraryPage({ params }: PageProps) {
                   itineraryId={itinerary.id}
                   destination={destination}
                   totalQuotationAmount={finalQuotationAmount}
+                  advanceAmountPaid={advanceAmountPaid}
+                  balancePendingAmount={balancePendingAmount}
                   leadName={leadName}
                   email={itinerary.leadDetails?.email || itinerary.rawZohoData?.Email || ''}
                   mobile={itinerary.leadDetails?.mobile || itinerary.leadDetails?.phone || itinerary.rawZohoData?.Mobile || itinerary.rawZohoData?.Phone || ''}
@@ -914,6 +933,9 @@ export default async function ItineraryPage({ params }: PageProps) {
               itineraryId={itinerary.id}
               destination={destination}
               totalQuotationAmount={finalQuotationAmount || 0}
+              advanceAmountPaid={advanceAmountPaid}
+              balancePendingAmount={balancePendingAmount}
+              payments={itinerary.payments}
               leadName={leadName}
               email={itinerary.leadDetails?.email || itinerary.rawZohoData?.Email || ''}
               mobile={itinerary.leadDetails?.mobile || itinerary.leadDetails?.phone || itinerary.rawZohoData?.Mobile || itinerary.rawZohoData?.Phone || ''}
@@ -985,6 +1007,8 @@ export default async function ItineraryPage({ params }: PageProps) {
           itineraryId={itinerary.id}
           destination={destination}
           totalQuotationAmount={finalQuotationAmount}
+          advanceAmountPaid={advanceAmountPaid}
+          balancePendingAmount={balancePendingAmount}
           leadName={leadName}
           email={itinerary.leadDetails?.email || itinerary.rawZohoData?.Email || ''}
           mobile={itinerary.leadDetails?.mobile || itinerary.leadDetails?.phone || itinerary.rawZohoData?.Mobile || itinerary.rawZohoData?.Phone || ''}

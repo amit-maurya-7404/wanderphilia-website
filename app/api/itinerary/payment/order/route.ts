@@ -34,14 +34,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Fetch itinerary to verify quotation amount
+    // Fetch itinerary from DB or manual catalog to strictly verify quotation amount on server
     const db = await getDb();
     const collection = db.collection<ItineraryDocument>('itineraries');
     const itinerary = await collection.findOne({
       $or: [{ id: itineraryId }, { slug: itineraryId }]
     });
 
-    // Determine final quotation amount
+    // Determine final quotation amount from server records ONLY
     let totalQuotation = 0;
     if (itinerary) {
       totalQuotation = Number(
@@ -54,28 +54,52 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    if (totalQuotation === 0 && customAmount) {
-      totalQuotation = Number(customAmount);
+    if (totalQuotation === 0) {
+      const { getManualItinerary } = await import('@/data/manual-itineraries');
+      const manual = getManualItinerary(itineraryId);
+      if (manual && manual.finalQuotationAmount) {
+        totalQuotation = Number(manual.finalQuotationAmount);
+      }
     }
 
     if (totalQuotation <= 0) {
       return NextResponse.json(
-        { error: 'Quotation amount is not available for this itinerary.' },
+        { error: 'Valid quotation amount not found for this itinerary on server.' },
         { status: 400 }
       );
     }
 
+    // Fetch current paid amount from itinerary
+    const currentPaid = Number(
+      itinerary?.advanceAmountPaid ??
+      itinerary?.rawZohoData?.Advance_Amount_Paid ??
+      itinerary?.rawZohoData?.advanceAmountPaid ??
+      0
+    );
+
+    const tokenAmount = Math.round(totalQuotation * 0.1); // 10% Token
+    const fiftyPercentAmount = Math.round(totalQuotation * 0.5); // 50% Total Advance
+    const remainingAdvanceAmount = Math.max(0, fiftyPercentAmount - currentPaid); // 40% if 10% paid
+    const remainingBalanceAmount = Math.max(0, totalQuotation - currentPaid); // Remaining balance
+
     // Calculate amount to charge (in INR)
     let payableAmount = 0;
-    if (paymentType === 'advance') {
-      payableAmount = Math.round(totalQuotation * 0.5); // 50% Advance
+    if (paymentType === 'token') {
+      payableAmount = tokenAmount;
+    } else if (paymentType === 'advance') {
+      payableAmount = fiftyPercentAmount;
+    } else if (paymentType === 'remaining_advance') {
+      payableAmount = remainingAdvanceAmount;
+    } else if (paymentType === 'remaining_balance' || paymentType === 'balance') {
+      payableAmount = remainingBalanceAmount;
     } else {
-      payableAmount = totalQuotation; // 100% Full Payment
+      // 'full'
+      payableAmount = currentPaid > 0 ? remainingBalanceAmount : totalQuotation;
     }
 
     if (payableAmount < 1) {
       return NextResponse.json(
-        { error: 'Invalid payable amount calculated.' },
+        { error: 'No balance payable for this selected option or amount is already paid.' },
         { status: 400 }
       );
     }
@@ -124,6 +148,9 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    const totalPaidAfter = currentPaid + payableAmount;
+    const balanceDueAfter = Math.max(0, totalQuotation - totalPaidAfter);
+
     return NextResponse.json({
       success: true,
       orderId: order.id,
@@ -133,8 +160,11 @@ export async function POST(req: NextRequest) {
       keyId: razorpayKeyId,
       paymentType,
       totalQuotation,
+      currentPaid,
       payableAmount,
-      balanceDue: Math.max(0, totalQuotation - payableAmount),
+      totalPaidAfter,
+      balanceDue: balanceDueAfter,
+      balanceDueAfter,
       itineraryId,
     });
   } catch (error: any) {

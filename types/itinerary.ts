@@ -1,3 +1,19 @@
+export interface ItineraryPaymentRecord {
+  paymentId: string;
+  orderId?: string;
+  paymentType: 'token' | 'advance' | 'remaining_advance' | 'remaining_balance' | 'full' | string;
+  amount: number;
+  totalPaidAfter?: number;
+  balanceDueAfter?: number;
+  paidAt: string | Date;
+  invoiceNumber?: string;
+  invoiceFileName?: string;
+  status: 'paid' | 'verified' | 'failed';
+  customerName?: string;
+  customerEmail?: string;
+  customerMobile?: string;
+}
+
 export interface ItineraryLeadDetails {
   name?: string;
   firstName?: string;
@@ -25,6 +41,7 @@ export interface ItineraryLeadDetails {
   kids?: number;
   advanceAmountPaid?: number;
   balancePendingAmount?: number;
+  paymentStage?: 'unpaid' | 'token_paid' | 'advance_paid' | 'fully_paid';
   notes?: string;
 }
 
@@ -78,6 +95,8 @@ export interface ItineraryDocument {
   kids?: number;
   advanceAmountPaid?: number;
   balancePendingAmount?: number;
+  paymentStage?: 'unpaid' | 'token_paid' | 'advance_paid' | 'fully_paid';
+  payments?: ItineraryPaymentRecord[];
   dayPlans?: ItineraryDayPlan[];
   highlights?: string[];
   inclusions?: string[];
