@@ -202,23 +202,36 @@ export default async function ItineraryPage({ params }: PageProps) {
     routeCities.push(destination);
   }
 
-  // 6 Collage images from dummy pool
+  // 6 Collage images
+  const isRajasthanDest = destination.toLowerCase().includes('rajasthan') || (itinerary.id && itinerary.id.toLowerCase().includes('rajasthan')) || (itinerary.id && itinerary.id.toLowerCase().includes('4002b3f4'));
+  const isVietnamDest = destination.toLowerCase().includes('vietnam') || (itinerary.id && itinerary.id.toLowerCase().includes('vietnam'));
+
+  const defaultCollagePool = isRajasthanDest ? [
+    '/images/Rajasthan/rajasthan1.jpeg',
+    '/images/Rajasthan/rajasthan2.jpeg',
+    '/images/Rajasthan/rajasthan3.jpeg',
+    '/images/Rajasthan/rajasthan4.jpeg',
+    '/images/Rajasthan/rajasthan5.jpg',
+    '/images/Rajasthan/rajasthan6.jpg'
+  ] : (isVietnamDest ? [
+    '/images/vietnam-beauty.png',
+    '/images/vietnam-best.png',
+    '/images/vietnam-couple.png',
+    '/images/vietnam-dreamy.png',
+    '/images/vietnam-exotic.png',
+    '/images/vietnam-highlights.png'
+  ] : [
+    heroImage,
+    '/images/himachal.jpg',
+    '/images/himachal2.jpg',
+    '/images/himachal3.jpg',
+    '/images/himachal4.jpg',
+    '/images/himachal5.jpg'
+  ]);
+
   const collageImages = itinerary.galleryImages && itinerary.galleryImages.length >= 6
     ? itinerary.galleryImages.slice(0, 6)
-    : [
-      heroImage,
-      '/images/about_hero4.jpg',
-      '/images/about_hero5.jpg',
-      '/images/himachal.jpg',
-      '/images/kashmir.jpg',
-      '/images/bali.jpg',
-      '/images/bhutan1.jpg',
-      '/images/bhutan2.jpg',
-      '/images/singapore1.jpg',
-      '/images/gallery1.jpeg',
-      '/images/gallery4.jpg',
-      '/images/gallery11.jpg'
-    ];
+    : defaultCollagePool;
 
   const vehicleType = itinerary.vehicleType || itinerary.leadDetails?.vehicleType || itinerary.rawZohoData?.Vehicle_Type || 'Private AC Sedan / SUV';
   const roomCategory = itinerary.roomCategory || itinerary.leadDetails?.preferredRoomCategory || itinerary.rawZohoData?.Preferred_Room_Category || 'Luxury';

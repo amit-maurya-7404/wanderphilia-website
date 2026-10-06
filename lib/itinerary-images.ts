@@ -34,22 +34,58 @@ export const destinationLuxuryImages: Record<string, string[]> = {
     '/images/Rajasthan/rajasthan7.jpg'
   ],
   jodhpur: [
+    '/images/Rajasthan/rajasthan4.jpeg',
     '/images/Rajasthan/rajasthan1.jpeg',
     '/images/Rajasthan/rajasthan2.jpeg',
     '/images/Rajasthan/rajasthan3.jpeg',
-    '/images/Rajasthan/rajasthan4.jpeg'
+    '/images/Rajasthan/rajasthan5.jpg',
+    '/images/Rajasthan/rajasthan6.jpg',
+    '/images/Rajasthan/rajasthan7.jpg'
   ],
   jaipur: [
     '/images/Rajasthan/rajasthan1.jpeg',
     '/images/Rajasthan/rajasthan2.jpeg',
     '/images/Rajasthan/rajasthan3.jpeg',
-    '/images/Rajasthan/rajasthan4.jpeg'
+    '/images/Rajasthan/rajasthan4.jpeg',
+    '/images/Rajasthan/rajasthan5.jpg',
+    '/images/Rajasthan/rajasthan6.jpg',
+    '/images/Rajasthan/rajasthan7.jpg'
   ],
   jaisalmer: [
+    '/images/Rajasthan/rajasthan3.jpeg',
+    '/images/Rajasthan/rajasthan1.jpeg',
+    '/images/Rajasthan/rajasthan2.jpeg',
+    '/images/Rajasthan/rajasthan4.jpeg',
+    '/images/Rajasthan/rajasthan5.jpg',
+    '/images/Rajasthan/rajasthan6.jpg',
+    '/images/Rajasthan/rajasthan7.jpg'
+  ],
+  udaipur: [
+    '/images/Rajasthan/rajasthan5.jpg',
+    '/images/Rajasthan/rajasthan6.jpg',
     '/images/Rajasthan/rajasthan1.jpeg',
     '/images/Rajasthan/rajasthan2.jpeg',
     '/images/Rajasthan/rajasthan3.jpeg',
-    '/images/Rajasthan/rajasthan4.jpeg'
+    '/images/Rajasthan/rajasthan4.jpeg',
+    '/images/Rajasthan/rajasthan7.jpg'
+  ],
+  'mount abu': [
+    '/images/Rajasthan/rajasthan7.jpg',
+    '/images/Rajasthan/rajasthan1.jpeg',
+    '/images/Rajasthan/rajasthan2.jpeg',
+    '/images/Rajasthan/rajasthan3.jpeg',
+    '/images/Rajasthan/rajasthan4.jpeg',
+    '/images/Rajasthan/rajasthan5.jpg',
+    '/images/Rajasthan/rajasthan6.jpg'
+  ],
+  jawai: [
+    '/images/Rajasthan/rajasthan7.jpg',
+    '/images/Rajasthan/rajasthan3.jpeg',
+    '/images/Rajasthan/rajasthan4.jpeg',
+    '/images/Rajasthan/rajasthan1.jpeg',
+    '/images/Rajasthan/rajasthan2.jpeg',
+    '/images/Rajasthan/rajasthan5.jpg',
+    '/images/Rajasthan/rajasthan6.jpg'
   ],
   bhutan: [
     '/images/bhutan1.jpg',

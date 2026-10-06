@@ -107,16 +107,35 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
   const staySummary = itinerary.routeSummary || '2N Dharamshala | 2N Dalhousie | 1N Bir | 2N Manali | 2N Kasol';
 
   // 6 Collage images for Page 2
+  const isRajasthanDest = destination.toLowerCase().includes('rajasthan') || (itinerary.id && itinerary.id.toLowerCase().includes('rajasthan')) || (itinerary.id && itinerary.id.toLowerCase().includes('4002b3f4'));
+  const isVietnamDest = destination.toLowerCase().includes('vietnam') || (itinerary.id && itinerary.id.toLowerCase().includes('vietnam'));
+
+  const defaultCollage = isRajasthanDest ? [
+    '/images/Rajasthan/rajasthan1.jpeg',
+    '/images/Rajasthan/rajasthan2.jpeg',
+    '/images/Rajasthan/rajasthan3.jpeg',
+    '/images/Rajasthan/rajasthan4.jpeg',
+    '/images/Rajasthan/rajasthan5.jpg',
+    '/images/Rajasthan/rajasthan6.jpg'
+  ] : (isVietnamDest ? [
+    '/images/vietnam-beauty.png',
+    '/images/vietnam-best.png',
+    '/images/vietnam-couple.png',
+    '/images/vietnam-dreamy.png',
+    '/images/vietnam-exotic.png',
+    '/images/vietnam-highlights.png'
+  ] : [
+    heroImage,
+    '/images/himachal.jpg',
+    '/images/himachal2.jpg',
+    '/images/himachal3.jpg',
+    '/images/himachal4.jpg',
+    '/images/himachal5.jpg'
+  ]);
+
   const collageImages = itinerary.galleryImages && itinerary.galleryImages.length >= 6
     ? itinerary.galleryImages.slice(0, 6)
-    : [
-      heroImage,
-      '/images/himachal.jpg',
-      '/images/himachal2.jpg',
-      '/images/himachal3.jpg',
-      '/images/himachal4.jpg',
-      '/images/himachal5.jpg'
-    ];
+    : defaultCollage;
 
   // Payment stage calculations
   const alreadyPaid = Number(itinerary.advanceAmountPaid || 0);
