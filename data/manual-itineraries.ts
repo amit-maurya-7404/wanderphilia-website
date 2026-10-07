@@ -1644,13 +1644,13 @@ export const vietnamNaushadManualItinerary: ManualItinerary = {
 export const rajasthanRoyalEscapeManualItinerary: ManualItinerary = {
   id: 'rajasthan-royal-experience',
   slug: 'rajasthan-royal-experience',
-  title: 'Rajasthan Royal Experience – 9 Nights / 10 Days',
-  subtitle: 'Family Trip',
+  title: 'Royal Rajasthan Experience – 9 Nights / 10 Days',
+  subtitle: 'Wanderphilia Exclusive | Family Trip',
   duration: '9 Nights / 10 Days | 30 October – 8 November 2026',
   numNights: 9,
   numDays: 10,
   dates: '30 October – 8 November 2026',
-  route: 'Jaipur → Jaisalmer → Jodhpur → Jawai → Mount Abu → Udaipur',
+  route: 'Jaipur 2 Nights → Jaisalmer 1 Night → Jodhpur 2 Nights → Jawai 1 Night → Mount Abu 1 Night → Udaipur 2 Nights',
   routeSummary: '2N Jaipur | 1N Jaisalmer | 2N Jodhpur | 1N Jawai | 1N Mount Abu | 2N Udaipur',
   destination: 'Rajasthan',
   travelStyle: 'Family Trip',
@@ -1679,14 +1679,15 @@ export const rajasthanRoyalEscapeManualItinerary: ManualItinerary = {
     {
       day: 1,
       date: '30 Oct',
-      title: 'Day 1 – Jaipur | Kisan Bagh & Nahargarh Sunset Dining',
+      title: 'DAY 1 | Friday, 30th October – Arrival in Jaipur | Kisan Bagh & Nahargarh Sunset Dining',
       route: 'Jaipur Arrival',
-      intro: 'Arrive in Jaipur and begin your Rajasthan experience with a visit to Kisan Bagh, followed by an evening excursion to Nahargarh Fort.\n\nEnjoy a beautiful sunset experience at Nahargarh Fort, followed by dinner at RTDC Durg Cafeteria, offering panoramic views over Jaipur.',
+      intro: 'Arrive in Jaipur and meet your private driver. Proceed towards the city and begin your Rajasthan journey.\n\nVisit Kisan Bagh, a beautifully landscaped destination showcasing Rajasthan’s natural beauty, traditional landscape and serene surroundings.\n\nLater, proceed towards Nahargarh Fort, located on the Aravalli Hills and offering spectacular panoramic views of Jaipur.\n\nAs the sun sets, enjoy a memorable sunset experience overlooking the Pink City, followed by a special dining experience at RTDC Durg Cafeteria at Nahargarh Fort.\n\nLater, return to the hotel and enjoy a relaxed evening.',
       timeline: [
-        'Kisan Bagh',
-        'Nahargarh Fort',
-        'Jaipur sunset viewpoint',
-        'Sunset dining at RTDC Durg Cafeteria'
+        'Arrival in Jaipur & Private Chauffeur Meet',
+        'Kisan Bagh Landscape & Traditional Nature Walk',
+        'Nahargarh Fort Panoramic Viewpoint atop Aravalli Hills',
+        'Pink City Sunset Experience',
+        'Sunset Dining at RTDC Durg Cafeteria'
       ],
       stayLocation: 'Hotel Kalyan, Jaipur',
       image: '/images/Rajasthan/rajasthan1.jpeg',
@@ -1695,18 +1696,17 @@ export const rajasthanRoyalEscapeManualItinerary: ManualItinerary = {
     {
       day: 2,
       date: '31 Oct',
-      title: 'Day 2 – Jaipur | Heritage, Amber Fort & Luxury Boat Experience',
+      title: 'DAY 2 | Saturday, 31st October – Jaipur Heritage Tour | Hawa Mahal, City Palace, Amber Fort & Maota Lake Experience',
       route: 'Jaipur Heritage & Amber Fort',
-      intro: 'After breakfast, explore Jaipur\'s major heritage attractions.\n\nVisit the iconic Hawa Mahal, followed by City Palace and Amber Fort. Later, enjoy a relaxing luxury boat experience at Maota Lake, accompanied by a traditional Rajasthani folk dance performance.\n\nIn the evening, enjoy dinner and a Sound & Light Show experience at The Stag Rooftop Restaurant, overlooking the illuminated Amber Fort.',
+      intro: 'After breakfast, proceed for a full-day sightseeing tour of Jaipur, exploring the city’s rich royal heritage and architectural landmarks.\n\nBegin with a visit to Hawa Mahal, one of Jaipur’s most iconic landmarks, known for its distinctive honeycomb-style façade.\n\nContinue to City Palace, a magnificent royal complex showcasing Jaipur’s royal history, architecture and cultural heritage.\n\nLater, proceed towards Amber Fort, one of Rajasthan’s most impressive hill forts, known for its grand courtyards, palaces and beautiful artistic architecture.\n\nEnjoy a unique experience at Maota Lake with a luxury boat ride accompanied by a traditional Rajasthani folk dance experience.\n\nIn the evening, visit The Stag Rooftop Restaurant for a special dining experience overlooking Amber Fort, followed by a Sound & Light Show.\n\nLater, return to the hotel and relax.',
       timeline: [
-        'Hawa Mahal',
-        'City Palace',
-        'Amber Fort',
-        'Maota Lake',
-        'Luxury Boat Ride',
-        'Rajasthani Folk Dance',
-        'Dinner at The Stag Rooftop Restaurant',
-        'Sound & Light Show'
+        'Hawa Mahal Honeycomb Façade',
+        'City Palace Royal Heritage Complex',
+        'Amber Fort Grand Courtyards & Palaces',
+        'Maota Lake Luxury Boat Ride',
+        'Traditional Rajasthani Folk Dance Performance',
+        'Special Dining at The Stag Rooftop Restaurant',
+        'Sound & Light Show overlooking Amber Fort'
       ],
       stayLocation: 'Hotel Kalyan, Jaipur',
       image: '/images/Rajasthan/rajasthan2.jpeg',
@@ -1715,16 +1715,16 @@ export const rajasthanRoyalEscapeManualItinerary: ManualItinerary = {
     {
       day: 3,
       date: '01 Nov',
-      title: 'Day 3 – Jaipur → Jaisalmer | Thar Desert Camp Experience',
+      title: 'DAY 3 | Sunday, 1st November – Jaipur → Jaisalmer | Thar Desert Camp, Camel Safari & Cultural Evening',
       route: 'Jaipur → Jaisalmer',
-      intro: 'After breakfast, proceed towards Jaisalmer.\n\nUpon arrival, check in to your desert camp at Sam Sand Dunes. Experience the magic of the Thar Desert with a traditional camel safari, followed by sunset over the dunes.\n\nIn the evening, enjoy a traditional Rajasthani dinner with cultural folk performances, including music and dance around the desert camp.',
+      intro: 'After breakfast, check out from the hotel and proceed towards Jaisalmer, travelling through the scenic landscapes of Rajasthan and the Thar Desert.\n\nOn arrival in Jaisalmer, proceed towards Sam Sand Dunes and check in to your desert camp.\n\nIn the evening, enjoy a memorable camel safari across the golden sand dunes and experience the spectacular sunset over the Thar Desert.\n\nLater, enjoy a traditional Rajasthani cultural evening featuring folk music and dance performances.\n\nExperience the authentic desert atmosphere with traditional Rajasthani dinner and cultural entertainment under the desert sky.',
       timeline: [
-        'Transfer to Jaisalmer',
-        'Sam Sand Dunes',
-        'Camel Safari',
-        'Desert Sunset',
-        'Rajasthani Dinner',
-        'Cultural Folk Dance & Music'
+        'Scenic Drive towards Jaisalmer & Thar Desert',
+        'Sam Sand Dunes & Desert Camp Check-in',
+        'Camel Safari across Golden Sand Dunes',
+        'Spectacular Sunset over Thar Desert',
+        'Rajasthani Folk Music & Dance Performance',
+        'Traditional Rajasthani Dinner under Desert Sky'
       ],
       stayLocation: 'Lakhmana Dessert Camp, Jaisalmer',
       image: '/images/Rajasthan/rajasthan3.jpeg',
@@ -1733,15 +1733,16 @@ export const rajasthanRoyalEscapeManualItinerary: ManualItinerary = {
     {
       day: 4,
       date: '02 Nov',
-      title: 'Day 4 – Jaisalmer → Jodhpur | Golden City Sightseeing',
+      title: 'DAY 4 | Monday, 2nd November – Jaisalmer Heritage Tour → Jodhpur | Golden Fort, Havelis, Bada Bagh & Gadisar Lake',
       route: 'Jaisalmer → Jodhpur',
-      intro: 'After breakfast, check out from the desert camp and proceed towards Jaisalmer City.\n\nExplore the magnificent Jaisalmer Fort, followed by Patwon Ki Haveli, Bada Bagh and Gadisar Lake.\n\nLater, proceed towards Jodhpur, also known as the Blue City.',
+      intro: 'After breakfast, check out from the desert camp and proceed towards Jaisalmer city.\n\nBegin your sightseeing with a visit to the magnificent Jaisalmer Fort, also known as the Golden Fort, rising dramatically from the golden desert landscape.\n\nContinue to Patwon Ki Haveli, one of Jaisalmer’s finest examples of traditional Rajasthani architecture and craftsmanship.\n\nLater, visit Bada Bagh, famous for its impressive royal cenotaphs set against the desert landscape.\n\nProceed towards Gadisar Lake, a historic water reservoir surrounded by temples, shrines and traditional architecture.\n\nAfter completing the sightseeing, proceed towards Jodhpur, the famous Blue City of Rajasthan.\n\nOn arrival, check in to your hotel and relax after the journey.',
       timeline: [
-        'Jaisalmer Fort',
-        'Patwon Ki Haveli',
-        'Bada Bagh',
-        'Gadisar Lake',
-        'Jaisalmer → Jodhpur transfer'
+        'Jaisalmer Fort (Golden Fort) Exploration',
+        'Patwon Ki Haveli Architecture & Craftsmanship',
+        'Bada Bagh Royal Cenotaphs',
+        'Gadisar Lake Historic Reservoirs & Temples',
+        'Transfer: Jaisalmer → Jodhpur (Blue City)',
+        'Check-in & Relaxation in Jodhpur'
       ],
       stayLocation: 'Krishna Prakash Heritage Haveli, Jodhpur',
       image: '/images/Rajasthan/rajasthan4.jpeg',
@@ -1750,15 +1751,15 @@ export const rajasthanRoyalEscapeManualItinerary: ManualItinerary = {
     {
       day: 5,
       date: '03 Nov',
-      title: 'Day 5 – Jodhpur | Mehrangarh Fort & Blue City Sunset',
+      title: 'DAY 5 | Tuesday, 3rd November – Jodhpur Heritage Tour | Mehrangarh Fort, Blue City & Panchatiya Hills Sunset',
       route: 'Jodhpur Sightseeing',
-      intro: 'After breakfast, begin your Jodhpur sightseeing.\n\nVisit the magnificent Mehrangarh Fort & Museum, one of Rajasthan\'s most impressive hilltop forts. Continue with a Blue City Tour, exploring the traditional blue-painted lanes and neighbourhoods of Jodhpur.\n\nIn the evening, head to Panchatiya Hills for a beautiful sunset experience overlooking the Blue City.',
+      intro: 'After breakfast, proceed for a full-day sightseeing tour of Jodhpur, exploring the city’s rich royal heritage and famous Blue City landscapes.\n\nVisit the magnificent Mehrangarh Fort & Museum, one of Rajasthan’s most iconic forts, offering spectacular views of the historic Blue City.\n\nContinue with a Blue City Tour, exploring the traditional blue-painted houses, narrow lanes and historic neighbourhoods of Jodhpur.\n\nLater, proceed towards Panchatiya Hills for a beautiful sunset experience overlooking the Blue City.\n\nEnjoy the evening atmosphere and panoramic views before returning to the hotel.',
       timeline: [
-        'Mehrangarh Fort & Museum',
-        'Blue City Tour',
-        'Traditional Jodhpur lanes',
-        'Panchatiya Hills',
-        'Sunset Experience'
+        'Mehrangarh Fort & Royal Museum',
+        'Historic Blue City Walking Tour',
+        'Traditional Blue-Painted Lanes of Jodhpur',
+        'Panchatiya Hills Viewpoint',
+        'Panoramic Sunset over Blue City'
       ],
       stayLocation: 'Krishna Prakash Heritage Haveli, Jodhpur',
       image: '/images/Rajasthan/rajasthan4.jpeg',
@@ -1767,15 +1768,16 @@ export const rajasthanRoyalEscapeManualItinerary: ManualItinerary = {
     {
       day: 6,
       date: '04 Nov',
-      title: 'Day 6 – Jodhpur | Umaid Bhawan → Jawai Wildlife Experience',
+      title: 'DAY 6 | Wednesday, 4th November – Jodhpur → Jawai | Umaid Bhawan Palace, Jaswant Thada & Wildlife Safari',
       route: 'Jodhpur → Jawai',
-      intro: 'After breakfast, visit Umaid Bhawan Palace and Jaswant Thada.\n\nLater, check out and proceed towards Jawai.\n\nUpon arrival, check in to your Jawai accommodation and relax.\n\nIn the evening, embark on a Jawai Wildlife Safari, exploring the unique leopard habitat around the Jawai hills and granite landscapes. Enjoy a spectacular sunset safari experience.',
+      intro: 'After breakfast, proceed for a visit to Umaid Bhawan Palace, one of India’s grandest palace residences and an important symbol of Jodhpur’s royal heritage.\n\nContinue to Jaswant Thada, an elegant white-marble memorial surrounded by peaceful gardens and scenic surroundings.\n\nLater, check out from the hotel and proceed towards Jawai.\n\nOn arrival, check in to your Jawai accommodation and relax.\n\nIn the evening, embark on an exciting Jawai Wildlife Safari, exploring the unique granite landscape and natural habitat of the famous Jawai leopards.\n\nEnjoy a spectacular sunset wildlife experience amidst the Jawai hills before returning to the accommodation.',
       timeline: [
-        'Umaid Bhawan Palace',
-        'Jaswant Thada',
-        'Jodhpur → Jawai transfer',
-        'Jawai Wildlife Safari',
-        'Sunset Experience'
+        'Umaid Bhawan Palace Royal Residence',
+        'Jaswant Thada White-Marble Memorial',
+        'Transfer: Jodhpur → Jawai Granite Region',
+        'Check-in & Relaxation at Thar Resort',
+        '4x4 Open Gypsy Jawai Leopard Safari',
+        'Spectacular Sunset Safari in Granite Hills'
       ],
       stayLocation: 'Thar Resort, Jawai',
       image: '/images/Rajasthan/rajasthan7.jpg',
@@ -1784,15 +1786,15 @@ export const rajasthanRoyalEscapeManualItinerary: ManualItinerary = {
     {
       day: 7,
       date: '05 Nov',
-      title: 'Day 7 – Jawai → Mount Abu | Hills, Temples & Sunset Boating',
+      title: 'DAY 7 | Thursday, 5th November – Jawai → Mount Abu | Dilwara Temples, Market & Nakki Lake Sunset',
       route: 'Jawai → Mount Abu',
-      intro: 'After breakfast, check out from Jawai and proceed towards Mount Abu, Rajasthan\'s only hill station.\n\nUpon arrival, check in to the hotel and relax.\n\nLater, explore Dilwara Temples and stroll through Mount Abu Market.\n\nIn the evening, enjoy a boat ride at Nakki Lake with a beautiful sunset experience.',
+      intro: 'After breakfast, check out from your Jawai accommodation and proceed towards Mount Abu, Rajasthan’s only hill station.\n\nOn arrival, check in to the hotel and relax.\n\nLater, visit the magnificent Dilwara Temples, renowned for their intricate marble carvings and extraordinary craftsmanship.\n\nExplore Mount Abu Market and enjoy some leisure time exploring the local surroundings.\n\nIn the evening, proceed towards Nakki Lake for a relaxing boat ride and beautiful sunset experience.\n\nLater, return to the hotel and enjoy a relaxed evening.',
       timeline: [
-        'Jawai → Mount Abu transfer',
-        'Dilwara Temples',
-        'Mount Abu Market',
-        'Nakki Lake',
-        'Sunset Boat Ride'
+        'Drive: Jawai → Mount Abu Hill Station',
+        'Check-in at Hotel Rock Regency',
+        'Dilwara Temples Exquisite Marble Carvings',
+        'Mount Abu Market Leisure Stroll',
+        'Nakki Lake Relaxing Sunset Boat Ride'
       ],
       stayLocation: 'Hotel Rock Regency, Mount Abu',
       image: '/images/Rajasthan/rajasthan7.jpg',
@@ -1801,15 +1803,15 @@ export const rajasthanRoyalEscapeManualItinerary: ManualItinerary = {
     {
       day: 8,
       date: '06 Nov',
-      title: 'Day 8 – Mount Abu → Kumbhalgarh → Udaipur | Fort & Lake Experience',
+      title: 'DAY 8 | Friday, 6th November – Mount Abu → Kumbhalgarh → Udaipur | Fort & Lake Pichola Experience',
       route: 'Mount Abu → Kumbhalgarh → Udaipur',
-      intro: 'After breakfast, check out and proceed towards Udaipur.\n\nEn route, visit the magnificent Kumbhalgarh Fort, famous for its massive fortifications and scenic Aravalli surroundings.\n\nContinue towards Udaipur and check in to your hotel. Relax before heading out for an evening Lake Pichola Boat Ride.\n\nDuring the boat ride, enjoy views of Jag Mandir Palace and Udaipur\'s iconic lakefront.',
+      intro: 'After breakfast, check out from the hotel and proceed towards Udaipur.\n\nEn route, visit the magnificent Kumbhalgarh Fort, famous for its massive fortifications, historic architecture and spectacular Aravalli surroundings.\n\nContinue the journey towards Udaipur, the beautiful City of Lakes.\n\nOn arrival, check in to your hotel and relax.\n\nIn the evening, enjoy a memorable Lake Pichola Boat Ride, surrounded by Udaipur’s beautiful palaces, historic ghats and scenic lake views.\n\nDuring the boat ride, enjoy views of the magnificent Jag Mandir Palace, located on an island in Lake Pichola.\n\nLater, return to the hotel and relax.',
       timeline: [
-        'Mount Abu → Kumbhalgarh → Udaipur',
-        'Kumbhalgarh Fort',
-        'Hotel check-in & relaxation',
-        'Lake Pichola Boat Ride',
-        'Jag Mandir Palace view/visit'
+        'En-route Visit to Kumbhalgarh Fort & Great Wall',
+        'Scenic Drive to Udaipur (City of Lakes)',
+        'Check-in at Mewar Haveli & Relaxation',
+        'Sunset Boat Ride on Lake Pichola',
+        'Views of Jag Mandir Palace & Historic Ghats'
       ],
       stayLocation: 'Mewar haveli, Udaipur',
       image: '/images/Rajasthan/rajasthan5.jpg',
@@ -1818,15 +1820,15 @@ export const rajasthanRoyalEscapeManualItinerary: ManualItinerary = {
     {
       day: 9,
       date: '07 Nov',
-      title: 'Day 9 – Udaipur | Royal Heritage & Monsoon Palace',
+      title: 'DAY 9 | Saturday, 7th November – Udaipur Heritage Tour | City Palace, Saheliyon Ki Bari, Monsoon Palace & Shilpgram',
       route: 'Udaipur Sightseeing',
-      intro: 'After breakfast, explore the beautiful attractions of Udaipur.\n\nVisit the grand City Palace, followed by Saheliyon Ki Bari.\n\nLater, proceed to Sajjangarh Monsoon Palace, located on a hilltop overlooking Udaipur and its surrounding lakes.\n\nEnd the day at Shilpgram, a rural arts and crafts complex showcasing Rajasthan\'s traditional culture and handicrafts.',
+      intro: 'After breakfast, proceed for a full-day sightseeing tour of Udaipur.\n\nVisit the magnificent City Palace, one of Rajasthan’s most impressive royal complexes, overlooking the beautiful Lake Pichola.\n\nContinue to Saheliyon Ki Bari, a historic garden known for its fountains, marble structures, lush greenery and peaceful surroundings.\n\nLater, proceed towards Sajjangarh Monsoon Palace, dramatically positioned on a hilltop overlooking Udaipur and its surrounding lakes.\n\nEnd the day with a visit to Shilpgram, a cultural village showcasing traditional Rajasthani arts, crafts, rural life and cultural heritage.\n\nLater, return to the hotel and enjoy a relaxed evening.',
       timeline: [
-        'City Palace',
-        'Saheliyon Ki Bari',
-        'Sajjangarh Monsoon Palace',
-        'Shilpgram',
-        'Udaipur cultural experience'
+        'City Palace Grand Royal Complex',
+        'Saheliyon Ki Bari Historic Fountains & Gardens',
+        'Sajjangarh Monsoon Palace Hilltop Panorama',
+        'Shilpgram Traditional Arts & Rural Crafts Village',
+        'Relaxed Heritage Evening at Mewar Haveli'
       ],
       stayLocation: 'Mewar haveli, Udaipur',
       image: '/images/Rajasthan/rajasthan6.jpg',
@@ -1835,14 +1837,14 @@ export const rajasthanRoyalEscapeManualItinerary: ManualItinerary = {
     {
       day: 10,
       date: '08 Nov',
-      title: 'Day 10 – Udaipur | Temple Visit & Departure',
+      title: 'DAY 10 | Sunday, 8th November – Udaipur | Jagdish Temple → Departure',
       route: 'Udaipur Departure',
-      intro: 'After breakfast, visit the historic Jagdish Temple, one of Udaipur\'s most important temples.\n\nLater, check out from the hotel and proceed for your departure transfer to Udaipur Railway Station / Udaipur Airport.\n\nTrip Ends with beautiful memories of Rajasthan. 🧡',
+      intro: 'After breakfast, visit the historic Jagdish Temple, one of Udaipur’s most important temples and a fine example of Indo-Aryan architecture.\n\nLater, return to the hotel and complete the check-out formalities.\n\nAfter check-out, proceed towards Udaipur Railway Station / Airport for your onward journey.\n\nTour Ends with beautiful memories of Royal Rajasthan. 🧡',
       timeline: [
-        'Jagdish Temple',
-        'Hotel checkout',
-        'Transfer to Udaipur Railway Station / Airport',
-        'Trip Ends with beautiful memories of Rajasthan 🧡'
+        'Jagdish Temple Indo-Aryan Architectural Visit',
+        'Hotel Check-out Formalities',
+        'Departure Transfer to Udaipur Railway Station / Airport',
+        'Tour Ends with beautiful memories of Royal Rajasthan 🧡'
       ],
       stayLocation: 'Departure Transfer',
       image: '/images/Rajasthan/rajasthan5.jpg',
@@ -1888,7 +1890,293 @@ export const rajasthanRoyalEscapeManualItinerary: ManualItinerary = {
   perAdultPrice: 46340
 };
 
+export const winterSpitiYatinManualItinerary: ManualItinerary = {
+  id: 'spiti-yatin',
+  slug: 'winter-spiti-kinnaur-yatin',
+  title: 'Wanderphilia Signature Winter Spiti Specially Curated for Mr Yatin Sir & Family',
+  subtitle: 'Signature Winter Spiti & Kinnaur Himalayan Expedition',
+  duration: '10 Nights / 11 Days | 20th – 30th November',
+  numNights: 10,
+  numDays: 11,
+  dates: '20th – 30th November',
+  route: 'Chandigarh → Narkanda → Sangla / Chitkul → Nako → Tabo → Kaza → Kalpa → Shimla → Chandigarh',
+  routeSummary: '1N Narkanda | 2N Sangla / Chitkul | 2N Tabo | 2N Kaza | 2N Kalpa | 1N Shimla',
+  destination: 'Spiti Valley & Kinnaur',
+  travelStyle: 'Signature Winter Expedition',
+  tripType: 'Specially Curated Family Tour',
+  leadName: 'Mr Yatin Sir & Family',
+  vehicleType: 'Private Toyota Innova Crysta',
+  mealPlan: 'Daily Breakfast & Dinner at the respective hotels (MAP Plan) + Curated Local Himachali Food Experience',
+  heroImage: '/images/spiti-valley.jpg',
+  galleryImages: [
+    '/images/spiti-valley.jpg',
+    '/images/spiti1.JPG',
+    '/images/spiti2.JPG',
+    '/images/spiti3.jpg',
+    '/images/spiti5.JPG',
+    '/images/himachal.jpg',
+    '/images/himachal2.jpg',
+    '/images/himachal3.jpg',
+    '/images/himachal7.jpg',
+    '/images/himachal8.jpg',
+    '/images/himachal9.jpg'
+  ],
+  accommodations: [
+    { city: 'Narkanda', nights: 1, hotelName: 'Snow Valley Resort / Similar', roomCategory: 'Deluxe Mountain View Room' },
+    { city: 'Sangla / Chitkul', nights: 2, hotelName: 'Hotel Mount Kailash / Banjara Valley Retreat / Similar', roomCategory: 'Valley View Deluxe Cottage / Room' },
+    { city: 'Tabo', nights: 2, hotelName: 'Maitreya Mud House / Similar', roomCategory: 'Traditional Deluxe Mud Room' },
+    { city: 'Kaza', nights: 2, hotelName: 'Baspa Mud House / Spiti Village Resort Mud House / Similar', roomCategory: 'Super Deluxe Heated Room' },
+    { city: 'Kalpa', nights: 2, hotelName: 'Kinner Villa / Similar', roomCategory: 'Kinner Kailash View Deluxe Room' },
+    { city: 'Shimla', nights: 1, hotelName: 'Snow Valley Heights / Similar', roomCategory: 'Luxury Valley View Room' }
+  ],
+  dayPlans: [
+    {
+      day: 1,
+      date: '20 Nov',
+      title: 'Day 1 | 20 Nov Chandigarh → Narkanda',
+      route: 'Chandigarh → Narkanda',
+      durationNote: 'Approx. 5–6 hrs | 175 km',
+      timeline: [
+        'Scenic drive from Chandigarh towards Narkanda, surrounded by cedar forests & mountain landscapes',
+        'Arrive at your mountain retreat in Narkanda and check-in',
+        'Spend the evening slowing down with a warm cup of chai and Himalayan sunset views',
+        'Cosy evening bonfire under the mountains',
+        'Warm and relaxed mountain dinner'
+      ],
+      stayLocation: 'Narkanda (Snow Valley Resort / Similar)',
+      image: '/images/himachal.jpg',
+      meals: 'Dinner'
+    },
+    {
+      day: 2,
+      date: '21 Nov',
+      title: 'Day 2 | 21 Nov Narkanda → Sangla / Chitkul',
+      route: 'Narkanda → Sangla / Chitkul',
+      durationNote: 'Approx. 6–7 hrs | 160 km',
+      timeline: [
+        'Journey deeper into Kinnaur as the landscape transforms into dramatic valleys',
+        'Scenic drive through traditional Himalayan mountain villages',
+        'Arrive in the beautiful Baspa Valley and settle into your stay',
+        'Spend the evening at leisure, enjoying valley views and peaceful surroundings',
+        'Warm local Kinnauri dinner'
+      ],
+      stayLocation: 'Sangla / Chitkul (Hotel Mount Kailash / Banjara Valley Retreat / Similar)',
+      image: '/images/himachal2.jpg',
+      meals: 'Breakfast & Dinner'
+    },
+    {
+      day: 3,
+      date: '22 Nov',
+      title: 'Day 3 | 22 Nov Chitkul & Baspa Valley',
+      route: 'Chitkul & Baspa Valley',
+      durationNote: 'Leisure Day Excursion',
+      timeline: [
+        'Explore Chitkul, one of Kinnaur’s most beautiful and remote villages',
+        'Take a slow village walk and discover traditional wooden homes',
+        'Visit the local village temple and interact with locals',
+        'Enjoy the magnificent Baspa Valley and Baspa River surroundings',
+        'Return to your stay for a relaxed afternoon and evening'
+      ],
+      stayLocation: 'Sangla / Chitkul (Hotel Mount Kailash / Banjara Valley Retreat / Similar)',
+      image: '/images/himachal3.jpg',
+      meals: 'Breakfast & Dinner'
+    },
+    {
+      day: 4,
+      date: '23 Nov',
+      title: 'Day 4 | 23 Nov Sangla / Chitkul → Nako → Tabo',
+      route: 'Sangla / Chitkul → Nako → Tabo',
+      durationNote: 'Approx. 6–7 hrs | 150 km',
+      timeline: [
+        'Leave the lush valleys of Kinnaur behind as the landscape transforms into the cold desert',
+        'Scenic stop at Nako with time to explore the village',
+        'Visit the tranquil and sacred Nako Lake',
+        'Enjoy a warm local lunch in Nako',
+        'Continue towards Tabo through dramatic Trans-Himalayan landscapes',
+        'Arrive in Tabo and settle into your mountain stay'
+      ],
+      stayLocation: 'Tabo (Maitreya Mud House / Similar)',
+      image: '/images/spiti-valley.jpg',
+      meals: 'Breakfast & Dinner'
+    },
+    {
+      day: 5,
+      date: '24 Nov',
+      title: 'Day 5 | 24 Nov Tabo — A Day in Ancient Spiti',
+      route: 'Tabo & Heritage Valley',
+      durationNote: 'Unrushed Cultural Day',
+      timeline: [
+        'Wake up to a peaceful Himalayan morning in Tabo',
+        'Spend the morning exploring ancient Tabo Monastery and its historical complex',
+        'Discover ancient temples, Buddhist artwork and peaceful surroundings',
+        'Take a slow walk through traditional Tabo village',
+        'Deliberately relaxed afternoon enjoying the stay and surrounding mountains',
+        'Warm local dinner'
+      ],
+      stayLocation: 'Tabo (Maitreya Mud House / Similar)',
+      image: '/images/spiti1.JPG',
+      meals: 'Breakfast & Dinner'
+    },
+    {
+      day: 6,
+      date: '25 Nov',
+      title: 'Day 6 | 25 Nov Tabo → Dhankar → Kaza',
+      route: 'Tabo → Dhankar → Kaza',
+      durationNote: 'Approx. 3–4 hrs | 65 km',
+      timeline: [
+        'After breakfast, begin your journey towards spectacular Dhankar',
+        'Explore the ancient monastery dramatically perched above the Spiti Valley',
+        'Enjoy magnificent panoramic views across the mountains and river valley',
+        'Continue towards Kaza travelling through some of Spiti’s most dramatic landscapes',
+        'Arrive in Kaza and enjoy a relaxed evening'
+      ],
+      stayLocation: 'Kaza (Baspa Mud House / Spiti Village Resort Mud House / Similar)',
+      image: '/images/spiti3.jpg',
+      meals: 'Breakfast & Dinner'
+    },
+    {
+      day: 7,
+      date: '26 Nov',
+      title: 'Day 7 | 26 Nov Kaza → Key → Kibber → Chicham → Kaza',
+      route: 'Kaza → Key → Kibber → Chicham → Kaza',
+      durationNote: 'Full Day Spiti Sightseeing Circuit',
+      timeline: [
+        'Begin your day with Key Monastery, one of Spiti’s most iconic landmarks',
+        'Continue towards Kibber and experience remote Spitian mountain village life',
+        'Visit Chicham and cross the spectacular suspension bridge enjoying vast vistas',
+        'Optional extension to Langza, Hikkim & Komic (subject to weather, road and daylight conditions)',
+        'Return to Kaza for a warm local dinner and relaxed evening'
+      ],
+      stayLocation: 'Kaza (Baspa Mud House / Spiti Village Resort Mud House / Similar)',
+      image: '/images/spiti2.JPG',
+      meals: 'Breakfast & Dinner'
+    },
+    {
+      day: 8,
+      date: '27 Nov',
+      title: 'Day 8 | 27 Nov Kaza → Kalpa',
+      route: 'Kaza → Kalpa',
+      durationNote: 'Approx. 6–7 hrs | 200 km',
+      timeline: [
+        'Begin the beautiful descent from Spiti towards Kinnaur',
+        'Watch the landscape gradually transform from stark cold desert to softer Himalayan valleys',
+        'Arrive in Kalpa and check-in to your stay',
+        'Spend the evening unwinding with magnificent Kinner Kailash views',
+        'Enjoy sunset from your stay followed by a relaxed dinner'
+      ],
+      stayLocation: 'Kalpa (Kinner Villa / Similar)',
+      image: '/images/himachal7.jpg',
+      meals: 'Breakfast & Dinner'
+    },
+    {
+      day: 9,
+      date: '28 Nov',
+      title: 'Day 9 | 28 Nov Kalpa — Slow Kinnaur Experience',
+      route: 'Kalpa & Roghi Village',
+      durationNote: 'Leisurely Kinnauri Immersion',
+      timeline: [
+        'Leisurely Himalayan morning and breakfast overlooking the mountains',
+        'Explore the charming lanes of Kalpa and traditional Kinnauri architecture',
+        'Visit Roghi Village for beautiful mountain views and photography (subject to weather/road conditions)',
+        'Return to your stay for a relaxed afternoon embracing the art of doing nothing',
+        'Mountain sunset, cosy bonfire and special local dinner'
+      ],
+      stayLocation: 'Kalpa (Kinner Villa / Similar)',
+      image: '/images/himachal8.jpg',
+      meals: 'Breakfast & Dinner'
+    },
+    {
+      day: 10,
+      date: '29 Nov',
+      title: 'Day 10 | 29 Nov Kalpa → Shimla',
+      route: 'Kalpa → Shimla',
+      durationNote: 'Approx. 6–7 hrs | 220 km',
+      timeline: [
+        'After breakfast, journey towards Shimla through the changing landscapes of Himachal',
+        'Arrive in Shimla and check-in to your hotel',
+        'Spend your final evening with a leisurely walk around The Ridge & Mall Road',
+        'Stop at a cosy café and enjoy bakery treats',
+        'End the journey with a beautiful farewell dinner'
+      ],
+      stayLocation: 'Shimla (Snow Valley Heights / Similar)',
+      image: '/images/himachal9.jpg',
+      meals: 'Breakfast & Dinner'
+    },
+    {
+      day: 11,
+      date: '30 Nov',
+      title: 'Day 11 | 30 Nov Shimla → Chandigarh & Departure',
+      route: 'Shimla → Chandigarh',
+      durationNote: 'Approx. 3–4 hrs | 115 km',
+      timeline: [
+        'Breakfast in Shimla with final morning hill views',
+        'Scenic drive from Shimla down to Chandigarh in your Private Toyota Innova Crysta',
+        'Safe drop-off at Chandigarh Airport / Railway Station to board your evening flight / train',
+        'Depart with unforgettable Himalayan memories of Winter Spiti & Kinnaur'
+      ],
+      stayLocation: 'Departure',
+      signOff: 'Until the next Himalayan adventure — Wanderphilia style!',
+      image: '/images/himachal1.jpg',
+      meals: 'Breakfast'
+    }
+  ],
+  inclusions: [
+    'Private Toyota Innova Crysta at your disposal from Chandigarh to Chandigarh for 11 Days, including all sightseeing and transfers as per the itinerary.',
+    'Experienced local driver throughout the journey.',
+    'Accommodation as per the selected hotels/properties and itinerary (10 Nights / 11 Days).',
+    'Daily Breakfast & Dinner at the respective hotels (MAP Plan).',
+    'All sightseeing and experiences mentioned in the itinerary.',
+    'One special Bonfire Evening during the journey.',
+    'Himalayan Stargazing Experience in Spiti, subject to clear weather conditions.',
+    'Curated Local Himachali Food Experience to experience the authentic flavours of the mountains.',
+    'All applicable tolls, parking charges, driver allowances and driver-related expenses for the vehicle as per the itinerary.',
+    'Inner Line / Route Permits wherever required for the planned journey.',
+    'All vehicle-related expenses including fuel and applicable interstate taxes for the confirmed itinerary.',
+    'Dedicated Wanderphilia trip coordination and assistance throughout the journey.',
+    'Important: The vehicle’s air conditioning will not be operated in the hill regions, as it is not recommended/required due to the prevailing temperatures and terrain. AC may be used during suitable plains/low-altitude stretches as operationally feasible.'
+  ],
+  exclusions: [
+    'GST @ 5% is applicable extra.',
+    'Any meals, beverages or food items not specifically mentioned under inclusions, including alcoholic beverages, mineral water, snacks, refreshments and lunches, including highway meals.',
+    'Any personal expenses, including tips/gratuities to drivers or hotel staff, laundry, telephone calls, room service, shopping, etc.',
+    'Entry fees to monuments, monasteries, museums, temples or other attractions, wherever applicable.',
+    'Any additional cost arising due to weather conditions, snowfall, landslides, roadblocks, road closures, natural calamities, government restrictions or unforeseen circumstances. Such additional expenses, if any, will be borne directly by the customer on the spot.',
+    'Any expenses arising from changes or delays caused by the customer.',
+    'Anything not specifically mentioned under the Inclusions.'
+  ],
+  thingsToCarry: [
+    'Heavy woollens, thermal innerwear (top & bottom), fleece jackets, windproof & waterproof down jackets',
+    'Warm woolen beanies/caps, mufflers/neck gaiters, insulated gloves/mittens, woolen socks (multiple pairs)',
+    'Sturdy walking / trekking shoes with good grip and waterproof properties',
+    'UV-protection sunglasses (essential for high-altitude snow glare) & high-SPF sunscreen & lip balm',
+    'Thermos flask / insulated water bottle for hot drinking water during drives',
+    'Personal medications, Altitude Sickness (Diamox) if advised, cold/headache medication, basic first aid kit',
+    'Power banks (batteries discharge rapidly in sub-zero temperatures) & extra camera memory cards',
+    'Moisturizers, cold cream & body lotion (high-altitude cold climate is very dry)',
+    'Original Government-Issued Photo ID Cards (Aadhaar Card / Passport) for permits & hotel check-ins'
+  ],
+  finalQuotationAmount: 129665,
+  baseAmount: 123490,
+  gstPercentage: 5,
+  gstAmount: 6175,
+  tcsPercentage: 0,
+  tcsAmount: 0,
+  adults: 2,
+  kids: 0,
+  perAdultPrice: 61745
+};
+
 export const manualItinerariesRegistry: Record<string, ManualItinerary> = {
+  'spiti-yatin': winterSpitiYatinManualItinerary,
+  'winter-spiti-kinnaur-yatin': winterSpitiYatinManualItinerary,
+  'winter-spiti-yatin': winterSpitiYatinManualItinerary,
+  'yatin': winterSpitiYatinManualItinerary,
+  'mr-yatin': winterSpitiYatinManualItinerary,
+  'mr-yatin-sir': winterSpitiYatinManualItinerary,
+  'mr-yatin-sir-family': winterSpitiYatinManualItinerary,
+  'wanderphilia-signature-winter-spiti-yatin': winterSpitiYatinManualItinerary,
+  'wp-winter-spiti-yatin': winterSpitiYatinManualItinerary,
+  'wp-spiti-yatin': winterSpitiYatinManualItinerary,
   'himachal-explorer': himachalExplorerManualItinerary,
   'wanderphilia-signature-himachal-explorer': himachalExplorerManualItinerary,
   'wp-himachal-explorer': himachalExplorerManualItinerary,
@@ -1922,6 +2210,9 @@ export const manualItinerariesRegistry: Record<string, ManualItinerary> = {
   'vietnam-family-tour': vietnamNaushadManualItinerary,
   'wp-vietnam-naushad': vietnamNaushadManualItinerary,
   'wp-4002b3f4': rajasthanRoyalEscapeManualItinerary,
+  'royal-rajasthan-experience': rajasthanRoyalEscapeManualItinerary,
+  'royal-rajasthan-experience-9n-10d': rajasthanRoyalEscapeManualItinerary,
+  'royal-rajasthan': rajasthanRoyalEscapeManualItinerary,
   'rajasthan-royal-experience': rajasthanRoyalEscapeManualItinerary,
   'rajasthan-royal-experience-9n-10d': rajasthanRoyalEscapeManualItinerary,
   'rajasthan-royal-family-tour': rajasthanRoyalEscapeManualItinerary,
@@ -1943,6 +2234,7 @@ export function getManualItinerary(idOrSlug: string): ManualItinerary | null {
 export function getAllManualItineraries(): ManualItinerary[] {
   return [
     himachalExplorerManualItinerary,
+    winterSpitiYatinManualItinerary,
     vietnamAneeshManualItinerary,
     vietnamYashManualItinerary,
     vietnamNaushadManualItinerary,
@@ -1956,6 +2248,7 @@ export function getAllManualItineraries(): ManualItinerary[] {
 export function manualItineraryToDocument(manual: ManualItinerary): ItineraryDocument {
   const isVietnam = manual.destination.toLowerCase().includes('vietnam');
   const isRajasthan = manual.destination.toLowerCase().includes('rajasthan') || manual.id.includes('4002b3f4');
+  const isSpiti = manual.destination.toLowerCase().includes('spiti') || manual.id.includes('spiti') || manual.destination.toLowerCase().includes('kinnaur');
   const defaultHighlights = isVietnam ? [
     'Ho Chi Minh City Highlights & Cu Chi Underground Tunnels',
     'Phu Quoc Island: 3 Islands Speedboat, VinWonders & Vinpearl Safari',
@@ -1973,6 +2266,15 @@ export function manualItineraryToDocument(manual: ManualItinerary): ItineraryDoc
     'Dilwara Marble Temples & Nakki Lake Sunset Boat Ride in Mount Abu',
     'UNESCO Kumbhalgarh Fort Wall & Lake Pichola Sunset Boating in Udaipur',
     'Grand Udaipur City Palace, Saheliyon Ki Bari & Sajjangarh Monsoon Palace'
+  ] : (isSpiti ? [
+    'Forest mornings in Narkanda surrounded by cedar valleys',
+    'A slow afternoon in Chitkul – The Last Inhabited Village of Kinnaur',
+    'Ancient 1000-year-old UNESCO Tabo & Cliffside Dhankar Monasteries',
+    'High-altitude villages of Kibber, Chicham, Langza & Komic',
+    'World’s Highest Post Office at Hikkim & Highest Suspension Bridge at Chicham',
+    'Golden sunsets in Kalpa overlooking sacred Kinner Kailash range',
+    'Warm local Kinnauri & Spitian traditional food experiences',
+    'Cosy bonfires under the mountains & Himalayan Stargazing in Spiti'
   ] : [
     'Scenic drive through Kangra Valley & McLeod Ganj',
     'Dalai Lama Temple & Bhagsu Waterfall',
@@ -1982,7 +2284,7 @@ export function manualItineraryToDocument(manual: ManualItinerary): ItineraryDoc
     'Snow Activities in Solang Valley & New Year Party in Manali',
     'River Rafting Experience in Manali',
     'Kasol & Parvati Valley Exploration'
-  ]);
+  ]));
 
   return {
     id: manual.id,
@@ -1991,7 +2293,7 @@ export function manualItineraryToDocument(manual: ManualItinerary): ItineraryDoc
     subTitle: manual.subtitle || `${manual.numNights} Nights / ${manual.numDays} Days Signature Experience`,
     description: `Custom ${manual.duration} expedition exploring ${manual.route}`,
     destination: manual.destination,
-    stateOrCountry: isVietnam ? 'Vietnam' : (isRajasthan ? 'Rajasthan, India' : 'Himachal Pradesh, India'),
+    stateOrCountry: isVietnam ? 'Vietnam' : (isRajasthan ? 'Rajasthan, India' : (isSpiti ? 'Himachal Pradesh (Spiti & Kinnaur), India' : 'Himachal Pradesh, India')),
     travelStyle: manual.travelStyle || 'Signature Tour',
     tripType: manual.tripType || 'Customised Trip',
     vehicleType: manual.vehicleType || 'Private AC Van with Dedicated Driver',

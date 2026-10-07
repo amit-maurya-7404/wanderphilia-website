@@ -516,8 +516,8 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                   </h3>
                 </div>
                 <div className="bg-amber-400/20 text-amber-300 border border-amber-400/40 text-[11px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
-                  {itinerary.kids && itinerary.kids > 0 
-                    ? `${itinerary.adults || 2} Adults + ${itinerary.kids} Kids (Family Tour)` 
+                  {itinerary.kids && itinerary.kids > 0
+                    ? `${itinerary.adults || 2} Adults + ${itinerary.kids} Kids (Family Tour)`
                     : `${itinerary.adults || 2} Adults Included`}
                 </div>
               </div>
