@@ -355,11 +355,31 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
               </div>
 
             </div>
+
+            {/* Wanderphilia Moments (if present) */}
+            {itinerary.moments && itinerary.moments.length > 0 && (
+              <div className="mt-8 pt-6 border-t-2 border-[#6E1E14]/15">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-lg">✨</span>
+                  <h3 className={`${playfair.className} text-base sm:text-lg font-black text-[#6E1E14] uppercase tracking-wider`}>
+                    Wanderphilia Moments
+                  </h3>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+                  {itinerary.moments.map((moment, idx) => (
+                    <div key={idx} className="flex items-start gap-2 bg-white p-2.5 rounded-xl border border-stone-200/90 shadow-2xs">
+                      <span className="text-[#FF6E0B] font-black text-xs shrink-0 mt-0.5">✦</span>
+                      <span className="text-xs font-bold text-stone-800 leading-snug">{moment}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Bottom Rust Bar */}
           <div className="bg-[#6E1E14] text-white py-3 px-6 text-center text-[10px] sm:text-xs font-bold tracking-wide">
-            Wanderphilia Signature Private Mountain Expedition Proposal
+            Wanderphilia Signature {destination} Curated Travel Proposal
           </div>
         </section>
 

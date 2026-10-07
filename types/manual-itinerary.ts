@@ -49,6 +49,8 @@ export interface ManualItinerary {
   mealPlan?: string;
   heroImage: string;
   galleryImages: string[];
+  moments?: string[];
+  highlights?: string[];
   dayPlans: ManualDayPlan[];
   accommodations?: ManualAccommodation[];
   inclusions: string[];
