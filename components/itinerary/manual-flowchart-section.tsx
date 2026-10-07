@@ -106,10 +106,16 @@ export function ManualFlowchartSection({
           dayImage = imagePool[idx % imagePool.length];
         }
 
-        // Clean title to avoid duplicate "Day X" since orange badge already displays "Day X"
-        const cleanTitle = (day.title || '')
+        // Clean title to extract pure descriptive headline (without duplicate Day X or Date:)
+        const cleanHeadline = (day.title || '')
           .replace(/^Day\s*\d+\s*[|:–-]\s*/i, '')
+          .replace(/^\d+\s+[A-Za-z]+\s*:\s*/i, '')
           .trim();
+
+        // Route with Date prefix (e.g. "20 Nov: Chandigarh → Narkanda")
+        const routeWithDate = day.date
+          ? `${day.date}: ${day.route || cleanHeadline}`
+          : (day.route || cleanHeadline);
 
         return (
           <div
@@ -117,27 +123,36 @@ export function ManualFlowchartSection({
             id={`day-card-${dayNum}`}
             className="bg-white rounded-2xl sm:rounded-3xl border border-stone-200/90 shadow-sm overflow-hidden transition-all duration-300"
           >
-            {/* Header Accordion Button */}
+            {/* Header Accordion Button (Shows Date + Route & Duration whether open or closed) */}
             <button
               onClick={() => toggleDay(dayNum)}
-              className="w-full text-left p-5 sm:p-6 flex items-start sm:items-center justify-between gap-4 hover:bg-stone-50/80 transition cursor-pointer"
+              className="w-full text-left p-4 sm:p-5 flex items-center justify-between gap-3 hover:bg-stone-50/80 transition cursor-pointer"
             >
-              <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 flex-1 min-w-0">
-                {/* Orange Day Badge */}
-                <span className="inline-flex items-center justify-center bg-orange-100 text-orange-800 text-xs font-black px-3.5 py-1 rounded-full uppercase tracking-wider shrink-0 border border-orange-200 shadow-2xs">
+              {/* Left Info: Day Badge always on left + Date & Route Pill + Duration Pill */}
+              <div className="flex flex-wrap items-center justify-start gap-2 sm:gap-2.5 flex-1 min-w-0">
+                {/* Orange Day Badge (Always Left-aligned) */}
+                <span className="inline-flex items-center justify-center bg-orange-100 text-orange-800 text-[11px] sm:text-xs font-black px-2.5 sm:px-3 py-1 rounded-full uppercase tracking-wider shrink-0 border border-orange-200 shadow-2xs">
                   Day {dayNum}
                 </span>
 
-                {/* Day Headline */}
-                <h3 className={`${playfair.className} text-base sm:text-xl font-bold text-[#8B2519] tracking-tight leading-snug`}>
-                  {cleanTitle}
-                </h3>
+                {/* Date & Route Pill (e.g. 20 Nov: Chandigarh → Narkanda) */}
+                <span className="inline-flex items-center gap-1.5 bg-[#FFF6EE] text-[#8B2519] text-xs sm:text-sm font-bold px-3 py-1.5 rounded-xl border border-orange-200/90 shadow-2xs">
+                  <MapPin className="w-3.5 h-3.5 text-orange-600 shrink-0" />
+                  <span>{routeWithDate}</span>
+                </span>
+
+                {/* Approx Duration & KM Pill */}
+                {day.durationNote && (
+                  <span className="inline-flex items-center gap-1.5 bg-stone-100 text-stone-700 text-xs sm:text-sm font-semibold px-3 py-1.5 rounded-xl border border-stone-200 shadow-2xs">
+                    <Clock className="w-3.5 h-3.5 text-orange-600 shrink-0" />
+                    <span>{day.durationNote}</span>
+                  </span>
+                )}
               </div>
 
-              <div className="flex items-center gap-2 shrink-0">
-                <div className="p-1.5 rounded-full bg-stone-100 text-stone-600">
-                  {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                </div>
+              {/* Right Chevron Toggle Button */}
+              <div className="shrink-0 p-1.5 sm:p-2 rounded-full bg-stone-100 text-stone-600 self-center">
+                {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
               </div>
             </button>
 
@@ -151,23 +166,12 @@ export function ManualFlowchartSection({
                   {/* LEFT: Structured Narrative & Flowchart Bullet Points */}
                   <div className="md:col-span-7 space-y-4">
 
-                    {/* Route & Travel Duration Header Strip */}
-                    {(day.route || day.durationNote) && (
-                      <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs sm:text-sm font-semibold pb-1">
-                        {day.route && (
-                          <div className="inline-flex items-center gap-1.5 bg-orange-50/90 text-[#8B2519] font-bold px-3 py-1.5 rounded-lg border border-orange-200/80 shadow-2xs">
-                            <MapPin className="w-3.5 h-3.5 text-orange-600 shrink-0" />
-                            <span>{day.route}</span>
-                          </div>
-                        )}
-                        {day.durationNote && (
-                          <div className="inline-flex items-center gap-1.5 bg-stone-100 text-stone-700 font-semibold px-3 py-1.5 rounded-lg border border-stone-200/80">
-                            <Clock className="w-3.5 h-3.5 text-orange-600 shrink-0" />
-                            <span>{day.durationNote}</span>
-                          </div>
-                        )}
-                      </div>
-                    )}
+                    {/* One-Liner Theme Heading */}
+                    <div className="pb-1 border-b border-stone-100">
+                      <h4 className={`${playfair.className} text-base sm:text-lg font-extrabold text-[#8B2519] leading-snug`}>
+                        {cleanHeadline}
+                      </h4>
+                    </div>
 
                     {/* Intro Sentence (Clean regular text, no airplane icon) */}
                     {day.intro && (
