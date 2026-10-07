@@ -106,6 +106,11 @@ export function ManualFlowchartSection({
           dayImage = imagePool[idx % imagePool.length];
         }
 
+        // Clean title to avoid duplicate "Day X" since orange badge already displays "Day X"
+        const cleanTitle = (day.title || '')
+          .replace(/^Day\s*\d+\s*[|:–-]\s*/i, '')
+          .trim();
+
         return (
           <div
             key={dayNum}
@@ -117,7 +122,7 @@ export function ManualFlowchartSection({
               onClick={() => toggleDay(dayNum)}
               className="w-full text-left p-5 sm:p-6 flex items-start sm:items-center justify-between gap-4 hover:bg-stone-50/80 transition cursor-pointer"
             >
-              <div className="flex flex-wrap items-center gap-3">
+              <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 flex-1 min-w-0">
                 {/* Orange Day Badge */}
                 <span className="inline-flex items-center justify-center bg-orange-100 text-orange-800 text-xs font-black px-3.5 py-1 rounded-full uppercase tracking-wider shrink-0 border border-orange-200 shadow-2xs">
                   Day {dayNum}
@@ -125,7 +130,7 @@ export function ManualFlowchartSection({
 
                 {/* Day Headline */}
                 <h3 className={`${playfair.className} text-base sm:text-xl font-bold text-[#8B2519] tracking-tight leading-snug`}>
-                  {day.title}
+                  {cleanTitle}
                 </h3>
               </div>
 
@@ -152,14 +157,6 @@ export function ManualFlowchartSection({
                   {/* LEFT: Structured Narrative & Flowchart Bullet Points */}
                   <div className="md:col-span-7 space-y-4">
 
-                    {/* Duration Note if present */}
-                    {day.durationNote && (
-                      <p className="text-xs font-semibold text-stone-500 flex items-center gap-1">
-                        <Clock className="w-3.5 h-3.5 text-orange-600" />
-                        <span>{day.durationNote}</span>
-                      </p>
-                    )}
-
                     {/* Intro Sentence (Clean regular text, no airplane icon) */}
                     {day.intro && (
                       <p className="text-xs sm:text-sm font-medium text-stone-700 leading-relaxed whitespace-pre-line">
@@ -182,7 +179,7 @@ export function ManualFlowchartSection({
                       </div>
                     )}
 
-                    {/* Sub-sections (Evening, Signature, Optional, Solang Valley, New Year's Eve, etc.) */}
+                    {/* Sub-sections (Evening, Signature, Optional, etc.) */}
                     {day.sections && day.sections.map((section, sIdx) => {
                       return (
                         <div key={sIdx} className="space-y-2.5 pt-2">
@@ -191,7 +188,7 @@ export function ManualFlowchartSection({
                             {section.title}
                           </div>
 
-                          {/* Section Note (e.g. Dress up, gather with your fellow travellers...) */}
+                          {/* Section Note */}
                           {section.note && (
                             <p className="text-xs sm:text-sm font-medium text-stone-600 leading-relaxed">
                               {section.note}
@@ -216,7 +213,7 @@ export function ManualFlowchartSection({
                       );
                     })}
 
-                    {/* Outro / Notes (e.g. Return to Dalhousie by evening...) */}
+                    {/* Outro / Notes */}
                     {day.outro && (
                       <div className="pt-2 text-xs sm:text-sm font-medium text-stone-700 space-y-1">
                         {Array.isArray(day.outro) ? (
@@ -227,16 +224,7 @@ export function ManualFlowchartSection({
                       </div>
                     )}
 
-                    {/* Stay Line (e.g. Stay: Dharamshala) */}
-                    {day.stayLocation && (
-                      <div className="pt-3 text-xs sm:text-sm font-bold text-[#6E1E14]">
-                        {day.stayLocation.toLowerCase().startsWith('stay:') || day.stayLocation.toLowerCase().startsWith('trip')
-                          ? day.stayLocation
-                          : `Stay: ${day.stayLocation}`}
-                      </div>
-                    )}
-
-                    {/* Sign-Off (e.g. Until the next adventure — Wanderphilia style) */}
+                    {/* Sign-Off */}
                     {day.signOff && (
                       <div className="pt-2 text-xs sm:text-sm font-bold text-[#8B2519] italic">
                         {day.signOff}
@@ -245,7 +233,7 @@ export function ManualFlowchartSection({
 
                   </div>
 
-                    {/* RIGHT: High Quality Destination Photo Card */}
+                  {/* RIGHT: High Quality Destination Photo Card */}
                   <div className="md:col-span-5 flex flex-col items-center">
                     <div className="relative w-full h-60 sm:h-72 rounded-2xl overflow-hidden shadow-md border-2 border-white bg-stone-100 group">
                       <SafeImage

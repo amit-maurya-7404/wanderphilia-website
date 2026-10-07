@@ -1933,7 +1933,7 @@ export const winterSpitiYatinManualItinerary: ManualItinerary = {
     {
       day: 1,
       date: '20 Nov',
-      title: 'Day 1 | 20 Nov Chandigarh → Narkanda',
+      title: '20 Nov: The Himalayan Journey Begins & Sunset Bonfire',
       route: 'Chandigarh → Narkanda',
       durationNote: 'Approx. 5–6 hrs | 175 km',
       timeline: [
@@ -1950,7 +1950,7 @@ export const winterSpitiYatinManualItinerary: ManualItinerary = {
     {
       day: 2,
       date: '21 Nov',
-      title: 'Day 2 | 21 Nov Narkanda → Sangla / Chitkul',
+      title: '21 Nov: Into the Baspa Valley & Dramatic Kinnauri Gorges',
       route: 'Narkanda → Sangla / Chitkul',
       durationNote: 'Approx. 6–7 hrs | 160 km',
       timeline: [
@@ -1967,7 +1967,7 @@ export const winterSpitiYatinManualItinerary: ManualItinerary = {
     {
       day: 3,
       date: '22 Nov',
-      title: 'Day 3 | 22 Nov Chitkul & Baspa Valley',
+      title: '22 Nov: Exploring Chitkul, India’s Last Village & Baspa Riverside',
       route: 'Chitkul & Baspa Valley',
       durationNote: 'Leisure Day Excursion',
       timeline: [
@@ -1984,7 +1984,7 @@ export const winterSpitiYatinManualItinerary: ManualItinerary = {
     {
       day: 4,
       date: '23 Nov',
-      title: 'Day 4 | 23 Nov Sangla / Chitkul → Nako → Tabo',
+      title: '23 Nov: Kinnaur to Spiti Cold Desert via Sacred Nako Lake',
       route: 'Sangla / Chitkul → Nako → Tabo',
       durationNote: 'Approx. 6–7 hrs | 150 km',
       timeline: [
@@ -2002,7 +2002,7 @@ export const winterSpitiYatinManualItinerary: ManualItinerary = {
     {
       day: 5,
       date: '24 Nov',
-      title: 'Day 5 | 24 Nov Tabo — A Day in Ancient Spiti',
+      title: '24 Nov: Ancient Spiti & 1000-Year-Old UNESCO Tabo Monastery',
       route: 'Tabo & Heritage Valley',
       durationNote: 'Unrushed Cultural Day',
       timeline: [
@@ -2020,7 +2020,7 @@ export const winterSpitiYatinManualItinerary: ManualItinerary = {
     {
       day: 6,
       date: '25 Nov',
-      title: 'Day 6 | 25 Nov Tabo → Dhankar → Kaza',
+      title: '25 Nov: Cliff-Hanging Dhankar Monastery & Scenic Drive to Kaza',
       route: 'Tabo → Dhankar → Kaza',
       durationNote: 'Approx. 3–4 hrs | 65 km',
       timeline: [
@@ -2037,7 +2037,7 @@ export const winterSpitiYatinManualItinerary: ManualItinerary = {
     {
       day: 7,
       date: '26 Nov',
-      title: 'Day 7 | 26 Nov Kaza → Key → Kibber → Chicham → Kaza',
+      title: '26 Nov: Key Monastery, High-Altitude Kibber & Asia’s Highest Chicham Bridge',
       route: 'Kaza → Key → Kibber → Chicham → Kaza',
       durationNote: 'Full Day Spiti Sightseeing Circuit',
       timeline: [
@@ -2054,7 +2054,7 @@ export const winterSpitiYatinManualItinerary: ManualItinerary = {
     {
       day: 8,
       date: '27 Nov',
-      title: 'Day 8 | 27 Nov Kaza → Kalpa',
+      title: '27 Nov: Scenic Descent to Kinnaur & Sacred Kinner Kailash Sunset',
       route: 'Kaza → Kalpa',
       durationNote: 'Approx. 6–7 hrs | 200 km',
       timeline: [
@@ -2071,7 +2071,7 @@ export const winterSpitiYatinManualItinerary: ManualItinerary = {
     {
       day: 9,
       date: '28 Nov',
-      title: 'Day 9 | 28 Nov Kalpa — Slow Kinnaur Experience',
+      title: '28 Nov: The Art of Doing Nothing, Roghi Village & Farewell Bonfire',
       route: 'Kalpa & Roghi Village',
       durationNote: 'Leisurely Kinnauri Immersion',
       timeline: [
@@ -2088,7 +2088,7 @@ export const winterSpitiYatinManualItinerary: ManualItinerary = {
     {
       day: 10,
       date: '29 Nov',
-      title: 'Day 10 | 29 Nov Kalpa → Shimla',
+      title: '29 Nov: The Final Stretch, Colonial Mall Road Walk & Farewell Dinner',
       route: 'Kalpa → Shimla',
       durationNote: 'Approx. 6–7 hrs | 220 km',
       timeline: [
@@ -2105,7 +2105,7 @@ export const winterSpitiYatinManualItinerary: ManualItinerary = {
     {
       day: 11,
       date: '30 Nov',
-      title: 'Day 11 | 30 Nov Shimla → Chandigarh & Departure',
+      title: '30 Nov: Homeward Bound with Mountain Memories & Chandigarh Drop-off',
       route: 'Shimla → Chandigarh',
       durationNote: 'Approx. 3–4 hrs | 115 km',
       timeline: [
