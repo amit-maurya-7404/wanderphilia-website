@@ -135,12 +135,6 @@ export function ManualFlowchartSection({
               </div>
 
               <div className="flex items-center gap-2 shrink-0">
-                {day.durationNote && (
-                  <span className="hidden sm:inline-flex items-center gap-1 bg-stone-100 text-stone-600 text-[11px] font-bold px-2.5 py-1 rounded-full border border-stone-200">
-                    <Clock className="w-3 h-3 text-orange-600" />
-                    {day.durationNote}
-                  </span>
-                )}
                 <div className="p-1.5 rounded-full bg-stone-100 text-stone-600">
                   {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                 </div>
@@ -156,6 +150,24 @@ export function ManualFlowchartSection({
 
                   {/* LEFT: Structured Narrative & Flowchart Bullet Points */}
                   <div className="md:col-span-7 space-y-4">
+
+                    {/* Route & Travel Duration Header Strip */}
+                    {(day.route || day.durationNote) && (
+                      <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs sm:text-sm font-semibold pb-1">
+                        {day.route && (
+                          <div className="inline-flex items-center gap-1.5 bg-orange-50/90 text-[#8B2519] font-bold px-3 py-1.5 rounded-lg border border-orange-200/80 shadow-2xs">
+                            <MapPin className="w-3.5 h-3.5 text-orange-600 shrink-0" />
+                            <span>{day.route}</span>
+                          </div>
+                        )}
+                        {day.durationNote && (
+                          <div className="inline-flex items-center gap-1.5 bg-stone-100 text-stone-700 font-semibold px-3 py-1.5 rounded-lg border border-stone-200/80">
+                            <Clock className="w-3.5 h-3.5 text-orange-600 shrink-0" />
+                            <span>{day.durationNote}</span>
+                          </div>
+                        )}
+                      </div>
+                    )}
 
                     {/* Intro Sentence (Clean regular text, no airplane icon) */}
                     {day.intro && (
