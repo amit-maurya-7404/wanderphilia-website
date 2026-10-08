@@ -58,6 +58,46 @@ interface ManualFlowchartSectionProps {
   defaultImages?: string[];
 }
 
+function renderFormattedText(text: string) {
+  if (!text) return null;
+
+  // Split by markdown bold **...**
+  const parts = text.split(/(\*\*.*?\*\*)/g);
+
+  if (parts.length > 1) {
+    return (
+      <>
+        {parts.map((part, pIdx) => {
+          if (part.startsWith('**') && part.endsWith('**') && part.length >= 4) {
+            const inner = part.slice(2, -2);
+            return (
+              <strong key={pIdx} className="text-stone-900 font-bold">
+                {inner}
+              </strong>
+            );
+          }
+          return <span key={pIdx}>{part}</span>;
+        })}
+      </>
+    );
+  }
+
+  // If no markdown bold, check if there is a "Heading: Detail" format
+  const colonIdx = text.indexOf(': ');
+  if (colonIdx > 0 && colonIdx < 50 && !text.toLowerCase().startsWith('http')) {
+    const head = text.slice(0, colonIdx);
+    const body = text.slice(colonIdx + 2);
+    return (
+      <>
+        <strong className="text-stone-900 font-bold">{head}: </strong>
+        <span>{body}</span>
+      </>
+    );
+  }
+
+  return <span>{text}</span>;
+}
+
 const fallbackImages = [
   '/images/himachal.jpg',
   '/images/himachal2.jpg',
@@ -208,32 +248,15 @@ export function ManualFlowchartSection({
                     {/* Primary Sightseeing Points (with Dotted Flowchart Line & Step Nodes) */}
                     {day.timeline && day.timeline.length > 0 && (
                       <div className="relative pl-6 space-y-3.5 py-1 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:border-l-2 before:border-dashed before:border-sky-300">
-                        {day.timeline.map((item, mIdx) => {
-                          const boldMatch = item.match(/^\*\*(.*?)\*\*:\s*(.*)$/);
-                          const colonIdx = !boldMatch ? item.indexOf(': ') : -1;
-
-                          return (
-                            <div key={mIdx} className="relative group">
-                              {/* Circular Step Node Dot */}
-                              <div className="absolute -left-[22px] top-1 w-3.5 h-3.5 rounded-full bg-white border-2 border-sky-500 group-hover:scale-125 group-hover:border-orange-500 transition-all shadow-2xs" />
-                              <p className="text-xs sm:text-sm font-semibold text-stone-800 leading-relaxed group-hover:text-stone-950 transition-colors">
-                                {boldMatch ? (
-                                  <>
-                                    <strong className="text-stone-900 font-bold">{boldMatch[1]}: </strong>
-                                    <span>{boldMatch[2]}</span>
-                                  </>
-                                ) : colonIdx > 0 && !item.toLowerCase().startsWith('http') ? (
-                                  <>
-                                    <strong className="text-stone-900 font-bold">{item.slice(0, colonIdx)}: </strong>
-                                    <span>{item.slice(colonIdx + 2)}</span>
-                                  </>
-                                ) : (
-                                  item
-                                )}
-                              </p>
-                            </div>
-                          );
-                        })}
+                        {day.timeline.map((item, mIdx) => (
+                          <div key={mIdx} className="relative group">
+                            {/* Circular Step Node Dot */}
+                            <div className="absolute -left-[22px] top-1 w-3.5 h-3.5 rounded-full bg-white border-2 border-sky-500 group-hover:scale-125 group-hover:border-orange-500 transition-all shadow-2xs" />
+                            <p className="text-xs sm:text-sm font-semibold text-stone-800 leading-relaxed group-hover:text-stone-950 transition-colors">
+                              {renderFormattedText(item)}
+                            </p>
+                          </div>
+                        ))}
                       </div>
                     )}
 
@@ -275,6 +298,21 @@ export function ManualFlowchartSection({
                         ) : (
                           <p>{day.outro}</p>
                         )}
+                      </div>
+                    )}
+
+                    {/* Optional Note Callout */}
+                    {day.optionalNote && (
+                      <div className="pt-2">
+                        <div className="p-3 rounded-xl bg-amber-50/90 border border-amber-300/80 text-amber-950 text-xs font-medium flex items-start gap-2 shadow-2xs">
+                          <span className="text-amber-700 font-bold shrink-0 mt-0.5">📌</span>
+                          <div className="leading-relaxed">
+                            <strong className="font-extrabold uppercase text-[#8B2519]">
+                              NOTE:{' '}
+                            </strong>
+                            <span>{day.optionalNote.replace(/^NOTE:\s*/i, '').replace(/^Note:\s*/i, '')}</span>
+                          </div>
+                        </div>
                       </div>
                     )}
 

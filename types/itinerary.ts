@@ -59,6 +59,7 @@ export interface ItineraryDayPlan {
   stayLocation?: string;
   activities?: string[];
   timeline?: string[]; // Chronological flowchart milestones (morning to night)
+  optionalNote?: string;
   image?: string;
   meals?: string;
   highlights?: string[];

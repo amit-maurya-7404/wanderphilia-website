@@ -28,6 +28,44 @@ const guaranteedDummyImages = [
   '/images/gallery26.JPG'
 ];
 
+function renderFormattedText(text: string) {
+  if (!text) return null;
+
+  const parts = text.split(/(\*\*.*?\*\*)/g);
+
+  if (parts.length > 1) {
+    return (
+      <>
+        {parts.map((part, pIdx) => {
+          if (part.startsWith('**') && part.endsWith('**') && part.length >= 4) {
+            const inner = part.slice(2, -2);
+            return (
+              <strong key={pIdx} className="text-stone-900 font-bold">
+                {inner}
+              </strong>
+            );
+          }
+          return <span key={pIdx}>{part}</span>;
+        })}
+      </>
+    );
+  }
+
+  const colonIdx = text.indexOf(': ');
+  if (colonIdx > 0 && colonIdx < 50 && !text.toLowerCase().startsWith('http')) {
+    const head = text.slice(0, colonIdx);
+    const body = text.slice(colonIdx + 2);
+    return (
+      <>
+        <strong className="text-stone-900 font-bold">{head}: </strong>
+        <span>{body}</span>
+      </>
+    );
+  }
+
+  return <span>{text}</span>;
+}
+
 export function ItineraryFlowchartSection({
   dayPlans,
   destination,
@@ -120,35 +158,17 @@ export function ItineraryFlowchartSection({
                   
                   {/* LEFT: Dotted Flowchart Line & Step Nodes */}
                   <div className="md:col-span-7 space-y-5 relative pl-7 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:border-l-2 before:border-dashed before:border-sky-300">
-                    {milestones.map((milestone, mIdx) => {
-                      // Check for **Bold Title**: Description format
-                      const boldMatch = milestone.match(/^\*\*(.*?)\*\*:\s*(.*)$/);
-                      const colonIdx = !boldMatch ? milestone.indexOf(': ') : -1;
+                    {milestones.map((milestone, mIdx) => (
+                      <div key={mIdx} className="relative group">
+                        {/* Circular Step Node Dot */}
+                        <div className="absolute -left-[27px] top-1 w-3.5 h-3.5 rounded-full bg-white border-3 border-sky-500 group-hover:scale-125 group-hover:border-orange-500 transition-all shadow-xs" />
 
-                      return (
-                        <div key={mIdx} className="relative group">
-                          {/* Circular Step Node Dot */}
-                          <div className="absolute -left-[27px] top-1 w-3.5 h-3.5 rounded-full bg-white border-3 border-sky-500 group-hover:scale-125 group-hover:border-orange-500 transition-all shadow-xs" />
-
-                          {/* Milestone Narrative Text */}
-                          <p className="text-xs sm:text-sm font-semibold text-stone-700 leading-relaxed group-hover:text-stone-950 transition-colors">
-                            {boldMatch ? (
-                              <>
-                                <strong className="text-stone-900 font-bold">{boldMatch[1]}: </strong>
-                                <span>{boldMatch[2]}</span>
-                              </>
-                            ) : colonIdx > 0 ? (
-                              <>
-                                <strong className="text-stone-900 font-bold">{milestone.slice(0, colonIdx)}: </strong>
-                                <span>{milestone.slice(colonIdx + 2)}</span>
-                              </>
-                            ) : (
-                              milestone
-                            )}
-                          </p>
-                        </div>
-                      );
-                    })}
+                        {/* Milestone Narrative Text */}
+                        <p className="text-xs sm:text-sm font-semibold text-stone-700 leading-relaxed group-hover:text-stone-950 transition-colors">
+                          {renderFormattedText(milestone)}
+                        </p>
+                      </div>
+                    ))}
                   </div>
 
                   {/* RIGHT: Photo Card */}

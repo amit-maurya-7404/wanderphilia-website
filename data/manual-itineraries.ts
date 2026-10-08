@@ -2717,6 +2717,69 @@ export function formatDayDate(rawStart: any, dayIndex: number): string | undefin
   return `${getOrdinal(current.getDate())} ${MONTH_NAMES[current.getMonth()]}`;
 }
 
+export function extractDayOptionalNotes(
+  timeline: string[],
+  existingOptionalNote?: string
+): { cleanedTimeline: string[]; optionalNote?: string } {
+  let optionalNote = existingOptionalNote ? existingOptionalNote.trim() : '';
+  const optionalItems: string[] = [];
+
+  const cleanedTimeline = timeline.map(item => {
+    let cur = item.replace(/\*\*([^*()]+)\s*\([^)]*\)\*\*/g, '**$1**');
+
+    if (/\((?:optional|recommended on your own|on your own)\)/i.test(cur) || /\[(?:optional|on your own)\]/i.test(cur)) {
+      const clauseMatch = cur.match(/(?:&|and|also|\+)\s*(?:enjoy|experience|explore|visit|try)?\s*([^.&,;()]+(?:\s*(?:&|and|\+)\s*[^.&,;()]+)*)\s*\((?:optional|on your own)\)/i);
+      
+      if (clauseMatch) {
+        let rawOptClause = clauseMatch[1].trim()
+          .replace(/^(?:enjoy|experience|explore|visit|try|the|also)\s+/i, '')
+          .replace(/\s+(?:also\s+)?(?:enjoy|visit|explore|try|experience)\s+(?:the\s+)?/gi, ' ')
+          .replace(/\s{2,}/g, ' ')
+          .trim();
+        
+        rawOptClause = rawOptClause.replace(/^(?:also|the)\s+/i, '').trim();
+
+        if (rawOptClause && rawOptClause.length > 2) {
+          optionalItems.push(rawOptClause);
+        }
+
+        let cleanedSentence = cur.replace(clauseMatch[0], '').replace(/\s{2,}/g, ' ').trim();
+        cleanedSentence = cleanedSentence.replace(/[,;&]\s*([.!?]?)$/, '$1').trim();
+        if (cleanedSentence && !/[.!?]$/.test(cleanedSentence)) {
+          cleanedSentence += '.';
+        }
+        return cleanedSentence;
+      } else {
+        const optClean = cur
+          .replace(/^\*\*(.*?)\*\*:\s*/, '$1 — ')
+          .replace(/\((?:optional|on your own)\)/gi, '')
+          .replace(/\[(?:optional|on your own)\]/gi, '')
+          .replace(/\s{2,}/g, ' ')
+          .trim()
+          .replace(/[.,;]$/, '');
+        
+        if (optClean && optClean.length > 3) {
+          optionalItems.push(optClean);
+        }
+
+        let cleaned = cur.replace(/\((?:optional|on your own)\)/gi, '').replace(/\[(?:optional|on your own)\]/gi, '').replace(/\s{2,}/g, ' ').trim();
+        if (cleaned && !/[.!?]$/.test(cleaned)) {
+          cleaned += '.';
+        }
+        return cleaned;
+      }
+    }
+    return cur;
+  });
+
+  if (!optionalNote && optionalItems.length > 0) {
+    const combined = optionalItems.join(' & ');
+    optionalNote = `NOTE: ${combined} is optional (on your own).`;
+  }
+
+  return { cleanedTimeline, optionalNote: optionalNote || undefined };
+}
+
 export function itineraryDocumentToManualItinerary(itinerary: ItineraryDocument): ManualItinerary {
   const leadName = itinerary.leadDetails?.name || itinerary.rawZohoData?.Full_Name || (itinerary.rawZohoData?.First_Name ? `${itinerary.rawZohoData.First_Name} ${itinerary.rawZohoData.Last_Name || ''}`.trim() : '') || 'Valued Traveler';
   const destination = itinerary.destination || itinerary.rawZohoData?.Destinations || itinerary.rawZohoData?.Destination || 'Rajasthan';
@@ -3143,6 +3206,9 @@ export function itineraryDocumentToManualItinerary(itinerary: ItineraryDocument)
       durationNote = undefined;
     }
 
+    const rawTimeline = (dp.timeline && dp.timeline.length > 0) ? dp.timeline : (dp.activities && dp.activities.length > 0 ? dp.activities : []);
+    const { cleanedTimeline, optionalNote } = extractDayOptionalNotes(rawTimeline, dp.optionalNote);
+
     return {
       day: dp.day || idx + 1,
       date: dp.date || formatDayDate(rawStartDate, dp.day || idx + 1),
@@ -3150,7 +3216,8 @@ export function itineraryDocumentToManualItinerary(itinerary: ItineraryDocument)
       route: dayRoute || destination,
       durationNote,
       intro: undefined,
-      timeline: (dp.timeline && dp.timeline.length > 0) ? dp.timeline : (dp.activities && dp.activities.length > 0 ? dp.activities : []),
+      timeline: cleanedTimeline,
+      optionalNote,
       stayLocation: dp.stayLocation,
       image: dp.image || collageImages[idx % collageImages.length],
       meals: dp.meals
