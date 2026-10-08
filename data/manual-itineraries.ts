@@ -2936,32 +2936,43 @@ export function itineraryDocumentToManualItinerary(itinerary: ItineraryDocument)
     });
   }
 
-  const displayInclusions: string[] = (itinerary.inclusions && itinerary.inclusions.length > 0)
-    ? itinerary.inclusions
-    : [
-      `Private ${vehicleType} for the complete ${destination} itinerary and Airport Transfers.`,
-      `Accomodation in ${roomCategory} Properties For ${numNights} Nights.`,
-      `Meals ${mealPlan} ( Breakfast Except 1st Day , Dinner Last Day )`,
-      `Driver allowance, fuel, toll taxes, parking charges and applicable road taxes.`,
-      `All transfers and sightseeing as per the day-wise itinerary. Entry fees are excluded unless specifically mentioned.`,
-      ...dynamicExperiences,
-      `Assistance during hotel check-in and check-out.`,
-      `Applicable taxes included in the quoted package, wherever applicable.`
-    ];
+  if (dynamicExperiences.length === 0 && Array.isArray(itinerary.dayPlans)) {
+    itinerary.dayPlans.forEach((dp) => {
+      (dp.activities || []).forEach(act => {
+        let clean = act.replace(/^Transfer from.*$/i, '').replace(/^Arrival.*$/i, '').trim();
+        clean = clean.replace(/\([^()]*\)/g, '').trim();
+        if (clean && clean.length > 2 && !seenExp.has(clean.toLowerCase())) {
+          seenExp.add(clean.toLowerCase());
+          dynamicExperiences.push(clean);
+        }
+      });
+    });
+  }
 
-  const displayExclusions: string[] = (itinerary.exclusions && itinerary.exclusions.length > 0)
-    ? itinerary.exclusions
-    : [
-      `5% GST.`,
-      `Early check-in (Before 1:00 PM) & Late Check-out (After 11:00 AM) at the hotel.`,
-      `Any additional expenses of personal nature.`,
-      `Additional accommodation/food costs incurred due to any delayed travel.`,
-      `Any lunch and other meals not mentioned in Package Inclusions.`,
-      `Any Airfare / Rail fare other than what is mentioned in "Inclusions" or any type of transportation.`,
-      `Monument entry fees during Sightseeing.`,
-      `Additional Costs due to Flight Cancellations, Landslides, Roadblocks, and other natural calamities.`,
-      `Any other services not specified above in inclusions.`
-    ];
+  const rawLead = itinerary.rawZohoData?.rawLeadData || {};
+  const hotelCategory = rawLead.Hotel_Category || rawLead.Preferred_Room_Category || itinerary.rawZohoData?.Hotel_Category || itinerary.rawZohoData?.Preferred_Room_Category || roomCategory || 'Deluxe';
+  const cleanVehicle = (vehicleType || 'AC Vehicle').replace(/^Private\s+/i, '');
+
+  const displayInclusions: string[] = [
+    `Private ${cleanVehicle} for the complete ${destination} itinerary and Airport Transfers.`,
+    `Accomodation in ${hotelCategory} Properties For ${numNights} Nights.`,
+    `Meals ${mealPlan} ( Breakfast Except 1st Day , Dinner Last Day )`,
+    `Driver allowance, fuel, toll taxes, parking charges and applicable road taxes.`,
+    `All transfers and sightseeing as per the day-wise itinerary. Entry fees are excluded unless specifically mentioned.`,
+    ...dynamicExperiences,
+    `Assistance during hotel check-in and check-out.`,
+    `Applicable taxes included in the quoted package, wherever applicable.`
+  ];
+
+  const displayExclusions: string[] = [
+    `5% GST.`,
+    `Early check-in (Before 1:00 PM) & Late Check-out (After 11:00 AM) at the hotel.`,
+    `Any additional expenses of personal nature.`,
+    `Additional accommodation/food costs incurred due to any delayed travel.`,
+    `Any lunch and other meals not mentioned in Package Inclusions.`,
+    `Any Airfare / Rail fare other than what is mentioned in "Inclusions" or any type of transportation.`,
+    `Monument entry fees during Sightseeing.`
+  ];
 
   const thingsToCarry = (itinerary.packingTips && itinerary.packingTips.length > 0)
     ? itinerary.packingTips

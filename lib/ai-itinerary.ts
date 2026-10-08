@@ -1053,7 +1053,7 @@ export function generateLuxuryFallback(raw: Record<string, any>): GeneratedItine
   });
 
   const exactInclusions: string[] = [
-    `Private ${vehicle} for the complete ${dest} itinerary and Airport Transfers.`,
+    `Private ${(vehicle || 'AC Vehicle').replace(/^Private\s+/i, '')} for the complete ${dest} itinerary and Airport Transfers.`,
     `Accomodation in ${room} Properties For ${noOfNights} Nights.`,
     `Meals ${mealPlan ? mealPlan : 'Breakfast & Dinner'} ( Breakfast Except 1st Day , Dinner Last Day )`,
     `Driver allowance, fuel, toll taxes, parking charges and applicable road taxes.`,
@@ -1070,9 +1070,7 @@ export function generateLuxuryFallback(raw: Record<string, any>): GeneratedItine
     `Additional accommodation/food costs incurred due to any delayed travel.`,
     `Any lunch and other meals not mentioned in Package Inclusions.`,
     `Any Airfare / Rail fare other than what is mentioned in "Inclusions" or any type of transportation.`,
-    `Monument entry fees during Sightseeing.`,
-    `Additional Costs due to Flight Cancellations, Landslides, Roadblocks, and other natural calamities.`,
-    `Any other services not specified above in inclusions.`
+    `Monument entry fees during Sightseeing.`
   ];
 
   const finalQuotationAmount = raw.finalQuotationAmount !== undefined ? Number(raw.finalQuotationAmount) : (raw.Final_Quotation_Amount ? Number(raw.Final_Quotation_Amount) : (raw.Total_Package_Cost ? Number(raw.Total_Package_Cost) : (raw.Quotation_Amount ? Number(raw.Quotation_Amount) : (raw.Expected_Revenue ? Number(raw.Expected_Revenue) : (raw.Amount ? Number(raw.Amount) : undefined)))));
