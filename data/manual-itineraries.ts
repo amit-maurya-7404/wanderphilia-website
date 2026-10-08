@@ -1293,20 +1293,20 @@ export const vietnamNaushadManualItinerary: ManualItinerary = {
   routeSummary: '2N Hoi An | 1N Ba Na Hills | 4N Phu Quoc',
   destination: 'Vietnam',
   travelStyle: 'Family Vacation',
-  tripType: 'Customised Private Tour (4 Adults + 1 Child)',
+  tripType: 'Customised Private Tour (2 Adults + 2 Kids)',
   leadName: 'Mr Naushad Chaudhary',
-  adults: 4,
-  kids: 1,
-  kidsDetails: '1 Child (5 Yrs sharing bed / extra bed at La Festa) + 1 Infant (2.5 Yrs Free)',
+  adults: 2,
+  kids: 2,
+  kidsDetails: '1 Child (5 Yrs) + 1 Child (2.5 Yrs Free)',
   perAdultPrice: 248600,
   perKidPrice: 37200,
   childPricingNote: '1 Child (5 Yrs): ₹37,200 (Extra bed mandatory at La Festa Phu Quoc; shares bed at other hotels) • 1 Child (2.5 Yrs): Free of charge',
-  baseAmount: 1031600,
+  baseAmount: 534400,
   gstPercentage: 5,
-  gstAmount: 51580,
+  gstAmount: 26720,
   tcsPercentage: 2,
-  tcsAmount: 20632,
-  finalQuotationAmount: 1103812,
+  tcsAmount: 10688,
+  finalQuotationAmount: 571808,
   vehicleType: 'Private 07 Seater Car with Dedicated Driver',
   mealPlan: 'Daily Breakfast at Hotels (except Day 1)',
   heroImage: '/images/vietnam.png',
@@ -1478,36 +1478,31 @@ export const vietnamNaushadManualItinerary: ManualItinerary = {
     }
   ],
   inclusions: [
-    'Transfer on a private 07-seater car with dedicated driver throughout the tour',
-    '7 Nights accommodation at handpicked hotels/resorts as specified (2N Hoi An, 1N Ba Na Hills, 4N Phu Quoc)',
-    'Daily breakfast at the hotel (except Day 1)',
-    'Cam Thanh Coconut Forest bamboo basket boat ride',
-    'Hoi An Ancient Town walking tour',
-    'Traditional Lantern Making Workshop (with handmade lantern souvenir)',
-    'Lantern boat ride on Hoai River',
-    'Ba Na Hills round-trip Cable Car & Golden Bridge tickets (no lunch)',
-    'Fantasy Park admission and amusement rides',
-    'Hon Thom Over-Sea Cable Car 2-way tickets',
-    'Aquatopia Water Park admission',
-    'Kiss Bridge and Sunset Town promenade',
-    'Kiss of the Sea Show tickets (including Light, Sound & Fireworks)',
-    'Venice Gondola canal boat ride at Grand World',
-    'VinWonders Phu Quoc full-day all-access ticket',
-    'Vinpearl Safari semi-wildlife conservation park entry & safari vehicle tour',
-    'Professional English-speaking tour guide as mentioned on Day 2 in Hoi An',
-    'Complimentary drinking water on tour (2 bottles/pax/day)',
-    'Government tax & service charge'
+    'Transfer on a 07 seater car',
+    'Daily breakfast at the hotel (except day 1)',
+    'Coconut Forest to take a basket boat ride',
+    'Hoi An Ancient Town',
+    'Lantern Making Workshop',
+    'Lantern boat ride on Hoai River.',
+    'Ba Na Hills (no lunch)',
+    'Hon Thom Cable Car (2 ways)',
+    'Kiss Bridge and Sunset Town',
+    'Kiss of the Sea (including Light, Sound & Fireworks)',
+    'Venice boat ride',
+    'Vin Wonders Phu Quoc',
+    'Vinpearl Safari',
+    'English speaking as mentioned on day 2',
+    'Water on tour ( 2bottle/pax/day)',
+    'Government tax & service charge.'
   ],
   exclusions: [
-    '5% GST & 2% TCS applicable extra on total package cost',
-    'All Flight tickets (International & Domestic flights) and meals NOT mentioned',
-    'Compulsory tipping for driver and guide: 5 USD / 1 PAX / 1 DAY WITH TOUR GUIDE',
+    'All Flight tickets, meals NOT mentioned',
+    'Compulsory tipping for driver and guide: 5 USD/1 PAX/ 1 DAY WITH TOUR GUIDE',
     'Lunch',
     'Dinner with transfer',
-    'Vietnam E-Visa fees',
-    'Optional shows and museums (Tinh Hoa Show, Teddy Bear Museum in Grand World)',
-    'Early check-in & late check-out at hotels',
-    'Any personal expenses, laundry, minibar, or items not mentioned in the inclusions'
+    'E VISA',
+    '5% GST and 2% TCS',
+    'Other items not mentioned'
   ],
   thingsToCarry: [
     'Passports (min. 6 months validity from travel date) & Printed Vietnam E-Visas',
@@ -2384,6 +2379,8 @@ export const manualItinerariesRegistry: Record<string, ManualItinerary> = {
   'naushad': vietnamNaushadManualItinerary,
   'mr-naushad': vietnamNaushadManualItinerary,
   'naushad-chaudhary': vietnamNaushadManualItinerary,
+  'naushad-family': vietnamNaushadManualItinerary,
+  'mr-naushad-family': vietnamNaushadManualItinerary,
   'wp-naushad': vietnamNaushadManualItinerary,
   'vietnam-family-tour': vietnamNaushadManualItinerary,
   'wp-vietnam-naushad': vietnamNaushadManualItinerary,
@@ -2832,27 +2829,37 @@ export function itineraryDocumentToManualItinerary(itinerary: ItineraryDocument)
         hRoomCat = 'Luxury Tent';
       }
 
+      let cleanHName = (h.hotelName || '').trim();
+      if (!cleanHName || /^(?:Standard|Deluxe|Selected|3[- ]?Star|4[- ]?Star|5[- ]?Star|Luxury|Budget|Premium)\s*(?:Hotel|Property|Resort)?$/i.test(cleanHName) || cleanHName.toLowerCase() === 'standard' || cleanHName.toLowerCase() === 'deluxe') {
+        cleanHName = 'Hotel';
+      }
+
       return {
         city: h.city || destination,
         nights: Number(h.nights) || 1,
-        hotelName: h.hotelName || 'Handpicked Deluxe Property',
+        hotelName: cleanHName,
         roomCategory: hRoomCat || 'Deluxe Room'
       };
     });
   } else if (itinerary.hotelName || itinerary.stay?.hotelName) {
-    const hName = (itinerary.hotelName || itinerary.stay?.hotelName || '').toLowerCase();
+    const rawHName = itinerary.hotelName || itinerary.stay?.hotelName || '';
+    const hName = rawHName.toLowerCase();
     const defaultCat = (hName.includes('camp') || hName.includes('tent') || hName.includes('desert')) ? 'Luxury Tent' : (roomCategory && !roomCategory.includes('/') ? roomCategory : 'Deluxe Room');
+    let cleanHName = rawHName.trim();
+    if (!cleanHName || /^(?:Standard|Deluxe|Selected|3[- ]?Star|4[- ]?Star|5[- ]?Star|Luxury|Budget|Premium)\s*(?:Hotel|Property|Resort)?$/i.test(cleanHName) || cleanHName.toLowerCase() === 'standard' || cleanHName.toLowerCase() === 'deluxe') {
+      cleanHName = 'Hotel';
+    }
     accommodations = [{
       city: destination,
       nights: numNights,
-      hotelName: itinerary.hotelName || itinerary.stay?.hotelName || 'Handpicked Deluxe Property',
+      hotelName: cleanHName,
       roomCategory: defaultCat
     }];
   } else {
     accommodations = [{
       city: destination,
       nights: numNights,
-      hotelName: 'Curated Deluxe Property',
+      hotelName: 'Hotel',
       roomCategory: roomCategory || 'Deluxe Room'
     }];
   }
@@ -3090,7 +3097,45 @@ export function itineraryDocumentToManualItinerary(itinerary: ItineraryDocument)
     }
 
     const rawTimeline = (dp.timeline && dp.timeline.length > 0) ? dp.timeline : (dp.activities && dp.activities.length > 0 ? dp.activities : []);
-    const { cleanedTimeline, optionalNote } = extractDayOptionalNotes(rawTimeline, dp.optionalNote);
+
+    // 1. Deduplicate check-ins (if smooth check-in exists, remove redundant 'Arrive in ... and complete check-in')
+    const hasSmoothCheckIn = rawTimeline.some(item => /complete smooth (?:hotel )?check-in/i.test(item));
+    let dedupedTimeline = rawTimeline;
+    if (hasSmoothCheckIn) {
+      dedupedTimeline = rawTimeline.filter(item => !/arrive in .*? and complete check-in/i.test(item));
+    }
+
+    // 2. Clean 'Standard Hotel', 'Deluxe Hotel', etc. to just 'Hotel'
+    dedupedTimeline = dedupedTimeline.map(item =>
+      item
+        .replace(/\bStandard Hotel\b/g, 'Hotel')
+        .replace(/\bstandard hotel\b/g, 'hotel')
+        .replace(/\bDeluxe Hotel\b/g, 'Hotel')
+        .replace(/\bdeluxe hotel\b/g, 'hotel')
+        .replace(/\bSelected Hotel\b/g, 'Hotel')
+        .replace(/\bselected hotel\b/g, 'hotel')
+        .replace(/\b3[- ]?Star Hotel\b/gi, 'Hotel')
+        .replace(/\b4[- ]?Star Hotel\b/gi, 'Hotel')
+        .replace(/\b5[- ]?Star Hotel\b/gi, 'Hotel')
+        .replace(/\bLuxury Hotel\b/gi, 'Hotel')
+    );
+
+    const { cleanedTimeline, optionalNote } = extractDayOptionalNotes(dedupedTimeline, dp.optionalNote);
+
+    let cleanStayLocation = dp.stayLocation;
+    if (cleanStayLocation) {
+      cleanStayLocation = cleanStayLocation
+        .replace(/\bStandard Hotel\b/g, 'Hotel')
+        .replace(/\bstandard hotel\b/g, 'hotel')
+        .replace(/\bDeluxe Hotel\b/g, 'Hotel')
+        .replace(/\bdeluxe hotel\b/g, 'hotel')
+        .replace(/\bSelected Hotel\b/g, 'Hotel')
+        .replace(/\bselected hotel\b/g, 'hotel')
+        .replace(/\b3[- ]?Star Hotel\b/gi, 'Hotel')
+        .replace(/\b4[- ]?Star Hotel\b/gi, 'Hotel')
+        .replace(/\b5[- ]?Star Hotel\b/gi, 'Hotel')
+        .replace(/\bLuxury Hotel\b/gi, 'Hotel');
+    }
 
     return {
       day: dp.day || idx + 1,
@@ -3101,7 +3146,7 @@ export function itineraryDocumentToManualItinerary(itinerary: ItineraryDocument)
       intro: undefined,
       timeline: cleanedTimeline,
       optionalNote,
-      stayLocation: dp.stayLocation,
+      stayLocation: cleanStayLocation,
       image: dp.image || collageImages[idx % collageImages.length],
       meals: dp.meals
     };

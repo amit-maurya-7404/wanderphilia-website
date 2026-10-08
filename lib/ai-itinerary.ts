@@ -612,6 +612,16 @@ export function buildCleanDayPlansFromZoho(
   const totalHotelNights = hotels.reduce((sum, h) => sum + (Number(h.nights) || 0), 0);
 
   // Helper to determine stay location for each day based on hotel list or city
+  const formatStayName = (rawName?: string, rawCity?: string) => {
+    const city = (rawCity || '').trim();
+    if (!rawName) return city ? `Hotel, ${city}` : 'Hotel';
+    const clean = rawName.trim();
+    if (/^(?:Standard|Deluxe|Selected|3[- ]?Star|4[- ]?Star|5[- ]?Star|Luxury|Budget|Premium)\s*(?:Hotel|Property|Resort)?$/i.test(clean) || clean.toLowerCase() === 'standard' || clean.toLowerCase() === 'deluxe') {
+      return city ? `Hotel, ${city}` : 'Hotel';
+    }
+    return city ? `${clean}, ${city}` : clean;
+  };
+
   const getStayForDay = (dayNum: number, currentCity: string): string | undefined => {
     // 1. If hotel nights are specified:
     if (totalHotelNights > 0) {
@@ -624,11 +634,7 @@ export function buildCleanDayPlansFromZoho(
         const n = Number(h.nights) || 0;
         if (n > 0) {
           if (dayNum > cumulativeNights && dayNum <= cumulativeNights + n) {
-            if (h.hotelName) {
-              return `${h.hotelName}, ${h.city || currentCity || destination}`;
-            } else if (h.city) {
-              return `Selected Hotel, ${h.city}`;
-            }
+            return formatStayName(h.hotelName, h.city || currentCity || destination);
           }
           cumulativeNights += n;
         }
@@ -644,12 +650,12 @@ export function buildCleanDayPlansFromZoho(
         const match = hotels.find(
           h => h.city && h.city.toLowerCase().trim() === currentCity.toLowerCase().trim()
         );
-        if (match && match.hotelName) {
-          return `${match.hotelName}, ${match.city || currentCity}`;
+        if (match) {
+          return formatStayName(match.hotelName, match.city || currentCity);
         }
       }
-      if (hotels.length === 1 && hotels[0].hotelName) {
-        return `${hotels[0].hotelName}, ${currentCity || destination}`;
+      if (hotels.length === 1) {
+        return formatStayName(hotels[0].hotelName, currentCity || destination);
       }
     }
 
@@ -658,7 +664,7 @@ export function buildCleanDayPlansFromZoho(
       return undefined; // Departure day on multi-day trip
     }
 
-    return currentCity ? `Selected Hotel, ${currentCity}` : (destination ? `Selected Hotel, ${destination}` : undefined);
+    return currentCity ? `Hotel, ${currentCity}` : (destination ? `Hotel, ${destination}` : undefined);
   };
 
   if (!dayActivities || dayActivities.length === 0) {
@@ -901,8 +907,8 @@ export function buildCleanDayPlansFromZoho(
       timeline.push(frameEnRouteExperienceSentence(enRoute));
     }
 
-    // Step 3: Destination Hotel Check-in (if intercity and not departure day)
-    if (isInterCityTravel && !isLastDay) {
+    // Step 3: Destination Hotel Check-in (if intercity and not arrival/departure day)
+    if (isInterCityTravel && !isLastDay && !isFirstDay) {
       if (stayLocation) {
         timeline.push(`Arrive in ${toCity} and complete check-in formalities at ${stayLocation}.`);
       } else {

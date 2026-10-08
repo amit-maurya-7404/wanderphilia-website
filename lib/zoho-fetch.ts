@@ -139,11 +139,15 @@ export async function fetchZohoLeadById(leadIdOrQuery: string): Promise<Normaliz
     const hotelNights = rawLead[`Hotel_${i}_Nights`];
     const hotelStayDates = rawLead[`Hotel_${i}_Stay_Dates`] || '';
 
-    const hotelName = typeof hotelObj === 'object' && hotelObj !== null ? hotelObj.name : (typeof hotelObj === 'string' ? hotelObj : '');
-    if (hotelName || hotelCity) {
+    const rawHotelName = typeof hotelObj === 'object' && hotelObj !== null ? hotelObj.name : (typeof hotelObj === 'string' ? hotelObj : '');
+    let cleanHName = (rawHotelName || '').trim();
+    if (/^(?:Standard|Deluxe|Selected|3[- ]?Star|4[- ]?Star|5[- ]?Star|Luxury|Budget|Premium)\s*(?:Hotel|Property|Resort)?$/i.test(cleanHName) || cleanHName.toLowerCase() === 'standard' || cleanHName.toLowerCase() === 'deluxe') {
+      cleanHName = 'Hotel';
+    }
+    if (cleanHName || hotelCity) {
       hotels.push({
         index: i,
-        hotelName: hotelName || 'Standard Hotel',
+        hotelName: cleanHName || 'Hotel',
         city: hotelCity,
         nights: Number(hotelNights) || 0,
         stayDates: hotelStayDates
