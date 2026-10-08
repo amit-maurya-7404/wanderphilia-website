@@ -214,7 +214,7 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                 {possessiveName}
               </span>
               <span className={`${playfair.className} text-xl sm:text-2xl md:text-3xl font-black text-[#7A2B20] tracking-tight`}>
-                exclusive itinerary
+                itinerary
               </span>
             </div>
 
@@ -335,7 +335,7 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                 {/* Theme Highlights Pills */}
                 <div className="pt-4 border-t border-[#6E1E14]/15">
                   <div className="text-xs sm:text-sm font-black text-[#6E1E14] uppercase tracking-wider leading-relaxed">
-                    {itinerary.subtitle ? itinerary.subtitle.toUpperCase() : `${destination.toUpperCase()} — EXCLUSIVE CURATED PRIVATE EXPEDITION`}
+                    {itinerary.subtitle ? itinerary.subtitle.toUpperCase() : `${destination.toUpperCase()} TOUR ITINERARY`}
                   </div>
                 </div>
               </div>
@@ -529,7 +529,7 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-white/15 pb-4">
                 <div className="space-y-1">
                   <span className="text-[11px] font-black uppercase tracking-widest text-amber-300">
-                    5-Star Luxury Private Tour Quotation
+                    Tour Quotation
                   </span>
                   <h3 className={`${playfair.className} text-xl sm:text-2xl font-black text-white`}>
                     Investment & Pricing Summary
@@ -747,7 +747,7 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                     ) : isAdvancePaid ? (
                       <>Next Stage: <b>Final Balance ₹{remainingBalanceAmount.toLocaleString('en-IN')}</b> payable 15 days before departure.</>
                     ) : (
-                      <>All luxury hotel stays, cruise cabin & private chauffeur transport are fully confirmed. Zero pending dues!</>
+                      <>All hotel stays & private chauffeur transport are fully confirmed. Zero pending dues!</>
                     )}
                   </p>
                 </div>
@@ -757,7 +757,7 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
 
           {/* Bottom Rust Bar */}
           <div className="bg-[#6E1E14] text-white py-3 px-6 text-center text-[10px] sm:text-xs font-bold tracking-wide rounded-xl">
-            Wanderphilia Exclusive Private Travel Proposal • Inclusions & Exclusions
+            Wanderphilia Travel Proposal • Inclusions & Exclusions
           </div>
         </section>
 
@@ -788,7 +788,7 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
               </li>
               <li className="flex items-start gap-2.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-amber-600 shrink-0 mt-1.5" />
-                <span><b>50% Advance Payment:</b> Payable within <b>7 days</b> of token payment to confirm luxury hotel stays, cruise cabins and private transport.</span>
+                <span><b>50% Advance Payment:</b> Payable within <b>7 days</b> of token payment to confirm hotel stays and private transport.</span>
               </li>
               <li className="flex items-start gap-2.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-amber-600 shrink-0 mt-1.5" />

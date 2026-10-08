@@ -162,7 +162,7 @@ export function ItineraryBookModal({
   }
 
   const clientDisplayName = initialLeadName && initialLeadName !== 'Valued Traveler' ? initialLeadName : 'Aneesh';
-  const itineraryDisplayName = proposalTitle || `${destination} Signature Luxury Expedition`;
+  const itineraryDisplayName = proposalTitle || `${destination} Tour Itinerary`;
 
   const handlePayNow = async () => {
     if (payableAmount <= 0) {
@@ -626,7 +626,7 @@ export function ItineraryBookModal({
                           ₹{fiftyPercentAmount.toLocaleString('en-IN')}
                         </div>
                         <p className="text-[10px] text-stone-500 leading-tight pt-0.5">
-                          Locks luxury hotels, cruise & transfers. Balance due 15 days before departure.
+                          Locks hotel stays, activities & transfers. Balance due 15 days before departure.
                         </p>
                       </div>
                     </div>

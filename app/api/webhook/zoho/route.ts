@@ -118,7 +118,7 @@ export async function POST(req: NextRequest) {
     const itineraryDoc: ItineraryDocument = {
       id: uniqueId,
       slug: uniqueId,
-      title: aiContent.title || `${details.noOfNights || 4} Nights / ${details.noOfDays || 5} Days Royal ${details.destination} Escape`,
+      title: aiContent.title || `${details.noOfNights || 4} Nights / ${details.noOfDays || 5} Days ${details.destination} Tour Itinerary`,
       subTitle: details.travelStyle || aiContent.subTitle, // Zoho Travel Style
       description: aiContent.description, // Strict one-liner luxury description (NO prices/durations)
       destination: details.destination || aiContent.destination,

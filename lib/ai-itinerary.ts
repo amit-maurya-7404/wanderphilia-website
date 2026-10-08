@@ -69,7 +69,7 @@ export function sanitizeLuxuryDescription(desc: string): string {
 /**
  * Sanitize subTitle to strictly 1-3 words
  */
-export function sanitizeSubTitle(subTitle: string, fallback: string = 'Luxury Suite'): string {
+export function sanitizeSubTitle(subTitle: string, fallback: string = 'Tour Itinerary'): string {
   if (!subTitle) return fallback;
   const words = subTitle.replace(/[^\w\s-]/g, '').trim().split(/\s+/).filter(Boolean);
   if (words.length === 0) return fallback;
@@ -706,7 +706,7 @@ export function buildCleanDayPlansFromZoho(
       plans.push({
         day: i,
         title,
-        description: isFirst ? `Arrive in ${destination} and settle into your luxury accommodation.` : (isLast ? `Check out and transfer for your departure journey.` : `Explore key highlights of ${destination}.`),
+        description: isFirst ? `Arrive in ${destination} and settle into your accommodation.` : (isLast ? `Check out and transfer for your departure journey.` : `Explore key highlights of ${destination}.`),
         stayLocation,
         meals: dayMeals,
         activities: isFirst ? [`Arrival & Hotel Check-in`] : (isLast ? [`Breakfast & Departure Transfer`] : [`${destination} Sightseeing`]),
@@ -1010,9 +1010,9 @@ export function generateLuxuryFallback(raw: Record<string, any>): GeneratedItine
     hotels = [{ index: 1, hotelName: hotel, city: dest, nights: noOfNights, stayDates: '' }];
   }
 
-  const defaultSubTitle = travelStyle || sanitizeSubTitle(room || hotel || 'Royal Retreat');
+  const defaultSubTitle = travelStyle || sanitizeSubTitle(room || hotel || 'Tour Itinerary');
   const defaultDesc = sanitizeLuxuryDescription(
-    `Private curated travel experience for ${dest}, featuring handpicked stays and personalized day-wise experiences.`
+    `Personalized travel experience for ${dest}, featuring handpicked stays and day-wise sightseeing.`
   );
 
   const dayPlans = buildCleanDayPlansFromZoho(
@@ -1024,7 +1024,7 @@ export function generateLuxuryFallback(raw: Record<string, any>): GeneratedItine
     destType
   );
 
-  const standardTitle = `${noOfNights} Nights / ${noOfDays} Days Royal ${dest} Escape`;
+  const standardTitle = `${noOfNights} Nights / ${noOfDays} Days ${dest} Tour Itinerary`;
 
   const vehicle = (raw.vehicleType || raw.Vehicle_Type || raw.vehicle || raw.Cab_Type || 'AC Vehicle').trim();
 
@@ -1356,10 +1356,10 @@ export async function generateItineraryContentWithAI(rawZohoData: Record<string,
 Generate the overall trip title, 1-3 word subTitle, one-liner luxury description, highlights, inclusions, exclusions, and amenities in strictly valid JSON format.
 
 CRITICAL MANDATORY RULES:
-1. "subTitle": MUST be a short, catchy 1 to 3 word title (e.g. "Desert Tent", "Luxury Suite", "Royal Palace", "Himalayan Haven"). Maximum 3 words!
+1. "subTitle": MUST be a short, clean 1 to 3 word title (e.g. "Desert Camp", "Heritage Stay", "Himalayan Haven"). Maximum 3 words! Avoid promotional words like "Luxury" or "Royal".
 2. "description": MUST be a clean, genuine, professional ONE-LINER description summarizing the holiday experience.
    - ABSOLUTE PROHIBITION: Under NO circumstances include ANY prices/amounts (₹, Rs., $, USD, etc.) OR ANY time durations (e.g. 30-minute, 2-hour, 5-day) in the description! Exactly 1 sentence.
-3. "title": A grand, professional trip title (e.g., "Exclusive Travel Itinerary to ${dest}").
+3. "title": A clean, professional trip title (e.g., "${dest} Tour Itinerary"). Avoid promotional words like "5 Star", "Luxury", "Royal Escape", or "Exclusive".
 4. "highlights": An array of 4 to 5 genuine tour highlights based on the hotels and destination.
 5. "inclusions": 5 to 6 standard inclusions (Accommodation, meal plan, private AC vehicle, driver allowance & tolls, concierge support).
 6. "exclusions": 4 to 5 standard exclusions (Airfare/train fare, personal expenses, monument entry tickets not mentioned, travel insurance).
@@ -1468,7 +1468,7 @@ Generate the clean itinerary JSON now.`;
     const noOfNights = fallback.noOfNights || (noOfDays > 1 ? noOfDays - 1 : 1);
     const travelStyle = fallback.travelStyle || (rawZohoData.travelStyle || rawZohoData.Travel_Style || 'Family Trip').trim();
     const tripType = fallback.tripType || (rawZohoData.tripType || rawZohoData.Trip_Type || 'Customised Trip').trim();
-    const standardTitle = `${noOfNights} Nights / ${noOfDays} Days Royal ${dest} Escape`;
+    const standardTitle = `${noOfNights} Nights / ${noOfDays} Days ${dest} Tour Itinerary`;
 
     return {
       title: standardTitle,

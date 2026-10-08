@@ -70,7 +70,7 @@ export function ItineraryFlowchartSection({
             ? day.activities
             : [
                 `Arrive in ${day.stayLocation || destination} and meet your tour representative.`,
-                `Check-in to your luxury property and refresh.`,
+                `Check-in to your hotel and refresh.`,
                 day.description,
                 `Enjoy dinner and an overnight stay in ${day.stayLocation || destination}.`
               ];

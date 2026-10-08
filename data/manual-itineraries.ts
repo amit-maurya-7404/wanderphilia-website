@@ -3138,11 +3138,58 @@ export function itineraryDocumentToManualItinerary(itinerary: ItineraryDocument)
     };
   });
 
+  const rawTitle = itinerary.title || `${numNights} Nights / ${numDays} Days ${destination} Tour Itinerary`;
+  const cleanTitle = rawTitle
+    .replace(/\b5[- ]?Star\b/gi, '')
+    .replace(/\bLuxury\b/gi, '')
+    .replace(/\bRoyal\s+/gi, '')
+    .replace(/\bEscape\b/gi, 'Tour')
+    .replace(/\bExclusive\b/gi, '')
+    .replace(/\bCurated\b/gi, '')
+    .replace(/\bPrivate Tour Quotation\b/gi, 'Tour Quotation')
+    .replace(/\bPrivate Expedition\b/gi, 'Tour')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+
+  const finalTitle = cleanTitle && cleanTitle.toLowerCase() !== 'tour' && cleanTitle.toLowerCase() !== 'tour itinerary'
+    ? cleanTitle
+    : `${numNights} Nights / ${numDays} Days ${destination} Tour Itinerary`;
+
+  const rawSubtitle = itinerary.subTitle || itinerary.travelStyle || `${destination.toUpperCase()} TOUR ITINERARY`;
+  const cleanSub = rawSubtitle
+    .replace(/—\s*EXCLUSIVE CURATED PRIVATE EXPEDITION/gi, 'TOUR ITINERARY')
+    .replace(/EXCLUSIVE CURATED PRIVATE EXPEDITION/gi, 'TOUR ITINERARY')
+    .replace(/\b5[- ]?Star\b/gi, '')
+    .replace(/\bLuxury\b/gi, '')
+    .replace(/\bRoyal\b/gi, '')
+    .replace(/\bExclusive\b/gi, '')
+    .replace(/\bCurated\b/gi, '')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+
+  const finalSubtitle = cleanSub && cleanSub.length > 0 ? cleanSub : `${destination.toUpperCase()} TOUR ITINERARY`;
+
+  const rawTravelStyle = itinerary.travelStyle || rawLead.Travel_Style || 'Customised Trip';
+  const cleanTravelStyle = rawTravelStyle
+    .replace(/\b5[- ]?Star\b/gi, '')
+    .replace(/\bLuxury\b/gi, '')
+    .replace(/\bExclusive\b/gi, '')
+    .replace(/\s{2,}/g, ' ')
+    .trim() || 'Customised Trip';
+
+  const rawTripType = itinerary.tripType || rawLead.Trip_Type || 'Customised Tour';
+  const cleanTripType = rawTripType
+    .replace(/\b5[- ]?Star\b/gi, '')
+    .replace(/\bLuxury\b/gi, '')
+    .replace(/\bExclusive\b/gi, '')
+    .replace(/\s{2,}/g, ' ')
+    .trim() || 'Customised Tour';
+
   return {
     id: itinerary.id,
     slug: itinerary.slug || itinerary.id,
-    title: itinerary.title || `${numNights} Nights / ${numDays} Days Royal ${destination} Escape`,
-    subtitle: itinerary.subTitle || itinerary.travelStyle || `${destination.toUpperCase()} — EXCLUSIVE CURATED PRIVATE EXPEDITION`,
+    title: finalTitle,
+    subtitle: finalSubtitle,
     duration,
     numNights,
     numDays,
@@ -3150,8 +3197,8 @@ export function itineraryDocumentToManualItinerary(itinerary: ItineraryDocument)
     route: routeDisplay,
     routeSummary,
     destination,
-    travelStyle,
-    tripType,
+    travelStyle: cleanTravelStyle,
+    tripType: cleanTripType,
     leadName,
     vehicleType,
     mealPlan,

@@ -55,12 +55,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!itinerary) {
     return {
       title: 'Itinerary Not Found | Wanderphilia',
-      description: 'The requested luxury travel itinerary could not be found.',
+      description: 'The requested travel itinerary could not be found.',
     };
   }
 
-  const title = `${itinerary.destination?.toUpperCase()} ITINERARY | Wanderphilia Exclusive`;
-  const description = itinerary.description || `Custom luxury travel itinerary for ${itinerary.destination} curated by Wanderphilia.`;
+  const title = `${itinerary.destination?.toUpperCase()} ITINERARY | Wanderphilia`;
+  const description = itinerary.description || `Travel itinerary for ${itinerary.destination} from Wanderphilia.`;
   const teamImageUrl = 'https://wanderphilia.com/images/team5.jpg';
 
   return {

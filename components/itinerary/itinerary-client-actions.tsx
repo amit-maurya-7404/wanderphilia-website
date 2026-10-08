@@ -36,8 +36,8 @@ export function ItineraryClientActions({
     if (navigator.share) {
       try {
         await navigator.share({
-          title: `Wanderphilia Luxury Itinerary: ${title}`,
-          text: `Check out this bespoke luxury travel itinerary for ${destination} curated by Wanderphilia.`,
+          title: `Wanderphilia Itinerary: ${title}`,
+          text: `Check out this travel itinerary for ${destination} from Wanderphilia.`,
           url: url
         });
         return;
@@ -61,7 +61,7 @@ export function ItineraryClientActions({
 
   const cleanPhone = contactPhoneDisplay.replace(/\s+/g, '');
   const whatsappMessage = encodeURIComponent(
-    `Hi Wanderphilia Team! I'm reviewing my custom luxury itinerary (${itineraryId}) for ${destination} for ${leadName}. I'd love to discuss the details and next steps!`
+    `Hi Wanderphilia Team! I'm reviewing my travel itinerary (${itineraryId}) for ${destination} for ${leadName}. I'd love to discuss the details and next steps!`
   );
   const whatsappUrl = `https://wa.me/91${cleanPhone}?text=${whatsappMessage}`;
   const callUrl = `tel:+91${cleanPhone}`;
