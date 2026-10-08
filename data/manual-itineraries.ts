@@ -2325,7 +2325,263 @@ export const rajasthanJignaManualItinerary: ManualItinerary = {
   perAdultPrice: 42153
 };
 
+export const rajasthanSachinManualItinerary: ManualItinerary = {
+  id: 'wp-041c1bdc',
+  slug: 'rajasthan-sachin-yadav-family-trip',
+  title: '7 Nights / 8 Days Rajasthan Tour Itinerary',
+  subtitle: 'RAJASTHAN TOUR ITINERARY',
+  duration: '7 Nights / 8 Days | 14th Nov to 21st Nov 2026',
+  numNights: 7,
+  numDays: 8,
+  dates: '14th Nov to 21st Nov 2026',
+  route: 'Jodhpur → Jaisalmer → Jodhpur → Jawai → Udaipur',
+  routeSummary: '2N Jaisalmer | 2N Jodhpur | 1N Jawai | 2N Udaipur',
+  destination: 'Rajasthan',
+  travelStyle: 'Family Vacation',
+  tripType: 'Customised Private Tour (2 Adults + 1 Child)',
+  leadName: 'Mr Sachin Yadav',
+  adults: 2,
+  kids: 1,
+  kidsDetails: '1 Child (with Dedicated Extra Bed)',
+  perAdultPrice: 49900,
+  perKidPrice: 29360,
+  childPricingNote: '1 Child (with Dedicated Extra Bed): ₹29,360 + 5% GST (₹1,468) = ₹30,828/-',
+  baseAmount: 129160,
+  gstPercentage: 5,
+  gstAmount: 6458,
+  tcsPercentage: 0,
+  tcsAmount: 0,
+  finalQuotationAmount: 135618,
+  vehicleType: 'Private AC Sedan / Ertiga with Dedicated Tour Chauffeur',
+  mealPlan: 'Breakfast & Dinner (MAP Plan) (Breakfast except Day 1)',
+  heroImage: '/images/Rajasthan/rajasthan1.jpeg',
+  galleryImages: [
+    '/images/Rajasthan/rajasthan1.jpeg',
+    '/images/Rajasthan/rajasthan2.jpeg',
+    '/images/Rajasthan/rajasthan3.jpeg',
+    '/images/Rajasthan/rajasthan4.jpeg',
+    '/images/Rajasthan/rajasthan5.jpg',
+    '/images/Rajasthan/rajasthan6.jpg'
+  ],
+  moments: [
+    'Sam Dunes Sunset Camel Safari & Desert Folk Dance',
+    'UNESCO Jaisalmer Golden Sandstone Fort Walking Tour',
+    'Intricate Patwon Ki Haveli & Royal Bada Bagh Cenotaphs',
+    'Gadisar Lake 4-Seater Sunset Pedal Boating',
+    'Jodhpur Iconic Blue City Lanes & Panchatiya Hills Sunset',
+    'Grand Mehrangarh Fort & Marble Jaswant Thada',
+    'Umaid Bhawan Palace & Royal Vintage Car Collection',
+    'Mandore Garden Evening Cultural Light & Sound Show',
+    'Open 4x4 Gypsy Wildlife Leopard Safari in Jawai Granite Hills',
+    'Scenic Lake Pichola Sunset Boat Ride & Jag Mandir Island',
+    'Majestic Udaipur City Palace & Saheliyon Ki Bari Fountains',
+    'Hilltop Sajjangarh Monsoon Palace Sunset Panorama'
+  ],
+  accommodations: [
+    { city: 'Jaisalmer (Sam Dunes)', nights: 1, hotelName: 'Lakhmana Desert Camp', roomCategory: 'Luxury Tent' },
+    { city: 'Jaisalmer (City)', nights: 1, hotelName: 'Antra Inn Hotel', roomCategory: 'Deluxe Rooms' },
+    { city: 'Jodhpur', nights: 2, hotelName: 'Heritage Bagh', roomCategory: 'Deluxe Rooms' },
+    { city: 'Jawai', nights: 1, hotelName: 'Thour Nature Resort Jawai', roomCategory: 'Deluxe Room' },
+    { city: 'Udaipur', nights: 2, hotelName: 'Skk Blue Hotel & Spa', roomCategory: 'Deluxe City View Rooms' }
+  ],
+  dayPlans: [
+    {
+      day: 1,
+      date: '14 Nov',
+      title: 'Journey from Jodhpur to Jaisalmer with Sam Dunes & Sunset Camel Safari',
+      route: 'Jodhpur → Jaisalmer',
+      durationNote: 'Approx. 285 KM | 4.5 - 5 Hrs Drive',
+      timeline: [
+        '**Arrival in Jodhpur & Transfer to Sam Dunes**: Arrival at Jodhpur Airport / Railway Station, meet our tour representative and proceed for your scenic drive to Jaisalmer.',
+        '**Sam Dunes Desert Experience**: Experience the Sam Dunes with stunning desert sunsets, camel safaris, cultural folk dance performances and desert camping.',
+        '**Check-in & Dinner**: Complete smooth hotel check-in formalities and refresh at Lakhmana Desert Camp, Sam Dunes.',
+        '**Overnight Stay**: Enjoy dinner and a comfortable overnight stay at Lakhmana Desert Camp, Sam Dunes, Jaisalmer.'
+      ],
+      stayLocation: 'Lakhmana Desert Camp, Sam Dunes, Jaisalmer',
+      image: '/images/Rajasthan/rajasthan1.jpeg',
+      meals: 'Dinner Only'
+    },
+    {
+      day: 2,
+      date: '15 Nov',
+      title: 'Jaisalmer Golden Fort, Patwon Ki Haveli, Bada Bagh & Gadisar Lake Pedal Boating',
+      route: 'Jaisalmer',
+      timeline: [
+        '**Morning Breakfast & Transfer to City**: Enjoy breakfast at the desert camp before transferring to Jaisalmer city.',
+        '**Jaisalmer Fort**: Explore the magnificent Jaisalmer Fort, showcasing golden sandstone architecture, Jain temples and royal heritage.',
+        '**Patwon Ki Haveli & Museum**: Explore Patwon Ki Haveli, showcasing intricate jharokhas, heritage art and traditional craftsmanship.',
+        '**Bada Bagh Cenotaphs**: Explore Bada Bagh’s magnificent royal cenotaphs and historic sandstone architecture.',
+        '**Gadisar Lake Pedal Boating**: Enjoy a relaxing 4-seater pedal boat ride on Gadisar Lake and scenic sunset views.',
+        '**Check-in & Overnight**: Complete smooth check-in formalities and enjoy dinner and an overnight stay at Antra Inn Hotel, Jaisalmer.'
+      ],
+      optionalNote: 'NOTE: Tasthastu Cafe dining experience near Gadisar Lake is optional.',
+      stayLocation: 'Antra Inn Hotel, Jaisalmer',
+      image: '/images/Rajasthan/rajasthan2.jpeg',
+      meals: 'Breakfast & Dinner'
+    },
+    {
+      day: 3,
+      date: '16 Nov',
+      title: 'Scenic Drive from Jaisalmer to Jodhpur, Blue City Tour & Sunset at Panchatiya Hills',
+      route: 'Jaisalmer → Jodhpur',
+      durationNote: 'Approx. 285 KM | 4.5 - 5 Hrs Drive',
+      timeline: [
+        '**Breakfast & Check-out**: Enjoy a wholesome breakfast and complete check-out formalities in Jaisalmer.',
+        '**Scenic Drive to Jodhpur**: Depart from Jaisalmer and proceed on a scenic drive towards Jodhpur.',
+        '**Check-in at Jodhpur**: Complete smooth check-in formalities and refresh at Heritage Bagh, Jodhpur.',
+        '**Blue City Walking Tour**: Explore Jodhpur’s iconic Blue City winding lanes, vibrant indigo houses and local bazaars.',
+        '**Panchatiya Hills Sunset**: Enjoy panoramic golden-hour sunset views over Jodhpur city from Panchatiya Hills.',
+        '**Dinner & Overnight**: Enjoy dinner and a comfortable overnight stay at Heritage Bagh, Jodhpur.'
+      ],
+      stayLocation: 'Heritage Bagh, Jodhpur',
+      image: '/images/Rajasthan/rajasthan3.jpeg',
+      meals: 'Breakfast & Dinner'
+    },
+    {
+      day: 4,
+      date: '17 Nov',
+      title: 'Mehrangarh Fort, Umaid Bhawan Palace, Jaswant Thada & Mandore Garden Light Show',
+      route: 'Jodhpur',
+      timeline: [
+        '**Breakfast at Hotel**: Enjoy breakfast at Heritage Bagh before proceeding for Jodhpur’s royal sightseeing.',
+        '**Mehrangarh Fort & Palaces**: Explore the colossal Mehrangarh Fort, Sheesh Mahal, Phool Mahal and royal museum collections.',
+        '**Jaswant Thada Memorial**: Visit the serene white marble cenotaph of Jaswant Thada surrounded by peaceful lakeside gardens.',
+        '**Umaid Bhawan Palace & Vintage Cars**: Discover royal artefacts, vintage automobile collections and the heritage museum at Umaid Bhawan Palace.',
+        '**Mandore Garden Light Show**: Enjoy the engaging evening sound and light show celebrating Rajasthan’s rich culture and heritage.',
+        '**Dinner & Overnight**: Return to Heritage Bagh for dinner and an overnight stay in Jodhpur.'
+      ],
+      optionalNote: 'NOTE: Mehrangarh Fort Zipline & Rao Jodha Desert Rock Park is optional.',
+      stayLocation: 'Heritage Bagh, Jodhpur',
+      image: '/images/Rajasthan/rajasthan4.jpeg',
+      meals: 'Breakfast & Dinner'
+    },
+    {
+      day: 5,
+      date: '18 Nov',
+      title: 'Journey to Jawai Granite Hills, Kaylana Lake & Open 4x4 Wildlife Leopard Safari',
+      route: 'Jodhpur → Jawai',
+      durationNote: 'Approx. 150 KM | 3 - 3.5 Hrs Drive',
+      timeline: [
+        '**Breakfast & Scenic Drive to Jawai**: Enjoy breakfast, complete check-out, and embark on a scenic drive to the rugged granite wilderness of Jawai.',
+        '**Kaylana Lake & Countryside Landscapes**: En-route visit to peaceful Kaylana Lake and scenic countryside reservoirs.',
+        '**Check-in at Jawai Resort**: Complete smooth check-in formalities and refresh at Thour Nature Resort Jawai.',
+        '**Open 4x4 Jawai Wildlife Safari**: Board an open 4x4 Gypsy safari across rugged granite hills to spot wild leopards, crocodiles at Jawai Dam, and migratory birds.',
+        '**Dinner & Overnight**: Enjoy a traditional Rajasthani dinner and overnight stay at Thour Nature Resort Jawai.'
+      ],
+      stayLocation: 'Thour Nature Resort Jawai',
+      image: '/images/Rajasthan/rajasthan5.jpg',
+      meals: 'Breakfast & Dinner'
+    },
+    {
+      day: 6,
+      date: '19 Nov',
+      title: 'Drive from Jawai to Udaipur, Historic Jagdish Mandir & Lake Pichola Boat Ride',
+      route: 'Jawai → Udaipur',
+      durationNote: 'Approx. 140 KM | 3 - 3.5 Hrs Drive',
+      timeline: [
+        '**Breakfast & Drive to Udaipur**: After breakfast, check out from Jawai and drive through the Aravalli hills towards Udaipur.',
+        '**Check-in at Udaipur**: Complete smooth check-in formalities and refresh at Skk Blue Hotel & Spa, Udaipur.',
+        '**Jagdish Mandir Temple**: Visit the historic 17th-century Jagdish Temple renowned for its intricate stone carvings and architecture.',
+        '**Lake Pichola Sunset Boat Cruise**: Board a scenic boat ride across Lake Pichola offering panoramic views of the Lake Palace and surrounding palaces.',
+        '**Jag Mandir Island Palace**: Explore the island palace of Jag Mandir and enjoy romantic views across the tranquil waters.',
+        '**Dinner & Overnight**: Enjoy dinner and an overnight stay at Skk Blue Hotel & Spa, Udaipur.'
+      ],
+      stayLocation: 'Skk Blue Hotel & Spa, Udaipur',
+      image: '/images/Rajasthan/rajasthan6.jpg',
+      meals: 'Breakfast & Dinner'
+    },
+    {
+      day: 7,
+      date: '20 Nov',
+      title: 'Udaipur City Palace, Saheliyon Ki Bari, Sajjangarh Monsoon Palace & Shilpgram',
+      route: 'Udaipur',
+      timeline: [
+        '**Breakfast at Hotel**: Enjoy breakfast at Skk Blue Hotel & Spa before exploring Udaipur’s royal heritage.',
+        '**Udaipur City Palace**: Explore the grand City Palace complex, royal courtyards, crystal gallery and elevated lake balconies.',
+        '**Saheliyon Ki Bari Gardens**: Stroll through the historic royal gardens featuring marble elephants, fountains and lotus pools.',
+        '**Sajjangarh Monsoon Palace**: Ascend to the hilltop Monsoon Palace for breathtaking panoramic views of Udaipur’s lakes and Aravalli hills.',
+        '**Shilpgram Rural Arts Complex**: Discover traditional Rajasthani handicrafts, pottery, folk performances and tribal heritage.',
+        '**Dinner & Overnight**: Enjoy dinner and an overnight stay at Skk Blue Hotel & Spa, Udaipur.'
+      ],
+      stayLocation: 'Skk Blue Hotel & Spa, Udaipur',
+      image: '/images/Rajasthan/rajasthan1.jpeg',
+      meals: 'Breakfast & Dinner'
+    },
+    {
+      day: 8,
+      date: '21 Nov',
+      title: 'Morning Leisure, Local Shopping & Departure Transfer to Udaipur Airport',
+      route: 'Udaipur Hotel → Udaipur Airport (UDR)',
+      timeline: [
+        '**Breakfast & Check-out**: Enjoy a relaxed breakfast at the hotel and complete check-out formalities.',
+        '**Local Shopping & Souvenirs**: Spend time exploring Udaipur’s local markets for authentic miniature paintings, silver jewellery and souvenirs.',
+        '**Airport Departure Transfer**: Meet your dedicated driver and transfer to Udaipur Maharana Pratap Airport (UDR) for your flight home carrying cherished royal Rajasthan memories!'
+      ],
+      stayLocation: 'Departure',
+      signOff: 'Until your next royal adventure — Wanderphilia style. 🧡',
+      image: '/images/Rajasthan/rajasthan4.jpeg',
+      meals: 'Breakfast'
+    }
+  ],
+  inclusions: [
+    'Private dedicated air-conditioned vehicle for 8 Days for all transfers, sightseeing and intercity travel as per itinerary.',
+    'Experienced, verified and courteous professional tour chauffeur throughout the journey.',
+    '7 Nights accommodation in handpicked properties as specified (1N Lakhmana Desert Camp Sam Dunes, 1N Antra Inn Jaisalmer, 2N Heritage Bagh Jodhpur, 1N Thour Nature Resort Jawai, 2N Skk Blue Hotel & Spa Udaipur).',
+    'Daily Breakfast at all hotels + Dinners as specified in the itinerary (Breakfast except Day 1).',
+    'Sam Dunes Thar Desert Experience: Desert sunset, camel safari, Rajasthani cultural folk dance performances, evening bonfire and buffet dinner.',
+    'Jaisalmer Golden Sandstone Fort & ancient Jain Temples heritage exploration.',
+    'Patwon Ki Haveli & Heritage Museum visit in Jaisalmer.',
+    'Bada Bagh Royal Sandstone Cenotaphs sightseeing.',
+    'Gadisar Lake 4-Seater Sunset Pedal Boat Ride in Jaisalmer.',
+    'Jodhpur Iconic Blue City Heritage Walking Tour through historic indigo lanes.',
+    'Panchatiya Hills Golden Hour Sunset Panorama in Jodhpur.',
+    'Mehrangarh Fort, Sheesh Mahal, Phool Mahal & Royal Museum exploration in Jodhpur.',
+    'Serene Jaswant Thada white marble memorial & lakeside garden visit.',
+    'Umaid Bhawan Palace Heritage Museum & Royal Vintage Car Collection visit.',
+    'Mandore Garden Evening Cultural Sound & Light Show in Jodhpur.',
+    'En-route Kaylana Lake and countryside scenic reservoir stop.',
+    'Open 4x4 Gypsy Wildlife & Leopard Safari in Jawai Granite Hills & Jawai Dam.',
+    'Historic 17th-Century Jagdish Mandir Temple visit in Udaipur.',
+    'Scenic Lake Pichola Sunset Boat Ride in Udaipur.',
+    'Jag Mandir Island Palace visit and exploration.',
+    'Grand Udaipur City Palace & Museum complex royal tour.',
+    'Saheliyon Ki Bari historic royal gardens with marble fountains & lotus pools.',
+    'Hilltop Sajjangarh Monsoon Palace panoramic sunset experience.',
+    'Shilpgram Rural Arts and Crafts Complex cultural exploration.',
+    'All toll taxes, parking fees, interstate permits, fuel charges and driver allowances.',
+    'Dedicated Wanderphilia 24x7 trip coordination and concierge assistance throughout the journey.'
+  ],
+  exclusions: [
+    '5% GST is applicable extra on total package cost.',
+    'Flight tickets (Airfare) and rail tickets.',
+    'Monument entry tickets, museum entry fees and camera charges not explicitly listed.',
+    'Lunches and personal beverages/refreshments.',
+    'Any personal expenses like laundry, room service, telephone calls, tips or gratuities.',
+    'Optional activities (Mehrangarh Zipline, Rao Jodha Desert Park, Tasthastu Cafe).',
+    'Anything not explicitly mentioned under Inclusions.'
+  ],
+  thingsToCarry: [
+    'Valid Government photo ID proofs for all travelers (Aadhaar / Passport / Driving License).',
+    'Comfortable walking shoes or sandals for fort and palace walking tours.',
+    'Light cotton clothing for daytime sightseeing with sunglasses, hat and sunscreen.',
+    'Light jacket / shawl for cool evenings in Sam Dunes and Jawai.',
+    'Camera with extra memory cards to capture Rajasthan’s magnificent heritage and wildlife.'
+  ]
+};
+
 export const manualItinerariesRegistry: Record<string, ManualItinerary> = {
+  'wp-041c1bdc': rajasthanSachinManualItinerary,
+  '041c1bdc': rajasthanSachinManualItinerary,
+  'rajasthan-sachin': rajasthanSachinManualItinerary,
+  'rajasthan-sachin-yadav': rajasthanSachinManualItinerary,
+  'sachin-rajasthan': rajasthanSachinManualItinerary,
+  'sachin': rajasthanSachinManualItinerary,
+  'mr-sachin': rajasthanSachinManualItinerary,
+  'mr-sachin-sir': rajasthanSachinManualItinerary,
+  'sachin-yadav': rajasthanSachinManualItinerary,
+  'sachin-sir': rajasthanSachinManualItinerary,
+  'wp-rajasthan-sachin': rajasthanSachinManualItinerary,
+
   'rajasthan-jigna': rajasthanJignaManualItinerary,
   'royal-rajasthan-jigna': rajasthanJignaManualItinerary,
   'jigna': rajasthanJignaManualItinerary,
@@ -2414,7 +2670,8 @@ export function getAllManualItineraries(): ManualItinerary[] {
     vietnamYashManualItinerary,
     vietnamNaushadManualItinerary,
     rajasthanRoyalEscapeManualItinerary,
-    rajasthanJignaManualItinerary
+    rajasthanJignaManualItinerary,
+    rajasthanSachinManualItinerary
   ];
 }
 
