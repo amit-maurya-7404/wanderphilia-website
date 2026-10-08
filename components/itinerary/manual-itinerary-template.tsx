@@ -437,8 +437,8 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                     <tr className="bg-[#6E1E14] text-white uppercase text-[11px] font-black tracking-wider">
                       <th className="p-3.5 border-r border-white/20">Destination</th>
                       <th className="p-3.5 border-r border-white/20">Duration</th>
-                      <th className="p-3.5 border-r border-white/20">Property Type</th>
-                      <th className="p-3.5">Sharing Type</th>
+                      <th className="p-3.5 border-r border-white/20">Property Name</th>
+                      <th className="p-3.5">Room Category</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#6E1E14]/20 font-semibold text-stone-900 bg-white">

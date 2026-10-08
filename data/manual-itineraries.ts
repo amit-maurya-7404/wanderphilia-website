@@ -2870,24 +2870,43 @@ export function itineraryDocumentToManualItinerary(itinerary: ItineraryDocument)
   // Accommodations Table
   let accommodations: ManualAccommodation[] = [];
   if (Array.isArray(rawHotels) && rawHotels.length > 0) {
-    accommodations = rawHotels.map((h: any) => ({
-      city: h.city || destination,
-      nights: Number(h.nights) || 1,
-      hotelName: h.hotelName || 'Handpicked Deluxe Property',
-      roomCategory: roomCategory || 'Luxury Category'
-    }));
+    accommodations = rawHotels.map((h: any) => {
+      const hName = (h.hotelName || '').toLowerCase();
+      let hRoomCat = (h.roomCategory || h.room || '').trim();
+
+      if (!hRoomCat || hRoomCat === roomCategory || hRoomCat.includes('/')) {
+        if (hName.includes('camp') || hName.includes('tent') || hName.includes('desert') || hName.includes('lakhmana')) {
+          hRoomCat = 'Luxury Tent';
+        } else if (roomCategory && !roomCategory.includes('/') && !roomCategory.includes('+')) {
+          hRoomCat = roomCategory;
+        } else {
+          hRoomCat = 'Deluxe Room';
+        }
+      } else if (hRoomCat.toLowerCase().includes('luxury swiss tent') || hRoomCat.toLowerCase().includes('swiss tent')) {
+        hRoomCat = 'Luxury Tent';
+      }
+
+      return {
+        city: h.city || destination,
+        nights: Number(h.nights) || 1,
+        hotelName: h.hotelName || 'Handpicked Deluxe Property',
+        roomCategory: hRoomCat || 'Deluxe Room'
+      };
+    });
   } else if (itinerary.hotelName || itinerary.stay?.hotelName) {
+    const hName = (itinerary.hotelName || itinerary.stay?.hotelName || '').toLowerCase();
+    const defaultCat = (hName.includes('camp') || hName.includes('tent') || hName.includes('desert')) ? 'Luxury Tent' : (roomCategory && !roomCategory.includes('/') ? roomCategory : 'Deluxe Room');
     accommodations = [{
       city: destination,
       nights: numNights,
       hotelName: itinerary.hotelName || itinerary.stay?.hotelName || 'Handpicked Deluxe Property',
-      roomCategory: roomCategory || 'Luxury Category'
+      roomCategory: defaultCat
     }];
   } else {
     accommodations = [{
       city: destination,
       nights: numNights,
-      hotelName: 'Curated 4-Star / 5-Star Property',
+      hotelName: 'Curated Deluxe Property',
       roomCategory: roomCategory || 'Deluxe Room'
     }];
   }
