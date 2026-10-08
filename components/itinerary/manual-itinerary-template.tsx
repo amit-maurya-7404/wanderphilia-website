@@ -93,18 +93,18 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
   const possessiveName = firstName.toLowerCase() === 'your'
     ? 'Your'
     : (firstName.endsWith('s') || firstName.endsWith('S') ? `${firstName}'` : `${firstName}'s`);
-  const destination = itinerary.destination || 'Himachal Pradesh';
-  const numDays = itinerary.numDays;
-  const numNights = itinerary.numNights;
-  const travelStyle = itinerary.travelStyle || 'Signature Mountain Tour';
+  const destination = itinerary.destination || 'Selected Destination';
+  const numDays = itinerary.numDays || 5;
+  const numNights = itinerary.numNights || 4;
+  const travelStyle = itinerary.travelStyle || 'Curated Travel Experience';
   const tripType = itinerary.tripType || 'Customised Tour';
-  const heroImage = itinerary.heroImage || '/images/himachal1.jpg';
-  const vehicleType = itinerary.vehicleType || '17 Seater Tempo Traveller';
-  const mealPlan = itinerary.mealPlan || 'Breakfast & Dinner (Breakfast except for Day 1 & Dinner for day 10)';
+  const heroImage = itinerary.heroImage || '/images/about_hero4.jpg';
+  const vehicleType = itinerary.vehicleType || 'Private AC Vehicle';
+  const mealPlan = itinerary.mealPlan || 'Breakfast & Dinner';
 
   // Route cities breakdown
-  const routeDisplay = itinerary.route || 'Chandigarh → Dharamshala → Dalhousie → Bir → Manali → Kasol → Chandigarh';
-  const staySummary = itinerary.routeSummary || '2N Dharamshala | 2N Dalhousie | 1N Bir | 2N Manali | 2N Kasol';
+  const routeDisplay = itinerary.route || destination;
+  const staySummary = itinerary.routeSummary || `${numNights}N ${destination}`;
 
   // 6 Collage images for Page 2
   const isRajasthanDest = destination.toLowerCase().includes('rajasthan') || (itinerary.id && itinerary.id.toLowerCase().includes('rajasthan')) || (itinerary.id && itinerary.id.toLowerCase().includes('4002b3f4'));
@@ -139,7 +139,7 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
 
   // Payment stage calculations
   const alreadyPaid = Number(itinerary.advanceAmountPaid || 0);
-  const totalQuotationAmount = Number(itinerary.finalQuotationAmount || 683088);
+  const totalQuotationAmount = Number(itinerary.finalQuotationAmount || 0);
   const remainingBalanceAmount = Math.max(0, totalQuotationAmount - alreadyPaid);
   const tenPercentAmount = Math.round(totalQuotationAmount * 0.1);
   const fiftyPercentAmount = Math.round(totalQuotationAmount * 0.5);
@@ -587,11 +587,11 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                         </div>
                       </div>
 
-                      {/* 2. Child Cost (5 Yrs) */}
+                      {/* 2. Child Cost (With Extra Bed) */}
                       <div className="bg-white/10 backdrop-blur-md rounded-xl p-3.5 sm:p-4 border border-white/15 flex flex-col justify-between space-y-2">
                         <div className="space-y-1">
                           <div className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-amber-300 flex items-center justify-between">
-                            <span>Child Cost (5 Yrs)</span>
+                            <span>Child with Extra Bed</span>
                             <Users className="w-4 h-4 text-amber-300" />
                           </div>
                           <div className="text-lg sm:text-xl font-black text-white">
@@ -602,7 +602,7 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                             {tcsTotal > 0 && <div>+ {tcsPct}% TCS: ₹{kidTcs.toLocaleString('en-IN')}/-</div>}
                           </div>
                           <div className="text-[10px] text-emerald-300 font-bold pt-1 leading-tight">
-                            Without Extra Bed • 2.5 Yrs Child FREE
+                            Dedicated Extra Bed Included
                           </div>
                         </div>
                         <div className="pt-2 border-t border-white/15 text-[11px] text-white/90 font-medium flex items-center justify-between">

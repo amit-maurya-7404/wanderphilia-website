@@ -37,3 +37,6 @@ next.user-config.*
 
 # TypeScript
 *.tsbuildinfo
+
+# Scratch test scripts
+scratch/

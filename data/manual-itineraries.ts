@@ -1,5 +1,6 @@
 import { ManualItinerary } from '@/types/manual-itinerary';
 import { ItineraryDocument } from '@/types/itinerary';
+import { getRouteTransitInfo } from '@/lib/ai-itinerary';
 
 export const himachalExplorerManualItinerary: ManualItinerary = {
   id: 'himachal-explorer',
@@ -2662,5 +2663,507 @@ export function manualItineraryToDocument(manual: ManualItinerary): ItineraryDoc
     status: 'active',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
+  };
+}
+
+function parseAnyDate(str: any): Date | null {
+  if (!str) return null;
+  const s = String(str).trim();
+  if (/^\d{4}-\d{1,2}-\d{1,2}$/.test(s)) {
+    const [y, m, d] = s.split('-').map(Number);
+    return new Date(y, m - 1, d);
+  }
+  if (/^\d{1,2}[-\/]\d{1,2}[-\/]\d{4}$/.test(s)) {
+    const [d, m, y] = s.split(/[-\/]/).map(Number);
+    return new Date(y, m - 1, d);
+  }
+  const parsed = new Date(s);
+  return isNaN(parsed.getTime()) ? null : parsed;
+}
+
+function getOrdinal(n: number): string {
+  const s = ['th', 'st', 'nd', 'rd'];
+  const v = n % 100;
+  return n + (s[(v - 20) % 10] || s[v] || s[0]);
+}
+
+const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+export function formatDateRange(rawStart: any, rawEnd: any, numDays: number = 5): string {
+  const startDate = parseAnyDate(rawStart);
+  if (!startDate) return rawStart ? String(rawStart) : '';
+
+  let endDate = parseAnyDate(rawEnd);
+  if (!endDate && numDays > 0) {
+    endDate = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() + (numDays - 1));
+  }
+
+  const startStr = `${getOrdinal(startDate.getDate())} ${MONTH_NAMES[startDate.getMonth()]}`;
+  if (!endDate) return `${startStr} ${startDate.getFullYear()}`;
+
+  const endStr = `${getOrdinal(endDate.getDate())} ${MONTH_NAMES[endDate.getMonth()]}`;
+  const endYear = endDate.getFullYear();
+
+  if (startDate.getFullYear() !== endDate.getFullYear()) {
+    return `${startStr} ${startDate.getFullYear()} to ${endStr} ${endYear}`;
+  }
+  return `${startStr} to ${endStr} ${endYear}`;
+}
+
+export function formatDayDate(rawStart: any, dayIndex: number): string | undefined {
+  const startDate = parseAnyDate(rawStart);
+  if (!startDate) return undefined;
+  const current = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() + (dayIndex - 1));
+  return `${getOrdinal(current.getDate())} ${MONTH_NAMES[current.getMonth()]}`;
+}
+
+export function itineraryDocumentToManualItinerary(itinerary: ItineraryDocument): ManualItinerary {
+  const leadName = itinerary.leadDetails?.name || itinerary.rawZohoData?.Full_Name || (itinerary.rawZohoData?.First_Name ? `${itinerary.rawZohoData.First_Name} ${itinerary.rawZohoData.Last_Name || ''}`.trim() : '') || 'Valued Traveler';
+  const destination = itinerary.destination || itinerary.rawZohoData?.Destinations || itinerary.rawZohoData?.Destination || 'Rajasthan';
+  const numDays = itinerary.noOfDays || (itinerary.rawZohoData?.No_of_Days ? Number(itinerary.rawZohoData.No_of_Days) : (itinerary.dayPlans?.length || 5));
+  const numNights = itinerary.noOfNights || (itinerary.rawZohoData?.No_of_Nights ? Number(itinerary.rawZohoData.No_of_Nights) : (numDays > 1 ? numDays - 1 : 1));
+  const travelStyle = itinerary.travelStyle || itinerary.leadDetails?.travelStyle || itinerary.rawZohoData?.Travel_Style || 'Family Trip';
+  const tripType = itinerary.tripType || itinerary.leadDetails?.tripType || itinerary.rawZohoData?.Trip_Type || 'Customised Trip';
+  const guests = itinerary.leadDetails?.guests || itinerary.rawZohoData?.Number_Of_Guest || itinerary.rawZohoData?.Number_Of_Guests || 2;
+  const heroImage = itinerary.heroImage || '/images/about_hero4.jpg';
+
+  const rawStartDate = itinerary.leadDetails?.startDate || itinerary.rawZohoData?.Preferred_Start_date || itinerary.startDate || '';
+  const rawEndDate = itinerary.leadDetails?.endDate || itinerary.rawZohoData?.Travel_End_Date || itinerary.endDate || '';
+  const dates = formatDateRange(rawStartDate, rawEndDate, numDays);
+  const duration = dates ? `${numNights} Nights / ${numDays} Days | ${dates}` : `${numNights} Nights / ${numDays} Days`;
+
+  const vehicleType = itinerary.vehicleType || itinerary.leadDetails?.vehicleType || itinerary.rawZohoData?.Vehicle_Type || 'Private AC Sedan / SUV';
+  const roomCategory = itinerary.roomCategory || itinerary.leadDetails?.preferredRoomCategory || itinerary.rawZohoData?.Preferred_Room_Category || 'Luxury';
+  const mealPlan = itinerary.mealPlan || itinerary.leadDetails?.mealPlan || itinerary.rawZohoData?.Meal_Plan || 'Breakfast & Dinner';
+
+  // 6 Collage images
+  const isRajasthanDest = destination.toLowerCase().includes('rajasthan') || (itinerary.id && itinerary.id.toLowerCase().includes('rajasthan')) || (itinerary.id && itinerary.id.toLowerCase().includes('4002b3f4'));
+  const isVietnamDest = destination.toLowerCase().includes('vietnam') || (itinerary.id && itinerary.id.toLowerCase().includes('vietnam'));
+
+  const defaultCollagePool = isRajasthanDest ? [
+    '/images/Rajasthan/rajasthan1.jpeg',
+    '/images/Rajasthan/rajasthan2.jpeg',
+    '/images/Rajasthan/rajasthan3.jpeg',
+    '/images/Rajasthan/rajasthan4.jpeg',
+    '/images/Rajasthan/rajasthan5.jpg',
+    '/images/Rajasthan/rajasthan6.jpg'
+  ] : (isVietnamDest ? [
+    '/images/vietnam-beauty.png',
+    '/images/vietnam-best.png',
+    '/images/vietnam-couple.png',
+    '/images/vietnam-dreamy.png',
+    '/images/vietnam-exotic.png',
+    '/images/vietnam-highlights.png'
+  ] : [
+    heroImage,
+    '/images/himachal.jpg',
+    '/images/himachal2.jpg',
+    '/images/himachal3.jpg',
+    '/images/himachal4.jpg',
+    '/images/himachal5.jpg'
+  ]);
+
+  const collageImages = itinerary.galleryImages && itinerary.galleryImages.length >= 6
+    ? itinerary.galleryImages.slice(0, 6)
+    : defaultCollagePool;
+
+  // Route & Route Summary
+  const routeCities: string[] = [];
+  const cityStaysMap: { [city: string]: number } = {};
+
+  const cleanCityName = (c: string): string => {
+    if (!c || typeof c !== 'string') return '';
+    let clean = c.trim();
+    clean = clean.replace(/^(?:Arrival\s+(?:in|at)\s+|Departure\s+(?:from\s+)?|Trip\s+Ends\s*:\s*|Stay\s*:\s*)/i, '');
+    clean = clean.replace(/\s+(?:Airport|Railway Station|Station|Hotel|Resort|Heritage)$/i, '');
+    clean = clean.replace(/\s*\([^)]*\)/g, '');
+    clean = clean.replace(/\b\d+\s*(?:N|Nights?|D|Days?)\b/gi, '');
+    clean = clean.replace(/\s+(?:City|District|Town)$/i, '');
+    clean = clean.replace(/\s*\/\s*Similar$/i, '');
+    clean = clean.replace(/\s{2,}/g, ' ').trim();
+    return clean;
+  };
+
+  const addRouteCity = (city: string) => {
+    const clean = cleanCityName(city);
+    if (!clean || clean.length < 2) return;
+    if (routeCities.length === 0 || routeCities[routeCities.length - 1].toLowerCase() !== clean.toLowerCase()) {
+      routeCities.push(clean);
+    }
+  };
+
+  // A. Check Zoho Subform rows (Activities_and_Experiences_1)
+  const rawSubform = itinerary.rawZohoData?.rawLeadData?.Activities_and_Experiences_1 || itinerary.rawZohoData?.Activities_and_Experiences_1;
+  if (Array.isArray(rawSubform) && rawSubform.length > 0) {
+    rawSubform.forEach(row => {
+      const rawC1 = typeof row.City === 'object' && row.City !== null ? row.City.name : String(row.City || '');
+      const rawC2 = row.City_2 ?? row.City2 ?? row.Transit_City ?? row.Transit_city ?? '';
+      const c2 = typeof rawC2 === 'object' && rawC2 !== null ? rawC2.name : String(rawC2 || '');
+      const c1 = String(rawC1 || '').trim();
+
+      if (c1) addRouteCity(c1);
+      if (c2 && c2.toLowerCase() !== c1.toLowerCase()) addRouteCity(c2);
+    });
+  }
+
+  // B. Check dayActivities from rawZohoData
+  if (routeCities.length <= 1 && Array.isArray(itinerary.rawZohoData?.dayActivities) && itinerary.rawZohoData.dayActivities.length > 0) {
+    itinerary.rawZohoData.dayActivities.forEach((da: any) => {
+      const c1 = String(da.city || '').trim();
+      const c2 = String(da.city2 || '').trim();
+      if (c1) addRouteCity(c1);
+      if (c2 && c2.toLowerCase() !== c1.toLowerCase()) addRouteCity(c2);
+    });
+  }
+
+  // C. Check dayPlans activities and titles
+  if (routeCities.length <= 1 && Array.isArray(itinerary.dayPlans) && itinerary.dayPlans.length > 0) {
+    itinerary.dayPlans.forEach((dp) => {
+      (dp.activities || []).forEach(act => {
+        const transferMatch = act.match(/Transfer\s+from\s+([A-Za-z\s]+?)\s+to\s+([A-Za-z\s]+?)(?:\s*\(|$)/i);
+        if (transferMatch) {
+          addRouteCity(transferMatch[1]);
+          addRouteCity(transferMatch[2]);
+        }
+        const arrivalMatch = act.match(/Arrival\s+(?:in|at)\s+([A-Za-z\s]+?)(?:\s*&|$)/i);
+        if (arrivalMatch) {
+          addRouteCity(arrivalMatch[1]);
+        }
+      });
+      if (dp.title) {
+        const arrowMatch = dp.title.match(/(?:Journey|Drive|Transfer)\s+from\s+([A-Za-z\s]+?)\s+to\s+([A-Za-z\s]+?)(?:\s+with|\s*[|—–-]|$)/i);
+        if (arrowMatch) {
+          addRouteCity(arrowMatch[1]);
+          addRouteCity(arrowMatch[2]);
+        }
+      }
+      if (dp.stayLocation) {
+        const parts = dp.stayLocation.split(',');
+        const cityCandidate = cleanCityName(parts[parts.length - 1]);
+        if (cityCandidate) addRouteCity(cityCandidate);
+      }
+    });
+  }
+
+  // D. Check rawHotels for night stays
+  const rawHotels = itinerary.rawZohoData?.hotels || (Array.isArray(itinerary.stay) ? itinerary.stay : []);
+  if (Array.isArray(rawHotels) && rawHotels.length > 0) {
+    rawHotels.forEach((h: any) => {
+      const c = cleanCityName(h.city || destination);
+      const n = Number(h.nights) || 1;
+      if (c) {
+        if (routeCities.length <= 1) addRouteCity(c);
+        cityStaysMap[c] = (cityStaysMap[c] || 0) + n;
+      }
+    });
+  }
+
+  if (routeCities.length === 0) {
+    routeCities.push(destination);
+  }
+
+  const routeDisplay = routeCities.join(' → ');
+  const routeSummary = Object.keys(cityStaysMap).length > 0
+    ? Object.entries(cityStaysMap).map(([city, nights]) => `${nights}N ${city}`).join(' | ')
+    : `${numNights}N ${destination}`;
+
+  // Accommodations Table
+  let accommodations: ManualAccommodation[] = [];
+  if (Array.isArray(rawHotels) && rawHotels.length > 0) {
+    accommodations = rawHotels.map((h: any) => ({
+      city: h.city || destination,
+      nights: Number(h.nights) || 1,
+      hotelName: h.hotelName || 'Handpicked Deluxe Property',
+      roomCategory: roomCategory || 'Luxury Category'
+    }));
+  } else if (itinerary.hotelName || itinerary.stay?.hotelName) {
+    accommodations = [{
+      city: destination,
+      nights: numNights,
+      hotelName: itinerary.hotelName || itinerary.stay?.hotelName || 'Handpicked Deluxe Property',
+      roomCategory: roomCategory || 'Luxury Category'
+    }];
+  } else {
+    accommodations = [{
+      city: destination,
+      nights: numNights,
+      hotelName: 'Curated 4-Star / 5-Star Property',
+      roomCategory: roomCategory || 'Deluxe Room'
+    }];
+  }
+
+  // Dynamic experiences for inclusions
+  const dynamicExperiences: string[] = [];
+  const seenExp = new Set<string>();
+
+  if (Array.isArray(rawSubform)) {
+    rawSubform.forEach(row => {
+      const rawEnRoute = row.En_route_Experiences ?? row.En_route_experiences ?? row.En_Route_Experiences ?? row.En_route ?? row.Enroute ?? row.en_route_experiences;
+      const enRouteName = (typeof rawEnRoute === 'object' && rawEnRoute !== null ? rawEnRoute.name : (typeof rawEnRoute === 'string' ? rawEnRoute : '')).trim();
+      if (enRouteName && !seenExp.has(enRouteName.toLowerCase())) {
+        seenExp.add(enRouteName.toLowerCase());
+        dynamicExperiences.push(enRouteName.toLowerCase().startsWith('en-route') ? enRouteName : `En-route Experience: ${enRouteName}`);
+      }
+
+      for (let e = 1; e <= 10; e++) {
+        const expKey = e === 1 ? (row.Experiences_and_activities || row.Experiences_1) : row[`Experiences_${e}`];
+        if (!expKey) continue;
+        const expName = (typeof expKey === 'object' && expKey !== null ? expKey.name : (typeof expKey === 'string' ? expKey : '')).trim();
+        if (expName && !seenExp.has(expName.toLowerCase())) {
+          seenExp.add(expName.toLowerCase());
+          dynamicExperiences.push(expName);
+        }
+      }
+    });
+  }
+
+  if (dynamicExperiences.length === 0 && itinerary.rawZohoData?.dayActivities && Array.isArray(itinerary.rawZohoData.dayActivities)) {
+    itinerary.rawZohoData.dayActivities.forEach((da: any) => {
+      if (da.enRouteExperiences) {
+        const er = String(da.enRouteExperiences).trim();
+        if (er && !seenExp.has(er.toLowerCase())) {
+          seenExp.add(er.toLowerCase());
+          dynamicExperiences.push(er.toLowerCase().startsWith('en-route') ? er : `En-route Experience: ${er}`);
+        }
+      }
+      (da.experiences || []).forEach((exp: any) => {
+        const name = (exp.name || '').trim();
+        if (name && !seenExp.has(name.toLowerCase())) {
+          seenExp.add(name.toLowerCase());
+          dynamicExperiences.push(name);
+        }
+      });
+    });
+  }
+
+  const displayInclusions: string[] = (itinerary.inclusions && itinerary.inclusions.length > 0)
+    ? itinerary.inclusions
+    : [
+      `Private ${vehicleType} for the complete ${destination} itinerary and Airport Transfers.`,
+      `Accomodation in ${roomCategory} Properties For ${numNights} Nights.`,
+      `Meals ${mealPlan} ( Breakfast Except 1st Day , Dinner Last Day )`,
+      `Driver allowance, fuel, toll taxes, parking charges and applicable road taxes.`,
+      `All transfers and sightseeing as per the day-wise itinerary. Entry fees are excluded unless specifically mentioned.`,
+      ...dynamicExperiences,
+      `Assistance during hotel check-in and check-out.`,
+      `Applicable taxes included in the quoted package, wherever applicable.`
+    ];
+
+  const displayExclusions: string[] = (itinerary.exclusions && itinerary.exclusions.length > 0)
+    ? itinerary.exclusions
+    : [
+      `5% GST.`,
+      `Early check-in (Before 1:00 PM) & Late Check-out (After 11:00 AM) at the hotel.`,
+      `Any additional expenses of personal nature.`,
+      `Additional accommodation/food costs incurred due to any delayed travel.`,
+      `Any lunch and other meals not mentioned in Package Inclusions.`,
+      `Any Airfare / Rail fare other than what is mentioned in "Inclusions" or any type of transportation.`,
+      `Monument entry fees during Sightseeing.`,
+      `Additional Costs due to Flight Cancellations, Landslides, Roadblocks, and other natural calamities.`,
+      `Any other services not specified above in inclusions.`
+    ];
+
+  const thingsToCarry = (itinerary.packingTips && itinerary.packingTips.length > 0)
+    ? itinerary.packingTips
+    : [
+      'Original Government ID Proof (Aadhaar / Passport / Voter ID)',
+      'Comfortable walking shoes & sunscreen / sunglasses',
+      'Personal medications and first-aid essentials',
+      'Camera / Mobile charger & Power Bank',
+      'Warm layer / light jacket for travel & air-conditioning',
+      'Rain jacket / Umbrella (as per season & terrain)'
+    ];
+
+  // Pricing
+  const finalQuotationAmount = itinerary.finalQuotationAmount ?? itinerary.rawZohoData?.finalQuotationAmount ?? (itinerary.rawZohoData?.Final_Quotation_Amount ? Number(itinerary.rawZohoData.Final_Quotation_Amount) : (itinerary.rawZohoData?.Total_Package_Cost ? Number(itinerary.rawZohoData.Total_Package_Cost) : (itinerary.rawZohoData?.Quotation_Amount ? Number(itinerary.rawZohoData.Quotation_Amount) : (itinerary.rawZohoData?.Expected_Revenue ? Number(itinerary.rawZohoData.Expected_Revenue) : undefined))));
+
+  const adults = Number(itinerary.adults ?? itinerary.rawZohoData?.adults ?? itinerary.rawZohoData?.Adults ?? guests) || 2;
+  const kids = Number(itinerary.kids ?? itinerary.rawZohoData?.kids ?? itinerary.rawZohoData?.Kids ?? itinerary.rawZohoData?.Children ?? 0);
+
+  const perAdultPrice = itinerary.perAdultPrice ?? itinerary.rawZohoData?.perAdultPrice ?? (itinerary.rawZohoData?.Per_Adult_Price ? Number(itinerary.rawZohoData.Per_Adult_Price) : (finalQuotationAmount && adults > 0 ? Math.round(finalQuotationAmount / adults) : undefined));
+  const perKidPrice = itinerary.perKidPrice ?? itinerary.rawZohoData?.perKidPrice ?? (itinerary.rawZohoData?.Per_Kid_Price ? Number(itinerary.rawZohoData.Per_Kid_Price) : (itinerary.rawZohoData?.Per_Child_Price ? Number(itinerary.rawZohoData.Per_Child_Price) : undefined));
+
+  const advanceAmountPaid = Number(
+    itinerary.advanceAmountPaid ??
+    itinerary.leadDetails?.advanceAmountPaid ??
+    itinerary.rawZohoData?.Advance_Amount_Paid ??
+    itinerary.rawZohoData?.advanceAmountPaid ??
+    0
+  );
+
+  const balancePendingAmount = Number(
+    itinerary.balancePendingAmount ??
+    itinerary.leadDetails?.balancePendingAmount ??
+    itinerary.rawZohoData?.Balance_Pending_Amount ??
+    (finalQuotationAmount ? Math.max(0, finalQuotationAmount - advanceAmountPaid) : undefined)
+  );
+
+  const isIntl = (itinerary.destinationType || itinerary.rawZohoData?.Destination_Type || '').toLowerCase().includes('international');
+  const gstPercentage = itinerary.gstPercentage !== undefined ? itinerary.gstPercentage : 5;
+  const tcsPercentage = itinerary.tcsPercentage !== undefined ? itinerary.tcsPercentage : (isIntl ? 2 : 0);
+
+  let baseAmount = itinerary.baseAmount ?? itinerary.rawZohoData?.Base_Amount;
+  if (baseAmount === undefined && finalQuotationAmount) {
+    const taxMultiplier = 1 + (gstPercentage + tcsPercentage) / 100;
+    baseAmount = Math.round(finalQuotationAmount / taxMultiplier);
+  }
+
+  let gstAmount = itinerary.gstAmount ?? itinerary.rawZohoData?.GST_Amount;
+  if (gstAmount === undefined && baseAmount) {
+    gstAmount = Math.round(baseAmount * (gstPercentage / 100));
+  }
+
+  let tcsAmount = itinerary.tcsAmount ?? itinerary.rawZohoData?.TCS_Amount;
+  if (tcsAmount === undefined && baseAmount && tcsPercentage > 0) {
+    tcsAmount = Math.round(baseAmount * (tcsPercentage / 100));
+  } else if (tcsPercentage === 0) {
+    tcsAmount = 0;
+  }
+
+  const manualDayPlans: ManualDayPlan[] = (itinerary.dayPlans || []).map((dp, idx) => {
+    let cleanTitle = dp.title || '';
+    cleanTitle = cleanTitle.replace(/^Day\s*\d+\s*[|:–-]\s*/i, '');
+    let prev = '';
+    while (cleanTitle !== prev) {
+      prev = cleanTitle;
+      cleanTitle = cleanTitle.replace(/\([^()]*\)/g, '').replace(/\[[^[\]]*\]/g, '').trim();
+    }
+    cleanTitle = cleanTitle.replace(/\s{2,}/g, ' ').replace(/[.,:;–—\s]+$/g, '').trim();
+
+    let dayRoute = '';
+    let durationNote: string | undefined = dp.durationNote || undefined;
+
+    // 1. Try from rawSubform
+    const subRow = Array.isArray(rawSubform) ? rawSubform[idx] : null;
+    if (subRow) {
+      const rawC1 = typeof subRow.City === 'object' && subRow.City !== null ? subRow.City.name : String(subRow.City || '');
+      const rawC2 = subRow.City_2 ?? subRow.City2 ?? subRow.Transit_City ?? subRow.Transit_city ?? '';
+      const c1 = cleanCityName(String(rawC1 || ''));
+      const c2 = cleanCityName(typeof rawC2 === 'object' && rawC2 !== null ? rawC2.name : String(rawC2 || ''));
+
+      if (c2 && c1 && c2.toLowerCase() !== c1.toLowerCase()) {
+        dayRoute = `${c1} → ${c2}`;
+        const tInfo = getRouteTransitInfo(c1, c2);
+        if (tInfo) {
+          durationNote = `Approx. ${tInfo.distanceKm} KM | ${tInfo.duration} ${tInfo.mode}`;
+        }
+      } else if (c1) {
+        dayRoute = c1;
+      }
+    }
+
+    // 2. Try from rawZohoData.dayActivities
+    if (!dayRoute && Array.isArray(itinerary.rawZohoData?.dayActivities) && itinerary.rawZohoData.dayActivities[idx]) {
+      const da = itinerary.rawZohoData.dayActivities[idx];
+      const c1 = cleanCityName(da.city || '');
+      const c2 = cleanCityName(da.city2 || '');
+      if (c2 && c1 && c2.toLowerCase() !== c1.toLowerCase()) {
+        dayRoute = `${c1} → ${c2}`;
+        const tInfo = getRouteTransitInfo(c1, c2);
+        if (tInfo) {
+          durationNote = `Approx. ${tInfo.distanceKm} KM | ${tInfo.duration} ${tInfo.mode}`;
+        }
+      } else if (c1) {
+        dayRoute = c1;
+      }
+    }
+
+    // 3. Try from activities / title
+    if (!dayRoute) {
+      for (const act of dp.activities || []) {
+        const transferMatch = act.match(/Transfer\s+from\s+([A-Za-z\s]+?)\s+to\s+([A-Za-z\s]+?)(?:\s*\(|$)/i);
+        if (transferMatch) {
+          const from = cleanCityName(transferMatch[1]);
+          const to = cleanCityName(transferMatch[2]);
+          dayRoute = `${from} → ${to}`;
+          const tInfo = getRouteTransitInfo(from, to);
+          if (tInfo) {
+            durationNote = `Approx. ${tInfo.distanceKm} KM | ${tInfo.duration} ${tInfo.mode}`;
+          }
+          break;
+        }
+      }
+    }
+
+    if (!dayRoute && dp.title) {
+      const titleMatch = dp.title.match(/(?:Journey|Drive|Transfer)\s+from\s+([A-Za-z\s]+?)\s+to\s+([A-Za-z\s]+?)(?:\s+with|\s*[|—–-]|$)/i);
+      if (titleMatch) {
+        const from = cleanCityName(titleMatch[1]);
+        const to = cleanCityName(titleMatch[2]);
+        dayRoute = `${from} → ${to}`;
+        const tInfo = getRouteTransitInfo(from, to);
+        if (tInfo) {
+          durationNote = `Approx. ${tInfo.distanceKm} KM | ${tInfo.duration} ${tInfo.mode}`;
+        }
+      }
+    }
+
+    // 4. Fallback for non-transit day: extract city from stayLocation or destination
+    if (!dayRoute) {
+      if (dp.stayLocation) {
+        const parts = dp.stayLocation.split(',');
+        dayRoute = cleanCityName(parts[parts.length - 1]);
+      } else {
+        dayRoute = destination;
+      }
+    }
+
+    // Ensure durationNote is only present if there is inter-city travel (contains → or ->)
+    if (!dayRoute.includes('→') && !dayRoute.includes('->')) {
+      durationNote = undefined;
+    }
+
+    return {
+      day: dp.day || idx + 1,
+      date: dp.date || formatDayDate(rawStartDate, dp.day || idx + 1),
+      title: cleanTitle || `Day ${dp.day || idx + 1} Highlights`,
+      route: dayRoute || destination,
+      durationNote,
+      intro: undefined,
+      timeline: (dp.timeline && dp.timeline.length > 0) ? dp.timeline : (dp.activities && dp.activities.length > 0 ? dp.activities : []),
+      stayLocation: dp.stayLocation,
+      image: dp.image || collageImages[idx % collageImages.length],
+      meals: dp.meals
+    };
+  });
+
+  return {
+    id: itinerary.id,
+    slug: itinerary.slug || itinerary.id,
+    title: itinerary.title || `${numNights} Nights / ${numDays} Days Royal ${destination} Escape`,
+    subtitle: itinerary.subTitle || itinerary.travelStyle || `${destination.toUpperCase()} — EXCLUSIVE CURATED PRIVATE EXPEDITION`,
+    duration,
+    numNights,
+    numDays,
+    dates,
+    route: routeDisplay,
+    routeSummary,
+    destination,
+    travelStyle,
+    tripType,
+    leadName,
+    vehicleType,
+    mealPlan,
+    heroImage,
+    galleryImages: collageImages,
+    dayPlans: manualDayPlans,
+    accommodations,
+    inclusions: displayInclusions,
+    exclusions: displayExclusions,
+    thingsToCarry,
+    finalQuotationAmount,
+    perAdultPrice,
+    perKidPrice,
+    adults,
+    kids,
+    baseAmount,
+    gstPercentage,
+    tcsPercentage,
+    gstAmount,
+    tcsAmount,
+    advanceAmountPaid,
+    balancePendingAmount,
+    paymentStage: itinerary.paymentStage || (advanceAmountPaid >= (finalQuotationAmount || 1) ? 'fully_paid' : (advanceAmountPaid > 0 ? 'token_paid' : 'unpaid')),
+    payments: itinerary.payments || []
   };
 }
