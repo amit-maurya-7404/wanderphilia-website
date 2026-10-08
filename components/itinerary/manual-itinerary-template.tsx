@@ -714,6 +714,14 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                 );
               })()}
 
+              {/* Child Pricing & Sharing Note (if provided) */}
+              {itinerary.childPricingNote && (
+                <div className="bg-white/10 backdrop-blur-md rounded-xl p-3.5 border border-amber-400/40 text-xs text-amber-200/95 font-medium flex items-start gap-2.5">
+                  <span className="text-amber-300 font-bold shrink-0">ℹ</span>
+                  <span>{itinerary.childPricingNote}</span>
+                </div>
+              )}
+
               {/* LIVE VERIFIED PAYMENT STATUS CARD (IF ALREADY PAID) */}
               {alreadyPaid > 0 && (
                 <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-emerald-400/40 space-y-2 mt-3">

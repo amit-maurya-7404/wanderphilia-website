@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { ItineraryDayPlan } from '@/types/itinerary';
 import { ChevronDown, ChevronUp, Utensils, MapPin, Hotel as HotelIcon } from 'lucide-react';
+import { cleanHeadlineText } from './manual-flowchart-section';
 
 interface ItineraryFlowchartSectionProps {
   dayPlans: ItineraryDayPlan[];
@@ -132,7 +133,7 @@ export function ItineraryFlowchartSection({
 
                 {/* Catchy Day Headline */}
                 <h3 className="text-base sm:text-lg font-black text-stone-900 tracking-tight leading-snug">
-                  {day.title}
+                  {cleanHeadlineText(day.title)}
                 </h3>
               </div>
 
@@ -147,9 +148,11 @@ export function ItineraryFlowchartSection({
                 
                 {/* Stay / Location Sub-bar - Only shown when hotel/stay is booked */}
                 {day.stayLocation && day.stayLocation.trim().length > 0 && (
-                  <div className="flex items-center gap-2 text-xs font-bold text-stone-500 pb-1">
-                    <MapPin className="w-3.5 h-3.5 text-orange-600" />
-                    <span>Location: <strong className="text-stone-800">{day.stayLocation}</strong></span>
+                  <div className="flex items-start gap-2 text-xs text-stone-600 pb-1">
+                    <MapPin className="w-4 h-4 text-orange-600 shrink-0 mt-0.5" />
+                    <div className="flex-1 min-w-0 leading-relaxed">
+                      <strong className="text-stone-800 font-bold">{day.stayLocation}</strong>
+                    </div>
                   </div>
                 )}
 

@@ -112,24 +112,34 @@ const fallbackImages = [
 ];
 
 /**
- * Bulletproof helper to format day headings cleanly without stripping sentence structure
+ * Bulletproof helper to format day headings cleanly without duplicate Day or Date prefixes
  */
-function cleanHeadlineText(title: string): string {
+export function cleanHeadlineText(title: string): string {
   if (!title) return '';
   let clean = title.trim();
 
-  // Strip leading Day X prefixes like "Day 1 | 25 Dec ", "Day 1: "
-  clean = clean.replace(/^Day\s*\d+\s*[|:–-]\s*/i, '');
-  clean = clean.replace(/^\d+\s+[A-Za-z]+\s*:\s*/i, '');
+  // 1. Strip leading "Day X |", "Day X -", "Day X:", "Day X", etc.
+  clean = clean.replace(/^Day\s*\d+\s*[|:–—\-]\s*/i, '');
+  clean = clean.replace(/^Day\s*\d+\s+/i, '');
 
-  // Recursively strip all internal bracketed notes e.g. (Recommended), (Optional), (Enjoy a relaxing...)
+  // 2. Strip leading date expressions e.g. "14 Dec", "14th Dec", "14th December", "14-12-2026", "14 Dec 2026"
+  clean = clean.replace(/^\d{1,2}(?:st|nd|rd|th)?\s+(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)(?:\s+\d{4})?\s*[|:–—\-]?\s*/i, '');
+
+  // 3. Strip any residual "Day X |", "Day X:", or dates
+  clean = clean.replace(/^Day\s*\d+\s*[|:–—\-]\s*/i, '');
+  clean = clean.replace(/^Day\s*\d+\s+/i, '');
+
+  // 4. Strip standalone leading punctuation like "|", "-", ":", "–"
+  clean = clean.replace(/^[|:–—\-]\s*/, '');
+
+  // 5. Recursively strip all internal bracketed notes e.g. (Recommended), (Optional), (Enjoy a relaxing...)
   let prev = '';
   while (clean !== prev) {
     prev = clean;
     clean = clean.replace(/\([^()]*\)/g, '').replace(/\[[^[\]]*\]/g, '').trim();
   }
 
-  // Remove duplicate spaces, trailing dashes, commas
+  // 6. Remove duplicate spaces, trailing dashes, commas
   clean = clean.replace(/\s{2,}/g, ' ').replace(/[.,:;–—\s]+$/g, '').trim();
 
   return clean || title.trim();
@@ -222,17 +232,14 @@ export function ManualFlowchartSection({
               <div className="px-5 sm:px-8 pb-7 pt-3 border-t border-stone-100 space-y-5">
 
                 {/* Location & Transit Route Strip */}
-                <div className="flex items-center justify-between flex-wrap gap-2 text-xs text-stone-600 pb-2.5 border-b border-stone-100">
-                  <div className="flex items-center gap-1.5 flex-wrap">
-                    <MapPin className="w-3.5 h-3.5 text-orange-600 shrink-0" />
-                    <span>
-                      Location:{' '}
-                      <strong className="text-stone-900 font-bold text-xs sm:text-sm">
-                        {day.route || (day.stayLocation ? day.stayLocation.split(',').pop()?.trim() : destination)}
-                      </strong>
-                    </span>
+                <div className="flex items-start gap-2 text-xs text-stone-600 pb-2.5 border-b border-stone-100">
+                  <MapPin className="w-4 h-4 text-orange-600 shrink-0 mt-0.5" />
+                  <div className="flex-1 min-w-0 leading-relaxed">
+                    <strong className="text-stone-900 font-bold text-xs sm:text-sm">
+                      {day.route || (day.stayLocation ? day.stayLocation.split(',').pop()?.trim() : destination)}
+                    </strong>
                     {day.durationNote && (
-                      <span className="text-stone-500 font-semibold text-[11px] sm:text-xs">
+                      <span className="text-stone-500 font-medium text-[11px] sm:text-xs ml-1.5">
                         ({day.durationNote.replace(/^\(?/, '').replace(/\)?$/, '')})
                       </span>
                     )}
@@ -310,7 +317,13 @@ export function ManualFlowchartSection({
                             <strong className="font-extrabold uppercase text-[#8B2519]">
                               NOTE:{' '}
                             </strong>
-                            <span>{day.optionalNote.replace(/^NOTE:\s*/i, '').replace(/^Note:\s*/i, '')}</span>
+                            <span>
+                              {day.optionalNote
+                                .replace(/^NOTE:\s*/i, '')
+                                .replace(/^Note:\s*/i, '')
+                                .replace(/\s*\(on your own\)/gi, '')
+                                .replace(/\s*on your own/gi, '')}
+                            </span>
                           </div>
                         </div>
                       </div>

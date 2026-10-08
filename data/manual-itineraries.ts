@@ -1282,32 +1282,32 @@ export const vietnamYashManualItinerary: ManualItinerary = {
 
 export const vietnamNaushadManualItinerary: ManualItinerary = {
   id: 'vietnam-naushad',
-  slug: 'vietnam-danang-phuquoc-luxury-family-holiday',
-  title: 'Grand Vietnam, Ba Na Hills & Tropical Phu Quoc Luxury Family Holiday',
-  subtitle: '4-Star Luxury Private Family Vacation • Da Nang, Ba Na Hills & Phu Quoc Island',
-  duration: '8 Nights / 9 Days | 2 Adults + 2 Kids',
-  numNights: 8,
-  numDays: 9,
-  dates: 'Custom Family Dates | 8N / 9D',
+  slug: 'mr-naushad-chaudhary-x4-vietnam-trip',
+  title: '7 Nights / 8 Days Vietnam Tour Itinerary',
+  subtitle: 'VIETNAM TOUR ITINERARY',
+  duration: '7 Nights / 8 Days | 14th Dec to 21st Dec 2026',
+  numNights: 7,
+  numDays: 8,
+  dates: '14th Dec to 21st Dec 2026',
   route: 'Da Nang → Hoi An → Ba Na Hills → Phu Quoc Island',
-  routeSummary: '2N Da Nang | 1N Ba Na Hills | 5N Phu Quoc Island',
+  routeSummary: '2N Hoi An | 1N Ba Na Hills | 4N Phu Quoc',
   destination: 'Vietnam',
-  travelStyle: '4-Star Luxury Private Family Tour',
-  tripType: 'Customised Private Family Tour (2 Adults + 2 Kids)',
-  leadName: 'Naushad Chaudhary',
-  adults: 2,
-  kids: 2,
-  kidsDetails: '1 Child (5 Yrs) + 1 Infant/Toddler (2.5 Yrs)',
-  perAdultPrice: 105459,
-  perKidPrice: 34459,
-  childPricingNote: '5 Yrs Child: ₹34,459/- (Without Extra Bed) • 2.5 Yrs Child: FREE',
-  baseAmount: 245377,
+  travelStyle: 'Family Vacation',
+  tripType: 'Customised Private Tour (4 Adults + 1 Child)',
+  leadName: 'Mr Naushad Chaudhary',
+  adults: 4,
+  kids: 1,
+  kidsDetails: '1 Child (5 Yrs sharing bed / extra bed at La Festa) + 1 Infant (2.5 Yrs Free)',
+  perAdultPrice: 248600,
+  perKidPrice: 37200,
+  childPricingNote: '1 Child (5 Yrs): ₹37,200 (Extra bed mandatory at La Festa Phu Quoc; shares bed at other hotels) • 1 Child (2.5 Yrs): Free of charge',
+  baseAmount: 1031600,
   gstPercentage: 5,
-  gstAmount: 12269,
+  gstAmount: 51580,
   tcsPercentage: 2,
-  tcsAmount: 4908,
-  finalQuotationAmount: 262554,
-  vehicleType: 'Private Comfortable AC Van with Dedicated Chauffeur & English-Speaking Tour Guide',
+  tcsAmount: 20632,
+  finalQuotationAmount: 1103812,
+  vehicleType: 'Private 07 Seater Car with Dedicated Driver',
   mealPlan: 'Daily Breakfast at Hotels (except Day 1)',
   heroImage: '/images/vietnam.png',
   galleryImages: [
@@ -1320,325 +1320,204 @@ export const vietnamNaushadManualItinerary: ManualItinerary = {
     '/images/vietnam-exotic.png',
     '/images/vietnam-dreamy.png'
   ],
+  moments: [
+    'Cam Thanh Coconut Forest Basket Boat Ride',
+    'UNESCO Hoi An Ancient Town Walking Tour',
+    'Traditional Lantern Making Workshop & Souvenir',
+    'Romantic Hoai River Lantern Boat Ride',
+    'Ba Na Hills Scenic Cable Car & Golden Bridge',
+    'French Village & Fantasy Park Exploration',
+    'Hon Thom World’s Longest Over-Sea Cable Car',
+    'Aquatopia Water Park & Sunset Town Kiss Bridge',
+    'Kiss of the Sea Multimedia Show & Fireworks',
+    'Full Day VinWonders Theme Park & Waterpark',
+    'Vinpearl Semi-Wildlife Safari Vehicle Tour',
+    'Venice Gondola Boat Ride at Grand World'
+  ],
   accommodations: [
-    { city: 'Da Nang', nights: 2, hotelName: 'PHUC LONG HOTEL (4-Star)', roomCategory: 'Premier Deluxe Oceanview Balcony Double' },
-    { city: 'Ba Na Hills', nights: 1, hotelName: 'Mercure Danang French Village Bana Hills (4-Star Superior)', roomCategory: 'Standard Room' },
-    { city: 'Phu Quoc', nights: 5, hotelName: 'VinHolidays Fiesta Phu Quoc (4-Star Resort)', roomCategory: 'Standard Twin Joining Bed' }
+    { city: 'Hoi An', nights: 2, hotelName: 'Four Seasons Resort The Nam Hai, Hoi An', roomCategory: 'Family Villa (Corner of the top of the U)' },
+    { city: 'Ba Na Hills', nights: 1, hotelName: 'Mercure Danang French Village Bana Hills', roomCategory: 'Deluxe Room' },
+    { city: 'Phu Quoc', nights: 4, hotelName: 'La Festa Phu Quoc / WYNDHAM GRAND PHU QUOC', roomCategory: 'Deluxe Room with Extra Bed / Superior Room' }
   ],
   dayPlans: [
     {
       day: 1,
-      title: 'Day 1 | Da Nang Arrival & Coastal Welcome',
-      route: 'Da Nang Airport → Hotel Check-in',
-      durationNote: 'Arrival Day (Private Chauffeur)',
-      intro: 'Welcome to Vietnam! Arrive at Da Nang International Airport where your private chauffeur warmly welcomes your family and transfers you to Phuc Long Hotel overlooking the ocean.',
+      date: '14 Dec',
+      title: 'Da Nang Arrival → Hoi An Transfer',
+      route: 'Da Nang Airport → Hoi An',
+      durationNote: 'Driver',
+      intro: 'Upon arrival at Da Nang Airport, meet your private driver and transfer to your hotel in Hoi An.',
       timeline: [
-        'Warm airport greeting by your private driver upon arrival at Da Nang Airport',
-        'Private comfortable transfer to Phuc Long Hotel along My Khe beachfront',
-        'Check-in to your Premier Deluxe Oceanview Balcony Double Room (early check-in not included)',
-        'Rest, refresh, and unwind after your flight',
-        'Evening at leisure to stroll along the white sand beach, view the illuminated Dragon Bridge, or explore the local night market'
+        '**Da Nang Airport Arrival**: Upon arrival at Da Nang Airport, meet your private driver.',
+        '**Hotel Transfer & Check-in**: Transfer to Four Seasons Resort The Nam Hai, Hoi An and check in at the hotel (early check-in is not included).',
+        '**Evening at Leisure**: Free at leisure to relax and enjoy the coastal resort.'
       ],
-      sections: [
-        {
-          title: 'Arrival Highlights:',
-          items: [
-            'Private comfortable AC Van airport transfer.',
-            'Premier Deluxe Oceanview Balcony Room at Phuc Long Hotel.',
-            'Relaxing first evening in coastal Da Nang.'
-          ],
-          type: 'normal'
-        }
-      ],
-      stayLocation: 'Da Nang (Phuc Long Hotel)',
+      stayLocation: 'Hoi An',
       image: '/images/vietnam.png',
       meals: 'On own / In-flight'
     },
     {
       day: 2,
-      title: 'Day 2 | Lady Buddha, Coconut Forest Basket Boat, Hoi An Lantern Making Workshop & Hoai River Lantern Boat Ride',
-      route: 'Da Nang → Son Tra Peninsula → Cam Thanh Coconut Forest → Hoi An Ancient Town → Da Nang',
-      durationNote: 'Full Day Guided Tour (Driver + Guide)',
-      intro: 'Embark on an unforgettable cultural and family adventure exploring Son Tra Peninsula, traditional coconut basket boats, hands-on lantern making, and Hoi An’s magical lantern river cruise.',
+      date: '15 Dec',
+      title: 'Coconut Forest Basket Boat, Hoi An Walking Tour, Lantern Workshop & Hoai River Boat Ride',
+      route: 'Hoi An & Cam Thanh',
+      durationNote: 'Driver + Guide',
+      intro: 'Begin the day with a basket boat ride in Coconut Forest before exploring Hoi An Ancient Town with a lantern making workshop and river boat ride.',
       timeline: [
-        'Delicious breakfast at Phuc Long Hotel',
-        'Visit the serene Linh Ung Pagoda on Son Tra Peninsula, featuring the majestic 67-meter Lady Buddha statue overlooking the East Sea',
-        'Journey to Cam Thanh Coconut Forest and board traditional bamboo basket boats with fun spinning performances amidst lush waterways',
-        'Transfer to UNESCO World Heritage Hoi An Ancient Town for a guided walking tour through lantern-lit lanes, the 400-year-old Japanese Covered Bridge, and Chinese assembly halls',
-        'Join a special family-friendly Lantern Making Workshop — design and craft your own authentic silk lantern to take home as a meaningful handmade souvenir',
-        'Board a wooden boat on the Hoai River for a magical evening lantern cruise, lighting and releasing floating paper lanterns for good luck',
-        'In the evening, return to Da Nang and enjoy the rest of the night at leisure'
+        '**Coconut Forest Basket Boat**: After breakfast, visit Cam Thanh Coconut Forest to take a traditional basket boat ride.',
+        '**Hoi An Ancient Town Walking Tour**: Head to Hoi An Ancient Town for a guided walking tour through lantern-lit historic streets.',
+        '**Lantern Making Workshop**: Join a Lantern Making Workshop where you can create your own traditional lantern as a meaningful souvenir.',
+        '**Hoai River Lantern Boat Ride**: Have a lantern boat ride on the Hoai River, releasing floating lanterns for good luck.',
+        '**Evening at Leisure**: In the evening, return and enjoy the rest of the day at leisure.'
       ],
-      sections: [
-        {
-          title: 'Hoi An & Coconut Forest Inclusions:',
-          items: [
-            'Linh Ung Pagoda & Lady Buddha Son Tra exploration.',
-            'Cam Thanh Coconut Forest bamboo basket boat adventure with fun boat spinning.',
-            'Hoi An UNESCO Ancient Town guided walking tour & entrance ticket.',
-            'Hands-on Traditional Lantern Making Workshop with customized handmade lantern souvenir.',
-            'Romantic candle-lit Hoai River lantern boat ride with floating wishing lanterns.'
-          ],
-          type: 'signature'
-        }
-      ],
-      stayLocation: 'Da Nang (Phuc Long Hotel)',
+      stayLocation: 'Hoi An',
       image: '/images/vietnam-highlights.png',
       meals: 'Breakfast (B)'
     },
     {
       day: 3,
-      title: 'Day 3 | Ba Na Hills Cable Car, Giant Hands Golden Bridge, Fantasy Park & Overnight in French Village',
-      route: 'Da Nang → Ba Na Hills Mountain Resort',
-      durationNote: 'Mountain Resort Stay (Private Driver)',
-      intro: 'Following breakfast, ascend to the fairytale mountaintop of Ba Na Hills via a scenic cable car, walk across the world-famous Golden Bridge, enjoy thrilling family rides at Fantasy Park, and experience an overnight stay in the European French Village.',
+      date: '16 Dec',
+      title: 'Ba Na Hills Cable Car, Golden Bridge, French Village & Fantasy Park',
+      route: 'Hoi An → Ba Na Hills',
+      durationNote: 'Driver',
+      intro: 'Depart for Ba Na Hills, take the scenic cable car to the French Village, visit the Golden Bridge, and enjoy the rides at Fantasy Park.',
       timeline: [
-        'Breakfast at Phuc Long Hotel and check-out',
-        'Private transfer to Ba Na Hills station',
-        'Take the world-record scenic cable car offering panoramic mountain vistas and cascading waterfalls',
-        'Walk across the iconic Golden Bridge (Cau Vang) held aloft by giant stone hands emerging from the mountain clouds',
-        'Explore the charming French Village featuring Gothic castles, cobblestone plazas, and Le Jardin D’Amour flower gardens',
-        'Enjoy unlimited family entertainment and games at Fantasy Park (indoor amusement park with rides and 4D/5D cinema)',
-        'Check in at Mercure Danang French Village Bana Hills (Standard Room)',
-        'Experience the magical, quiet European atmosphere atop the mountain after daytime visitors depart'
+        '**Transfer to Ba Na Hills**: Following breakfast, depart for Ba Na Hills with your driver.',
+        '**Scenic Cable Car & Golden Bridge**: Enjoy a scenic cable car ascent to the summit and walk across the iconic Golden Bridge.',
+        '**French Village & Fantasy Park**: Explore the charming French Village and experience the fun attractions and rides at Fantasy Park.',
+        '**Check-in & Overnight**: Check-in at Mercure Danang French Village Bana Hills for an overnight stay atop the mountain.'
       ],
-      sections: [
-        {
-          title: 'Ba Na Hills Highlights:',
-          items: [
-            '2-Way Ba Na Hills Cable Car tickets.',
-            'Golden Bridge (Cau Vang) giant hands walk.',
-            'Fantasy Park amusement park admission & rides (no lunch).',
-            'Overnight mountaintop stay at Mercure Danang French Village Bana Hills.'
-          ],
-          type: 'signature'
-        }
-      ],
-      stayLocation: 'Ba Na Hills (Mercure Danang French Village)',
+      stayLocation: 'Ba Na Hills',
       image: '/images/vietnam-best.png',
       meals: 'Breakfast (B)'
     },
     {
       day: 4,
-      title: 'Day 4 | Ba Na Hills Morning Leisure → Flight to Tropical Phu Quoc Island',
-      route: 'Ba Na Hills → Da Nang Airport ✈ Flight to Phu Quoc Island',
-      durationNote: 'Transfer & Domestic Flight (Private Driver)',
-      intro: 'Savor a leisurely morning amidst the mountain clouds before descending by cable car and flying to Vietnam’s premier tropical island, Phu Quoc, for beachfront resort relaxation.',
+      date: '17 Dec',
+      title: 'Ba Na Hills Leisure → Flight to Phu Quoc Island',
+      route: 'Ba Na Hills → Da Nang Airport ✈ Phu Quoc',
+      durationNote: 'Driver',
+      intro: 'Enjoy leisure time atop Ba Na Hills before descending by cable car and transferring to the airport for your flight to Phu Quoc.',
       timeline: [
-        'Buffet breakfast at Mercure French Village and leisure morning for photos above the clouds',
-        'Check-out, descend by cable car, and meet your private chauffeur',
-        'Transfer to Da Nang International Airport for your afternoon flight to Phu Quoc (recommended flight after 12:00 PM; flight ticket not included)',
-        'Warm airport welcome by your private driver upon landing at Phu Quoc Airport',
-        'Transfer to VinHolidays Fiesta Phu Quoc and check-in to your Standard Twin Joining Bed Room (early check-in not included)',
-        'Unwind by the resort’s massive 800m² outdoor swimming pool or explore the surrounding tropical grounds'
+        '**Morning Leisure in Ba Na Hills**: After breakfast, enjoy leisure time exploring the mountaintop.',
+        '**Cable Car Descent & Airport Transfer**: Check out at the hotel, go down by cable car, meet your driver, and transfer to Da Nang Airport for your flight to Phu Quoc (recommended flight after noon).',
+        '**Phu Quoc Arrival & Check-in**: Upon arrival in Phu Quoc, meet your driver and head to the hotel for check-in (early check-in is not included).'
       ],
-      sections: [
-        {
-          title: 'Island Transfer & Resort:',
-          items: [
-            'Private Da Nang airport departure transfer & Phu Quoc airport arrival transfer.',
-            '5-Night stay at 4-Star VinHolidays Fiesta Phu Quoc.',
-            'Complimentary resort pool and amenities access.'
-          ],
-          type: 'normal'
-        }
-      ],
-      stayLocation: 'Phu Quoc (VinHolidays Fiesta Phu Quoc)',
+      stayLocation: 'Phu Quoc',
       image: '/images/vietnam-wonders.png',
       meals: 'Breakfast (B)'
     },
     {
       day: 5,
-      title: 'Day 5 | Hon Thom Longest Over-Sea Cable Car, Aquatopia Water Park, Kiss Bridge & Kiss of the Sea Fireworks Show',
-      route: 'Resort → Hon Thom Island → Sunset Town',
-      durationNote: 'Full Day Island & Show Tour (Private Driver)',
-      intro: 'Ride the world’s longest over-sea cable car to Hon Thom Island, enjoy a day of water park family fun, stroll Sunset Town & Kiss Bridge, and watch the spectacular "Kiss of the Sea" multimedia fireworks show.',
+      date: '18 Dec',
+      title: 'Hon Thom Over-Sea Cable Car, Aquatopia Water Park, Kiss Bridge & Kiss of the Sea Show',
+      route: 'Phu Quoc (Hon Thom Island & Sunset Town)',
+      durationNote: 'Tickets Included (Walking distance in Sunset Town)',
+      intro: 'Ride the world’s longest over-sea cable car to Hon Thom Island, enjoy Aquatopia Water Park, walk Kiss Bridge, and watch the Kiss of the Sea show.',
       timeline: [
-        'Breakfast at VinHolidays Fiesta Phu Quoc',
-        'Board the Hon Thom Cable Car — the longest over-sea 3-wire cable car in the world (7,899.9m) with 360° turquoise sea vistas',
-        'Have a blast at Aquatopia Water Park on Hon Thom Island with over 20 modern water slides, family lagoons, and kid-friendly splash zones',
-        'Return to the main island and explore Mediterranean-inspired Sunset Town with colorful seaside facades',
-        'Walk onto the architectural wonder Kiss Bridge (Cau Hon) with panoramic sunset views across the sea',
-        'In the evening, witness the breathtaking "Kiss of the Sea" multimedia show combining water screens, lasers, music, and an extraordinary grand fireworks pyrotechnic display',
-        'Private transfer back to the hotel for a restful night'
+        '**Hon Thom Cable Car & Aquatopia Water Park**: After breakfast, enjoy a ride on the spectacular Hon Thom Cable Car (the longest over-sea cable car in the world) and have fun at Aquatopia Water Park with exciting water slides and family attractions.',
+        '**Kiss Bridge & Sunset Town**: Continue to the striking Kiss Bridge and Sunset Town, an architectural icon offering sweeping sea views and photo opportunities.',
+        '**Kiss of the Sea Show**: As evening falls, witness the breathtaking Kiss of the Sea show (including Light, Sound, Lasers & Fireworks), a spectacular blend illuminating the night sky.',
+        '**Return to Hotel**: Return to the hotel after the show.'
       ],
-      sections: [
-        {
-          title: 'Hon Thom & Fireworks Package:',
-          items: [
-            'Hon Thom 2-Way Over-Sea Cable Car Ticket.',
-            'Aquatopia Water Park all-access admission.',
-            'Kiss Bridge & Sunset Town promenade.',
-            '"Kiss of the Sea" Multimedia Show Ticket with live fireworks.'
-          ],
-          type: 'signature'
-        }
-      ],
-      stayLocation: 'Phu Quoc (VinHolidays Fiesta Phu Quoc)',
+      optionalNote: 'NOTE: Driver and guide transfers are not required on Day 5 as La Festa Hotel is located in Sunset Town near the cable station.',
+      stayLocation: 'Phu Quoc',
       image: '/images/vietnam-dreamy.png',
       meals: 'Breakfast (B)'
     },
     {
       day: 6,
-      title: 'Day 6 | Grand World ("The Sleepless City") Exploration & Venetian Gondola Canal Boat Ride',
-      route: 'Resort ↔ Grand World Phu Quoc',
-      durationNote: 'Leisure Day (Driver / Hotel Shuttle)',
-      intro: 'Explore Grand World Phu Quoc, "The Sleepless City", filled with European-style canals, grand architecture, and cultural wonders, highlighted by a romantic Venetian Gondola boat ride.',
+      date: '19 Dec',
+      title: 'Full Day Adventure at VinWonders Phu Quoc Theme Park',
+      route: 'Phu Quoc ↔ VinWonders',
+      durationNote: 'Driver',
+      intro: 'Set off for an unforgettable day at VinWonders Phu Quoc, Vietnam’s premier theme park with multiple themed zones, water park, and live shows.',
       timeline: [
-        'Breakfast at VinHolidays Fiesta Phu Quoc',
-        'Set out to explore the vibrant Grand World entertainment complex',
-        'Admire the monumental Bamboo Legend structure crafted from over 42,000 bamboo poles',
-        'Stroll through colorful European-style shopping streets and Urban Park',
-        'Board an authentic Venetian Gondola for a relaxing boat ride along the grand canal',
-        '(Note: Tinh Hoa Vietnam cultural live show and Teddy Bear Museum are optional on own)',
-        'Afterwards, return to the hotel to relax and enjoy the resort pool'
+        '**Departure to VinWonders**: After breakfast, set off with your driver for an unforgettable day at VinWonders Phu Quoc.',
+        '**Themed Zones & Rides**: Dive into thrilling rides, rollercoasters, and enchanting settings that blend fairy-tale charm with modern attractions.',
+        '**Lively Water Park & Live Shows**: Enjoy the lively water park slides, splash zones, and spectacular live performances.',
+        '**Return to Hotel**: Return to the hotel after a full day of excitement.'
       ],
-      sections: [
-        {
-          title: 'Grand World Inclusions:',
-          items: [
-            'Grand World Phu Quoc complex exploration.',
-            'Venetian Gondola Canal Boat Ride included.',
-            'Flexible time for family relaxation and shopping.'
-          ],
-          type: 'normal'
-        }
-      ],
-      stayLocation: 'Phu Quoc (VinHolidays Fiesta Phu Quoc)',
-      image: '/images/vietnam-beauty.png',
-      meals: 'Breakfast (B)'
-    },
-    {
-      day: 7,
-      title: 'Day 7 | Full Day at VinWonders Phu Quoc Theme Park, Water Park & Giant Turtle Aquarium',
-      route: 'Resort ↔ VinWonders Phu Quoc',
-      durationNote: 'Full Day Theme Park Excursion (Private Driver / Shuttle)',
-      intro: 'Dive into non-stop family adventure at VinWonders Phu Quoc, Southeast Asia’s largest theme park, featuring world-class rollercoasters, water park slides, live fairy-tale shows, and the Giant Turtle Aquarium.',
-      timeline: [
-        'Buffet breakfast at VinHolidays Fiesta Phu Quoc',
-        'Full day of excitement at VinWonders Phu Quoc spanning 6 themed zones:',
-        'European Avenue — charming Renaissance architecture and shopping',
-        'Typhoon World — Southeast Asia’s largest water park with thrilling wave pools and family slides',
-        'Adventure World — exhilarating rollercoasters and Mayan/Greek ancient worlds',
-        'The Sea Shell — giant turtle-shaped ocean aquarium with thousands of exotic marine creatures',
-        'Fantasy World & Mysterious Viking Village — magical fairy-tale quests and kid-friendly attractions',
-        'Spectacular live performances and Once Show in the afternoon/evening',
-        'Return to the hotel for a relaxed overnight stay'
-      ],
-      sections: [
-        {
-          title: 'VinWonders Inclusions:',
-          items: [
-            'VinWonders Phu Quoc Full-Day All-Access Pass for the entire family.',
-            'Typhoon World waterpark, Adventure World rides & Giant Turtle Aquarium.',
-            'Live street shows and interactive family entertainment.'
-          ],
-          type: 'signature'
-        }
-      ],
-      stayLocation: 'Phu Quoc (VinHolidays Fiesta Phu Quoc)',
+      stayLocation: 'Phu Quoc',
       image: '/images/vietnam-wonders.png',
       meals: 'Breakfast (B)'
     },
     {
-      day: 8,
-      title: 'Day 8 | Full Day Adventure at Vinpearl Safari Open Conservation Park',
-      route: 'Resort ↔ Vinpearl Safari Phu Quoc',
-      durationNote: 'Full Day Wildlife Safari (Private Driver / Shuttle)',
-      intro: 'Get up close with wild animals in open habitats at Vinpearl Safari, Vietnam’s premier semi-wild conservation park home to over 150 species from around the world.',
+      day: 7,
+      date: '20 Dec',
+      title: 'Vinpearl Open Safari Adventure & Grand World Venice Gondola Ride',
+      route: 'Phu Quoc ↔ Vinpearl Safari & Grand World',
+      durationNote: 'Driver',
+      intro: 'Embark on an open safari adventure at Vinpearl Safari, explore Grand World, and take a relaxing Venetian gondola boat ride.',
       timeline: [
-        'Breakfast at VinHolidays Fiesta Phu Quoc',
-        'Head to Vinpearl Safari — Vietnam’s first and largest open semi-wild conservation zoo',
-        'Board a specialized safari vehicle through open habitats where Bengal tigers, African lions, white rhinos, giraffes, zebras, and antelopes roam freely',
-        'Explore the Open Zoo area with flamingos, lemurs, elephants, and exotic tropical birds',
-        'Visit the Kid Zoo where children can interact with and feed gentle farm animals',
-        'Watch the live animal conservation presentation',
-        'Return to the hotel in the afternoon to unwind, swim in the resort pool, and pack leisurely'
+        '**Vinpearl Safari Tour**: After breakfast, embark on a full-day adventure at Vinpearl Safari, the largest semi-wildlife conservation park in Vietnam. Board a specialized safari vehicle and journey through open habitats where over 150 species roam freely.',
+        '**Grand World Cultural Complex**: Free time to explore Grand World, the vibrant entertainment and cultural complex of Phu Quoc, at your own pace.',
+        '**Venice Gondola Canal Boat Ride**: Enjoy a relaxing gondola ride along the Grand World Venice canals.',
+        '**Return to Hotel**: Return to the hotel after the tour.'
       ],
-      sections: [
-        {
-          title: 'Vinpearl Safari Inclusions:',
-          items: [
-            'Vinpearl Safari Full Entry Ticket for the family.',
-            'Specialized Safari vehicle guided open-habitat tour.',
-            'Open Zoo walking tour and live animal conservation presentation.'
-          ],
-          type: 'signature'
-        }
-      ],
-      stayLocation: 'Phu Quoc (VinHolidays Fiesta Phu Quoc)',
+      optionalNote: 'NOTE: Tinh Hoa Vietnam Cultural Show and Teddy Bear Museum at Grand World are optional.',
+      stayLocation: 'Phu Quoc',
       image: '/images/vietnam-exotic.png',
       meals: 'Breakfast (B)'
     },
     {
-      day: 9,
-      title: 'Day 9 | Phu Quoc Leisure & Departure Flight',
-      route: 'VinHolidays Fiesta → Phu Quoc International Airport',
-      durationNote: 'Departure Transfer (Private Driver)',
-      intro: 'Enjoy a leisurely final breakfast at the resort before checking out and transferring to Phu Quoc Airport for your return flight home carrying unforgettable family memories.',
+      day: 8,
+      date: '21 Dec',
+      title: 'Departure Transfer to Phu Quoc Airport',
+      route: 'Phu Quoc Hotel → Phu Quoc International Airport',
+      durationNote: 'Driver',
+      intro: 'After breakfast and check-out, transfer to Phu Quoc International Airport for your departure flight.',
       timeline: [
-        'Breakfast at VinHolidays Fiesta Phu Quoc',
-        'Leisure time for morning swimming, photography, or packing',
-        'Check-out at the hotel (late check-out not included; luggage stored safely with driver)',
-        'Private transfer to Phu Quoc International Airport for your departure flight',
-        'Board your return flight home carrying cherishable family holiday memories of Vietnam!'
+        '**Breakfast & Hotel Check-out**: Enjoy breakfast at the hotel and complete check-out (late check-out is not included).',
+        '**Airport Departure Transfer**: Meet your driver and transfer to Phu Quoc International Airport for your departure flight.'
       ],
-      sections: [
-        {
-          title: 'Departure Service:',
-          items: [
-            'Private chauffeur transfer from hotel to Phu Quoc Airport.',
-            'Warm farewell from the Wanderphilia team.'
-          ],
-          type: 'normal'
-        }
-      ],
-      stayLocation: 'Departure / Flight Home',
+      stayLocation: 'Departure',
+      signOff: 'Until your next family adventure — Wanderphilia style.',
       image: '/images/vietnam.png',
-      meals: 'Breakfast (B)',
-      signOff: 'Until your next family adventure — Wanderphilia style.'
+      meals: 'Breakfast (B)'
     }
   ],
   inclusions: [
-    'Transfer on private comfortable AC Van throughout the tour',
-    'Daily breakfast at the hotels (except Day 1)',
-    'Linh Ung Pagoda & Lady Buddha on Son Tra Peninsula',
-    'Coconut Forest traditional bamboo basket boat ride with boat spinning',
-    'Hoi An Ancient Town UNESCO World Heritage guided walking tour & entrance ticket',
-    'Hands-on Traditional Lantern Making Workshop in Hoi An (with custom handmade lantern souvenir)',
-    'Candle-lit lantern boat ride on Hoai River',
-    'Ba Na Hills round-trip Cable Car ticket & Fantasy Park admission (no lunch)',
-    'Overnight mountaintop stay at Mercure Danang French Village Bana Hills',
-    'Hon Thom 2-Way Over-Sea Cable Car ticket & Aquatopia Water Park admission',
+    'Transfer on a private 07-seater car with dedicated driver throughout the tour',
+    '7 Nights accommodation at handpicked hotels/resorts as specified (2N Hoi An, 1N Ba Na Hills, 4N Phu Quoc)',
+    'Daily breakfast at the hotel (except Day 1)',
+    'Cam Thanh Coconut Forest bamboo basket boat ride',
+    'Hoi An Ancient Town walking tour',
+    'Traditional Lantern Making Workshop (with handmade lantern souvenir)',
+    'Lantern boat ride on Hoai River',
+    'Ba Na Hills round-trip Cable Car & Golden Bridge tickets (no lunch)',
+    'Fantasy Park admission and amusement rides',
+    'Hon Thom Over-Sea Cable Car 2-way tickets',
+    'Aquatopia Water Park admission',
     'Kiss Bridge and Sunset Town promenade',
-    '"Kiss of the Sea" multimedia show ticket (Light, Sound, Lasers & Fireworks)',
-    'Venice Gondola canal boat ride in Grand World Phu Quoc',
-    'VinWonders Phu Quoc full-day all-access theme park & waterpark pass',
-    'Vinpearl Safari open conservation park entry & specialized safari vehicle tour',
-    'Professional English-speaking tour guide as mentioned (Day 2 in Hoi An)',
+    'Kiss of the Sea Show tickets (including Light, Sound & Fireworks)',
+    'Venice Gondola canal boat ride at Grand World',
+    'VinWonders Phu Quoc full-day all-access ticket',
+    'Vinpearl Safari semi-wildlife conservation park entry & safari vehicle tour',
+    'Professional English-speaking tour guide as mentioned on Day 2 in Hoi An',
     'Complimentary drinking water on tour (2 bottles/pax/day)',
-    'All government taxes & service charges'
+    'Government tax & service charge'
   ],
   exclusions: [
-    'All Flight tickets (International flights & Domestic flight: Da Nang → Phu Quoc) and meals NOT mentioned in the itinerary',
+    '5% GST & 2% TCS applicable extra on total package cost',
+    'All Flight tickets (International & Domestic flights) and meals NOT mentioned',
     'Compulsory tipping for driver and guide: 5 USD / 1 PAX / 1 DAY WITH TOUR GUIDE',
-    'Lunch & Dinner (except where mentioned)',
+    'Lunch',
     'Dinner with transfer',
     'Vietnam E-Visa fees',
-    'Personal expenses, laundry, telephone calls, mini-bar, alcoholic drinks',
-    'Optional shows & attractions (Tinh Hoa Show, Teddy Bear Museum in Grand World)',
-    'Any other items or services not mentioned in the inclusions'
+    'Optional shows and museums (Tinh Hoa Show, Teddy Bear Museum in Grand World)',
+    'Early check-in & late check-out at hotels',
+    'Any personal expenses, laundry, minibar, or items not mentioned in the inclusions'
   ],
   thingsToCarry: [
-    'Original Passports (min. 6 months validity) & Printed Vietnam E-Visas',
-    'Lightweight Breathable Clothes for Phu Quoc, Da Nang & Hoi An',
-    'Light Jacket / Cardigan for evening atop Ba Na Hills',
-    'Swimwear, Beach Hats & Goggles for Aquatopia, VinWonders & Beach',
-    'Comfortable Walking Shoes & Water Sandals / Crocs for basket boat & waterparks',
-    'High-Protection Sunscreen (SPF 50+), Sunglasses & Baby Essentials',
-    'Personal First Aid & Family/Child Travel Medicines',
-    'Universal Travel Adapter & High-Capacity Power Bank',
-    'Vietnam Dong (VND) / USD & Forex Cards'
+    'Passports (min. 6 months validity from travel date) & Printed Vietnam E-Visas',
+    'Light cotton clothing for Phu Quoc, Da Nang & Hoi An',
+    'Light jacket / cardigan for evening atop Ba Na Hills',
+    'Swimwear, sunscreen (SPF 50+), sunglasses & sun hats for beach and water parks',
+    'Comfortable walking shoes / sneakers for sightseeing & walking tours',
+    'Universal power adapter, phone chargers & power bank',
+    'Personal first aid kit & family/child travel medicines',
+    'Vietnam Dong (VND) / USD & international forex cards'
   ]
 };
 
@@ -2502,6 +2381,10 @@ export const manualItinerariesRegistry: Record<string, ManualItinerary> = {
   'mr-naushad-chaudhary-x4-vietnam-trip': vietnamNaushadManualItinerary,
   'mr-naushad-vietnam': vietnamNaushadManualItinerary,
   'naushad-vietnam': vietnamNaushadManualItinerary,
+  'naushad': vietnamNaushadManualItinerary,
+  'mr-naushad': vietnamNaushadManualItinerary,
+  'naushad-chaudhary': vietnamNaushadManualItinerary,
+  'wp-naushad': vietnamNaushadManualItinerary,
   'vietnam-family-tour': vietnamNaushadManualItinerary,
   'wp-vietnam-naushad': vietnamNaushadManualItinerary,
   'wp-4002b3f4': rajasthanRoyalEscapeManualItinerary,
@@ -2721,7 +2604,7 @@ export function extractDayOptionalNotes(
   timeline: string[],
   existingOptionalNote?: string
 ): { cleanedTimeline: string[]; optionalNote?: string } {
-  let optionalNote = existingOptionalNote ? existingOptionalNote.trim() : '';
+  let optionalNote = existingOptionalNote ? existingOptionalNote.trim().replace(/\s*\(on your own\)/gi, '').replace(/\s*on your own/gi, '') : '';
   const optionalItems: string[] = [];
 
   const cleanedTimeline = timeline.map(item => {
@@ -2774,7 +2657,7 @@ export function extractDayOptionalNotes(
 
   if (!optionalNote && optionalItems.length > 0) {
     const combined = optionalItems.join(' & ');
-    optionalNote = `NOTE: ${combined} is optional (on your own).`;
+    optionalNote = `NOTE: ${combined} is optional.`;
   }
 
   return { cleanedTimeline, optionalNote: optionalNote || undefined };
