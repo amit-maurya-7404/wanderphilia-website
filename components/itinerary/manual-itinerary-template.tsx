@@ -367,7 +367,7 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
                   {itinerary.moments.map((moment, idx) => (
-                    <div key={idx} className="flex items-start gap-2 bg-white p-2.5 rounded-xl border border-stone-200/90 shadow-2xs">
+                    <div key={idx} className="flex items-start gap-2.5 bg-white p-3 rounded-xl border border-stone-200/90 shadow-2xs">
                       <span className="text-[#FF6E0B] font-black text-xs shrink-0 mt-0.5">✦</span>
                       <span className="text-xs font-bold text-stone-800 leading-snug">{moment}</span>
                     </div>
@@ -379,7 +379,7 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
 
           {/* Bottom Rust Bar */}
           <div className="bg-[#6E1E14] text-white py-3 px-6 text-center text-[10px] sm:text-xs font-bold tracking-wide">
-            Wanderphilia Signature {destination} Curated Travel Proposal
+            Wanderphilia {destination} Travel Proposal
           </div>
         </section>
 

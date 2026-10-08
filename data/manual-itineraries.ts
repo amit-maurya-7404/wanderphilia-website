@@ -3204,6 +3204,12 @@ export function itineraryDocumentToManualItinerary(itinerary: ItineraryDocument)
     .replace(/\s{2,}/g, ' ')
     .trim() || 'Customised Tour';
 
+  const rawMoments = (itinerary.moments && itinerary.moments.length > 0)
+    ? itinerary.moments
+    : (dynamicExperiences.length > 0
+        ? dynamicExperiences.map(e => e.replace(/^En-route Experience:\s*/i, ''))
+        : (itinerary.highlights || []));
+
   return {
     id: itinerary.id,
     slug: itinerary.slug || itinerary.id,
@@ -3223,6 +3229,8 @@ export function itineraryDocumentToManualItinerary(itinerary: ItineraryDocument)
     mealPlan,
     heroImage,
     galleryImages: collageImages,
+    moments: rawMoments,
+    highlights: itinerary.highlights || rawMoments,
     dayPlans: manualDayPlans,
     accommodations,
     inclusions: displayInclusions,
