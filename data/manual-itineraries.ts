@@ -1516,6 +1516,243 @@ export const vietnamNaushadManualItinerary: ManualItinerary = {
   ]
 };
 
+export const vietnamNaushadUpdatedManualItinerary: ManualItinerary = {
+  id: 'vietnam-naushad-updated',
+  slug: 'mr-naushad-chaudhary-vietnam-updated',
+  title: '7 Nights / 8 Days Vietnam Tour Itinerary',
+  subtitle: 'VIETNAM TOUR ITINERARY',
+  duration: '7 Nights / 8 Days | 22nd Dec to 29th Dec 2026',
+  numNights: 7,
+  numDays: 8,
+  dates: '22nd Dec to 29th Dec 2026',
+  route: 'Da Nang → Hoi An → Ba Na Hills → Phu Quoc Island',
+  routeSummary: '2N Hoi An | 1N Ba Na Hills | 2N South Phu Quoc | 2N North Phu Quoc',
+  destination: 'Vietnam',
+  travelStyle: 'Family Vacation',
+  tripType: 'Customised Private Tour (2 Adults + 2 Kids)',
+  leadName: 'Mr Naushad Chaudhary',
+  adults: 2,
+  kids: 2,
+  kidsDetails: '1 Child (5 Yrs with Extra Bed) + 1 Child (2.5 Yrs Free)',
+  perAdultPrice: 212400,
+  perKidPrice: 35200,
+  childPricingNote: '1 Child (5 Yrs with Extra Bed): ₹35,200 + 5% GST (₹1,760) + 2% TCS (₹704) = ₹37,664/- • 1 Child (2.5 Yrs): Complimentary / Free of charge',
+  baseAmount: 460000,
+  gstPercentage: 5,
+  gstAmount: 23000,
+  tcsPercentage: 2,
+  tcsAmount: 9200,
+  finalQuotationAmount: 492200,
+  vehicleType: 'Private 07 Seater Car with Dedicated Driver',
+  mealPlan: 'Daily Breakfast at Hotels (except Day 1)',
+  heroImage: '/images/vietnam.png',
+  galleryImages: [
+    '/images/vietnam.png',
+    '/images/vietnam-wonders.png',
+    '/images/vietnam-highlights.png',
+    '/images/vietnam-beauty.png',
+    '/images/vietnam-best.png',
+    '/images/vietnam-mesmerising.png',
+    '/images/vietnam-exotic.png',
+    '/images/vietnam-dreamy.png'
+  ],
+  moments: [
+    'Cam Thanh Coconut Forest Basket Boat Ride',
+    'UNESCO Hoi An Ancient Town Walking Tour',
+    'Traditional Lantern Making Workshop & Souvenir',
+    'Romantic Hoai River Lantern Boat Ride',
+    'Ba Na Hills Scenic Cable Car & Golden Bridge',
+    'French Village & Fantasy Park Exploration',
+    'Hon Thom World’s Longest Over-Sea Cable Car',
+    'Aquatopia Water Park & Sunset Town Kiss Bridge',
+    'Kiss of the Sea Multimedia Show & Fireworks',
+    'Full Day VinWonders Theme Park & Waterpark',
+    'Vinpearl Semi-Wildlife Safari Vehicle Tour',
+    'Venice Gondola Boat Ride at Grand World'
+  ],
+  accommodations: [
+    { city: 'Hoi An', nights: 2, hotelName: 'New World Hoiana Beach Resort', roomCategory: 'Superior Ocean View with King Bed' },
+    { city: 'Ba Na Hills', nights: 1, hotelName: 'Mercure Danang French Village Bana Hills', roomCategory: 'Duplex Suite with 1 King Bed' },
+    { city: 'South Phu Quoc', nights: 2, hotelName: 'La Fiesta Phu Quoc', roomCategory: 'Suite 1 King Bed' },
+    { city: 'North Phu Quoc', nights: 2, hotelName: 'SOL By Melia Phu Quoc', roomCategory: 'Standard Ocean View' }
+  ],
+  dayPlans: [
+    {
+      day: 1,
+      date: '22 Dec',
+      title: 'Da Nang Arrival → Hoi An Transfer',
+      route: 'Da Nang Airport → Hoi An',
+      durationNote: 'Driver',
+      intro: 'Upon arrival at Da Nang Airport, meet your private driver and transfer to your luxury coastal resort in Hoi An.',
+      timeline: [
+        '**Da Nang Airport Arrival**: Upon arrival at Da Nang Airport, meet your private driver.',
+        '**Hotel Transfer & Check-in**: Transfer to New World Hoiana Beach Resort, Hoi An and check in at the hotel (Superior Ocean View with King Bed) (early check-in is not included).',
+        '**Evening at Leisure**: Free at leisure to relax and enjoy the beachfront resort.'
+      ],
+      stayLocation: 'Hoi An',
+      image: '/images/vietnam.png',
+      meals: 'On own / In-flight'
+    },
+    {
+      day: 2,
+      date: '23 Dec',
+      title: 'Coconut Forest Basket Boat, Hoi An Walking Tour, Lantern Workshop & Hoai River Boat Ride',
+      route: 'Hoi An & Cam Thanh',
+      durationNote: 'Driver + Guide',
+      intro: 'Begin the day with a basket boat ride in Coconut Forest before exploring Hoi An Ancient Town with a lantern making workshop and river boat ride.',
+      timeline: [
+        '**Coconut Forest Basket Boat**: After breakfast, visit Cam Thanh Coconut Forest to take a traditional basket boat ride.',
+        '**Hoi An Ancient Town Walking Tour**: Head to Hoi An Ancient Town for a guided walking tour through lantern-lit historic streets.',
+        '**Lantern Making Workshop**: Join a Lantern Making Workshop where you can create your own traditional lantern as a meaningful souvenir.',
+        '**Hoai River Lantern Boat Ride**: Have a lantern boat ride on the Hoai River, releasing floating lanterns for good luck.',
+        '**Evening at Leisure**: In the evening, return and enjoy the rest of the day at leisure.'
+      ],
+      stayLocation: 'Hoi An',
+      image: '/images/vietnam-highlights.png',
+      meals: 'Breakfast (B)'
+    },
+    {
+      day: 3,
+      date: '24 Dec',
+      title: 'Ba Na Hills Cable Car, Golden Bridge, French Village & Fantasy Park',
+      route: 'Hoi An → Ba Na Hills',
+      durationNote: 'Driver',
+      intro: 'Depart for Ba Na Hills, take the scenic cable car to the French Village, visit the Golden Bridge, and enjoy the rides at Fantasy Park.',
+      timeline: [
+        '**Transfer to Ba Na Hills**: Following breakfast, depart for Ba Na Hills with your driver.',
+        '**Scenic Cable Car & Golden Bridge**: Enjoy a scenic cable car ascent to the summit and walk across the iconic Golden Bridge.',
+        '**French Village & Fantasy Park**: Explore the charming French Village and experience the fun attractions and rides at Fantasy Park.',
+        '**Check-in & Overnight**: Check-in at Mercure Danang French Village Bana Hills for an overnight stay atop the mountain (Duplex Suite with 1 King Bed).'
+      ],
+      stayLocation: 'Ba Na Hills',
+      image: '/images/vietnam-best.png',
+      meals: 'Breakfast (B)'
+    },
+    {
+      day: 4,
+      date: '25 Dec',
+      title: 'Ba Na Hills Leisure → Flight to Phu Quoc Island',
+      route: 'Ba Na Hills → Da Nang Airport ✈ Phu Quoc',
+      durationNote: 'Driver',
+      intro: 'Enjoy leisure time atop Ba Na Hills before descending by cable car and transferring to the airport for your flight to Phu Quoc.',
+      timeline: [
+        '**Morning Leisure in Ba Na Hills**: After breakfast, enjoy leisure time exploring the mountaintop.',
+        '**Cable Car Descent & Airport Transfer**: Check out at the hotel, go down by cable car, meet your driver, and transfer to Da Nang Airport for your flight to Phu Quoc (recommended flight after noon).',
+        '**Phu Quoc Arrival & Check-in**: Upon arrival in Phu Quoc, meet your driver and transfer to La Fiesta Phu Quoc for check-in (Suite 1 King Bed) (early check-in is not included).'
+      ],
+      stayLocation: 'South Phu Quoc',
+      image: '/images/vietnam-wonders.png',
+      meals: 'Breakfast (B)'
+    },
+    {
+      day: 5,
+      date: '26 Dec',
+      title: 'Hon Thom Over-Sea Cable Car, Aquatopia Water Park, Kiss Bridge & Kiss of the Sea Show',
+      route: 'Phu Quoc (Hon Thom Island & Sunset Town)',
+      durationNote: 'Tickets Included (Walking distance in Sunset Town)',
+      intro: 'Ride the world’s longest over-sea cable car to Hon Thom Island, enjoy Aquatopia Water Park, walk Kiss Bridge, and watch the Kiss of the Sea show.',
+      timeline: [
+        '**Hon Thom Cable Car & Aquatopia Water Park**: After breakfast, enjoy a ride on the spectacular Hon Thom Cable Car (the longest over-sea cable car in the world) and have fun at Aquatopia Water Park with exciting water slides and family attractions.',
+        '**Kiss Bridge & Sunset Town**: Continue to the striking Kiss Bridge and Sunset Town, an architectural icon offering sweeping sea views and photo opportunities.',
+        '**Kiss of the Sea Show**: As evening falls, witness the breathtaking Kiss of the Sea show (including Light, Sound, Lasers & Fireworks), a spectacular blend illuminating the night sky.',
+        '**Return to Hotel**: Return to the hotel after the show.'
+      ],
+      optionalNote: 'NOTE: Driver and guide transfers are not required on Day 5 as La Fiesta Hotel is located in Sunset Town near the cable station.',
+      stayLocation: 'South Phu Quoc',
+      image: '/images/vietnam-dreamy.png',
+      meals: 'Breakfast (B)'
+    },
+    {
+      day: 6,
+      date: '27 Dec',
+      title: 'Transfer to North Phu Quoc & Full Day Adventure at VinWonders Theme Park',
+      route: 'South Phu Quoc → North Phu Quoc ↔ VinWonders',
+      durationNote: 'Driver',
+      intro: 'Transfer to North Phu Quoc and set off for an unforgettable day at VinWonders Phu Quoc theme park and waterpark.',
+      timeline: [
+        '**Transfer to North Phu Quoc & Check-in**: After breakfast, transfer to SOL By Melia Phu Quoc (Standard Ocean View) for check-in before heading out for a full day of fun.',
+        '**Themed Zones & Rides**: Dive into thrilling rides, rollercoasters, and enchanting settings that blend fairy-tale charm with modern attractions at VinWonders Phu Quoc.',
+        '**Lively Water Park & Live Shows**: Enjoy the lively water park slides, splash zones, and spectacular live performances.',
+        '**Return to Hotel**: Return to SOL By Melia Phu Quoc after a full day of excitement.'
+      ],
+      stayLocation: 'North Phu Quoc',
+      image: '/images/vietnam-wonders.png',
+      meals: 'Breakfast (B)'
+    },
+    {
+      day: 7,
+      date: '28 Dec',
+      title: 'Vinpearl Open Safari Adventure & Grand World Venice Gondola Ride',
+      route: 'North Phu Quoc ↔ Vinpearl Safari & Grand World',
+      durationNote: 'Driver',
+      intro: 'Embark on an open safari adventure at Vinpearl Safari, explore Grand World, and take a relaxing Venetian gondola boat ride.',
+      timeline: [
+        '**Vinpearl Safari Tour**: After breakfast, embark on an adventure at Vinpearl Safari, the largest semi-wildlife conservation park in Vietnam. Board a specialized safari vehicle and journey through open habitats where over 150 species roam freely.',
+        '**Grand World Cultural Complex**: Free time to explore Grand World, the vibrant entertainment and cultural complex of Phu Quoc, at your own pace.',
+        '**Venice Gondola Canal Boat Ride**: Enjoy a relaxing gondola ride along the Grand World Venice canals.',
+        '**Return to Hotel**: Return to SOL By Melia Phu Quoc after the tour.'
+      ],
+      optionalNote: 'NOTE: Tinh Hoa Vietnam Cultural Show and Teddy Bear Museum at Grand World are optional.',
+      stayLocation: 'North Phu Quoc',
+      image: '/images/vietnam-exotic.png',
+      meals: 'Breakfast (B)'
+    },
+    {
+      day: 8,
+      date: '29 Dec',
+      title: 'Departure Transfer to Phu Quoc Airport',
+      route: 'SOL By Melia Phu Quoc → Phu Quoc International Airport',
+      durationNote: 'Driver',
+      intro: 'After breakfast and check-out, transfer to Phu Quoc International Airport for your departure flight.',
+      timeline: [
+        '**Breakfast & Hotel Check-out**: Enjoy breakfast at SOL By Melia Phu Quoc and complete check-out (late check-out is not included).',
+        '**Airport Departure Transfer**: Meet your driver and transfer to Phu Quoc International Airport for your departure flight.'
+      ],
+      stayLocation: 'Departure',
+      signOff: 'Until your next family adventure — Wanderphilia style.',
+      image: '/images/vietnam.png',
+      meals: 'Breakfast (B)'
+    }
+  ],
+  inclusions: [
+    'Transfer on a 07 seater car',
+    'Daily breakfast at the hotel (except day 1)',
+    'Coconut Forest to take a basket boat ride',
+    'Hoi An Ancient Town',
+    'Lantern Making Workshop',
+    'Lantern boat ride on Hoai River.',
+    'Ba Na Hills (no lunch)',
+    'Hon Thom Cable Car (2 ways)',
+    'Kiss Bridge and Sunset Town',
+    'Kiss of the Sea (including Light, Sound & Fireworks)',
+    'Venice boat ride',
+    'Vin Wonders Phu Quoc',
+    'Vinpearl Safari',
+    'English speaking as mentioned on day 2',
+    'Water on tour ( 2bottle/pax/day)',
+    'Government tax & service charge.'
+  ],
+  exclusions: [
+    'All Flight tickets, meals NOT mentioned',
+    'Compulsory tipping for driver and guide: 5 USD/1 PAX/ 1 DAY WITH TOUR GUIDE',
+    'Lunch',
+    'Dinner with transfer',
+    'E VISA',
+    '5% GST and 2% TCS',
+    'Other items not mentioned'
+  ],
+  thingsToCarry: [
+    'Passports (min. 6 months validity from travel date) & Printed Vietnam E-Visas',
+    'Light cotton clothing for Phu Quoc, Da Nang & Hoi An',
+    'Light jacket / cardigan for evening atop Ba Na Hills',
+    'Swimwear, sunscreen (SPF 50+), sunglasses & sun hats for beach and water parks',
+    'Comfortable walking shoes / sneakers for sightseeing & walking tours',
+    'Universal power adapter, phone chargers & power bank',
+    'Personal first aid kit & family/child travel medicines',
+    'Vietnam Dong (VND) / USD & international forex cards'
+  ]
+};
+
 export const rajasthanRoyalEscapeManualItinerary: ManualItinerary = {
   id: 'rajasthan-royal-experience',
   slug: 'rajasthan-royal-experience',
@@ -2640,6 +2877,14 @@ export const manualItinerariesRegistry: Record<string, ManualItinerary> = {
   'wp-naushad': vietnamNaushadManualItinerary,
   'vietnam-family-tour': vietnamNaushadManualItinerary,
   'wp-vietnam-naushad': vietnamNaushadManualItinerary,
+
+  'vietnam-naushad-updated': vietnamNaushadUpdatedManualItinerary,
+  'wp-vietnam-naushad-updated': vietnamNaushadUpdatedManualItinerary,
+  'naushad-updated': vietnamNaushadUpdatedManualItinerary,
+  'mr-naushad-updated': vietnamNaushadUpdatedManualItinerary,
+  'mr-naushad-chaudhary-vietnam-updated': vietnamNaushadUpdatedManualItinerary,
+  'vietnam-naushad-new': vietnamNaushadUpdatedManualItinerary,
+  'vietnam-danang-phuquoc-luxury-family-holiday-updated': vietnamNaushadUpdatedManualItinerary,
   'wp-4002b3f4': rajasthanRoyalEscapeManualItinerary,
   'royal-rajasthan-experience': rajasthanRoyalEscapeManualItinerary,
   'royal-rajasthan-experience-9n-10d': rajasthanRoyalEscapeManualItinerary,
@@ -2669,6 +2914,7 @@ export function getAllManualItineraries(): ManualItinerary[] {
     vietnamAneeshManualItinerary,
     vietnamYashManualItinerary,
     vietnamNaushadManualItinerary,
+    vietnamNaushadUpdatedManualItinerary,
     rajasthanRoyalEscapeManualItinerary,
     rajasthanJignaManualItinerary,
     rajasthanSachinManualItinerary
