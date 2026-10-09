@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ManualItinerary } from '@/types/manual-itinerary';
 import { ManualFlowchartSection } from './manual-flowchart-section';
+import { ManualFlightQuotationSection } from './manual-flight-quotation-section';
 import { ItineraryClientActions } from './itinerary-client-actions';
 import { ItineraryPaymentSection } from './itinerary-payment-section';
 import {
@@ -413,7 +414,7 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
         {/* ========================================================= */}
         {/* PAGE 5: ACCOMMODATION, INCLUSIONS & EXCLUSIONS + CARRY BAG */}
         {/* ========================================================= */}
-        <section className="bg-[#FAF8F5] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border border-stone-200/80 p-6 sm:p-10 space-y-8 relative print:shadow-none print:border-0 print:rounded-none page-break-after">
+        <section className="bg-[#FAF8F5] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border border-stone-200/80 p-3 sm:p-8 md:p-10 space-y-6 sm:space-y-8 relative print:shadow-none print:border-0 print:rounded-none page-break-after">
 
           <div className="text-center space-y-2 border-b-2 border-[#6E1E14]/20 pb-4">
             <h2 className={`${playfair.className} text-2xl sm:text-4xl font-black text-[#5C1810] tracking-tight uppercase`}>
@@ -761,6 +762,11 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                 </div>
               )}
             </div>
+          )}
+
+          {/* ✈️ FLIGHT QUOTATIONS & SCHEDULE (Placed below the Tour Quotation) */}
+          {itinerary.flightQuotations && itinerary.flightQuotations.length > 0 && (
+            <ManualFlightQuotationSection flightQuotations={itinerary.flightQuotations} />
           )}
 
           {/* Bottom Rust Bar */}

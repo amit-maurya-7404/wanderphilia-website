@@ -30,6 +30,33 @@ export interface ManualAccommodation {
   roomCategory?: string;
 }
 
+export interface FlightSector {
+  fromCity: string;
+  toCity: string;
+  via?: string;
+  airline: string;
+  flightNumber: string;
+  departureDate: string;
+  departureTime: string;
+  arrivalDate?: string;
+  arrivalTime: string;
+  duration: string;
+  stops: string;
+  baggage: string;
+  price?: number;
+  paxDetails?: string;
+  refundPolicy?: string;
+}
+
+export interface FlightQuotationOption {
+  optionId?: string;
+  optionTitle: string;
+  totalPrice: number;
+  paxDetails?: string;
+  sectors: FlightSector[];
+  note?: string;
+}
+
 export interface ManualItinerary {
   id: string;
   slug: string;
@@ -53,6 +80,7 @@ export interface ManualItinerary {
   highlights?: string[];
   dayPlans: ManualDayPlan[];
   accommodations?: ManualAccommodation[];
+  flightQuotations?: FlightQuotationOption[];
   inclusions: string[];
   exclusions: string[];
   thingsToCarry?: string[];

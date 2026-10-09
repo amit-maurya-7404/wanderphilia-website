@@ -1576,6 +1576,120 @@ export const vietnamNaushadUpdatedManualItinerary: ManualItinerary = {
     { city: 'South Phu Quoc', nights: 2, hotelName: 'La Fiesta Phu Quoc', roomCategory: 'Suite 1 King Bed' },
     { city: 'North Phu Quoc', nights: 2, hotelName: 'SOL By Melia Phu Quoc', roomCategory: 'Standard Ocean View' }
   ],
+  flightQuotations: [
+    {
+      optionId: 'flight-option-1',
+      optionTitle: 'Flight Quotation Option 1 (VietJet & Vietnam Airlines via Hanoi)',
+      totalPrice: 301511,
+      paxDetails: '2 Adults, 2 Children (Total Inclusive of All Taxes & Checked Baggage)',
+      note: 'Airline ticket pricing is dynamic. Fares are valid as of now and subject to real-time seat availability at the time of final ticket issuance.',
+      sectors: [
+        {
+          fromCity: 'BOM (Mumbai)',
+          toCity: 'DAD (Da Nang)',
+          via: 'HAN (Hanoi)',
+          airline: 'VietJet Air',
+          flightNumber: 'VJ - 910, VJ - 527',
+          departureDate: 'Tue, 22 Dec 2026',
+          departureTime: '00:40',
+          arrivalDate: 'Tue, 22 Dec 2026',
+          arrivalTime: '11:05',
+          duration: '8 h 55 m',
+          stops: '1 stop (via HAN)',
+          baggage: 'Cabin 7 Kgs | Check-in 20 Kgs per pax',
+          paxDetails: 'Total for 2 Adults + 2 Children',
+          refundPolicy: 'Non-Refundable'
+        },
+        {
+          fromCity: 'DAD (Da Nang)',
+          toCity: 'PQC (Phu Quoc)',
+          airline: 'VietJet Air',
+          flightNumber: 'VJ - 715',
+          departureDate: 'Fri, 25 Dec 2026',
+          departureTime: '12:40',
+          arrivalDate: 'Fri, 25 Dec 2026',
+          arrivalTime: '14:25',
+          duration: '1 h 45 m',
+          stops: 'Non Stop',
+          baggage: 'Cabin 7 Kgs | Check-in 20 Kgs per pax',
+          paxDetails: 'Total for 2 Adults + 2 Children',
+          refundPolicy: 'Non-Refundable'
+        },
+        {
+          fromCity: 'PQC (Phu Quoc)',
+          toCity: 'BOM (Mumbai)',
+          via: 'HAN (Hanoi)',
+          airline: 'Vietnam Airlines',
+          flightNumber: 'VN - 1236, VN - 973',
+          departureDate: 'Tue, 29 Dec 2026',
+          departureTime: '09:50',
+          arrivalDate: 'Tue, 29 Dec 2026',
+          arrivalTime: '21:20',
+          duration: '13 h 0 m',
+          stops: '1 stop (via HAN)',
+          baggage: 'Cabin 7 Kgs | Check-in 1 Pc (23 Kgs) per pax',
+          paxDetails: 'Total for 2 Adults + 2 Children',
+          refundPolicy: 'Non-Refundable'
+        }
+      ]
+    },
+    {
+      optionId: 'flight-option-2',
+      optionTitle: 'Flight Quotation Option 2 (Thai VietJet & Sun PhuQuoc via Bangkok)',
+      totalPrice: 278005,
+      paxDetails: '2 Adults, 2 Children (Total Inclusive of All Taxes & Baggage)',
+      note: 'Airline ticket pricing is dynamic. Fares are valid as of now and subject to real-time seat availability at the time of final ticket issuance.',
+      sectors: [
+        {
+          fromCity: 'BOM (Mumbai)',
+          toCity: 'DAD (Da Nang)',
+          via: 'BKK (Bangkok)',
+          airline: 'Thai VietJet Air',
+          flightNumber: 'VZ - 761, VZ - 960',
+          departureDate: 'Tue, 22 Dec 2026',
+          departureTime: '00:45',
+          arrivalDate: 'Tue, 22 Dec 2026',
+          arrivalTime: '12:30',
+          duration: '10 h 15 m',
+          stops: '1 stop (via BKK)',
+          baggage: 'Adults: Cabin 7kg + Check-in 20kg | Child: 0kg',
+          paxDetails: '2 Adults + 2 Children',
+          refundPolicy: 'Non-Refundable'
+        },
+        {
+          fromCity: 'DAD (Da Nang)',
+          toCity: 'PQC (Phu Quoc)',
+          airline: 'Sun PhuQuoc Airways',
+          flightNumber: '9G - 2963',
+          departureDate: 'Fri, 25 Dec 2026',
+          departureTime: '08:45',
+          arrivalDate: 'Fri, 25 Dec 2026',
+          arrivalTime: '10:30',
+          duration: '1 h 45 m',
+          stops: 'Non Stop',
+          baggage: 'Cabin 7 Kgs | Check-in 1 Pc (20 Kgs) per pax',
+          paxDetails: '2 Adults + 2 Children',
+          refundPolicy: 'Cancellation Fee Applies'
+        },
+        {
+          fromCity: 'PQC (Phu Quoc)',
+          toCity: 'BOM (Mumbai)',
+          via: 'BKK (Bangkok)',
+          airline: 'Thai VietJet Air',
+          flightNumber: 'VZ - 983, VZ - 760',
+          departureDate: 'Tue, 29 Dec 2026',
+          departureTime: '16:50',
+          arrivalDate: 'Tue, 29 Dec 2026',
+          arrivalTime: '23:50',
+          duration: '8 h 30 m',
+          stops: '1 stop (via BKK)',
+          baggage: 'Check-in: 20 Kgs per pax | Cabin: 0 Kg',
+          paxDetails: '2 Adults + 2 Children',
+          refundPolicy: 'Non-Refundable'
+        }
+      ]
+    }
+  ],
   dayPlans: [
     {
       day: 1,
