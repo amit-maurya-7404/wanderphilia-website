@@ -288,13 +288,27 @@ export function getMealPlanForDay(
 /**
  * Frames a rich, engaging sentence explaining what happens in that experience based on Zoho CRM data
  */
-export function frameExperienceSentence(exp: ZohoExperienceItem, city: string = ''): string {
+export function frameExperienceSentence(
+  exp: ZohoExperienceItem,
+  city: string = '',
+  polishedDesc?: string
+): string {
   const name = (exp.name || '').trim();
   if (!name) return '';
 
+  // 1. If AI generated a polished description for this experience
+  if (polishedDesc && polishedDesc.trim()) {
+    let clean = polishedDesc.trim().replace(/^["'“”‘’]|["'“”‘’]$/g, '').trim();
+    if (!clean.endsWith('.')) clean += '.';
+    if (clean.toLowerCase().startsWith(name.toLowerCase())) {
+      return clean;
+    }
+    return `**${name}**: ${clean}`;
+  }
+
   const detail = (exp.inclusionDescription || exp.description || exp.subTitle || '').trim();
 
-  // If Zoho CRM provided a detailed description that is not just repeating the name
+  // 2. If Zoho CRM provided a detailed description that is not just repeating the name
   if (detail && detail.toLowerCase() !== name.toLowerCase()) {
     const cleanedDetail = detail.replace(/^["']|["']$/g, '').trim();
     if (cleanedDetail.toLowerCase().startsWith(name.toLowerCase())) {
@@ -604,7 +618,8 @@ export function buildCleanDayPlansFromZoho(
   destination: string = '',
   totalDays: number = 0,
   fallbackMealPlan: string = '',
-  destinationType: string = ''
+  destinationType: string = '',
+  polishedExperiences?: Record<string, string>
 ): ItineraryDayPlan[] {
   const isIntl = isInternationalTrip(destination, destinationType);
   const totalCount = Math.max(dayActivities.length, totalDays || 0, 1);
@@ -918,7 +933,22 @@ export function buildCleanDayPlansFromZoho(
 
     // Step 4: Zoho Experiences with proper sentence framing explaining what is happening
     uniqueExps.forEach(exp => {
-      const sentence = frameExperienceSentence(exp, targetCity);
+      const cleanName = cleanActivityTitle(exp.name);
+      const keyWithDay = `${dayNum}_${cleanName.toLowerCase()}`;
+      const keyPlain = cleanName.toLowerCase();
+      const rawNameKey = `${dayNum}_${(exp.name || '').toLowerCase().trim()}`;
+      
+      let polishedDesc: string | undefined = undefined;
+      if (polishedExperiences) {
+        polishedDesc = polishedExperiences[keyWithDay] || polishedExperiences[keyPlain] || polishedExperiences[rawNameKey];
+        // Also check partial keys if exact key wasn't matched
+        if (!polishedDesc) {
+          const matchingKey = Object.keys(polishedExperiences).find(k => k.startsWith(`${dayNum}_`) && (k.includes(keyPlain) || keyPlain.includes(k.replace(/^\d+_/, ''))));
+          if (matchingKey) polishedDesc = polishedExperiences[matchingKey];
+        }
+      }
+
+      const sentence = frameExperienceSentence(exp, targetCity, polishedDesc);
       if (sentence) {
         timeline.push(sentence);
       }
@@ -1168,58 +1198,76 @@ export function generateLuxuryFallback(raw: Record<string, any>): GeneratedItine
 }
 
 /**
- * Uses Groq AI to enhance ONLY day headings based on genuine day activities.
- * Strictly constrained: Does NOT touch hotel stays, dates, pricing, or timeline milestones.
+ * Uses Groq AI to enhance Day Headings AND polish rough experience descriptions based strictly on genuine day activities.
+ * Strictly constrained: Does NOT invent extra activities, monuments, dates, pricing, or timeline milestones.
  */
-export async function generateDayHeadingsWithGroq(
+export async function generateDayHeadingsAndExperiencesWithGroq(
   destination: string,
-  dayPlans: ItineraryDayPlan[]
-): Promise<Record<number, string>> {
+  dayPlans: ItineraryDayPlan[],
+  dayActivities: ZohoDayActivity[] = []
+): Promise<{
+  dayHeadings: Record<number, string>;
+  polishedExperiences: Record<string, string>;
+}> {
   const apiKey = process.env.GROQ_API_KEY || process.env.OPENAI_API_KEY;
   if (!apiKey || !dayPlans || dayPlans.length === 0) {
-    return {};
+    return { dayHeadings: {}, polishedExperiences: {} };
   }
 
-  const dayContext = dayPlans.map(d => ({
-    day: d.day,
-    currentTitle: d.title,
-    stayLocation: d.stayLocation || destination,
-    activities: d.activities || []
-  }));
+  const dayContext = dayPlans.map(d => {
+    const act = dayActivities.find(a => (a.dayNumber || 0) === d.day) || dayActivities[d.day - 1];
+    const rawExps = (act?.experiences || []).map((e: any) => ({
+      name: e.name,
+      rawNotes: (e.inclusionDescription || e.description || e.subTitle || '').trim()
+    }));
+
+    return {
+      day: d.day,
+      currentTitle: d.title,
+      stayLocation: d.stayLocation || destination,
+      enRoute: act?.enRouteExperiences || '',
+      experiences: rawExps
+    };
+  });
 
   const systemPrompt = `You are a Senior Luxury Travel Writer for Wanderphilia.
-Your task is to write a clear, descriptive, and engaging Day Heading sentence for each day of a ${destination} trip.
+Your task is twofold:
+1. Write a clear, descriptive, and engaging Day Heading sentence for each day of a ${destination} trip.
+2. For each experience/activity that has "rawNotes" (rough description or notes), polish and rewrite those raw notes into an elegant, fluid, and grammatically complete 1-2 sentence description.
 
-CRITICAL REQUIREMENTS:
-1. The heading must be a proper, informative descriptive sentence / title that clearly explains the full flow and major activities being done on that day.
-2. Structure format:
-   - For Transit / Arrival: "Journey / Drive from [FromCity] to [ToCity] with [Major Activity / En-route Stop] & [Evening Experience]"
-   - For Sightseeing days: "Exploring [Monuments / Forts], [Heritage Sites] & [Special Experience / Boating / Sunset / Market]"
-   - For Departure: "Morning Leisure & Exploration in [City] followed by Departure Transfer"
-3. Do NOT include raw hotel names (e.g. "Standard Hotel") in the title. Focus on destinations and activities.
-4. Tone: Inspiring, premium, descriptive, and crystal-clear so the traveler immediately understands the day's journey.
-5. Length: Around 8 to 18 words (a complete, informative sentence).
-6. ABSOLUTE PROHIBITION: Do NOT prefix with "Day 1:", "Day 2 | " or include prices/dates.
-7. Return strictly a valid JSON object mapping day numbers as string keys (e.g. "1", "2") to the descriptive sentence string.
+CRITICAL MANDATORY RULES:
+1. DAY HEADINGS:
+   - Must be a complete descriptive title sentence (8 to 18 words) explaining the route and key activities.
+   - Example: "Scenic Drive from Jodhpur to Jaisalmer followed by Sunset Camel Safari & Cultural Evening at Sam Dunes"
+   - Do NOT prefix with "Day 1:", "Day 2 |" or include prices/dates.
+2. EXPERIENCE DESCRIPTIONS (STRICT ANTI-HALLUCINATION RULE):
+   - You MUST ONLY rewrite and polish the provided "rawNotes" into a grammatically sound, premium, clear sentence.
+   - ABSOLUTE PROHIBITION: Do NOT invent or add any new monuments, attractions, timings, or prices that are not mentioned in the raw notes!
+   - If rawNotes is empty or short, provide a clean, natural 1-sentence description focused strictly on that specific monument/activity name.
+3. OUTPUT FORMAT:
+   Return strictly valid JSON with this exact schema:
+   {
+     "dayHeadings": {
+       "1": "Descriptive Day 1 Heading Sentence",
+       "2": "Descriptive Day 2 Heading Sentence"
+     },
+     "polishedExperiences": {
+       "1_Mehrangarh Fort": "Explore the majestic courtyards, royal museum collections, and Sheesh Mahal while enjoying sweeping panoramic views of the Blue City.",
+       "1_Camel Safari": "Enjoy a sunset camel safari traversing the rolling sand dunes followed by traditional Rajasthani folk music and cultural dance."
+     }
+   }`;
 
-Example JSON format:
-{
-  "1": "Scenic Drive from Jodhpur to Jaisalmer followed by Sunset Camel Safari & Cultural Evening at Sam Dunes",
-  "2": "Exploring Jaisalmer Golden Fort, Patwon Ki Haveli, Bada Bagh & Scenic Pedal Boat Ride on Gadisar Lake",
-  "3": "Drive to Jodhpur featuring Blue City Heritage Walk & Panoramic Sunset from Panchatiya Hills",
-  "4": "Exploring Majestic Mehrangarh Fort, Umaid Bhawan Palace, Jaswant Thada & Mandore Garden Light Show",
-  "5": "Morning Leisure & Souvenir Shopping in Jodhpur followed by Departure Transfer"
-}`;
-
-  const userPrompt = `Here is the day-wise itinerary for ${destination}:
+  const userPrompt = `Here is the day-wise itinerary data for ${destination}:
 ${JSON.stringify(dayContext, null, 2)}
 
-Generate the informative day heading sentences JSON now.`;
+Generate the JSON response with "dayHeadings" and "polishedExperiences" now.`;
 
   const groqModels = [
-    'openai/gpt-oss-20b',
     'openai/gpt-oss-120b',
-    'qwen/qwen3.8-27b'
+    'openai/gpt-oss-20b',
+    'qwen/qwen3.8-27b',
+    'llama-3.3-70b-versatile',
+    'llama-3.1-8b-instant'
   ];
 
   for (const model of groqModels) {
@@ -1237,8 +1285,8 @@ Generate the informative day heading sentences JSON now.`;
             { role: 'user', content: userPrompt }
           ],
           response_format: { type: 'json_object' },
-          temperature: 0.6,
-          max_tokens: 1500,
+          temperature: 0.5,
+          max_tokens: 2500,
         }),
       });
 
@@ -1247,31 +1295,60 @@ Generate the informative day heading sentences JSON now.`;
         const rawContent = json.choices?.[0]?.message?.content || '';
         if (rawContent) {
           const parsed = JSON.parse(rawContent.trim());
-          const cleanedMap: Record<number, string> = {};
+          const cleanedHeadings: Record<number, string> = {};
+          const cleanedExperiences: Record<string, string> = {};
 
-          Object.entries(parsed).forEach(([key, val]) => {
-            const dayNum = parseInt(key.replace(/\D/g, ''), 10);
-            if (dayNum && typeof val === 'string' && val.trim().length > 0) {
-              let clean = val.replace(/^["'“”‘’]|["'“”‘’]$/g, '').trim();
-              clean = clean.replace(/^Day\s*\d+\s*[:|–-]\s*/i, '');
-              clean = clean.replace(/\([^)]*\)/g, '').trim();
-              if (clean) {
-                cleanedMap[dayNum] = clean;
+          // 1. Process Headings
+          const rawHeadings = parsed.dayHeadings || parsed.headings || parsed;
+          if (typeof rawHeadings === 'object') {
+            Object.entries(rawHeadings).forEach(([key, val]) => {
+              const dayNum = parseInt(key.replace(/\D/g, ''), 10);
+              if (dayNum && typeof val === 'string' && val.trim().length > 0) {
+                let clean = val.replace(/^["'“”‘’]|["'“”‘’]$/g, '').trim();
+                clean = clean.replace(/^Day\s*\d+\s*[:|–-]\s*/i, '');
+                clean = clean.replace(/\([^)]*\)/g, '').trim();
+                if (clean) {
+                  cleanedHeadings[dayNum] = clean;
+                }
               }
-            }
-          });
+            });
+          }
 
-          if (Object.keys(cleanedMap).length > 0) {
-            return cleanedMap;
+          // 2. Process Experiences
+          const rawExpMap = parsed.polishedExperiences || parsed.experiences || parsed.descriptions || {};
+          if (typeof rawExpMap === 'object') {
+            Object.entries(rawExpMap).forEach(([key, val]) => {
+              if (typeof val === 'string' && val.trim().length > 0) {
+                let cleanVal = val.trim().replace(/^["'“”‘’]|["'“”‘’]$/g, '').trim();
+                if (!cleanVal.endsWith('.')) cleanVal += '.';
+                cleanedExperiences[key.toLowerCase().trim()] = cleanVal;
+              }
+            });
+          }
+
+          if (Object.keys(cleanedHeadings).length > 0 || Object.keys(cleanedExperiences).length > 0) {
+            return {
+              dayHeadings: cleanedHeadings,
+              polishedExperiences: cleanedExperiences
+            };
           }
         }
       }
     } catch (err) {
-      console.warn(`[Groq Day Headings Error with model ${model}]:`, err);
+      console.warn(`[Groq Day Headings & Experiences Error with model ${model}]:`, err);
     }
   }
 
-  return {};
+  return { dayHeadings: {}, polishedExperiences: {} };
+}
+
+// Backward-compatible alias for generateDayHeadingsWithGroq
+export async function generateDayHeadingsWithGroq(
+  destination: string,
+  dayPlans: ItineraryDayPlan[]
+): Promise<Record<number, string>> {
+  const result = await generateDayHeadingsAndExperiencesWithGroq(destination, dayPlans);
+  return result.dayHeadings;
 }
 
 /**
@@ -1314,8 +1391,8 @@ export async function generateItineraryContentWithAI(rawZohoData: Record<string,
     hotels = [{ index: 1, hotelName: hotel, city: dest, nights: totalDays || 3, stayDates: '' }];
   }
 
-  // ALWAYS generate clean, accurate day plans directly from Zoho CRM subform adhering to Indian vs Intl rules
-  const cleanDayPlans = buildCleanDayPlansFromZoho(
+  // 1. Build initial baseline day plans directly from Zoho CRM subform
+  let cleanDayPlans = buildCleanDayPlansFromZoho(
     dayActivities,
     hotels,
     dest,
@@ -1324,16 +1401,29 @@ export async function generateItineraryContentWithAI(rawZohoData: Record<string,
     destType
   );
 
-  // Enhance Day Headings using Groq AI strictly based on day activities
+  // 2. Enhance Day Headings and Polish Rough Experience Descriptions using AI
   try {
-    const aiHeadings = await generateDayHeadingsWithGroq(dest, cleanDayPlans);
+    const aiEnhancement = await generateDayHeadingsAndExperiencesWithGroq(dest, cleanDayPlans, dayActivities);
+    
+    // Re-build cleanDayPlans passing polished experiences
+    cleanDayPlans = buildCleanDayPlansFromZoho(
+      dayActivities,
+      hotels,
+      dest,
+      totalDays || (dayActivities.length > 0 ? dayActivities.length : 4),
+      mealPlan,
+      destType,
+      aiEnhancement.polishedExperiences
+    );
+
+    // Apply enhanced day heading titles
     cleanDayPlans.forEach(d => {
-      if (aiHeadings[d.day]) {
-        d.title = aiHeadings[d.day];
+      if (aiEnhancement.dayHeadings[d.day]) {
+        d.title = aiEnhancement.dayHeadings[d.day];
       }
     });
   } catch (e) {
-    console.warn('[AI Headings Generation skipped]:', e);
+    console.warn('[AI Headings & Experiences Enhancement skipped]:', e);
   }
 
   const apiKey = process.env.GROQ_API_KEY || process.env.OPENAI_API_KEY || process.env.GEMINI_API_KEY;

@@ -10,6 +10,11 @@ import { Parachute } from '@/components/parachute-icon';
 
 export default function ItineraryTestPage() {
   const [leadQuery, setLeadQuery] = useState('');
+  const [selectedOptionNumber, setSelectedOptionNumber] = useState<number>(1);
+  const [existingOptions, setExistingOptions] = useState<any[]>([]);
+  const [checkingOptions, setCheckingOptions] = useState(false);
+  const [verifyMessage, setVerifyMessage] = useState<string | null>(null);
+
   const [fetchingLead, setFetchingLead] = useState(false);
   const [fetchSuccess, setFetchSuccess] = useState(false);
 
@@ -43,6 +48,57 @@ export default function ItineraryTestPage() {
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
 
+  // Check existing itinerary options in database for this Lead ID
+  const checkExistingOptionsForLead = async (query: string) => {
+    const clean = query.trim();
+    if (!clean || clean.length < 3) {
+      setExistingOptions([]);
+      setVerifyMessage(null);
+      return;
+    }
+
+    setCheckingOptions(true);
+    try {
+      const res = await fetch(`/api/zoho/check-lead-options?query=${encodeURIComponent(clean)}&_t=${Date.now()}`, {
+        cache: 'no-store'
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        const optionsList = data.existingOptions || [];
+        setExistingOptions(optionsList);
+        const createdNums = optionsList.map((o: any) => o.optionNumber);
+
+        // Auto-select first available option
+        const nextAvailable = [1, 2, 3].find(num => !createdNums.includes(num));
+        if (nextAvailable) {
+          setSelectedOptionNumber(nextAvailable);
+        }
+
+        if (data.hasExisting) {
+          setVerifyMessage(`✓ Verified: ${optionsList.length} Itinerary Option(s) already created for this Lead.`);
+        } else {
+          setVerifyMessage('✓ Fresh Lead — No existing itineraries found. Ready to create Option 1.');
+        }
+      }
+    } catch (err) {
+      console.warn('Error checking lead options:', err);
+    } finally {
+      setCheckingOptions(false);
+    }
+  };
+
+  // Handle lead input change with debounced verify check
+  const handleQueryChange = (val: string) => {
+    setLeadQuery(val);
+    if (val.trim().length >= 4) {
+      checkExistingOptionsForLead(val);
+    } else {
+      setExistingOptions([]);
+      setVerifyMessage(null);
+    }
+  };
+
   // Fetch lead directly from Zoho CRM API
   const handleFetchFromZoho = async () => {
     if (!leadQuery.trim()) return;
@@ -51,6 +107,9 @@ export default function ItineraryTestPage() {
     setFetchSuccess(false);
 
     try {
+      // Also ensure existing options are checked
+      await checkExistingOptionsForLead(leadQuery);
+
       const res = await fetch(`/api/zoho/fetch-lead?query=${encodeURIComponent(leadQuery.trim())}&_t=${Date.now()}`, {
         cache: 'no-store',
         headers: {
@@ -139,6 +198,7 @@ export default function ItineraryTestPage() {
       const payloadToSend = {
         ...(rawLeadFull || {}),
         ...formData,
+        optionNumber: selectedOptionNumber,
         name: formData.Full_Name,
         Full_Name: formData.Full_Name,
         First_Name: formData.First_Name,
@@ -187,12 +247,19 @@ export default function ItineraryTestPage() {
       }
 
       setResult(data);
+
+      // Refresh existing options after creation
+      if (leadQuery) {
+        checkExistingOptionsForLead(leadQuery);
+      }
     } catch (err: any) {
       setError(err.message || 'Something went wrong');
     } finally {
       setLoading(false);
     }
   };
+
+  const isSelectedOptionCreated = Boolean(existingOptions.find(o => o.optionNumber === selectedOptionNumber));
 
   return (
     <div className="min-h-screen bg-[#FDFBF7] text-slate-900 flex flex-col justify-between">
@@ -210,50 +277,157 @@ export default function ItineraryTestPage() {
             Fetch from Zoho CRM & AI Itinerary Generator
           </h1>
           <p className="text-sm text-slate-600 max-w-xl mx-auto">
-            Fetch any live lead directly from Zoho CRM using Lead ID or Inquiry ID, preview the exact mapped fields, and generate the luxury proposal template!
+            Fetch any live lead directly from Zoho CRM using Lead ID or Inquiry ID, select option number (Option 1, 2, or 3), and generate the luxury proposal template!
           </p>
         </div>
 
-        {/* 1. DIRECT ZOHO FETCH BAR */}
-        <div className="bg-gradient-to-r from-slate-900 to-slate-800 text-white rounded-3xl p-6 sm:p-7 shadow-xl border border-slate-700 mb-8 space-y-4">
+        {/* 1. DIRECT ZOHO FETCH BAR & OPTION SELECTION */}
+        <div className="bg-gradient-to-r from-slate-900 to-slate-800 text-white rounded-3xl p-6 sm:p-7 shadow-xl border border-slate-700 mb-8 space-y-5">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
             <div>
               <div className="text-xs uppercase font-extrabold text-orange-400 tracking-wider flex items-center gap-1.5">
-                <Search className="w-4 h-4" /> Step 1: Fetch Live Lead from Zoho CRM
+                <Search className="w-4 h-4" /> Step 1: Enter Lead ID & Select Option
               </div>
               <p className="text-xs text-slate-300 mt-0.5">
                 Enter Zoho Lead ID (e.g. <span className="font-mono text-amber-300">843125000010916169</span>) or Inquiry ID (e.g. <span className="font-mono text-amber-300">WNDPQ349</span>)
               </p>
             </div>
-            {fetchSuccess && (
-              <span className="inline-flex items-center gap-1 text-emerald-400 text-xs font-bold bg-emerald-950/60 border border-emerald-500/40 px-2.5 py-1 rounded-full">
-                <CheckCircle2 className="w-3.5 h-3.5" /> Lead Fetched Successfully!
+
+            {checkingOptions && (
+              <span className="inline-flex items-center gap-1 text-amber-300 text-xs font-semibold bg-amber-950/60 border border-amber-500/30 px-2.5 py-1 rounded-full animate-pulse">
+                <Loader2 className="w-3 h-3 animate-spin" /> Verifying Lead ID...
+              </span>
+            )}
+
+            {!checkingOptions && verifyMessage && (
+              <span className={`inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full border ${
+                existingOptions.length > 0
+                  ? 'text-amber-300 bg-amber-950/60 border-amber-500/40'
+                  : 'text-emerald-400 bg-emerald-950/60 border-emerald-500/40'
+              }`}>
+                <CheckCircle2 className="w-3.5 h-3.5" /> {verifyMessage}
               </span>
             )}
           </div>
 
+          {/* INPUT BAR */}
           <div className="flex flex-col sm:flex-row gap-3">
-            <Input
-              value={leadQuery}
-              onChange={(e) => setLeadQuery(e.target.value)}
-              placeholder="Enter Zoho Lead ID or Inquiry ID (e.g. 843125000010916169 or WNDPQ349)"
-              className="bg-white/10 border-white/20 text-white placeholder:text-slate-400 font-mono text-xs sm:text-sm py-5 rounded-2xl focus:border-orange-500"
-            />
+            <div className="relative flex-1">
+              <Input
+                value={leadQuery}
+                onChange={(e) => handleQueryChange(e.target.value)}
+                onBlur={() => {
+                  if (leadQuery.trim()) checkExistingOptionsForLead(leadQuery);
+                }}
+                placeholder="Enter Zoho Lead ID or Inquiry ID (e.g. 843125000010916169 or WNDPQ349)"
+                className="bg-white/10 border-white/20 text-white placeholder:text-slate-400 font-mono text-xs sm:text-sm py-5 rounded-2xl focus:border-orange-500 w-full"
+              />
+            </div>
+
             <Button
               onClick={handleFetchFromZoho}
-              disabled={fetchingLead}
-              className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-extrabold text-xs sm:text-sm px-6 py-5 rounded-2xl shadow-lg shrink-0 cursor-pointer"
+              disabled={fetchingLead || !leadQuery.trim() || isSelectedOptionCreated}
+              className={`font-extrabold text-xs sm:text-sm px-6 py-5 rounded-2xl shadow-lg shrink-0 transition-all cursor-pointer ${
+                isSelectedOptionCreated
+                  ? 'bg-slate-700 text-slate-400 cursor-not-allowed'
+                  : 'bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white'
+              }`}
             >
               {fetchingLead ? (
                 <span className="flex items-center gap-2">
-                  <Loader2 className="w-4 h-4 animate-spin" /> Fetching...
+                  <Loader2 className="w-4 h-4 animate-spin" /> Fetching Option {selectedOptionNumber}...
                 </span>
+              ) : isSelectedOptionCreated ? (
+                <span>Option {selectedOptionNumber} Already Created</span>
               ) : (
                 <span className="flex items-center gap-2">
-                  <Search className="w-4 h-4" /> Fetch from Zoho CRM
+                  <Search className="w-4 h-4" /> Fetch from Zoho for Option {selectedOptionNumber}
                 </span>
               )}
             </Button>
+          </div>
+
+          {/* 3 OPTION BUTTONS WITH VERIFICATION & DIRECT LINKS */}
+          <div className="pt-2 border-t border-white/10 space-y-2">
+            <div className="text-[11px] font-bold text-slate-300 uppercase tracking-wider flex items-center justify-between">
+              <span>Select Option to Generate:</span>
+              <span className="text-amber-400 text-[10px] lowercase">
+                {existingOptions.length > 0 ? `${existingOptions.length} option(s) already exist` : 'fresh lead'}
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {[1, 2, 3].map((optNum) => {
+                const existing = existingOptions.find(o => o.optionNumber === optNum);
+                const isCreated = Boolean(existing);
+                const isSelected = selectedOptionNumber === optNum;
+
+                return (
+                  <div
+                    key={optNum}
+                    onClick={() => {
+                      if (!isCreated) {
+                        setSelectedOptionNumber(optNum);
+                      }
+                    }}
+                    className={`relative rounded-2xl p-3.5 border transition-all duration-200 flex flex-col justify-between ${
+                      isCreated
+                        ? 'bg-emerald-950/40 border-emerald-500/50 text-slate-300'
+                        : isSelected
+                        ? 'bg-orange-500/20 border-orange-500 text-white ring-2 ring-orange-500/40 cursor-pointer scale-[1.02]'
+                        : 'bg-white/5 border-white/10 hover:border-white/25 text-slate-300 hover:text-white cursor-pointer'
+                    }`}
+                  >
+                    {/* TOP BADGE & DIRECT LINK */}
+                    <div className="flex items-center justify-between gap-1 mb-1.5">
+                      <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full ${
+                        isCreated
+                          ? 'bg-emerald-900 text-emerald-300 border border-emerald-400/40'
+                          : isSelected
+                          ? 'bg-orange-500 text-white'
+                          : 'bg-white/10 text-slate-300'
+                      }`}>
+                        Option {optNum}
+                      </span>
+
+                      {isCreated && existing && (
+                        <a
+                          href={existing.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          className="inline-flex items-center gap-1 text-[11px] font-black text-amber-300 hover:text-amber-200 underline underline-offset-2 transition bg-black/40 px-2 py-0.5 rounded-md border border-amber-300/30"
+                        >
+                          <span>View Link</span>
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      )}
+                    </div>
+
+                    {/* STATUS TEXT */}
+                    <div className="space-y-0.5">
+                      <div className="text-xs font-black text-white flex items-center gap-1">
+                        {isCreated ? (
+                          <>
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                            <span className="truncate">Created ({existing?.id || existing?.slug})</span>
+                          </>
+                        ) : (
+                          <span>Option {optNum} {optNum === 1 ? '(Base / Initial)' : optNum === 2 ? '(2nd Revision)' : '(3rd Upgrade)'}</span>
+                        )}
+                      </div>
+                      <p className="text-[10px] text-slate-400 leading-tight">
+                        {isCreated
+                          ? 'Already generated. Click "View Link" above to open.'
+                          : isSelected
+                          ? `Active for Zoho Fetch & Generation`
+                          : `Click to select Option ${optNum}`}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
           {rawLeadFull && (
@@ -262,6 +436,7 @@ export default function ItineraryTestPage() {
               <span><strong>Hotels:</strong> {rawLeadFull.hotels?.length || 0} Stays</span>
               <span><strong>Activities:</strong> {rawLeadFull.dayActivities?.length || 0} Days</span>
               <span><strong>Quotation:</strong> ₹{rawLeadFull.finalQuotationAmount?.toLocaleString('en-IN') || 'Pending'}</span>
+              <span><strong>Active Target:</strong> <span className="text-amber-300 font-bold font-mono">Option {selectedOptionNumber}</span></span>
             </div>
           )}
         </div>

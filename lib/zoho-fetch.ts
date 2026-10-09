@@ -59,6 +59,19 @@ export interface NormalizedZohoLead {
   rawLeadData: Record<string, any>;
 }
 
+export function toSafeString(val: any, fallback = ''): string {
+  if (val === null || val === undefined) return fallback;
+  if (typeof val === 'string') return val.trim();
+  if (typeof val === 'object') {
+    if (Array.isArray(val)) {
+      return val.map(v => toSafeString(v)).filter(Boolean).join(', ') || fallback;
+    }
+    const extracted = val.name || val.value || val.label || val.display_value || val.title;
+    if (extracted) return String(extracted).trim();
+  }
+  return String(val).trim() || fallback;
+}
+
 /**
  * Fetch Lead from Zoho CRM by ID or Inquiry ID
  * Accurately extracts Days, City, City_2, En_route_Experiences, and Subform data
@@ -206,34 +219,34 @@ export async function fetchZohoLeadById(leadIdOrQuery: string): Promise<Normaliz
   dayActivities.sort((a, b) => a.dayNumber - b.dayNumber);
 
   return {
-    leadId: String(rawLead.id || ''),
-    inquiryId: String(rawLead.Inquiry_ID || ''),
-    leadName: String(rawLead.Full_Name || [rawLead.First_Name, rawLead.Last_Name].filter(Boolean).join(' ') || 'Valued Guest'),
-    firstName: String(rawLead.First_Name || ''),
-    lastName: String(rawLead.Last_Name || ''),
-    email: String(rawLead.Email || ''),
-    mobile: String(rawLead.Mobile || rawLead.Phone || ''),
-    city: String(rawLead.City || ''),
-    destinations: String(rawLead.Destinations || rawLead.Destination_Location || rawLead.Destination_State || rawLead.City || ''),
-    destinationType: String(rawLead.Destination_Type || 'India'),
-    travelStartDate: String(rawLead.Preferred_Start_date || ''),
-    travelEndDate: String(rawLead.Travel_End_Date || ''),
+    leadId: toSafeString(rawLead.id, ''),
+    inquiryId: toSafeString(rawLead.Inquiry_ID, ''),
+    leadName: toSafeString(rawLead.Full_Name || [rawLead.First_Name, rawLead.Last_Name].filter(Boolean).join(' '), 'Valued Guest'),
+    firstName: toSafeString(rawLead.First_Name, ''),
+    lastName: toSafeString(rawLead.Last_Name, ''),
+    email: toSafeString(rawLead.Email, ''),
+    mobile: toSafeString(rawLead.Mobile || rawLead.Phone, ''),
+    city: toSafeString(rawLead.City, ''),
+    destinations: toSafeString(rawLead.Destinations || rawLead.Destination_Location || rawLead.Destination_State || rawLead.City, ''),
+    destinationType: toSafeString(rawLead.Destination_Type, 'India'),
+    travelStartDate: toSafeString(rawLead.Preferred_Start_date, ''),
+    travelEndDate: toSafeString(rawLead.Travel_End_Date, ''),
     noOfDays: Number(rawLead.No_of_Days) || (dayActivities.length > 0 ? dayActivities.length : 0),
     noOfNights: Number(rawLead.No_of_Nights) || 0,
     numberOfGuests: Number(rawLead.Number_Of_Guest || rawLead.Adults) || 2,
     adults: Number(rawLead.Adults || rawLead.Number_Of_Guest) || 2,
     kids: Number(rawLead.Kids || rawLead.Children || rawLead.Number_Of_Children || 0),
-    preferredRoomCategory: String(rawLead.Preferred_Room_Category || 'Standard'),
-    mealPlan: String(rawLead.Meal_Plan || rawLead.mealPlan || rawLead.MealPlan || ''),
-    vehicleType: String(rawLead.Vehicle_Type || rawLead.Vehicle || rawLead.vehicleType || rawLead.Cab_Type || 'AC Vehicle'),
-    tripType: String(rawLead.Trip_Type || 'Customised Trip'),
-    travelStyle: String(rawLead.Travel_Style || 'Family Trip'),
+    preferredRoomCategory: toSafeString(rawLead.Preferred_Room_Category, 'Standard'),
+    mealPlan: toSafeString(rawLead.Meal_Plan || rawLead.mealPlan || rawLead.MealPlan, ''),
+    vehicleType: toSafeString(rawLead.Vehicle_Type || rawLead.Vehicle || rawLead.vehicleType || rawLead.Cab_Type, 'AC Vehicle'),
+    tripType: toSafeString(rawLead.Trip_Type, 'Customised Trip'),
+    travelStyle: toSafeString(rawLead.Travel_Style, 'Family Trip'),
     finalQuotationAmount: rawLead.Final_Quotation_Amount ? Number(rawLead.Final_Quotation_Amount) : (rawLead.Total_Package_Cost ? Number(rawLead.Total_Package_Cost) : (rawLead.Quotation_Amount ? Number(rawLead.Quotation_Amount) : (rawLead.Expected_Revenue ? Number(rawLead.Expected_Revenue) : (rawLead.Amount ? Number(rawLead.Amount) : undefined)))),
     perAdultPrice: rawLead.Per_Adult_Price ? Number(rawLead.Per_Adult_Price) : (rawLead.Per_Adult_Cost ? Number(rawLead.Per_Adult_Cost) : (rawLead.Price_Per_Adult ? Number(rawLead.Price_Per_Adult) : (rawLead.Adult_Price ? Number(rawLead.Adult_Price) : undefined))),
     perKidPrice: rawLead.Per_Kid_Price ? Number(rawLead.Per_Kid_Price) : (rawLead.Per_Child_Price ? Number(rawLead.Per_Child_Price) : (rawLead.Price_Per_Kid ? Number(rawLead.Price_Per_Kid) : (rawLead.Child_Price ? Number(rawLead.Child_Price) : undefined))),
     advanceAmountPaid: rawLead.Advance_Amount_Paid ? Number(rawLead.Advance_Amount_Paid) : undefined,
     balancePendingAmount: rawLead.Balance_Pending_Amount ? Number(rawLead.Balance_Pending_Amount) : undefined,
-    costingRequestStatus: String(rawLead.Costing_Request_Status || ''),
+    costingRequestStatus: toSafeString(rawLead.Costing_Request_Status, ''),
     hotels,
     dayActivities,
     rawLeadData: rawLead

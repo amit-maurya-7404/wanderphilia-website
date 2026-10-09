@@ -4,18 +4,11 @@ import { getDb } from '@/lib/mongodb';
 import { generateItineraryContentWithAI } from '@/lib/ai-itinerary';
 import { getLuxuryImagesForDestination } from '@/lib/itinerary-images';
 import { ItineraryDocument } from '@/types/itinerary';
+import { generateLeadBasedItinerarySlug } from '@/lib/itinerary-slug';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 export const fetchCache = 'force-no-store';
-
-/**
- * Helper to generate a clean, collision-resistant unique slug/ID (e.g., "wp-k8m9x2a4")
- */
-function generateUniqueItineraryId(): string {
-  const randomBytes = crypto.randomBytes(4).toString('hex');
-  return `wp-${randomBytes}`;
-}
 
 /**
  * Normalizes incoming data from Zoho CRM webhooks (handles standard & custom CRM field keys)
@@ -108,8 +101,14 @@ export async function POST(req: NextRequest) {
     // 2. Generate Complete AI Luxury Itinerary Content using Groq / OpenAI
     const aiContent = await generateItineraryContentWithAI(normalizedData);
 
-    // 3. Generate Unique Secure Slug / ID
-    const uniqueId = generateUniqueItineraryId();
+    const optionNumber = Number(rawBody.optionNumber || rawBody.option || 1);
+
+    // 3. Generate Unique Secure Slug / ID (e.g. "amit-fu4tgu4" or "amit-2-fwebsu7")
+    const uniqueId = generateLeadBasedItinerarySlug({
+      leadName: details.name || details.firstName,
+      optionNumber: optionNumber,
+      destination: details.destination || aiContent.destination
+    });
 
     // 4. Resolve Curated Destination Images
     const images = getLuxuryImagesForDestination(details.destination || aiContent.destination);
@@ -118,6 +117,7 @@ export async function POST(req: NextRequest) {
     const itineraryDoc: ItineraryDocument = {
       id: uniqueId,
       slug: uniqueId,
+      optionNumber: optionNumber,
       title: aiContent.title || `${details.noOfNights || 4} Nights / ${details.noOfDays || 5} Days ${details.destination} Tour Itinerary`,
       subTitle: details.travelStyle || aiContent.subTitle, // Zoho Travel Style
       description: aiContent.description, // Strict one-liner luxury description (NO prices/durations)

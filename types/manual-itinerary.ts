@@ -57,6 +57,46 @@ export interface FlightQuotationOption {
   note?: string;
 }
 
+export interface ManualItineraryOption {
+  id: string; // e.g. "option-1", "option-2", "deluxe", "luxury"
+  title: string; // e.g. "Option 1: 4★ Deluxe Package"
+  subtitle?: string; // e.g. "Superior Ocean View + Duplex Suite"
+  badge?: string; // e.g. "Recommended", "5-Star Luxury", "Popular"
+  isDefault?: boolean;
+  
+  // Pricing & Breakdown
+  perAdultPrice?: number;
+  perKidPrice?: number;
+  adults?: number;
+  kids?: number;
+  baseAmount?: number;
+  gstPercentage?: number;
+  tcsPercentage?: number;
+  gstAmount?: number;
+  tcsAmount?: number;
+  finalQuotationAmount?: number;
+  childPricingNote?: string;
+  kidsDetails?: string;
+
+  // Stays & Accommodations for this specific option
+  accommodations?: ManualAccommodation[];
+
+  // Flight Quotations associated with this option
+  flightQuotations?: FlightQuotationOption[];
+
+  // Optional Overrides
+  dayPlans?: ManualDayPlan[];
+  inclusions?: string[];
+  exclusions?: string[];
+  vehicleType?: string;
+  mealPlan?: string;
+  duration?: string;
+  numDays?: number;
+  numNights?: number;
+  routeSummary?: string;
+  notes?: string;
+}
+
 export interface ManualItinerary {
   id: string;
   slug: string;
@@ -81,6 +121,7 @@ export interface ManualItinerary {
   dayPlans: ManualDayPlan[];
   accommodations?: ManualAccommodation[];
   flightQuotations?: FlightQuotationOption[];
+  options?: ManualItineraryOption[]; // Multi-Option Interactive Support
   inclusions: string[];
   exclusions: string[];
   thingsToCarry?: string[];

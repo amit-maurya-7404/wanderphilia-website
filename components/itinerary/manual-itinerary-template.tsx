@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { ManualItinerary } from '@/types/manual-itinerary';
 import { ManualFlowchartSection } from './manual-flowchart-section';
 import { ManualFlightQuotationSection } from './manual-flight-quotation-section';
+import { ManualOptionSwitcher } from './manual-option-switcher';
 import { ItineraryClientActions } from './itinerary-client-actions';
 import { ItineraryPaymentSection } from './itinerary-payment-section';
 import {
@@ -88,6 +89,37 @@ interface ManualItineraryTemplateProps {
 }
 
 export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplateProps) {
+  // Multi-option state management & deep linking
+  const defaultOptId = itinerary.options?.find(o => o.isDefault)?.id || itinerary.options?.[0]?.id || 'option-1';
+  const [selectedOptionId, setSelectedOptionId] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const optParam = urlParams.get('opt') || urlParams.get('option');
+      if (optParam && itinerary.options && itinerary.options.length > 0) {
+        const found = itinerary.options.find(
+          o => o.id.toLowerCase() === optParam.toLowerCase() ||
+               o.title.toLowerCase().includes(optParam.toLowerCase())
+        );
+        if (found) return found.id;
+      }
+    }
+    return defaultOptId;
+  });
+
+  const handleSelectOption = (optId: string) => {
+    setSelectedOptionId(optId);
+    if (typeof window !== 'undefined') {
+      const url = new URL(window.location.href);
+      url.searchParams.set('opt', optId);
+      window.history.replaceState(null, '', url.toString());
+    }
+  };
+
+  // Active Option resolving
+  const activeOption = itinerary.options && itinerary.options.length > 0
+    ? (itinerary.options.find(o => o.id === selectedOptionId) || itinerary.options[0])
+    : null;
+
   const leadName = itinerary.leadName || 'Valued Traveler';
   const cleanedName = leadName.replace(/^(Mr\.|Mr|Mrs\.|Mrs|Ms\.|Ms|Dr\.|Dr|Shri)\s+/i, '').trim();
   const firstName = cleanedName && cleanedName !== 'Valued Traveler' ? cleanedName.split(' ')[0] : 'Your';
@@ -95,17 +127,34 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
     ? 'Your'
     : (firstName.endsWith('s') || firstName.endsWith('S') ? `${firstName}'` : `${firstName}'s`);
   const destination = itinerary.destination || 'Selected Destination';
-  const numDays = itinerary.numDays || 5;
-  const numNights = itinerary.numNights || 4;
+  const numDays = activeOption?.numDays || itinerary.numDays || 5;
+  const numNights = activeOption?.numNights || itinerary.numNights || 4;
   const travelStyle = itinerary.travelStyle || 'Curated Travel Experience';
   const tripType = itinerary.tripType || 'Customised Tour';
   const heroImage = itinerary.heroImage || '/images/about_hero4.jpg';
-  const vehicleType = itinerary.vehicleType || 'Private AC Vehicle';
-  const mealPlan = itinerary.mealPlan || 'Breakfast & Dinner';
+  const vehicleType = activeOption?.vehicleType || itinerary.vehicleType || 'Private AC Vehicle';
+  const mealPlan = activeOption?.mealPlan || itinerary.mealPlan || 'Breakfast & Dinner';
+
+  // Dynamic overrides per option
+  const currentAccommodations = activeOption?.accommodations || itinerary.accommodations || [];
+  const currentPerAdultPrice = activeOption?.perAdultPrice ?? itinerary.perAdultPrice;
+  const currentPerKidPrice = activeOption?.perKidPrice ?? itinerary.perKidPrice;
+  const currentBaseAmount = activeOption?.baseAmount ?? itinerary.baseAmount;
+  const currentGstPct = activeOption?.gstPercentage !== undefined ? activeOption.gstPercentage : (itinerary.gstPercentage !== undefined ? itinerary.gstPercentage : 5);
+  const currentTcsPct = activeOption?.tcsPercentage !== undefined ? activeOption.tcsPercentage : (itinerary.tcsPercentage !== undefined ? itinerary.tcsPercentage : 0);
+  const currentGstAmount = activeOption?.gstAmount ?? (currentBaseAmount ? Math.round(currentBaseAmount * (currentGstPct / 100)) : itinerary.gstAmount);
+  const currentTcsAmount = activeOption?.tcsAmount ?? (currentBaseAmount && currentTcsPct > 0 ? Math.round(currentBaseAmount * (currentTcsPct / 100)) : itinerary.tcsAmount);
+  const currentFinalQuotationAmount = activeOption?.finalQuotationAmount ?? itinerary.finalQuotationAmount ?? (currentBaseAmount ? currentBaseAmount + (currentGstAmount || 0) + (currentTcsAmount || 0) : undefined);
+  const currentChildPricingNote = activeOption?.childPricingNote || itinerary.childPricingNote;
+  const currentFlightQuotations = activeOption?.flightQuotations || itinerary.flightQuotations;
+  const currentDayPlans = activeOption?.dayPlans || itinerary.dayPlans;
+  const currentInclusions = activeOption?.inclusions || itinerary.inclusions || [];
+  const currentExclusions = activeOption?.exclusions || itinerary.exclusions || [];
+  const currentDuration = activeOption?.duration || itinerary.duration || (itinerary.dates ? `${numNights} Nights / ${numDays} Days | ${itinerary.dates}` : `${numNights} Nights / ${numDays} Days`);
 
   // Route cities breakdown
   const routeDisplay = itinerary.route || destination;
-  const staySummary = itinerary.routeSummary || `${numNights}N ${destination}`;
+  const staySummary = activeOption?.routeSummary || itinerary.routeSummary || `${numNights}N ${destination}`;
 
   // 6 Collage images for Page 2
   const isRajasthanDest = destination.toLowerCase().includes('rajasthan') || (itinerary.id && itinerary.id.toLowerCase().includes('rajasthan')) || (itinerary.id && itinerary.id.toLowerCase().includes('4002b3f4'));
@@ -140,7 +189,7 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
 
   // Payment stage calculations
   const alreadyPaid = Number(itinerary.advanceAmountPaid || 0);
-  const totalQuotationAmount = Number(itinerary.finalQuotationAmount || 0);
+  const totalQuotationAmount = Number(currentFinalQuotationAmount || 0);
   const remainingBalanceAmount = Math.max(0, totalQuotationAmount - alreadyPaid);
   const tenPercentAmount = Math.round(totalQuotationAmount * 0.1);
   const fiftyPercentAmount = Math.round(totalQuotationAmount * 0.5);
@@ -266,6 +315,18 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
         </section>
 
         {/* ========================================================= */}
+        {/* MULTI-QUOTATION OPTION SWITCHER (IF MULTIPLE OPTIONS EXIST) */}
+        {/* ========================================================= */}
+        {itinerary.options && itinerary.options.length > 1 && (
+          <ManualOptionSwitcher
+            options={itinerary.options}
+            selectedOptionId={selectedOptionId}
+            onSelectOption={handleSelectOption}
+            itinerarySlug={itinerary.slug || itinerary.id}
+          />
+        )}
+
+        {/* ========================================================= */}
         {/* PAGE 2: TRIP OVERVIEW & HIGHLIGHTS COLLAGE                 */}
         {/* ========================================================= */}
         <section className="bg-[#FAF8F5] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border border-stone-200/80 min-h-[900px] flex flex-col justify-between relative print:shadow-none print:border-0 print:rounded-none page-break-after">
@@ -301,7 +362,7 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                       Trip Duration & Dates:
                     </div>
                     <div className="text-xs sm:text-sm font-bold text-stone-900 mt-0.5">
-                      {itinerary.duration}
+                      {currentDuration}
                     </div>
                   </div>
 
@@ -336,7 +397,7 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                 {/* Theme Highlights Pills */}
                 <div className="pt-4 border-t border-[#6E1E14]/15">
                   <div className="text-xs sm:text-sm font-black text-[#6E1E14] uppercase tracking-wider leading-relaxed">
-                    {itinerary.subtitle ? itinerary.subtitle.toUpperCase() : `${destination.toUpperCase()} TOUR ITINERARY`}
+                    {activeOption?.title ? activeOption.title.toUpperCase() : (itinerary.subtitle ? itinerary.subtitle.toUpperCase() : `${destination.toUpperCase()} TOUR ITINERARY`)}
                   </div>
                 </div>
               </div>
@@ -404,7 +465,7 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
 
           {/* Interactive Flow Chart Timeline Section */}
           <ManualFlowchartSection
-            dayPlans={itinerary.dayPlans}
+            dayPlans={currentDayPlans}
             destination={destination}
             defaultImages={collageImages}
           />
@@ -426,11 +487,18 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
           </div>
 
           {/* Accommodations Table */}
-          {itinerary.accommodations && itinerary.accommodations.length > 0 && (
+          {currentAccommodations && currentAccommodations.length > 0 && (
             <div className="space-y-3">
-              <h3 className="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-[#6E1E14] flex items-center gap-1.5">
-                <Hotel className="w-4 h-4 text-[#6E1E14]" /> Handpicked Accommodations
-              </h3>
+              <div className="flex items-center justify-between">
+                <h3 className="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-[#6E1E14] flex items-center gap-1.5">
+                  <Hotel className="w-4 h-4 text-[#6E1E14]" /> Handpicked Accommodations
+                </h3>
+                {activeOption && (
+                  <span className="text-[10px] sm:text-xs font-bold bg-amber-100 text-[#6E1E14] px-2.5 py-0.5 rounded-full border border-amber-300">
+                    {activeOption.badge || activeOption.title}
+                  </span>
+                )}
+              </div>
 
               <div className="overflow-x-auto rounded-xl border-2 border-[#6E1E14] shadow-xs">
                 <table className="w-full text-left border-collapse text-xs sm:text-sm">
@@ -443,7 +511,7 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#6E1E14]/20 font-semibold text-stone-900 bg-white">
-                    {itinerary.accommodations.map((acc, idx) => (
+                    {currentAccommodations.map((acc, idx) => (
                       <tr key={idx} className={idx % 2 === 1 ? 'bg-[#FFF8F5]' : 'bg-white'}>
                         <td className="p-3.5 border-r border-[#6E1E14]/20 uppercase font-bold text-[#6E1E14]">
                           {acc.city}
@@ -477,7 +545,7 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                 <span>Inclusions</span>
               </div>
               <ul className="space-y-2.5 text-xs font-semibold text-stone-700 leading-relaxed">
-                {itinerary.inclusions.map((inc, i) => (
+                {currentInclusions.map((inc, i) => (
                   <li key={i} className="flex items-start gap-2.5">
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
                     <span>{inc}</span>
@@ -495,7 +563,7 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                 <span>Exclusions</span>
               </div>
               <ul className="space-y-2.5 text-xs font-semibold text-stone-700 leading-relaxed">
-                {itinerary.exclusions.map((exc, i) => (
+                {currentExclusions.map((exc, i) => (
                   <li key={i} className="flex items-start gap-2.5">
                     <XCircle className="w-3.5 h-3.5 text-rose-600 shrink-0 mt-0.5" />
                     <span>{exc}</span>
@@ -525,41 +593,48 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
           )}
 
           {/* PACKAGE QUOTATION & INVESTMENT SUMMARY CARD */}
-          {(itinerary.finalQuotationAmount || itinerary.perAdultPrice) && (
+          {(currentFinalQuotationAmount || currentPerAdultPrice) && (
             <div className="bg-gradient-to-br from-[#6E1E14] via-[#5C1810] to-stone-900 rounded-2xl p-5 sm:p-8 text-white shadow-xl space-y-5 border border-amber-500/30">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-white/15 pb-4">
                 <div className="space-y-1">
-                  <span className="text-[11px] font-black uppercase tracking-widest text-amber-300">
-                    Tour Quotation
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] font-black uppercase tracking-widest text-amber-300">
+                      Tour Quotation
+                    </span>
+                    {activeOption && (
+                      <span className="text-[10px] bg-amber-400/30 text-amber-300 px-2 py-0.5 rounded-full font-bold border border-amber-400/40">
+                        {activeOption.badge || activeOption.title}
+                      </span>
+                    )}
+                  </div>
                   <h3 className={`${playfair.className} text-xl sm:text-2xl font-black text-white`}>
                     Investment & Pricing Summary
                   </h3>
                 </div>
                 <div className="bg-amber-400/20 text-amber-300 border border-amber-400/40 text-[11px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
-                  {itinerary.kids && itinerary.kids > 0
-                    ? `${itinerary.adults || 2} Adults + ${itinerary.kids} Kids (Family Tour)`
-                    : `${itinerary.adults || 2} Adults Included`}
+                  {(activeOption?.kids ?? itinerary.kids) && (activeOption?.kids ?? itinerary.kids)! > 0
+                    ? `${(activeOption?.adults ?? itinerary.adults) || 2} Adults + ${activeOption?.kids ?? itinerary.kids} Kids (Family Tour)`
+                    : `${(activeOption?.adults ?? itinerary.adults) || 2} Adults Included`}
                 </div>
               </div>
 
               {/* Pricing calculations */}
               {(() => {
-                const adultsCount = itinerary.adults || 2;
-                const baseTotal = itinerary.baseAmount || (itinerary.finalQuotationAmount ? Math.round(itinerary.finalQuotationAmount / (itinerary.tcsPercentage ? 1.07 : 1.05)) : 638400);
-                const gstPct = itinerary.gstPercentage !== undefined ? itinerary.gstPercentage : 5;
-                const tcsPct = itinerary.tcsPercentage !== undefined ? itinerary.tcsPercentage : 0;
-                const gstTotal = itinerary.gstAmount !== undefined ? itinerary.gstAmount : Math.round(baseTotal * (gstPct / 100));
-                const tcsTotal = itinerary.tcsAmount !== undefined ? itinerary.tcsAmount : (tcsPct > 0 ? Math.round(baseTotal * (tcsPct / 100)) : 0);
-                const grandTotal = totalQuotationAmount || itinerary.finalQuotationAmount || (baseTotal + gstTotal + tcsTotal);
+                const adultsCount = (activeOption?.adults ?? itinerary.adults) || 2;
+                const baseTotal = currentBaseAmount || (currentFinalQuotationAmount ? Math.round(currentFinalQuotationAmount / (currentTcsPct > 0 ? (1 + (currentGstPct + currentTcsPct)/100) : (1 + currentGstPct/100))) : 638400);
+                const gstPct = currentGstPct;
+                const tcsPct = currentTcsPct;
+                const gstTotal = currentGstAmount !== undefined ? currentGstAmount : Math.round(baseTotal * (gstPct / 100));
+                const tcsTotal = currentTcsAmount !== undefined ? currentTcsAmount : (tcsPct > 0 ? Math.round(baseTotal * (tcsPct / 100)) : 0);
+                const grandTotal = currentFinalQuotationAmount || (baseTotal + gstTotal + tcsTotal);
 
-                const hasKidPrice = Boolean(itinerary.perKidPrice && itinerary.perKidPrice > 0);
-                const adultBase = itinerary.perAdultPrice || Math.round(baseTotal / adultsCount);
+                const hasKidPrice = Boolean(currentPerKidPrice && currentPerKidPrice > 0);
+                const adultBase = currentPerAdultPrice || Math.round(baseTotal / adultsCount);
                 const adultGst = Math.round(adultBase * (gstPct / 100));
                 const adultTcs = tcsPct > 0 ? Math.round(adultBase * (tcsPct / 100)) : 0;
                 const adultGrand = adultBase + adultGst + adultTcs;
 
-                const kidBase = itinerary.perKidPrice || 0;
+                const kidBase = currentPerKidPrice || 0;
                 const kidGst = Math.round(kidBase * (gstPct / 100));
                 const kidTcs = tcsPct > 0 ? Math.round(kidBase * (tcsPct / 100)) : 0;
                 const kidGrand = kidBase + kidGst + kidTcs;
@@ -716,10 +791,10 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
               })()}
 
               {/* Child Pricing & Sharing Note (if provided) */}
-              {itinerary.childPricingNote && (
+              {currentChildPricingNote && (
                 <div className="bg-white/10 backdrop-blur-md rounded-xl p-3.5 border border-amber-400/40 text-xs text-amber-200/95 font-medium flex items-start gap-2.5">
                   <span className="text-amber-300 font-bold shrink-0">ℹ</span>
-                  <span>{itinerary.childPricingNote}</span>
+                  <span>{currentChildPricingNote}</span>
                 </div>
               )}
 
@@ -765,8 +840,8 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
           )}
 
           {/* ✈️ FLIGHT QUOTATIONS & SCHEDULE (Placed below the Tour Quotation) */}
-          {itinerary.flightQuotations && itinerary.flightQuotations.length > 0 && (
-            <ManualFlightQuotationSection flightQuotations={itinerary.flightQuotations} />
+          {currentFlightQuotations && currentFlightQuotations.length > 0 && (
+            <ManualFlightQuotationSection flightQuotations={currentFlightQuotations} />
           )}
 
           {/* Bottom Rust Bar */}

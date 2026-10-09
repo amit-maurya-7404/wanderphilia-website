@@ -1576,6 +1576,55 @@ export const vietnamNaushadUpdatedManualItinerary: ManualItinerary = {
     { city: 'South Phu Quoc', nights: 2, hotelName: 'La Fiesta Phu Quoc', roomCategory: 'Suite 1 King Bed' },
     { city: 'North Phu Quoc', nights: 2, hotelName: 'SOL By Melia Phu Quoc', roomCategory: 'Standard Ocean View' }
   ],
+  options: [
+    {
+      id: 'option-1',
+      title: 'Option 1: 5★ Luxury Ocean View & Suites (Selected)',
+      subtitle: 'New World Hoiana (Superior Ocean View) • Mercure Bana Hills (Duplex Suite) • La Fiesta (Suite) • SOL Melia (Ocean View)',
+      badge: '5★ Luxury Upgrade',
+      isDefault: true,
+      perAdultPrice: 212400,
+      perKidPrice: 35200,
+      adults: 2,
+      kids: 2,
+      childPricingNote: '1 Child (5 Yrs with Extra Bed): ₹35,200 + 5% GST (₹1,760) + 2% TCS (₹704) = ₹37,664/- • 1 Child (2.5 Yrs): Complimentary / Free of charge',
+      baseAmount: 460000,
+      gstPercentage: 5,
+      gstAmount: 23000,
+      tcsPercentage: 2,
+      tcsAmount: 9200,
+      finalQuotationAmount: 492200,
+      accommodations: [
+        { city: 'Hoi An', nights: 2, hotelName: 'New World Hoiana Beach Resort', roomCategory: 'Superior Ocean View with King Bed' },
+        { city: 'Ba Na Hills', nights: 1, hotelName: 'Mercure Danang French Village Bana Hills', roomCategory: 'Duplex Suite with 1 King Bed' },
+        { city: 'South Phu Quoc', nights: 2, hotelName: 'La Fiesta Phu Quoc', roomCategory: 'Suite 1 King Bed' },
+        { city: 'North Phu Quoc', nights: 2, hotelName: 'SOL By Melia Phu Quoc', roomCategory: 'Standard Ocean View' }
+      ]
+    },
+    {
+      id: 'option-2',
+      title: 'Option 2: 4★ Deluxe Boutique Resort Package',
+      subtitle: 'Grandvrio City / Boutique Hoi An • Mercure Bana Hills (Standard) • Seashells Phu Quoc • Novotel Resort',
+      badge: '4★ Deluxe Value',
+      perAdultPrice: 185000,
+      perKidPrice: 28000,
+      adults: 2,
+      kids: 2,
+      childPricingNote: '1 Child (5 Yrs with Extra Bed): ₹28,000 + 5% GST (₹1,400) + 2% TCS (₹560) = ₹29,960/- • 1 Child (2.5 Yrs): Complimentary / Free of charge',
+      baseAmount: 398000,
+      gstPercentage: 5,
+      gstAmount: 19900,
+      tcsPercentage: 2,
+      tcsAmount: 7960,
+      finalQuotationAmount: 425860,
+      accommodations: [
+        { city: 'Hoi An', nights: 2, hotelName: 'Grandvrio City / Boutique Hoi An Resort', roomCategory: 'Deluxe Ocean Room' },
+        { city: 'Ba Na Hills', nights: 1, hotelName: 'Mercure Danang French Village Bana Hills', roomCategory: 'Standard King Room' },
+        { city: 'South Phu Quoc', nights: 2, hotelName: 'Seashells Phu Quoc Hotel & Spa', roomCategory: 'Classic Room' },
+        { city: 'North Phu Quoc', nights: 2, hotelName: 'Novotel Phu Quoc Resort', roomCategory: 'Superior Room' }
+      ]
+    }
+  ],
   flightQuotations: [
     {
       optionId: 'flight-option-1',
@@ -3277,24 +3326,59 @@ export function extractDayOptionalNotes(
   return { cleanedTimeline, optionalNote: optionalNote || undefined };
 }
 
+function toSafeString(val: any, fallback = ''): string {
+  if (val === null || val === undefined) return fallback;
+  if (typeof val === 'string') return val.trim();
+  if (typeof val === 'object') {
+    if (Array.isArray(val)) {
+      return val.map(v => toSafeString(v)).filter(Boolean).join(', ') || fallback;
+    }
+    const extracted = val.name || val.value || val.label || val.display_value || val.title;
+    if (extracted) return String(extracted).trim();
+  }
+  return String(val).trim() || fallback;
+}
+
 export function itineraryDocumentToManualItinerary(itinerary: ItineraryDocument): ManualItinerary {
-  const leadName = itinerary.leadDetails?.name || itinerary.rawZohoData?.Full_Name || (itinerary.rawZohoData?.First_Name ? `${itinerary.rawZohoData.First_Name} ${itinerary.rawZohoData.Last_Name || ''}`.trim() : '') || 'Valued Traveler';
-  const destination = itinerary.destination || itinerary.rawZohoData?.Destinations || itinerary.rawZohoData?.Destination || 'Rajasthan';
+  const leadName = toSafeString(
+    itinerary.leadDetails?.name || itinerary.rawZohoData?.Full_Name || (itinerary.rawZohoData?.First_Name ? `${itinerary.rawZohoData.First_Name} ${itinerary.rawZohoData.Last_Name || ''}`.trim() : ''),
+    'Valued Traveler'
+  );
+  const destination = toSafeString(
+    itinerary.destination || itinerary.rawZohoData?.Destinations || itinerary.rawZohoData?.Destination,
+    'Rajasthan'
+  );
   const numDays = itinerary.noOfDays || (itinerary.rawZohoData?.No_of_Days ? Number(itinerary.rawZohoData.No_of_Days) : (itinerary.dayPlans?.length || 5));
   const numNights = itinerary.noOfNights || (itinerary.rawZohoData?.No_of_Nights ? Number(itinerary.rawZohoData.No_of_Nights) : (numDays > 1 ? numDays - 1 : 1));
-  const travelStyle = itinerary.travelStyle || itinerary.leadDetails?.travelStyle || itinerary.rawZohoData?.Travel_Style || 'Family Trip';
-  const tripType = itinerary.tripType || itinerary.leadDetails?.tripType || itinerary.rawZohoData?.Trip_Type || 'Customised Trip';
+  const travelStyle = toSafeString(
+    itinerary.travelStyle || itinerary.leadDetails?.travelStyle || itinerary.rawZohoData?.Travel_Style,
+    'Family Trip'
+  );
+  const tripType = toSafeString(
+    itinerary.tripType || itinerary.leadDetails?.tripType || itinerary.rawZohoData?.Trip_Type,
+    'Customised Trip'
+  );
   const guests = itinerary.leadDetails?.guests || itinerary.rawZohoData?.Number_Of_Guest || itinerary.rawZohoData?.Number_Of_Guests || 2;
   const heroImage = itinerary.heroImage || '/images/about_hero4.jpg';
 
-  const rawStartDate = itinerary.leadDetails?.startDate || itinerary.rawZohoData?.Preferred_Start_date || itinerary.startDate || '';
-  const rawEndDate = itinerary.leadDetails?.endDate || itinerary.rawZohoData?.Travel_End_Date || itinerary.endDate || '';
+  const rawStartDate = toSafeString(itinerary.leadDetails?.startDate || itinerary.rawZohoData?.Preferred_Start_date || itinerary.startDate, '');
+  const rawEndDate = toSafeString(itinerary.leadDetails?.endDate || itinerary.rawZohoData?.Travel_End_Date || itinerary.endDate, '');
   const dates = formatDateRange(rawStartDate, rawEndDate, numDays);
   const duration = dates ? `${numNights} Nights / ${numDays} Days | ${dates}` : `${numNights} Nights / ${numDays} Days`;
 
-  const vehicleType = itinerary.vehicleType || itinerary.leadDetails?.vehicleType || itinerary.rawZohoData?.Vehicle_Type || 'Private AC Sedan / SUV';
-  const roomCategory = itinerary.roomCategory || itinerary.leadDetails?.preferredRoomCategory || itinerary.rawZohoData?.Preferred_Room_Category || 'Luxury';
-  const mealPlan = itinerary.mealPlan || itinerary.leadDetails?.mealPlan || itinerary.rawZohoData?.Meal_Plan || 'Breakfast & Dinner';
+  const rawVehicle = itinerary.vehicleType || itinerary.leadDetails?.vehicleType || itinerary.rawZohoData?.Vehicle_Type || itinerary.rawZohoData?.rawLeadData?.Vehicle_Type;
+  const rawVehicleStr = toSafeString(rawVehicle, 'AC Vehicle');
+  const cleanVehicle = rawVehicleStr.replace(/^Private\s+/i, '').trim() || 'AC Vehicle';
+  const vehicleType = cleanVehicle;
+
+  const roomCategory = toSafeString(
+    itinerary.roomCategory || itinerary.leadDetails?.preferredRoomCategory || itinerary.rawZohoData?.Preferred_Room_Category,
+    'Luxury'
+  );
+  const mealPlan = toSafeString(
+    itinerary.mealPlan || itinerary.leadDetails?.mealPlan || itinerary.rawZohoData?.Meal_Plan,
+    'Breakfast & Dinner'
+  );
 
   // 6 Collage images
   const isRajasthanDest = destination.toLowerCase().includes('rajasthan') || (itinerary.id && itinerary.id.toLowerCase().includes('rajasthan')) || (itinerary.id && itinerary.id.toLowerCase().includes('4002b3f4'));
@@ -3539,8 +3623,10 @@ export function itineraryDocumentToManualItinerary(itinerary: ItineraryDocument)
   }
 
   const rawLead = itinerary.rawZohoData?.rawLeadData || {};
-  const hotelCategory = rawLead.Hotel_Category || rawLead.Preferred_Room_Category || itinerary.rawZohoData?.Hotel_Category || itinerary.rawZohoData?.Preferred_Room_Category || roomCategory || 'Deluxe';
-  const cleanVehicle = (vehicleType || 'AC Vehicle').replace(/^Private\s+/i, '');
+  const hotelCategory = toSafeString(
+    rawLead.Hotel_Category || rawLead.Preferred_Room_Category || itinerary.rawZohoData?.Hotel_Category || itinerary.rawZohoData?.Preferred_Room_Category || roomCategory,
+    'Deluxe'
+  );
 
   const displayInclusions: string[] = [
     `Private ${cleanVehicle} for the complete ${destination} itinerary and Airport Transfers.`,
@@ -3800,7 +3886,7 @@ export function itineraryDocumentToManualItinerary(itinerary: ItineraryDocument)
 
   const finalSubtitle = cleanSub && cleanSub.length > 0 ? cleanSub : `${destination.toUpperCase()} TOUR ITINERARY`;
 
-  const rawTravelStyle = itinerary.travelStyle || rawLead.Travel_Style || 'Customised Trip';
+  const rawTravelStyle = toSafeString(itinerary.travelStyle || rawLead.Travel_Style, 'Customised Trip');
   const cleanTravelStyle = rawTravelStyle
     .replace(/\b5[- ]?Star\b/gi, '')
     .replace(/\bLuxury\b/gi, '')
@@ -3808,7 +3894,7 @@ export function itineraryDocumentToManualItinerary(itinerary: ItineraryDocument)
     .replace(/\s{2,}/g, ' ')
     .trim() || 'Customised Trip';
 
-  const rawTripType = itinerary.tripType || rawLead.Trip_Type || 'Customised Tour';
+  const rawTripType = toSafeString(itinerary.tripType || rawLead.Trip_Type, 'Customised Tour');
   const cleanTripType = rawTripType
     .replace(/\b5[- ]?Star\b/gi, '')
     .replace(/\bLuxury\b/gi, '')
