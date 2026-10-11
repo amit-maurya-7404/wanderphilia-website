@@ -667,7 +667,7 @@ export function isBatchDateUpcoming(
   );
 
   const parsed = parseBatchDateRange(rangeStr, defaultMonth, referenceDate.getFullYear());
-  if (!parsed) return true;
+  if (!parsed) return false;
 
   // A batch is upcoming if its start date is today or later
   return parsed.startDate.getTime() >= today.getTime();
@@ -4675,14 +4675,48 @@ The approaches to Spiti remain among the most rugged and scenically spectacular 
     ],
 
     dates: [
-      { startDate: '2026-05-16', endDate: '2026-05-22', spots: 0 },
-      { startDate: '2026-05-23', endDate: '2026-05-29', spots: 0 },
-      { startDate: '2026-06-06', endDate: '2026-06-12', spots: 0 }
+      { startDate: '2026-10-17', endDate: '2026-10-23', spots: 10 },
+      { startDate: '2026-10-24', endDate: '2026-10-30', spots: 10 },
+      { startDate: '2026-10-31', endDate: '2026-11-06', spots: 10 },
+      { startDate: '2026-11-07', endDate: '2026-11-13', spots: 10 },
+      { startDate: '2026-11-14', endDate: '2026-11-20', spots: 10 },
+      { startDate: '2026-11-21', endDate: '2026-11-27', spots: 10 },
+      { startDate: '2026-11-28', endDate: '2026-12-04', spots: 10 },
+      { startDate: '2026-12-05', endDate: '2026-12-11', spots: 10 },
+      { startDate: '2026-12-12', endDate: '2026-12-18', spots: 10 },
+      { startDate: '2026-12-19', endDate: '2026-12-25', spots: 10 },
+      { startDate: '2026-12-24', endDate: '2026-12-30', spots: 10 },
+      { startDate: '2026-12-26', endDate: '2027-01-01', spots: 10 }
     ],
 
     batchDates: [
-      { month: 'May', ranges: ['16nd May - 22th May', '23rd May - 29th May ( Eid Holiday )'] },
-      { month: 'June', ranges: ['6th June - 12th June'] }
+      {
+        month: 'October',
+        ranges: [
+          '17th Oct - 23rd Oct',
+          '24th Oct - 30th Oct',
+          '31st Oct - 06th Nov'
+        ]
+      },
+      {
+        month: 'November',
+        ranges: [
+          '07th Nov - 13th Nov',
+          '14th Nov - 20th Nov',
+          '21st Nov - 27th Nov',
+          '28th Nov - 04th Dec'
+        ]
+      },
+      {
+        month: 'December',
+        ranges: [
+          '05th Dec - 11th Dec',
+          '12th Dec - 18th Dec',
+          '19th Dec - 25th Dec',
+          '24th Dec - 30th Dec ( Christmas Special )',
+          '26th Dec - 01st Jan ( New Year Special )'
+        ]
+      }
     ],
 
     costingDetails: [

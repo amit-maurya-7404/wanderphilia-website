@@ -130,7 +130,7 @@ export function isBatchDateUpcoming(
   );
 
   const parsed = parseBatchDateRange(rangeStr, defaultMonth, referenceDate.getFullYear());
-  if (!parsed) return true;
+  if (!parsed) return false;
 
   // A batch is upcoming if its start date is today or later
   return parsed.startDate.getTime() >= today.getTime();

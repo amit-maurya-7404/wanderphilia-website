@@ -66,21 +66,14 @@ export default function BookingPackageClient({ trip, slug }: BookingPackageClien
     endDate?: string
   }
 
+  // Strictly filter for upcoming dates only (today onwards). Past dates must NEVER be shown.
   const upcomingBatchDates = getUpcomingBatchDates(trip.batchDates)
   const upcomingDates = getUpcomingTripDates(trip.dates)
 
-  const activeBatchDates = upcomingBatchDates.length > 0
-    ? upcomingBatchDates
-    : (trip.batchDates && trip.batchDates.length > 0 ? trip.batchDates : [])
-
-  const activeDates = upcomingDates.length > 0
-    ? upcomingDates
-    : (trip.dates && trip.dates.length > 0 ? trip.dates : [])
-
   let bookingDateOptions: BookingDateOption[] = []
 
-  if (activeBatchDates.length > 0) {
-    bookingDateOptions = activeBatchDates.flatMap((batch) =>
+  if (upcomingBatchDates.length > 0) {
+    bookingDateOptions = upcomingBatchDates.flatMap((batch) =>
       batch.ranges.map((range) => {
         const parsed = parseBatchDateRange(range, batch.month)
         const formatIso = (d: Date) =>
@@ -93,8 +86,8 @@ export default function BookingPackageClient({ trip, slug }: BookingPackageClien
         }
       })
     )
-  } else if (activeDates.length > 0) {
-    bookingDateOptions = activeDates.map((date) => ({
+  } else if (upcomingDates.length > 0) {
+    bookingDateOptions = upcomingDates.map((date) => ({
       month: new Date(date.startDate).toLocaleString('default', { month: 'short' }),
       label: `${date.startDate} - ${date.endDate}`,
       startDate: date.startDate,
@@ -102,27 +95,37 @@ export default function BookingPackageClient({ trip, slug }: BookingPackageClien
     }))
   }
 
-  // Safe fallback if still empty: create flexible upcoming departure options
+  // If no fixed future dates are in data, generate upcoming flexible departure options starting from TODAY / current month onwards - NEVER PAST DATES!
   if (bookingDateOptions.length === 0) {
     const today = new Date()
     const currentMonthName = today.toLocaleString('default', { month: 'short' })
     const nextMonthDate = new Date(today.getFullYear(), today.getMonth() + 1, 1)
     const nextMonthName = nextMonthDate.toLocaleString('default', { month: 'short' })
+    const monthAfterDate = new Date(today.getFullYear(), today.getMonth() + 2, 1)
+    const monthAfterName = monthAfterDate.toLocaleString('default', { month: 'short' })
     const formatIso = (d: Date) =>
       `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+
+    const tripDuration = trip.duration || 7
 
     bookingDateOptions = [
       {
         month: currentMonthName,
-        label: `${currentMonthName} Departures (Flexible / Custom)`,
+        label: `${currentMonthName} Departures (Flexible / On Request)`,
         startDate: formatIso(today),
-        endDate: formatIso(new Date(today.getTime() + (trip.duration || 7) * 86400000)),
+        endDate: formatIso(new Date(today.getTime() + tripDuration * 86400000)),
       },
       {
         month: nextMonthName,
-        label: `${nextMonthName} Departures (Flexible / Custom)`,
+        label: `${nextMonthName} Departures (Upcoming Batch / On Request)`,
         startDate: formatIso(nextMonthDate),
-        endDate: formatIso(new Date(nextMonthDate.getTime() + (trip.duration || 7) * 86400000)),
+        endDate: formatIso(new Date(nextMonthDate.getTime() + tripDuration * 86400000)),
+      },
+      {
+        month: monthAfterName,
+        label: `${monthAfterName} Departures (Upcoming Batch / On Request)`,
+        startDate: formatIso(monthAfterDate),
+        endDate: formatIso(new Date(monthAfterDate.getTime() + tripDuration * 86400000)),
       },
     ]
   }
