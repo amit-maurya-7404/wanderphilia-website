@@ -56,6 +56,8 @@ export function AITripPlanner() {
   const [submitLoading, setSubmitLoading] = useState(false)
   const [showScrollToTop, setShowScrollToTop] = useState(false)
 
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+
   // Track window scroll coordinates for positioning animation
   useEffect(() => {
     if (isExcluded) return
@@ -66,16 +68,15 @@ export function AITripPlanner() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [isExcluded])
 
+  // Auto-scroll to bottom on new messages
+  useEffect(() => {
+    if (isExcluded) return
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [messages, isTyping, isExcluded])
+
   if (isExcluded) {
     return null
   }
-
-  const messagesEndRef = useRef<HTMLDivElement>(null)
-
-  // Auto-scroll to bottom on new messages
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages, isTyping])
 
   const getNext6Months = () => {
     const months = []

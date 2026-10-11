@@ -69,26 +69,63 @@ export default function BookingPackageClient({ trip, slug }: BookingPackageClien
   const upcomingBatchDates = getUpcomingBatchDates(trip.batchDates)
   const upcomingDates = getUpcomingTripDates(trip.dates)
 
-  const bookingDateOptions: BookingDateOption[] = upcomingBatchDates.length > 0
-    ? upcomingBatchDates.flatMap((batch) =>
-        batch.ranges.map((range) => {
-          const parsed = parseBatchDateRange(range, batch.month)
-          const formatIso = (d: Date) =>
-            `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
-          return {
-            month: batch.month,
-            label: range,
-            startDate: parsed ? formatIso(parsed.startDate) : undefined,
-            endDate: parsed ? formatIso(parsed.endDate) : undefined,
-          }
-        })
-      )
-    : upcomingDates.map((date) => ({
-        month: new Date(date.startDate).toLocaleString('default', { month: 'short' }),
-        label: `${date.startDate} - ${date.endDate}`,
-        startDate: date.startDate,
-        endDate: date.endDate,
-      }))
+  const activeBatchDates = upcomingBatchDates.length > 0
+    ? upcomingBatchDates
+    : (trip.batchDates && trip.batchDates.length > 0 ? trip.batchDates : [])
+
+  const activeDates = upcomingDates.length > 0
+    ? upcomingDates
+    : (trip.dates && trip.dates.length > 0 ? trip.dates : [])
+
+  let bookingDateOptions: BookingDateOption[] = []
+
+  if (activeBatchDates.length > 0) {
+    bookingDateOptions = activeBatchDates.flatMap((batch) =>
+      batch.ranges.map((range) => {
+        const parsed = parseBatchDateRange(range, batch.month)
+        const formatIso = (d: Date) =>
+          `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+        return {
+          month: batch.month,
+          label: range,
+          startDate: parsed ? formatIso(parsed.startDate) : undefined,
+          endDate: parsed ? formatIso(parsed.endDate) : undefined,
+        }
+      })
+    )
+  } else if (activeDates.length > 0) {
+    bookingDateOptions = activeDates.map((date) => ({
+      month: new Date(date.startDate).toLocaleString('default', { month: 'short' }),
+      label: `${date.startDate} - ${date.endDate}`,
+      startDate: date.startDate,
+      endDate: date.endDate,
+    }))
+  }
+
+  // Safe fallback if still empty: create flexible upcoming departure options
+  if (bookingDateOptions.length === 0) {
+    const today = new Date()
+    const currentMonthName = today.toLocaleString('default', { month: 'short' })
+    const nextMonthDate = new Date(today.getFullYear(), today.getMonth() + 1, 1)
+    const nextMonthName = nextMonthDate.toLocaleString('default', { month: 'short' })
+    const formatIso = (d: Date) =>
+      `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+
+    bookingDateOptions = [
+      {
+        month: currentMonthName,
+        label: `${currentMonthName} Departures (Flexible / Custom)`,
+        startDate: formatIso(today),
+        endDate: formatIso(new Date(today.getTime() + (trip.duration || 7) * 86400000)),
+      },
+      {
+        month: nextMonthName,
+        label: `${nextMonthName} Departures (Flexible / Custom)`,
+        startDate: formatIso(nextMonthDate),
+        endDate: formatIso(new Date(nextMonthDate.getTime() + (trip.duration || 7) * 86400000)),
+      },
+    ]
+  }
 
   const monthTabs = [
     'All',

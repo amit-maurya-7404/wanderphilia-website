@@ -1,5 +1,5 @@
-import { ManualItinerary } from '@/types/manual-itinerary';
-import { ItineraryDocument } from '@/types/itinerary';
+import { ManualItinerary, ManualAccommodation, ManualDayPlan } from '@/types/manual-itinerary';
+import { ItineraryDocument, ItineraryDayPlan } from '@/types/itinerary';
 import { getRouteTransitInfo } from '@/lib/ai-itinerary';
 
 export const himachalExplorerManualItinerary: ManualItinerary = {
@@ -2725,6 +2725,311 @@ export const rajasthanJignaManualItinerary: ManualItinerary = {
   perAdultPrice: 42153
 };
 
+export const rajasthanJignaNewManualItinerary: ManualItinerary = {
+  id: 'rajasthan-jigna-new',
+  slug: 'royal-rajasthan-jigna-new',
+  title: 'Wanderphilia 10N/11D Royal Rajasthan Tour Specially Curated for Mrs. Jigna & Family',
+  subtitle: '10 Nights / 11 Days • Private Rajasthan Heritage Tour (03 Adults)',
+  duration: '10 Nights / 11 Days | 30 October – 9 November 2026',
+  numNights: 10,
+  numDays: 11,
+  dates: '30 October – 9 November 2026',
+  route: 'Udaipur → Mount Abu → Kumbhalgarh & Ranakpur → Jodhpur → Jaisalmer → Thar Desert → Pushkar → Jaipur',
+  routeSummary: '2N Udaipur | 1N Mount Abu | 1N Jodhpur | 1N Jaisalmer | 1N Desert Camp | 1N Pushkar | 3N Jaipur',
+  destination: 'Rajasthan',
+  travelStyle: 'Royal Heritage, Desert & Hill Station Circuit',
+  tripType: 'Customised Private Tour (03 Adults)',
+  leadName: 'Mrs. Jigna & Family',
+  adults: 3,
+  kids: 0,
+  vehicleType: 'Private AC Sedan 4+1 Seater Car with Dedicated Chauffeur',
+  mealPlan: 'Daily Breakfast at all hotels + Dinners included (MAP Plan) + Desert Camp Gala Dinner',
+  heroImage: '/images/Rajasthan/rajasthan1.jpeg',
+  galleryImages: [
+    '/images/Rajasthan/rajasthan1.jpeg',
+    '/images/Rajasthan/rajasthan2.jpeg',
+    '/images/Rajasthan/rajasthan3.jpeg',
+    '/images/Rajasthan/rajasthan4.jpeg',
+    '/images/Rajasthan/rajasthan5.jpg',
+    '/images/Rajasthan/rajasthan6.jpg',
+    '/images/Rajasthan/rajasthan7.jpg'
+  ],
+  moments: [
+    'Peaceful sunset boat ride over Lake Pichola in Udaipur',
+    'Grand City Palace, Saheliyon Ki Bari & Monsoon Palace in Udaipur',
+    'Dilwara Marble Temples, Nakki Lake & Sunset Point in Mount Abu',
+    'Great Wall of Kumbhalgarh Fort & 1,444 carved pillars of Ranakpur',
+    'Majestic Mehrangarh Fort & Jaswant Thada overlooking the Blue City',
+    'UNESCO Jaisalmer Golden Living Fort, Gadisar Lake & ornate Havelis',
+    'Thar Desert camel ride, folk music & Swiss tent stay under the stars',
+    'Mysterious 13th-century abandoned Kuldhara Village',
+    'World-famous Lord Brahma Temple & sacred Pushkar Sarovar',
+    'Snow-white landscape of Kishangarh Marble Dumping Yard',
+    'Amer Fort, Jaigarh Fort, Jal Mahal & colourful Pink City markets'
+  ],
+  accommodations: [
+    { city: 'Udaipur', nights: 2, hotelName: 'Hotel Platinum Royal Excellency', roomCategory: '01 Double Room + 01 Extra Bed/Mattress (AC)' },
+    { city: 'Mount Abu', nights: 1, hotelName: 'Hotel Sudhir / Hotel Rising Sun Retreat', roomCategory: '01 Double Room + 01 Extra Bed/Mattress (AC)' },
+    { city: 'Jodhpur', nights: 1, hotelName: 'Hotel Kissan Legacy', roomCategory: '01 Double Room + 01 Extra Bed/Mattress (AC)' },
+    { city: 'Jaisalmer', nights: 1, hotelName: 'Hotel Atithi Haveli / Hotel Gorakh Haveli', roomCategory: '01 Double Room + 01 Extra Bed/Mattress (AC)' },
+    { city: 'Thar Desert', nights: 1, hotelName: 'Desert Camp (N/AC Swiss Tent)', roomCategory: 'Swiss Tent with Attached Washroom (Triple Sharing)' },
+    { city: 'Pushkar', nights: 1, hotelName: 'Hotel Holy Pushkar', roomCategory: '01 Double Room + 01 Extra Bed/Mattress (AC)' },
+    { city: 'Jaipur', nights: 3, hotelName: 'Hotel Royal GM PLAZA', roomCategory: '01 Double Room + 01 Extra Bed/Mattress (AC)' }
+  ],
+  dayPlans: [
+    {
+      day: 1,
+      date: '30 Oct',
+      title: 'Arrival in Udaipur, Sajjangarh Monsoon Palace & Lake Pichola Sunset Boat Ride',
+      route: 'Udaipur Airport / Railway Station → Hotel Check-in → Sightseeing',
+      durationNote: 'Arrival & City Tour',
+      intro: 'Welcome to Udaipur, the City of Lakes. You will be picked up at Udaipur Airport or Railway Station and transferred to the hotel. Check into the hotel and freshen up before visiting Sajjangarh, Bahubali Hills, and enjoying a magical sunset boat ride on Lake Pichola.',
+      timeline: [
+        '**Airport / Railway Station Pickup:** You will be picked up at Udaipur Airport / Railway Station and transferred to the hotel.',
+        '**Hotel Check-in:** Check into Hotel Platinum Royal Excellency and freshen up.',
+        '**Sajjangarh Zoological Park:** Visit Sajjangarh Zoological Park nestled in the foothills of the Aravalli hills.',
+        '**Monsoon Palace (Sajjangarh Fort):** Explore the historic Monsoon Palace perched high on the hilltop offering panoramic views over Udaipur.',
+        '**Bahubali Hills Excursion:** Scenic excursion to Bahubali Hills overlooking the serene waters of Lake Badi.',
+        '**Lake Pichola Sunset Boat Ride:** By sunset, take a boat ride over Lake Pichola, an experience which is beyond any comparison.',
+        '**Overnight at Udaipur:** Enjoy dinner and overnight stay at Hotel Platinum Royal Excellency, Udaipur.'
+      ],
+      stayLocation: 'Udaipur (Hotel Platinum Royal Excellency)',
+      image: '/images/Rajasthan/rajasthan1.jpeg',
+      meals: 'Dinner'
+    },
+    {
+      day: 2,
+      date: '31 Oct',
+      title: 'Royal Udaipur Heritage Tour: Grand City Palace, Saheliyon Ki Bari & Bagore Ki Haveli',
+      route: 'Udaipur City Circuit',
+      durationNote: 'Full Day Heritage Sightseeing',
+      intro: 'After breakfast, embark on a full-day exploration of Udaipur’s royal heritage, visiting the iconic City Palace, gardens, historic mansions, temples, and cultural centres.',
+      timeline: [
+        '**Grand City Palace:** After breakfast, visit the famous City Palace complex and explore royal courtyards, chambers & museum.',
+        '**Saheliyon Ki Bari:** Stroll through Saheliyon Ki Bari - "Garden of the Maids of Honour" with fountains and marble kiosks.',
+        '**Bagore Ki Haveli:** Visit Bagore Ki Haveli on the waterfront of Lake Pichola at Gangaur Ghat.',
+        '**Historic Jagdish Temple:** Seek blessings at the famous 17th-century Jagdish Temple dedicated to Lord Vishnu.',
+        '**Maharana Pratap Smarak:** Visit Maharana Pratap Smarak at Moti Magri overlooking Fateh Sagar Lake.',
+        '**Bhartiya Lok Kala Mandal:** Explore traditional Rajasthani folk arts, puppets and culture at Bhartiya Lok Kala Mandal.',
+        '**Overnight at Udaipur:** Enjoy dinner and overnight stay at Hotel Platinum Royal Excellency, Udaipur.'
+      ],
+      stayLocation: 'Udaipur (Hotel Platinum Royal Excellency)',
+      image: '/images/Rajasthan/rajasthan2.jpeg',
+      meals: 'Breakfast & Dinner'
+    },
+    {
+      day: 3,
+      date: '01 Nov',
+      title: 'Drive to Mount Abu Hill Station: Delwara Marble Temples, Nakki Lake & Sunset Point',
+      route: 'Udaipur → Mount Abu',
+      durationNote: 'Approx. 3–4 hrs | 165 km',
+      intro: 'After breakfast, continue to Mount Abu – the one and only hill station of Rajasthan. Upon arrival check in at the hotel, and soon after visit Delwara Temple, Nakki Lake, Tod Rock, and Sunset Point.',
+      timeline: [
+        '**Scenic Drive to Mount Abu:** After breakfast, continue to Mount Abu – the one and only hill station of Rajasthan.',
+        '**Hotel Check-in:** Upon arrival, check in at the hotel (Hotel Sudhir / Hotel Rising Sun Retreat).',
+        '**Delwara (Dilwara) Jain Temples:** Soon after, visit Delwara Temple, world-renowned for its extraordinary and intricate marble carvings.',
+        '**Nakki Lake Promenade:** Stroll around picturesque Nakki Lake situated at the heart of Mount Abu.',
+        '**Tod Rock (Toad Rock):** View the unique Tod Rock formation overlooking the lake.',
+        '**Sunset Point:** Head to Sunset Point for spectacular evening views across the Aravalli hills.',
+        '**Overnight at Mount Abu:** Enjoy dinner and overnight stay at Mount Abu.'
+      ],
+      stayLocation: 'Mount Abu (Hotel Sudhir / Hotel Rising Sun Retreat)',
+      image: '/images/Rajasthan/rajasthan3.jpeg',
+      meals: 'Breakfast & Dinner'
+    },
+    {
+      day: 4,
+      date: '02 Nov',
+      title: 'Sprawling Kumbhalgarh Fort, 1444 Pillars of Ranakpur & Transfer to Jodhpur',
+      route: 'Mount Abu → Kumbhalgarh → Ranakpur → Jodhpur',
+      durationNote: 'Approx. 6–7 hrs | 280 km',
+      intro: 'After breakfast, transfer to Jodhpur. On the way visit Kumbhalgarh to explore the sprawling fort, and after lunch take a trip to Ranakpur Jain Temple before proceeding to Jodhpur.',
+      timeline: [
+        '**Transfer towards Jodhpur:** After breakfast, check out from Mount Abu and transfer towards Jodhpur.',
+        '**Sprawling Kumbhalgarh Fort:** On the way, visit Kumbhalgarh and explore the sprawling Kumbhalgarh Fort with its great defensive walls.',
+        '**Lunch Break:** Enjoy a relaxed lunch break amidst the Aravali Ranges.',
+        '**1444 Pillars of Ranakpur:** After lunch, take a trip to Ranakpur for its 1444 differently carved pillars of Jain Temple surrounded by tremendous valleys of Aravali Ranges.',
+        '**Highway to the Blue City:** Later proceed to Jodhpur through scenic desert terrain.',
+        '**Jodhpur Hotel Check-in:** Upon arrival in Jodhpur, check into Hotel Kissan Legacy.',
+        '**Overnight at Jodhpur Hotel:** Dinner and overnight stay at the Jodhpur hotel.'
+      ],
+      stayLocation: 'Jodhpur (Hotel Kissan Legacy)',
+      image: '/images/Rajasthan/rajasthan4.jpeg',
+      meals: 'Breakfast & Dinner'
+    },
+    {
+      day: 5,
+      date: '03 Nov',
+      title: 'Majestic Mehrangarh Fort, Jaswant Thada, Umaid Bhawan & Highway to Jaisalmer',
+      route: 'Jodhpur Sightseeing → Drive to Jaisalmer',
+      durationNote: 'Approx. 5 hrs drive | 280 km',
+      intro: 'After breakfast, climb up the Majestic Mehrangarh Fort and explore its every nook and corner, Jaswant Thada, Umaid Bhawan Palace Museum, Clock Tower and local markets before driving to Jaisalmer.',
+      timeline: [
+        '**Majestic Mehrangarh Fort:** After breakfast, climb up the Majestic Mehrangarh Fort and explore its every nook & corner and sweeping Blue City views.',
+        '**Jaswant Thada Memorial:** Visit the serene white marble cenotaph Jaswant Thada surrounded by peaceful gardens.',
+        '**Ummaid Bhawan Palace Museum:** Explore the royal museum of Ummaid Bhawan Palace displaying rare vintage cars and royal collections.',
+        '**Clock Tower & Local Markets:** Visit Ghanta Ghar (Clock Tower) and browse vibrant local markets of Jodhpur.',
+        '**Proceed to Jaisalmer:** Later, proceed on the smooth highway towards the Golden City of Jaisalmer.',
+        '**Hotel Check-in:** Upon arrival in Jaisalmer, check in at Hotel Atithi Haveli / Hotel Gorakh Haveli.',
+        '**Overnight at Jaisalmer Hotel:** Dinner and overnight stay at Hotel Atithi Haveli / Hotel Gorakh Haveli.'
+      ],
+      stayLocation: 'Jaisalmer (Hotel Atithi Haveli / Hotel Gorakh Haveli)',
+      image: '/images/Rajasthan/rajasthan5.jpg',
+      meals: 'Breakfast & Dinner'
+    },
+    {
+      day: 6,
+      date: '04 Nov',
+      title: 'Jaisalmer Golden Fort & Havelis, Desert Arabian Night, Camel Sunset & Dunes Camping',
+      route: 'Jaisalmer City Sightseeing → Thar Desert Camp',
+      durationNote: 'Half-Day City Sightseeing + Desert Camp',
+      intro: 'In our half-day sightseeing tour visit Jaisalmer Fort, Temples, Havelis, Gadisar Lake & Vyas Chhatri. In the evening, head for a unique Desert Arabian Night experience with camel ride, cultural program, and tented stay.',
+      timeline: [
+        '**Half-Day City Sightseeing:** In our half-day sightseeing tour, visit the golden living Jaisalmer Fort (Sonar Qila) and ancient Jain Temples.',
+        '**Heritage Havelis:** Marvel at the intricately carved stone Havelis including Patwon Ki Haveli.',
+        '**Gadisar Lake & Vyas Chhatri:** Visit scenic Gadisar Lake and the ornate royal cenotaphs at Vyas Chhatri.',
+        '**Desert Arabian Night Experience:** In the evening, head to Thar Desert dunes for a unique experience of the Desert Arabian night.',
+        '**Tented Accommodations:** Check in to tented accommodations over the dunes (N/AC Swiss Tents).',
+        '**Photogenic Sunset on Camelback:** Enjoy a photogenic sunset on camelback across the rolling golden sand dunes.',
+        '**Cultural Program & Hi-Tea:** Experience evening Hi-Tea, traditional cultural programs, Kalbeliya folk dance & live music.',
+        '**Vegetarian Dinner & Desert Camp Stay:** Relish a delicious vegetarian dinner and overnight stay at Desert Camp.'
+      ],
+      stayLocation: 'Thar Desert (Desert Camp - N/AC Swiss Tent)',
+      image: '/images/Rajasthan/rajasthan6.jpg',
+      meals: 'Breakfast, Evening Hi-Tea & Vegetarian Dinner'
+    },
+    {
+      day: 7,
+      date: '05 Nov',
+      title: 'Desert Camp Checkout, Haunted Kuldhara Village & World\'s Only Brahma Temple Pushkar',
+      route: 'Desert Camp → Kuldhara → Pushkar',
+      durationNote: 'Approx. 7–8 hrs | 450 km',
+      intro: 'After breakfast, check out from the desert camp and visit the mysterious abandoned Kuldhara Village. Later proceed to Pushkar, check in at the hotel, and visit the world\'s only Lord Brahma Temple.',
+      timeline: [
+        '**Desert Camp Checkout:** After breakfast, complete checkout from Desert Camp.',
+        '**Kuldhara Abandoned Village:** Visit the intriguing 13th-century abandoned village of Kuldhara and explore its legendary ruins.',
+        '**Proceed to Pushkar:** Later, proceed on the road journey across Rajasthan towards the holy pilgrimage town of Pushkar.',
+        '**Hotel Check-in:** Upon arrival in Pushkar, check in at Hotel Holy Pushkar.',
+        '**World\'s Only Lord Brahma Temple:** Soon after, visit the world-famous Lord Brahma Temple at Pushkar (one of the very few temples in the world dedicated to Lord Brahma).',
+        '**Pushkar Sarovar & Ghats:** Stroll along the holy Pushkar Lake ghats and spiritual market lanes.',
+        '**Overnight at Pushkar:** Dinner and overnight stay at Hotel Holy Pushkar.'
+      ],
+      stayLocation: 'Pushkar (Hotel Holy Pushkar)',
+      image: '/images/Rajasthan/rajasthan7.jpg',
+      meals: 'Breakfast & Dinner'
+    },
+    {
+      day: 8,
+      date: '06 Nov',
+      title: 'Drive to Jaipur via Kishangarh Marble Yard, Central Museum & Ethnic Village Evening',
+      route: 'Pushkar → Kishangarh → Jaipur',
+      durationNote: 'Approx. 3 hrs | 145 km',
+      intro: 'After breakfast, transfer to Jaipur. On the way visit Kishangarh Dumping Yard, check into the hotel, and explore Central Museum, Birla Mandir, and Jawahar Kala Kendra before an ethnic village evening.',
+      timeline: [
+        '**Transfer to Jaipur:** After breakfast, transfer from Pushkar towards Jaipur.',
+        '**Kishangarh Dumping Yard:** On the way, visit Kishangarh Dumping Yard (famed for its white marble slurry landscape looking like snow).',
+        '**Hotel Check-in:** Upon arrival in Jaipur, check into Hotel Royal GM PLAZA.',
+        '**Central Museum (Albert Hall):** Soon after, visit the Central Museum (Albert Hall) with its exquisite Indo-Saracenic architecture.',
+        '**Birla Mandir & Jawahar Kala Kendra:** Visit the serene white marble Birla Mandir and arts centre Jawahar Kala Kendra.',
+        '**Rajasthani Ethnic Village Evening:** From there, go for a Rajasthani culinary experience with folk music and dance at an ethnic village (Chokhi Dhani).',
+        '**Overnight at Hotel:** Dinner and overnight stay at Hotel Royal GM PLAZA, Jaipur.'
+      ],
+      stayLocation: 'Jaipur (Hotel Royal GM PLAZA)',
+      image: '/images/Rajasthan/rajasthan1.jpeg',
+      meals: 'Breakfast & Dinner'
+    },
+    {
+      day: 9,
+      date: '07 Nov',
+      title: 'Grand Pink City Circuit: Amer Fort, Jaigarh, Jal Mahal, City Palace, Hawa Mahal & Bazaars',
+      route: 'Jaipur Heritage & Forts Circuit',
+      durationNote: 'Full Day Heritage Tour',
+      intro: 'After breakfast, embark on a full-day royal Jaipur tour visiting Amer Fort, Jaigarh, Jal Mahal, City Palace, Jantar Mantar Observatory, Hawa Mahal, and the walled Pink City & markets.',
+      timeline: [
+        '**Amer Fort:** After breakfast, visit the majestic Amer Fort and explore Sheesh Mahal and royal courtyards.',
+        '**Jaigarh Fort:** Explore the formidable Jaigarh Fort, home to the massive historic Jaivana Cannon on wheels.',
+        '**Jal Mahal:** Photo stop at the picturesque Jal Mahal floating in Man Sagar Lake.',
+        '**City Palace Complex:** Visit the grand City Palace complex and explore royal courtyards, museums & heritage galleries.',
+        '**Observatory (Jantar Mantar):** Visit the historic astronomical observatory (Janter - Manter) with its colossal stone instruments.',
+        '**Hawa Mahal (Palace of Winds):** Marvel at the iconic pink honeycomb facade of Hawa Mahal.',
+        '**Walled Pink City & Markets:** Stroll through the bustling walled Pink City streets, Johari Bazaar & local handicraft markets.',
+        '**Overnight at Jaipur:** Dinner and overnight stay at Hotel Royal GM PLAZA, Jaipur.'
+      ],
+      stayLocation: 'Jaipur (Hotel Royal GM PLAZA)',
+      image: '/images/Rajasthan/rajasthan2.jpeg',
+      meals: 'Breakfast & Dinner'
+    },
+    {
+      day: 10,
+      date: '08 Nov',
+      title: 'Relaxed Morning, Rest & Pink City Self-Exploration',
+      route: 'Jaipur City',
+      durationNote: 'Rest & Self Exploration',
+      intro: 'After breakfast, keep the day for rest and self-exploration in Jaipur at your own family pace.',
+      timeline: [
+        '**Breakfast at Hotel:** Enjoy a relaxed breakfast at the hotel.',
+        '**Rest & Leisure Time:** Keep the rest of the day for rest, relaxation, and unwinding.',
+        '**Self-Exploration:** Explore Jaipur at your own pace — visit local cafés, boutiques, blue pottery studios or sweet shops.',
+        '**Souvenir Shopping:** Opportunity for souvenir shopping in nearby bazaars.',
+        '**Overnight at Jaipur:** Dinner and overnight stay at Hotel Royal GM PLAZA, Jaipur.'
+      ],
+      stayLocation: 'Jaipur (Hotel Royal GM PLAZA)',
+      image: '/images/Rajasthan/rajasthan3.jpeg',
+      meals: 'Breakfast & Dinner'
+    },
+    {
+      day: 11,
+      date: '09 Nov',
+      title: 'Breakfast, Hotel Check-Out & Drop near Jaipur Railway Station (Tour Ends)',
+      route: 'Jaipur Hotel → Jaipur Railway Station / Departure',
+      durationNote: 'Tour Ends',
+      intro: 'After breakfast, you will drop near Jaipur Railway Station as your 11-day Rajasthan tour comes to an end.',
+      timeline: [
+        '**Breakfast & Check-Out:** Enjoy breakfast at the hotel and complete check-out formalities.',
+        '**Railway Station Drop:** After breakfast, you will drop at Jaipur Railway Station (The Tour Ends) (Self drop near railway station).',
+        '**Tour Concludes:** Depart with cherished memories of your grand Rajasthan family tour.'
+      ],
+      stayLocation: 'Departure (The Tour Ends)',
+      signOff: 'Until your next royal journey with Wanderphilia! 🧡',
+      image: '/images/Rajasthan/rajasthan4.jpeg',
+      meals: 'Breakfast'
+    }
+  ],
+  inclusions: [
+    '10 Nights / 11 Days Air-Conditioned Accommodation (01 Double Occupancy Room & 01 Extra Bed/Mattress).',
+    'Daily breakfast basis.',
+    'All transfers and sightseeing by an AC Sedan 4+1 Seater Car.',
+    'Driver allowance, fuel, parking charges, toll taxes, and interstate taxes.',
+    'A stay at Desert Camp Jaisalmer include a camel ride, Hi-Tea, cultural programs & a vegetarian dinner.',
+    'All currently applicable taxe. (No Hidden Cost).',
+    'A child below 5 years is complimentary (without an extra bed).',
+    'Packaged Drinking Water.( 1/2L 2 Bottles Per Head Daily.)'
+  ],
+  exclusions: [
+    'GST @ 5% is applicable extra on total package cost.',
+    'Monument entry tickets, museum entry fees and camera charges not explicitly listed.',
+    'Lunches and personal beverages/refreshments.',
+    'Any personal expenses like laundry, room service, telephone calls, tips or gratuities.',
+    'Any costs arising due to unexpected road closures, weather conditions, or circumstances beyond control.',
+    'Anything not explicitly mentioned under Inclusions.'
+  ],
+  thingsToCarry: [
+    'Valid Government photo ID proofs for all 3 guests (Aadhaar Card / Passport / Driving License).',
+    'Comfortable walking shoes or sandals for fort, palace, and temple tours.',
+    'Light cotton clothing for daytime sightseeing with sunglasses, hats, and sunscreen.',
+    'Light jacket or shawl for cooler evenings in Mount Abu and the Thar Desert.',
+    'Personal toiletries, camera, and mobile chargers/power banks.'
+  ],
+  finalQuotationAmount: 103950,
+  baseAmount: 99000,
+  gstPercentage: 5,
+  gstAmount: 4950,
+  tcsPercentage: 0,
+  tcsAmount: 0,
+  perAdultPrice: 33000,
+  childPricingNote: 'Quoted for 03 Adults on Triple Sharing basis (01 Double Occupancy Room + 01 Extra Bed/Mattress). Children below 5 years are complimentary without extra bed.'
+};
+
 export const rajasthanSachinManualItinerary: ManualItinerary = {
   id: 'wp-041c1bdc',
   slug: 'rajasthan-sachin-yadav-family-trip',
@@ -2982,6 +3287,17 @@ export const manualItinerariesRegistry: Record<string, ManualItinerary> = {
   'sachin-sir': rajasthanSachinManualItinerary,
   'wp-rajasthan-sachin': rajasthanSachinManualItinerary,
 
+  'rajasthan-jigna-new': rajasthanJignaNewManualItinerary,
+  'royal-rajasthan-jigna-new': rajasthanJignaNewManualItinerary,
+  'jigna-new': rajasthanJignaNewManualItinerary,
+  'jigna-rajasthan': rajasthanJignaNewManualItinerary,
+  'wp-rajasthan-jigna-new': rajasthanJignaNewManualItinerary,
+  'wp-jigna-new': rajasthanJignaNewManualItinerary,
+  'royal-rajasthan-jigna-11d': rajasthanJignaNewManualItinerary,
+  'rajasthan-jigna-11d': rajasthanJignaNewManualItinerary,
+  'jigna-3adults': rajasthanJignaNewManualItinerary,
+  'jigna-latest': rajasthanJignaNewManualItinerary,
+
   'rajasthan-jigna': rajasthanJignaManualItinerary,
   'royal-rajasthan-jigna': rajasthanJignaManualItinerary,
   'jigna': rajasthanJignaManualItinerary,
@@ -3080,6 +3396,7 @@ export function getAllManualItineraries(): ManualItinerary[] {
     vietnamNaushadUpdatedManualItinerary,
     rajasthanRoyalEscapeManualItinerary,
     rajasthanJignaManualItinerary,
+    rajasthanJignaNewManualItinerary,
     rajasthanSachinManualItinerary
   ];
 }

@@ -54,6 +54,8 @@ export interface ItineraryLeadDetails {
 
 export interface ItineraryDayPlan {
   day: number;
+  date?: string;
+  durationNote?: string;
   title: string;
   description: string;
   stayLocation?: string;
@@ -84,7 +86,12 @@ export interface ItineraryDocument {
   description?: string; // AI-generated clean one-liner luxury description
   title?: string;
   destination: string;
+  destinationType?: string;
   stateOrCountry?: string;
+  startDate?: string;
+  endDate?: string;
+  optionNumber?: number;
+  moments?: string[];
   travelStyle?: string; // e.g. "Family Trip", "Couple Trip" from Zoho Leads.Travel Style
   tripType?: string;
   vehicleType?: string; // e.g. "Sedan / Innova / Tempo Traveller" from Zoho Leads.Vehicle Type
