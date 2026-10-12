@@ -9,6 +9,7 @@ import { ManualFlightQuotationSection } from './manual-flight-quotation-section'
 import { ManualOptionSwitcher } from './manual-option-switcher';
 import { ItineraryClientActions } from './itinerary-client-actions';
 import { ItineraryPaymentSection } from './itinerary-payment-section';
+import { ItineraryBookModal, ItineraryPaymentType } from './itinerary-book-modal';
 import {
   MapPin,
   Calendar,
@@ -26,11 +27,15 @@ import {
   HeartHandshake,
   Star,
   ExternalLink,
-  Luggage
+  Luggage,
+  Lock,
+  ArrowRight,
+  Check
 } from 'lucide-react';
 import { Parachute } from '@/components/parachute-icon';
 import { RiWhatsappLine } from 'react-icons/ri';
 import { contactPhoneDisplay, contactEmail } from '@/lib/contact';
+import { isInternationalTrip } from '@/lib/ai-itinerary';
 import { Playfair_Display, Plus_Jakarta_Sans, Dancing_Script } from 'next/font/google';
 
 const playfair = Playfair_Display({
@@ -140,8 +145,11 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
   const currentPerAdultPrice = activeOption?.perAdultPrice ?? itinerary.perAdultPrice;
   const currentPerKidPrice = activeOption?.perKidPrice ?? itinerary.perKidPrice;
   const currentBaseAmount = activeOption?.baseAmount ?? itinerary.baseAmount;
+  const isIntl = isInternationalTrip(destination, itinerary.tripType || '');
   const currentGstPct = activeOption?.gstPercentage !== undefined ? activeOption.gstPercentage : (itinerary.gstPercentage !== undefined ? itinerary.gstPercentage : 5);
-  const currentTcsPct = activeOption?.tcsPercentage !== undefined ? activeOption.tcsPercentage : (itinerary.tcsPercentage !== undefined ? itinerary.tcsPercentage : 0);
+  const currentTcsPct = isIntl
+    ? (activeOption?.tcsPercentage !== undefined ? activeOption.tcsPercentage : (itinerary.tcsPercentage !== undefined ? itinerary.tcsPercentage : 2))
+    : 0;
   const currentGstAmount = activeOption?.gstAmount ?? (currentBaseAmount ? Math.round(currentBaseAmount * (currentGstPct / 100)) : itinerary.gstAmount);
   const currentTcsAmount = activeOption?.tcsAmount ?? (currentBaseAmount && currentTcsPct > 0 ? Math.round(currentBaseAmount * (currentTcsPct / 100)) : itinerary.tcsAmount);
   const currentFinalQuotationAmount = activeOption?.finalQuotationAmount ?? itinerary.finalQuotationAmount ?? (currentBaseAmount ? currentBaseAmount + (currentGstAmount || 0) + (currentTcsAmount || 0) : undefined);
@@ -197,8 +205,26 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
   const isAdvancePaid = alreadyPaid >= fiftyPercentAmount && !isFullyPaid;
   const isTokenPaid = alreadyPaid > 0 && alreadyPaid < fiftyPercentAmount;
 
+  // Online Booking Feature Flag:
+  // Disabled for all past itineraries already sent to clients. Only active for new itineraries or when explicitly enabled.
+  const isOnlineBookingEnabled = Boolean(itinerary.enableOnlineBooking);
+
+  // Book Modal state
+  const [isBookModalOpen, setIsBookModalOpen] = useState(false);
+  const [selectedPaymentType, setSelectedPaymentType] = useState<ItineraryPaymentType>('token');
+
+  const handleOpenBookModal = (type: ItineraryPaymentType = 'token') => {
+    if (!isOnlineBookingEnabled) return;
+    setSelectedPaymentType(type);
+    setIsBookModalOpen(true);
+  };
+
+  const rawDatesStr = (activeOption as any)?.dates || itinerary.dates || '';
+  const travelStartDate = rawDatesStr ? rawDatesStr.split(/[–—-]/)[0]?.trim() : undefined;
+  const travelEndDate = rawDatesStr ? rawDatesStr.split(/[–—-]/)[1]?.trim() : undefined;
+
   return (
-    <div className={`${sansBody.className} min-h-screen bg-[#ECE8E1] text-stone-900 selection:bg-[#6E1E14] selection:text-white pb-16`}>
+    <div className={`${sansBody.className} min-h-screen bg-[#ECE8E1] text-stone-900 selection:bg-[#6E1E14] selection:text-white ${isOnlineBookingEnabled ? 'pb-24 sm:pb-32' : 'pb-10 sm:pb-16'} print:pb-0`}>
 
       {/* Top Floating Control Bar */}
       <header className="bg-white/95 backdrop-blur-md border-b border-stone-200 sticky top-0 z-50 py-2.5 px-3 sm:px-8 shadow-2xs print:hidden">
@@ -220,15 +246,28 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
             )}
           </div>
 
-          <ItineraryClientActions
-            itineraryId={itinerary.id}
-            title={itinerary.title}
-            leadName={leadName}
-            destination={destination}
-            totalQuotationAmount={itinerary.finalQuotationAmount || 0}
-            numDays={numDays}
-            numNights={numNights}
-          />
+          <div className="flex items-center gap-2">
+            {isOnlineBookingEnabled && !isFullyPaid && (
+              <button
+                type="button"
+                onClick={() => handleOpenBookModal('token')}
+                className="hidden sm:inline-flex items-center gap-1.5 bg-[#6E1E14] hover:bg-[#5C1810] text-white text-[11px] font-black px-3.5 py-1.5 rounded-full shadow-xs transition hover:scale-105 active:scale-95 uppercase tracking-wider cursor-pointer"
+              >
+                <Lock className="w-3 h-3 text-amber-300" />
+                <span>Book Now</span>
+              </button>
+            )}
+
+            <ItineraryClientActions
+              itineraryId={itinerary.id}
+              title={itinerary.title}
+              leadName={leadName}
+              destination={destination}
+              totalQuotationAmount={totalQuotationAmount}
+              numDays={numDays}
+              numNights={numNights}
+            />
+          </div>
         </div>
       </header>
 
@@ -798,8 +837,199 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                 </div>
               )}
 
+              {/* INTERACTIVE PAYMENT INSTALLMENT OPTIONS */}
+              {isOnlineBookingEnabled && !isFullyPaid && (
+                <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 sm:p-5 border border-white/20 space-y-3.5 mt-3">
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/15 pb-2.5">
+                    <div className="space-y-0.5">
+                      <div className="text-[10px] font-extrabold uppercase tracking-wider text-amber-300 flex items-center gap-1.5">
+                        <CreditCard className="w-3.5 h-3.5" />
+                        <span>Payment Options • Online Booking</span>
+                      </div>
+                      <h4 className="text-sm sm:text-base font-black text-white">
+                        Choose Your Installment & Book Instantly
+                      </h4>
+                    </div>
+                    <span className="text-[10px] bg-amber-400/20 text-amber-300 font-bold px-2.5 py-1 rounded-full border border-amber-400/30">
+                      Razorpay Verified
+                    </span>
+                  </div>
+
+                  {alreadyPaid <= 0 ? (
+                    /* 3 OPTIONS FOR FRESH BOOKINGS (0% PAID) */
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      {/* 1. 10% Token Payment */}
+                      <div className="bg-white/95 rounded-xl p-3.5 border-2 border-amber-200/80 shadow-xs flex flex-col justify-between space-y-3 text-stone-900 transition hover:shadow-md hover:border-amber-400">
+                        <div className="space-y-1.5">
+                          <div className="flex items-center justify-between">
+                            <span className="bg-amber-100 text-amber-900 text-[9px] font-black uppercase px-2 py-0.5 rounded-full tracking-wider">
+                              10% Token
+                            </span>
+                            <span className="text-[10px] font-bold text-stone-500">Stage 1</span>
+                          </div>
+                          <h5 className="text-xs font-black text-stone-900">Token Amount</h5>
+                          <div className="text-lg sm:text-xl font-black text-[#6E1E14]">
+                            ₹{tenPercentAmount.toLocaleString('en-IN')}/-
+                          </div>
+                          <p className="text-[10px] text-stone-600 leading-tight">
+                            Locks your itinerary proposal, dates & slot reservations. 50% advance payable within 7 days.
+                          </p>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => handleOpenBookModal('token')}
+                          className="w-full h-9 rounded-lg bg-stone-900 hover:bg-[#6E1E14] text-white text-[11px] font-black uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-sm transition hover:scale-[1.02] active:scale-95 cursor-pointer"
+                        >
+                          <Lock className="w-3 h-3 text-amber-300" />
+                          <span>Book with 10% Token</span>
+                        </button>
+                      </div>
+
+                      {/* 2. 50% Advance Payment (Recommended) */}
+                      <div className="bg-white/95 rounded-xl p-3.5 border-2 border-amber-400 shadow-md ring-2 ring-amber-400/20 flex flex-col justify-between space-y-3 text-stone-900 transition hover:shadow-lg relative">
+                        <div className="space-y-1.5">
+                          <div className="flex items-center justify-between">
+                            <span className="bg-amber-400 text-stone-950 text-[9px] font-black uppercase px-2 py-0.5 rounded-full tracking-wider">
+                              ★ Recommended
+                            </span>
+                            <span className="text-[10px] font-bold text-amber-800">Stage 2</span>
+                          </div>
+                          <h5 className="text-xs font-black text-stone-900">50% Advance</h5>
+                          <div className="text-lg sm:text-xl font-black text-[#6E1E14]">
+                            ₹{fiftyPercentAmount.toLocaleString('en-IN')}/-
+                          </div>
+                          <p className="text-[10px] text-stone-600 leading-tight">
+                            Locks handpicked hotel stays, activities & dedicated chauffeur transport. Balance due 15 days before departure.
+                          </p>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => handleOpenBookModal('advance')}
+                          className="w-full h-9 rounded-lg bg-[#6E1E14] hover:bg-[#5C1810] text-white text-[11px] font-black uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-md transition hover:scale-[1.02] active:scale-95 cursor-pointer"
+                        >
+                          <Lock className="w-3 h-3 text-amber-300" />
+                          <span>Book with 50% Advance</span>
+                        </button>
+                      </div>
+
+                      {/* 3. 100% Full Payment */}
+                      <div className="bg-white/95 rounded-xl p-3.5 border-2 border-emerald-300 shadow-xs flex flex-col justify-between space-y-3 text-stone-900 transition hover:shadow-md hover:border-emerald-500">
+                        <div className="space-y-1.5">
+                          <div className="flex items-center justify-between">
+                            <span className="bg-emerald-100 text-emerald-900 text-[9px] font-black uppercase px-2 py-0.5 rounded-full tracking-wider">
+                              ✓ 100% Cleared
+                            </span>
+                            <span className="text-[10px] font-bold text-emerald-700">One-Shot</span>
+                          </div>
+                          <h5 className="text-xs font-black text-stone-900">Full Payment</h5>
+                          <div className="text-lg sm:text-xl font-black text-stone-900">
+                            ₹{totalQuotationAmount.toLocaleString('en-IN')}/-
+                          </div>
+                          <p className="text-[10px] text-stone-600 leading-tight">
+                            Zero pending dues, instant confirmed booking kit & official GST tax invoice sent immediately.
+                          </p>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => handleOpenBookModal('full')}
+                          className="w-full h-9 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white text-[11px] font-black uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-sm transition hover:scale-[1.02] active:scale-95 cursor-pointer"
+                        >
+                          <CheckCircle2 className="w-3 h-3 text-emerald-200" />
+                          <span>Pay Full 100%</span>
+                        </button>
+                      </div>
+                    </div>
+                  ) : isTokenPaid ? (
+                    /* 2 OPTIONS WHEN 10% TOKEN IS ALREADY PAID */
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {/* Remaining Advance (40%) */}
+                      <div className="bg-white/95 rounded-xl p-3.5 border-2 border-amber-400 shadow-md flex flex-col justify-between space-y-3 text-stone-900">
+                        <div className="space-y-1.5">
+                          <div className="flex items-center justify-between">
+                            <span className="bg-amber-400 text-stone-950 text-[9px] font-black uppercase px-2 py-0.5 rounded-full tracking-wider">
+                              Next Stage (40%)
+                            </span>
+                          </div>
+                          <h5 className="text-xs font-black text-stone-900">Pay Remaining Advance</h5>
+                          <div className="text-lg sm:text-xl font-black text-[#6E1E14]">
+                            ₹{Math.max(0, fiftyPercentAmount - alreadyPaid).toLocaleString('en-IN')}/-
+                          </div>
+                          <p className="text-[10px] text-stone-600 leading-tight">
+                            Completes 50% advance to lock hotel stays. Final balance due 15 days before travel.
+                          </p>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => handleOpenBookModal('remaining_advance')}
+                          className="w-full h-9 rounded-lg bg-[#6E1E14] hover:bg-[#5C1810] text-white text-[11px] font-black uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-md transition cursor-pointer"
+                        >
+                          <Lock className="w-3 h-3 text-amber-300" />
+                          <span>Pay Remaining Advance</span>
+                        </button>
+                      </div>
+
+                      {/* Remaining Full Balance (90%) */}
+                      <div className="bg-white/95 rounded-xl p-3.5 border-2 border-emerald-300 shadow-xs flex flex-col justify-between space-y-3 text-stone-900">
+                        <div className="space-y-1.5">
+                          <div className="flex items-center justify-between">
+                            <span className="bg-emerald-100 text-emerald-900 text-[9px] font-black uppercase px-2 py-0.5 rounded-full tracking-wider">
+                              Clear All Dues
+                            </span>
+                          </div>
+                          <h5 className="text-xs font-black text-stone-900">Clear Full Balance</h5>
+                          <div className="text-lg sm:text-xl font-black text-stone-900">
+                            ₹{remainingBalanceAmount.toLocaleString('en-IN')}/-
+                          </div>
+                          <p className="text-[10px] text-stone-600 leading-tight">
+                            Clears 100% quotation immediately with 0 balance pending.
+                          </p>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => handleOpenBookModal('remaining_balance')}
+                          className="w-full h-9 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white text-[11px] font-black uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-sm transition cursor-pointer"
+                        >
+                          <CheckCircle2 className="w-3 h-3 text-emerald-200" />
+                          <span>Pay Remaining Balance</span>
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    /* REMAINING 50% BALANCE */
+                    <div className="bg-white/95 rounded-xl p-3.5 border-2 border-[#6E1E14] shadow-md flex flex-col sm:flex-row items-center justify-between gap-3 text-stone-900">
+                      <div className="space-y-1 text-center sm:text-left">
+                        <span className="bg-amber-400 text-stone-950 text-[9px] font-black uppercase px-2 py-0.5 rounded-full tracking-wider">
+                          Final Stage
+                        </span>
+                        <h5 className="text-sm font-black text-stone-900">Pay Remaining 50% Balance</h5>
+                        <p className="text-[10px] text-stone-600">Due 15 days before departure to release all hotel vouchers & chauffeur transport.</p>
+                      </div>
+
+                      <div className="flex items-center gap-3 shrink-0">
+                        <div className="text-xl font-black text-[#6E1E14]">
+                          ₹{remainingBalanceAmount.toLocaleString('en-IN')}/-
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => handleOpenBookModal('remaining_balance')}
+                          className="h-10 px-5 rounded-lg bg-[#6E1E14] hover:bg-[#5C1810] text-white text-xs font-black uppercase tracking-wider flex items-center gap-1.5 shadow-md transition cursor-pointer"
+                        >
+                          <Lock className="w-3.5 h-3.5 text-amber-300" />
+                          <span>Pay Balance Now</span>
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
               {/* LIVE VERIFIED PAYMENT STATUS CARD (IF ALREADY PAID) */}
-              {alreadyPaid > 0 && (
+              {isOnlineBookingEnabled && alreadyPaid > 0 && (
                 <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-emerald-400/40 space-y-2 mt-3">
                   <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/15 pb-2">
                     <div className="flex items-center gap-2">
@@ -976,18 +1206,25 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
               itineraryId={itinerary.id}
               destination={destination}
               proposalTitle={itinerary.title}
-              perAdultPrice={itinerary.perAdultPrice || 170772}
-              adults={itinerary.adults || 4}
-              baseAmount={itinerary.baseAmount || 638400}
-              gstPercentage={itinerary.gstPercentage || 5}
-              tcsPercentage={itinerary.tcsPercentage || 2}
-              totalQuotationAmount={itinerary.finalQuotationAmount || 683088}
+              perAdultPrice={currentPerAdultPrice || itinerary.perAdultPrice || 170772}
+              adults={(activeOption?.adults ?? itinerary.adults) || 4}
+              baseAmount={currentBaseAmount || itinerary.baseAmount || 638400}
+              gstPercentage={currentGstPct || itinerary.gstPercentage || 5}
+              tcsPercentage={currentTcsPct}
+              totalQuotationAmount={totalQuotationAmount || 683088}
               advanceAmountPaid={alreadyPaid}
               balancePendingAmount={remainingBalanceAmount}
               paymentStage={itinerary.paymentStage}
               leadName={leadName}
+              email={itinerary.email}
+              mobile={itinerary.mobile}
+              zohoLeadId={itinerary.zohoLeadId}
+              inquiryId={itinerary.inquiryId}
               numDays={numDays}
               numNights={numNights}
+              travelStartDate={travelStartDate}
+              travelEndDate={travelEndDate}
+              onOpenBookModal={isOnlineBookingEnabled ? handleOpenBookModal : undefined}
             />
           </div>
 
@@ -1042,6 +1279,95 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
         </section>
 
       </main>
+
+      {/* ========================================================= */}
+      {/* FLOATING STICKY BOTTOM BAR ("BOOK NOW") */}
+      {/* ========================================================= */}
+      {isOnlineBookingEnabled && (
+        <>
+          <aside aria-label="Book proposal action bar" className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-stone-200/90 shadow-[0_-8px_30px_rgba(0,0,0,0.12)] p-3 sm:p-4 print:hidden">
+            <div className="max-w-4xl mx-auto flex items-center justify-between gap-3 sm:gap-4">
+              <div className="min-w-0 space-y-0.5">
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex items-center gap-1 bg-amber-100 text-amber-900 text-[9px] sm:text-[10px] font-black uppercase px-2 py-0.5 rounded-full tracking-wider">
+                    <Parachute size={11} className="w-3 h-3 text-amber-900" /> Official Proposal
+                  </span>
+                  <span className="text-[10px] sm:text-xs text-stone-500 font-bold hidden sm:inline">
+                    Ref: {itinerary.id}
+                  </span>
+                </div>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-base sm:text-xl font-black text-stone-900 tracking-tight">
+                    ₹{totalQuotationAmount.toLocaleString('en-IN')}/-
+                  </span>
+                  <span className="text-[10px] sm:text-xs text-stone-500 font-medium hidden md:inline">
+                    Total for {(activeOption?.adults ?? itinerary.adults) || 2} Adults ({currentGstPct}% GST{currentTcsPct > 0 ? ` & ${currentTcsPct}% TCS` : ''} included)
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+                {isFullyPaid ? (
+                  <button
+                    type="button"
+                    onClick={() => handleOpenBookModal('full')}
+                    className="bg-emerald-700 hover:bg-emerald-800 text-white font-black text-xs sm:text-sm px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl shadow-md flex items-center gap-2 cursor-pointer transition hover:scale-105 active:scale-95"
+                  >
+                    <Check className="w-4 h-4 text-emerald-200" />
+                    <span>✓ Tour Confirmed (View Invoice)</span>
+                  </button>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => handleOpenBookModal('token')}
+                      className="hidden sm:inline-flex bg-stone-100 hover:bg-stone-200 text-stone-900 border border-stone-300 font-black text-xs px-3.5 py-2.5 rounded-xl transition cursor-pointer"
+                    >
+                      Pay 10% Token (₹{tenPercentAmount.toLocaleString('en-IN')})
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleOpenBookModal('token')}
+                      className="bg-gradient-to-r from-[#6E1E14] via-[#8A261A] to-[#6E1E14] hover:from-[#5C1810] hover:to-[#7A2016] text-white font-black text-xs sm:text-sm px-5 sm:px-7 py-2.5 sm:py-3 rounded-xl shadow-lg shadow-[#6E1E14]/30 flex items-center gap-2 cursor-pointer transition hover:scale-105 active:scale-95 uppercase tracking-wider ring-2 ring-amber-400/40"
+                    >
+                      <Lock className="w-3.5 h-3.5 text-amber-300" />
+                      <span>Book Now</span>
+                      <ArrowRight className="w-3.5 h-3.5 text-amber-300" />
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </aside>
+
+          {/* SECURE ONLINE BOOKING MODAL */}
+          <ItineraryBookModal
+            open={isBookModalOpen}
+            onOpenChange={setIsBookModalOpen}
+            itineraryId={itinerary.id}
+            destination={destination}
+            proposalTitle={itinerary.title}
+            perAdultPrice={currentPerAdultPrice || itinerary.perAdultPrice}
+            adults={(activeOption?.adults ?? itinerary.adults) || 2}
+            baseAmount={currentBaseAmount || itinerary.baseAmount}
+            gstPercentage={currentGstPct || itinerary.gstPercentage || 5}
+            tcsPercentage={currentTcsPct}
+            totalQuotationAmount={totalQuotationAmount}
+            advanceAmountPaid={alreadyPaid}
+            balancePendingAmount={remainingBalanceAmount}
+            initialPaymentType={selectedPaymentType}
+            initialLeadName={leadName}
+            initialEmail={itinerary.email}
+            initialPhone={itinerary.mobile}
+            zohoLeadId={itinerary.zohoLeadId}
+            inquiryId={itinerary.inquiryId}
+            numDays={numDays}
+            numNights={numNights}
+            travelStartDate={travelStartDate}
+            travelEndDate={travelEndDate}
+          />
+        </>
+      )}
 
       {/* Print Specific CSS */}
       <style>{`

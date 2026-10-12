@@ -245,6 +245,23 @@ export async function POST(req: NextRequest) {
       });
     }
 
+    // Determine Online Booking permission:
+    // Existing itineraries already sent to clients must NOT have Book Now unless explicitly asked in Zoho.
+    // Fresh new itineraries generated from today onwards get online booking enabled.
+    const rawOnlineBookingFlag = rawBody.Enable_Online_Booking ?? rawBody.Online_Booking ?? rawBody.enableOnlineBooking;
+    let enableOnlineBooking: boolean;
+
+    if (rawOnlineBookingFlag !== undefined) {
+      const s = String(rawOnlineBookingFlag).toLowerCase().trim();
+      enableOnlineBooking = s === 'true' || s === 'yes' || s === '1';
+    } else if (existingDoc) {
+      enableOnlineBooking = existingDoc.enableOnlineBooking ?? false;
+    } else {
+      enableOnlineBooking = true;
+    }
+
+    itineraryDoc.enableOnlineBooking = enableOnlineBooking;
+
     if (existingDoc) {
       targetId = existingDoc.id || existingDoc.slug;
       itineraryDoc.id = targetId;

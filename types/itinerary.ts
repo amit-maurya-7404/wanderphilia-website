@@ -131,6 +131,7 @@ export interface ItineraryDocument {
   galleryImages?: string[];
   status: 'active' | 'draft' | 'archived';
   rawZohoData?: Record<string, any>;
+  enableOnlineBooking?: boolean;
   createdAt: string | Date;
   updatedAt: string | Date;
 }

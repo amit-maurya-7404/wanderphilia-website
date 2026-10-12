@@ -1,6 +1,7 @@
 import { jsPDF } from 'jspdf';
 import path from 'path';
 import fs from 'fs';
+import { isInternationalTrip } from './ai-itinerary';
 
 export interface InvoiceData {
   invoiceNumber: string;
@@ -338,8 +339,9 @@ export function generateInvoicePDFDocument(data: InvoiceData): jsPDF {
 
   // Amount column Row 1
   const isPartial = data.balanceDue > 0;
+  const isIntl = isInternationalTrip(data.destination || '', '');
   const gstPct = data.gstPercentage !== undefined ? data.gstPercentage : 5;
-  const tcsPct = data.tcsPercentage !== undefined ? data.tcsPercentage : 2;
+  const tcsPct = isIntl ? (data.tcsPercentage !== undefined ? data.tcsPercentage : 2) : 0;
   const taxMultiplier = 1 + (gstPct + tcsPct) / 100;
 
   const currentPay = data.paidAmount || data.totalPackageAmount;
@@ -357,13 +359,16 @@ export function generateInvoicePDFDocument(data: InvoiceData): jsPDF {
     : Math.round(calculatedBase * (gstPct / 100));
   doc.text(calculatedGst.toLocaleString('en-IN'), rightEdge - 5, gstRowY, { align: 'right' });
 
-  // Table Row 3: 2% TCS
-  const tcsRowY = tableHeaderY + tableHeaderHeight + 36;
-  doc.text(`TCS (${tcsPct}%)`, frameX + 4, tcsRowY);
-  const calculatedTcs = data.tcsAmount !== undefined && !isPartial 
-    ? data.tcsAmount 
-    : (currentPay - calculatedBase - calculatedGst > 0 ? (currentPay - calculatedBase - calculatedGst) : Math.round(calculatedBase * (tcsPct / 100)));
-  doc.text(calculatedTcs.toLocaleString('en-IN'), rightEdge - 5, tcsRowY, { align: 'right' });
+  // Table Row 3: TCS (Applicable ONLY on International Trips)
+  let calculatedTcs = 0;
+  if (tcsPct > 0) {
+    const tcsRowY = tableHeaderY + tableHeaderHeight + 36;
+    doc.text(`TCS (${tcsPct}%)`, frameX + 4, tcsRowY);
+    calculatedTcs = data.tcsAmount !== undefined && !isPartial 
+      ? data.tcsAmount 
+      : (currentPay - calculatedBase - calculatedGst > 0 ? (currentPay - calculatedBase - calculatedGst) : Math.round(calculatedBase * (tcsPct / 100)));
+    doc.text(calculatedTcs.toLocaleString('en-IN'), rightEdge - 5, tcsRowY, { align: 'right' });
+  }
 
   // ==========================================
   // 6. TOTAL PAYABLE ROW

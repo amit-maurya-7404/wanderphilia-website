@@ -17,6 +17,7 @@ import {
 import { sendEmail, ADMIN_NOTIFICATION_EMAIL } from '@/lib/email';
 import { sendWhatsApp } from '@/lib/whatsapp';
 import { contactPhoneDisplay } from '@/lib/contact';
+import { isInternationalTrip } from '@/lib/ai-itinerary';
 
 export const dynamic = 'force-dynamic';
 
@@ -228,12 +229,19 @@ export async function POST(req: NextRequest) {
     const vehicleType = itinerary?.vehicleType || manualItinerary?.vehicleType || itinerary?.rawZohoData?.Vehicle_Type || 'Private AC Van with Dedicated Chauffeur & English-Speaking Guide';
     const roomCategory = itinerary?.roomCategory || (manualItinerary?.accommodations ? manualItinerary.accommodations[0]?.roomCategory : undefined) || itinerary?.rawZohoData?.Preferred_Room_Category || '5-Star Luxury Handpicked';
 
-    // Financial Breakdown
-    const baseAmount = manualItinerary?.baseAmount || (itinerary?.rawZohoData?.Base_Amount ? Number(itinerary.rawZohoData.Base_Amount) : Math.round(totalQuotationAmount / 1.07));
-    const gstPercentage = manualItinerary?.gstPercentage || 5;
-    const gstAmount = manualItinerary?.gstAmount || Math.round(baseAmount * (gstPercentage / 100));
-    const tcsPercentage = manualItinerary?.tcsPercentage || 2;
-    const tcsAmount = manualItinerary?.tcsAmount || Math.round(baseAmount * (tcsPercentage / 100));
+    // Financial Breakdown: Indian trips only have 5% GST (TCS = 0%). International trips have GST + TCS.
+    const isIntl = isInternationalTrip(destination, itinerary?.destinationType || itinerary?.rawZohoData?.Destination_Type || '');
+    const gstPercentage = manualItinerary?.gstPercentage !== undefined ? manualItinerary.gstPercentage : 5;
+    const tcsPercentage = isIntl
+      ? (manualItinerary?.tcsPercentage !== undefined ? manualItinerary.tcsPercentage : 2)
+      : 0;
+
+    const taxMultiplier = 1 + (gstPercentage + tcsPercentage) / 100;
+    const baseAmount = manualItinerary?.baseAmount || (itinerary?.rawZohoData?.Base_Amount ? Number(itinerary.rawZohoData.Base_Amount) : Math.round(totalQuotationAmount / taxMultiplier));
+    const gstAmount = manualItinerary?.gstAmount !== undefined ? manualItinerary.gstAmount : Math.round(baseAmount * (gstPercentage / 100));
+    const tcsAmount = isIntl && tcsPercentage > 0
+      ? (manualItinerary?.tcsAmount !== undefined ? manualItinerary.tcsAmount : Math.round(baseAmount * (tcsPercentage / 100)))
+      : 0;
     const perAdultPrice = manualItinerary?.perAdultPrice || Math.round(totalQuotationAmount / (adults || 4));
 
     // 4. Construct Invoice Data Structure
@@ -408,6 +416,10 @@ export async function POST(req: NextRequest) {
         const noteContent =
           `Online Payment of ₹${paidAmount.toLocaleString('en-IN')} received successfully via Razorpay.\n\n` +
           `• Client Name: ${customerName}\n` +
+          `• Client Email: ${customerEmail || 'N/A'}\n` +
+          `• Client Mobile: ${customerMobile || 'N/A'}\n` +
+          (customerPanNo ? `• PAN Card: ${customerPanNo}\n` : '') +
+          (customerGstNo ? `• GST Number: ${customerGstNo}\n` : '') +
           `• Number of Guests: ${numberOfGuests} (${adults} Adults${kids > 0 ? `, ${kids} Kids` : ', 0 Kids'})\n` +
           `• Duration: ${noOfNights} Nights / ${noOfDays} Days\n` +
           `• Travel Dates: ${travelStartDate} to ${travelEndDate}\n` +
@@ -611,6 +623,18 @@ export async function POST(req: NextRequest) {
           <td class="label">Transaction Date</td>
           <td class="value">${formattedDate}</td>
         </tr>
+        ${customerPanNo ? `
+        <tr>
+          <td class="label">PAN Card No.</td>
+          <td class="value" style="font-family: monospace;">${customerPanNo}</td>
+        </tr>
+        ` : ''}
+        ${customerGstNo ? `
+        <tr>
+          <td class="label">GST Number</td>
+          <td class="value" style="font-family: monospace;">${customerGstNo}</td>
+        </tr>
+        ` : ''}
       </table>
 
       ${nextPaymentDetailsHtml}

@@ -37,6 +37,7 @@ interface ItineraryPaymentSectionProps {
   numNights?: number;
   travelStartDate?: string;
   travelEndDate?: string;
+  onOpenBookModal?: (type?: 'token' | 'advance' | 'full') => void;
 }
 
 export function ItineraryPaymentSection({
@@ -62,6 +63,7 @@ export function ItineraryPaymentSection({
   numNights,
   travelStartDate,
   travelEndDate,
+  onOpenBookModal,
 }: ItineraryPaymentSectionProps) {
   const [copiedField, setCopiedField] = useState<string | null>(null);
 
@@ -79,6 +81,37 @@ export function ItineraryPaymentSection({
 
   return (
     <div className="space-y-6">
+
+      {/* ONLINE INSTANT PAYMENT BANNER */}
+      {onOpenBookModal && !isFullyPaid && (
+        <div className="bg-gradient-to-r from-stone-900 via-[#5C1810] to-[#3D0F0A] text-white p-4 sm:p-5 rounded-2xl shadow-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border border-amber-400/30">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="bg-amber-400 text-stone-950 text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full tracking-wider">
+                Instant Online Payment
+              </span>
+              <span className="text-[11px] text-amber-200/90 font-medium">
+                Official Razorpay Gateway
+              </span>
+            </div>
+            <h4 className="text-base sm:text-lg font-black text-white">
+              Pay Online & Get Instant Tax Invoice
+            </h4>
+            <p className="text-xs text-stone-300 max-w-lg leading-relaxed">
+              Choose 10% Token, 50% Advance, or Full Payment with UPI, Cards, or Netbanking. Your official GST invoice is generated and attached to your booking file immediately.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => onOpenBookModal('token')}
+            className="w-full sm:w-auto h-11 px-6 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-stone-950 font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg transition hover:scale-105 active:scale-95 cursor-pointer shrink-0"
+          >
+            <Lock className="w-3.5 h-3.5 text-stone-950" />
+            <span>Pay Online Now</span>
+          </button>
+        </div>
+      )}
       
       {/* DIRECT BANK ACCOUNT & UPI PAYMENT METHODS */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">

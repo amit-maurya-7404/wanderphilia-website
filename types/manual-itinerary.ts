@@ -141,4 +141,9 @@ export interface ManualItinerary {
   balancePendingAmount?: number;
   paymentStage?: 'unpaid' | 'token_paid' | 'advance_paid' | 'fully_paid';
   payments?: any[];
+  email?: string;
+  mobile?: string;
+  zohoLeadId?: string;
+  inquiryId?: string;
+  enableOnlineBooking?: boolean;
 }

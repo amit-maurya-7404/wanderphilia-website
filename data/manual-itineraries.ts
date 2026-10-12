@@ -1,6 +1,6 @@
 import { ManualItinerary, ManualAccommodation, ManualDayPlan } from '@/types/manual-itinerary';
 import { ItineraryDocument, ItineraryDayPlan } from '@/types/itinerary';
-import { getRouteTransitInfo } from '@/lib/ai-itinerary';
+import { getRouteTransitInfo, isInternationalTrip } from '@/lib/ai-itinerary';
 
 export const himachalExplorerManualItinerary: ManualItinerary = {
   id: 'himachal-explorer',
@@ -1575,55 +1575,6 @@ export const vietnamNaushadUpdatedManualItinerary: ManualItinerary = {
     { city: 'Ba Na Hills', nights: 1, hotelName: 'Mercure Danang French Village Bana Hills', roomCategory: 'Duplex Suite with 1 King Bed' },
     { city: 'South Phu Quoc', nights: 2, hotelName: 'La Fiesta Phu Quoc', roomCategory: 'Suite 1 King Bed' },
     { city: 'North Phu Quoc', nights: 2, hotelName: 'SOL By Melia Phu Quoc', roomCategory: 'Standard Ocean View' }
-  ],
-  options: [
-    {
-      id: 'option-1',
-      title: 'Option 1: 5★ Luxury Ocean View & Suites (Selected)',
-      subtitle: 'New World Hoiana (Superior Ocean View) • Mercure Bana Hills (Duplex Suite) • La Fiesta (Suite) • SOL Melia (Ocean View)',
-      badge: '5★ Luxury Upgrade',
-      isDefault: true,
-      perAdultPrice: 212400,
-      perKidPrice: 35200,
-      adults: 2,
-      kids: 2,
-      childPricingNote: '1 Child (5 Yrs with Extra Bed): ₹35,200 + 5% GST (₹1,760) + 2% TCS (₹704) = ₹37,664/- • 1 Child (2.5 Yrs): Complimentary / Free of charge',
-      baseAmount: 460000,
-      gstPercentage: 5,
-      gstAmount: 23000,
-      tcsPercentage: 2,
-      tcsAmount: 9200,
-      finalQuotationAmount: 492200,
-      accommodations: [
-        { city: 'Hoi An', nights: 2, hotelName: 'New World Hoiana Beach Resort', roomCategory: 'Superior Ocean View with King Bed' },
-        { city: 'Ba Na Hills', nights: 1, hotelName: 'Mercure Danang French Village Bana Hills', roomCategory: 'Duplex Suite with 1 King Bed' },
-        { city: 'South Phu Quoc', nights: 2, hotelName: 'La Fiesta Phu Quoc', roomCategory: 'Suite 1 King Bed' },
-        { city: 'North Phu Quoc', nights: 2, hotelName: 'SOL By Melia Phu Quoc', roomCategory: 'Standard Ocean View' }
-      ]
-    },
-    {
-      id: 'option-2',
-      title: 'Option 2: 4★ Deluxe Boutique Resort Package',
-      subtitle: 'Grandvrio City / Boutique Hoi An • Mercure Bana Hills (Standard) • Seashells Phu Quoc • Novotel Resort',
-      badge: '4★ Deluxe Value',
-      perAdultPrice: 185000,
-      perKidPrice: 28000,
-      adults: 2,
-      kids: 2,
-      childPricingNote: '1 Child (5 Yrs with Extra Bed): ₹28,000 + 5% GST (₹1,400) + 2% TCS (₹560) = ₹29,960/- • 1 Child (2.5 Yrs): Complimentary / Free of charge',
-      baseAmount: 398000,
-      gstPercentage: 5,
-      gstAmount: 19900,
-      tcsPercentage: 2,
-      tcsAmount: 7960,
-      finalQuotationAmount: 425860,
-      accommodations: [
-        { city: 'Hoi An', nights: 2, hotelName: 'Grandvrio City / Boutique Hoi An Resort', roomCategory: 'Deluxe Ocean Room' },
-        { city: 'Ba Na Hills', nights: 1, hotelName: 'Mercure Danang French Village Bana Hills', roomCategory: 'Standard King Room' },
-        { city: 'South Phu Quoc', nights: 2, hotelName: 'Seashells Phu Quoc Hotel & Spa', roomCategory: 'Classic Room' },
-        { city: 'North Phu Quoc', nights: 2, hotelName: 'Novotel Phu Quoc Resort', roomCategory: 'Superior Room' }
-      ]
-    }
   ],
   flightQuotations: [
     {
@@ -3524,6 +3475,7 @@ export function manualItineraryToDocument(manual: ManualItinerary): ItineraryDoc
     heroImage: manual.heroImage,
     galleryImages: manual.galleryImages,
     status: 'active',
+    enableOnlineBooking: Boolean(manual.enableOnlineBooking),
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   };
@@ -4001,9 +3953,9 @@ export function itineraryDocumentToManualItinerary(itinerary: ItineraryDocument)
     (finalQuotationAmount ? Math.max(0, finalQuotationAmount - advanceAmountPaid) : undefined)
   );
 
-  const isIntl = (itinerary.destinationType || itinerary.rawZohoData?.Destination_Type || '').toLowerCase().includes('international');
+  const isIntl = isInternationalTrip(destination, itinerary.destinationType || itinerary.rawZohoData?.Destination_Type || '');
   const gstPercentage = itinerary.gstPercentage !== undefined ? itinerary.gstPercentage : 5;
-  const tcsPercentage = itinerary.tcsPercentage !== undefined ? itinerary.tcsPercentage : (isIntl ? 2 : 0);
+  const tcsPercentage = isIntl ? (itinerary.tcsPercentage !== undefined ? itinerary.tcsPercentage : 2) : 0;
 
   let baseAmount = itinerary.baseAmount ?? itinerary.rawZohoData?.Base_Amount;
   if (baseAmount === undefined && finalQuotationAmount) {
@@ -4264,6 +4216,34 @@ export function itineraryDocumentToManualItinerary(itinerary: ItineraryDocument)
     advanceAmountPaid,
     balancePendingAmount,
     paymentStage: itinerary.paymentStage || (advanceAmountPaid >= (finalQuotationAmount || 1) ? 'fully_paid' : (advanceAmountPaid > 0 ? 'token_paid' : 'unpaid')),
-    payments: itinerary.payments || []
+    payments: itinerary.payments || [],
+    email: itinerary.leadDetails?.email || rawLead.Email || undefined,
+    mobile: itinerary.leadDetails?.mobile || rawLead.Mobile || rawLead.Phone || undefined,
+    zohoLeadId: rawLead.id ? String(rawLead.id) : (itinerary.rawZohoData?.id ? String(itinerary.rawZohoData.id) : undefined),
+    inquiryId: itinerary.inquiryId || rawLead.Inquiry_ID || undefined,
+    enableOnlineBooking: (() => {
+      // Existing itineraries created before this feature rollout were already sent to clients without online booking.
+      // Therefore, existing/legacy itineraries must NOT have Book Now or online payment.
+      // All existing 40 itineraries in DB were created on or before 2026-10-11T12:40:32Z.
+      const FEATURE_ROLLOUT_TIMESTAMP = new Date('2026-10-11T21:00:00.000Z').getTime();
+      const docCreatedAt = itinerary.createdAt ? new Date(itinerary.createdAt).getTime() : 0;
+      const isCreatedBeforeRollout = docCreatedAt > 0 && docCreatedAt < FEATURE_ROLLOUT_TIMESTAMP;
+
+      if (typeof itinerary.enableOnlineBooking === 'boolean') {
+        return itinerary.enableOnlineBooking;
+      }
+      if (rawLead.Enable_Online_Booking !== undefined || itinerary.rawZohoData?.Enable_Online_Booking !== undefined) {
+        const val = String(rawLead.Enable_Online_Booking ?? itinerary.rawZohoData?.Enable_Online_Booking).toLowerCase().trim();
+        return val === 'true' || val === 'yes' || val === '1';
+      }
+      if (rawLead.Online_Booking !== undefined || itinerary.rawZohoData?.Online_Booking !== undefined) {
+        const val = String(rawLead.Online_Booking ?? itinerary.rawZohoData?.Online_Booking).toLowerCase().trim();
+        return val === 'true' || val === 'yes' || val === '1';
+      }
+      // If not explicitly set:
+      // If created before cutoff (legacy/already sent to clients), strictly false.
+      // If created on or after cutoff (fresh itinerary), true.
+      return !isCreatedBeforeRollout && docCreatedAt >= FEATURE_ROLLOUT_TIMESTAMP;
+    })()
   };
 }
