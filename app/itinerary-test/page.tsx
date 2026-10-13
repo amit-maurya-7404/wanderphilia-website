@@ -5,7 +5,7 @@ import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Loader2, CheckCircle2, ExternalLink, Download, Search, Hotel, Calendar, Users, MapPin } from 'lucide-react';
+import { Loader2, CheckCircle2, ExternalLink, Download, Search, Hotel, Calendar, Users, MapPin, Percent, TrendingUp, IndianRupee } from 'lucide-react';
 import { Parachute } from '@/components/parachute-icon';
 
 export default function ItineraryTestPage() {
@@ -17,6 +17,10 @@ export default function ItineraryTestPage() {
 
   const [fetchingLead, setFetchingLead] = useState(false);
   const [fetchSuccess, setFetchSuccess] = useState(false);
+
+  // Base quotation from Zoho and manual margin percentage state
+  const [baseQuotation, setBaseQuotation] = useState<string>('');
+  const [marginPercent, setMarginPercent] = useState<string>('');
 
   const [formData, setFormData] = useState({
     First_Name: '',
@@ -99,6 +103,64 @@ export default function ItineraryTestPage() {
     }
   };
 
+  // Margin & Quotation calculation handlers
+  const handleMarginChange = (val: string) => {
+    setMarginPercent(val);
+    const effectiveBase = Number(baseQuotation) || (Number(formData.Final_Quotation_Amount) ? Number(formData.Final_Quotation_Amount) : 0);
+
+    if (!baseQuotation && formData.Final_Quotation_Amount) {
+      setBaseQuotation(formData.Final_Quotation_Amount);
+    }
+
+    if (!val || isNaN(Number(val))) {
+      if (baseQuotation) {
+        setFormData(prev => ({ ...prev, Final_Quotation_Amount: baseQuotation }));
+      }
+      return;
+    }
+
+    const pct = Number(val);
+    if (effectiveBase > 0) {
+      const finalAmount = Math.round(effectiveBase * (1 + pct / 100));
+      setFormData(prev => ({ ...prev, Final_Quotation_Amount: String(finalAmount) }));
+    }
+  };
+
+  const handleBaseQuotationChange = (val: string) => {
+    setBaseQuotation(val);
+    const baseNum = Number(val) || 0;
+    const pct = Number(marginPercent) || 0;
+
+    if (baseNum > 0 && pct > 0) {
+      const finalAmount = Math.round(baseNum * (1 + pct / 100));
+      setFormData(prev => ({ ...prev, Final_Quotation_Amount: String(finalAmount) }));
+    } else {
+      setFormData(prev => ({ ...prev, Final_Quotation_Amount: val }));
+    }
+  };
+
+  const handleFinalQuotationChange = (val: string) => {
+    setFormData(prev => ({ ...prev, Final_Quotation_Amount: val }));
+    const finalNum = Number(val) || 0;
+    const baseNum = Number(baseQuotation) || 0;
+
+    if (baseNum > 0 && finalNum > 0) {
+      if (finalNum > baseNum) {
+        const pct = (((finalNum - baseNum) / baseNum) * 100).toFixed(1);
+        setMarginPercent(pct.endsWith('.0') ? pct.slice(0, -2) : pct);
+      } else if (finalNum === baseNum) {
+        setMarginPercent('0');
+      }
+    } else if (!baseQuotation && finalNum > 0) {
+      setBaseQuotation(val);
+      setMarginPercent('0');
+    }
+  };
+
+  const applyQuickMargin = (pct: number) => {
+    handleMarginChange(String(pct));
+  };
+
   // Fetch lead directly from Zoho CRM API
   const handleFetchFromZoho = async () => {
     if (!leadQuery.trim()) return;
@@ -155,6 +217,20 @@ export default function ItineraryTestPage() {
       const totalDays = lead.noOfDays || (lead.dayActivities?.length || 0);
       const totalNights = lead.noOfNights || (totalDays > 1 ? totalDays - 1 : 0);
 
+      const rawZohoQuote = lead.finalQuotationAmount ? String(lead.finalQuotationAmount) : '';
+      setBaseQuotation(rawZohoQuote);
+
+      // Determine margin: if Zoho CRM has margin field use that, else use existing entered margin
+      const effectiveMargin = lead.marginPercentage !== undefined ? String(lead.marginPercentage) : marginPercent;
+      if (lead.marginPercentage !== undefined && !marginPercent) {
+        setMarginPercent(effectiveMargin);
+      }
+
+      let calculatedFinal = rawZohoQuote;
+      if (rawZohoQuote && effectiveMargin && !isNaN(Number(effectiveMargin)) && Number(effectiveMargin) > 0) {
+        calculatedFinal = String(Math.round(Number(rawZohoQuote) * (1 + Number(effectiveMargin) / 100)));
+      }
+
       setFormData({
         First_Name: lead.firstName || '',
         Last_Name: lead.lastName || '',
@@ -175,7 +251,7 @@ export default function ItineraryTestPage() {
         Hotel_Name: hotelNames,
         Room_Category: lead.preferredRoomCategory || '',
         Meal_Plan: lead.mealPlan || lead.rawLeadData?.Meal_Plan || '',
-        Final_Quotation_Amount: lead.finalQuotationAmount ? String(lead.finalQuotationAmount) : '',
+        Final_Quotation_Amount: calculatedFinal,
         Costing_Request_Status: lead.costingRequestStatus || '',
         Special_Requirements: experiencesSummary || lead.rawLeadData?.Specific_Requirements || lead.rawLeadData?.Description || ''
       });
@@ -230,7 +306,10 @@ export default function ItineraryTestPage() {
         preferredRoomCategory: formData.Room_Category,
         Meal_Plan: formData.Meal_Plan,
         mealPlan: formData.Meal_Plan,
-        Final_Quotation_Amount: formData.Final_Quotation_Amount ? Number(formData.Final_Quotation_Amount) : undefined
+        Final_Quotation_Amount: formData.Final_Quotation_Amount ? Number(formData.Final_Quotation_Amount) : undefined,
+        baseQuotationAmount: baseQuotation ? Number(baseQuotation) : undefined,
+        marginPercentage: marginPercent ? Number(marginPercent) : 0,
+        marginAmount: ((Number(formData.Final_Quotation_Amount) || 0) - (Number(baseQuotation) || 0)) || 0
       };
 
       const response = await fetch('/api/webhook/zoho', {
@@ -260,6 +339,13 @@ export default function ItineraryTestPage() {
   };
 
   const isSelectedOptionCreated = Boolean(existingOptions.find(o => o.optionNumber === selectedOptionNumber));
+
+  const baseNum = Number(baseQuotation) || 0;
+  const finalNum = Number(formData.Final_Quotation_Amount) || 0;
+  const marginNum = Number(marginPercent) || 0;
+  const marginAmount = baseNum > 0 && marginNum > 0
+    ? Math.round(baseNum * (marginNum / 100))
+    : (finalNum > baseNum ? finalNum - baseNum : 0);
 
   return (
     <div className="min-h-screen bg-[#FDFBF7] text-slate-900 flex flex-col justify-between">
@@ -431,11 +517,17 @@ export default function ItineraryTestPage() {
           </div>
 
           {rawLeadFull && (
-            <div className="pt-2 text-xs text-slate-300 border-t border-white/10 flex flex-wrap gap-4">
+            <div className="pt-2 text-xs text-slate-300 border-t border-white/10 flex flex-wrap items-center gap-4">
               <span><strong>Lead ID:</strong> {rawLeadFull.leadId}</span>
               <span><strong>Hotels:</strong> {rawLeadFull.hotels?.length || 0} Stays</span>
               <span><strong>Activities:</strong> {rawLeadFull.dayActivities?.length || 0} Days</span>
-              <span><strong>Quotation:</strong> ₹{rawLeadFull.finalQuotationAmount?.toLocaleString('en-IN') || 'Pending'}</span>
+              <span><strong>Zoho Quote:</strong> ₹{rawLeadFull.finalQuotationAmount?.toLocaleString('en-IN') || 'Pending'}</span>
+              {marginPercent && Number(marginPercent) > 0 && (
+                <span className="text-emerald-300 font-semibold bg-emerald-950/70 border border-emerald-500/50 px-2 py-0.5 rounded-lg flex items-center gap-1">
+                  <TrendingUp className="w-3 h-3 text-emerald-400" />
+                  Final ({marginPercent}% Margin): ₹{Number(formData.Final_Quotation_Amount || 0).toLocaleString('en-IN')}
+                </span>
+              )}
               <span><strong>Active Target:</strong> <span className="text-amber-300 font-bold font-mono">Option {selectedOptionNumber}</span></span>
             </div>
           )}
@@ -642,11 +734,12 @@ export default function ItineraryTestPage() {
             </div>
 
             {/* Section C: Stay & Accommodation Details */}
-            <div className="space-y-3 pt-4 border-t border-slate-100">
+            <div className="space-y-4 pt-4 border-t border-slate-100">
               <h3 className="text-xs font-black uppercase tracking-wider text-slate-800 flex items-center gap-1.5">
                 <Hotel className="w-3.5 h-3.5 text-orange-600" /> 3. Stay & Accommodation Details (Zoho Leads)
               </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="sm:col-span-2">
                   <label className="text-[10px] uppercase font-bold text-slate-500 block mb-1">
                     Hotel Stays (Hotel_1..4 + Nights)
@@ -670,30 +763,139 @@ export default function ItineraryTestPage() {
                     className="rounded-xl border-slate-200 font-semibold"
                   />
                 </div>
+              </div>
 
-                <div>
-                  <label className="text-[10px] uppercase font-bold text-slate-500 block mb-1">
-                    Meal Plan
-                  </label>
-                  <Input
-                    value={formData.Meal_Plan}
-                    onChange={(e) => setFormData({ ...formData, Meal_Plan: e.target.value })}
-                    placeholder="e.g. Breakfast & Dinner (MAP)"
-                    className="rounded-xl border-slate-200 font-semibold"
-                  />
+              {/* Quotation & Margin Control Suite */}
+              <div className="bg-slate-50/80 border border-slate-200/90 rounded-2xl p-4 sm:p-5 space-y-3.5 shadow-sm">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200/60 pb-2.5">
+                  <div className="text-[11px] font-black uppercase tracking-wider text-slate-800 flex items-center gap-1.5">
+                    <IndianRupee className="w-3.5 h-3.5 text-emerald-600" />
+                    Quotation & Itinerary Margin Pricing
+                  </div>
+                  {(baseNum > 0 || finalNum > 0) && (
+                    <div className="flex items-center flex-wrap gap-1 text-[11px] text-slate-600">
+                      <span className="font-semibold text-slate-500">Quick Margin:</span>
+                      {[5, 10, 12, 15, 20].map((pct) => (
+                        <button
+                          key={pct}
+                          type="button"
+                          onClick={() => applyQuickMargin(pct)}
+                          className={`px-2 py-0.5 rounded-md text-[10px] font-extrabold transition cursor-pointer border ${
+                            marginPercent === String(pct)
+                              ? 'bg-orange-500 text-white border-orange-600 shadow-sm'
+                              : 'bg-white text-slate-700 hover:bg-orange-50 hover:border-orange-300 border-slate-200'
+                          }`}
+                        >
+                          +{pct}%
+                        </button>
+                      ))}
+                      {marginPercent && Number(marginPercent) > 0 && (
+                        <button
+                          type="button"
+                          onClick={() => handleMarginChange('0')}
+                          className="px-1.5 py-0.5 rounded-md text-[10px] font-bold text-slate-400 hover:text-red-600 transition cursor-pointer"
+                          title="Reset Margin to 0%"
+                        >
+                          ✕ Reset
+                        </button>
+                      )}
+                    </div>
+                  )}
                 </div>
 
-                <div>
-                  <label className="text-[10px] uppercase font-bold text-slate-500 block mb-1">
-                    Final Quotation Amount (₹)
-                  </label>
-                  <Input
-                    value={formData.Final_Quotation_Amount}
-                    onChange={(e) => setFormData({ ...formData, Final_Quotation_Amount: e.target.value })}
-                    placeholder="e.g. 45000"
-                    className="rounded-xl border-slate-200 font-mono font-bold text-emerald-700"
-                  />
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3.5 items-start">
+                  <div>
+                    <label className="text-[10px] uppercase font-bold text-slate-500 block mb-1">
+                      Meal Plan
+                    </label>
+                    <Input
+                      value={formData.Meal_Plan}
+                      onChange={(e) => setFormData({ ...formData, Meal_Plan: e.target.value })}
+                      placeholder="e.g. Breakfast & Dinner (MAP)"
+                      className="rounded-xl border-slate-200 bg-white font-semibold"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-[10px] uppercase font-bold text-slate-600 block mb-1 flex items-center justify-between">
+                      <span>Zoho CRM Quotation (₹)</span>
+                      <span className="text-[9px] text-slate-400 font-normal">Base Cost</span>
+                    </label>
+                    <Input
+                      type="number"
+                      value={baseQuotation}
+                      onChange={(e) => handleBaseQuotationChange(e.target.value)}
+                      placeholder="e.g. 45000"
+                      className="rounded-xl border-slate-300 bg-white font-mono font-bold text-slate-800"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-[10px] uppercase font-bold text-slate-600 block mb-1 flex items-center justify-between">
+                      <span className="flex items-center gap-1 text-orange-700 font-extrabold">
+                        <Percent className="w-3 h-3 text-orange-600" /> Margin (%)
+                      </span>
+                      {marginNum > 0 && (
+                        <span className="text-[10px] font-black text-orange-600">
+                          +{marginNum}%
+                        </span>
+                      )}
+                    </label>
+                    <div className="relative">
+                      <Input
+                        type="number"
+                        step="0.1"
+                        min="0"
+                        value={marginPercent}
+                        onChange={(e) => handleMarginChange(e.target.value)}
+                        placeholder="e.g. 15"
+                        className="rounded-xl border-orange-300 focus:border-orange-500 bg-orange-50/50 font-mono font-black text-orange-800 pr-8"
+                      />
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-orange-500 font-black text-xs pointer-events-none">
+                        %
+                      </span>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-[10px] uppercase font-bold text-emerald-800 block mb-1 flex items-center justify-between">
+                      <span className="font-extrabold">Final Quotation (₹)</span>
+                      {marginAmount > 0 && (
+                        <span className="text-[10px] font-bold text-emerald-700">
+                          (+₹{marginAmount.toLocaleString('en-IN')})
+                        </span>
+                      )}
+                    </label>
+                    <Input
+                      value={formData.Final_Quotation_Amount}
+                      onChange={(e) => handleFinalQuotationChange(e.target.value)}
+                      placeholder="e.g. 51750"
+                      className="rounded-xl border-emerald-400 focus:border-emerald-600 bg-emerald-50/60 font-mono font-black text-emerald-800 text-sm"
+                    />
+                  </div>
                 </div>
+
+                {/* Live Calculation Explainer */}
+                {(baseNum > 0 || finalNum > 0) && (
+                  <div className="pt-1 text-[11px] text-slate-600 flex flex-wrap items-center gap-2">
+                    {marginNum > 0 && baseNum > 0 ? (
+                      <span className="inline-flex items-center gap-1.5 bg-emerald-100/80 border border-emerald-300 text-emerald-900 font-medium px-3 py-1 rounded-xl shadow-xs">
+                        <TrendingUp className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                        <span>
+                          Base Cost: <strong className="font-mono">₹{baseNum.toLocaleString('en-IN')}</strong> +{' '}
+                          <strong className="text-orange-700">{marginNum}% Margin</strong> (
+                          <strong className="font-mono text-emerald-700">+₹{marginAmount.toLocaleString('en-IN')}</strong>) ={' '}
+                          Final Quotation for Traveler:{' '}
+                          <strong className="font-mono text-emerald-900 text-xs">₹{finalNum.toLocaleString('en-IN')}</strong>
+                        </span>
+                      </span>
+                    ) : (
+                      <span className="text-slate-500 text-[10px]">
+                        ℹ️ Base Zoho quotation is <strong>₹{(baseNum || finalNum).toLocaleString('en-IN')}</strong>. Enter margin % above to manually add your profit markup on this itinerary.
+                      </span>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
 

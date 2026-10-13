@@ -47,6 +47,7 @@ export interface NormalizedZohoLead {
   tripType: string;
   travelStyle: string;
   finalQuotationAmount?: number;
+  marginPercentage?: number;
   perAdultPrice?: number;
   perKidPrice?: number;
   adults?: number;
@@ -242,6 +243,7 @@ export async function fetchZohoLeadById(leadIdOrQuery: string): Promise<Normaliz
     tripType: toSafeString(rawLead.Trip_Type, 'Customised Trip'),
     travelStyle: toSafeString(rawLead.Travel_Style, 'Family Trip'),
     finalQuotationAmount: rawLead.Final_Quotation_Amount ? Number(rawLead.Final_Quotation_Amount) : (rawLead.Total_Package_Cost ? Number(rawLead.Total_Package_Cost) : (rawLead.Quotation_Amount ? Number(rawLead.Quotation_Amount) : (rawLead.Expected_Revenue ? Number(rawLead.Expected_Revenue) : (rawLead.Amount ? Number(rawLead.Amount) : undefined)))),
+    marginPercentage: rawLead.Margin_Percentage !== undefined ? Number(rawLead.Margin_Percentage) : (rawLead.Margin !== undefined ? Number(rawLead.Margin) : (rawLead.Markup !== undefined ? Number(rawLead.Markup) : undefined)),
     perAdultPrice: rawLead.Per_Adult_Price ? Number(rawLead.Per_Adult_Price) : (rawLead.Per_Adult_Cost ? Number(rawLead.Per_Adult_Cost) : (rawLead.Price_Per_Adult ? Number(rawLead.Price_Per_Adult) : (rawLead.Adult_Price ? Number(rawLead.Adult_Price) : undefined))),
     perKidPrice: rawLead.Per_Kid_Price ? Number(rawLead.Per_Kid_Price) : (rawLead.Per_Child_Price ? Number(rawLead.Per_Child_Price) : (rawLead.Price_Per_Kid ? Number(rawLead.Price_Per_Kid) : (rawLead.Child_Price ? Number(rawLead.Child_Price) : undefined))),
     advanceAmountPaid: rawLead.Advance_Amount_Paid ? Number(rawLead.Advance_Amount_Paid) : undefined,

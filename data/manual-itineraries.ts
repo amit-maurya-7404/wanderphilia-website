@@ -4412,6 +4412,8 @@ export function itineraryDocumentToManualItinerary(itinerary: ItineraryDocument)
     exclusions: displayExclusions,
     thingsToCarry,
     finalQuotationAmount,
+    baseQuotationAmount: itinerary.baseQuotationAmount ?? itinerary.rawZohoData?.baseQuotationAmount,
+    marginPercentage: itinerary.marginPercentage ?? itinerary.rawZohoData?.marginPercentage,
     perAdultPrice,
     perKidPrice,
     adults,

@@ -37,6 +37,8 @@ export interface ItineraryLeadDetails {
   sharingType?: string;
   budget?: string | number;
   finalQuotationAmount?: number;
+  baseQuotationAmount?: number;
+  marginPercentage?: number;
   perAdultPrice?: number;
   perKidPrice?: number;
   adults?: number;
@@ -104,6 +106,8 @@ export interface ItineraryDocument {
   roomCategory?: string;
   mealPlan?: string;
   finalQuotationAmount?: number;
+  baseQuotationAmount?: number;
+  marginPercentage?: number;
   perAdultPrice?: number;
   perKidPrice?: number;
   adults?: number;

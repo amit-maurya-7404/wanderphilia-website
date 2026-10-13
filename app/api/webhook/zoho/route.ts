@@ -113,6 +113,13 @@ export async function POST(req: NextRequest) {
     // 4. Resolve Curated Destination Images
     const images = getLuxuryImagesForDestination(details.destination || aiContent.destination);
 
+    const marginPercentage = rawBody.marginPercentage !== undefined && rawBody.marginPercentage !== '' && !isNaN(Number(rawBody.marginPercentage))
+      ? Number(rawBody.marginPercentage)
+      : undefined;
+    const baseQuotationAmount = rawBody.baseQuotationAmount !== undefined && rawBody.baseQuotationAmount !== '' && !isNaN(Number(rawBody.baseQuotationAmount))
+      ? Number(rawBody.baseQuotationAmount)
+      : undefined;
+
     // 5. Assemble Itinerary Document for MongoDB
     const itineraryDoc: ItineraryDocument = {
       id: uniqueId,
@@ -131,6 +138,8 @@ export async function POST(req: NextRequest) {
       roomCategory: details.roomCategory || aiContent.roomCategory,
       mealPlan: details.mealPlan || aiContent.mealPlan,
       finalQuotationAmount: aiContent.finalQuotationAmount,
+      baseQuotationAmount,
+      marginPercentage,
       perAdultPrice: aiContent.perAdultPrice,
       perKidPrice: aiContent.perKidPrice,
       adults: aiContent.adults,
@@ -158,6 +167,8 @@ export async function POST(req: NextRequest) {
         travelStyle: details.travelStyle,
         tripType: details.tripType,
         finalQuotationAmount: aiContent.finalQuotationAmount,
+        baseQuotationAmount,
+        marginPercentage,
         perAdultPrice: aiContent.perAdultPrice,
         perKidPrice: aiContent.perKidPrice,
         adults: aiContent.adults,
@@ -196,6 +207,8 @@ export async function POST(req: NextRequest) {
         ...(rawBody.rawLeadData || {}),
         Final_Quotation_Amount: aiContent.finalQuotationAmount,
         finalQuotationAmount: aiContent.finalQuotationAmount,
+        baseQuotationAmount,
+        marginPercentage,
         Per_Adult_Price: aiContent.perAdultPrice,
         perAdultPrice: aiContent.perAdultPrice,
         Per_Kid_Price: aiContent.perKidPrice,

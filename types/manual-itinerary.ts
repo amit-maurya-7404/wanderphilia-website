@@ -75,6 +75,8 @@ export interface ManualItineraryOption {
   gstAmount?: number;
   tcsAmount?: number;
   finalQuotationAmount?: number;
+  baseQuotationAmount?: number;
+  marginPercentage?: number;
   childPricingNote?: string;
   kidsDetails?: string;
 
@@ -126,6 +128,8 @@ export interface ManualItinerary {
   exclusions: string[];
   thingsToCarry?: string[];
   finalQuotationAmount?: number;
+  baseQuotationAmount?: number;
+  marginPercentage?: number;
   perAdultPrice?: number;
   perKidPrice?: number;
   adults?: number;

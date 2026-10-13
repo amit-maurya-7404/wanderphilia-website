@@ -925,7 +925,7 @@ export function ItineraryBookModal({
                   <div>
                     <label className="block text-[10px] font-extrabold text-stone-800 uppercase mb-1 flex items-center justify-between">
                       <span>PAN Card Number *</span>
-                      <span className="text-[10px] text-stone-500 font-semibold">{effectiveTcsPct > 0 ? 'TCS & Invoicing' : 'Official Invoicing'}</span>
+                      <span className="text-[10px] text-stone-500 font-semibold">{isIntl ? 'TCS & Invoicing' : 'Official Invoicing'}</span>
                     </label>
                     <Input
                       type="text"
@@ -943,7 +943,7 @@ export function ItineraryBookModal({
                       <p className="text-[10px] text-red-600 font-semibold mt-1">{panError}</p>
                     ) : (
                       <p className="text-[9.5px] text-stone-500 mt-1">
-                        {effectiveTcsPct > 0
+                        {isIntl
                           ? '10-digit PAN required for International travel TCS compliance & formal tax invoice.'
                           : '10-digit PAN for official tax invoice and GST compliance records.'}
                       </p>
