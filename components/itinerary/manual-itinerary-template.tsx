@@ -1347,7 +1347,7 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                     ₹{totalQuotationAmount.toLocaleString('en-IN')}/-
                   </span>
                   <span className="text-[10px] sm:text-xs text-stone-500 font-medium hidden md:inline">
-                    Total for {(activeOption?.adults ?? itinerary.adults) || 2} Adults ({currentGstPct}% GST{currentTcsPct > 0 ? ` & ${currentTcsPct}% TCS` : ''} included)
+                    Total for {(activeOption?.kids ?? itinerary.kids) ? `${(activeOption?.adults ?? itinerary.adults) || 2} Adults + ${activeOption?.kids ?? itinerary.kids} Kids` : `${(activeOption?.adults ?? itinerary.adults) || 2} Adults`} ({currentGstPct}% GST{currentTcsPct > 0 ? ` & ${currentTcsPct}% TCS` : ''} included)
                   </span>
                 </div>
               </div>
