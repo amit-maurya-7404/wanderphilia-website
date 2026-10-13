@@ -105,13 +105,13 @@ export async function POST(req: NextRequest) {
     }
 
     const razorpayKeyId =
-      process.env.RAZORPAY_ITINERARY_KEY_ID ||
-      process.env.NEXT_PUBLIC_RAZORPAY_ITINERARY_KEY_ID ||
       process.env.RAZORPAY_KEY_ID ||
-      process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
+      process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID ||
+      process.env.RAZORPAY_ITINERARY_KEY_ID ||
+      process.env.NEXT_PUBLIC_RAZORPAY_ITINERARY_KEY_ID;
     const razorpayKeySecret =
-      process.env.RAZORPAY_ITINERARY_KEY_SECRET ||
-      process.env.RAZORPAY_KEY_SECRET;
+      process.env.RAZORPAY_KEY_SECRET ||
+      process.env.RAZORPAY_ITINERARY_KEY_SECRET;
 
     if (!razorpayKeyId || !razorpayKeySecret) {
       console.error('Razorpay keys are missing from environment variables.');

@@ -3234,7 +3234,7 @@ export const alibaugCorporateEscapeManualItinerary: ManualItinerary = {
   numNights: 1,
   numDays: 2,
   dates: '17th Nov (Sat) – 18th Nov (Sun)',
-  route: 'Surfing Tales, Revdanda Beach, Alibaug',
+  route: 'Private Revdanda Beach, Alibaug',
   routeSummary: '1N Beachfront Camping & Surfing at Revdanda Beach, Alibaug',
   destination: 'Alibaug, Maharashtra',
   travelStyle: 'Corporate Offsite & Team Bonding Escape',
@@ -3246,8 +3246,8 @@ export const alibaugCorporateEscapeManualItinerary: ManualItinerary = {
   galleryImages: [
     '/images/alibaug/hero.jpg',
     '/images/alibaug/beach-tents.jpg',
-    '/images/alibaug/sundowner.jpg',
-    '/images/alibaug/team-games.jpg',
+    '/images/alibaug/beach-camping-sunset.jpg',
+    '/images/alibaug/beach-cinema-night.jpg',
     '/images/alibaug/dj-night.jpg',
     '/images/alibaug/bonfire-music.jpg',
     '/images/alibaug/dinner-stars.jpg',
@@ -3283,7 +3283,7 @@ export const alibaugCorporateEscapeManualItinerary: ManualItinerary = {
     {
       city: 'Alibaug (Revdanda Beach)',
       nights: 1,
-      hotelName: 'Surfing Tales Beach Campsite',
+      hotelName: 'Private Revdanda Beach Campsite',
       roomCategory: 'Beachfront Camping Tents with Bedding, Pillows & Fleece Blankets'
     }
   ],
@@ -3293,11 +3293,11 @@ export const alibaugCorporateEscapeManualItinerary: ManualItinerary = {
       day: 1,
       date: '17 Nov (Sat)',
       title: 'Day 1 | 17 Nov (Sat) Check In, Connect & Celebrate',
-      route: 'Arrival at Surfing Tales, Revdanda Beach, Alibaug',
+      route: 'Arrival at Private Revdanda Beach, Alibaug',
       durationNote: 'Check-in from 4:00 PM',
       intro: 'An experience designed to bring people closer beyond the workplace — where the evening unfolds through sundowners, team challenges, music, great food, a bonfire, and a movie under the stars.',
       timeline: [
-        '**4:00 PM | Welcome to the Coast**: Arrive at Surfing Tales, Revdanda, and check into your camping tents. Settle in, freshen up, and soak in the relaxed coastal atmosphere with welcome refreshments and evening snacks.',
+        '**4:00 PM | Welcome to the Coast**: Arrive at Private Revdanda Beach, and check into your camping tents. Settle in, freshen up, and soak in the relaxed coastal atmosphere with welcome refreshments and evening snacks.',
         '**5:00 PM | The Sundowner Social**: Ease into the evening with music, conversations, refreshing drinks, and sunset moments. A chance for everyone to switch off from work mode and get into holiday mode.',
         '**5:45 PM | Team Play — Let the Games Begin!**: Get everyone involved in an energetic session of icebreakers, team challenges, fun competitions, and group games. Split into teams, bring out the competitive spirit, and create memorable team moments.',
         '**7:00 PM | Coastal Beats — DJ Session**: Turn up the energy with a lively DJ session. Let the team hit the dance floor, unwind, and celebrate together in a fun, informal setting.',
@@ -3319,7 +3319,7 @@ export const alibaugCorporateEscapeManualItinerary: ManualItinerary = {
           type: 'celebration'
         }
       ],
-      stayLocation: 'Surfing Tales Beach Campsite, Revdanda, Alibaug',
+      stayLocation: 'Private Revdanda Beach Campsite, Alibaug',
       image: '/images/alibaug/hero.jpg',
       meals: 'Welcome Refreshments, Evening Snacks & Dinner Buffet'
     },
@@ -3357,7 +3357,7 @@ export const alibaugCorporateEscapeManualItinerary: ManualItinerary = {
     }
   ],
   inclusions: [
-    'One-night camping accommodation in beachfront tents with comfortable bedding, pillows, and blankets at Surfing Tales, Revdanda.',
+    'One-night camping accommodation in beachfront tents with comfortable bedding, pillows, and blankets at Private Revdanda Beach, Alibaug.',
     'Evening snacks and high tea welcome refreshments on Day 1.',
     'Hearty buffet Dinner under the stars (Veg & Non-Veg options).',
     'Morning Breakfast with freshly brewed tea and coffee on Day 2.',
@@ -3366,13 +3366,13 @@ export const alibaugCorporateEscapeManualItinerary: ManualItinerary = {
     'Intimate beach bonfire and acoustic live music sing-along session.',
     'Open-air "Cinema Beneath the Stars" movie screening setup with ambient seating.',
     'Clean and well-maintained western washrooms, changing rooms, and shower facilities.',
-    'First-aid medical kit and dedicated Wanderphilia on-ground support.'
+    'First-aid medical kit and dedicated Wanderphilia on-ground support.',
+    '5% Goods and Services Tax (GST) included.'
   ],
   exclusions: [
     'Optional 90-minute professional surfing experience (₹1,500 per person add-on).',
     'Travel / transportation to and from Revdanda, Alibaug (AC bus / tempo traveller / ferry tickets can be arranged on request).',
-    'Personal expenses, extra food items, mocktails, bottled beverages, or barbecue add-ons outside the fixed menu.',
-    '5% GST (if corporate tax invoice with GST input credit is required).'
+    'Personal expenses, extra food items, mocktails, bottled beverages, or barbecue add-ons outside the fixed menu.'
   ],
   thingsToCarry: [
     'Valid Government Photo ID proof (Aadhaar / Passport / Driving License) for each member.',
@@ -3386,13 +3386,13 @@ export const alibaugCorporateEscapeManualItinerary: ManualItinerary = {
   ],
   perAdultPrice: 1800,
   baseAmount: 1800,
-  finalQuotationAmount: 1800,
-  gstPercentage: 0,
-  gstAmount: 0,
+  finalQuotationAmount: 1890,
+  gstPercentage: 5,
+  gstAmount: 90,
   adults: 1,
   kids: 0,
   advanceAmountPaid: 0,
-  balancePendingAmount: 1800,
+  balancePendingAmount: 1890,
   paymentStage: 'unpaid',
   enableOnlineBooking: false,
   fullPaymentOnly: true
@@ -3509,8 +3509,8 @@ export const manualItinerariesRegistry: Record<string, ManualItinerary> = {
   'alibaug-corporate-camping-escape': alibaugCorporateEscapeManualItinerary,
   'alibaug-corporate': alibaugCorporateEscapeManualItinerary,
   'alibaug-camping': alibaugCorporateEscapeManualItinerary,
-  'surfing-tales-alibaug': alibaugCorporateEscapeManualItinerary,
-  'surfing-tales': alibaugCorporateEscapeManualItinerary,
+  'private-revdanda-beach': alibaugCorporateEscapeManualItinerary,
+  'revdanda-beach-camping': alibaugCorporateEscapeManualItinerary,
   'alibaug': alibaugCorporateEscapeManualItinerary,
   'wp-alibaug': alibaugCorporateEscapeManualItinerary,
   'wp-alibaug-corporate': alibaugCorporateEscapeManualItinerary,
@@ -3871,8 +3871,8 @@ export function itineraryDocumentToManualItinerary(itinerary: ItineraryDocument)
   ] : (isAlibaugDest ? [
     '/images/alibaug/hero.jpg',
     '/images/alibaug/beach-tents.jpg',
-    '/images/alibaug/sundowner.jpg',
-    '/images/alibaug/team-games.jpg',
+    '/images/alibaug/beach-camping-sunset.jpg',
+    '/images/alibaug/beach-cinema-night.jpg',
     '/images/alibaug/dj-night.jpg',
     '/images/alibaug/surfing-lesson.jpg'
   ] : [

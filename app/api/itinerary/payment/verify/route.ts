@@ -46,13 +46,13 @@ export async function POST(req: NextRequest) {
     } = body;
 
     const razorpaySecret =
-      process.env.RAZORPAY_ITINERARY_KEY_SECRET ||
-      process.env.RAZORPAY_KEY_SECRET;
+      process.env.RAZORPAY_KEY_SECRET ||
+      process.env.RAZORPAY_ITINERARY_KEY_SECRET;
     const razorpayKeyId =
-      process.env.RAZORPAY_ITINERARY_KEY_ID ||
-      process.env.NEXT_PUBLIC_RAZORPAY_ITINERARY_KEY_ID ||
       process.env.RAZORPAY_KEY_ID ||
-      process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
+      process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID ||
+      process.env.RAZORPAY_ITINERARY_KEY_ID ||
+      process.env.NEXT_PUBLIC_RAZORPAY_ITINERARY_KEY_ID;
 
     if (!razorpaySecret || !razorpayKeyId) {
       console.error('Razorpay keys missing from environment.');

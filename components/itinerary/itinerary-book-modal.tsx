@@ -249,8 +249,8 @@ export function ItineraryBookModal({
       const orderData = await orderRes.json();
       const razorpayKey =
         orderData.keyId ||
-        process.env.NEXT_PUBLIC_RAZORPAY_ITINERARY_KEY_ID ||
-        process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
+        process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID ||
+        process.env.NEXT_PUBLIC_RAZORPAY_ITINERARY_KEY_ID;
 
       if (!razorpayKey) {
         alert('Payment gateway key is not configured.');

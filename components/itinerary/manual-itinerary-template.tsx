@@ -186,8 +186,8 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
   ] : (isAlibaugDest ? [
     '/images/alibaug/hero.jpg',
     '/images/alibaug/beach-tents.jpg',
-    '/images/alibaug/sundowner.jpg',
-    '/images/alibaug/team-games.jpg',
+    '/images/alibaug/beach-camping-sunset.jpg',
+    '/images/alibaug/beach-cinema-night.jpg',
     '/images/alibaug/dj-night.jpg',
     '/images/alibaug/surfing-lesson.jpg'
   ] : [
