@@ -3966,8 +3966,40 @@ export function itineraryDocumentToManualItinerary(itinerary: ItineraryDocument)
     });
   }
 
-  // D. Check rawHotels for night stays
-  const rawHotels = itinerary.rawZohoData?.hotels || (Array.isArray(itinerary.stay) ? itinerary.stay : []);
+  // D. Check rawHotels for night stays (supports up to 10 hotels from Zoho CRM)
+  let rawHotels = itinerary.rawZohoData?.hotels || (Array.isArray(itinerary.stay) ? itinerary.stay : []);
+  if (!Array.isArray(rawHotels)) rawHotels = [];
+
+  // If rawZohoData or rawLeadData contains additional hotels (e.g. Hotel_5, th_Hotel, th_Hotel1, etc.), extract all up to 10
+  const rawLeadSource = itinerary.rawZohoData?.rawLeadData || itinerary.rawZohoData;
+  if (rawLeadSource && typeof rawLeadSource === 'object') {
+    const extractedFromFields: any[] = [];
+    for (let i = 1; i <= 10; i++) {
+      const altKey = i === 5 ? 'th_Hotel' : (i > 5 ? `th_Hotel${i - 5}` : '');
+      const hObj = rawLeadSource[`Hotel_${i}`] || (altKey ? rawLeadSource[altKey] : undefined) || rawLeadSource[`${i}th_Hotel`] || rawLeadSource[`X${i}th_Hotel`];
+      const hCity = rawLeadSource[`Hotel_${i}_City`] || rawLeadSource[`${i}th_Hotel_City`] || (altKey ? rawLeadSource[`${altKey}_City`] : undefined) || '';
+      const hNights = rawLeadSource[`Hotel_${i}_Nights`] || rawLeadSource[`${i}th_Hotel_Nights`] || (altKey ? rawLeadSource[`${altKey}_Nights`] : undefined);
+      const hStayDates = rawLeadSource[`Hotel_${i}_Stay_Dates`] || rawLeadSource[`${i}th_Hotel_Stay_Dates`] || (altKey ? rawLeadSource[`${altKey}_Stay_Dates`] : undefined) || '';
+
+      const rawHName = typeof hObj === 'object' && hObj !== null ? hObj.name : (typeof hObj === 'string' ? hObj : '');
+      let cleanHName = (rawHName || '').trim();
+      if (/^(?:Standard|Deluxe|Selected|3[- ]?Star|4[- ]?Star|5[- ]?Star|Luxury|Budget|Premium)\s*(?:Hotel|Property|Resort)?$/i.test(cleanHName) || cleanHName.toLowerCase() === 'standard' || cleanHName.toLowerCase() === 'deluxe') {
+        cleanHName = 'Hotel';
+      }
+      if (cleanHName || hCity) {
+        extractedFromFields.push({
+          index: i,
+          hotelName: cleanHName || 'Hotel',
+          city: hCity,
+          nights: Number(hNights) || 1,
+          stayDates: hStayDates
+        });
+      }
+    }
+    if (extractedFromFields.length > rawHotels.length) {
+      rawHotels = extractedFromFields;
+    }
+  }
   if (Array.isArray(rawHotels) && rawHotels.length > 0) {
     rawHotels.forEach((h: any) => {
       const c = cleanCityName(h.city || destination);

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { getDb } from '@/lib/mongodb';
-import { generateItineraryContentWithAI } from '@/lib/ai-itinerary';
+import { generateItineraryContentWithAI, extractAllHotelsFromZohoData } from '@/lib/ai-itinerary';
 import { getLuxuryImagesForDestination } from '@/lib/itinerary-images';
 import { ItineraryDocument } from '@/types/itinerary';
 import { generateLeadBasedItinerarySlug } from '@/lib/itinerary-slug';
@@ -52,8 +52,11 @@ function normalizeZohoPayload(body: any): Record<string, any> {
   const phone = raw.Mobile || raw.mobile || raw.Phone || raw.phone || '';
   const notes = raw.Description || raw.description || raw.message || raw.Notes || raw.Special_Requirements || '';
 
+  const hotels = extractAllHotelsFromZohoData(raw, destination, noOfNights);
+
   return {
     ...raw,
+    hotels,
     normalized: {
       name: fullName,
       firstName,
@@ -73,7 +76,8 @@ function normalizeZohoPayload(body: any): Record<string, any> {
       noOfDays,
       noOfNights,
       inquiryId,
-      notes
+      notes,
+      hotels
     }
   };
 }
@@ -235,7 +239,7 @@ export async function POST(req: NextRequest) {
         noOfDays: details.noOfDays || aiContent.noOfDays,
         No_of_Nights: details.noOfNights || aiContent.noOfNights,
         noOfNights: details.noOfNights || aiContent.noOfNights,
-        hotels: rawBody.hotels || (aiContent.hotelName ? [{ hotelName: aiContent.hotelName, city: details.destination, nights: details.noOfNights }] : [])
+        hotels: (details.hotels && details.hotels.length > 0) ? details.hotels : (rawBody.hotels || (aiContent.hotelName ? [{ hotelName: aiContent.hotelName, city: details.destination, nights: details.noOfNights }] : []))
       },
       createdAt: new Date(),
       updatedAt: new Date()

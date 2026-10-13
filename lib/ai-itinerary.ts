@@ -488,6 +488,70 @@ export function parseHotelStringToStays(hotelStr: string, defaultCity: string = 
 }
 
 /**
+ * Extracts all hotels (up to 10) from Zoho data, including CRM custom fields (th_Hotel, th_Hotel1, etc.)
+ */
+export function extractAllHotelsFromZohoData(source: any, defaultDest: string = '', defaultNights: number = 1): ZohoHotelStay[] {
+  if (!source || typeof source !== 'object') return [];
+
+  let hotels: ZohoHotelStay[] = [];
+  if (Array.isArray(source.hotels) && source.hotels.length > 0) {
+    hotels = [...source.hotels];
+  }
+
+  const rawLeadSource = source.rawLeadData || source;
+  if (rawLeadSource && typeof rawLeadSource === 'object') {
+    const extractedFromFields: ZohoHotelStay[] = [];
+    for (let i = 1; i <= 10; i++) {
+      const altKey = i === 5 ? 'th_Hotel' : (i > 5 ? `th_Hotel${i - 5}` : '');
+      const hObj = rawLeadSource[`Hotel_${i}`] || (altKey ? rawLeadSource[altKey] : undefined) || rawLeadSource[`${i}th_Hotel`] || rawLeadSource[`X${i}th_Hotel`];
+      const hCity = rawLeadSource[`Hotel_${i}_City`] || rawLeadSource[`${i}th_Hotel_City`] || (altKey ? rawLeadSource[`${altKey}_City`] : undefined) || '';
+      const hNights = rawLeadSource[`Hotel_${i}_Nights`] || rawLeadSource[`${i}th_Hotel_Nights`] || (altKey ? rawLeadSource[`${altKey}_Nights`] : undefined);
+      const hStayDates = rawLeadSource[`Hotel_${i}_Stay_Dates`] || rawLeadSource[`${i}th_Hotel_Stay_Dates`] || (altKey ? rawLeadSource[`${altKey}_Stay_Dates`] : undefined) || '';
+
+      const rawHName = typeof hObj === 'object' && hObj !== null ? hObj.name : (typeof hObj === 'string' ? hObj : '');
+      let cleanHName = (rawHName || '').trim();
+      if (/^(?:Standard|Deluxe|Selected|3[- ]?Star|4[- ]?Star|5[- ]?Star|Luxury|Budget|Premium)\s*(?:Hotel|Property|Resort)?$/i.test(cleanHName) || cleanHName.toLowerCase() === 'standard' || cleanHName.toLowerCase() === 'deluxe') {
+        cleanHName = 'Hotel';
+      }
+      if (cleanHName || hCity) {
+        extractedFromFields.push({
+          index: i,
+          hotelName: cleanHName || 'Hotel',
+          city: hCity || defaultDest,
+          nights: Number(hNights) || defaultNights,
+          stayDates: hStayDates
+        });
+      }
+    }
+    if (extractedFromFields.length > hotels.length) {
+      hotels = extractedFromFields;
+    }
+  }
+
+  // If still empty, check hotelName / hotel string
+  const hotelStr = source.hotelName || source.Hotel_Name || source.hotel || source.Hotel || source.stay || '';
+  if (hotels.length === 0 && hotelStr) {
+    if (hotelStr.includes('+') || hotelStr.includes('(') || hotelStr.includes(' - ') || hotelStr.includes('|')) {
+      hotels = parseHotelStringToStays(hotelStr, defaultDest, defaultNights);
+    } else {
+      let cleanHName = hotelStr.trim();
+      if (/^(?:Standard|Deluxe|Selected|3[- ]?Star|4[- ]?Star|5[- ]?Star|Luxury|Budget|Premium)\s*(?:Hotel|Property|Resort)?$/i.test(cleanHName) || cleanHName.toLowerCase() === 'standard' || cleanHName.toLowerCase() === 'deluxe') {
+        cleanHName = 'Hotel';
+      }
+      hotels = [{
+        index: 1,
+        hotelName: cleanHName || 'Hotel',
+        city: defaultDest,
+        nights: defaultNights,
+        stayDates: ''
+      }];
+    }
+  }
+
+  return hotels;
+}
+
+/**
  * Parses user-edited activities text block into ZohoDayActivity array
  */
 export function parseActivitiesTextToDayActivities(text: string, defaultCity: string = ''): ZohoDayActivity[] {
@@ -1034,17 +1098,8 @@ export function generateLuxuryFallback(raw: Record<string, any>): GeneratedItine
   const travelStyle = (raw.travelStyle || raw.Travel_Style || 'Family Trip').trim();
   const tripType = (raw.tripType || raw.Trip_Type || 'Customised Trip').trim();
 
-  // Extract hotels (prioritizing manual edited hotel string)
-  let hotels: ZohoHotelStay[] = [];
-  if (hotel && (hotel.includes('+') || hotel.includes('(') || hotel.includes(' - ') || hotel.includes('|'))) {
-    hotels = parseHotelStringToStays(hotel, dest, 1);
-  }
-  if (hotels.length === 0 && Array.isArray(raw.hotels) && raw.hotels.length > 0) {
-    hotels = raw.hotels;
-  }
-  if (hotels.length === 0 && hotel) {
-    hotels = [{ index: 1, hotelName: hotel, city: dest, nights: noOfNights, stayDates: '' }];
-  }
+  // Extract hotels (supports up to 10 hotels from Zoho CRM)
+  const hotels = extractAllHotelsFromZohoData(raw, dest, noOfNights);
 
   const defaultSubTitle = travelStyle || sanitizeSubTitle(room || hotel || 'Tour Itinerary');
   const defaultDesc = sanitizeLuxuryDescription(
@@ -1466,17 +1521,8 @@ export async function generateItineraryContentWithAI(rawZohoData: Record<string,
     }
   }
 
-  // Extract hotels (prioritizing manual edited hotel string)
-  let hotels: ZohoHotelStay[] = [];
-  if (hotel && (hotel.includes('+') || hotel.includes('(') || hotel.includes(' - ') || hotel.includes('|'))) {
-    hotels = parseHotelStringToStays(hotel, dest, 1);
-  }
-  if (hotels.length === 0 && Array.isArray(rawZohoData.hotels) && rawZohoData.hotels.length > 0) {
-    hotels = rawZohoData.hotels;
-  }
-  if (hotels.length === 0 && hotel) {
-    hotels = [{ index: 1, hotelName: hotel, city: dest, nights: totalDays || 3, stayDates: '' }];
-  }
+  // Extract hotels (supports up to 10 hotels from Zoho CRM)
+  const hotels = extractAllHotelsFromZohoData(rawZohoData, dest, totalDays || 3);
 
   // 1. Build initial baseline day plans directly from Zoho CRM subform
   let cleanDayPlans = buildCleanDayPlansFromZoho(

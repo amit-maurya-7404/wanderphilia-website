@@ -145,13 +145,15 @@ export async function fetchZohoLeadById(leadIdOrQuery: string): Promise<Normaliz
 
   if (!rawLead) return null;
 
-  // 1. Hotels mapping
+  // 1. Hotels mapping (supports up to 10 hotels from Zoho CRM)
   const hotels: ZohoHotelStay[] = [];
-  for (let i = 1; i <= 4; i++) {
-    const hotelObj = rawLead[`Hotel_${i}`];
-    const hotelCity = rawLead[`Hotel_${i}_City`] || '';
-    const hotelNights = rawLead[`Hotel_${i}_Nights`];
-    const hotelStayDates = rawLead[`Hotel_${i}_Stay_Dates`] || '';
+  for (let i = 1; i <= 10; i++) {
+    // Zoho CRM custom fields can be named Hotel_i, th_Hotel (5th), th_Hotel1 (6th), etc.
+    const altKey = i === 5 ? 'th_Hotel' : (i > 5 ? `th_Hotel${i - 5}` : '');
+    const hotelObj = rawLead[`Hotel_${i}`] || (altKey ? rawLead[altKey] : undefined) || rawLead[`${i}th_Hotel`] || rawLead[`X${i}th_Hotel`];
+    const hotelCity = rawLead[`Hotel_${i}_City`] || rawLead[`${i}th_Hotel_City`] || (altKey ? rawLead[`${altKey}_City`] : undefined) || '';
+    const hotelNights = rawLead[`Hotel_${i}_Nights`] || rawLead[`${i}th_Hotel_Nights`] || (altKey ? rawLead[`${altKey}_Nights`] : undefined);
+    const hotelStayDates = rawLead[`Hotel_${i}_Stay_Dates`] || rawLead[`${i}th_Hotel_Stay_Dates`] || (altKey ? rawLead[`${altKey}_Stay_Dates`] : undefined) || '';
 
     const rawHotelName = typeof hotelObj === 'object' && hotelObj !== null ? hotelObj.name : (typeof hotelObj === 'string' ? hotelObj : '');
     let cleanHName = (rawHotelName || '').trim();

@@ -824,7 +824,7 @@ export default function ItineraryTestPage() {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="sm:col-span-2">
                   <label className="text-[10px] uppercase font-bold text-slate-500 block mb-1">
-                    Hotel Stays (Hotel_1..4 + Nights)
+                    Hotel Stays (Hotel_1..6+ Nights)
                   </label>
                   <Input
                     value={formData.Hotel_Name}
