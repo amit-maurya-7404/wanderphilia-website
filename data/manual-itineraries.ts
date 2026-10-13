@@ -3225,6 +3225,179 @@ export const rajasthanSachinManualItinerary: ManualItinerary = {
   ]
 };
 
+export const alibaugCorporateEscapeManualItinerary: ManualItinerary = {
+  id: 'alibaug-corporate-escape',
+  slug: 'the-coastal-unplug-corporate-camping-escape',
+  title: 'The Coastal Unplug: Corporate Camping Escape',
+  subtitle: 'Surf. Connect. Celebrate. Repeat. · 1 Night / 2 Days (17th Nov Sat – 18th Nov Sun)',
+  duration: '1 Night / 2 Days | 17th Nov (Sat) – 18th Nov (Sun)',
+  numNights: 1,
+  numDays: 2,
+  dates: '17th Nov (Sat) – 18th Nov (Sun)',
+  route: 'Surfing Tales, Revdanda Beach, Alibaug',
+  routeSummary: '1N Beachfront Camping & Surfing at Revdanda Beach, Alibaug',
+  destination: 'Alibaug, Maharashtra',
+  travelStyle: 'Corporate Offsite & Team Bonding Escape',
+  tripType: 'Curated Corporate Experience',
+  leadName: 'Corporate Team',
+  vehicleType: 'Self-Drive / AC Coach Available on Request',
+  mealPlan: 'Welcome Refreshments, Evening High-Tea, Dinner Buffet & Morning Breakfast',
+  heroImage: '/images/alibaug/hero.jpg',
+  galleryImages: [
+    '/images/alibaug/hero.jpg',
+    '/images/alibaug/beach-tents.jpg',
+    '/images/alibaug/sundowner.jpg',
+    '/images/alibaug/team-games.jpg',
+    '/images/alibaug/dj-night.jpg',
+    '/images/alibaug/bonfire-music.jpg',
+    '/images/alibaug/dinner-stars.jpg',
+    '/images/alibaug/cinema-stars.jpg',
+    '/images/alibaug/surfing-lesson.jpg',
+    '/images/alibaug/surfing-action.jpg',
+    '/images/alibaug/surfing-boards.jpg',
+    '/images/alibaug/morning-breakfast.jpg'
+  ],
+  moments: [
+    'Beachfront Camping Tents under coastal coconut palms at Revdanda Beach',
+    'Golden Hour Sundowner Social with curated music & chilled coastal vibes',
+    'Energetic Corporate Team Challenges, Icebreakers & Group Games',
+    'Lively Coastal DJ Night Session & Open Dance Floor',
+    'Hearty Dinner Buffet Under the Stars with Barbecue & Local Flavours',
+    'Intimate Beach Bonfire & Acoustic Live Music Sing-Alongs',
+    'Cinema Beneath the Stars: Open-air movie screening with cozy setup',
+    'Optional Morning Surfing: 90-Min Guided Surfing with Certified Instructors (₹1,500/person)',
+    'Relaxed Morning Breakfast with Ocean Breeze & Team Memories'
+  ],
+  highlights: [
+    'Beachfront Camping Tents under coastal coconut palms at Revdanda Beach',
+    'Golden Hour Sundowner Social with curated music & chilled coastal vibes',
+    'Energetic Corporate Team Challenges, Icebreakers & Group Games',
+    'Lively Coastal DJ Night Session & Open Dance Floor',
+    'Hearty Dinner Buffet Under the Stars with Barbecue & Local Flavours',
+    'Intimate Beach Bonfire & Acoustic Live Music Sing-Alongs',
+    'Cinema Beneath the Stars: Open-air movie screening with cozy setup',
+    'Optional Morning Surfing: 90-Min Guided Surfing with Certified Instructors (₹1,500/person)',
+    'Relaxed Morning Breakfast with Ocean Breeze & Team Memories'
+  ],
+  accommodations: [
+    {
+      city: 'Alibaug (Revdanda Beach)',
+      nights: 1,
+      hotelName: 'Surfing Tales Beach Campsite',
+      roomCategory: 'Beachfront Camping Tents with Bedding, Pillows & Fleece Blankets'
+    }
+  ],
+  childPricingNote: '100% full payment is required at the time of booking to confirm this event. Surfing is available as an optional morning activity at ₹1,500 per person.',
+  dayPlans: [
+    {
+      day: 1,
+      date: '17 Nov (Sat)',
+      title: 'Day 1 | 17 Nov (Sat) Check In, Connect & Celebrate',
+      route: 'Arrival at Surfing Tales, Revdanda Beach, Alibaug',
+      durationNote: 'Check-in from 4:00 PM',
+      intro: 'An experience designed to bring people closer beyond the workplace — where the evening unfolds through sundowners, team challenges, music, great food, a bonfire, and a movie under the stars.',
+      timeline: [
+        '**4:00 PM | Welcome to the Coast**: Arrive at Surfing Tales, Revdanda, and check into your camping tents. Settle in, freshen up, and soak in the relaxed coastal atmosphere with welcome refreshments and evening snacks.',
+        '**5:00 PM | The Sundowner Social**: Ease into the evening with music, conversations, refreshing drinks, and sunset moments. A chance for everyone to switch off from work mode and get into holiday mode.',
+        '**5:45 PM | Team Play — Let the Games Begin!**: Get everyone involved in an energetic session of icebreakers, team challenges, fun competitions, and group games. Split into teams, bring out the competitive spirit, and create memorable team moments.',
+        '**7:00 PM | Coastal Beats — DJ Session**: Turn up the energy with a lively DJ session. Let the team hit the dance floor, unwind, and celebrate together in a fun, informal setting.',
+        '**8:15 PM | Dinner Under the Stars**: Enjoy a hearty dinner with the group, taking a break from the music to recharge and enjoy good food and even better company.',
+        '**9:15 PM | Bonfire & Live Music**: Gather around the bonfire for a more intimate evening of live acoustic music, sing-alongs, shared stories, and easy conversations. A slower, more personal chapter of the experience.',
+        '**10:15 PM | Cinema Beneath the Stars**: Wind down with an outdoor movie screening under the night sky. Bring out the blankets, grab a comfortable spot, and end the evening with a shared cinematic experience by the coast.',
+        '**11:45 PM | Night at the Campsite**: Retire to your tents after an evening filled with music, laughter, and memories made together.'
+      ],
+      sections: [
+        {
+          title: 'Evening Highlights & Experiences:',
+          items: [
+            'Sunset moments over the Arabian Sea at Revdanda Beach',
+            'Curated corporate team challenges & competitive fun games',
+            'High-energy coastal DJ session & open dance floor',
+            'Beach bonfire circle with acoustic live guitarist & sing-alongs',
+            'Outdoor open-air projector movie screening under the stars'
+          ],
+          type: 'celebration'
+        }
+      ],
+      stayLocation: 'Surfing Tales Beach Campsite, Revdanda, Alibaug',
+      image: '/images/alibaug/hero.jpg',
+      meals: 'Welcome Refreshments, Evening Snacks & Dinner Buffet'
+    },
+    {
+      day: 2,
+      date: '18 Nov (Sun)',
+      title: 'Day 2 | 18 Nov (Sun) Wake Up to the Waves & Surfing Experience',
+      route: 'Revdanda Beach, Alibaug',
+      durationNote: 'Morning Surfing & Check-out by 10:30 AM',
+      intro: 'Wake up to the sound of ocean waves and crisp coastal air. Gear up for an exhilarating surfing session or enjoy a slow, peaceful morning by the coast.',
+      timeline: [
+        '**7:00 AM | Optional Surfing Experience**: Start the morning with an exciting introduction to surfing at Revdanda Beach. Learn the basics, warm up with the instructor, and try catching your first wave! (Optional add-on: ₹1,500 per person for a 90-minute session; subject to wave conditions and confirmed batch timing).',
+        '**8:45 AM | Breakfast & Easy Mornings**: Refuel with breakfast, tea or coffee, exchange stories from the previous evening, and enjoy a relaxed start to the day. Non-surfers can enjoy their morning relaxing at the campsite.',
+        '**9:30 AM | Final Moments & Check-Out**: Capture the last group photographs, enjoy some final conversations, pack up, and check out by 10:30 AM, subject to campsite policy.'
+      ],
+      sections: [
+        {
+          title: 'Optional Surfing Session Details (₹1,500/person):',
+          note: 'Revdanda is celebrated for its beginner-friendly, forgiving sandbank waves. You do not need swimming expertise for beginner lessons!',
+          items: [
+            '90-Minute structured session led by certified surf instructors',
+            'Beach safety briefing, ocean reading & pop-up practice on sand',
+            'In-water guided wave catching with dedicated surfboards provided',
+            'Rash guards and safety equipment included',
+            'Batch timings subject to high/low tide wave conditions'
+          ],
+          type: 'optional'
+        }
+      ],
+      optionalNote: 'NOTE: 90-minute Surfing Experience at Revdanda Beach is optional at ₹1,500 per person (includes surfboard, safety gear & certified instructor guidance; subject to wave conditions).',
+      stayLocation: 'Departure from Revdanda Beach, Alibaug',
+      image: '/images/alibaug/surfing-lesson.jpg',
+      meals: 'Wholesome Breakfast & Morning Tea / Coffee',
+      signOff: 'Work hard, catch waves harder — until the next Wanderphilia corporate escape! 🏄‍♂️✨'
+    }
+  ],
+  inclusions: [
+    'One-night camping accommodation in beachfront tents with comfortable bedding, pillows, and blankets at Surfing Tales, Revdanda.',
+    'Evening snacks and high tea welcome refreshments on Day 1.',
+    'Hearty buffet Dinner under the stars (Veg & Non-Veg options).',
+    'Morning Breakfast with freshly brewed tea and coffee on Day 2.',
+    'Curated corporate team games, icebreakers, and group activities conducted by coordinators.',
+    'High-energy coastal DJ session with professional sound setup.',
+    'Intimate beach bonfire and acoustic live music sing-along session.',
+    'Open-air "Cinema Beneath the Stars" movie screening setup with ambient seating.',
+    'Clean and well-maintained western washrooms, changing rooms, and shower facilities.',
+    'First-aid medical kit and dedicated Wanderphilia on-ground support.'
+  ],
+  exclusions: [
+    'Optional 90-minute professional surfing experience (₹1,500 per person add-on).',
+    'Travel / transportation to and from Revdanda, Alibaug (AC bus / tempo traveller / ferry tickets can be arranged on request).',
+    'Personal expenses, extra food items, mocktails, bottled beverages, or barbecue add-ons outside the fixed menu.',
+    '5% GST (if corporate tax invoice with GST input credit is required).'
+  ],
+  thingsToCarry: [
+    'Valid Government Photo ID proof (Aadhaar / Passport / Driving License) for each member.',
+    'Quick-dry swimwear, rash guards, or beach shorts for surfing and ocean water play.',
+    'Extra pair of dry clothes and personal towel.',
+    'Sunscreen (SPF 50+), sunglasses, and sun hat / cap.',
+    'Comfortable beach flip-flops or water footwear.',
+    'Personal toiletries and regular personal medications.',
+    'Mobile phone charger, power bank, and waterproof pouch for phones.',
+    'Light jacket or hoodie for breezy coastal late-night movie and bonfire hours.'
+  ],
+  perAdultPrice: 1800,
+  baseAmount: 1800,
+  finalQuotationAmount: 1800,
+  gstPercentage: 0,
+  gstAmount: 0,
+  adults: 1,
+  kids: 0,
+  advanceAmountPaid: 0,
+  balancePendingAmount: 1800,
+  paymentStage: 'unpaid',
+  enableOnlineBooking: false,
+  fullPaymentOnly: true
+};
+
 export const manualItinerariesRegistry: Record<string, ManualItinerary> = {
   'wp-041c1bdc': rajasthanSachinManualItinerary,
   '041c1bdc': rajasthanSachinManualItinerary,
@@ -3326,7 +3499,22 @@ export const manualItinerariesRegistry: Record<string, ManualItinerary> = {
   'rajasthan-royal-escape': rajasthanRoyalEscapeManualItinerary,
   'wp-rajasthan-royal-escape': rajasthanRoyalEscapeManualItinerary,
   'rajasthan-10-days': rajasthanRoyalEscapeManualItinerary,
-  'rajasthan-10d9n': rajasthanRoyalEscapeManualItinerary
+  'rajasthan-10d9n': rajasthanRoyalEscapeManualItinerary,
+
+  'alibaug-corporate-escape': alibaugCorporateEscapeManualItinerary,
+  'the-coastal-unplug-corporate-camping-escape': alibaugCorporateEscapeManualItinerary,
+  'the-coastal-unplug': alibaugCorporateEscapeManualItinerary,
+  'coastal-unplug': alibaugCorporateEscapeManualItinerary,
+  'coastal-unplug-alibaug': alibaugCorporateEscapeManualItinerary,
+  'alibaug-corporate-camping-escape': alibaugCorporateEscapeManualItinerary,
+  'alibaug-corporate': alibaugCorporateEscapeManualItinerary,
+  'alibaug-camping': alibaugCorporateEscapeManualItinerary,
+  'surfing-tales-alibaug': alibaugCorporateEscapeManualItinerary,
+  'surfing-tales': alibaugCorporateEscapeManualItinerary,
+  'alibaug': alibaugCorporateEscapeManualItinerary,
+  'wp-alibaug': alibaugCorporateEscapeManualItinerary,
+  'wp-alibaug-corporate': alibaugCorporateEscapeManualItinerary,
+  'alibaug-escape': alibaugCorporateEscapeManualItinerary
 };
 
 export function getManualItinerary(idOrSlug: string): ManualItinerary | null {
@@ -3348,7 +3536,8 @@ export function getAllManualItineraries(): ManualItinerary[] {
     rajasthanRoyalEscapeManualItinerary,
     rajasthanJignaManualItinerary,
     rajasthanJignaNewManualItinerary,
-    rajasthanSachinManualItinerary
+    rajasthanSachinManualItinerary,
+    alibaugCorporateEscapeManualItinerary
   ];
 }
 
@@ -3359,6 +3548,7 @@ export function manualItineraryToDocument(manual: ManualItinerary): ItineraryDoc
   const isVietnam = manual.destination.toLowerCase().includes('vietnam');
   const isRajasthan = manual.destination.toLowerCase().includes('rajasthan') || manual.id.includes('4002b3f4');
   const isSpiti = manual.destination.toLowerCase().includes('spiti') || manual.id.includes('spiti') || manual.destination.toLowerCase().includes('kinnaur');
+  const isAlibaug = manual.destination.toLowerCase().includes('alibaug') || manual.id.includes('alibaug');
   const defaultHighlights = isVietnam ? [
     'Ho Chi Minh City Highlights & Cu Chi Underground Tunnels',
     'Phu Quoc Island: 3 Islands Speedboat, VinWonders & Vinpearl Safari',
@@ -3385,6 +3575,16 @@ export function manualItineraryToDocument(manual: ManualItinerary): ItineraryDoc
     'Golden sunsets in Kalpa overlooking sacred Kinner Kailash range',
     'Warm local Kinnauri & Spitian traditional food experiences',
     'Cosy bonfires under the mountains & Himalayan Stargazing in Spiti'
+  ] : (isAlibaug ? [
+    'Beachfront Camping Tents under coastal coconut palms at Revdanda Beach',
+    'Golden Hour Sundowner Social with curated music & chilled coastal vibes',
+    'Energetic Corporate Team Challenges, Icebreakers & Group Games',
+    'Lively Coastal DJ Night Session & Open Dance Floor',
+    'Hearty Dinner Buffet Under the Stars with Barbecue & Local Flavours',
+    'Intimate Beach Bonfire & Acoustic Live Music Sing-Alongs',
+    'Cinema Beneath the Stars: Open-air movie screening with cozy setup',
+    'Optional Morning Surfing: 90-Min Guided Surfing with Certified Instructors (₹1,500/person)',
+    'Relaxed Morning Breakfast with Ocean Breeze & Team Memories'
   ] : [
     'Scenic drive through Kangra Valley & McLeod Ganj',
     'Dalai Lama Temple & Bhagsu Waterfall',
@@ -3394,7 +3594,7 @@ export function manualItineraryToDocument(manual: ManualItinerary): ItineraryDoc
     'Snow Activities in Solang Valley & New Year Party in Manali',
     'River Rafting Experience in Manali',
     'Kasol & Parvati Valley Exploration'
-  ]));
+  ])));
 
   return {
     id: manual.id,
@@ -3403,7 +3603,7 @@ export function manualItineraryToDocument(manual: ManualItinerary): ItineraryDoc
     subTitle: manual.subtitle || `${manual.numNights} Nights / ${manual.numDays} Days Signature Experience`,
     description: `Custom ${manual.duration} expedition exploring ${manual.route}`,
     destination: manual.destination,
-    stateOrCountry: isVietnam ? 'Vietnam' : (isRajasthan ? 'Rajasthan, India' : (isSpiti ? 'Himachal Pradesh (Spiti & Kinnaur), India' : 'Himachal Pradesh, India')),
+    stateOrCountry: isVietnam ? 'Vietnam' : (isRajasthan ? 'Rajasthan, India' : (isSpiti ? 'Himachal Pradesh (Spiti & Kinnaur), India' : (isAlibaug ? 'Maharashtra, India' : 'Himachal Pradesh, India'))),
     travelStyle: manual.travelStyle || 'Signature Tour',
     tripType: manual.tripType || 'Customised Trip',
     vehicleType: manual.vehicleType || 'Private AC Van with Dedicated Driver',
@@ -3652,6 +3852,7 @@ export function itineraryDocumentToManualItinerary(itinerary: ItineraryDocument)
   // 6 Collage images
   const isRajasthanDest = destination.toLowerCase().includes('rajasthan') || (itinerary.id && itinerary.id.toLowerCase().includes('rajasthan')) || (itinerary.id && itinerary.id.toLowerCase().includes('4002b3f4'));
   const isVietnamDest = destination.toLowerCase().includes('vietnam') || (itinerary.id && itinerary.id.toLowerCase().includes('vietnam'));
+  const isAlibaugDest = destination.toLowerCase().includes('alibaug') || (itinerary.id && itinerary.id.toLowerCase().includes('alibaug'));
 
   const defaultCollagePool = isRajasthanDest ? [
     '/images/Rajasthan/rajasthan1.jpeg',
@@ -3667,6 +3868,13 @@ export function itineraryDocumentToManualItinerary(itinerary: ItineraryDocument)
     '/images/vietnam-dreamy.png',
     '/images/vietnam-exotic.png',
     '/images/vietnam-highlights.png'
+  ] : (isAlibaugDest ? [
+    '/images/alibaug/hero.jpg',
+    '/images/alibaug/beach-tents.jpg',
+    '/images/alibaug/sundowner.jpg',
+    '/images/alibaug/team-games.jpg',
+    '/images/alibaug/dj-night.jpg',
+    '/images/alibaug/surfing-lesson.jpg'
   ] : [
     heroImage,
     '/images/himachal.jpg',
@@ -3674,7 +3882,7 @@ export function itineraryDocumentToManualItinerary(itinerary: ItineraryDocument)
     '/images/himachal3.jpg',
     '/images/himachal4.jpg',
     '/images/himachal5.jpg'
-  ]);
+  ]));
 
   const collageImages = itinerary.galleryImages && itinerary.galleryImages.length >= 6
     ? itinerary.galleryImages.slice(0, 6)

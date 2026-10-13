@@ -167,6 +167,7 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
   // 6 Collage images for Page 2
   const isRajasthanDest = destination.toLowerCase().includes('rajasthan') || (itinerary.id && itinerary.id.toLowerCase().includes('rajasthan')) || (itinerary.id && itinerary.id.toLowerCase().includes('4002b3f4'));
   const isVietnamDest = destination.toLowerCase().includes('vietnam') || (itinerary.id && itinerary.id.toLowerCase().includes('vietnam'));
+  const isAlibaugDest = destination.toLowerCase().includes('alibaug') || (itinerary.id && itinerary.id.toLowerCase().includes('alibaug'));
 
   const defaultCollage = isRajasthanDest ? [
     '/images/Rajasthan/rajasthan1.jpeg',
@@ -182,6 +183,13 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
     '/images/vietnam-dreamy.png',
     '/images/vietnam-exotic.png',
     '/images/vietnam-highlights.png'
+  ] : (isAlibaugDest ? [
+    '/images/alibaug/hero.jpg',
+    '/images/alibaug/beach-tents.jpg',
+    '/images/alibaug/sundowner.jpg',
+    '/images/alibaug/team-games.jpg',
+    '/images/alibaug/dj-night.jpg',
+    '/images/alibaug/surfing-lesson.jpg'
   ] : [
     heroImage,
     '/images/himachal.jpg',
@@ -189,7 +197,7 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
     '/images/himachal3.jpg',
     '/images/himachal4.jpg',
     '/images/himachal5.jpg'
-  ]);
+  ]));
 
   const collageImages = itinerary.galleryImages && itinerary.galleryImages.length >= 6
     ? itinerary.galleryImages.slice(0, 6)
@@ -208,6 +216,7 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
   // Online Booking Feature Flag:
   // Disabled for all past itineraries already sent to clients. Only active for new itineraries or when explicitly enabled.
   const isOnlineBookingEnabled = Boolean(itinerary.enableOnlineBooking);
+  const isFullPaymentOnly = Boolean(itinerary.fullPaymentOnly);
 
   // Book Modal state
   const [isBookModalOpen, setIsBookModalOpen] = useState(false);
@@ -653,7 +662,9 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                 <div className="bg-amber-400/20 text-amber-300 border border-amber-400/40 text-[11px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
                   {(activeOption?.kids ?? itinerary.kids) && (activeOption?.kids ?? itinerary.kids)! > 0
                     ? `${(activeOption?.adults ?? itinerary.adults) || 2} Adults + ${activeOption?.kids ?? itinerary.kids} Kids (Family Tour)`
-                    : `${(activeOption?.adults ?? itinerary.adults) || 2} Adults Included`}
+                    : (activeOption?.adults ?? itinerary.adults) === 1
+                      ? 'Per Person Rate (1 Guest)'
+                      : `${(activeOption?.adults ?? itinerary.adults) || 2} Adults Included`}
                 </div>
               </div>
 
@@ -750,14 +761,23 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                       {/* 4. Flexible Payment Stages */}
                       <div className="bg-white/10 backdrop-blur-md rounded-xl p-3.5 sm:p-4 border border-white/15 space-y-1">
                         <div className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-emerald-300 flex items-center justify-between">
-                          <span>Flexible Payment Stages</span>
+                          <span>{isFullPaymentOnly ? 'Payment Terms' : 'Flexible Payment Stages'}</span>
                           <CreditCard className="w-4 h-4 text-emerald-300" />
                         </div>
-                        <div className="text-[11px] text-white/90 space-y-0.5 pt-0.5 font-semibold">
-                          <div>• 10% Token: ₹{Math.round(grandTotal * 0.10).toLocaleString('en-IN')}/- (Locks proposal)</div>
-                          <div>• 50% Advance: ₹{Math.round(grandTotal * 0.50).toLocaleString('en-IN')}/- (Due in 7 days)</div>
-                          <div>• Final Balance: Due 15 days before travel</div>
-                        </div>
+                        {isFullPaymentOnly ? (
+                          <div className="text-[11px] text-white/90 space-y-1 pt-0.5 font-semibold">
+                            <div>• 100% Full Payment: ₹{grandTotal.toLocaleString('en-IN')}/-</div>
+                            <div className="text-[10px] text-amber-200/90 font-normal leading-tight">
+                              Full amount is payable in a single transaction to confirm booking.
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="text-[11px] text-white/90 space-y-0.5 pt-0.5 font-semibold">
+                            <div>• 10% Token: ₹{Math.round(grandTotal * 0.10).toLocaleString('en-IN')}/- (Locks proposal)</div>
+                            <div>• 50% Advance: ₹{Math.round(grandTotal * 0.50).toLocaleString('en-IN')}/- (Due in 7 days)</div>
+                            <div>• Final Balance: Due 15 days before travel</div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   );
@@ -816,14 +836,23 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                     {/* 3. Flexible Payment Stages */}
                     <div className="bg-white/10 backdrop-blur-md rounded-xl p-3.5 sm:p-4 border border-white/15 space-y-1 sm:col-span-2 md:col-span-1">
                       <div className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-emerald-300 flex items-center justify-between">
-                        <span>Flexible Payment Stages</span>
+                        <span>{isFullPaymentOnly ? 'Payment Terms' : 'Flexible Payment Stages'}</span>
                         <CreditCard className="w-4 h-4 text-emerald-300" />
                       </div>
-                      <div className="text-[11px] text-white/90 space-y-0.5 pt-0.5 font-semibold">
-                        <div>• 10% Token: ₹{Math.round(grandTotal * 0.10).toLocaleString('en-IN')}/- (Locks dates & proposal)</div>
-                        <div>• 50% Advance: ₹{Math.round(grandTotal * 0.50).toLocaleString('en-IN')}/- (Due in 7 days)</div>
-                        <div>• Final Balance: Due 15 days before departure</div>
-                      </div>
+                      {isFullPaymentOnly ? (
+                        <div className="text-[11px] text-white/90 space-y-1 pt-0.5 font-semibold">
+                          <div>• 100% Full Payment: ₹{grandTotal.toLocaleString('en-IN')}/-</div>
+                          <div className="text-[10px] text-amber-200/90 font-normal leading-tight">
+                            Full amount is payable in a single transaction to confirm booking.
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="text-[11px] text-white/90 space-y-0.5 pt-0.5 font-semibold">
+                          <div>• 10% Token: ₹{Math.round(grandTotal * 0.10).toLocaleString('en-IN')}/- (Locks dates & proposal)</div>
+                          <div>• 50% Advance: ₹{Math.round(grandTotal * 0.50).toLocaleString('en-IN')}/- (Due in 7 days)</div>
+                          <div>• Final Balance: Due 15 days before departure</div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 );
@@ -1100,24 +1129,41 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
               <CreditCard className="w-4 h-4 text-amber-700" />
               <span>Payment Terms & Timelines</span>
             </div>
-            <ul className="space-y-2 text-xs font-semibold text-stone-700 leading-relaxed">
-              <li className="flex items-start gap-2.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-600 shrink-0 mt-1.5" />
-                <span><b>10% Token Amount:</b> Locks your itinerary proposal, dates and begins slot reservations.</span>
-              </li>
-              <li className="flex items-start gap-2.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-600 shrink-0 mt-1.5" />
-                <span><b>50% Advance Payment:</b> Payable within <b>7 days</b> of token payment to confirm hotel stays and private transport.</span>
-              </li>
-              <li className="flex items-start gap-2.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-600 shrink-0 mt-1.5" />
-                <span><b>Final Balance Payment:</b> Must be received at least <b>15 days prior to departure</b> to release final confirmation vouchers and driver allocation.</span>
-              </li>
-              <li className="flex items-start gap-2.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-600 shrink-0 mt-1.5" />
-                <span>All bookings are subject to availability and confirmation from respective suppliers at the time of payment.</span>
-              </li>
-            </ul>
+            {isFullPaymentOnly ? (
+              <ul className="space-y-2 text-xs font-semibold text-stone-700 leading-relaxed">
+                <li className="flex items-start gap-2.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-600 shrink-0 mt-1.5" />
+                  <span><b>100% Full Payment at Booking:</b> 100% full amount is payable in a single transaction at the time of booking to confirm and lock beachfront camping tents, buffet meals, DJ setup, bonfire, and group activities.</span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-600 shrink-0 mt-1.5" />
+                  <span><b>Single Installment:</b> No split installments or partial token options apply for this event. 100% clearance confirms your team reservation immediately.</span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-600 shrink-0 mt-1.5" />
+                  <span>All bookings are subject to availability and campsite confirmation at the time of receipt of full payment.</span>
+                </li>
+              </ul>
+            ) : (
+              <ul className="space-y-2 text-xs font-semibold text-stone-700 leading-relaxed">
+                <li className="flex items-start gap-2.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-600 shrink-0 mt-1.5" />
+                  <span><b>10% Token Amount:</b> Locks your itinerary proposal, dates and begins slot reservations.</span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-600 shrink-0 mt-1.5" />
+                  <span><b>50% Advance Payment:</b> Payable within <b>7 days</b> of token payment to confirm hotel stays and private transport.</span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-600 shrink-0 mt-1.5" />
+                  <span><b>Final Balance Payment:</b> Must be received at least <b>15 days prior to departure</b> to release final confirmation vouchers and driver allocation.</span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-600 shrink-0 mt-1.5" />
+                  <span>All bookings are subject to availability and confirmation from respective suppliers at the time of payment.</span>
+                </li>
+              </ul>
+            )}
           </div>
 
           {/* 2. CANCELLATION POLICY */}

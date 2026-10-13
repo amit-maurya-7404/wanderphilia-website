@@ -11,14 +11,6 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
-export async function generateStaticParams() {
-  const all = getAllManualItineraries();
-  return all.flatMap(it => [
-    { slug: it.id },
-    { slug: it.slug }
-  ]);
-}
-
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const itinerary = getManualItinerary(slug);

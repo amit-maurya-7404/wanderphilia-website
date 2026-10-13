@@ -146,4 +146,6 @@ export interface ManualItinerary {
   zohoLeadId?: string;
   inquiryId?: string;
   enableOnlineBooking?: boolean;
+  fullPaymentOnly?: boolean;
 }
+

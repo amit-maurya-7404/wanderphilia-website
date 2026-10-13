@@ -91,8 +91,6 @@ export function ItineraryBookModal({
 
   // Indian trips have 0% TCS. International trips have GST + TCS.
   const isIntl = isInternationalTrip(destination, '');
-  const effectiveTcsPct = tcsPercentage !== undefined ? tcsPercentage : (isIntl ? 2 : 0);
-  x``
   const alreadyPaid = Number(advanceAmountPaid || 0);
   const tenPercentAmount = Math.round(totalQuotationAmount * 0.1);
   const fiftyPercentAmount = Math.round(totalQuotationAmount * 0.5);
