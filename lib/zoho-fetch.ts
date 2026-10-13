@@ -235,8 +235,27 @@ export async function fetchZohoLeadById(leadIdOrQuery: string): Promise<Normaliz
     noOfDays: Number(rawLead.No_of_Days) || (dayActivities.length > 0 ? dayActivities.length : 0),
     noOfNights: Number(rawLead.No_of_Nights) || 0,
     numberOfGuests: Number(rawLead.Number_Of_Guest || rawLead.Adults) || 2,
-    adults: Number(rawLead.Adults || rawLead.Number_Of_Guest) || 2,
-    kids: Number(rawLead.Kids || rawLead.Children || rawLead.Number_Of_Children || 0),
+    adults: (() => {
+      const a = Number(rawLead.Adults || rawLead.adults || rawLead.Number_Of_Adults);
+      const g = Number(rawLead.Number_Of_Guest || rawLead.Number_Of_Guests);
+      return !isNaN(a) && a > 0 ? a : (!isNaN(g) && g > 0 ? g : 2);
+    })(),
+    kids: (() => {
+      const k = Number(rawLead.Kids || rawLead.kids || rawLead.Children || rawLead.children || rawLead.Number_Of_Children || rawLead.Number_Of_Kids);
+      if (!isNaN(k) && k > 0) return k;
+      if (rawLead.Kids_Age && !isNaN(Number(rawLead.Kids_Age)) && Number(rawLead.Kids_Age) > 0) return Number(rawLead.Kids_Age);
+      let childAgesCount = 0;
+      for (let c = 1; c <= 10; c++) {
+        if (rawLead[`Child_${c}_Age`] !== undefined && rawLead[`Child_${c}_Age`] !== null && rawLead[`Child_${c}_Age`] !== '') {
+          childAgesCount++;
+        }
+      }
+      if (childAgesCount > 0) return childAgesCount;
+      const g = Number(rawLead.Number_Of_Guest || rawLead.Number_Of_Guests);
+      const a = Number(rawLead.Adults || rawLead.adults);
+      if (!isNaN(g) && !isNaN(a) && g > a) return g - a;
+      return 0;
+    })(),
     preferredRoomCategory: toSafeString(rawLead.Preferred_Room_Category, 'Standard'),
     mealPlan: toSafeString(rawLead.Meal_Plan || rawLead.mealPlan || rawLead.MealPlan, ''),
     vehicleType: toSafeString(rawLead.Vehicle_Type || rawLead.Vehicle || rawLead.vehicleType || rawLead.Cab_Type, 'AC Vehicle'),
@@ -244,8 +263,26 @@ export async function fetchZohoLeadById(leadIdOrQuery: string): Promise<Normaliz
     travelStyle: toSafeString(rawLead.Travel_Style, 'Family Trip'),
     finalQuotationAmount: rawLead.Final_Quotation_Amount ? Number(rawLead.Final_Quotation_Amount) : (rawLead.Total_Package_Cost ? Number(rawLead.Total_Package_Cost) : (rawLead.Quotation_Amount ? Number(rawLead.Quotation_Amount) : (rawLead.Expected_Revenue ? Number(rawLead.Expected_Revenue) : (rawLead.Amount ? Number(rawLead.Amount) : undefined)))),
     marginPercentage: rawLead.Margin_Percentage !== undefined ? Number(rawLead.Margin_Percentage) : (rawLead.Margin !== undefined ? Number(rawLead.Margin) : (rawLead.Markup !== undefined ? Number(rawLead.Markup) : undefined)),
-    perAdultPrice: rawLead.Per_Adult_Price ? Number(rawLead.Per_Adult_Price) : (rawLead.Per_Adult_Cost ? Number(rawLead.Per_Adult_Cost) : (rawLead.Price_Per_Adult ? Number(rawLead.Price_Per_Adult) : (rawLead.Adult_Price ? Number(rawLead.Adult_Price) : undefined))),
-    perKidPrice: rawLead.Per_Kid_Price ? Number(rawLead.Per_Kid_Price) : (rawLead.Per_Child_Price ? Number(rawLead.Per_Child_Price) : (rawLead.Price_Per_Kid ? Number(rawLead.Price_Per_Kid) : (rawLead.Child_Price ? Number(rawLead.Child_Price) : undefined))),
+    perAdultPrice: rawLead.Per_Adult_Cost !== undefined && rawLead.Per_Adult_Cost !== null && !isNaN(Number(rawLead.Per_Adult_Cost))
+      ? Number(rawLead.Per_Adult_Cost)
+      : (rawLead.Per_Adult_Price !== undefined && rawLead.Per_Adult_Price !== null && !isNaN(Number(rawLead.Per_Adult_Price))
+      ? Number(rawLead.Per_Adult_Price)
+      : (rawLead.Price_Per_Adult !== undefined && rawLead.Price_Per_Adult !== null && !isNaN(Number(rawLead.Price_Per_Adult))
+      ? Number(rawLead.Price_Per_Adult)
+      : (rawLead.Adult_Price !== undefined && rawLead.Adult_Price !== null && !isNaN(Number(rawLead.Adult_Price))
+      ? Number(rawLead.Adult_Price)
+      : undefined))),
+    perKidPrice: rawLead.Per_Child_Cost !== undefined && rawLead.Per_Child_Cost !== null && !isNaN(Number(rawLead.Per_Child_Cost))
+      ? Number(rawLead.Per_Child_Cost)
+      : (rawLead.Per_Child_Price !== undefined && rawLead.Per_Child_Price !== null && !isNaN(Number(rawLead.Per_Child_Price))
+      ? Number(rawLead.Per_Child_Price)
+      : (rawLead.Per_Kid_Price !== undefined && rawLead.Per_Kid_Price !== null && !isNaN(Number(rawLead.Per_Kid_Price))
+      ? Number(rawLead.Per_Kid_Price)
+      : (rawLead.Price_Per_Kid !== undefined && rawLead.Price_Per_Kid !== null && !isNaN(Number(rawLead.Price_Per_Kid))
+      ? Number(rawLead.Price_Per_Kid)
+      : (rawLead.Child_Price !== undefined && rawLead.Child_Price !== null && !isNaN(Number(rawLead.Child_Price))
+      ? Number(rawLead.Child_Price)
+      : undefined)))),
     advanceAmountPaid: rawLead.Advance_Amount_Paid ? Number(rawLead.Advance_Amount_Paid) : undefined,
     balancePendingAmount: rawLead.Balance_Pending_Amount ? Number(rawLead.Balance_Pending_Amount) : undefined,
     costingRequestStatus: toSafeString(rawLead.Costing_Request_Status, ''),

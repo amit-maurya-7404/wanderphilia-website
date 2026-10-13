@@ -4141,10 +4141,16 @@ export function itineraryDocumentToManualItinerary(itinerary: ItineraryDocument)
   const finalQuotationAmount = itinerary.finalQuotationAmount ?? itinerary.rawZohoData?.finalQuotationAmount ?? (itinerary.rawZohoData?.Final_Quotation_Amount ? Number(itinerary.rawZohoData.Final_Quotation_Amount) : (itinerary.rawZohoData?.Total_Package_Cost ? Number(itinerary.rawZohoData.Total_Package_Cost) : (itinerary.rawZohoData?.Quotation_Amount ? Number(itinerary.rawZohoData.Quotation_Amount) : (itinerary.rawZohoData?.Expected_Revenue ? Number(itinerary.rawZohoData.Expected_Revenue) : undefined))));
 
   const adults = Number(itinerary.adults ?? itinerary.rawZohoData?.adults ?? itinerary.rawZohoData?.Adults ?? guests) || 2;
-  const kids = Number(itinerary.kids ?? itinerary.rawZohoData?.kids ?? itinerary.rawZohoData?.Kids ?? itinerary.rawZohoData?.Children ?? 0);
+  const kids = Number(
+    itinerary.kids !== undefined && itinerary.kids !== null
+      ? itinerary.kids
+      : (itinerary.rawZohoData?.kids !== undefined && itinerary.rawZohoData?.kids !== null
+      ? itinerary.rawZohoData.kids
+      : (itinerary.rawZohoData?.Kids ?? itinerary.rawZohoData?.Children ?? (itinerary.rawZohoData?.Kids_Age && !isNaN(Number(itinerary.rawZohoData.Kids_Age)) ? Number(itinerary.rawZohoData.Kids_Age) : 0)))
+  );
 
-  const perAdultPrice = itinerary.perAdultPrice ?? itinerary.rawZohoData?.perAdultPrice ?? (itinerary.rawZohoData?.Per_Adult_Price ? Number(itinerary.rawZohoData.Per_Adult_Price) : (finalQuotationAmount && adults > 0 ? Math.round(finalQuotationAmount / adults) : undefined));
-  const perKidPrice = itinerary.perKidPrice ?? itinerary.rawZohoData?.perKidPrice ?? (itinerary.rawZohoData?.Per_Kid_Price ? Number(itinerary.rawZohoData.Per_Kid_Price) : (itinerary.rawZohoData?.Per_Child_Price ? Number(itinerary.rawZohoData.Per_Child_Price) : undefined));
+  const perAdultPrice = itinerary.perAdultPrice ?? itinerary.rawZohoData?.perAdultPrice ?? (itinerary.rawZohoData?.Per_Adult_Cost ? Number(itinerary.rawZohoData.Per_Adult_Cost) : (itinerary.rawZohoData?.Per_Adult_Price ? Number(itinerary.rawZohoData.Per_Adult_Price) : (finalQuotationAmount && adults > 0 && (!kids || kids === 0) ? Math.round(finalQuotationAmount / adults) : undefined)));
+  const perKidPrice = itinerary.perKidPrice ?? itinerary.rawZohoData?.perKidPrice ?? (itinerary.rawZohoData?.Per_Child_Cost ? Number(itinerary.rawZohoData.Per_Child_Cost) : (itinerary.rawZohoData?.Per_Child_Price ? Number(itinerary.rawZohoData.Per_Child_Price) : (itinerary.rawZohoData?.Per_Kid_Price ? Number(itinerary.rawZohoData.Per_Kid_Price) : undefined)));
 
   const advanceAmountPaid = Number(
     itinerary.advanceAmountPaid ??
@@ -4165,13 +4171,13 @@ export function itineraryDocumentToManualItinerary(itinerary: ItineraryDocument)
   const gstPercentage = itinerary.gstPercentage !== undefined ? itinerary.gstPercentage : 5;
   const tcsPercentage = isIntl ? (itinerary.tcsPercentage !== undefined ? itinerary.tcsPercentage : 2) : 0;
 
-  let baseAmount = itinerary.baseAmount ?? itinerary.rawZohoData?.Base_Amount;
+  let baseAmount = itinerary.baseAmount ?? itinerary.rawZohoData?.Base_Amount ?? itinerary.rawZohoData?.baseAmount;
   if (baseAmount === undefined && finalQuotationAmount) {
     const taxMultiplier = 1 + (gstPercentage + tcsPercentage) / 100;
     baseAmount = Math.round(finalQuotationAmount / taxMultiplier);
   }
 
-  let gstAmount = itinerary.gstAmount ?? itinerary.rawZohoData?.GST_Amount;
+  let gstAmount = itinerary.gstAmount ?? itinerary.rawZohoData?.GST_Amount ?? itinerary.rawZohoData?.gstAmount;
   if (gstAmount === undefined && baseAmount) {
     gstAmount = Math.round(baseAmount * (gstPercentage / 100));
   }

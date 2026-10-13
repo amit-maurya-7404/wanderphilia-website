@@ -21,6 +21,8 @@ export default function ItineraryTestPage() {
   // Base quotation from Zoho and manual margin percentage state
   const [baseQuotation, setBaseQuotation] = useState<string>('');
   const [marginPercent, setMarginPercent] = useState<string>('');
+  const [basePerAdult, setBasePerAdult] = useState<string>('');
+  const [basePerKid, setBasePerKid] = useState<string>('');
 
   const [formData, setFormData] = useState({
     First_Name: '',
@@ -37,6 +39,10 @@ export default function ItineraryTestPage() {
     Preferred_Start_date: '',
     Travel_End_Date: '',
     Number_Of_Guest: '2',
+    Adults: '2',
+    Kids: '0',
+    Per_Adult_Price: '',
+    Per_Kid_Price: '',
     Travel_Style: 'Family Trip',
     Trip_Type: 'Customised Trip',
     Hotel_Name: '',
@@ -113,17 +119,30 @@ export default function ItineraryTestPage() {
     }
 
     if (!val || isNaN(Number(val))) {
-      if (baseQuotation) {
-        setFormData(prev => ({ ...prev, Final_Quotation_Amount: baseQuotation }));
-      }
+      setFormData(prev => ({
+        ...prev,
+        Final_Quotation_Amount: baseQuotation || prev.Final_Quotation_Amount,
+        Per_Adult_Price: basePerAdult || prev.Per_Adult_Price,
+        Per_Kid_Price: basePerKid || prev.Per_Kid_Price
+      }));
       return;
     }
 
     const pct = Number(val);
-    if (effectiveBase > 0) {
-      const finalAmount = Math.round(effectiveBase * (1 + pct / 100));
-      setFormData(prev => ({ ...prev, Final_Quotation_Amount: String(finalAmount) }));
-    }
+    const finalAmount = effectiveBase > 0 ? Math.round(effectiveBase * (1 + pct / 100)) : 0;
+
+    const bAdult = Number(basePerAdult) || 0;
+    const finalAdult = bAdult > 0 ? Math.round(bAdult * (1 + pct / 100)) : undefined;
+
+    const bKid = Number(basePerKid) || 0;
+    const finalKid = bKid > 0 ? Math.round(bKid * (1 + pct / 100)) : undefined;
+
+    setFormData(prev => ({
+      ...prev,
+      Final_Quotation_Amount: finalAmount > 0 ? String(finalAmount) : prev.Final_Quotation_Amount,
+      Per_Adult_Price: finalAdult !== undefined ? String(finalAdult) : prev.Per_Adult_Price,
+      Per_Kid_Price: finalKid !== undefined ? String(finalKid) : prev.Per_Kid_Price
+    }));
   };
 
   const handleBaseQuotationChange = (val: string) => {
@@ -220,16 +239,35 @@ export default function ItineraryTestPage() {
       const rawZohoQuote = lead.finalQuotationAmount ? String(lead.finalQuotationAmount) : '';
       setBaseQuotation(rawZohoQuote);
 
+      const rawZohoAdult = lead.perAdultPrice ? String(lead.perAdultPrice) : '';
+      const rawZohoKid = lead.perKidPrice ? String(lead.perKidPrice) : '';
+      setBasePerAdult(rawZohoAdult);
+      setBasePerKid(rawZohoKid);
+
       // Determine margin: if Zoho CRM has margin field use that, else use existing entered margin
       const effectiveMargin = lead.marginPercentage !== undefined ? String(lead.marginPercentage) : marginPercent;
       if (lead.marginPercentage !== undefined && !marginPercent) {
         setMarginPercent(effectiveMargin);
       }
 
+      const mPct = Number(effectiveMargin) || 0;
       let calculatedFinal = rawZohoQuote;
-      if (rawZohoQuote && effectiveMargin && !isNaN(Number(effectiveMargin)) && Number(effectiveMargin) > 0) {
-        calculatedFinal = String(Math.round(Number(rawZohoQuote) * (1 + Number(effectiveMargin) / 100)));
+      if (rawZohoQuote && mPct > 0) {
+        calculatedFinal = String(Math.round(Number(rawZohoQuote) * (1 + mPct / 100)));
       }
+
+      let calculatedAdult = rawZohoAdult;
+      if (rawZohoAdult && mPct > 0) {
+        calculatedAdult = String(Math.round(Number(rawZohoAdult) * (1 + mPct / 100)));
+      }
+
+      let calculatedKid = rawZohoKid;
+      if (rawZohoKid && mPct > 0) {
+        calculatedKid = String(Math.round(Number(rawZohoKid) * (1 + mPct / 100)));
+      }
+
+      const fetchedAdults = Number(lead.adults || 2);
+      const fetchedKids = Number(lead.kids || 0);
 
       setFormData({
         First_Name: lead.firstName || '',
@@ -245,7 +283,11 @@ export default function ItineraryTestPage() {
         No_of_Nights: totalNights > 0 ? String(totalNights) : '',
         Preferred_Start_date: lead.travelStartDate || '',
         Travel_End_Date: lead.travelEndDate || '',
-        Number_Of_Guest: String(lead.numberOfGuests || 2),
+        Number_Of_Guest: String(fetchedAdults + fetchedKids),
+        Adults: String(fetchedAdults),
+        Kids: String(fetchedKids),
+        Per_Adult_Price: calculatedAdult,
+        Per_Kid_Price: calculatedKid,
         Travel_Style: lead.travelStyle || 'Family Trip',
         Trip_Type: lead.tripType || 'Customised Trip',
         Hotel_Name: hotelNames,
@@ -294,8 +336,12 @@ export default function ItineraryTestPage() {
         noOfNights: Number(formData.No_of_Nights) || 0,
         Preferred_Start_date: formData.Preferred_Start_date,
         Travel_End_Date: formData.Travel_End_Date,
-        Number_Of_Guest: Number(formData.Number_Of_Guest) || 2,
-        numberOfGuests: Number(formData.Number_Of_Guest) || 2,
+        Adults: Number(formData.Adults || 2),
+        adults: Number(formData.Adults || 2),
+        Kids: Number(formData.Kids || 0),
+        kids: Number(formData.Kids || 0),
+        Number_Of_Guest: Number(formData.Adults || 2) + Number(formData.Kids || 0),
+        numberOfGuests: Number(formData.Adults || 2) + Number(formData.Kids || 0),
         Travel_Style: formData.Travel_Style,
         travelStyle: formData.Travel_Style,
         Trip_Type: formData.Trip_Type,
@@ -307,9 +353,14 @@ export default function ItineraryTestPage() {
         Meal_Plan: formData.Meal_Plan,
         mealPlan: formData.Meal_Plan,
         Final_Quotation_Amount: formData.Final_Quotation_Amount ? Number(formData.Final_Quotation_Amount) : undefined,
+        finalQuotationAmount: formData.Final_Quotation_Amount ? Number(formData.Final_Quotation_Amount) : undefined,
         baseQuotationAmount: baseQuotation ? Number(baseQuotation) : undefined,
         marginPercentage: marginPercent ? Number(marginPercent) : 0,
-        marginAmount: ((Number(formData.Final_Quotation_Amount) || 0) - (Number(baseQuotation) || 0)) || 0
+        marginAmount: ((Number(formData.Final_Quotation_Amount) || 0) - (Number(baseQuotation) || 0)) || 0,
+        Per_Adult_Price: formData.Per_Adult_Price ? Number(formData.Per_Adult_Price) : undefined,
+        perAdultPrice: formData.Per_Adult_Price ? Number(formData.Per_Adult_Price) : undefined,
+        Per_Kid_Price: formData.Per_Kid_Price ? Number(formData.Per_Kid_Price) : undefined,
+        perKidPrice: formData.Per_Kid_Price ? Number(formData.Per_Kid_Price) : undefined
       };
 
       const response = await fetch('/api/webhook/zoho', {
@@ -648,13 +699,44 @@ export default function ItineraryTestPage() {
 
                 <div>
                   <label className="text-[10px] uppercase font-bold text-slate-500 block mb-1">
-                    Number of Guests
+                    Adults
                   </label>
                   <Input
-                    value={formData.Number_Of_Guest}
-                    onChange={(e) => setFormData({ ...formData, Number_Of_Guest: e.target.value })}
+                    type="number"
+                    min="1"
+                    value={formData.Adults}
+                    onChange={(e) => {
+                      const a = e.target.value;
+                      const k = formData.Kids || '0';
+                      setFormData({
+                        ...formData,
+                        Adults: a,
+                        Number_Of_Guest: String((Number(a) || 0) + (Number(k) || 0))
+                      });
+                    }}
                     required
-                    className="rounded-xl border-slate-200 font-semibold"
+                    className="rounded-xl border-slate-200 font-bold"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-[10px] uppercase font-bold text-slate-500 block mb-1">
+                    Kids
+                  </label>
+                  <Input
+                    type="number"
+                    min="0"
+                    value={formData.Kids}
+                    onChange={(e) => {
+                      const k = e.target.value;
+                      const a = formData.Adults || '2';
+                      setFormData({
+                        ...formData,
+                        Kids: k,
+                        Number_Of_Guest: String((Number(a) || 0) + (Number(k) || 0))
+                      });
+                    }}
+                    className="rounded-xl border-slate-200 font-bold"
                   />
                 </div>
 
@@ -859,7 +941,7 @@ export default function ItineraryTestPage() {
 
                   <div>
                     <label className="text-[10px] uppercase font-bold text-emerald-800 block mb-1 flex items-center justify-between">
-                      <span className="font-extrabold">Final Quotation (₹)</span>
+                      <span className="font-extrabold">Final Package Base (₹)</span>
                       {marginAmount > 0 && (
                         <span className="text-[10px] font-bold text-emerald-700">
                           (+₹{marginAmount.toLocaleString('en-IN')})
@@ -875,25 +957,64 @@ export default function ItineraryTestPage() {
                   </div>
                 </div>
 
-                {/* Live Calculation Explainer */}
+                {/* Per Adult Cost & Per Child Cost Breakdown */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-2 border-t border-slate-200/60">
+                  <div className="bg-white/80 rounded-xl p-3 border border-slate-200">
+                    <label className="text-[10px] uppercase font-bold text-slate-600 block mb-1 flex items-center justify-between">
+                      <span>Per Adult Cost (₹)</span>
+                      {basePerAdult && (
+                        <span className="text-[9px] text-slate-400">Zoho: ₹{Number(basePerAdult).toLocaleString('en-IN')}</span>
+                      )}
+                    </label>
+                    <Input
+                      type="number"
+                      value={formData.Per_Adult_Price}
+                      onChange={(e) => setFormData({ ...formData, Per_Adult_Price: e.target.value })}
+                      placeholder="e.g. 39966"
+                      className="rounded-xl border-slate-300 font-mono font-bold text-slate-800"
+                    />
+                    {Number(formData.Per_Adult_Price) > 0 && (
+                      <div className="text-[10px] text-emerald-700 font-semibold mt-1">
+                        + 5% GST (₹{Math.round(Number(formData.Per_Adult_Price) * 0.05).toLocaleString('en-IN')}) = Grand Total ₹{Math.round(Number(formData.Per_Adult_Price) * 1.05).toLocaleString('en-IN')}/-
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="bg-white/80 rounded-xl p-3 border border-slate-200">
+                    <label className="text-[10px] uppercase font-bold text-slate-600 block mb-1 flex items-center justify-between">
+                      <span>Per Child Cost (₹)</span>
+                      {basePerKid && (
+                        <span className="text-[9px] text-slate-400">Zoho: ₹{Number(basePerKid).toLocaleString('en-IN')}</span>
+                      )}
+                    </label>
+                    <Input
+                      type="number"
+                      value={formData.Per_Kid_Price}
+                      onChange={(e) => setFormData({ ...formData, Per_Kid_Price: e.target.value })}
+                      placeholder="e.g. 11083"
+                      className="rounded-xl border-slate-300 font-mono font-bold text-slate-800"
+                    />
+                    {Number(formData.Per_Kid_Price) > 0 && (
+                      <div className="text-[10px] text-emerald-700 font-semibold mt-1">
+                        + 5% GST (₹{Math.round(Number(formData.Per_Kid_Price) * 0.05).toLocaleString('en-IN')}) = Grand Total ₹{Math.round(Number(formData.Per_Kid_Price) * 1.05).toLocaleString('en-IN')}/-
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Live Calculation Explainer with 5% GST */}
                 {(baseNum > 0 || finalNum > 0) && (
-                  <div className="pt-1 text-[11px] text-slate-600 flex flex-wrap items-center gap-2">
-                    {marginNum > 0 && baseNum > 0 ? (
-                      <span className="inline-flex items-center gap-1.5 bg-emerald-100/80 border border-emerald-300 text-emerald-900 font-medium px-3 py-1 rounded-xl shadow-xs">
+                  <div className="pt-2 border-t border-slate-200/60 text-[11px] text-slate-600 space-y-1.5">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="inline-flex items-center gap-1.5 bg-emerald-100/90 border border-emerald-300 text-emerald-950 font-medium px-3 py-1.5 rounded-xl shadow-xs">
                         <TrendingUp className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                         <span>
-                          Base Cost: <strong className="font-mono">₹{baseNum.toLocaleString('en-IN')}</strong> +{' '}
-                          <strong className="text-orange-700">{marginNum}% Margin</strong> (
-                          <strong className="font-mono text-emerald-700">+₹{marginAmount.toLocaleString('en-IN')}</strong>) ={' '}
-                          Final Quotation for Traveler:{' '}
-                          <strong className="font-mono text-emerald-900 text-xs">₹{finalNum.toLocaleString('en-IN')}</strong>
+                          Package Base (Post-Margin): <strong className="font-mono">₹{finalNum.toLocaleString('en-IN')}</strong> +{' '}
+                          <strong className="text-emerald-800">5% GST: ₹{Math.round(finalNum * 0.05).toLocaleString('en-IN')}</strong> ={' '}
+                          Total Payable: <strong className="font-mono text-emerald-950 text-xs font-black">₹{Math.round(finalNum * 1.05).toLocaleString('en-IN')}/-</strong>
                         </span>
                       </span>
-                    ) : (
-                      <span className="text-slate-500 text-[10px]">
-                        ℹ️ Base Zoho quotation is <strong>₹{(baseNum || finalNum).toLocaleString('en-IN')}</strong>. Enter margin % above to manually add your profit markup on this itinerary.
-                      </span>
-                    )}
+                    </div>
                   </div>
                 )}
               </div>

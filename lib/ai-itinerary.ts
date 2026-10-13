@@ -1109,36 +1109,123 @@ export function generateLuxuryFallback(raw: Record<string, any>): GeneratedItine
     `Monument entry fees during Sightseeing.`
   ];
 
-  const finalQuotationAmount = raw.finalQuotationAmount !== undefined ? Number(raw.finalQuotationAmount) : (raw.Final_Quotation_Amount ? Number(raw.Final_Quotation_Amount) : (raw.Total_Package_Cost ? Number(raw.Total_Package_Cost) : (raw.Quotation_Amount ? Number(raw.Quotation_Amount) : (raw.Expected_Revenue ? Number(raw.Expected_Revenue) : (raw.Amount ? Number(raw.Amount) : undefined)))));
-
   const isIntl = isInternationalTrip(dest, destType);
   const gstPercentage = raw.gstPercentage !== undefined ? Number(raw.gstPercentage) : 5;
   const tcsPercentage = raw.tcsPercentage !== undefined ? Number(raw.tcsPercentage) : (isIntl ? 2 : 0);
 
-  let baseAmount = raw.baseAmount !== undefined ? Number(raw.baseAmount) : (raw.Base_Amount ? Number(raw.Base_Amount) : undefined);
-  if (baseAmount === undefined && finalQuotationAmount) {
-    const taxMultiplier = 1 + (gstPercentage + tcsPercentage) / 100;
-    baseAmount = Math.round(finalQuotationAmount / taxMultiplier);
+  const marginPercentage = raw.marginPercentage !== undefined && raw.marginPercentage !== '' && !isNaN(Number(raw.marginPercentage))
+    ? Number(raw.marginPercentage)
+    : 0;
+
+  // Base Amount calculation:
+  // Zoho Quote + Margin = Base Amount (before taxes). 5% GST is then applied ON TOP of Base Amount!
+  let baseAmount = raw.baseAmount !== undefined && raw.baseAmount !== null
+    ? Number(raw.baseAmount)
+    : (raw.Base_Amount !== undefined && raw.Base_Amount !== null ? Number(raw.Base_Amount) : undefined);
+
+  if (baseAmount === undefined) {
+    if (raw.baseQuotationAmount !== undefined && Number(raw.baseQuotationAmount) > 0) {
+      const bq = Number(raw.baseQuotationAmount);
+      baseAmount = marginPercentage > 0 ? Math.round(bq * (1 + marginPercentage / 100)) : bq;
+    } else if (raw.Final_Quotation_Amount !== undefined && Number(raw.Final_Quotation_Amount) > 0) {
+      baseAmount = Number(raw.Final_Quotation_Amount);
+    } else if (raw.finalQuotationAmount !== undefined && Number(raw.finalQuotationAmount) > 0) {
+      const fq = Number(raw.finalQuotationAmount);
+      baseAmount = marginPercentage > 0 ? Math.round(fq * (1 + marginPercentage / 100)) : fq;
+    } else if (raw.Total_Package_Cost !== undefined && Number(raw.Total_Package_Cost) > 0) {
+      baseAmount = Number(raw.Total_Package_Cost);
+    } else if (raw.Quotation_Amount !== undefined && Number(raw.Quotation_Amount) > 0) {
+      baseAmount = Number(raw.Quotation_Amount);
+    }
   }
 
-  let gstAmount = raw.gstAmount !== undefined ? Number(raw.gstAmount) : (raw.GST_Amount ? Number(raw.GST_Amount) : undefined);
+  let gstAmount = raw.gstAmount !== undefined && raw.gstAmount !== null
+    ? Number(raw.gstAmount)
+    : (raw.GST_Amount !== undefined && raw.GST_Amount !== null ? Number(raw.GST_Amount) : undefined);
+
   if (gstAmount === undefined && baseAmount) {
     gstAmount = Math.round(baseAmount * (gstPercentage / 100));
   }
 
-  let tcsAmount = raw.tcsAmount !== undefined ? Number(raw.tcsAmount) : (raw.TCS_Amount ? Number(raw.TCS_Amount) : undefined);
+  let tcsAmount = raw.tcsAmount !== undefined && raw.tcsAmount !== null
+    ? Number(raw.tcsAmount)
+    : (raw.TCS_Amount !== undefined && raw.TCS_Amount !== null ? Number(raw.TCS_Amount) : undefined);
+
   if (tcsAmount === undefined && baseAmount && tcsPercentage > 0) {
     tcsAmount = Math.round(baseAmount * (tcsPercentage / 100));
   } else if (tcsPercentage === 0) {
     tcsAmount = 0;
   }
 
-  const adults = Number(raw.adults || raw.Adults || raw.Number_Of_Guest || raw.numberOfGuests) || 2;
-  const kids = Number(raw.kids || raw.Kids || raw.Children || raw.Number_Of_Children || 0);
+  // Grand Total for client = Base Amount + 5% GST (+ TCS if intl)
+  const finalQuotationAmount = (baseAmount !== undefined && gstAmount !== undefined)
+    ? baseAmount + gstAmount + (tcsAmount || 0)
+    : (raw.finalQuotationAmount ? Number(raw.finalQuotationAmount) : baseAmount);
 
-  const perAdultPrice = raw.perAdultPrice !== undefined ? Number(raw.perAdultPrice) : (raw.Per_Adult_Price ? Number(raw.Per_Adult_Price) : (raw.Per_Adult_Cost ? Number(raw.Per_Adult_Cost) : (raw.Price_Per_Adult ? Number(raw.Price_Per_Adult) : (raw.Adult_Price ? Number(raw.Adult_Price) : (finalQuotationAmount && adults > 0 ? Math.round(finalQuotationAmount / adults) : undefined)))));
+  const rawAdultsCount = Number(raw.Adults || raw.adults || raw.Number_Of_Adults);
+  const rawGuestCount = Number(raw.Number_Of_Guest || raw.Number_Of_Guests || raw.numberOfGuests || raw.guests);
+  const adults = !isNaN(rawAdultsCount) && rawAdultsCount > 0 ? rawAdultsCount : (!isNaN(rawGuestCount) && rawGuestCount > 0 ? rawGuestCount : 2);
 
-  const perKidPrice = raw.perKidPrice !== undefined ? Number(raw.perKidPrice) : (raw.Per_Kid_Price ? Number(raw.Per_Kid_Price) : (raw.Per_Child_Price ? Number(raw.Per_Child_Price) : (raw.Price_Per_Kid ? Number(raw.Price_Per_Kid) : (raw.Child_Price ? Number(raw.Child_Price) : undefined))));
+  let kids = Number(raw.Kids || raw.kids || raw.Children || raw.children || raw.Number_Of_Children || raw.Number_Of_Kids);
+  if (isNaN(kids) || kids <= 0) {
+    if (raw.Kids_Age && !isNaN(Number(raw.Kids_Age)) && Number(raw.Kids_Age) > 0) {
+      kids = Number(raw.Kids_Age);
+    } else {
+      let childAgesCount = 0;
+      for (let c = 1; c <= 10; c++) {
+        if (raw[`Child_${c}_Age`] !== undefined && raw[`Child_${c}_Age`] !== null && raw[`Child_${c}_Age`] !== '') {
+          childAgesCount++;
+        }
+      }
+      if (childAgesCount > 0) {
+        kids = childAgesCount;
+      } else if (!isNaN(rawGuestCount) && rawGuestCount > adults) {
+        kids = rawGuestCount - adults;
+      } else {
+        kids = 0;
+      }
+    }
+  }
+
+  let rawAdultCost = raw.perAdultPrice !== undefined && raw.perAdultPrice !== null && !isNaN(Number(raw.perAdultPrice))
+    ? Number(raw.perAdultPrice)
+    : (raw.Per_Adult_Cost !== undefined && raw.Per_Adult_Cost !== null && !isNaN(Number(raw.Per_Adult_Cost))
+    ? Number(raw.Per_Adult_Cost)
+    : (raw.Per_Adult_Price !== undefined && raw.Per_Adult_Price !== null && !isNaN(Number(raw.Per_Adult_Price))
+    ? Number(raw.Per_Adult_Price)
+    : (raw.Price_Per_Adult !== undefined && raw.Price_Per_Adult !== null && !isNaN(Number(raw.Price_Per_Adult))
+    ? Number(raw.Price_Per_Adult)
+    : (raw.Adult_Price !== undefined && raw.Adult_Price !== null && !isNaN(Number(raw.Adult_Price))
+    ? Number(raw.Adult_Price)
+    : undefined))));
+
+  if (rawAdultCost === undefined && baseAmount && adults > 0 && (!kids || kids === 0)) {
+    rawAdultCost = Math.round(baseAmount / adults);
+  }
+
+  if (rawAdultCost !== undefined && marginPercentage > 0 && raw.Per_Adult_Cost && rawAdultCost === Number(raw.Per_Adult_Cost)) {
+    rawAdultCost = Math.round(rawAdultCost * (1 + marginPercentage / 100));
+  }
+  const perAdultPrice = rawAdultCost;
+
+  let rawKidCost = raw.perKidPrice !== undefined && raw.perKidPrice !== null && !isNaN(Number(raw.perKidPrice))
+    ? Number(raw.perKidPrice)
+    : (raw.Per_Child_Cost !== undefined && raw.Per_Child_Cost !== null && !isNaN(Number(raw.Per_Child_Cost))
+    ? Number(raw.Per_Child_Cost)
+    : (raw.Per_Child_Price !== undefined && raw.Per_Child_Price !== null && !isNaN(Number(raw.Per_Child_Price))
+    ? Number(raw.Per_Child_Price)
+    : (raw.Per_Kid_Price !== undefined && raw.Per_Kid_Price !== null && !isNaN(Number(raw.Per_Kid_Price))
+    ? Number(raw.Per_Kid_Price)
+    : (raw.Price_Per_Kid !== undefined && raw.Price_Per_Kid !== null && !isNaN(Number(raw.Price_Per_Kid))
+    ? Number(raw.Price_Per_Kid)
+    : (raw.Child_Price !== undefined && raw.Child_Price !== null && !isNaN(Number(raw.Child_Price))
+    ? Number(raw.Child_Price)
+    : undefined)))));
+
+  if (rawKidCost !== undefined && marginPercentage > 0 && raw.Per_Child_Cost && rawKidCost === Number(raw.Per_Child_Cost)) {
+    rawKidCost = Math.round(rawKidCost * (1 + marginPercentage / 100));
+  }
+  const perKidPrice = rawKidCost;
 
   const advanceAmountPaid = raw.advanceAmountPaid !== undefined ? Number(raw.advanceAmountPaid) : (raw.Advance_Amount_Paid ? Number(raw.Advance_Amount_Paid) : undefined);
   const balancePendingAmount = raw.balancePendingAmount !== undefined ? Number(raw.balancePendingAmount) : (raw.Balance_Pending_Amount ? Number(raw.Balance_Pending_Amount) : undefined);
