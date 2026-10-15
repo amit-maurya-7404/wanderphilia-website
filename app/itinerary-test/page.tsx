@@ -215,26 +215,22 @@ export default function ItineraryTestPage() {
       // Assemble activities summary dynamically from Zoho subform with complete details including City_2 and En_route_Experiences
       const experiencesSummary = lead.dayActivities && lead.dayActivities.length > 0
         ? lead.dayActivities.map((d: any) => {
-            const routeText = d.city2
-              ? `${d.city} to ${d.city2}${d.enRouteExperiences ? ` via ${d.enRouteExperiences}` : ''}`
-              : (d.enRouteExperiences ? `${d.city} via ${d.enRouteExperiences}` : d.city);
+          const routeText = d.city2
+            ? `${d.city} to ${d.city2}${d.enRouteExperiences ? ` via ${d.enRouteExperiences}` : ''}`
+            : (d.enRouteExperiences ? `${d.city} via ${d.enRouteExperiences}` : d.city);
 
-            const expList = (d.experiences || []).map((e: any) => {
-              const expName = e.name || e.experienceName || '';
-              const desc = e.inclusionDescription || e.description || e.subTitle || '';
-              return desc && desc.toLowerCase() !== expName.toLowerCase() ? `${expName} (${desc})` : expName;
-            }).filter(Boolean);
+          const expList = (d.experiences || []).map((e: any) => {
+            const expName = e.name || e.experienceName || '';
+            const desc = e.inclusionDescription || e.description || e.subTitle || '';
+            return desc && desc.toLowerCase() !== expName.toLowerCase() ? `${expName} (${desc})` : expName;
+          }).filter(Boolean);
 
-            if (d.optionalExperiences) {
-              expList.push(`[Optional: ${d.optionalExperiences}]`);
-            }
+          const expStr = expList.length > 0
+            ? expList.join(' | ')
+            : (d.enRouteExperiences ? `En-Route Visit to ${d.enRouteExperiences} & Departure Transfer` : (d.pdfDescription || 'Leisure & Sightseeing'));
 
-            const expStr = expList.length > 0
-              ? expList.join(' | ')
-              : (d.enRouteExperiences ? `En-Route Visit to ${d.enRouteExperiences} & Departure Transfer` : (d.pdfDescription || 'Leisure & Sightseeing'));
-
-            return `[${d.dayText}${routeText ? ` - ${routeText}` : ''}]: ${expStr}`;
-          }).join('\n')
+          return `[${d.dayText}${routeText ? ` - ${routeText}` : ''}]: ${expStr}`;
+        }).join('\n')
         : '';
 
       const totalDays = lead.noOfDays || (lead.dayActivities?.length || 0);
@@ -407,7 +403,7 @@ export default function ItineraryTestPage() {
       <Navbar />
 
       <main className="max-w-4xl mx-auto w-full px-4 sm:px-6 py-24 grow">
-        
+
         {/* Header */}
         <div className="text-center space-y-3 mb-8">
           <span className="inline-flex items-center gap-1.5 bg-orange-100 text-orange-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
@@ -441,11 +437,10 @@ export default function ItineraryTestPage() {
             )}
 
             {!checkingOptions && verifyMessage && (
-              <span className={`inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full border ${
-                existingOptions.length > 0
+              <span className={`inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full border ${existingOptions.length > 0
                   ? 'text-amber-300 bg-amber-950/60 border-amber-500/40'
                   : 'text-emerald-400 bg-emerald-950/60 border-emerald-500/40'
-              }`}>
+                }`}>
                 <CheckCircle2 className="w-3.5 h-3.5" /> {verifyMessage}
               </span>
             )}
@@ -468,11 +463,10 @@ export default function ItineraryTestPage() {
             <Button
               onClick={handleFetchFromZoho}
               disabled={fetchingLead || !leadQuery.trim() || isSelectedOptionCreated}
-              className={`font-extrabold text-xs sm:text-sm px-6 py-5 rounded-2xl shadow-lg shrink-0 transition-all cursor-pointer ${
-                isSelectedOptionCreated
+              className={`font-extrabold text-xs sm:text-sm px-6 py-5 rounded-2xl shadow-lg shrink-0 transition-all cursor-pointer ${isSelectedOptionCreated
                   ? 'bg-slate-700 text-slate-400 cursor-not-allowed'
                   : 'bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white'
-              }`}
+                }`}
             >
               {fetchingLead ? (
                 <span className="flex items-center gap-2">
@@ -511,23 +505,21 @@ export default function ItineraryTestPage() {
                         setSelectedOptionNumber(optNum);
                       }
                     }}
-                    className={`relative rounded-2xl p-3.5 border transition-all duration-200 flex flex-col justify-between ${
-                      isCreated
+                    className={`relative rounded-2xl p-3.5 border transition-all duration-200 flex flex-col justify-between ${isCreated
                         ? 'bg-emerald-950/40 border-emerald-500/50 text-slate-300'
                         : isSelected
-                        ? 'bg-orange-500/20 border-orange-500 text-white ring-2 ring-orange-500/40 cursor-pointer scale-[1.02]'
-                        : 'bg-white/5 border-white/10 hover:border-white/25 text-slate-300 hover:text-white cursor-pointer'
-                    }`}
+                          ? 'bg-orange-500/20 border-orange-500 text-white ring-2 ring-orange-500/40 cursor-pointer scale-[1.02]'
+                          : 'bg-white/5 border-white/10 hover:border-white/25 text-slate-300 hover:text-white cursor-pointer'
+                      }`}
                   >
                     {/* TOP BADGE & DIRECT LINK */}
                     <div className="flex items-center justify-between gap-1 mb-1.5">
-                      <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full ${
-                        isCreated
+                      <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full ${isCreated
                           ? 'bg-emerald-900 text-emerald-300 border border-emerald-400/40'
                           : isSelected
-                          ? 'bg-orange-500 text-white'
-                          : 'bg-white/10 text-slate-300'
-                      }`}>
+                            ? 'bg-orange-500 text-white'
+                            : 'bg-white/10 text-slate-300'
+                        }`}>
                         Option {optNum}
                       </span>
 
@@ -561,8 +553,8 @@ export default function ItineraryTestPage() {
                         {isCreated
                           ? 'Already generated. Click "View Link" above to open.'
                           : isSelected
-                          ? `Active for Zoho Fetch & Generation`
-                          : `Click to select Option ${optNum}`}
+                            ? `Active for Zoho Fetch & Generation`
+                            : `Click to select Option ${optNum}`}
                       </p>
                     </div>
                   </div>
@@ -824,7 +816,7 @@ export default function ItineraryTestPage() {
               <h3 className="text-xs font-black uppercase tracking-wider text-slate-800 flex items-center gap-1.5">
                 <Hotel className="w-3.5 h-3.5 text-orange-600" /> 3. Stay & Accommodation Details (Zoho Leads)
               </h3>
-              
+
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="sm:col-span-2">
                   <label className="text-[10px] uppercase font-bold text-slate-500 block mb-1">
@@ -866,11 +858,10 @@ export default function ItineraryTestPage() {
                           key={pct}
                           type="button"
                           onClick={() => applyQuickMargin(pct)}
-                          className={`px-2 py-0.5 rounded-md text-[10px] font-extrabold transition cursor-pointer border ${
-                            marginPercent === String(pct)
+                          className={`px-2 py-0.5 rounded-md text-[10px] font-extrabold transition cursor-pointer border ${marginPercent === String(pct)
                               ? 'bg-orange-500 text-white border-orange-600 shadow-sm'
                               : 'bg-white text-slate-700 hover:bg-orange-50 hover:border-orange-300 border-slate-200'
-                          }`}
+                            }`}
                         >
                           +{pct}%
                         </button>

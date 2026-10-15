@@ -21,7 +21,6 @@ export interface ZohoDayActivity {
   city: string;
   city2?: string;
   enRouteExperiences?: string;
-  optionalExperiences?: string;
   experiences: ZohoExperienceItem[];
   pdfDescription?: string;
 }
@@ -187,10 +186,6 @@ export async function fetchZohoLeadById(leadIdOrQuery: string): Promise<Normaliz
 
       const rawEnRoute = row.En_route_Experiences ?? row.En_route_experiences ?? row.En_Route_Experiences ?? row.En_route ?? row.Enroute ?? row.en_route_experiences ?? '';
       const enRouteExperiences = (typeof rawEnRoute === 'object' && rawEnRoute !== null ? rawEnRoute.name : String(rawEnRoute || '')).trim();
-
-      const rawOptional = row.Optional_Experiences ?? row.Optional_experiences ?? row.optional_experiences ?? row.Optional ?? '';
-      const optionalExperiences = (typeof rawOptional === 'object' && rawOptional !== null ? rawOptional.name : String(rawOptional || '')).trim();
-
       const pdfDescription = String(row.PDF_Description || '').trim();
 
       const experiences: ZohoExperienceItem[] = [];
@@ -200,7 +195,7 @@ export async function fetchZohoLeadById(leadIdOrQuery: string): Promise<Normaliz
         const expKey = e === 1 ? (row.Experiences_and_activities || row.Experiences_1) : row[`Experiences_${e}`];
         if (!expKey) continue;
         const expName = (typeof expKey === 'object' && expKey !== null ? expKey.name : (typeof expKey === 'string' ? expKey : '')).trim();
-        
+
         if (expName && !seenExpNames.has(expName.toLowerCase())) {
           seenExpNames.add(expName.toLowerCase());
           experiences.push({
@@ -218,7 +213,6 @@ export async function fetchZohoLeadById(leadIdOrQuery: string): Promise<Normaliz
         city,
         city2: city2 || undefined,
         enRouteExperiences: enRouteExperiences || undefined,
-        optionalExperiences: optionalExperiences || undefined,
         experiences,
         pdfDescription: pdfDescription || undefined
       });
@@ -274,23 +268,23 @@ export async function fetchZohoLeadById(leadIdOrQuery: string): Promise<Normaliz
     perAdultPrice: rawLead.Per_Adult_Cost !== undefined && rawLead.Per_Adult_Cost !== null && !isNaN(Number(rawLead.Per_Adult_Cost))
       ? Number(rawLead.Per_Adult_Cost)
       : (rawLead.Per_Adult_Price !== undefined && rawLead.Per_Adult_Price !== null && !isNaN(Number(rawLead.Per_Adult_Price))
-      ? Number(rawLead.Per_Adult_Price)
-      : (rawLead.Price_Per_Adult !== undefined && rawLead.Price_Per_Adult !== null && !isNaN(Number(rawLead.Price_Per_Adult))
-      ? Number(rawLead.Price_Per_Adult)
-      : (rawLead.Adult_Price !== undefined && rawLead.Adult_Price !== null && !isNaN(Number(rawLead.Adult_Price))
-      ? Number(rawLead.Adult_Price)
-      : undefined))),
+        ? Number(rawLead.Per_Adult_Price)
+        : (rawLead.Price_Per_Adult !== undefined && rawLead.Price_Per_Adult !== null && !isNaN(Number(rawLead.Price_Per_Adult))
+          ? Number(rawLead.Price_Per_Adult)
+          : (rawLead.Adult_Price !== undefined && rawLead.Adult_Price !== null && !isNaN(Number(rawLead.Adult_Price))
+            ? Number(rawLead.Adult_Price)
+            : undefined))),
     perKidPrice: rawLead.Per_Child_Cost !== undefined && rawLead.Per_Child_Cost !== null && !isNaN(Number(rawLead.Per_Child_Cost))
       ? Number(rawLead.Per_Child_Cost)
       : (rawLead.Per_Child_Price !== undefined && rawLead.Per_Child_Price !== null && !isNaN(Number(rawLead.Per_Child_Price))
-      ? Number(rawLead.Per_Child_Price)
-      : (rawLead.Per_Kid_Price !== undefined && rawLead.Per_Kid_Price !== null && !isNaN(Number(rawLead.Per_Kid_Price))
-      ? Number(rawLead.Per_Kid_Price)
-      : (rawLead.Price_Per_Kid !== undefined && rawLead.Price_Per_Kid !== null && !isNaN(Number(rawLead.Price_Per_Kid))
-      ? Number(rawLead.Price_Per_Kid)
-      : (rawLead.Child_Price !== undefined && rawLead.Child_Price !== null && !isNaN(Number(rawLead.Child_Price))
-      ? Number(rawLead.Child_Price)
-      : undefined)))),
+        ? Number(rawLead.Per_Child_Price)
+        : (rawLead.Per_Kid_Price !== undefined && rawLead.Per_Kid_Price !== null && !isNaN(Number(rawLead.Per_Kid_Price))
+          ? Number(rawLead.Per_Kid_Price)
+          : (rawLead.Price_Per_Kid !== undefined && rawLead.Price_Per_Kid !== null && !isNaN(Number(rawLead.Price_Per_Kid))
+            ? Number(rawLead.Price_Per_Kid)
+            : (rawLead.Child_Price !== undefined && rawLead.Child_Price !== null && !isNaN(Number(rawLead.Child_Price))
+              ? Number(rawLead.Child_Price)
+              : undefined)))),
     advanceAmountPaid: rawLead.Advance_Amount_Paid ? Number(rawLead.Advance_Amount_Paid) : undefined,
     balancePendingAmount: rawLead.Balance_Pending_Amount ? Number(rawLead.Balance_Pending_Amount) : undefined,
     costingRequestStatus: toSafeString(rawLead.Costing_Request_Status, ''),

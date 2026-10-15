@@ -403,10 +403,6 @@ export function parseRawSubformToDayActivities(rawSubform: any[]): ZohoDayActivi
 
     const rawEnRoute = row.En_route_Experiences ?? row.En_route_experiences ?? row.En_Route_Experiences ?? row.En_route ?? row.Enroute ?? row.en_route_experiences ?? '';
     const enRouteExperiences = (typeof rawEnRoute === 'object' && rawEnRoute !== null ? rawEnRoute.name : String(rawEnRoute || '')).trim();
-
-    const rawOptional = row.Optional_Experiences ?? row.Optional_experiences ?? row.optional_experiences ?? row.Optional ?? '';
-    const optionalExperiences = (typeof rawOptional === 'object' && rawOptional !== null ? rawOptional.name : String(rawOptional || '')).trim();
-
     const pdfDescription = String(row.PDF_Description || '').trim();
 
     const experiences: ZohoExperienceItem[] = [];
@@ -434,7 +430,6 @@ export function parseRawSubformToDayActivities(rawSubform: any[]): ZohoDayActivi
       city,
       city2: city2 || undefined,
       enRouteExperiences: enRouteExperiences || undefined,
-      optionalExperiences: optionalExperiences || undefined,
       experiences,
       pdfDescription: pdfDescription || undefined
     });
@@ -596,17 +591,10 @@ export function parseActivitiesTextToDayActivities(text: string, defaultCity: st
         }
       }
 
-      let optionalExperiences: string | undefined = undefined;
       const experiences: ZohoExperienceItem[] = [];
       const expParts = contentSection.split(/\s*\|\s*/g).map(p => p.trim()).filter(Boolean);
 
       expParts.forEach((part) => {
-        const optMatch = part.match(/^\[?(?:Optional|On your own):\s*([^\]]+)\]?$/i);
-        if (optMatch) {
-          optionalExperiences = optMatch[1].trim();
-          return;
-        }
-
         const nameDescMatch = part.match(/^([^(]+)(?:\(([^)]+)\))?$/);
         if (nameDescMatch) {
           const name = nameDescMatch[1].trim();
@@ -632,7 +620,6 @@ export function parseActivitiesTextToDayActivities(text: string, defaultCity: st
         city: city1 || defaultCity,
         city2,
         enRouteExperiences,
-        optionalExperiences,
         experiences,
         pdfDescription: experiences.length === 0 ? contentSection : undefined
       });
@@ -973,51 +960,6 @@ export function buildCleanDayPlansFromZoho(
     // 4. DAY TIMELINE (Flowchart Step Milestones) - Sequential Day Flow
     const timeline: string[] = [];
 
-    // Optional Experiences Callout Note
-    let dayOptionalNote: string | undefined = undefined;
-    if (act.optionalExperiences) {
-      const cleanOpt = act.optionalExperiences.trim();
-      dayOptionalNote = /optional/i.test(cleanOpt) ? cleanOpt : `${cleanOpt} is optional.`;
-    }
-
-    // For intercity travel, separate experiences into departure city / en-route visits vs destination city visits
-    const fromCityOrEnRouteExps: typeof uniqueExps = [];
-    const destinationExps: typeof uniqueExps = [];
-
-    if (isInterCityTravel) {
-      const fLower = fromCity.toLowerCase().trim();
-      const tLower = toCity.toLowerCase().trim();
-
-      uniqueExps.forEach(exp => {
-        const text = `${exp.name} ${exp.inclusionDescription || ''} ${exp.description || ''}`.toLowerCase();
-        const isExplicitEnRoute = text.includes('en-route') || text.includes('en route') || text.includes('transit') || text.includes('stepwell') || text.includes('reservoir') || text.includes('toorji') || text.includes('umed sagar');
-        const mentionsFrom = fLower && (text.includes(fLower) || (fLower === 'jodhpur' && (text.includes('jodhpur') || text.includes('toorji') || text.includes('umed sagar'))) || (fLower === 'jaisalmer' && (text.includes('jaisalmer') || text.includes('patwon') || text.includes('bada bagh'))));
-        const mentionsTo = tLower && (text.includes(tLower) || text.includes('camp') || text.includes('tent') || text.includes('desert') || text.includes('dunes'));
-
-        if (isExplicitEnRoute || mentionsFrom) {
-          fromCityOrEnRouteExps.push(exp);
-        } else if (mentionsTo) {
-          destinationExps.push(exp);
-        } else {
-          if (destinationExps.length === 0 && !fromCityOrEnRouteExps.some(e => `${e.name} ${e.inclusionDescription || ''}`.toLowerCase().includes('camp'))) {
-            fromCityOrEnRouteExps.push(exp);
-          } else {
-            destinationExps.push(exp);
-          }
-        }
-      });
-
-      if (destinationExps.length > 0 && fromCityOrEnRouteExps.length === 0) {
-        const anyMentionsTo = destinationExps.some(exp => `${exp.name} ${exp.inclusionDescription || ''}`.toLowerCase().includes(tLower));
-        if (!anyMentionsTo) {
-          fromCityOrEnRouteExps.push(...destinationExps);
-          destinationExps.length = 0;
-        }
-      }
-    } else {
-      destinationExps.push(...uniqueExps);
-    }
-
     // Step 1: Morning Start / Arrival / Departure
     if (isFirstDay) {
       timeline.push(
@@ -1032,49 +974,19 @@ export function buildCleanDayPlansFromZoho(
       }
     } else if (isInterCityTravel) {
       timeline.push(`Enjoy a wholesome breakfast and complete check-out formalities in ${fromCity}.`);
+      timeline.push(
+        `Depart from ${fromCity} and proceed on a scenic drive towards ${toCity}${enRoute ? ` via ${enRoute}` : ''}${transitBadge ? ` ${transitBadge}` : ''}.`
+      );
     } else {
       timeline.push(`Enjoy breakfast at the hotel before proceeding for the day's curated sightseeing in ${city1}.`);
     }
 
-    // Step 2: From-city sights / En-route experiences visited BEFORE driving & check-in at destination
-    fromCityOrEnRouteExps.forEach(exp => {
-      const cleanName = cleanActivityTitle(exp.name);
-      const isEnRoute = cleanName.toLowerCase().includes('en-route') || exp.name.toLowerCase().includes('toorji') || exp.name.toLowerCase().includes('umed sagar') || (exp.inclusionDescription || '').toLowerCase().includes('countryside') || (exp.inclusionDescription || '').toLowerCase().includes('stepwell') || (exp.inclusionDescription || '').toLowerCase().includes('reservoir');
-
-      const keyWithDay = `${dayNum}_${cleanName.toLowerCase()}`;
-      const keyPlain = cleanName.toLowerCase();
-      const rawNameKey = `${dayNum}_${(exp.name || '').toLowerCase().trim()}`;
-      let polishedDesc: string | undefined = undefined;
-      if (polishedExperiences) {
-        polishedDesc = polishedExperiences[keyWithDay] || polishedExperiences[keyPlain] || polishedExperiences[rawNameKey];
-        if (!polishedDesc) {
-          const matchingKey = Object.keys(polishedExperiences).find(k => k.startsWith(`${dayNum}_`) && (k.includes(keyPlain) || keyPlain.includes(k.replace(/^\d+_/, ''))));
-          if (matchingKey) polishedDesc = polishedExperiences[matchingKey];
-        }
-      }
-
-      let sentence = frameExperienceSentence(exp, fromCity, polishedDesc);
-      if (sentence) {
-        if (isEnRoute && !sentence.toLowerCase().includes('en-route')) {
-          sentence = `**En-route Experience — ${cleanName}**: ${sentence.replace(/^\*\*.*?\*\*:\s*/, '')}`;
-        }
-        timeline.push(sentence);
-      }
-    });
-
-    // Step 3: En-route transit drive milestone
-    if (isInterCityTravel) {
-      timeline.push(
-        `Depart from ${fromCity} and proceed on a scenic drive towards ${toCity}${enRoute ? ` via ${enRoute}` : ''}${transitBadge ? ` ${transitBadge}` : ''}.`
-      );
-    }
-
-    // Step 4: En-route experience milestone (from Zoho subform En_route_Experiences field if specified)
+    // Step 2: En-route experience milestone (well framed)
     if (enRoute) {
       timeline.push(frameEnRouteExperienceSentence(enRoute));
     }
 
-    // Step 5: Destination Hotel Check-in (if intercity and not arrival/departure day)
+    // Step 3: Destination Hotel Check-in (if intercity and not arrival/departure day)
     if (isInterCityTravel && !isLastDay && !isFirstDay) {
       if (stayLocation) {
         timeline.push(`Arrive in ${toCity} and complete check-in formalities at ${stayLocation}.`);
@@ -1083,16 +995,17 @@ export function buildCleanDayPlansFromZoho(
       }
     }
 
-    // Step 6: Destination Zoho Experiences with proper sentence framing
-    destinationExps.forEach(exp => {
+    // Step 4: Zoho Experiences with proper sentence framing explaining what is happening
+    uniqueExps.forEach(exp => {
       const cleanName = cleanActivityTitle(exp.name);
       const keyWithDay = `${dayNum}_${cleanName.toLowerCase()}`;
       const keyPlain = cleanName.toLowerCase();
       const rawNameKey = `${dayNum}_${(exp.name || '').toLowerCase().trim()}`;
-      
+
       let polishedDesc: string | undefined = undefined;
       if (polishedExperiences) {
         polishedDesc = polishedExperiences[keyWithDay] || polishedExperiences[keyPlain] || polishedExperiences[rawNameKey];
+        // Also check partial keys if exact key wasn't matched
         if (!polishedDesc) {
           const matchingKey = Object.keys(polishedExperiences).find(k => k.startsWith(`${dayNum}_`) && (k.includes(keyPlain) || keyPlain.includes(k.replace(/^\d+_/, ''))));
           if (matchingKey) polishedDesc = polishedExperiences[matchingKey];
@@ -1105,7 +1018,7 @@ export function buildCleanDayPlansFromZoho(
       }
     });
 
-    // Step 7: Evening & Overnight / Departure
+    // Step 5: Evening & Overnight / Departure
     if (isLastDay) {
       if (!isInterCityTravel) {
         timeline.push(
@@ -1143,8 +1056,7 @@ export function buildCleanDayPlansFromZoho(
       stayLocation,
       meals: dayMeals,
       activities,
-      timeline,
-      optionalNote: dayOptionalNote || undefined
+      timeline
     });
   });
 
@@ -1333,14 +1245,14 @@ export function generateLuxuryFallback(raw: Record<string, any>): GeneratedItine
   let rawAdultCost = raw.perAdultPrice !== undefined && raw.perAdultPrice !== null && !isNaN(Number(raw.perAdultPrice))
     ? Number(raw.perAdultPrice)
     : (raw.Per_Adult_Cost !== undefined && raw.Per_Adult_Cost !== null && !isNaN(Number(raw.Per_Adult_Cost))
-    ? Number(raw.Per_Adult_Cost)
-    : (raw.Per_Adult_Price !== undefined && raw.Per_Adult_Price !== null && !isNaN(Number(raw.Per_Adult_Price))
-    ? Number(raw.Per_Adult_Price)
-    : (raw.Price_Per_Adult !== undefined && raw.Price_Per_Adult !== null && !isNaN(Number(raw.Price_Per_Adult))
-    ? Number(raw.Price_Per_Adult)
-    : (raw.Adult_Price !== undefined && raw.Adult_Price !== null && !isNaN(Number(raw.Adult_Price))
-    ? Number(raw.Adult_Price)
-    : undefined))));
+      ? Number(raw.Per_Adult_Cost)
+      : (raw.Per_Adult_Price !== undefined && raw.Per_Adult_Price !== null && !isNaN(Number(raw.Per_Adult_Price))
+        ? Number(raw.Per_Adult_Price)
+        : (raw.Price_Per_Adult !== undefined && raw.Price_Per_Adult !== null && !isNaN(Number(raw.Price_Per_Adult))
+          ? Number(raw.Price_Per_Adult)
+          : (raw.Adult_Price !== undefined && raw.Adult_Price !== null && !isNaN(Number(raw.Adult_Price))
+            ? Number(raw.Adult_Price)
+            : undefined))));
 
   if (rawAdultCost === undefined && baseAmount && adults > 0 && (!kids || kids === 0)) {
     rawAdultCost = Math.round(baseAmount / adults);
@@ -1354,16 +1266,16 @@ export function generateLuxuryFallback(raw: Record<string, any>): GeneratedItine
   let rawKidCost = raw.perKidPrice !== undefined && raw.perKidPrice !== null && !isNaN(Number(raw.perKidPrice))
     ? Number(raw.perKidPrice)
     : (raw.Per_Child_Cost !== undefined && raw.Per_Child_Cost !== null && !isNaN(Number(raw.Per_Child_Cost))
-    ? Number(raw.Per_Child_Cost)
-    : (raw.Per_Child_Price !== undefined && raw.Per_Child_Price !== null && !isNaN(Number(raw.Per_Child_Price))
-    ? Number(raw.Per_Child_Price)
-    : (raw.Per_Kid_Price !== undefined && raw.Per_Kid_Price !== null && !isNaN(Number(raw.Per_Kid_Price))
-    ? Number(raw.Per_Kid_Price)
-    : (raw.Price_Per_Kid !== undefined && raw.Price_Per_Kid !== null && !isNaN(Number(raw.Price_Per_Kid))
-    ? Number(raw.Price_Per_Kid)
-    : (raw.Child_Price !== undefined && raw.Child_Price !== null && !isNaN(Number(raw.Child_Price))
-    ? Number(raw.Child_Price)
-    : undefined)))));
+      ? Number(raw.Per_Child_Cost)
+      : (raw.Per_Child_Price !== undefined && raw.Per_Child_Price !== null && !isNaN(Number(raw.Per_Child_Price))
+        ? Number(raw.Per_Child_Price)
+        : (raw.Per_Kid_Price !== undefined && raw.Per_Kid_Price !== null && !isNaN(Number(raw.Per_Kid_Price))
+          ? Number(raw.Per_Kid_Price)
+          : (raw.Price_Per_Kid !== undefined && raw.Price_Per_Kid !== null && !isNaN(Number(raw.Price_Per_Kid))
+            ? Number(raw.Price_Per_Kid)
+            : (raw.Child_Price !== undefined && raw.Child_Price !== null && !isNaN(Number(raw.Child_Price))
+              ? Number(raw.Child_Price)
+              : undefined)))));
 
   if (rawKidCost !== undefined && marginPercentage > 0 && raw.Per_Child_Cost && rawKidCost === Number(raw.Per_Child_Cost)) {
     rawKidCost = Math.round(rawKidCost * (1 + marginPercentage / 100));
@@ -1625,7 +1537,7 @@ export async function generateItineraryContentWithAI(rawZohoData: Record<string,
   // 2. Enhance Day Headings and Polish Rough Experience Descriptions using AI
   try {
     const aiEnhancement = await generateDayHeadingsAndExperiencesWithGroq(dest, cleanDayPlans, dayActivities);
-    
+
     // Re-build cleanDayPlans passing polished experiences
     cleanDayPlans = buildCleanDayPlansFromZoho(
       dayActivities,
