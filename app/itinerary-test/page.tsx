@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Loader2, CheckCircle2, ExternalLink, Download, Search, Hotel, Calendar, Users, MapPin, Percent, TrendingUp, IndianRupee } from 'lucide-react';
 import { Parachute } from '@/components/parachute-icon';
+import { ItineraryHistorySection } from '@/components/itinerary/itinerary-history-section';
 
 export default function ItineraryTestPage() {
   const [leadQuery, setLeadQuery] = useState('');
@@ -1086,6 +1087,9 @@ export default function ItineraryTestPage() {
             </a>
           </div>
         )}
+
+        {/* 3. GENERATED ITINERARY HISTORY & AUDIT LOGS */}
+        <ItineraryHistorySection lastGeneratedId={result?.id || result?.slug} />
       </main>
 
       <Footer />
