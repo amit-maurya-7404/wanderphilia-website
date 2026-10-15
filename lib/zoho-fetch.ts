@@ -21,6 +21,7 @@ export interface ZohoDayActivity {
   city: string;
   city2?: string;
   enRouteExperiences?: string;
+  optionalExperiences?: string;
   experiences: ZohoExperienceItem[];
   pdfDescription?: string;
 }
@@ -186,6 +187,10 @@ export async function fetchZohoLeadById(leadIdOrQuery: string): Promise<Normaliz
 
       const rawEnRoute = row.En_route_Experiences ?? row.En_route_experiences ?? row.En_Route_Experiences ?? row.En_route ?? row.Enroute ?? row.en_route_experiences ?? '';
       const enRouteExperiences = (typeof rawEnRoute === 'object' && rawEnRoute !== null ? rawEnRoute.name : String(rawEnRoute || '')).trim();
+
+      const rawOptional = row.Optional_Experiences ?? row.Optional_experiences ?? row.optional_experiences ?? row.Optional ?? '';
+      const optionalExperiences = (typeof rawOptional === 'object' && rawOptional !== null ? rawOptional.name : String(rawOptional || '')).trim();
+
       const pdfDescription = String(row.PDF_Description || '').trim();
 
       const experiences: ZohoExperienceItem[] = [];
@@ -213,6 +218,7 @@ export async function fetchZohoLeadById(leadIdOrQuery: string): Promise<Normaliz
         city,
         city2: city2 || undefined,
         enRouteExperiences: enRouteExperiences || undefined,
+        optionalExperiences: optionalExperiences || undefined,
         experiences,
         pdfDescription: pdfDescription || undefined
       });

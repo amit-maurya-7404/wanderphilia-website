@@ -4338,7 +4338,16 @@ export function itineraryDocumentToManualItinerary(itinerary: ItineraryDocument)
         .replace(/\bLuxury Hotel\b/gi, 'Hotel')
     );
 
-    const { cleanedTimeline, optionalNote } = extractDayOptionalNotes(dedupedTimeline, dp.optionalNote);
+    let initialOptNote = dp.optionalNote;
+    if (!initialOptNote && subRow) {
+      const rawOpt = subRow.Optional_Experiences ?? subRow.Optional_experiences ?? subRow.optional_experiences;
+      const optStr = (typeof rawOpt === 'object' && rawOpt !== null ? rawOpt.name : String(rawOpt || '')).trim();
+      if (optStr) {
+        initialOptNote = /optional/i.test(optStr) ? optStr : `${optStr} is optional.`;
+      }
+    }
+
+    const { cleanedTimeline, optionalNote } = extractDayOptionalNotes(dedupedTimeline, initialOptNote);
 
     let cleanStayLocation = dp.stayLocation;
     if (cleanStayLocation) {

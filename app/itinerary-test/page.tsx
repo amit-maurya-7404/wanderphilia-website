@@ -225,6 +225,10 @@ export default function ItineraryTestPage() {
               return desc && desc.toLowerCase() !== expName.toLowerCase() ? `${expName} (${desc})` : expName;
             }).filter(Boolean);
 
+            if (d.optionalExperiences) {
+              expList.push(`[Optional: ${d.optionalExperiences}]`);
+            }
+
             const expStr = expList.length > 0
               ? expList.join(' | ')
               : (d.enRouteExperiences ? `En-Route Visit to ${d.enRouteExperiences} & Departure Transfer` : (d.pdfDescription || 'Leisure & Sightseeing'));
