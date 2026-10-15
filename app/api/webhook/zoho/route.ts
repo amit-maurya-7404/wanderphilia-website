@@ -207,8 +207,8 @@ export async function POST(req: NextRequest) {
       galleryImages: images.gallery,
       status: 'active',
       rawZohoData: {
-        ...rawBody,
         ...(rawBody.rawLeadData || {}),
+        ...rawBody,
         Final_Quotation_Amount: aiContent.finalQuotationAmount,
         finalQuotationAmount: aiContent.finalQuotationAmount,
         baseQuotationAmount,
@@ -231,6 +231,8 @@ export async function POST(req: NextRequest) {
         hotelName: details.hotelName || aiContent.hotelName,
         Room_Category: details.roomCategory || aiContent.roomCategory,
         preferredRoomCategory: details.roomCategory || aiContent.roomCategory,
+        Preferred_Room_Category: details.roomCategory || aiContent.roomCategory,
+        Vehicle_Type: rawBody.Vehicle_Type || rawBody.vehicleType || 'AC Vehicle',
         Meal_Plan: details.mealPlan || aiContent.mealPlan,
         mealPlan: details.mealPlan || aiContent.mealPlan,
         Destination: details.destination || aiContent.destination,

@@ -493,11 +493,28 @@ export function parseHotelStringToStays(hotelStr: string, defaultCity: string = 
 export function extractAllHotelsFromZohoData(source: any, defaultDest: string = '', defaultNights: number = 1): ZohoHotelStay[] {
   if (!source || typeof source !== 'object') return [];
 
-  let hotels: ZohoHotelStay[] = [];
+  // 1. If explicit hotels array is already present (e.g. from user manual edit in itinerary-test)
   if (Array.isArray(source.hotels) && source.hotels.length > 0) {
-    hotels = [...source.hotels];
+    return source.hotels.map((h: any, i: number) => ({
+      index: h.index || i + 1,
+      hotelName: (h.hotelName || '').trim() || 'Hotel',
+      city: (h.city || defaultDest).trim(),
+      nights: Number(h.nights) || 1,
+      roomCategory: h.roomCategory || undefined,
+      stayDates: h.stayDates || ''
+    }));
   }
 
+  // 2. If user manually edited Hotel_Name string (e.g. from itinerary-test form)
+  const hotelStr = (source.Hotel_Name || source.hotelName || source.hotel || source.Hotel || source.stay || '').trim();
+  if (hotelStr && (hotelStr.includes('+') || hotelStr.includes('(') || hotelStr.includes(' - ') || hotelStr.includes('|'))) {
+    const parsedStays = parseHotelStringToStays(hotelStr, defaultDest, defaultNights);
+    if (parsedStays.length > 0) {
+      return parsedStays;
+    }
+  }
+
+  let hotels: ZohoHotelStay[] = [];
   const rawLeadSource = source.rawLeadData || source;
   if (rawLeadSource && typeof rawLeadSource === 'object') {
     const extractedFromFields: ZohoHotelStay[] = [];
@@ -528,8 +545,7 @@ export function extractAllHotelsFromZohoData(source: any, defaultDest: string = 
     }
   }
 
-  // If still empty, check hotelName / hotel string
-  const hotelStr = source.hotelName || source.Hotel_Name || source.hotel || source.Hotel || source.stay || '';
+  // If still empty, check fallback hotel string
   if (hotels.length === 0 && hotelStr) {
     if (hotelStr.includes('+') || hotelStr.includes('(') || hotelStr.includes(' - ') || hotelStr.includes('|')) {
       hotels = parseHotelStringToStays(hotelStr, defaultDest, defaultNights);
