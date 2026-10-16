@@ -42,8 +42,12 @@ export async function GET(req: NextRequest) {
     const optionsMap: Record<number, any> = {};
 
     matchingDocs.forEach((doc, idx) => {
-      let optNum = (doc as any).optionNumber;
-      if (!optNum) {
+      let optNum: number;
+      const rawOpt = (doc as any).optionNumber;
+      if (rawOpt !== undefined && rawOpt !== null && rawOpt !== '') {
+        const parsed = parseInt(String(rawOpt).replace(/\D+/g, ''), 10);
+        optNum = !isNaN(parsed) && parsed > 0 ? parsed : 1;
+      } else {
         // If slug has pattern "name-2-hash", extract option number
         const matchOpt = doc.slug?.match(/-(\d+)-[a-z0-9]+$/i) || doc.id?.match(/-(\d+)-[a-z0-9]+$/i);
         if (matchOpt) {

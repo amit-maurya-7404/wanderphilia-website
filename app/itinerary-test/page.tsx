@@ -506,15 +506,15 @@ export default function ItineraryTestPage() {
                   <div
                     key={optNum}
                     onClick={() => {
-                      if (!isCreated) {
-                        setSelectedOptionNumber(optNum);
-                      }
+                      setSelectedOptionNumber(optNum);
                     }}
-                    className={`relative rounded-2xl p-3.5 border transition-all duration-200 flex flex-col justify-between ${isCreated
-                        ? 'bg-emerald-950/40 border-emerald-500/50 text-slate-300'
+                    className={`relative rounded-2xl p-3.5 border transition-all duration-200 flex flex-col justify-between cursor-pointer ${isCreated
+                        ? isSelected
+                          ? 'bg-emerald-950/70 border-emerald-400 text-white ring-2 ring-emerald-400/50 scale-[1.02]'
+                          : 'bg-emerald-950/30 border-emerald-500/40 text-slate-300 hover:border-emerald-400/60'
                         : isSelected
-                          ? 'bg-orange-500/20 border-orange-500 text-white ring-2 ring-orange-500/40 cursor-pointer scale-[1.02]'
-                          : 'bg-white/5 border-white/10 hover:border-white/25 text-slate-300 hover:text-white cursor-pointer'
+                          ? 'bg-orange-500/20 border-orange-500 text-white ring-2 ring-orange-500/40 scale-[1.02]'
+                          : 'bg-white/5 border-white/10 hover:border-white/25 text-slate-300 hover:text-white'
                       }`}
                   >
                     {/* TOP BADGE & DIRECT LINK */}
@@ -525,7 +525,7 @@ export default function ItineraryTestPage() {
                             ? 'bg-orange-500 text-white'
                             : 'bg-white/10 text-slate-300'
                         }`}>
-                        Option {optNum}
+                        Option {optNum} {isCreated ? '• Created' : '• New Link'}
                       </span>
 
                       {isCreated && existing && (
@@ -536,7 +536,7 @@ export default function ItineraryTestPage() {
                           onClick={(e) => e.stopPropagation()}
                           className="inline-flex items-center gap-1 text-[11px] font-black text-amber-300 hover:text-amber-200 underline underline-offset-2 transition bg-black/40 px-2 py-0.5 rounded-md border border-amber-300/30"
                         >
-                          <span>View Link</span>
+                          <span>Open Link</span>
                           <ExternalLink className="w-3 h-3" />
                         </a>
                       )}
@@ -548,18 +548,20 @@ export default function ItineraryTestPage() {
                         {isCreated ? (
                           <>
                             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                            <span className="truncate">Created ({existing?.id || existing?.slug})</span>
+                            <span className="truncate">Option {optNum} ({existing?.id || existing?.slug})</span>
                           </>
                         ) : (
-                          <span>Option {optNum} {optNum === 1 ? '(Base / Initial)' : optNum === 2 ? '(2nd Revision)' : '(3rd Upgrade)'}</span>
+                          <span>Option {optNum} (New Link)</span>
                         )}
                       </div>
                       <p className="text-[10px] text-slate-400 leading-tight">
                         {isCreated
-                          ? 'Already generated. Click "View Link" above to open.'
+                          ? isSelected
+                            ? 'Selected: Click generate below to update this existing option link.'
+                            : 'Already created. Click to select & update, or "Open Link" to view.'
                           : isSelected
-                            ? `Active for Zoho Fetch & Generation`
-                            : `Click to select Option ${optNum}`}
+                            ? 'Selected: Generates a brand new link for this option.'
+                            : `Click to select Option ${optNum} for a new link.`}
                       </p>
                     </div>
                   </div>
@@ -1042,12 +1044,16 @@ export default function ItineraryTestPage() {
               {loading ? (
                 <span className="flex items-center gap-2">
                   <Loader2 className="w-5 h-5 animate-spin" />
-                  Generating Luxury Itinerary Content with AI & Saving to MongoDB...
+                  {isSelectedOptionCreated
+                    ? `Updating Option ${selectedOptionNumber} Itinerary & Saving to MongoDB...`
+                    : `Generating Option ${selectedOptionNumber} (Brand New Link) & Saving to MongoDB...`}
                 </span>
               ) : (
                 <span className="flex items-center gap-2">
                   <Parachute className="w-4 h-4" />
-                  Generate Itinerary with AI ↗
+                  {isSelectedOptionCreated
+                    ? `Update Option ${selectedOptionNumber} Itinerary ↗`
+                    : `Generate Option ${selectedOptionNumber} (Brand New Link) with AI ↗`}
                 </span>
               )}
             </Button>

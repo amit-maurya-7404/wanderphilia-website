@@ -105,7 +105,17 @@ export async function POST(req: NextRequest) {
     // 2. Generate Complete AI Luxury Itinerary Content using Groq / OpenAI
     const aiContent = await generateItineraryContentWithAI(normalizedData);
 
-    const optionNumber = Number(rawBody.optionNumber || rawBody.option || 1);
+    // Extract Option Number (supports 1, 2, 3 or "Option 1", "Option 2", "Option 3")
+    const rawOptionVal = rawBody.optionNumber ?? rawBody.option ?? rawBody.Option ?? rawBody.Option_Number ?? rawBody.Itinerary_Option ?? rawBody.option_number;
+    let optionNumber = 1;
+    if (rawOptionVal !== undefined && rawOptionVal !== null && rawOptionVal !== '') {
+      const parsedNum = typeof rawOptionVal === 'number'
+        ? rawOptionVal
+        : parseInt(String(rawOptionVal).replace(/\D+/g, ''), 10);
+      if (!isNaN(parsedNum) && parsedNum > 0) {
+        optionNumber = parsedNum;
+      }
+    }
 
     // 3. Generate Unique Secure Slug / ID (e.g. "amit-fu4tgu4" or "amit-2-fwebsu7")
     const uniqueId = generateLeadBasedItinerarySlug({
@@ -254,12 +264,38 @@ export async function POST(req: NextRequest) {
     let targetId = uniqueId;
     let existingDoc: ItineraryDocument | null = null;
 
-    if (details.inquiryId && details.inquiryId.trim()) {
-      existingDoc = await collection.findOne({
-        $or: [
-          { inquiryId: details.inquiryId.trim() },
-          { 'rawZohoData.Inquiry_ID': details.inquiryId.trim() },
-          { 'rawZohoData.inquiryId': details.inquiryId.trim() }
+    const inquiryClean = (details.inquiryId || '').trim();
+    const leadIdClean = String(rawBody.id || rawBody.leadId || rawBody.rawLeadData?.id || '').trim();
+
+    if (inquiryClean || leadIdClean) {
+      const matchConditions: any[] = [];
+      if (inquiryClean) {
+        matchConditions.push(
+          { inquiryId: inquiryClean },
+          { 'rawZohoData.Inquiry_ID': inquiryClean },
+          { 'rawZohoData.inquiryId': inquiryClean }
+        );
+      }
+      if (leadIdClean) {
+        matchConditions.push(
+          { 'rawZohoData.id': leadIdClean },
+          { 'rawZohoData.leadId': leadIdClean },
+          { 'rawZohoData.rawLeadData.id': leadIdClean }
+        );
+      }
+
+      // CRITICAL: Option 1, Option 2, and Option 3 MUST be separate documents and URLs!
+      // Option 1 only updates Option 1 (or legacy doc without optionNumber)
+      // Option 2 only updates Option 2
+      // Option 3 only updates Option 3
+      const optionFilter: any = optionNumber === 1
+        ? { $in: [1, '1', null, undefined] }
+        : { $in: [optionNumber, String(optionNumber)] };
+
+      existingDoc = await (collection as any).findOne({
+        $and: [
+          { $or: matchConditions },
+          { optionNumber: optionFilter }
         ]
       });
     }
@@ -288,13 +324,13 @@ export async function POST(req: NextRequest) {
       itineraryDoc.createdAt = existingDoc.createdAt || new Date();
       itineraryDoc.updatedAt = new Date();
 
-      await collection.replaceOne(
-        { _id: existingDoc._id },
+      await (collection as any).replaceOne(
+        { _id: (existingDoc as any)._id },
         itineraryDoc
       );
       console.log(`[Zoho Webhook] Successfully UPDATED existing luxury itinerary with ID: ${targetId} for Inquiry: ${details.inquiryId}`);
     } else {
-      await collection.insertOne(itineraryDoc);
+      await (collection as any).insertOne(itineraryDoc);
       console.log(`[Zoho Webhook] Successfully created new luxury itinerary with ID: ${uniqueId}`);
     }
 
