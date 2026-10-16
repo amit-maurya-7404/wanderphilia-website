@@ -216,12 +216,17 @@ export default function ItineraryTestPage() {
       // Assemble activities summary dynamically from Zoho subform with complete details including City_2 and En_route_Experiences
       const experiencesSummary = lead.dayActivities && lead.dayActivities.length > 0
         ? lead.dayActivities.map((d: any) => {
+          const isGuided = Boolean(d.guidedTour);
           const routeText = d.city2
             ? `${d.city} to ${d.city2}${d.enRouteExperiences ? ` via ${d.enRouteExperiences}` : ''}`
             : (d.enRouteExperiences ? `${d.city} via ${d.enRouteExperiences}` : d.city);
 
           const expList = (d.experiences || []).map((e: any) => {
-            const expName = e.name || e.experienceName || '';
+            let expName = (e.name || e.experienceName || '').trim();
+            const hasGuided = /\bguided\b/i.test(expName);
+            if (isGuided && !hasGuided) {
+              expName = `${expName} (Guided Tour)`;
+            }
             const desc = e.inclusionDescription || e.description || e.subTitle || '';
             return desc && desc.toLowerCase() !== expName.toLowerCase() ? `${expName} (${desc})` : expName;
           }).filter(Boolean);
@@ -230,7 +235,8 @@ export default function ItineraryTestPage() {
             ? expList.join(' | ')
             : (d.enRouteExperiences ? `En-Route Visit to ${d.enRouteExperiences} & Departure Transfer` : (d.pdfDescription || 'Leisure & Sightseeing'));
 
-          return `[${d.dayText}${routeText ? ` - ${routeText}` : ''}]: ${expStr}`;
+          const dayTag = isGuided ? `${d.dayText} (Guided Tour)` : d.dayText;
+          return `[${dayTag}${routeText ? ` - ${routeText}` : ''}]: ${expStr}`;
         }).join('\n')
         : '';
 

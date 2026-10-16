@@ -13,6 +13,7 @@ export interface ZohoExperienceItem {
   subTitle?: string;
   description?: string;
   inclusionDescription?: string;
+  guidedTour?: boolean;
 }
 
 export interface ZohoDayActivity {
@@ -20,6 +21,7 @@ export interface ZohoDayActivity {
   dayText: string;
   city: string;
   city2?: string;
+  guidedTour?: boolean;
   enRouteExperiences?: string;
   experiences: ZohoExperienceItem[];
   pdfDescription?: string;
@@ -188,6 +190,8 @@ export async function fetchZohoLeadById(leadIdOrQuery: string): Promise<Normaliz
       const enRouteExperiences = (typeof rawEnRoute === 'object' && rawEnRoute !== null ? rawEnRoute.name : String(rawEnRoute || '')).trim();
       const pdfDescription = String(row.PDF_Description || '').trim();
 
+      const isGuidedTour = row.Guided_Tour === true || String(row.Guided_Tour).toLowerCase() === 'true' || row.guided_tour === true;
+
       const experiences: ZohoExperienceItem[] = [];
       const seenExpNames = new Set<string>();
 
@@ -202,7 +206,8 @@ export async function fetchZohoLeadById(leadIdOrQuery: string): Promise<Normaliz
             name: expName,
             subTitle: String(row[`Sub_Title_${e}`] || '').trim(),
             description: String(row[`Description_for_template_${e}`] || '').trim(),
-            inclusionDescription: String(row[`Inclusions_Description_${e}`] || '').trim()
+            inclusionDescription: String(row[`Inclusions_Description_${e}`] || '').trim(),
+            guidedTour: isGuidedTour
           });
         }
       }
@@ -212,6 +217,7 @@ export async function fetchZohoLeadById(leadIdOrQuery: string): Promise<Normaliz
         dayText,
         city,
         city2: city2 || undefined,
+        guidedTour: isGuidedTour,
         enRouteExperiences: enRouteExperiences || undefined,
         experiences,
         pdfDescription: pdfDescription || undefined

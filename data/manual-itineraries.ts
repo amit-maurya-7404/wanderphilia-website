@@ -4392,11 +4392,15 @@ export function itineraryDocumentToManualItinerary(itinerary: ItineraryDocument)
 
   if (Array.isArray(rawSubform)) {
     rawSubform.forEach(row => {
+      const isDayGuided = row.Guided_Tour === true || String(row.Guided_Tour).toLowerCase() === 'true' || row.guided_tour === true;
+
       const rawEnRoute = row.En_route_Experiences ?? row.En_route_experiences ?? row.En_Route_Experiences ?? row.En_route ?? row.Enroute ?? row.en_route_experiences;
       const enRouteName = (typeof rawEnRoute === 'object' && rawEnRoute !== null ? rawEnRoute.name : (typeof rawEnRoute === 'string' ? rawEnRoute : '')).trim();
       if (enRouteName && !seenExp.has(enRouteName.toLowerCase())) {
         seenExp.add(enRouteName.toLowerCase());
-        dynamicExperiences.push(enRouteName.toLowerCase().startsWith('en-route') ? enRouteName : `En-route Experience: ${enRouteName}`);
+        const hasGuidedTag = /\(\s*guided\s*tour\s*\)/i.test(enRouteName);
+        const prefix = enRouteName.toLowerCase().startsWith('en-route') ? enRouteName : `En-route Experience: ${enRouteName}`;
+        dynamicExperiences.push(isDayGuided && !hasGuidedTag ? `${prefix} (Guided Tour)` : prefix);
       }
 
       for (let e = 1; e <= 10; e++) {
@@ -4405,7 +4409,8 @@ export function itineraryDocumentToManualItinerary(itinerary: ItineraryDocument)
         const expName = (typeof expKey === 'object' && expKey !== null ? expKey.name : (typeof expKey === 'string' ? expKey : '')).trim();
         if (expName && !seenExp.has(expName.toLowerCase())) {
           seenExp.add(expName.toLowerCase());
-          dynamicExperiences.push(expName);
+          const hasGuidedTag = /\(\s*guided\s*tour\s*\)/i.test(expName);
+          dynamicExperiences.push(isDayGuided && !hasGuidedTag ? `${expName} (Guided Tour)` : expName);
         }
       }
     });
@@ -4413,18 +4418,24 @@ export function itineraryDocumentToManualItinerary(itinerary: ItineraryDocument)
 
   if (dynamicExperiences.length === 0 && itinerary.rawZohoData?.dayActivities && Array.isArray(itinerary.rawZohoData.dayActivities)) {
     itinerary.rawZohoData.dayActivities.forEach((da: any) => {
+      const isDayGuided = Boolean(da.guidedTour);
+
       if (da.enRouteExperiences) {
         const er = String(da.enRouteExperiences).trim();
         if (er && !seenExp.has(er.toLowerCase())) {
           seenExp.add(er.toLowerCase());
-          dynamicExperiences.push(er.toLowerCase().startsWith('en-route') ? er : `En-route Experience: ${er}`);
+          const hasGuidedTag = /\(\s*guided\s*tour\s*\)/i.test(er);
+          const prefix = er.toLowerCase().startsWith('en-route') ? er : `En-route Experience: ${er}`;
+          dynamicExperiences.push(isDayGuided && !hasGuidedTag ? `${prefix} (Guided Tour)` : prefix);
         }
       }
       (da.experiences || []).forEach((exp: any) => {
         const name = (exp.name || '').trim();
         if (name && !seenExp.has(name.toLowerCase())) {
           seenExp.add(name.toLowerCase());
-          dynamicExperiences.push(name);
+          const isGuided = isDayGuided || Boolean(exp.guidedTour);
+          const hasGuidedTag = /\(\s*guided\s*tour\s*\)/i.test(name);
+          dynamicExperiences.push(isGuided && !hasGuidedTag ? `${name} (Guided Tour)` : name);
         }
       });
     });
@@ -4434,7 +4445,6 @@ export function itineraryDocumentToManualItinerary(itinerary: ItineraryDocument)
     itinerary.dayPlans.forEach((dp) => {
       (dp.activities || []).forEach(act => {
         let clean = act.replace(/^Transfer from.*$/i, '').replace(/^Arrival.*$/i, '').trim();
-        clean = clean.replace(/\([^()]*\)/g, '').trim();
         if (clean && clean.length > 2 && !seenExp.has(clean.toLowerCase())) {
           seenExp.add(clean.toLowerCase());
           dynamicExperiences.push(clean);

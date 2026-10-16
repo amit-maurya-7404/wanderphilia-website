@@ -291,60 +291,88 @@ export function getMealPlanForDay(
 export function frameExperienceSentence(
   exp: ZohoExperienceItem,
   city: string = '',
-  polishedDesc?: string
+  polishedDesc?: string,
+  isGuidedDay?: boolean
 ): string {
   const name = (exp.name || '').trim();
   if (!name) return '';
+
+  const isGuided = Boolean(isGuidedDay || exp.guidedTour);
 
   // 1. If AI generated a polished description for this experience
   if (polishedDesc && polishedDesc.trim()) {
     let clean = polishedDesc.trim().replace(/^["'“”‘’]|["'“”‘’]$/g, '').trim();
     if (!clean.endsWith('.')) clean += '.';
+    if (isGuided && !/\bguided\b/i.test(clean)) {
+      clean = clean.replace(/([.,;:\s]*)$/, ' on an insightful guided tour.');
+    }
     if (clean.toLowerCase().startsWith(name.toLowerCase())) {
       return clean;
     }
-    return `**${name}**: ${clean}`;
+    return `**${name}${isGuided && !name.toLowerCase().includes('guided') ? ' (Guided Tour)' : ''}**: ${clean}`;
   }
 
   const detail = (exp.inclusionDescription || exp.description || exp.subTitle || '').trim();
 
   // 2. If Zoho CRM provided a detailed description that is not just repeating the name
   if (detail && detail.toLowerCase() !== name.toLowerCase()) {
-    const cleanedDetail = detail.replace(/^["']|["']$/g, '').trim();
-    if (cleanedDetail.toLowerCase().startsWith(name.toLowerCase())) {
-      return cleanedDetail.endsWith('.') ? cleanedDetail : `${cleanedDetail}.`;
+    let cleanedDetail = detail.replace(/^["']|["']$/g, '').trim();
+    if (isGuided && !/\bguided\b/i.test(cleanedDetail)) {
+      cleanedDetail = `${cleanedDetail.replace(/[.,\s]+$/, '')} on an expert guided tour.`;
     }
-    return `**${name}**: ${cleanedDetail.endsWith('.') ? cleanedDetail : `${cleanedDetail}.`}`;
+    const finalDetail = cleanedDetail.endsWith('.') ? cleanedDetail : `${cleanedDetail}.`;
+    if (finalDetail.toLowerCase().startsWith(name.toLowerCase())) {
+      return finalDetail;
+    }
+    return `**${name}${isGuided && !name.toLowerCase().includes('guided') ? ' (Guided Tour)' : ''}**: ${finalDetail}`;
   }
 
   // Natural descriptive framing based on experience name keywords
   const nLower = name.toLowerCase();
   if (nLower.includes('safari') || nLower.includes('jungle')) {
-    return `Embark on an exhilarating **${name}** in an open-top gypsy accompanied by a certified naturalist to spot wildlife and diverse flora.`;
+    return isGuided
+      ? `Embark on an exhilarating **${name} (Guided Tour)** in an open-top gypsy accompanied by a certified naturalist and local guide to spot wildlife and diverse flora.`
+      : `Embark on an exhilarating **${name}** in an open-top gypsy accompanied by a certified naturalist to spot wildlife and diverse flora.`;
   }
   if (nLower.includes('fort') || nLower.includes('palace') || nLower.includes('mahal')) {
-    return `Explore the historic **${name}**, discovering its royal architectural grandeur, ornate courtyards, and rich heritage.`;
+    return isGuided
+      ? `Embark on an insightful **Guided Tour of ${name}**, discovering its royal architectural grandeur, ornate courtyards, and rich heritage with an expert local guide.`
+      : `Explore the historic **${name}**, discovering its royal architectural grandeur, ornate courtyards, and rich heritage.`;
   }
   if (nLower.includes('temple') || nLower.includes('dargah') || nLower.includes('monastery') || nLower.includes('shrine')) {
-    return `Visit the revered **${name}**, experiencing its spiritual ambiance, intricate carvings, and peaceful surroundings.`;
+    return isGuided
+      ? `Visit the revered **${name} (Guided Tour)**, experiencing its spiritual ambiance, intricate carvings, and sacred history with a local guide.`
+      : `Visit the revered **${name}**, experiencing its spiritual ambiance, intricate carvings, and peaceful surroundings.`;
   }
   if (nLower.includes('lake') || nLower.includes('river') || nLower.includes('boating') || nLower.includes('shikara') || nLower.includes('cruise')) {
-    return `Enjoy a scenic **${name}**, taking in tranquil waterfront vistas and picturesque natural landscapes.`;
+    return isGuided
+      ? `Enjoy a scenic **${name} (Guided Tour)**, taking in tranquil waterfront vistas and picturesque natural landscapes with guided local storytelling.`
+      : `Enjoy a scenic **${name}**, taking in tranquil waterfront vistas and picturesque natural landscapes.`;
   }
   if (nLower.includes('waterfall') || nLower.includes('falls')) {
-    return `Witness the cascading beauty of **${name}**, surrounded by lush green foliage and refreshing mist.`;
+    return isGuided
+      ? `Witness the cascading beauty of **${name} (Guided Tour)**, surrounded by lush green foliage and refreshing mist with guided assistance.`
+      : `Witness the cascading beauty of **${name}**, surrounded by lush green foliage and refreshing mist.`;
   }
   if (nLower.includes('market') || nLower.includes('bazaar') || nLower.includes('shopping')) {
-    return `Stroll through the vibrant **${name}**, exploring local handicrafts, authentic souvenirs, and regional delicacies.`;
+    return isGuided
+      ? `Stroll through the vibrant **${name} on an authentic Guided Walking Tour**, exploring local handicrafts, authentic souvenirs, and regional delicacies.`
+      : `Stroll through the vibrant **${name}**, exploring local handicrafts, authentic souvenirs, and regional delicacies.`;
   }
   if (nLower.includes('garden') || nLower.includes('plantation') || nLower.includes('valley') || nLower.includes('viewpoint') || nLower.includes('peak')) {
-    return `Visit **${name}** to enjoy panoramic views, fresh mountain air, and lush landscapes.`;
+    return isGuided
+      ? `Visit **${name} (Guided Tour)** to enjoy panoramic views, fresh mountain air, and lush landscapes with guided storytelling.`
+      : `Visit **${name}** to enjoy panoramic views, fresh mountain air, and lush landscapes.`;
   }
   if (nLower.includes('museum') || nLower.includes('gallery')) {
-    return `Discover curated historical artifacts, art collections, and cultural exhibits at **${name}**.`;
+    return isGuided
+      ? `Discover curated historical artifacts, art collections, and cultural exhibits at **${name} on a comprehensive Guided Tour**.`
+      : `Discover curated historical artifacts, art collections, and cultural exhibits at **${name}**.`;
   }
 
-  return `Visit and experience **${name}** with guided exploration.`;
+  return isGuided
+    ? `Visit and experience **${name} on an enriching Guided Tour** with curated local insights.`
+    : `Visit and experience **${name}** with guided exploration.`;
 }
 
 /**
@@ -405,6 +433,8 @@ export function parseRawSubformToDayActivities(rawSubform: any[]): ZohoDayActivi
     const enRouteExperiences = (typeof rawEnRoute === 'object' && rawEnRoute !== null ? rawEnRoute.name : String(rawEnRoute || '')).trim();
     const pdfDescription = String(row.PDF_Description || '').trim();
 
+    const isGuidedTour = row.Guided_Tour === true || String(row.Guided_Tour).toLowerCase() === 'true' || row.guided_tour === true;
+
     const experiences: ZohoExperienceItem[] = [];
     const seenExpNames = new Set<string>();
 
@@ -419,7 +449,8 @@ export function parseRawSubformToDayActivities(rawSubform: any[]): ZohoDayActivi
           name: expName,
           subTitle: String(row[`Sub_Title_${e}`] || '').trim(),
           description: String(row[`Description_for_template_${e}`] || '').trim(),
-          inclusionDescription: String(row[`Inclusions_Description_${e}`] || '').trim()
+          inclusionDescription: String(row[`Inclusions_Description_${e}`] || '').trim(),
+          guidedTour: isGuidedTour
         });
       }
     }
@@ -429,6 +460,7 @@ export function parseRawSubformToDayActivities(rawSubform: any[]): ZohoDayActivi
       dayText,
       city,
       city2: city2 || undefined,
+      guidedTour: isGuidedTour,
       enRouteExperiences: enRouteExperiences || undefined,
       experiences,
       pdfDescription: pdfDescription || undefined
@@ -607,14 +639,21 @@ export function parseActivitiesTextToDayActivities(text: string, defaultCity: st
         }
       }
 
+      const isDayGuided = /\bguided\s*tour\b/i.test(line) || /\bguided\b/i.test(routeSection);
+
       const experiences: ZohoExperienceItem[] = [];
       const expParts = contentSection.split(/\s*\|\s*/g).map(p => p.trim()).filter(Boolean);
 
       expParts.forEach((part) => {
+        const isExpGuided = isDayGuided || /\bguided\s*tour\b/i.test(part);
         const nameDescMatch = part.match(/^([^(]+)(?:\(([^)]+)\))?$/);
         if (nameDescMatch) {
-          const name = nameDescMatch[1].trim();
-          const desc = (nameDescMatch[2] || '').trim();
+          let name = nameDescMatch[1].trim();
+          let desc = (nameDescMatch[2] || '').trim();
+
+          if (/^guided\s*tour$/i.test(desc)) {
+            desc = '';
+          }
 
           if (name.toLowerCase().startsWith('en-route') && !enRouteExperiences) {
             enRouteExperiences = name.replace(/^en-route\s+(?:visit\s+to\s+|stop\s+at\s+)?/i, '').trim();
@@ -622,11 +661,15 @@ export function parseActivitiesTextToDayActivities(text: string, defaultCity: st
             experiences.push({
               name,
               inclusionDescription: desc || undefined,
-              description: desc || undefined
+              description: desc || undefined,
+              guidedTour: isExpGuided
             });
           }
         } else {
-          experiences.push({ name: part });
+          experiences.push({
+            name: part.replace(/\s*\(\s*guided\s*tour\s*\)/i, '').trim(),
+            guidedTour: isExpGuided
+          });
         }
       });
 
@@ -635,6 +678,7 @@ export function parseActivitiesTextToDayActivities(text: string, defaultCity: st
         dayText: `Day ${dayNumber}`,
         city: city1 || defaultCity,
         city2,
+        guidedTour: isDayGuided,
         enRouteExperiences,
         experiences,
         pdfDescription: experiences.length === 0 ? contentSection : undefined
@@ -925,19 +969,28 @@ export function buildCleanDayPlansFromZoho(
       }
     }
 
+    const isDayGuided = Boolean(act.guidedTour);
+
     // 2. DAY DESCRIPTION (Cleanly framed by AI / smart rules)
     let description = '';
     if (act.pdfDescription && act.pdfDescription.trim()) {
       description = act.pdfDescription.trim();
+      if (isDayGuided && !/\bguided\b/i.test(description)) {
+        description = `${description.replace(/[.,\s]+$/, '')} on an expert guided tour.`;
+      }
     } else if (isInterCityTravel) {
       if (enRoute && isLastDay && expNames.length === 0) {
         description = `Travel from ${fromCity} to ${toCity} with a memorable en-route stop at ${enRoute}, before transferring for your departure journey.`;
       } else if (enRoute && expNames.length > 0) {
-        description = `Travel from ${fromCity} to ${toCity} with an en-route visit to ${enRoute}, followed by curated visits to ${joinWithAnd(expNames)}.`;
+        description = isDayGuided
+          ? `Travel from ${fromCity} to ${toCity} with an en-route visit to ${enRoute}, followed by an insightful guided tour of ${joinWithAnd(expNames)}.`
+          : `Travel from ${fromCity} to ${toCity} with an en-route visit to ${enRoute}, followed by curated visits to ${joinWithAnd(expNames)}.`;
       } else if (enRoute) {
         description = `Travel from ${fromCity} to ${toCity} with an en-route stop at ${enRoute}, settling in upon arrival in ${toCity}.`;
       } else if (expNames.length > 0) {
-        description = `Travel from ${fromCity} to ${toCity}, followed by curated visits to ${joinWithAnd(expNames)}.`;
+        description = isDayGuided
+          ? `Travel from ${fromCity} to ${toCity}, followed by an insightful guided tour of ${joinWithAnd(expNames)}.`
+          : `Travel from ${fromCity} to ${toCity}, followed by curated visits to ${joinWithAnd(expNames)}.`;
       } else {
         description = isLastDay
           ? `Travel from ${fromCity} to ${toCity} and complete check-out transfers for your onward journey.`
@@ -945,8 +998,16 @@ export function buildCleanDayPlansFromZoho(
       }
     } else if (expNames.length > 0) {
       description = isFirstDay
-        ? `Arrive in ${city1} and experience ${joinWithAnd(expNames)}.`
-        : (isLastDay ? `Experience ${joinWithAnd(expNames)} before your departure transfer.` : `Explore ${city1} with curated visits to ${joinWithAnd(expNames)}.`);
+        ? (isDayGuided
+            ? `Arrive in ${city1} and experience an insightful guided tour of ${joinWithAnd(expNames)}.`
+            : `Arrive in ${city1} and experience ${joinWithAnd(expNames)}.`)
+        : (isLastDay
+            ? (isDayGuided
+                ? `Experience an insightful guided tour of ${joinWithAnd(expNames)} before your departure transfer.`
+                : `Experience ${joinWithAnd(expNames)} before your departure transfer.`)
+            : (isDayGuided
+                ? `Explore ${city1} on an insightful guided tour covering ${joinWithAnd(expNames)}.`
+                : `Explore ${city1} with curated visits to ${joinWithAnd(expNames)}.`));
     } else {
       description = isFirstDay
         ? (isIntl
@@ -967,7 +1028,10 @@ export function buildCleanDayPlansFromZoho(
       activities.push(`En-route Stop: ${enRoute}`);
     }
     uniqueExps.forEach(exp => {
-      activities.push(exp.name);
+      const isGuided = Boolean(isDayGuided || exp.guidedTour);
+      const cleanName = exp.name.trim();
+      const hasGuidedTag = /\(\s*guided\s*tour\s*\)/i.test(cleanName);
+      activities.push(isGuided && !hasGuidedTag ? `${cleanName} (Guided Tour)` : cleanName);
     });
     if (isLastDay && uniqueExps.length === 0) {
       activities.push(`Departure Transfer`);
@@ -1028,7 +1092,7 @@ export function buildCleanDayPlansFromZoho(
         }
       }
 
-      const sentence = frameExperienceSentence(exp, targetCity, polishedDesc);
+      const sentence = frameExperienceSentence(exp, targetCity, polishedDesc, isDayGuided);
       if (sentence) {
         timeline.push(sentence);
       }
@@ -1140,12 +1204,16 @@ export function generateLuxuryFallback(raw: Record<string, any>): GeneratedItine
   const seenExp = new Set<string>();
 
   (dayActivities || []).forEach(d => {
+    const isDayGuided = Boolean(d.guidedTour);
+
     // 1. En-route experiences
     if (d.enRouteExperiences) {
       const er = String(d.enRouteExperiences).trim();
       if (er && !seenExp.has(er.toLowerCase())) {
         seenExp.add(er.toLowerCase());
-        uniqueExpList.push(er.toLowerCase().startsWith('en-route') ? er : `En-route Experience: ${er}`);
+        const hasGuided = /\bguided\b/i.test(er);
+        const prefix = er.toLowerCase().startsWith('en-route') ? er : `En-route Experience: ${er}`;
+        uniqueExpList.push(isDayGuided && !hasGuided ? `${prefix} (Guided Tour)` : prefix);
       }
     }
 
@@ -1154,7 +1222,9 @@ export function generateLuxuryFallback(raw: Record<string, any>): GeneratedItine
       const n = (e.name || '').trim();
       if (n && !seenExp.has(n.toLowerCase())) {
         seenExp.add(n.toLowerCase());
-        uniqueExpList.push(n);
+        const isGuided = Boolean(isDayGuided || e.guidedTour);
+        const hasGuidedTag = /\(\s*guided\s*tour\s*\)/i.test(n);
+        uniqueExpList.push(isGuided && !hasGuidedTag ? `${n} (Guided Tour)` : n);
       }
     });
   });
