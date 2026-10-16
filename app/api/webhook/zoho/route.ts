@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import crypto from 'crypto';
 import { getDb } from '@/lib/mongodb';
 import { generateItineraryContentWithAI, extractAllHotelsFromZohoData } from '@/lib/ai-itinerary';
 import { getLuxuryImagesForDestination } from '@/lib/itinerary-images';

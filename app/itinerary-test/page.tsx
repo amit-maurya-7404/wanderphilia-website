@@ -5,7 +5,7 @@ import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Loader2, CheckCircle2, ExternalLink, Download, Search, Hotel, Calendar, Users, MapPin, Percent, TrendingUp, IndianRupee } from 'lucide-react';
+import { Loader2, CheckCircle2, ExternalLink, Search, Hotel, Calendar, Users, MapPin, Percent, TrendingUp, IndianRupee } from 'lucide-react';
 import { Parachute } from '@/components/parachute-icon';
 import { ItineraryHistorySection } from '@/components/itinerary/itinerary-history-section';
 
