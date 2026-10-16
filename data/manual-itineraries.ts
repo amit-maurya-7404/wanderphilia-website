@@ -3277,13 +3277,13 @@ export const rajasthanJignaUpdatedManualItinerary: ManualItinerary = {
     'Light jacket or shawl for cooler evenings in Mount Abu and the Thar Desert.',
     'Personal toiletries, camera, and mobile chargers/power banks.'
   ],
-  finalQuotationAmount: 103950,
-  baseAmount: 99000,
+  finalQuotationAmount: 113400,
+  baseAmount: 108000,
   gstPercentage: 5,
-  gstAmount: 4950,
+  gstAmount: 5400,
   tcsPercentage: 0,
   tcsAmount: 0,
-  perAdultPrice: 33000,
+  perAdultPrice: 36000,
   childPricingNote: 'Quoted for 03 Adults on Triple Sharing basis (01 Double Occupancy Room + 01 Extra Bed/Mattress). Children below 5 years are complimentary without extra bed.',
   enableOnlineBooking: false
 };
