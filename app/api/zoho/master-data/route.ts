@@ -118,6 +118,8 @@ export async function GET(req: NextRequest) {
           rooms.push({
             roomCategory: r.Room_Category || 'Deluxe Room',
             pricePerNight: Number(r.Price_Per_Night) || Number(r.Base_Price) || 0,
+            extraBedPrice: Number(r.Extra_Bed) || Number(r.Extra_Bed_INR) || Number(r.Extra_Bed_Price) || 0,
+            childWithoutBed: Number(r.Child_without_bed) || 0,
             description: r.Description_for_room || ''
           });
         });

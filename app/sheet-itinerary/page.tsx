@@ -32,7 +32,8 @@ import {
   Layers,
   Calculator,
   Database,
-  Baby
+  Baby,
+  RotateCcw
 } from 'lucide-react';
 import { ItineraryHistorySection } from '@/components/itinerary/itinerary-history-section';
 import {
@@ -177,6 +178,40 @@ const formatStayDateRange = (startStr: string, endStr: string, nights?: number):
   const [sy, sm, sd] = startStr.split('-').map(Number);
   const [ey, em, ed] = endStr.split('-').map(Number);
   return `${sd} ${months[sm - 1]} - ${ed} ${months[em - 1]}${nights ? ` (${nights} Nts)` : ''}`;
+};
+
+// Draft Storage Key
+const DRAFT_STORAGE_KEY = 'wanderphilia_sheet_itinerary_draft_v2';
+
+// Baseline Standard Hotel Rates per Category
+const DEFAULT_HOTEL_RATES: Record<string, { base: number; extraBed: number }> = {
+  deluxe: { base: 3500, extraBed: 1200 },
+  superdeluxe: { base: 5000, extraBed: 1600 },
+  premium: { base: 7500, extraBed: 2500 },
+  luxury: { base: 12000, extraBed: 4000 }
+};
+
+// Helper to extract or fallback Base Price & Extra Bed Rate for any hotel
+export const getHotelRates = (h: any, fallbackCategory = 'Deluxe') => {
+  const cat = (h?.category || fallbackCategory || 'Deluxe').trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+  const def = DEFAULT_HOTEL_RATES[cat] || DEFAULT_HOTEL_RATES.deluxe;
+
+  let baseRate = def.base;
+  let extraBedRate = def.extraBed;
+
+  if (h && Array.isArray(h.rooms) && h.rooms.length > 0) {
+    const firstValid = h.rooms.find((r: any) => Number(r.pricePerNight || r.Base_Price) > 0) || h.rooms[0];
+    if (firstValid) {
+      if (Number(firstValid.pricePerNight || firstValid.Base_Price) > 0) {
+        baseRate = Number(firstValid.pricePerNight || firstValid.Base_Price);
+      }
+      if (Number(firstValid.extraBedPrice || firstValid.Extra_Bed || firstValid.Extra_Bed_INR || firstValid.Extra_Bed_Price) > 0) {
+        extraBedRate = Number(firstValid.extraBedPrice || firstValid.Extra_Bed || firstValid.Extra_Bed_INR || firstValid.Extra_Bed_Price);
+      }
+    }
+  }
+
+  return { baseRate, extraBedRate };
 };
 
 // --- REUSABLE LOOKUP FIELD COMPONENT ---
@@ -417,6 +452,10 @@ export default function SheetItineraryPage() {
   const [zohoMasterStats, setZohoMasterStats] = useState<{ activitiesCount: number; hotelsCount: number; vehiclesCount: number } | null>(null);
   const [zohoVehicles, setZohoVehicles] = useState<any[]>([]);
 
+  // LocalStorage Draft Persistence State
+  const [hasSavedDraft, setHasSavedDraft] = useState(false);
+  const [isDraftRestored, setIsDraftRestored] = useState(false);
+
   // Google Sheet Connection State (Fallback option)
   const [sheetUrl, setSheetUrl] = useState('https://docs.google.com/spreadsheets/d/1e5wSIGjKwpyujB12YjoFlu3SXc6XLnI7tOLj5zD97XY/edit?usp=sharing');
   const [connectingSheet, setConnectingSheet] = useState(false);
@@ -581,14 +620,18 @@ export default function SheetItineraryPage() {
       const cClean = (h.city || destination || '').trim().toLowerCase().replace(/[^a-z0-9]/g, '');
       const sheetHotels = sheetHotelsByCity[cClean] || [];
       const foundHotel = sheetHotels.find((sh: any) => (sh.hotelName || '').toLowerCase().trim() === (h.hotelName || '').toLowerCase().trim());
-      let roomRate = 0;
-      let extraBedRate = 0;
+      
+      const { baseRate: fallbackBase, extraBedRate: fallbackExtra } = getHotelRates(foundHotel, cat);
+      let roomRate = fallbackBase;
+      let extraBedRate = fallbackExtra;
       let childNoBedRate = 0;
 
       if (foundHotel && Array.isArray(foundHotel.rooms)) {
         const foundRoom = foundHotel.rooms.find((r: any) => (r.roomCategory || '').toLowerCase().trim() === (h.roomCategory || '').toLowerCase().trim());
         if (foundRoom && foundRoom.pricePerNight) {
-          roomRate = Number(foundRoom.pricePerNight) || 0;
+          roomRate = Number(foundRoom.pricePerNight) || roomRate;
+          extraBedRate = Number(foundRoom.extraBedPrice || foundRoom.Extra_Bed || foundRoom.Extra_Bed_INR || 0) || extraBedRate;
+          childNoBedRate = Number(foundRoom.childWithoutBed || 0);
         }
       }
 
@@ -688,6 +731,7 @@ export default function SheetItineraryPage() {
       delugePerAdultCost: delugePricing.perAdultCost,
       delugePerChildCost: delugePricing.perChildCost,
       vehicleDailyRate,
+      hotelBreakdowns: delugePricing.hotelBreakdowns || [],
       delugePricing
     };
   }, [
@@ -1078,7 +1122,7 @@ export default function SheetItineraryPage() {
     return c === t || c.includes(t) || t.includes(c);
   };
 
-  // Get Hotels Lookup for a City filtered STRICTLY by Hotel Category
+  // Get Hotels Lookup for a City filtered STRICTLY by Hotel Category with Base/ExtraBed prices
   const getHotelsLookupForCity = (cityName: string, categoryFilter?: string) => {
     const cClean = (cityName || destination).trim().toLowerCase().replace(/[^a-z0-9]/g, '');
     const sheetHotels = sheetHotelsByCity[cClean] || [];
@@ -1088,23 +1132,21 @@ export default function SheetItineraryPage() {
       matchesHotelCategory(h.category, effectiveCat)
     );
 
-    // If matches found for this specific category in this city, return only them
-    if (filtered.length > 0) {
-      return filtered.map(h => ({
+    const listToUse = filtered.length > 0 ? filtered : sheetHotels;
+
+    return listToUse.map(h => {
+      const { baseRate, extraBedRate } = getHotelRates(h, h.category || effectiveCat);
+      return {
         label: h.hotelName,
         value: h.hotelName,
-        badge: h.category,
-        meta: h
-      }));
-    }
-
-    // Fallback: If no hotel in this city matches that specific category, show available hotels
-    return sheetHotels.map(h => ({
-      label: h.hotelName,
-      value: h.hotelName,
-      badge: h.category,
-      meta: h
-    }));
+        badge: `₹${baseRate.toLocaleString('en-IN')} / ₹${extraBedRate.toLocaleString('en-IN')}`,
+        meta: {
+          ...h,
+          baseRate,
+          extraBedRate
+        }
+      };
+    });
   };
 
   // Get Room Categories for a Selected Hotel
@@ -1978,7 +2020,163 @@ export default function SheetItineraryPage() {
     });
   };
 
-  // Margin Calculation
+  // Restore draft from localStorage on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(DRAFT_STORAGE_KEY);
+      if (saved) {
+        const d = JSON.parse(saved);
+        if (d && typeof d === 'object') {
+          if (d.zohoInquiryInput) setZohoInquiryInput(d.zohoInquiryInput);
+          if (d.inquiryId) setInquiryId(d.inquiryId);
+          if (d.firstName) setFirstName(d.firstName);
+          if (d.lastName) setLastName(d.lastName);
+          if (d.fullName) setFullName(d.fullName);
+          if (d.email) setEmail(d.email);
+          if (d.mobile) setMobile(d.mobile);
+          if (d.departureCity) setDepartureCity(d.departureCity);
+          if (d.destination) setDestination(d.destination);
+          if (d.destinationType) setDestinationType(d.destinationType);
+          if (d.startDate) setStartDate(d.startDate);
+          if (d.endDate) setEndDate(d.endDate);
+          if (d.noOfDays) setNoOfDays(d.noOfDays);
+          if (d.noOfNights) setNoOfNights(d.noOfNights);
+          if (d.adults) setAdults(d.adults);
+          if (d.kids !== undefined) setKids(d.kids);
+          if (Array.isArray(d.kidsDetails)) setKidsDetails(d.kidsDetails);
+          if (d.roomsCount) setRoomsCount(d.roomsCount);
+          if (d.isRoomsManuallySet !== undefined) setIsRoomsManuallySet(d.isRoomsManuallySet);
+          if (d.sharingType) setSharingType(d.sharingType);
+          if (d.travelStyle) setTravelStyle(d.travelStyle);
+          if (d.vehicleType) setVehicleType(d.vehicleType);
+          if (d.mealPlan) setMealPlan(d.mealPlan);
+          if (d.masterHotelCategory) setMasterHotelCategory(d.masterHotelCategory);
+          if (Array.isArray(d.hotels) && d.hotels.length > 0) setHotels(d.hotels);
+          if (d.isHotelsManuallyCustomized !== undefined) setIsHotelsManuallyCustomized(d.isHotelsManuallyCustomized);
+          if (Array.isArray(d.dayRows) && d.dayRows.length > 0) setDayRows(d.dayRows);
+          if (d.baseQuotation) setBaseQuotation(d.baseQuotation);
+          if (d.marginPercent) setMarginPercent(d.marginPercent);
+          if (d.finalQuotation) setFinalQuotation(d.finalQuotation);
+          if (d.perAdultPrice) setPerAdultPrice(d.perAdultPrice);
+          if (d.perKidPrice) setPerKidPrice(d.perKidPrice);
+          if (d.advanceAmount) setAdvanceAmount(d.advanceAmount);
+          if (d.balanceAmount) setBalanceAmount(d.balanceAmount);
+          if (d.specialRequirements) setSpecialRequirements(d.specialRequirements);
+          if (d.isQuoteManuallyEdited !== undefined) setIsQuoteManuallyEdited(d.isQuoteManuallyEdited);
+          if (d.zohoSyncMsg) setZohoSyncMsg(d.zohoSyncMsg);
+          setHasSavedDraft(true);
+        }
+      }
+    } catch (e) {
+      console.warn('Draft restore failed', e);
+    } finally {
+      setIsDraftRestored(true);
+    }
+  }, []);
+
+  // Auto-save draft to localStorage whenever form data changes
+  useEffect(() => {
+    if (!isDraftRestored) return;
+    const timeout = setTimeout(() => {
+      try {
+        const draft = {
+          zohoInquiryInput,
+          inquiryId,
+          firstName,
+          lastName,
+          fullName,
+          email,
+          mobile,
+          departureCity,
+          destination,
+          destinationType,
+          startDate,
+          endDate,
+          noOfDays,
+          noOfNights,
+          adults,
+          kids,
+          kidsDetails,
+          roomsCount,
+          isRoomsManuallySet,
+          sharingType,
+          travelStyle,
+          vehicleType,
+          mealPlan,
+          masterHotelCategory,
+          hotels,
+          isHotelsManuallyCustomized,
+          dayRows,
+          baseQuotation,
+          marginPercent,
+          finalQuotation,
+          perAdultPrice,
+          perKidPrice,
+          advanceAmount,
+          balanceAmount,
+          specialRequirements,
+          isQuoteManuallyEdited,
+          zohoSyncMsg,
+          savedAt: new Date().toISOString()
+        };
+        localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(draft));
+        setHasSavedDraft(true);
+      } catch (e) {
+        console.warn('Auto-save failed', e);
+      }
+    }, 600);
+
+    return () => clearTimeout(timeout);
+  }, [
+    isDraftRestored,
+    zohoInquiryInput,
+    inquiryId,
+    firstName,
+    lastName,
+    fullName,
+    email,
+    mobile,
+    departureCity,
+    destination,
+    destinationType,
+    startDate,
+    endDate,
+    noOfDays,
+    noOfNights,
+    adults,
+    kids,
+    kidsDetails,
+    roomsCount,
+    isRoomsManuallySet,
+    sharingType,
+    travelStyle,
+    vehicleType,
+    mealPlan,
+    masterHotelCategory,
+    hotels,
+    isHotelsManuallyCustomized,
+    dayRows,
+    baseQuotation,
+    marginPercent,
+    finalQuotation,
+    perAdultPrice,
+    perKidPrice,
+    advanceAmount,
+    balanceAmount,
+    specialRequirements,
+    isQuoteManuallyEdited,
+    zohoSyncMsg
+  ]);
+
+  // Handle Reset / Fresh Form button click
+  const handleResetForm = () => {
+    if (window.confirm('Reset this itinerary to fresh blank state? Unsaved changes will be cleared.')) {
+      try {
+        localStorage.removeItem(DRAFT_STORAGE_KEY);
+      } catch (e) {}
+      window.location.reload();
+    }
+  };
   const handleMarginChange = (val: string) => {
     setMarginPercent(val);
     const base = Number(baseQuotation) || 0;
@@ -2122,17 +2320,38 @@ export default function SheetItineraryPage() {
 
       <main className="flex-1 max-w-[1440px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-30">
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-10">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-orange-50 border border-orange-300 text-orange-700 text-xs font-bold tracking-wide uppercase mb-3 shadow-2xs">
-            <Layers className="w-4 h-4 text-orange-600" />
-            Compact Grid Subform • Live Activities Cost Per Person
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+          <div>
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-orange-50 border border-orange-300 text-orange-700 text-xs font-bold tracking-wide uppercase mb-3 shadow-2xs">
+              <Layers className="w-4 h-4 text-orange-600" />
+              Compact Grid Subform • Live Activities Cost Per Person
+            </div>
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 mb-2">
+              Sheet Itinerary Subform Builder
+            </h1>
+            <p className="text-slate-600 text-sm leading-relaxed font-normal">
+              Manage 10-15 day itineraries in a compact spreadsheet subform. City &amp; experiences filter automatically, descriptions load from the sheet, and activity costs calculate per person.
+            </p>
           </div>
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 mb-3">
-            Sheet Itinerary Subform Builder
-          </h1>
-          <p className="text-slate-600 text-sm sm:text-base leading-relaxed font-normal">
-            Manage 10-15 day itineraries in a compact spreadsheet subform. City &amp; experiences filter automatically, descriptions load from the sheet, and activity costs calculate per person.
-          </p>
+
+          <div className="flex items-center gap-2.5 shrink-0 self-start md:self-auto">
+            {hasSavedDraft && (
+              <span className="inline-flex items-center gap-1.5 text-xs text-emerald-700 font-semibold bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-xl shadow-2xs">
+                <Check className="w-3.5 h-3.5" />
+                Draft Auto-Saved
+              </span>
+            )}
+            <Button
+              onClick={handleResetForm}
+              variant="outline"
+              size="sm"
+              className="h-10 px-4 text-xs border border-red-300 bg-red-50 text-red-700 hover:bg-red-100 hover:text-red-900 rounded-xl font-bold flex items-center gap-2 shadow-2xs transition-colors"
+              title="Reset all form inputs and clear saved draft"
+            >
+              <RotateCcw className="w-4 h-4 text-red-600" />
+              Reset / Fresh Form
+            </Button>
+          </div>
         </div>
 
         {/* SECTION 1: TRAVELER & CLIENT DETAILS */}
@@ -2164,6 +2383,16 @@ export default function SheetItineraryPage() {
                 className="h-8 text-xs border border-slate-400 text-slate-800 hover:bg-slate-100 hover:text-slate-950 rounded-lg shrink-0 font-bold"
               >
                 {fetchingZoho ? <RefreshCw className="w-3 h-3 animate-spin" /> : 'Sync from Zoho'}
+              </Button>
+              <Button
+                onClick={handleResetForm}
+                variant="outline"
+                size="sm"
+                className="h-8 px-2.5 text-xs border border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 rounded-lg shrink-0 font-bold flex items-center gap-1"
+                title="Reset form to fresh state"
+              >
+                <RotateCcw className="w-3 h-3" />
+                Reset
               </Button>
             </div>
           </div>
@@ -2725,103 +2954,135 @@ export default function SheetItineraryPage() {
             </div>
 
             <div className="space-y-3">
-              {hotels.map((h, idx) => (
-                <div key={idx} className="p-4 bg-slate-50/70 border border-slate-300 rounded-xl relative">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="text-xs font-bold text-orange-700 flex items-center gap-1.5">
-                        <Hotel className="w-3.5 h-3.5" />
-                        Hotel #{idx + 1}
-                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-orange-100 border border-orange-200 text-orange-800 font-extrabold">
-                          {h.category || masterHotelCategory || 'Deluxe'}
+              {hotels.map((h, idx) => {
+                const hBreakdown = quotationCalculations.hotelBreakdowns?.find((hb: any) => hb.hotelIndex === idx + 1) || quotationCalculations.hotelBreakdowns?.[idx];
+                return (
+                  <div key={idx} className="p-4 bg-slate-50/70 border border-slate-300 rounded-xl relative">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="text-xs font-bold text-orange-700 flex items-center gap-1.5">
+                          <Hotel className="w-3.5 h-3.5" />
+                          Hotel #{idx + 1}
+                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-orange-100 border border-orange-200 text-orange-800 font-extrabold">
+                            {h.category || masterHotelCategory || 'Deluxe'}
+                          </span>
                         </span>
-                      </span>
-                      {h.stayDates && (
-                        <span className="text-[10px] px-2 py-0.5 rounded-md bg-white border border-slate-300 text-slate-700 font-mono font-semibold">
-                          📅 {h.stayDates}
-                        </span>
+                        {h.stayDates && (
+                          <span className="text-[10px] px-2 py-0.5 rounded-md bg-white border border-slate-300 text-slate-700 font-mono font-semibold">
+                            📅 {h.stayDates}
+                          </span>
+                        )}
+                      </div>
+                      {hotels.length > 1 && (
+                        <button
+                          onClick={() => removeHotel(idx)}
+                          className="text-slate-500 hover:text-red-600 text-xs p-1"
+                          title="Remove Hotel"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
                       )}
                     </div>
-                    {hotels.length > 1 && (
-                      <button
-                        onClick={() => removeHotel(idx)}
-                        className="text-slate-500 hover:text-red-600 text-xs p-1"
-                        title="Remove Hotel"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    )}
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3">
+                      <div className="lg:col-span-2">
+                        <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                          City ({destination})
+                        </label>
+                        <LookupField
+                          value={h.city}
+                          onChange={val => updateHotel(idx, 'city', val)}
+                          options={availableCitiesForDestination}
+                          placeholder="Select City..."
+                        />
+                      </div>
+
+                      <div className="lg:col-span-2">
+                        <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                          Hotel Category
+                        </label>
+                        <select
+                          value={h.category || masterHotelCategory || 'Deluxe'}
+                          onChange={e => updateHotel(idx, 'category', e.target.value)}
+                          className="w-full bg-white border border-slate-400 text-slate-900 font-bold text-xs h-9 rounded-md px-2.5 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
+                        >
+                          <option value="Deluxe">Deluxe</option>
+                          <option value="Super Deluxe">Super Deluxe</option>
+                          <option value="Premium">Premium</option>
+                          <option value="Luxury">Luxury</option>
+                          <option value="All">All Categories</option>
+                        </select>
+                      </div>
+
+                      <div className="lg:col-span-4">
+                        <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                          Hotel / Property Name ({h.category || masterHotelCategory || 'Deluxe'})
+                        </label>
+                        <LookupField
+                          value={h.hotelName}
+                          onChange={(val, meta) => updateHotel(idx, 'hotelName', val, meta)}
+                          options={getHotelsLookupForCity(h.city, h.category)}
+                          placeholder={`Select ${h.category || masterHotelCategory} Hotel...`}
+                        />
+                        {h.hotelName && (
+                          <div className="mt-1 flex items-center gap-1.5 text-[10px] font-mono">
+                            <span className="font-semibold text-slate-500">Rate:</span>
+                            <span className="px-1.5 py-0.5 rounded bg-orange-100 text-orange-800 font-bold border border-orange-200">
+                              Base: ₹{Number(hBreakdown?.matchedRate || 0).toLocaleString('en-IN')} / Extra Bed: ₹{Number(hBreakdown?.extraBedRate || 0).toLocaleString('en-IN')}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="lg:col-span-3">
+                        <label className="block text-[11px] font-bold text-slate-700 mb-1">Room Category</label>
+                        <LookupField
+                          value={h.roomCategory}
+                          onChange={val => updateHotel(idx, 'roomCategory', val)}
+                          options={getRoomCategoriesForHotel(h.hotelName, h.city)}
+                          placeholder="Room Category..."
+                        />
+                      </div>
+
+                      <div className="lg:col-span-1">
+                        <label className="block text-[11px] font-bold text-slate-700 mb-1">Nights</label>
+                        <Input
+                          type="text"
+                          inputMode="numeric"
+                          pattern="[0-9]*"
+                          value={h.nights === 0 ? '' : h.nights}
+                          onChange={e => {
+                            const sanitized = e.target.value.replace(/\D/g, '');
+                            updateHotel(idx, 'nights', sanitized === '' ? 1 : Number(sanitized));
+                          }}
+                          className="bg-white border border-slate-400 text-xs h-9 text-center font-bold text-slate-900 focus-visible:ring-orange-500"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Individual Hotel Cost Breakdown & Total */}
+                    <div className="mt-3 pt-2.5 border-t border-slate-200 flex flex-wrap items-center justify-between text-xs gap-2">
+                      <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-600">
+                        <span className="font-bold text-slate-700">Cost Calculation:</span>
+                        <span className="bg-white border border-slate-300 px-2 py-0.5 rounded text-slate-800 font-mono">
+                          Base: ₹{Number(hBreakdown?.matchedRate || 0).toLocaleString('en-IN')} × {h.nights} Nts × {quotationCalculations.rooms} Rms = <strong>₹{Number(hBreakdown?.hotelRoomTotal || 0).toLocaleString('en-IN')}</strong>
+                        </span>
+                        {Number(hBreakdown?.extraBedCost || 0) > 0 && (
+                          <span className="bg-orange-50 border border-orange-200 px-2 py-0.5 rounded text-orange-800 font-mono">
+                            Extra Bed: ₹{Number(hBreakdown?.extraBedRate || 0).toLocaleString('en-IN')} × {quotationCalculations.billableExtraBeds} EB × {h.nights} Nts = <strong>₹{Number(hBreakdown?.extraBedCost || 0).toLocaleString('en-IN')}</strong>
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-1.5 ml-auto">
+                        <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wide">Hotel #{idx + 1} Total:</span>
+                        <span className="text-xs font-black text-emerald-900 bg-emerald-100 border border-emerald-300 px-2.5 py-1 rounded-md font-mono shadow-2xs">
+                          ₹{Number(hBreakdown?.singleHotelTotal || 0).toLocaleString('en-IN')}
+                        </span>
+                      </div>
+                    </div>
                   </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3">
-                    <div className="lg:col-span-2">
-                      <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                        City ({destination})
-                      </label>
-                      <LookupField
-                        value={h.city}
-                        onChange={val => updateHotel(idx, 'city', val)}
-                        options={availableCitiesForDestination}
-                        placeholder="Select City..."
-                      />
-                    </div>
-
-                    <div className="lg:col-span-2">
-                      <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                        Hotel Category
-                      </label>
-                      <select
-                        value={h.category || masterHotelCategory || 'Deluxe'}
-                        onChange={e => updateHotel(idx, 'category', e.target.value)}
-                        className="w-full bg-white border border-slate-400 text-slate-900 font-bold text-xs h-9 rounded-md px-2.5 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
-                      >
-                        <option value="Deluxe">Deluxe</option>
-                        <option value="Super Deluxe">Super Deluxe</option>
-                        <option value="Premium">Premium</option>
-                        <option value="Luxury">Luxury</option>
-                        <option value="All">All Categories</option>
-                      </select>
-                    </div>
-
-                    <div className="lg:col-span-4">
-                      <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                        Hotel / Property Name ({h.category || masterHotelCategory || 'Deluxe'})
-                      </label>
-                      <LookupField
-                        value={h.hotelName}
-                        onChange={(val, meta) => updateHotel(idx, 'hotelName', val, meta)}
-                        options={getHotelsLookupForCity(h.city, h.category)}
-                        placeholder={`Select ${h.category || masterHotelCategory} Hotel...`}
-                      />
-                    </div>
-
-                    <div className="lg:col-span-3">
-                      <label className="block text-[11px] font-bold text-slate-700 mb-1">Room Category</label>
-                      <LookupField
-                        value={h.roomCategory}
-                        onChange={val => updateHotel(idx, 'roomCategory', val)}
-                        options={getRoomCategoriesForHotel(h.hotelName, h.city)}
-                        placeholder="Room Category..."
-                      />
-                    </div>
-
-                    <div className="lg:col-span-1">
-                      <label className="block text-[11px] font-bold text-slate-700 mb-1">Nights</label>
-                      <Input
-                        type="text"
-                        inputMode="numeric"
-                        pattern="[0-9]*"
-                        value={h.nights === 0 ? '' : h.nights}
-                        onChange={e => {
-                          const sanitized = e.target.value.replace(/\D/g, '');
-                          updateHotel(idx, 'nights', sanitized === '' ? 1 : Number(sanitized));
-                        }}
-                        className="bg-white border border-slate-400 text-xs h-9 text-center font-bold text-slate-900 focus-visible:ring-orange-500"
-                      />
-                    </div>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 
@@ -3372,6 +3633,16 @@ export default function SheetItineraryPage() {
                   <span className="text-[10px] text-slate-400 block mt-0.5">
                     {hotels.reduce((acc, h) => acc + (Number(h.nights) || 1), 0)} Nts • {quotationCalculations.rooms} Rms
                   </span>
+                  {quotationCalculations.hotelBreakdowns && quotationCalculations.hotelBreakdowns.length > 0 && (
+                    <div className="mt-1.5 pt-1.5 border-t border-slate-100 space-y-0.5">
+                      {quotationCalculations.hotelBreakdowns.map((hb: any, hbIdx: number) => (
+                        <div key={hbIdx} className="flex items-center justify-between text-[9px] text-slate-600 font-mono truncate" title={`${hb.hotelName}: ₹${Number(hb.singleHotelTotal || 0).toLocaleString('en-IN')}`}>
+                          <span className="truncate pr-1">H#{hbIdx + 1} {hb.hotelName?.slice(0, 10)}:</span>
+                          <span className="font-bold text-slate-900 shrink-0">₹{Number(hb.singleHotelTotal || 0).toLocaleString('en-IN')}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 <div className="bg-white p-2.5 rounded-lg border border-slate-200">
