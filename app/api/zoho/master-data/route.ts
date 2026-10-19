@@ -5,8 +5,17 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 export const fetchCache = 'force-no-store';
 
+let cachedMasterData: any = null;
+let lastCacheTime = 0;
+const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+
 export async function GET(req: NextRequest) {
   try {
+    const isRefresh = req.nextUrl.searchParams.has('refresh');
+    if (!isRefresh && cachedMasterData && Date.now() - lastCacheTime < CACHE_TTL_MS) {
+      return NextResponse.json(cachedMasterData);
+    }
+
     const token = await getZohoAccessToken();
     const fetchHeaders = {
       'Authorization': `Zoho-oauthtoken ${token}`,
@@ -42,8 +51,33 @@ export async function GET(req: NextRequest) {
 
     // 2. Fetch all Hotels from Zoho CRM
     const rawHotels = await fetchZohoPagedRecords(
-      '/crm/v3/Hotel?fields=Name,City_Location,Destinations,Hotel_Star_Rating,Hotel_Category,Description,Room_Rates_Pricing'
+      '/crm/v3/Hotel?fields=id,Name,City_Location,Destinations,Hotel_Star_Rating,Hotel_Category,Description'
     );
+
+    // Fetch full hotel records in parallel batches to retrieve Room_Rates_Pricing subforms
+    const detailedHotelsMap = new Map<string, any>();
+    for (let i = 0; i < rawHotels.length; i += 15) {
+      const chunk = rawHotels.slice(i, i + 15);
+      const chunkResults = await Promise.all(
+        chunk.map(async h => {
+          if (!h.id) return null;
+          try {
+            const hUrl = getZohoApiUrl(`/crm/v3/Hotel/${h.id}`);
+            const hRes = await fetch(hUrl, { headers: fetchHeaders, cache: 'no-store' });
+            if (!hRes.ok) return null;
+            const hJson = await hRes.json();
+            return hJson.data?.[0] || null;
+          } catch {
+            return null;
+          }
+        })
+      );
+      chunkResults.forEach(item => {
+        if (item && item.id) {
+          detailedHotelsMap.set(String(item.id), item);
+        }
+      });
+    }
 
     // 3. Fetch all Vehicles from Zoho CRM
     const rawVehicles = await fetchZohoPagedRecords(
@@ -95,11 +129,13 @@ export async function GET(req: NextRequest) {
 
     // Process Hotels
     rawHotels.forEach(item => {
-      const hotelName = String(item.Name || '').trim();
+      const hotelId = String(item.id || '');
+      const fullRecord = detailedHotelsMap.get(hotelId) || item;
+      const hotelName = String(fullRecord.Name || item.Name || '').trim();
       if (!hotelName) return;
 
-      const cityName = String(item.City_Location || '').trim();
-      const destName = String(item.Destinations || 'Rajasthan').trim();
+      const cityName = String(fullRecord.City_Location || item.City_Location || '').trim();
+      const destName = String(fullRecord.Destinations || item.Destinations || 'Rajasthan').trim();
       const destKey = destName.toLowerCase().replace(/[^a-z0-9]/g, '');
 
       if (destName) destinationsSet.add(destName);
@@ -111,19 +147,26 @@ export async function GET(req: NextRequest) {
       const cityKey = (cityName || destName).toLowerCase().replace(/[^a-z0-9]/g, '');
       if (!hotelsByCity[cityKey]) hotelsByCity[cityKey] = [];
 
-      const category = String(item.Hotel_Category || 'Deluxe').trim();
+      const category = String(fullRecord.Hotel_Category || item.Hotel_Category || 'Deluxe').trim();
       const rooms: any[] = [];
-      if (Array.isArray(item.Room_Rates_Pricing)) {
-        item.Room_Rates_Pricing.forEach((r: any) => {
-          rooms.push({
-            roomCategory: r.Room_Category || 'Deluxe Room',
-            pricePerNight: Number(r.Price_Per_Night) || Number(r.Base_Price) || 0,
-            extraBedPrice: Number(r.Extra_Bed) || Number(r.Extra_Bed_INR) || Number(r.Extra_Bed_Price) || 0,
-            childWithoutBed: Number(r.Child_without_bed) || 0,
-            description: r.Description_for_room || ''
-          });
+      const subform = Array.isArray(fullRecord.Room_Rates_Pricing) ? fullRecord.Room_Rates_Pricing : [];
+      subform.forEach((r: any) => {
+        const basePrice = Number(r.Base_Price) || Number(r.Base_Price_INR) || Number(r.Price_Per_Night) || 0;
+        const extraBed = Number(r.Extra_Bed) || Number(r.Extra_Bed_INR) || Number(r.Extra_Bed_Price) || 0;
+        const childWithoutBed = Number(r.Child_without_bed) || 0;
+        const pricePerNight = Number(r.Price_Per_Night) || basePrice || 0;
+        rooms.push({
+          roomCategory: String(r.Room_Category || 'Deluxe Room').trim(),
+          basePrice,
+          pricePerNight,
+          extraBedPrice: extraBed,
+          childWithoutBed,
+          description: String(r.Description_for_room || '').trim()
         });
-      }
+      });
+
+      // Sort rooms ascending by basePrice so lowest price room category is automatically first!
+      rooms.sort((a, b) => (a.basePrice || 0) - (b.basePrice || 0));
 
       hotelsByCity[cityKey].push({
         id: item.id,
@@ -131,8 +174,8 @@ export async function GET(req: NextRequest) {
         city: cityName,
         destination: destName,
         category,
-        starRating: String(item.Hotel_Star_Rating || '').trim(),
-        description: String(item.Description || '').trim(),
+        starRating: String(fullRecord.Hotel_Star_Rating || item.Hotel_Star_Rating || '').trim(),
+        description: String(fullRecord.Description || item.Description || '').trim(),
         rooms
       });
     });
@@ -153,7 +196,7 @@ export async function GET(req: NextRequest) {
       formattedCitiesByDest[dKey] = Array.from(citiesByDestination[dKey]).sort();
     }
 
-    return NextResponse.json({
+    const responsePayload = {
       success: true,
       source: 'Zoho CRM Modules',
       stats: {
@@ -166,7 +209,12 @@ export async function GET(req: NextRequest) {
       experiencesByCity,
       hotelsByCity,
       vehicles: vehiclesList
-    });
+    };
+
+    cachedMasterData = responsePayload;
+    lastCacheTime = Date.now();
+
+    return NextResponse.json(responsePayload);
   } catch (error) {
     console.error('[Zoho Master Data API Error]:', error);
     return NextResponse.json(

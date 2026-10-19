@@ -854,8 +854,10 @@ export function calculateLeadPricingOffline(input: OfflinePricingInput): Pricing
   const hotelBreakdowns: PricingCalculationResult['hotelBreakdowns'] = [];
 
   const DEFAULT_RATES: Record<string, { base: number; extraBed: number; childNoBed: number }> = {
+    standard: { base: 2500, extraBed: 1000, childNoBed: 0 },
     deluxe: { base: 3500, extraBed: 1200, childNoBed: 0 },
     superdeluxe: { base: 5000, extraBed: 1600, childNoBed: 0 },
+    suite: { base: 6500, extraBed: 2000, childNoBed: 0 },
     premium: { base: 7500, extraBed: 2500, childNoBed: 0 },
     luxury: { base: 12000, extraBed: 4000, childNoBed: 0 }
   };
