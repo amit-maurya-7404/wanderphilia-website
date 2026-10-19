@@ -639,13 +639,14 @@ export async function calculateLeadPricingAndItinerary1(
           let rowActivityCost = 0.0;
           let isPrivate = false;
 
-          // Agar SIC (Per Person) cost available nahi hai, toh Private Cost ko sabhi guests mein equally divide karenge
-          if (adultItemPrice === 0.0 && privateItemCost > 0.0) {
+          // User rule: agar SIC per person and child blank hota hai toh Private Cost se cost lena uss activity ka and sab adults and kids jo 3 saal se bade honge unme equally divide krna
+          if (adultItemPrice === 0.0 && childItemPrice === 0.0 && privateItemCost > 0.0) {
             isPrivate = true;
-            if (totalGuestsCount > 0) {
-              rowActivityCost = privateItemCost;
-              const privatePerHeadShare = round2(privateItemCost / totalGuestsCount);
-              totalAdultActivitiesCost += privatePerHeadShare;
+            rowActivityCost = privateItemCost;
+            const eligibleGuestsCount = Math.max(1, adults + transportKidsCount);
+            const privatePerHeadShare = round2(privateItemCost / eligibleGuestsCount);
+            totalAdultActivitiesCost += privatePerHeadShare;
+            if (transportKidsCount > 0) {
               totalChildActivitiesCost += privatePerHeadShare;
             }
           } else {
@@ -917,12 +918,16 @@ export function calculateLeadPricingOffline(input: OfflinePricingInput): Pricing
       let rowCost = 0.0;
       let isPrivate = false;
 
-      if (adultItemPrice === 0.0 && privateItemCost > 0.0) {
+      // User rule: agar SIC per person and child blank hota hai toh Private Cost se cost lena uss activity ka and sab adults and kids jo 3 saal se bade honge unme equally divide krna
+      if (adultItemPrice === 0.0 && childItemPrice === 0.0 && privateItemCost > 0.0) {
         isPrivate = true;
         rowCost = privateItemCost;
-        const privatePerHeadShare = round2(privateItemCost / totalGuestsCount);
+        const eligibleGuestsCount = Math.max(1, adults + transportKidsCount);
+        const privatePerHeadShare = round2(privateItemCost / eligibleGuestsCount);
         totalAdultActivitiesCost += privatePerHeadShare;
-        totalChildActivitiesCost += privatePerHeadShare;
+        if (transportKidsCount > 0) {
+          totalChildActivitiesCost += privatePerHeadShare;
+        }
       } else {
         let kids5AndUnderCount = Math.max(0, transportKidsCount - kidsAbove5Count);
         const effectiveAdultsCount = adults + kidsAbove5Count;

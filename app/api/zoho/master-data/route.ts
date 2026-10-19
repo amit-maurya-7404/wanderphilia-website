@@ -46,7 +46,7 @@ export async function GET(req: NextRequest) {
 
     // 1. Fetch all Activities & Experiences from Zoho CRM
     const rawActivities = await fetchZohoPagedRecords(
-      '/crm/v3/Activities_and_Experiences?fields=Name,City_Destination,Destination,Cost_Per_Person,Inclusions_Description,Description_for_template,Sighseeing_and_Experiences_Category,Activity_Location_Type,En_route_Routes'
+      '/crm/v3/Activities_and_Experiences?fields=id,Name,City_Destination,Destination,Cost_Per_Person,Cost_per_child,Private_Cost,Inclusions_Description,Description_for_template,Sighseeing_and_Experiences_Category,Activity_Location_Type,En_route_Routes,Timing,Duration_Timing,Distance_From_Main_City,Opening_Time,Closing_TIme,Closing_Day'
     );
 
     // 2. Fetch all Hotels from Zoho CRM
@@ -240,9 +240,18 @@ export async function GET(req: NextRequest) {
       if (!experiencesByCity[cityKey]) experiencesByCity[cityKey] = [];
 
       const description = String(item.Inclusions_Description || item.Description_for_template || '').trim();
-      const ppCost = Number(item.Cost_Per_Person) || 0;
+      const sicAdult = Number(item.Cost_Per_Person) || Number(item.SIC_Per_Person) || 0;
+      const sicChild = Number(item.Cost_per_child) || Number(item.SIC_per_child) || 0;
+      const privateCost = Number(item.Private_Cost) || 0;
+      const timing = String(item.Timing || item.Duration_Timing || '').trim();
+      const distance = String(item.Distance_From_Main_City || '').trim();
+      const openingTime = String(item.Opening_Time || '').trim();
+      const closingTime = String(item.Closing_TIme || item.Closing_Time || '').trim();
+      const closingDay = String(item.Closing_Day || '').trim();
       const category = String(item.Sighseeing_and_Experiences_Category || '').trim();
       const locationType = String(item.Activity_Location_Type || '').trim();
+      const costType = (sicAdult > 0 || sicChild > 0) ? 'SIC' : (privateCost > 0 ? 'Private' : 'Free');
+      const ppCost = sicAdult > 0 ? sicAdult : (privateCost > 0 ? privateCost : 0);
 
       experiencesByCity[cityKey].push({
         id: item.id,
@@ -250,6 +259,15 @@ export async function GET(req: NextRequest) {
         city: cityName,
         destination: destName,
         ppCost,
+        sicAdult,
+        sicChild,
+        privateCost,
+        costType,
+        timing,
+        distance,
+        openingTime,
+        closingTime,
+        closingDay,
         description,
         templateDescription: description,
         category,
