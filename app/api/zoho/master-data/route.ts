@@ -131,13 +131,103 @@ export async function GET(req: NextRequest) {
     const experiencesByCity: Record<string, any[]> = {};
     const hotelsByCity: Record<string, any[]> = {};
 
+    const KNOWN_CITY_DESTINATIONS: Record<string, string> = {
+      danang: 'Vietnam',
+      hanoi: 'Vietnam',
+      hochiminhcity: 'Vietnam',
+      halongbay: 'Vietnam',
+      hoian: 'Vietnam',
+      sapa: 'Vietnam',
+      phuquoc: 'Vietnam',
+      agra: 'Golden Triangle',
+      vrindavan: 'Golden Triangle',
+      mathura: 'Golden Triangle',
+      delhi: 'Golden Triangle',
+      fatehpursikri: 'Golden Triangle',
+      jaipur: 'Rajasthan',
+      jodhpur: 'Rajasthan',
+      udaipur: 'Rajasthan',
+      jaisalmer: 'Rajasthan',
+      jaisalmerdessert: 'Rajasthan',
+      pushkar: 'Rajasthan',
+      mountabu: 'Rajasthan',
+      jawai: 'Rajasthan',
+      ranthambore: 'Rajasthan',
+      bikaner: 'Rajasthan',
+      ajmer: 'Rajasthan',
+      kumbhalgarh: 'Rajasthan',
+      chittorgarh: 'Rajasthan',
+      mandawa: 'Rajasthan',
+      bharatpur: 'Rajasthan',
+      srinagar: 'Kashmir',
+      gulmarg: 'Kashmir',
+      pahalgam: 'Kashmir',
+      sonamarg: 'Kashmir',
+      manali: 'Himachal Pradesh',
+      shimla: 'Himachal Pradesh',
+      dharamshala: 'Himachal Pradesh',
+      kaza: 'Spiti Valley',
+      spiti: 'Spiti Valley',
+      leh: 'Leh Ladakh',
+      nubra: 'Leh Ladakh',
+      pangong: 'Leh Ladakh',
+      munnar: 'Kerala',
+      alleppey: 'Kerala',
+      kochi: 'Kerala',
+      calangute: 'Goa',
+      baga: 'Goa',
+      panaji: 'Goa',
+      havelock: 'Andaman',
+      portblair: 'Andaman',
+      dubai: 'Dubai',
+      abudhabi: 'Dubai',
+      kuta: 'Bali',
+      ubud: 'Bali',
+      seminyak: 'Bali',
+      bangkok: 'Thailand',
+      phuket: 'Thailand',
+      krabi: 'Thailand',
+      pattaya: 'Thailand',
+      singapore: 'Singapore',
+      kualalumpur: 'Malaysia',
+      male: 'Maldives',
+      zurich: 'Switzerland',
+      interlaken: 'Switzerland',
+      lucerne: 'Switzerland',
+      colombo: 'Sri Lanka',
+      kandy: 'Sri Lanka',
+      kathmandu: 'Nepal',
+      pokhara: 'Nepal',
+      paro: 'Bhutan',
+      thimphu: 'Bhutan',
+      tbilisi: 'Georgia',
+      baku: 'Azerbaijan',
+      almaty: 'Kazakhstan',
+      tashkent: 'Uzbekistan',
+      tokyo: 'Japan',
+      cairo: 'Egypt',
+      nairobi: 'Kenya'
+    };
+
+    function resolveCityDestination(cityName: string, explicitDest?: string): string {
+      const c = cityName.toLowerCase().replace(/[^a-z0-9]/g, '');
+      if (KNOWN_CITY_DESTINATIONS[c]) {
+        return KNOWN_CITY_DESTINATIONS[c];
+      }
+      const d = (explicitDest || '').trim();
+      if (d && d.toLowerCase() !== '-none-') {
+        return d;
+      }
+      return 'Rajasthan';
+    }
+
     // Process Activities
     rawActivities.forEach(item => {
       const actName = String(item.Name || '').trim();
       if (!actName) return;
 
       const cityName = String(item.City_Destination || '').trim();
-      const destName = String(item.Destination || 'Rajasthan').trim();
+      const destName = resolveCityDestination(cityName, item.Destination);
       const destKey = destName.toLowerCase().replace(/[^a-z0-9]/g, '');
 
       if (destName) destinationsSet.add(destName);
@@ -176,7 +266,7 @@ export async function GET(req: NextRequest) {
       if (!hotelName) return;
 
       const cityName = String(fullRecord.City_Location || item.City_Location || '').trim();
-      const destName = String(fullRecord.Destinations || item.Destinations || 'Rajasthan').trim();
+      const destName = resolveCityDestination(cityName, fullRecord.Destinations || item.Destinations);
       const destKey = destName.toLowerCase().replace(/[^a-z0-9]/g, '');
 
       if (destName) destinationsSet.add(destName);

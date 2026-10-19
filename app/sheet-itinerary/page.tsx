@@ -1688,17 +1688,7 @@ export default function SheetItineraryPage() {
   const availableCitiesForDestination = useMemo(() => {
     const destClean = (destination || '').trim().toLowerCase();
     const destAlpha = destClean.replace(/[^a-z0-9]/g, '');
-    const sheetMatches: string[] = [];
-
-    // 1. Check Zoho CRM master data cities
-    Object.keys(sheetCitiesByDest).forEach(dKey => {
-      const k = dKey.toLowerCase().replace(/[^a-z0-9]/g, '');
-      if (k && (k === destAlpha || k.includes(destAlpha) || destAlpha.includes(k))) {
-        sheetMatches.push(...sheetCitiesByDest[dKey]);
-      }
-    });
-
-    // 2. Direct or fuzzy lookup in DEFAULT_CITIES_BY_DESTINATION
+    // 1. Direct or fuzzy lookup in DEFAULT_CITIES_BY_DESTINATION
     let defaultMatches: string[] = [];
     if (DEFAULT_CITIES_BY_DESTINATION[destAlpha]) {
       defaultMatches = DEFAULT_CITIES_BY_DESTINATION[destAlpha];
@@ -1726,12 +1716,26 @@ export default function SheetItineraryPage() {
       }
     }
 
-    const combined = Array.from(new Set([...sheetMatches, ...defaultMatches]));
-
-    if (combined.length === 0) {
-      return DEFAULT_CITIES_BY_DESTINATION['rajasthan'] || [];
+    // STRICT: When we have an authoritative, verified list of cities for this destination,
+    // ALWAYS return this clean list directly! Never let wrongly mapped Zoho cities (e.g., Da Nang in Rajasthan) pollute it!
+    if (defaultMatches.length > 0) {
+      return defaultMatches;
     }
-    return combined;
+
+    // Fallback only if the destination is custom and not in our curated dictionary
+    const sheetMatches: string[] = [];
+    Object.keys(sheetCitiesByDest).forEach(dKey => {
+      const k = dKey.toLowerCase().replace(/[^a-z0-9]/g, '');
+      if (k && (k === destAlpha || k.includes(destAlpha) || destAlpha.includes(k))) {
+        sheetMatches.push(...sheetCitiesByDest[dKey]);
+      }
+    });
+
+    if (sheetMatches.length > 0) {
+      return Array.from(new Set(sheetMatches));
+    }
+
+    return DEFAULT_CITIES_BY_DESTINATION['rajasthan'] || [];
   }, [destination, sheetCitiesByDest]);
 
   // Filter Zoho Fixed Itineraries strictly according to the selected destination
