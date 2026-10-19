@@ -635,6 +635,65 @@ export default function SheetItineraryPage() {
     return combined;
   }, [destination, sheetCitiesByDest]);
 
+  // Filter Zoho Fixed Itineraries strictly according to the selected destination
+  const [showAllZohoFixedItineraries, setShowAllZohoFixedItineraries] = useState(false);
+
+  const filteredZohoFixedItineraries = useMemo(() => {
+    if (showAllZohoFixedItineraries || !destination || !destination.trim()) {
+      return zohoFixedItineraries;
+    }
+
+    const destClean = destination.trim().toLowerCase();
+    const destAlpha = destClean.replace(/[^a-z0-9]/g, '');
+    const knownCities = (availableCitiesForDestination || [])
+      .map(c => c.toLowerCase().trim().replace(/[^a-z0-9]/g, ''))
+      .filter(c => c.length >= 3);
+
+    const filtered = zohoFixedItineraries.filter(item => {
+      const itemDest = String(item.destination || '').trim().toLowerCase();
+      const itemDestAlpha = itemDest.replace(/[^a-z0-9]/g, '');
+      const itemName = String(item.name || '').trim().toLowerCase();
+      const itemNameAlpha = itemName.replace(/[^a-z0-9]/g, '');
+      const itemCatAlpha = String(item.category || '').trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+
+      // 1. Direct match with item destination
+      if (itemDestAlpha && (itemDestAlpha === destAlpha || itemDestAlpha.includes(destAlpha) || destAlpha.includes(itemDestAlpha))) {
+        return true;
+      }
+
+      // 2. Direct match with item category
+      if (itemCatAlpha && (itemCatAlpha === destAlpha || itemCatAlpha.includes(destAlpha) || destAlpha.includes(itemCatAlpha))) {
+        return true;
+      }
+
+      // 3. Itinerary name contains destination
+      if (itemNameAlpha.includes(destAlpha) || itemName.includes(destClean)) {
+        return true;
+      }
+
+      // 4. Itinerary name contains any known city belonging to this destination
+      // e.g. Jawai, Jodhpur, Jaisalmer, Jaipur, Udaipur all belong to Rajasthan!
+      const hasCityMatch = knownCities.some(city => itemNameAlpha.includes(city));
+      if (hasCityMatch) {
+        return true;
+      }
+
+      return false;
+    });
+
+    return filtered;
+  }, [destination, zohoFixedItineraries, availableCitiesForDestination, showAllZohoFixedItineraries]);
+
+  // Auto-reset selected fixed itinerary if destination changed and current selection is no longer in filtered list
+  useEffect(() => {
+    if (selectedFixedItineraryId && !showAllZohoFixedItineraries) {
+      const exists = filteredZohoFixedItineraries.some(item => item.id === selectedFixedItineraryId);
+      if (!exists) {
+        setSelectedFixedItineraryId('');
+      }
+    }
+  }, [destination, filteredZohoFixedItineraries, showAllZohoFixedItineraries, selectedFixedItineraryId]);
+
   // Helper to derive Hotel Stays & Nights from Day Rows based on City 2 (night stay city takes precedence)
   const deriveHotelsFromDayRows = (
     rows: TableDayRow[] | any[],
@@ -2590,18 +2649,42 @@ export default function SheetItineraryPage() {
               </div>
 
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 shrink-0">
-                <select
-                  value={selectedFixedItineraryId}
-                  onChange={e => setSelectedFixedItineraryId(e.target.value)}
-                  className="bg-white border border-slate-400 text-slate-900 font-bold text-xs h-10 rounded-xl px-3 min-w-[270px] focus:outline-none focus:border-orange-500"
-                >
-                  <option value="">-- Select Itinerary from Zoho --</option>
-                  {zohoFixedItineraries.map(item => (
-                    <option key={item.id} value={item.id}>
-                      {item.name} {item.destination ? `(${item.destination})` : ''}
+                <div className="flex flex-col gap-1">
+                  <select
+                    value={selectedFixedItineraryId}
+                    onChange={e => setSelectedFixedItineraryId(e.target.value)}
+                    className="bg-white border border-slate-400 text-slate-900 font-bold text-xs h-10 rounded-xl px-3 min-w-[300px] focus:outline-none focus:border-orange-500 shadow-xs"
+                  >
+                    <option value="">
+                      {filteredZohoFixedItineraries.length > 0
+                        ? `-- Select ${destination} Itinerary from Zoho (${filteredZohoFixedItineraries.length}) --`
+                        : `-- No itineraries found for ${destination} --`}
                     </option>
-                  ))}
-                </select>
+                    {filteredZohoFixedItineraries.map(item => (
+                      <option key={item.id} value={item.id}>
+                        {item.name} {item.destination ? `(${item.destination})` : ''}
+                      </option>
+                    ))}
+                  </select>
+
+                  {/* Filter Status Badge & Toggle */}
+                  <div className="flex items-center justify-between text-[10px] text-slate-500 px-1">
+                    <span>
+                      {showAllZohoFixedItineraries
+                        ? `Showing all (${zohoFixedItineraries.length})`
+                        : `Filtered for ${destination} (${filteredZohoFixedItineraries.length} of ${zohoFixedItineraries.length})`}
+                    </span>
+                    {zohoFixedItineraries.length > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => setShowAllZohoFixedItineraries(!showAllZohoFixedItineraries)}
+                        className="text-orange-600 hover:text-orange-800 font-bold underline cursor-pointer ml-2"
+                      >
+                        {showAllZohoFixedItineraries ? `Filter strictly for ${destination}` : 'Show All'}
+                      </button>
+                    )}
+                  </div>
+                </div>
 
                 <Button
                   onClick={() => handleApplyZohoFixedItinerary()}
