@@ -194,6 +194,9 @@ export async function POST(req: NextRequest) {
         advanceAmountPaid: aiContent.advanceAmountPaid,
         balancePendingAmount: aiContent.balancePendingAmount,
         preferredRoomCategory: details.roomCategory,
+        hotelCategory: rawBody.Hotel_Category || rawBody.hotelCategory || rawBody.rawLeadData?.Hotel_Category,
+        freezeItinerary: Boolean(rawBody.Freeze_Itinerary ?? rawBody.freezeItinerary ?? rawBody.rawLeadData?.Freeze_Itinerary),
+        pickItinerary: rawBody.Pick_Itinerary || rawBody.pickItinerary || rawBody.rawLeadData?.Pick_Itinerary,
         mealPlan: details.mealPlan,
         notes: details.notes
       },

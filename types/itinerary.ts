@@ -33,6 +33,9 @@ export interface ItineraryLeadDetails {
   tripType?: string;
   vehicleType?: string;
   preferredRoomCategory?: string;
+  hotelCategory?: string;
+  freezeItinerary?: boolean;
+  pickItinerary?: string;
   mealPlan?: string;
   sharingType?: string;
   budget?: string | number;

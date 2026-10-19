@@ -51,7 +51,10 @@ export default function ItineraryTestPage() {
     Meal_Plan: '',
     Final_Quotation_Amount: '',
     Costing_Request_Status: '',
-    Special_Requirements: ''
+    Special_Requirements: '',
+    Pick_Itinerary: '',
+    Freeze_Itinerary: false,
+    Hotel_Category: 'Deluxe'
   });
 
   const [rawLeadFull, setRawLeadFull] = useState<any>(null);
@@ -302,7 +305,10 @@ export default function ItineraryTestPage() {
         Meal_Plan: lead.mealPlan || lead.rawLeadData?.Meal_Plan || '',
         Final_Quotation_Amount: calculatedFinal,
         Costing_Request_Status: lead.costingRequestStatus || '',
-        Special_Requirements: experiencesSummary || lead.rawLeadData?.Specific_Requirements || lead.rawLeadData?.Description || ''
+        Special_Requirements: experiencesSummary || lead.rawLeadData?.Specific_Requirements || lead.rawLeadData?.Description || '',
+        Pick_Itinerary: lead.pickItinerary || '',
+        Freeze_Itinerary: Boolean(lead.freezeItinerary),
+        Hotel_Category: lead.hotelCategory || lead.globalTargetCat || 'Deluxe'
       });
 
       setFetchSuccess(true);
@@ -371,7 +377,15 @@ export default function ItineraryTestPage() {
         Per_Adult_Price: formData.Per_Adult_Price ? Number(formData.Per_Adult_Price) : undefined,
         perAdultPrice: formData.Per_Adult_Price ? Number(formData.Per_Adult_Price) : undefined,
         Per_Kid_Price: formData.Per_Kid_Price ? Number(formData.Per_Kid_Price) : undefined,
-        perKidPrice: formData.Per_Kid_Price ? Number(formData.Per_Kid_Price) : undefined
+        perKidPrice: formData.Per_Kid_Price ? Number(formData.Per_Kid_Price) : undefined,
+        Pick_Itinerary: formData.Pick_Itinerary,
+        pickItinerary: formData.Pick_Itinerary,
+        Freeze_Itinerary: formData.Freeze_Itinerary,
+        freezeItinerary: formData.Freeze_Itinerary,
+        Hotel_Category: formData.Hotel_Category,
+        hotelCategory: formData.Hotel_Category,
+        hotels: rawLeadFull?.hotels,
+        dayActivities: rawLeadFull?.dayActivities
       };
 
       const response = await fetch('/api/webhook/zoho', {
@@ -855,6 +869,86 @@ export default function ItineraryTestPage() {
                   />
                 </div>
               </div>
+
+              {/* Extra Zoho CRM Automation Fields */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label className="text-[10px] uppercase font-bold text-slate-500 block mb-1">
+                    Pick Itinerary (Product)
+                  </label>
+                  <Input
+                    value={formData.Pick_Itinerary}
+                    onChange={(e) => setFormData({ ...formData, Pick_Itinerary: e.target.value })}
+                    placeholder="e.g. 7N/8Days Jawai Jodhpur..."
+                    className="rounded-xl border-slate-200 text-xs font-semibold text-slate-800"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-[10px] uppercase font-bold text-slate-500 block mb-1">
+                    Hotel Category (Global)
+                  </label>
+                  <Input
+                    value={formData.Hotel_Category}
+                    onChange={(e) => setFormData({ ...formData, Hotel_Category: e.target.value })}
+                    placeholder="e.g. Deluxe, Super Deluxe"
+                    className="rounded-xl border-slate-200 text-xs font-semibold"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-[10px] uppercase font-bold text-slate-500 block mb-1">
+                    Freeze Itinerary
+                  </label>
+                  <div className="flex items-center gap-2 h-10 px-3 bg-slate-50 border border-slate-200 rounded-xl">
+                    <input
+                      type="checkbox"
+                      id="freezeItinCheck"
+                      checked={formData.Freeze_Itinerary}
+                      onChange={(e) => setFormData({ ...formData, Freeze_Itinerary: e.target.checked })}
+                      className="rounded text-orange-600 focus:ring-orange-500 h-4 w-4"
+                    />
+                    <label htmlFor="freezeItinCheck" className="text-xs font-bold text-slate-700 cursor-pointer select-none">
+                      {formData.Freeze_Itinerary ? 'Frozen (Locked to Lead)' : 'Not Frozen (Live Catalog)'}
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              {/* Hotel Stay Breakdown Table (City, Nights, Stay Dates & Synced Category) */}
+              {rawLeadFull?.hotels && rawLeadFull.hotels.length > 0 && (
+                <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2">
+                  <div className="text-[11px] font-bold text-slate-700 uppercase tracking-wider flex items-center justify-between">
+                    <span>Dynamic Hotel Stays & Stay Dates Breakdown</span>
+                    <span className="text-[10px] font-semibold text-orange-600">
+                      {rawLeadFull.hotels.length} Stays Auto-calculated
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 text-xs">
+                    {rawLeadFull.hotels.map((h: any, idx: number) => (
+                      <div key={idx} className="bg-white border border-slate-200 rounded-xl p-2.5 space-y-1 shadow-xs">
+                        <div className="flex items-center justify-between font-bold text-slate-900">
+                          <span className="truncate">{h.city || `Hotel ${idx + 1}`}</span>
+                          <span className="text-[10px] font-mono bg-orange-100 text-orange-800 px-1.5 py-0.2 rounded font-bold">
+                            {h.nights}N
+                          </span>
+                        </div>
+                        <div className="text-[11px] text-slate-600 truncate">
+                          {h.hotelName || 'Hotel'}
+                        </div>
+                        <div className="flex items-center justify-between text-[10px] text-slate-500 pt-1 border-t border-slate-100">
+                          <span className="font-semibold text-emerald-700 bg-emerald-50 px-1 py-0.2 rounded">
+                            {h.category || formData.Hotel_Category || 'Deluxe'}
+                          </span>
+                          <span className="font-mono text-slate-500 truncate" title={h.stayDates}>
+                            {h.stayDates || 'Dates pending'}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* Quotation & Margin Control Suite */}
               <div className="bg-slate-50/80 border border-slate-200/90 rounded-2xl p-4 sm:p-5 space-y-3.5 shadow-sm">

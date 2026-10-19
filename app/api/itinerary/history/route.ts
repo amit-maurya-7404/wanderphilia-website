@@ -43,7 +43,7 @@ export async function GET(req: NextRequest) {
 
       const inquiryId =
         doc.inquiryId ||
-        doc.leadDetails?.inquiryId ||
+        (doc.leadDetails as any)?.inquiryId ||
         doc.rawZohoData?.Inquiry_ID ||
         doc.rawZohoData?.inquiryId ||
         '';
@@ -95,9 +95,9 @@ export async function GET(req: NextRequest) {
         title: m.title,
         destination: m.destination,
         travelerName: m.leadName || 'Valued Traveler',
-        inquiryId: m.leadDetails?.inquiryId || '',
+        inquiryId: (m as any).leadDetails?.inquiryId || '',
         optionNumber: 1,
-        finalQuotationAmount: m.finalQuotationAmount || (m.pricingTable ? m.pricingTable.grandTotal : null),
+        finalQuotationAmount: m.finalQuotationAmount || ((m as any).pricingTable ? (m as any).pricingTable.grandTotal : null),
         perAdultPrice: m.perAdultPrice || null,
         perKidPrice: m.perKidPrice || null,
         days: m.numDays,
