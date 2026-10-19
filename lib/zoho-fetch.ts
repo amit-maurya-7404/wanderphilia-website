@@ -541,20 +541,22 @@ export async function fetchZohoLeadById(leadIdOrQuery: string): Promise<Normaliz
     if (
       /^(?:Standard|Deluxe|Selected|3[- ]?Star|4[- ]?Star|5[- ]?Star|Luxury|Budget|Premium)\s*(?:Hotel|Property|Resort)?$/i.test(cleanHName) ||
       cleanHName.toLowerCase() === 'standard' ||
-      cleanHName.toLowerCase() === 'deluxe'
+      cleanHName.toLowerCase() === 'deluxe' ||
+      cleanHName.toLowerCase() === 'hotel' ||
+      cleanHName.toLowerCase().endsWith(' hotel')
     ) {
-      cleanHName = city ? `${city} Hotel` : 'Hotel';
+      cleanHName = '';
     }
 
     if (cleanHName || city || nights > 0) {
       hotels.push({
         index: i,
-        hotelName: cleanHName || (city ? `${city} Hotel` : 'Hotel'),
+        hotelName: cleanHName,
         city: city || 'Destination',
         nights: nights,
         stayDates: stayDates,
         category: hotelCategory,
-        roomCategory: toSafeString(rawLead.Preferred_Room_Category, 'Standard')
+        roomCategory: cleanHName ? toSafeString(rawLead.Preferred_Room_Category, '') : ''
       });
     }
   }
@@ -569,17 +571,26 @@ export async function fetchZohoLeadById(leadIdOrQuery: string): Promise<Normaliz
     const rawCat = toSafeString(rawLead[`Hotel_${i}_Category`] || '');
 
     const rawHotelName = typeof hotelObj === 'object' && hotelObj !== null ? hotelObj.name : (typeof hotelObj === 'string' ? hotelObj : '');
-    const cleanHName = (rawHotelName || '').trim();
+    let cleanHName = (rawHotelName || '').trim();
+    if (
+      /^(?:Standard|Deluxe|Selected|3[- ]?Star|4[- ]?Star|5[- ]?Star|Luxury|Budget|Premium)\s*(?:Hotel|Property|Resort)?$/i.test(cleanHName) ||
+      cleanHName.toLowerCase() === 'standard' ||
+      cleanHName.toLowerCase() === 'deluxe' ||
+      cleanHName.toLowerCase() === 'hotel' ||
+      cleanHName.toLowerCase().endsWith(' hotel')
+    ) {
+      cleanHName = '';
+    }
 
     if (cleanHName || rawCity) {
       hotels.push({
         index: i,
-        hotelName: cleanHName || 'Hotel',
+        hotelName: cleanHName,
         city: rawCity || 'Destination',
         nights: Number(rawNights) || 0,
         stayDates: rawStayDates,
         category: (rawCat && rawCat !== '-None-') ? rawCat : globalTargetCat,
-        roomCategory: toSafeString(rawLead.Preferred_Room_Category, 'Standard')
+        roomCategory: cleanHName ? toSafeString(rawLead.Preferred_Room_Category, '') : ''
       });
     }
   }

@@ -853,24 +853,16 @@ export function calculateLeadPricingOffline(input: OfflinePricingInput): Pricing
   let currentHotelChildNoBedCostTotal = 0.0;
   const hotelBreakdowns: PricingCalculationResult['hotelBreakdowns'] = [];
 
-  const DEFAULT_RATES: Record<string, { base: number; extraBed: number; childNoBed: number }> = {
-    standard: { base: 2500, extraBed: 1000, childNoBed: 0 },
-    deluxe: { base: 3500, extraBed: 1200, childNoBed: 0 },
-    superdeluxe: { base: 5000, extraBed: 1600, childNoBed: 0 },
-    suite: { base: 6500, extraBed: 2000, childNoBed: 0 },
-    premium: { base: 7500, extraBed: 2500, childNoBed: 0 },
-    luxury: { base: 12000, extraBed: 4000, childNoBed: 0 }
-  };
-
   input.hotels.forEach((h, idx) => {
     const nights = Math.max(1, Number(h.nights) || 1);
-    const cat = (h.category || globalTargetCat || 'Deluxe').trim();
-    const catClean = cat.toLowerCase().replace(/[^a-z0-9]/g, '');
-    const def = DEFAULT_RATES[catClean] || DEFAULT_RATES.deluxe;
+    const cat = (h.category || globalTargetCat || '').trim();
 
-    const matchedRate = Number(h.roomRate) || def.base;
-    const extraBedRate = Number(h.extraBedRate) || def.extraBed;
-    const childNoBedRate = Number(h.childNoBedRate) || def.childNoBed;
+    // STRICT: If no hotel is selected, rate is strictly 0!
+    const isHotelSelected = Boolean(h.hotelName && h.hotelName.trim() && h.hotelName.toLowerCase() !== 'hotel');
+
+    const matchedRate = isHotelSelected ? (Number(h.roomRate) || 0) : 0;
+    const extraBedRate = isHotelSelected ? (Number(h.extraBedRate) || 0) : 0;
+    const childNoBedRate = isHotelSelected ? (Number(h.childNoBedRate) || 0) : 0;
 
     const hotelRoomTotal = matchedRate * totalRooms * nights;
     const currentHotelExtraBedCost = extraBedRate * billableExtraBeds * nights;
@@ -884,7 +876,7 @@ export function calculateLeadPricingOffline(input: OfflinePricingInput): Pricing
 
     hotelBreakdowns.push({
       hotelIndex: idx + 1,
-      hotelName: h.hotelName || `Hotel ${idx + 1}`,
+      hotelName: isHotelSelected ? h.hotelName : `Hotel #${idx + 1} (Not selected)`,
       targetCat: cat,
       matchedRate,
       extraBedRate,

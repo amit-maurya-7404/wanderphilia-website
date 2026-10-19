@@ -183,27 +183,16 @@ const formatStayDateRange = (startStr: string, endStr: string, nights?: number):
 // Draft Storage Key
 const DRAFT_STORAGE_KEY = 'wanderphilia_sheet_itinerary_draft_v2';
 
-// Baseline Standard Hotel Rates per Category
+// Fixed Hotel Categories
 const HOTEL_CATEGORIES = ['Standard', 'Deluxe', 'Super Deluxe', 'Suite', 'Premium', 'Luxury'];
 
-const DEFAULT_HOTEL_RATES: Record<string, { base: number; extraBed: number; childWithoutBed: number }> = {
-  standard: { base: 2500, extraBed: 1000, childWithoutBed: 500 },
-  deluxe: { base: 3500, extraBed: 1200, childWithoutBed: 800 },
-  superdeluxe: { base: 5000, extraBed: 1600, childWithoutBed: 1000 },
-  suite: { base: 6500, extraBed: 2000, childWithoutBed: 1200 },
-  premium: { base: 7500, extraBed: 2500, childWithoutBed: 1500 },
-  luxury: { base: 12000, extraBed: 4000, childWithoutBed: 2000 }
-};
-
-// Helper to extract or fallback Base Price & Extra Bed Rate for any hotel (with lowest room category auto-selected)
-export const getHotelRates = (h: any, fallbackCategory = 'Deluxe', selectedRoomCategory?: string) => {
-  const cat = (h?.category || fallbackCategory || 'Deluxe').trim().toLowerCase().replace(/[^a-z0-9]/g, '');
-  const def = DEFAULT_HOTEL_RATES[cat] || DEFAULT_HOTEL_RATES.deluxe;
-
-  let baseRate = def.base;
-  let extraBedRate = def.extraBed;
-  let childWithoutBedRate = def.childWithoutBed;
-  let roomCategory = 'Deluxe Room';
+// Helper to extract Base Price & Extra Bed Rate directly from hotel data
+// STRICT RULE: No hardcoded fallback rates. If hotel not selected or rate missing, returns 0.
+export const getHotelRates = (h: any, _fallbackCategory?: string, selectedRoomCategory?: string) => {
+  let baseRate = 0;
+  let extraBedRate = 0;
+  let childWithoutBedRate = 0;
+  let roomCategory = '';
 
   if (h && Array.isArray(h.rooms) && h.rooms.length > 0) {
     let matchedRoom: any = null;
@@ -212,15 +201,25 @@ export const getHotelRates = (h: any, fallbackCategory = 'Deluxe', selectedRoomC
       matchedRoom = h.rooms.find((r: any) => String(r.roomCategory || '').trim().toLowerCase() === target);
     }
     if (!matchedRoom) {
-      // Pick lowest price room (already sorted ascending by basePrice)
-      matchedRoom = [...h.rooms].sort((a: any, b: any) => (Number(a.basePrice || a.pricePerNight) || 0) - (Number(b.basePrice || b.pricePerNight) || 0))[0];
+      // Pick lowest price room where Base Price > 0
+      const withPrice = h.rooms.filter((r: any) => Number(r.basePrice || r.Base_Price || r.Base_Price_INR) > 0);
+      const pool = withPrice.length > 0 ? withPrice : h.rooms;
+      matchedRoom = [...pool].sort((a: any, b: any) => 
+        (Number(a.basePrice || a.Base_Price || a.Base_Price_INR) || 0) - (Number(b.basePrice || b.Base_Price || b.Base_Price_INR) || 0)
+      )[0];
     }
     if (matchedRoom) {
-      roomCategory = matchedRoom.roomCategory || roomCategory;
-      baseRate = Number(matchedRoom.basePrice || matchedRoom.pricePerNight || matchedRoom.Base_Price) || baseRate;
-      extraBedRate = Number(matchedRoom.extraBedPrice || matchedRoom.Extra_Bed || matchedRoom.Extra_Bed_INR || matchedRoom.Extra_Bed_Price) || extraBedRate;
+      roomCategory = matchedRoom.roomCategory || '';
+      // STRICT: Base Price column from subform!
+      baseRate = Number(matchedRoom.basePrice || matchedRoom.Base_Price || matchedRoom.Base_Price_INR) || 0;
+      extraBedRate = Number(matchedRoom.extraBedPrice || matchedRoom.Extra_Bed || matchedRoom.Extra_Bed_INR || matchedRoom.Extra_Bed_Price) || 0;
       childWithoutBedRate = Number(matchedRoom.childWithoutBed || 0);
     }
+  } else if (h && Number(h.basePrice || h.Base_Price || h.Base_Price_INR) > 0) {
+    baseRate = Number(h.basePrice || h.Base_Price || h.Base_Price_INR) || 0;
+    extraBedRate = Number(h.extraBedPrice || h.Extra_Bed || h.Extra_Bed_INR) || 0;
+    childWithoutBedRate = Number(h.childWithoutBedPrice || h.childWithoutBed) || 0;
+    roomCategory = h.roomCategory || '';
   }
 
   return { baseRate, extraBedRate, childWithoutBedRate, roomCategory };
@@ -496,8 +495,8 @@ export default function SheetItineraryPage() {
 
   // Hotels (Up to 6)
   const [hotels, setHotels] = useState<HotelItem[]>([
-    { index: 1, hotelName: '', city: 'Jaipur', nights: 2, roomCategory: 'Deluxe Room', category: 'Deluxe', stayDates: '' },
-    { index: 2, hotelName: '', city: 'Jodhpur', nights: 2, roomCategory: 'Deluxe Room', category: 'Deluxe', stayDates: '' }
+    { index: 1, hotelName: '', city: 'Jaipur', nights: 2, roomCategory: '', category: 'Deluxe', stayDates: '', basePrice: 0, extraBedPrice: 0, childWithoutBedPrice: 0 },
+    { index: 2, hotelName: '', city: 'Jodhpur', nights: 2, roomCategory: '', category: 'Deluxe', stayDates: '', basePrice: 0, extraBedPrice: 0, childWithoutBedPrice: 0 }
   ]);
   const [isHotelsManuallyCustomized, setIsHotelsManuallyCustomized] = useState<boolean>(false);
 
@@ -631,22 +630,37 @@ export default function SheetItineraryPage() {
 
     // 2. Hotel Accommodations Setup
     const mappedHotels = hotels.map(h => {
-      const cat = h.category || masterHotelCategory || 'Deluxe';
+      const isSelected = Boolean(h.hotelName && h.hotelName.trim() && h.hotelName.toLowerCase() !== 'hotel');
+      if (!isSelected) {
+        return {
+          hotelName: '',
+          city: h.city,
+          nights: Number(h.nights) || 1,
+          category: h.category || masterHotelCategory || '',
+          roomCategory: '',
+          roomRate: 0,
+          extraBedRate: 0,
+          childNoBedRate: 0
+        };
+      }
+
+      const cat = h.category || masterHotelCategory || '';
       const cClean = (h.city || destination || '').trim().toLowerCase().replace(/[^a-z0-9]/g, '');
       const sheetHotels = sheetHotelsByCity[cClean] || [];
       const foundHotel = sheetHotels.find((sh: any) => (sh.hotelName || '').toLowerCase().trim() === (h.hotelName || '').toLowerCase().trim());
-      
+
       const rates = getHotelRates(foundHotel, cat, h.roomCategory);
-      let roomRate = h.basePrice || rates.baseRate;
-      let extraBedRate = h.extraBedPrice || rates.extraBedRate;
-      let childNoBedRate = h.childWithoutBedPrice || rates.childWithoutBedRate;
+      let roomRate = h.basePrice !== undefined ? h.basePrice : rates.baseRate;
+      let extraBedRate = h.extraBedPrice !== undefined ? h.extraBedPrice : rates.extraBedRate;
+      let childNoBedRate = h.childWithoutBedPrice !== undefined ? h.childWithoutBedPrice : rates.childWithoutBedRate;
 
       if (foundHotel && Array.isArray(foundHotel.rooms) && foundHotel.rooms.length > 0) {
         const foundRoom = foundHotel.rooms.find((r: any) => (r.roomCategory || '').toLowerCase().trim() === (h.roomCategory || '').toLowerCase().trim());
         if (foundRoom) {
-          roomRate = Number(foundRoom.basePrice || foundRoom.pricePerNight) || roomRate;
-          extraBedRate = Number(foundRoom.extraBedPrice || foundRoom.Extra_Bed || foundRoom.Extra_Bed_INR || 0) || extraBedRate;
-          childNoBedRate = Number(foundRoom.childWithoutBed || 0);
+          // STRICTLY from Base Price column
+          roomRate = Number(foundRoom.basePrice || foundRoom.Base_Price || foundRoom.Base_Price_INR) || 0;
+          extraBedRate = Number(foundRoom.extraBedPrice || foundRoom.Extra_Bed || foundRoom.Extra_Bed_INR) || 0;
+          childNoBedRate = Number(foundRoom.childWithoutBed) || 0;
         }
       }
 
@@ -656,9 +670,9 @@ export default function SheetItineraryPage() {
         nights: Number(h.nights) || 1,
         category: cat,
         roomCategory: h.roomCategory,
-        roomRate: roomRate || undefined,
-        extraBedRate: extraBedRate || undefined,
-        childNoBedRate: childNoBedRate || undefined
+        roomRate: roomRate || 0,
+        extraBedRate: extraBedRate || 0,
+        childNoBedRate: childNoBedRate || 0
       };
     });
 
@@ -948,24 +962,24 @@ export default function SheetItineraryPage() {
       );
       const cClean = stay.city.toLowerCase().replace(/[^a-z0-9]/g, '');
       const cityHotels = sheetHotelsByCity[cClean] || [];
-      const matchingHotel = existing?.hotelName 
-        ? cityHotels.find((sh: any) => (sh.hotelName || '').toLowerCase().trim() === String(existing.hotelName).toLowerCase().trim())
-        : cityHotels.find((sh: any) => matchesHotelCategory(sh.category, existing?.category || cat)) || cityHotels[0];
-
-      const hotelName = existing?.hotelName || matchingHotel?.hotelName || '';
-      const rates = getHotelRates(matchingHotel, existing?.category || cat, existing?.roomCategory);
+      const hotelName = existing?.hotelName || '';
+      let rates = { baseRate: 0, extraBedRate: 0, childWithoutBedRate: 0, roomCategory: '' };
+      if (hotelName) {
+        const matchingHotel = cityHotels.find((sh: any) => (sh.hotelName || '').toLowerCase().trim() === hotelName.toLowerCase().trim());
+        rates = getHotelRates(matchingHotel, existing?.category || cat, existing?.roomCategory);
+      }
 
       return {
         index: idx + 1,
         hotelName,
         city: stay.city,
         nights: stay.nights,
-        roomCategory: existing?.roomCategory || rates.roomCategory || 'Deluxe Room',
-        category: existing?.category || matchingHotel?.category || cat,
+        roomCategory: existing?.roomCategory || rates.roomCategory || '',
+        category: existing?.category || cat,
         stayDates: existing?.stayDates || '',
-        basePrice: existing?.basePrice || rates.baseRate,
-        extraBedPrice: existing?.extraBedPrice || rates.extraBedRate,
-        childWithoutBedPrice: existing?.childWithoutBedPrice || rates.childWithoutBedRate
+        basePrice: hotelName ? (existing?.basePrice || rates.baseRate) : 0,
+        extraBedPrice: hotelName ? (existing?.extraBedPrice || rates.extraBedRate) : 0,
+        childWithoutBedPrice: hotelName ? (existing?.childWithoutBedPrice || rates.childWithoutBedRate) : 0
       };
     });
 
@@ -1208,8 +1222,9 @@ export default function SheetItineraryPage() {
     });
   };
 
-  // Get Room Categories for a Selected Hotel
+  // Get Room Categories for a Selected Hotel strictly from its Zoho subform
   const getRoomCategoriesForHotel = (hotelName: string, cityName: string) => {
+    if (!hotelName || !hotelName.trim()) return [];
     const cClean = (cityName || destination || '').trim().toLowerCase().replace(/[^a-z0-9]/g, '');
     const sheetHotels = sheetHotelsByCity[cClean] || [];
     const hName = (hotelName || '').trim().toLowerCase();
@@ -1217,12 +1232,14 @@ export default function SheetItineraryPage() {
 
     if (found && Array.isArray(found.rooms) && found.rooms.length > 0) {
       return found.rooms.map((r: any) => {
-        const bPrice = Number(r.basePrice || r.pricePerNight || r.Base_Price) || 0;
-        const ebPrice = Number(r.extraBedPrice || r.Extra_Bed || r.Extra_Bed_INR || 0) || 0;
+        // STRICTLY from Base Price column
+        const bPrice = Number(r.basePrice || r.Base_Price || r.Base_Price_INR) || 0;
+        const ebPrice = Number(r.extraBedPrice || r.Extra_Bed || r.Extra_Bed_INR) || 0;
+        const badge = bPrice > 0 ? `₹${bPrice.toLocaleString('en-IN')} / ₹${ebPrice.toLocaleString('en-IN')}` : undefined;
         return {
-          label: `${r.roomCategory} (₹${bPrice.toLocaleString('en-IN')} / ₹${ebPrice.toLocaleString('en-IN')})`,
+          label: badge ? `${r.roomCategory} (${badge})` : r.roomCategory,
           value: r.roomCategory,
-          badge: `₹${bPrice.toLocaleString('en-IN')} / ₹${ebPrice.toLocaleString('en-IN')}`,
+          badge,
           meta: {
             ...r,
             basePrice: bPrice,
@@ -1232,11 +1249,7 @@ export default function SheetItineraryPage() {
       });
     }
 
-    return [
-      { label: 'Deluxe Room (₹3,500 / ₹1,200)', value: 'Deluxe Room', badge: '₹3,500 / ₹1,200', meta: { roomCategory: 'Deluxe Room', basePrice: 3500, extraBedPrice: 1200 } },
-      { label: 'Super Deluxe Room (₹5,000 / ₹1,600)', value: 'Super Deluxe Room', badge: '₹5,000 / ₹1,600', meta: { roomCategory: 'Super Deluxe Room', basePrice: 5000, extraBedPrice: 1600 } },
-      { label: 'Suite Room (₹6,500 / ₹2,000)', value: 'Suite Room', badge: '₹6,500 / ₹2,000', meta: { roomCategory: 'Suite Room', basePrice: 6500, extraBedPrice: 2000 } }
-    ];
+    return [];
   };
 
   // Sync from Zoho Lead
@@ -1441,15 +1454,23 @@ export default function SheetItineraryPage() {
 
       // 13. Hotels if populated in Zoho Lead
       if (Array.isArray(l.hotels) && l.hotels.length > 0) {
-        const mappedHotels = l.hotels.map((h: any, idx: number) => ({
-          index: idx + 1,
-          hotelName: h.hotelName || '',
-          city: h.city || '',
-          nights: Number(h.nights) || 1,
-          roomCategory: 'Deluxe Room',
-          category: hotelCat || masterHotelCategory || 'Deluxe',
-          stayDates: h.stayDates || ''
-        }));
+        const mappedHotels = l.hotels.map((h: any, idx: number) => {
+          const rawName = (h.hotelName || '').trim();
+          const isGeneric = !rawName || rawName.toLowerCase() === 'hotel' || rawName.toLowerCase().endsWith(' hotel');
+          const finalName = isGeneric ? '' : rawName;
+          return {
+            index: idx + 1,
+            hotelName: finalName,
+            city: h.city || '',
+            nights: Number(h.nights) || 1,
+            roomCategory: finalName ? (h.roomCategory || '') : '',
+            category: hotelCat || masterHotelCategory || 'Deluxe',
+            stayDates: h.stayDates || '',
+            basePrice: 0,
+            extraBedPrice: 0,
+            childWithoutBedPrice: 0
+          };
+        });
         const withStayDates = startD ? computeHotelStayDates(startD, mappedHotels) : mappedHotels;
         setHotels(withStayDates);
       }
@@ -2093,9 +2114,12 @@ export default function SheetItineraryPage() {
         hotelName: '',
         city: defaultCity,
         nights: 1,
-        roomCategory: 'Deluxe Room',
+        roomCategory: '',
         category: masterHotelCategory || 'Deluxe',
-        stayDates: ''
+        stayDates: '',
+        basePrice: 0,
+        extraBedPrice: 0,
+        childWithoutBedPrice: 0
       }
     ]);
   };
@@ -2115,26 +2139,38 @@ export default function SheetItineraryPage() {
       const h = { ...updated[index], [field]: value };
 
       if (field === 'hotelName') {
-        const cClean = (h.city || destination || '').trim().toLowerCase().replace(/[^a-z0-9]/g, '');
-        const sheetHotels = sheetHotelsByCity[cClean] || [];
-        const foundHotel = meta?.hotelName 
-          ? meta 
-          : sheetHotels.find((sh: any) => (sh.hotelName || '').toLowerCase().trim() === String(value || '').toLowerCase().trim());
-
-        if (foundHotel && Array.isArray(foundHotel.rooms) && foundHotel.rooms.length > 0) {
-          // Auto-select lowest basePrice room (already sorted ascending)
-          const sorted = [...foundHotel.rooms].sort((a: any, b: any) => (Number(a.basePrice || a.pricePerNight) || 0) - (Number(b.basePrice || b.pricePerNight) || 0));
-          const lowest = sorted[0];
-          h.roomCategory = lowest.roomCategory;
-          h.basePrice = Number(lowest.basePrice || lowest.pricePerNight) || 0;
-          h.extraBedPrice = Number(lowest.extraBedPrice) || 0;
-          h.childWithoutBedPrice = Number(lowest.childWithoutBed) || 0;
+        if (!value || !String(value).trim()) {
+          h.hotelName = '';
+          h.roomCategory = '';
+          h.basePrice = 0;
+          h.extraBedPrice = 0;
+          h.childWithoutBedPrice = 0;
         } else {
-          const fallback = getHotelRates(foundHotel, h.category || masterHotelCategory);
-          h.roomCategory = fallback.roomCategory || 'Deluxe Room';
-          h.basePrice = fallback.baseRate;
-          h.extraBedPrice = fallback.extraBedRate;
-          h.childWithoutBedPrice = fallback.childWithoutBedRate;
+          const cClean = (h.city || destination || '').trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+          const sheetHotels = sheetHotelsByCity[cClean] || [];
+          const foundHotel = meta?.hotelName 
+            ? meta 
+            : sheetHotels.find((sh: any) => (sh.hotelName || '').toLowerCase().trim() === String(value || '').toLowerCase().trim());
+
+          if (foundHotel && Array.isArray(foundHotel.rooms) && foundHotel.rooms.length > 0) {
+            // Pick lowest base price room where Base Price > 0
+            const withPrice = foundHotel.rooms.filter((r: any) => Number(r.basePrice || r.Base_Price || r.Base_Price_INR) > 0);
+            const pool = withPrice.length > 0 ? withPrice : foundHotel.rooms;
+            const sorted = [...pool].sort((a: any, b: any) => 
+              (Number(a.basePrice || a.Base_Price || a.Base_Price_INR) || 0) - (Number(b.basePrice || b.Base_Price || b.Base_Price_INR) || 0)
+            );
+            const lowest = sorted[0];
+            h.roomCategory = lowest.roomCategory;
+            // STRICTLY from Base Price column
+            h.basePrice = Number(lowest.basePrice || lowest.Base_Price || lowest.Base_Price_INR) || 0;
+            h.extraBedPrice = Number(lowest.extraBedPrice || lowest.Extra_Bed || lowest.Extra_Bed_INR) || 0;
+            h.childWithoutBedPrice = Number(lowest.childWithoutBed) || 0;
+          } else {
+            h.roomCategory = '';
+            h.basePrice = 0;
+            h.extraBedPrice = 0;
+            h.childWithoutBedPrice = 0;
+          }
         }
       }
 
@@ -2142,17 +2178,21 @@ export default function SheetItineraryPage() {
         const cClean = (h.city || destination || '').trim().toLowerCase().replace(/[^a-z0-9]/g, '');
         const sheetHotels = sheetHotelsByCity[cClean] || [];
         const foundHotel = sheetHotels.find((sh: any) => (sh.hotelName || '').toLowerCase().trim() === String(h.hotelName || '').toLowerCase().trim());
-        const selectedRoom = (meta && (meta.basePrice !== undefined || meta.pricePerNight !== undefined))
+        const selectedRoom = (meta && (meta.basePrice !== undefined || meta.Base_Price !== undefined))
           ? meta
           : (foundHotel?.rooms || []).find((r: any) => String(r.roomCategory || '').toLowerCase().trim() === String(value || '').toLowerCase().trim());
 
         if (selectedRoom) {
           h.roomCategory = selectedRoom.roomCategory || value;
-          h.basePrice = Number(selectedRoom.basePrice || selectedRoom.pricePerNight) || h.basePrice;
-          h.extraBedPrice = Number(selectedRoom.extraBedPrice) || h.extraBedPrice;
-          h.childWithoutBedPrice = Number(selectedRoom.childWithoutBed) || h.childWithoutBedPrice;
+          // STRICTLY from Base Price column
+          h.basePrice = Number(selectedRoom.basePrice || selectedRoom.Base_Price || selectedRoom.Base_Price_INR) || 0;
+          h.extraBedPrice = Number(selectedRoom.extraBedPrice || selectedRoom.Extra_Bed || selectedRoom.Extra_Bed_INR) || 0;
+          h.childWithoutBedPrice = Number(selectedRoom.childWithoutBed) || 0;
         } else {
           h.roomCategory = value;
+          h.basePrice = 0;
+          h.extraBedPrice = 0;
+          h.childWithoutBedPrice = 0;
         }
       }
 
@@ -2205,7 +2245,20 @@ export default function SheetItineraryPage() {
           if (d.vehicleType) setVehicleType(d.vehicleType);
           if (d.mealPlan) setMealPlan(d.mealPlan);
           if (d.masterHotelCategory) setMasterHotelCategory(d.masterHotelCategory);
-          if (Array.isArray(d.hotels) && d.hotels.length > 0) setHotels(d.hotels);
+          if (Array.isArray(d.hotels) && d.hotels.length > 0) {
+            const sanitizedHotels = d.hotels.map((h: any) => {
+              const hasHotel = Boolean(h.hotelName && h.hotelName.trim() && h.hotelName.toLowerCase() !== 'hotel');
+              return {
+                ...h,
+                hotelName: hasHotel ? h.hotelName : '',
+                roomCategory: hasHotel ? h.roomCategory : '',
+                basePrice: hasHotel ? (Number(h.basePrice) || 0) : 0,
+                extraBedPrice: hasHotel ? (Number(h.extraBedPrice) || 0) : 0,
+                childWithoutBedPrice: hasHotel ? (Number(h.childWithoutBedPrice) || 0) : 0
+              };
+            });
+            setHotels(sanitizedHotels);
+          }
           if (d.isHotelsManuallyCustomized !== undefined) setIsHotelsManuallyCustomized(d.isHotelsManuallyCustomized);
           if (Array.isArray(d.dayRows) && d.dayRows.length > 0) setDayRows(d.dayRows);
           if (d.baseQuotation) setBaseQuotation(d.baseQuotation);
@@ -3184,12 +3237,16 @@ export default function SheetItineraryPage() {
                           options={getHotelsLookupForCity(h.city, h.category)}
                           placeholder={`Select ${h.category || masterHotelCategory} Hotel...`}
                         />
-                        {h.hotelName && (
+                        {h.hotelName ? (
                           <div className="mt-1 flex items-center gap-1.5 text-[10px] font-mono">
                             <span className="font-semibold text-slate-500">Rate:</span>
                             <span className="px-1.5 py-0.5 rounded bg-orange-100 text-orange-800 font-bold border border-orange-200">
                               Base: ₹{Number(hBreakdown?.matchedRate || h.basePrice || 0).toLocaleString('en-IN')} / Extra Bed: ₹{Number(hBreakdown?.extraBedRate || h.extraBedPrice || 0).toLocaleString('en-IN')}
                             </span>
+                          </div>
+                        ) : (
+                          <div className="mt-1 text-[10px] text-slate-400 font-mono italic">
+                            Rate: ₹0 (No hotel selected)
                           </div>
                         )}
                       </div>
@@ -3200,7 +3257,7 @@ export default function SheetItineraryPage() {
                           value={h.roomCategory}
                           onChange={(val, meta) => updateHotel(idx, 'roomCategory', val, meta)}
                           options={getRoomCategoriesForHotel(h.hotelName, h.city)}
-                          placeholder="Room Category..."
+                          placeholder={h.hotelName ? "Select Room Category..." : "Select Hotel first..."}
                         />
                       </div>
 
@@ -3224,18 +3281,26 @@ export default function SheetItineraryPage() {
                     <div className="mt-3 pt-2.5 border-t border-slate-200 flex flex-wrap items-center justify-between text-xs gap-2">
                       <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-600">
                         <span className="font-bold text-slate-700">Cost Calculation:</span>
-                        <span className="bg-white border border-slate-300 px-2 py-0.5 rounded text-slate-800 font-mono">
-                          Base: ₹{Number(hBreakdown?.matchedRate || 0).toLocaleString('en-IN')} × {h.nights} Nts × {quotationCalculations.rooms} Rms = <strong>₹{Number(hBreakdown?.hotelRoomTotal || 0).toLocaleString('en-IN')}</strong>
-                        </span>
-                        {Number(hBreakdown?.extraBedCost || 0) > 0 && (
-                          <span className="bg-orange-50 border border-orange-200 px-2 py-0.5 rounded text-orange-800 font-mono">
-                            Extra Bed: ₹{Number(hBreakdown?.extraBedRate || 0).toLocaleString('en-IN')} × {quotationCalculations.billableExtraBeds} EB × {h.nights} Nts = <strong>₹{Number(hBreakdown?.extraBedCost || 0).toLocaleString('en-IN')}</strong>
+                        {h.hotelName && Number(hBreakdown?.singleHotelTotal || 0) > 0 ? (
+                          <>
+                            <span className="bg-white border border-slate-300 px-2 py-0.5 rounded text-slate-800 font-mono">
+                              Base: ₹{Number(hBreakdown?.matchedRate || 0).toLocaleString('en-IN')} × {h.nights} Nts × {quotationCalculations.rooms} Rms = <strong>₹{Number(hBreakdown?.hotelRoomTotal || 0).toLocaleString('en-IN')}</strong>
+                            </span>
+                            {Number(hBreakdown?.extraBedCost || 0) > 0 && (
+                              <span className="bg-orange-50 border border-orange-200 px-2 py-0.5 rounded text-orange-800 font-mono">
+                                Extra Bed: ₹{Number(hBreakdown?.extraBedRate || 0).toLocaleString('en-IN')} × {quotationCalculations.billableExtraBeds} EB × {h.nights} Nts = <strong>₹{Number(hBreakdown?.extraBedCost || 0).toLocaleString('en-IN')}</strong>
+                              </span>
+                            )}
+                          </>
+                        ) : (
+                          <span className="text-slate-400 italic font-mono text-[11px]">
+                            ₹0 (Select a hotel to calculate cost)
                           </span>
                         )}
                       </div>
                       <div className="flex items-center gap-1.5 ml-auto">
                         <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wide">Hotel #{idx + 1} Total:</span>
-                        <span className="text-xs font-black text-emerald-900 bg-emerald-100 border border-emerald-300 px-2.5 py-1 rounded-md font-mono shadow-2xs">
+                        <span className={`text-xs font-black px-2.5 py-1 rounded-md font-mono shadow-2xs ${h.hotelName && Number(hBreakdown?.singleHotelTotal || 0) > 0 ? 'text-emerald-900 bg-emerald-100 border border-emerald-300' : 'text-slate-500 bg-slate-100 border border-slate-200'}`}>
                           ₹{Number(hBreakdown?.singleHotelTotal || 0).toLocaleString('en-IN')}
                         </span>
                       </div>

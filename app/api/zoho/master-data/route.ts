@@ -151,10 +151,11 @@ export async function GET(req: NextRequest) {
       const rooms: any[] = [];
       const subform = Array.isArray(fullRecord.Room_Rates_Pricing) ? fullRecord.Room_Rates_Pricing : [];
       subform.forEach((r: any) => {
-        const basePrice = Number(r.Base_Price) || Number(r.Base_Price_INR) || Number(r.Price_Per_Night) || 0;
+        // STRICT: Base Price comes ONLY from Base_Price or Base_Price_INR column
+        const basePrice = Number(r.Base_Price) || Number(r.Base_Price_INR) || 0;
         const extraBed = Number(r.Extra_Bed) || Number(r.Extra_Bed_INR) || Number(r.Extra_Bed_Price) || 0;
         const childWithoutBed = Number(r.Child_without_bed) || 0;
-        const pricePerNight = Number(r.Price_Per_Night) || basePrice || 0;
+        const pricePerNight = Number(r.Price_Per_Night) || 0;
         rooms.push({
           roomCategory: String(r.Room_Category || 'Deluxe Room').trim(),
           basePrice,
