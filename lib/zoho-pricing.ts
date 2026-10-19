@@ -876,7 +876,7 @@ export function calculateLeadPricingOffline(input: OfflinePricingInput): Pricing
 
     hotelBreakdowns.push({
       hotelIndex: idx + 1,
-      hotelName: isHotelSelected ? h.hotelName : `Hotel #${idx + 1} (Not selected)`,
+      hotelName: (isHotelSelected && h.hotelName ? h.hotelName : '') || `Hotel #${idx + 1} (Not selected)`,
       targetCat: cat,
       matchedRate,
       extraBedRate,

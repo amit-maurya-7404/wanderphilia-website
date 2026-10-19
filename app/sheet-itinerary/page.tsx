@@ -1035,10 +1035,18 @@ export const getHotelRates = (h: any, _fallbackCategory?: string, selectedRoomCa
 };
 
 // --- REUSABLE LOOKUP FIELD COMPONENT ---
+export interface LookupOptionItem {
+  label?: string;
+  value?: string;
+  badge?: string;
+  meta?: any;
+  disabled?: boolean;
+}
+
 interface LookupFieldProps {
   value?: string | null;
   onChange: (val: string, meta?: any) => void;
-  options: (string | { label?: string; value?: string; badge?: string; meta?: any })[];
+  options: (string | LookupOptionItem)[];
   placeholder?: string;
   className?: string;
   disabled?: boolean;
@@ -1066,7 +1074,7 @@ function LookupField({ value = '', onChange, options = [], placeholder, classNam
     return options.map(opt => {
       if (typeof opt === 'string' || typeof opt === 'number') {
         const str = String(opt);
-        return { label: str, value: str, badge: undefined, meta: undefined };
+        return { label: str, value: str, badge: undefined, meta: undefined, disabled: false };
       }
       if (opt && typeof opt === 'object') {
         const valStr = opt.value !== undefined && opt.value !== null ? String(opt.value) : (opt.label ? String(opt.label) : '');
@@ -1074,16 +1082,19 @@ function LookupField({ value = '', onChange, options = [], placeholder, classNam
         return {
           ...opt,
           label: lblStr,
-          value: valStr
+          value: valStr,
+          disabled: Boolean(opt.disabled)
         };
       }
-      return { label: '', value: '', badge: undefined, meta: undefined };
+      return { label: '', value: '', badge: undefined, meta: undefined, disabled: false };
     });
   }, [options]);
 
   const filteredOptions = useMemo(() => {
     const q = (search || '').trim().toLowerCase();
     if (!q) return normalizedOptions;
+    const hasOnlyDisabled = normalizedOptions.length > 0 && normalizedOptions.every(o => o.disabled);
+    if (hasOnlyDisabled) return normalizedOptions;
     return normalizedOptions.filter(o =>
       (o.label || '').toLowerCase().includes(q) ||
       (o.value || '').toLowerCase().includes(q) ||
@@ -1144,24 +1155,33 @@ function LookupField({ value = '', onChange, options = [], placeholder, classNam
         <div className="absolute z-50 left-0 w-full min-w-[300px] max-w-[420px] mt-1 max-h-60 overflow-y-auto bg-white border border-slate-300 rounded-lg shadow-2xl py-1 text-xs divide-y divide-slate-100">
           {filteredOptions.length > 0 ? (
             filteredOptions.map((opt, i) => {
-              const isSelected = safeValue.toLowerCase() === (opt.value || '').toLowerCase();
+              const isSelected = !opt.disabled && safeValue.toLowerCase() === (opt.value || '').toLowerCase();
               return (
                 <button
                   key={i}
                   type="button"
+                  disabled={opt.disabled}
                   onClick={() => {
+                    if (opt.disabled) return;
                     onChange(opt.value, opt.meta);
                     setSearch(opt.value);
                     setIsOpen(false);
                   }}
-                  className={`w-full text-left px-3 py-2 flex items-center justify-between transition-colors ${isSelected
+                  className={`w-full text-left px-3 py-2 flex items-center justify-between transition-colors ${
+                    opt.disabled
+                      ? 'bg-slate-50 text-slate-400 italic cursor-not-allowed select-none'
+                      : isSelected
                       ? 'bg-orange-50 text-orange-700 font-bold'
                       : 'text-slate-800 hover:bg-slate-50 hover:text-slate-900'
-                    }`}
+                  }`}
                 >
                   <span className="truncate font-semibold">{opt.label}</span>
                   {opt.badge && (
-                    <span className="ml-2 text-[10px] px-1.5 py-0.5 rounded bg-orange-100 border border-orange-200 text-orange-800 font-bold shrink-0 font-mono">
+                    <span className={`ml-2 text-[10px] px-1.5 py-0.5 rounded border shrink-0 font-mono ${
+                      opt.disabled
+                        ? 'bg-slate-100 border-slate-200 text-slate-400 font-normal'
+                        : 'bg-orange-100 border-orange-200 text-orange-800 font-bold'
+                    }`}>
                       {opt.badge}
                     </span>
                   )}
@@ -1854,11 +1874,16 @@ export default function SheetItineraryPage() {
       );
       const cClean = stay.city.toLowerCase().replace(/[^a-z0-9]/g, '');
       const cityHotels = sheetHotelsByCity[cClean] || [];
-      const hotelName = existing?.hotelName || '';
+      const hotelCat = existing?.category || cat;
+      let hotelName = existing?.hotelName || '';
       let rates = { baseRate: 0, extraBedRate: 0, childWithoutBedRate: 0, roomCategory: '' };
       if (hotelName) {
         const matchingHotel = cityHotels.find((sh: any) => (sh.hotelName || '').toLowerCase().trim() === hotelName.toLowerCase().trim());
-        rates = getHotelRates(matchingHotel, existing?.category || cat, existing?.roomCategory);
+        if (matchingHotel && matchesHotelCategory(matchingHotel.category, hotelCat)) {
+          rates = getHotelRates(matchingHotel, hotelCat, existing?.roomCategory);
+        } else {
+          hotelName = '';
+        }
       }
 
       return {
@@ -1866,8 +1891,8 @@ export default function SheetItineraryPage() {
         hotelName,
         city: stay.city,
         nights: stay.nights,
-        roomCategory: existing?.roomCategory || rates.roomCategory || '',
-        category: existing?.category || cat,
+        roomCategory: hotelName ? (existing?.roomCategory || rates.roomCategory || '') : '',
+        category: hotelCat,
         stayDates: existing?.stayDates || '',
         basePrice: hotelName ? (existing?.basePrice || rates.baseRate) : 0,
         extraBedPrice: hotelName ? (existing?.extraBedPrice || rates.extraBedRate) : 0,
@@ -1909,7 +1934,20 @@ export default function SheetItineraryPage() {
           const foundHotel = sheetHotels.find((sh: any) => (sh.hotelName || '').toLowerCase().trim() === String(h.hotelName || '').toLowerCase().trim());
           if (!foundHotel) return h;
 
-          const rates = getHotelRates(foundHotel, h.category || masterHotelCategory, h.roomCategory);
+          const effectiveCat = h.category || masterHotelCategory || 'Deluxe';
+          if (!matchesHotelCategory(foundHotel.category, effectiveCat)) {
+            changed = true;
+            return {
+              ...h,
+              hotelName: '',
+              roomCategory: '',
+              basePrice: 0,
+              extraBedPrice: 0,
+              childWithoutBedPrice: 0
+            };
+          }
+
+          const rates = getHotelRates(foundHotel, effectiveCat, h.roomCategory);
           if (h.basePrice !== rates.baseRate || h.extraBedPrice !== rates.extraBedRate || (foundHotel.rooms?.length > 0 && !h.roomCategory)) {
             changed = true;
             return {
@@ -1925,7 +1963,7 @@ export default function SheetItineraryPage() {
         return changed ? updated : prev;
       });
     }
-  }, [sheetHotelsByCity]);
+  }, [sheetHotelsByCity, masterHotelCategory]);
 
   // Available Vehicle options from Zoho CRM Vehicles module or fallback
   const vehicleOptions = useMemo(() => {
@@ -2077,29 +2115,51 @@ export default function SheetItineraryPage() {
     const c = (hotelCat || '').trim().toLowerCase().replace(/[^a-z0-9]/g, '');
     const t = targetCat.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
 
+    if (!c) return false;
+
     if (t === 'standard') return c === 'standard' || c.includes('standard');
     if (t === 'superdeluxe') return c === 'superdeluxe' || c.includes('super');
     if (t === 'deluxe') return c === 'deluxe' && !c.includes('super');
     if (t === 'suite') return c === 'suite' || c.includes('suite');
     if (t === 'premium') return c === 'premium' || c.includes('premium');
-    if (t === 'luxury') return c.includes('luxury');
+    if (t === 'luxury') return c === 'luxury' || c.includes('luxury');
 
-    return c === t || c.includes(t) || t.includes(c);
+    return c === t;
   };
 
   // Get Hotels Lookup for a City filtered STRICTLY by Hotel Category with Base/ExtraBed prices
   const getHotelsLookupForCity = (cityName: string, categoryFilter?: string) => {
-    const cClean = (cityName || destination).trim().toLowerCase().replace(/[^a-z0-9]/g, '');
-    const sheetHotels = sheetHotelsByCity[cClean] || [];
     const effectiveCat = categoryFilter || masterHotelCategory || 'Deluxe';
+    if (!cityName || !cityName.trim()) {
+      return [
+        {
+          label: 'Select city first',
+          value: '',
+          badge: 'Required',
+          disabled: true
+        }
+      ];
+    }
 
-    const filtered = sheetHotels.filter(h =>
-      matchesHotelCategory(h.category, effectiveCat)
-    );
+    const cClean = cityName.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+    const sheetHotels = sheetHotelsByCity[cClean] || [];
 
-    const listToUse = filtered.length > 0 ? filtered : sheetHotels;
+    const filtered = effectiveCat === 'All'
+      ? sheetHotels
+      : sheetHotels.filter(h => matchesHotelCategory(h.category, effectiveCat));
 
-    return listToUse.map(h => {
+    if (filtered.length === 0) {
+      return [
+        {
+          label: `No hotel in this hotel category (${effectiveCat})`,
+          value: '',
+          badge: '0 available',
+          disabled: true
+        }
+      ];
+    }
+
+    return filtered.map(h => {
       const { baseRate, extraBedRate } = getHotelRates(h, h.category || effectiveCat);
       return {
         label: `${h.hotelName} (₹${baseRate.toLocaleString('en-IN')} / ₹${extraBedRate.toLocaleString('en-IN')})`,
@@ -2116,7 +2176,16 @@ export default function SheetItineraryPage() {
 
   // Get Room Categories for a Selected Hotel strictly from its Zoho subform
   const getRoomCategoriesForHotel = (hotelName: string, cityName: string) => {
-    if (!hotelName || !hotelName.trim()) return [];
+    if (!hotelName || !hotelName.trim()) {
+      return [
+        {
+          label: 'Select hotel first',
+          value: '',
+          badge: 'Required',
+          disabled: true
+        }
+      ];
+    }
     const cClean = (cityName || destination || '').trim().toLowerCase().replace(/[^a-z0-9]/g, '');
     const sheetHotels = sheetHotelsByCity[cClean] || [];
     const hName = (hotelName || '').trim().toLowerCase();
@@ -2141,7 +2210,14 @@ export default function SheetItineraryPage() {
       });
     }
 
-    return [];
+    return [
+      {
+        label: 'No room categories found for this hotel',
+        value: '',
+        badge: '0 available',
+        disabled: true
+      }
+    ];
   };
 
   // Sync from Zoho Lead
@@ -2985,10 +3061,22 @@ export default function SheetItineraryPage() {
   const handleMasterHotelCategoryChange = (cat: string) => {
     setMasterHotelCategory(cat);
     setHotels(prev =>
-      prev.map(h => ({
-        ...h,
-        category: cat
-      }))
+      prev.map(h => {
+        const cClean = (h.city || destination || '').trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+        const sheetHotels = sheetHotelsByCity[cClean] || [];
+        const foundHotel = sheetHotels.find((sh: any) => (sh.hotelName || '').toLowerCase().trim() === String(h.hotelName || '').toLowerCase().trim());
+        const isMatch = foundHotel ? matchesHotelCategory(foundHotel.category, cat) : true;
+        const rates = isMatch && foundHotel ? getHotelRates(foundHotel, cat, h.roomCategory) : { baseRate: 0, extraBedRate: 0, childWithoutBedRate: 0 };
+        return {
+          ...h,
+          category: cat,
+          hotelName: isMatch ? h.hotelName : '',
+          roomCategory: isMatch ? h.roomCategory : '',
+          basePrice: isMatch ? rates.baseRate : 0,
+          extraBedPrice: isMatch ? rates.extraBedRate : 0,
+          childWithoutBedPrice: isMatch ? rates.childWithoutBedRate : 0
+        };
+      })
     );
   };
 
@@ -3027,6 +3115,15 @@ export default function SheetItineraryPage() {
     setHotels(prev => {
       const updated = [...prev];
       const h = { ...updated[index], [field]: value };
+
+      if (field === 'city') {
+        // If city changes, clear previously selected hotel from former city
+        h.hotelName = '';
+        h.roomCategory = '';
+        h.basePrice = 0;
+        h.extraBedPrice = 0;
+        h.childWithoutBedPrice = 0;
+      }
 
       if (field === 'hotelName') {
         if (!value || !String(value).trim()) {
@@ -3090,10 +3187,26 @@ export default function SheetItineraryPage() {
         const cClean = (h.city || destination || '').trim().toLowerCase().replace(/[^a-z0-9]/g, '');
         const sheetHotels = sheetHotelsByCity[cClean] || [];
         const foundHotel = sheetHotels.find((sh: any) => (sh.hotelName || '').toLowerCase().trim() === String(h.hotelName || '').toLowerCase().trim());
-        const rates = getHotelRates(foundHotel, value, h.roomCategory);
-        h.basePrice = rates.baseRate;
-        h.extraBedPrice = rates.extraBedRate;
-        h.childWithoutBedPrice = rates.childWithoutBedRate;
+        
+        if (foundHotel && !matchesHotelCategory(foundHotel.category, value)) {
+          // If selected hotel does not belong to the new category, clear it completely
+          h.hotelName = '';
+          h.roomCategory = '';
+          h.basePrice = 0;
+          h.extraBedPrice = 0;
+          h.childWithoutBedPrice = 0;
+        } else if (foundHotel) {
+          const rates = getHotelRates(foundHotel, value, h.roomCategory);
+          h.basePrice = rates.baseRate;
+          h.extraBedPrice = rates.extraBedRate;
+          h.childWithoutBedPrice = rates.childWithoutBedRate;
+        } else {
+          h.hotelName = '';
+          h.roomCategory = '';
+          h.basePrice = 0;
+          h.extraBedPrice = 0;
+          h.childWithoutBedPrice = 0;
+        }
       }
 
       updated[index] = h;
