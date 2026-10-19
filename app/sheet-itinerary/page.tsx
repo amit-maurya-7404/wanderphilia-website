@@ -61,37 +61,37 @@ const DEFAULT_CITIES_BY_DESTINATION: Record<string, string[]> = {
 
 const DEFAULT_EXPERIENCES_BY_CITY: Record<string, { name: string; guidedTour?: boolean; description?: string }[]> = {
   jaipur: [
-    { name: 'City Palace', guidedTour: true, description: 'Explore the magnificent City Palace and discover Jaipur’s royal heritage through its grand courtyards, museums, and traditional architecture.' },
-    { name: 'Hawa Mahal', guidedTour: true, description: 'Marvel at the iconic Palace of Winds with its 953 honeycombed windows built for royal women to observe city life.' },
-    { name: 'Amber Fort', guidedTour: true, description: 'Explore the majestic hilltop Amber Fort featuring the dazzling Sheesh Mahal (Mirror Palace) and Rajput architecture.' },
-    { name: 'Jantar Mantar', guidedTour: true, description: 'Discover the UNESCO World Heritage astronomical observatory and its fascinating geometric stone instruments.' },
+    { name: 'City Palace', guidedTour: false, description: 'Explore the magnificent City Palace and discover Jaipur’s royal heritage through its grand courtyards, museums, and traditional architecture.' },
+    { name: 'Hawa Mahal', guidedTour: false, description: 'Marvel at the iconic Palace of Winds with its 953 honeycombed windows built for royal women to observe city life.' },
+    { name: 'Amber Fort', guidedTour: false, description: 'Explore the majestic hilltop Amber Fort featuring the dazzling Sheesh Mahal (Mirror Palace) and Rajput architecture.' },
+    { name: 'Jantar Mantar', guidedTour: false, description: 'Discover the UNESCO World Heritage astronomical observatory and its fascinating geometric stone instruments.' },
     { name: 'Nahargarh Sunset Point', guidedTour: false, description: 'Enjoy panoramic sunset views overlooking the Pink City from the high ramparts of Nahargarh Fort.' },
     { name: 'Jal Mahal Photo Stop', guidedTour: false, description: 'Scenic photo stop at the serene Water Palace set amidst the waters of Man Sagar Lake.' },
-    { name: 'Pink City Heritage Bazaar Walk', guidedTour: true, description: 'Walk through historic bazaars of Jaipur famous for block prints, gems, spices, and Rajasthani handicrafts.' },
+    { name: 'Pink City Heritage Bazaar Walk', guidedTour: false, description: 'Walk through historic bazaars of Jaipur famous for block prints, gems, spices, and Rajasthani handicrafts.' },
     { name: 'Johari Bazaar', guidedTour: false, description: 'Explore Jaipur’s vibrant Johari Bazaar, known for traditional jewellery, gemstones, and festive shopping.' },
     { name: 'Patrika Gate', guidedTour: false, description: 'Admire the vibrant hand-painted murals and arches showcasing Rajasthan’s culture and heritage at Jawahar Circle.' },
     { name: 'Chokhi Dhani Cultural Village', guidedTour: false, description: 'Experience authentic Rajasthani village culture, traditional folk performances, and royal dining.' }
   ],
   jodhpur: [
-    { name: 'Mehrangarh Fort', guidedTour: true, description: 'Visit one of India’s largest forts rising 400 feet above the city with palatial courtyards and royal exhibits.' },
-    { name: 'Jaswant Thada', guidedTour: true, description: 'Peaceful white-marble royal cenotaph with carved gazebos, peaceful gardens, and panoramic city views.' },
+    { name: 'Mehrangarh Fort', guidedTour: false, description: 'Visit one of India’s largest forts rising 400 feet above the city with palatial courtyards and royal exhibits.' },
+    { name: 'Jaswant Thada', guidedTour: false, description: 'Peaceful white-marble royal cenotaph with carved gazebos, peaceful gardens, and panoramic city views.' },
     { name: 'Umaid Bhawan Palace & Museum', guidedTour: false, description: 'Explore the grand art-deco royal palace, museum exhibits, vintage automobiles, and royal family history.' },
     { name: 'Clock Tower & Sardar Market', guidedTour: false, description: 'Stroll around the historic Ghanta Ghar clock tower and bustling bazaar filled with spices, tea, and textiles.' },
     { name: 'Panchatiya Hills', guidedTour: false, description: 'Enjoy peaceful panoramic sunset views overlooking the Blue City from the heights of Panchatiya Hills.' },
     { name: 'Mandore Garden Light Show', guidedTour: false, description: 'Witness the captivating light and sound spectacle bringing the royal history of Mandore to life.' }
   ],
   udaipur: [
-    { name: 'City Palace Udaipur', guidedTour: true, description: 'Explore Rajasthan’s largest palace complex overlooking Lake Pichola with ornate courtyards and mirror work.' },
+    { name: 'City Palace Udaipur', guidedTour: false, description: 'Explore Rajasthan’s largest palace complex overlooking Lake Pichola with ornate courtyards and mirror work.' },
     { name: 'Lake Pichola Scenic Boat Ride', guidedTour: false, description: 'Delightful boat cruise on Lake Pichola past historic ghats, Jag Mandir, and the floating Lake Palace.' },
     { name: 'Jag Mandir Island', guidedTour: false, description: 'Picturesque island palace on Lake Pichola with marble pavilions and scenic lakeside gardens.' },
-    { name: 'Saheliyon Ki Bari', guidedTour: true, description: 'Stroll through the historic Garden of the Maidens featuring marble fountains, lotus pools, and kiosks.' },
+    { name: 'Saheliyon Ki Bari', guidedTour: false, description: 'Stroll through the historic Garden of the Maidens featuring marble fountains, lotus pools, and kiosks.' },
     { name: 'Vintage Car Collection', guidedTour: false, description: 'View the private classic and vintage car collection belonging to the royal family of Mewar.' }
   ],
   jaisalmer: [
-    { name: 'Jaisalmer Golden Fort', guidedTour: true, description: 'Explore the living golden sandstone fort housing ancient Jain temples, shops, and royal palaces.' },
+    { name: 'Jaisalmer Golden Fort', guidedTour: false, description: 'Explore the living golden sandstone fort housing ancient Jain temples, shops, and royal palaces.' },
     { name: 'Sam Sand Dunes Camel Safari', guidedTour: false, description: 'Thrilling camel safari across golden undulating dunes in the heart of the Thar Desert.' },
     { name: 'Desert Sunset & Folk Dance Night', guidedTour: false, description: 'Evening cultural program with traditional Kalbelia dance, folk singing, bonfire, and Rajasthani buffet.' },
-    { name: 'Patwon Ki Haveli', guidedTour: true, description: 'Marvel at the intricate jali stone carving and antique artefacts across five historic merchant havelis.' },
+    { name: 'Patwon Ki Haveli', guidedTour: false, description: 'Marvel at the intricate jali stone carving and antique artefacts across five historic merchant havelis.' },
     { name: 'Bada Bagh', guidedTour: false, description: 'Historic royal cenotaphs of the Maharajas of Jaisalmer set against rolling desert hills and windmills.' },
     { name: 'Thar Desert Experience', guidedTour: false, description: 'Experience the Thar Desert with sunset views, camel safaris, dunes, and traditional camping.' }
   ]
@@ -504,7 +504,7 @@ export default function SheetItineraryPage() {
   const createInitialDayRow = (dayNum: number, city?: string): TableDayRow => ({
     dayNumber: dayNum,
     dayText: `Day ${dayNum}`,
-    guidedTour: dayNum <= 2,
+    guidedTour: false,
     city: city || 'Jaipur',
     enRouteExperiences: [''],
     city2: '',
@@ -1943,9 +1943,7 @@ export default function SheetItineraryPage() {
         }
       }
       costs[expIdx] = Number(meta?.ppCost) || 0;
-      if (meta?.guidedTour) {
-        row.guidedTour = true;
-      }
+      // Guided Tour is strictly manual - selecting an experience must never auto-tick Guided Tour
 
       row.experiences = exps;
       row.descriptions = descs;

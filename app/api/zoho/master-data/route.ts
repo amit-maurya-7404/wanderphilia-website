@@ -123,7 +123,7 @@ export async function GET(req: NextRequest) {
         templateDescription: description,
         category,
         locationType,
-        guidedTour: true // Default all curated Zoho experiences with guided availability
+        guidedTour: false
       });
     });
 
