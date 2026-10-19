@@ -1,4 +1,5 @@
 import { getZohoAccessToken, getZohoApiUrl } from './zoho';
+import { calculateLeadPricingAndItinerary1, PricingCalculationResult } from './zoho-pricing';
 
 export interface ZohoHotelStay {
   index: number;
@@ -69,10 +70,12 @@ export interface NormalizedZohoLead {
   advanceAmountPaid?: number;
   balancePendingAmount?: number;
   costingRequestStatus?: string;
+  roomsCount?: number;
   hotels: ZohoHotelStay[];
   dayActivities: ZohoDayActivity[];
   rawLeadData: Record<string, any>;
   loadedProductData?: Record<string, any> | null;
+  calculatedPricing?: PricingCalculationResult;
 }
 
 export function toSafeString(val: any, fallback = ''): string {
@@ -680,6 +683,16 @@ export async function fetchZohoLeadById(leadIdOrQuery: string): Promise<Normaliz
   dayActivities.sort((a, b) => a.dayNumber - b.dayNumber);
 
   // --------------------------------------------------------------------------
+  // DELUGE PRICING AUTOMATION: calculateLeadPricingAndItinerary1
+  // --------------------------------------------------------------------------
+  let calculatedPricing: PricingCalculationResult | undefined = undefined;
+  try {
+    calculatedPricing = await calculateLeadPricingAndItinerary1(rawLead, token);
+  } catch (err) {
+    console.warn('[Auto Lead Pricing Calculation skipped]:', err);
+  }
+
+  // --------------------------------------------------------------------------
   // DELUGE STEP 8: RETURN FULL NORMALIZED RECORD
   // --------------------------------------------------------------------------
   return {
@@ -732,20 +745,21 @@ export async function fetchZohoLeadById(leadIdOrQuery: string): Promise<Normaliz
     vehicleType: toSafeString(rawLead.Vehicle_Type || rawLead.Vehicle || rawLead.vehicleType || rawLead.Cab_Type, 'AC Vehicle'),
     tripType: toSafeString(rawLead.Trip_Type, 'Customised Trip'),
     travelStyle: toSafeString(rawLead.Travel_Style, 'Family Trip'),
-    finalQuotationAmount: rawLead.Final_Quotation_Amount ? Number(rawLead.Final_Quotation_Amount) : (rawLead.Total_Package_Cost ? Number(rawLead.Total_Package_Cost) : (rawLead.Quotation_Amount ? Number(rawLead.Quotation_Amount) : (rawLead.Expected_Revenue ? Number(rawLead.Expected_Revenue) : (rawLead.Amount ? Number(rawLead.Amount) : undefined)))),
+    roomsCount: rawLead.Rooms_Count ? Number(rawLead.Rooms_Count) : calculatedPricing?.roomsCount,
+    finalQuotationAmount: rawLead.Final_Quotation_Amount ? Number(rawLead.Final_Quotation_Amount) : (calculatedPricing?.finalQuotation ?? (rawLead.Total_Package_Cost ? Number(rawLead.Total_Package_Cost) : (rawLead.Quotation_Amount ? Number(rawLead.Quotation_Amount) : (rawLead.Expected_Revenue ? Number(rawLead.Expected_Revenue) : (rawLead.Amount ? Number(rawLead.Amount) : undefined))))),
     marginPercentage: rawLead.Margin_Percentage !== undefined ? Number(rawLead.Margin_Percentage) : (rawLead.Margin !== undefined ? Number(rawLead.Margin) : (rawLead.Markup !== undefined ? Number(rawLead.Markup) : undefined)),
     perAdultPrice: rawLead.Per_Adult_Cost !== undefined && rawLead.Per_Adult_Cost !== null && !isNaN(Number(rawLead.Per_Adult_Cost))
       ? Number(rawLead.Per_Adult_Cost)
-      : (rawLead.Per_Adult_Price !== undefined && rawLead.Per_Adult_Price !== null && !isNaN(Number(rawLead.Per_Adult_Price))
+      : (calculatedPricing?.perAdultCost ?? (rawLead.Per_Adult_Price !== undefined && rawLead.Per_Adult_Price !== null && !isNaN(Number(rawLead.Per_Adult_Price))
         ? Number(rawLead.Per_Adult_Price)
         : (rawLead.Price_Per_Adult !== undefined && rawLead.Price_Per_Adult !== null && !isNaN(Number(rawLead.Price_Per_Adult))
           ? Number(rawLead.Price_Per_Adult)
           : (rawLead.Adult_Price !== undefined && rawLead.Adult_Price !== null && !isNaN(Number(rawLead.Adult_Price))
             ? Number(rawLead.Adult_Price)
-            : undefined))),
+            : undefined)))),
     perKidPrice: rawLead.Per_Child_Cost !== undefined && rawLead.Per_Child_Cost !== null && !isNaN(Number(rawLead.Per_Child_Cost))
       ? Number(rawLead.Per_Child_Cost)
-      : (rawLead.Per_Child_Price !== undefined && rawLead.Per_Child_Price !== null && !isNaN(Number(rawLead.Per_Child_Price))
+      : (calculatedPricing?.perChildCost ?? (rawLead.Per_Child_Price !== undefined && rawLead.Per_Child_Price !== null && !isNaN(Number(rawLead.Per_Child_Price))
         ? Number(rawLead.Per_Child_Price)
         : (rawLead.Per_Kid_Price !== undefined && rawLead.Per_Kid_Price !== null && !isNaN(Number(rawLead.Per_Kid_Price))
           ? Number(rawLead.Per_Kid_Price)
@@ -753,14 +767,15 @@ export async function fetchZohoLeadById(leadIdOrQuery: string): Promise<Normaliz
             ? Number(rawLead.Price_Per_Kid)
             : (rawLead.Child_Price !== undefined && rawLead.Child_Price !== null && !isNaN(Number(rawLead.Child_Price))
               ? Number(rawLead.Child_Price)
-              : undefined)))),
+              : undefined))))),
     advanceAmountPaid: rawLead.Advance_Amount_Paid ? Number(rawLead.Advance_Amount_Paid) : undefined,
     balancePendingAmount: rawLead.Balance_Pending_Amount ? Number(rawLead.Balance_Pending_Amount) : undefined,
     costingRequestStatus: toSafeString(rawLead.Costing_Request_Status, ''),
     hotels,
     dayActivities,
     rawLeadData: rawLead,
-    loadedProductData: loadedProductRecord
+    loadedProductData: loadedProductRecord,
+    calculatedPricing
   };
 }
 

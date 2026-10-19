@@ -35,6 +35,12 @@ import {
   Baby
 } from 'lucide-react';
 import { ItineraryHistorySection } from '@/components/itinerary/itinerary-history-section';
+import {
+  calculateRoomsAndBeds,
+  calculateLeadPricingOffline,
+  isExtraBed,
+  isWithoutBed
+} from '@/lib/zoho-pricing';
 
 // --- BASELINE CATALOGS ---
 const DEFAULT_CITIES_BY_DESTINATION: Record<string, string[]> = {
@@ -260,37 +266,22 @@ export interface ChildDetail {
   bedPreference: 'With Bed' | 'Without Bed' | 'Crib';
 }
 
-// Calculate recommended room count as per Adults, Kids, and Sharing Type
+// Calculate recommended room count strictly based on Zoho Deluge automation (Max 3 per room capacity)
 export function calculateRecommendedRooms(
   adultsCount: number,
   kidsCount: number,
   sharingTypeVal: string,
   kidsDetailsList: ChildDetail[] = []
 ): number {
-  const a = Math.max(1, Number(adultsCount) || 1);
   const k = Math.max(0, Number(kidsCount) || 0);
-
-  if (sharingTypeVal === 'Single Sharing') {
-    return a;
-  }
-  if (sharingTypeVal === 'Triple Sharing') {
-    const extraBedKids = kidsDetailsList.slice(0, k).filter(c => c.bedPreference === 'With Bed').length;
-    return Math.max(1, Math.ceil((a + extraBedKids) / 3));
-  }
-  if (sharingTypeVal === 'Quad Sharing') {
-    return Math.max(1, Math.ceil((a + k) / 4));
-  }
-
-  // Double Sharing (standard across travel industry)
-  // 1 room has 2 adults + up to 1 extra bed
-  const adultRooms = Math.ceil(a / 2);
-  const extraBedKids = kidsDetailsList.slice(0, k).filter(c => c.bedPreference === 'With Bed').length;
-  // If kids with extra bed exceed adult rooms, additional rooms are required
-  const minRoomsForBeds = Math.max(adultRooms, Math.ceil((a + extraBedKids) / 3));
-  // Total guests capacity: max 4 per room (2 adults + 2 sharing kids)
-  const maxPaxRooms = Math.ceil((a + k) / 4);
-
-  return Math.max(1, minRoomsForBeds, maxPaxRooms);
+  const extraBedKids = kidsDetailsList.slice(0, k).filter(c => isExtraBed(c.bedPreference)).length;
+  const res = calculateRoomsAndBeds({
+    adults: adultsCount,
+    sharingType: sharingTypeVal,
+    totalKidsCount: k,
+    initialExtraBedCount: extraBedKids
+  });
+  return res.totalRooms;
 }
 
 interface HotelItem {
@@ -450,19 +441,13 @@ export default function SheetItineraryPage() {
     return totalPerPersonActivityCost * (Number(adults) || 2);
   }, [totalPerPersonActivityCost, adults]);
 
-  // --- LIVE COMPREHENSIVE COST & QUOTATION ENGINE ---
+  // --- LIVE COMPREHENSIVE COST & QUOTATION ENGINE (EXACT ZOHO DELUGE FORMULA) ---
   const quotationCalculations = useMemo(() => {
     const adultPax = Math.max(1, Number(adults) || 1);
     const kidPax = Math.max(0, Number(kids) || 0);
     const totalDays = Math.max(1, Number(noOfDays) || dayRows.length || 1);
-    const rooms = Math.max(1, Number(roomsCount) || 1);
 
-    // 1. Total Activity / Sightseeing Cost
-    const adultActivitiesTotal = totalPerPersonActivityCost * adultPax;
-    const kidActivitiesTotal = totalPerPersonActivityCost * kidPax * 0.7;
-    const totalActivitiesCost = adultActivitiesTotal + kidActivitiesTotal;
-
-    // 2. Vehicle / Transport Cost
+    // 1. Vehicle / Transport Setup
     const vStr = typeof vehicleType === 'string'
       ? vehicleType
       : (typeof vehicleType === 'object' && vehicleType !== null
@@ -485,66 +470,110 @@ export default function SheetItineraryPage() {
       else if (vLower.includes('urbania')) vehicleDailyRate = 9500;
       else if (vLower.includes('fortuner')) vehicleDailyRate = 9000;
     }
-    const totalVehicleCost = vehicleDailyRate * totalDays;
 
-    // 3. Hotel Accommodations Cost
-    const kidsWithExtraBed = kidsDetails.slice(0, kidPax).filter(c => c.bedPreference === 'With Bed').length;
-    let totalHotelsCost = 0;
-
-    const DEFAULT_CATEGORY_RATES: Record<string, number> = {
-      deluxe: 3500,
-      superdeluxe: 5000,
-      premium: 7500,
-      luxury: 12000
-    };
-
-    hotels.forEach(h => {
-      const hNights = Math.max(1, Number(h.nights) || 1);
-      const catKey = (h.category || masterHotelCategory || 'Deluxe').toLowerCase().replace(/[^a-z0-9]/g, '');
-      let roomRatePerNight = DEFAULT_CATEGORY_RATES[catKey] || 3500;
-
+    // 2. Hotel Accommodations Setup
+    const mappedHotels = hotels.map(h => {
+      const cat = h.category || masterHotelCategory || 'Deluxe';
       const cClean = (h.city || destination || '').trim().toLowerCase().replace(/[^a-z0-9]/g, '');
       const sheetHotels = sheetHotelsByCity[cClean] || [];
       const foundHotel = sheetHotels.find((sh: any) => (sh.hotelName || '').toLowerCase().trim() === (h.hotelName || '').toLowerCase().trim());
+      let roomRate = 0;
+      let extraBedRate = 0;
+      let childNoBedRate = 0;
+
       if (foundHotel && Array.isArray(foundHotel.rooms)) {
         const foundRoom = foundHotel.rooms.find((r: any) => (r.roomCategory || '').toLowerCase().trim() === (h.roomCategory || '').toLowerCase().trim());
         if (foundRoom && foundRoom.pricePerNight) {
-          roomRatePerNight = Number(foundRoom.pricePerNight) || roomRatePerNight;
+          roomRate = Number(foundRoom.pricePerNight) || 0;
         }
       }
 
-      const extraBedRate = Math.max(1200, Math.round(roomRatePerNight * 0.35));
-      const roomTotalPerNight = (roomRatePerNight * rooms) + (extraBedRate * kidsWithExtraBed);
-      totalHotelsCost += (roomTotalPerNight * hNights);
+      return {
+        hotelName: h.hotelName,
+        city: h.city,
+        nights: Number(h.nights) || 1,
+        category: cat,
+        roomCategory: h.roomCategory,
+        roomRate: roomRate || undefined,
+        extraBedRate: extraBedRate || undefined,
+        childNoBedRate: childNoBedRate || undefined
+      };
     });
 
-    // 4. Base Cost Calculation
-    const calculatedBase = totalActivitiesCost + totalVehicleCost + totalHotelsCost;
+    // 3. Day Rows & Activities Setup (SIC vs Private, Guided Tour ₹2000)
+    const mappedDayRows = dayRows.map(row => {
+      const activities: Array<{ name?: string; costPerPerson?: number; costPerChild?: number; privateCost?: number }> = [];
+      (row.experiences || []).forEach((expName, eIdx) => {
+        if (!expName) return;
+        const catalogItem = findExperienceInCatalogs(expName, row.city || row.city2);
+        const pp = Number(row.experienceCosts?.[eIdx]) || Number(catalogItem?.ppCost) || 0;
+        activities.push({
+          name: expName,
+          costPerPerson: pp,
+          costPerChild: catalogItem?.costPerChild ? Number(catalogItem.costPerChild) : Math.round(pp * 0.7),
+          privateCost: catalogItem?.privateCost ? Number(catalogItem.privateCost) : 0
+        });
+      });
+      return {
+        dayNumber: row.dayNumber,
+        guidedTour: !!row.guidedTour,
+        activities
+      };
+    });
+
+    // 4. Run exact Deluge Offline Pricing Automation Engine
+    const delugePricing = calculateLeadPricingOffline({
+      adults: adultPax,
+      kids: kidPax,
+      noOfDays: totalDays,
+      sharingType,
+      globalTargetCat: masterHotelCategory,
+      kidsDetails: kidsDetails.map(k => ({ age: Number(k.age) || 6, bedPreference: k.bedPreference })),
+      hotels: mappedHotels,
+      vehicle: {
+        name: vStr,
+        dailyCost: vehicleDailyRate
+      },
+      dayRows: mappedDayRows
+    });
 
     // 5. Margin & Taxes
-    const marginPct = marginPercent !== '' && !isNaN(Number(marginPercent)) ? Number(marginPercent) : 15;
-    const marginAmount = Math.round(calculatedBase * (marginPct / 100));
+    const calculatedBase = delugePricing.finalQuotation;
+    const marginPct = marginPercent !== '' && !isNaN(Number(marginPercent)) ? Number(marginPercent) : 0;
+    const marginAmount = marginPct > 0 ? Math.round(calculatedBase * (marginPct / 100)) : 0;
     const subtotalWithMargin = calculatedBase + marginAmount;
-    const gstAmount = Math.round(subtotalWithMargin * 0.05); // 5% GST
+    const gstAmount = marginPct > 0 ? Math.round(subtotalWithMargin * 0.05) : 0; // 5% GST
     const calculatedFinalQuote = Math.round(subtotalWithMargin + gstAmount);
 
-    // 6. Per Adult and Per Child Breakdown
-    const kidsWithoutBed = kidPax - kidsWithExtraBed;
-    const effectivePax = adultPax + (kidsWithExtraBed * 0.75) + (kidsWithoutBed * 0.40);
-
-    const calculatedPerAdult = Math.round(calculatedFinalQuote / effectivePax);
-    const calculatedPerKid = kidPax > 0
-      ? Math.round((calculatedPerAdult * (kidsWithExtraBed > 0 ? 0.70 : 0.45)))
-      : 0;
+    // Scale Per Adult and Per Child proportionally if margin or taxes exist
+    const quoteRatio = calculatedBase > 0 ? calculatedFinalQuote / calculatedBase : 1;
+    const calculatedPerAdult = Math.round(delugePricing.perAdultCost * quoteRatio);
+    const calculatedPerKid = kidPax > 0 ? Math.round(delugePricing.perChildCost * quoteRatio) : 0;
 
     return {
       adultPax,
       kidPax,
-      rooms,
+      rooms: delugePricing.roomsCount,
+      baseRooms: delugePricing.baseRooms,
+      extraRoomsAdded: delugePricing.extraRoomsAdded,
+      extraBedCount: delugePricing.extraBedCount,
+      billableExtraBeds: delugePricing.billableExtraBeds,
+      childWithoutBedCount: delugePricing.childWithoutBedCount,
+      transportKidsCount: delugePricing.transportKidsCount,
+      kidsAbove5Count: delugePricing.kidsAbove5Count,
+      totalTransportPax: delugePricing.totalTransportPax,
       totalDays,
-      totalActivitiesCost,
-      totalVehicleCost,
-      totalHotelsCost,
+      totalActivitiesCost: delugePricing.totalActivitiesCost,
+      totalAdultActivitiesCost: delugePricing.totalAdultActivitiesCost,
+      totalChildActivitiesCost: delugePricing.totalChildActivitiesCost,
+      totalGuideCost: delugePricing.totalGuideCost,
+      perHeadGuideShare: delugePricing.perHeadGuideShare,
+      totalVehicleCost: delugePricing.totalVehicleCost,
+      perHeadTransportCost: delugePricing.perHeadTransportCost,
+      totalHotelsCost: delugePricing.totalHotelsCost,
+      currentHotelExtraBedCostTotal: delugePricing.currentHotelExtraBedCostTotal,
+      currentHotelChildNoBedCostTotal: delugePricing.currentHotelChildNoBedCostTotal,
+      childHotelShare: delugePricing.childHotelShare,
       calculatedBase,
       marginPct,
       marginAmount,
@@ -552,7 +581,10 @@ export default function SheetItineraryPage() {
       calculatedFinalQuote,
       calculatedPerAdult,
       calculatedPerKid,
-      vehicleDailyRate
+      delugePerAdultCost: delugePricing.perAdultCost,
+      delugePerChildCost: delugePricing.perChildCost,
+      vehicleDailyRate,
+      delugePricing
     };
   }, [
     adults,
@@ -564,6 +596,7 @@ export default function SheetItineraryPage() {
     hotels,
     vehicleType,
     masterHotelCategory,
+    sharingType,
     marginPercent,
     sheetHotelsByCity,
     zohoVehicles,
@@ -1157,14 +1190,23 @@ export default function SheetItineraryPage() {
       const finalQuote = raw.Final_Quotation_Amount ?? l.finalQuotationAmount;
       if (finalQuote !== undefined && finalQuote !== null && Number(finalQuote) > 0) {
         setFinalQuotation(String(finalQuote));
+      } else if (l.calculatedPricing?.finalQuotation) {
+        setFinalQuotation(String(l.calculatedPricing.finalQuotation));
       }
       const adultPrice = raw.Per_Adult_Cost ?? l.perAdultPrice;
       if (adultPrice !== undefined && adultPrice !== null && Number(adultPrice) > 0) {
         setPerAdultPrice(String(adultPrice));
+      } else if (l.calculatedPricing?.perAdultCost) {
+        setPerAdultPrice(String(l.calculatedPricing.perAdultCost));
       }
       const kidPrice = raw.Per_Child_Cost ?? l.perKidPrice;
       if (kidPrice !== undefined && kidPrice !== null && Number(kidPrice) > 0) {
         setPerKidPrice(String(kidPrice));
+      } else if (l.calculatedPricing?.perChildCost && effectiveKids > 0) {
+        setPerKidPrice(String(l.calculatedPricing.perChildCost));
+      }
+      if (l.calculatedPricing?.finalQuotation) {
+        setBaseQuotation(String(l.calculatedPricing.finalQuotation));
       }
       if (raw.Advance_Amount_Paid !== undefined && raw.Advance_Amount_Paid !== null && Number(raw.Advance_Amount_Paid) > 0) {
         setAdvanceAmount(String(raw.Advance_Amount_Paid));
@@ -3161,34 +3203,44 @@ export default function SheetItineraryPage() {
                   {adults} Adults {kids > 0 ? `• ${kids} Kids` : ''} • {roomsCount} Rooms • {noOfDays} Days
                 </span>
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 text-xs">
+              <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5 text-xs">
                 <div className="bg-white p-2.5 rounded-lg border border-slate-200">
-                  <span className="text-[10px] text-slate-500 block font-bold">Hotels Total:</span>
+                  <span className="text-[10px] text-slate-500 block font-bold">1. Hotels Total:</span>
                   <span className="text-xs font-extrabold text-slate-900 font-mono">
                     ₹{quotationCalculations.totalHotelsCost.toLocaleString('en-IN')}
                   </span>
                   <span className="text-[10px] text-slate-400 block mt-0.5">
-                    {hotels.reduce((acc, h) => acc + (Number(h.nights) || 1), 0)} Nts • {roomsCount} Rms
+                    {hotels.reduce((acc, h) => acc + (Number(h.nights) || 1), 0)} Nts • {quotationCalculations.rooms} Rms
                   </span>
                 </div>
 
                 <div className="bg-white p-2.5 rounded-lg border border-slate-200">
-                  <span className="text-[10px] text-slate-500 block font-bold">Transport / Cab:</span>
+                  <span className="text-[10px] text-slate-500 block font-bold">2. Transport / Cab:</span>
                   <span className="text-xs font-extrabold text-slate-900 font-mono">
                     ₹{quotationCalculations.totalVehicleCost.toLocaleString('en-IN')}
                   </span>
                   <span className="text-[10px] text-slate-400 block mt-0.5">
-                    {noOfDays} Days • {(typeof vehicleType === 'string' ? vehicleType : (vehicleType as any)?.name || 'Cab').split('/')[0]}
+                    {noOfDays} Days • ₹{quotationCalculations.perHeadTransportCost}/pax
                   </span>
                 </div>
 
                 <div className="bg-white p-2.5 rounded-lg border border-slate-200">
-                  <span className="text-[10px] text-slate-500 block font-bold">Activities / Sights:</span>
+                  <span className="text-[10px] text-slate-500 block font-bold">3. Activities / Sights:</span>
                   <span className="text-xs font-extrabold text-slate-900 font-mono">
                     ₹{quotationCalculations.totalActivitiesCost.toLocaleString('en-IN')}
                   </span>
                   <span className="text-[10px] text-slate-400 block mt-0.5">
-                    ₹{totalPerPersonActivityCost.toLocaleString('en-IN')}/pax
+                    SIC &amp; Private Share
+                  </span>
+                </div>
+
+                <div className="bg-white p-2.5 rounded-lg border border-slate-200">
+                  <span className="text-[10px] text-slate-500 block font-bold">4. Guided Tour:</span>
+                  <span className="text-xs font-extrabold text-slate-900 font-mono">
+                    ₹{quotationCalculations.totalGuideCost.toLocaleString('en-IN')}
+                  </span>
+                  <span className="text-[10px] text-slate-400 block mt-0.5">
+                    ₹2,000/guided day
                   </span>
                 </div>
 
@@ -3198,7 +3250,7 @@ export default function SheetItineraryPage() {
                     ₹{quotationCalculations.calculatedBase.toLocaleString('en-IN')}
                   </span>
                   <span className="text-[10px] text-slate-400 block mt-0.5">
-                    Net Operator Cost
+                    Deluge Net Cost
                   </span>
                 </div>
 
@@ -3232,6 +3284,30 @@ export default function SheetItineraryPage() {
                       Child: ₹{quotationCalculations.calculatedPerKid.toLocaleString('en-IN')}
                     </span>
                   )}
+                </div>
+              </div>
+
+              {/* Zoho Deluge Capacity Details Pill */}
+              <div className="mt-3 pt-2.5 border-t border-slate-200 flex flex-wrap items-center justify-between text-[11px] text-slate-600 gap-2">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="font-semibold text-slate-700">Zoho Deluge Capacity Formula:</span>
+                  <span className="px-2 py-0.5 rounded bg-white border border-slate-300 text-slate-800 font-medium">
+                    Rooms: <strong>{quotationCalculations.rooms}</strong> ({quotationCalculations.baseRooms} Base {quotationCalculations.extraRoomsAdded > 0 ? `+ ${quotationCalculations.extraRoomsAdded} Extra Needed` : ''})
+                  </span>
+                  <span className="px-2 py-0.5 rounded bg-white border border-slate-300 text-slate-800 font-medium">
+                    Extra Beds: <strong>{quotationCalculations.extraBedCount}</strong> ({quotationCalculations.billableExtraBeds} Billable)
+                  </span>
+                  <span className="px-2 py-0.5 rounded bg-white border border-slate-300 text-slate-800 font-medium">
+                    Transport Pax: <strong>{quotationCalculations.totalTransportPax}</strong> (Adults + Kids &gt; 3 yrs)
+                  </span>
+                  {kids > 0 && (
+                    <span className="px-2 py-0.5 rounded bg-white border border-slate-300 text-slate-800 font-medium">
+                      Child Hotel Share: <strong>₹{quotationCalculations.childHotelShare.toLocaleString('en-IN')}</strong>
+                    </span>
+                  )}
+                </div>
+                <div className="text-[10px] text-slate-500 font-mono">
+                  Exact distribution: (Adults × ₹{quotationCalculations.delugePerAdultCost.toLocaleString('en-IN')}) {kids > 0 ? `+ (Kids × ₹${quotationCalculations.delugePerChildCost.toLocaleString('en-IN')})` : ''} = ₹{quotationCalculations.calculatedBase.toLocaleString('en-IN')}
                 </div>
               </div>
             </div>
