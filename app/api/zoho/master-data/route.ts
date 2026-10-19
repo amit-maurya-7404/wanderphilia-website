@@ -85,7 +85,48 @@ export async function GET(req: NextRequest) {
     );
 
     // Grouping & Normalization
-    const destinationsSet = new Set<string>();
+    const destinationsSet = new Set<string>([
+      'Spiti Valley',
+      'Leh Ladakh',
+      'Kashmir',
+      'Himachal Pradesh',
+      'Uttarakhand',
+      'Rajasthan',
+      'Kerala',
+      'Goa',
+      'Andaman & Nicobar Islands',
+      'Meghalaya',
+      'Sikkim & Darjeeling',
+      'Golden Triangle',
+      'Karnataka & South India',
+      'Tamil Nadu & Pondicherry',
+      'Madhya Pradesh',
+      'Maharashtra',
+      'Gujarat',
+      'Arunachal Pradesh',
+      'Assam',
+      'Bali (Indonesia)',
+      'Dubai & Abu Dhabi (UAE)',
+      'Thailand',
+      'Vietnam',
+      'Singapore',
+      'Malaysia',
+      'Maldives',
+      'Switzerland',
+      'Europe',
+      'Sri Lanka',
+      'Nepal',
+      'Bhutan',
+      'Mauritius',
+      'Turkey',
+      'Georgia',
+      'Azerbaijan (Baku)',
+      'Kazakhstan (Almaty)',
+      'Uzbekistan',
+      'Japan',
+      'Egypt',
+      'Kenya & Tanzania'
+    ]);
     const citiesByDestination: Record<string, Set<string>> = {};
     const experiencesByCity: Record<string, any[]> = {};
     const hotelsByCity: Record<string, any[]> = {};

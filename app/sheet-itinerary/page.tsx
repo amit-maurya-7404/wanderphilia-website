@@ -45,18 +45,827 @@ import {
 
 // --- BASELINE CATALOGS ---
 const DEFAULT_CITIES_BY_DESTINATION: Record<string, string[]> = {
-  rajasthan: ['Jaipur', 'Udaipur', 'Jodhpur', 'Jaisalmer', 'Pushkar', 'Bikaner', 'Mount Abu', 'Ranthambore', 'Kumbhalgarh', 'Ajmer', 'Mandawa', 'Chittorgarh'],
-  kashmir: ['Srinagar', 'Gulmarg', 'Pahalgam', 'Sonmarg', 'Doodhpathri', 'Yusmarg'],
-  kerala: ['Munnar', 'Thekkady', 'Alleppey', 'Kochi', 'Kovalam', 'Wayanad', 'Varkala'],
-  himachal: ['Shimla', 'Manali', 'Dharamshala', 'Dalhousie', 'Kasol', 'Spiti', 'Kaza', 'Jibhi', 'Bir Billing'],
-  uttarakhand: ['Rishikesh', 'Haridwar', 'Mussoorie', 'Nainital', 'Jim Corbett', 'Auli', 'Dehradun'],
-  goa: ['North Goa', 'South Goa', 'Panaji', 'Calangute', 'Candolim', 'Baga', 'Anjuna'],
-  andaman: ['Port Blair', 'Havelock Island', 'Neil Island', 'Baratang Island'],
-  goldentriangle: ['Delhi', 'Agra', 'Jaipur'],
-  dubai: ['Dubai City', 'Desert Dunes', 'Abu Dhabi', 'Sharjah'],
-  bali: ['Ubud', 'Kuta', 'Seminyak', 'Nusa Penida', 'Uluwatu', 'Canggu', 'Sanur'],
-  thailand: ['Bangkok', 'Phuket', 'Krabi', 'Pattaya', 'Koh Samui', 'Chiang Mai'],
-  vietnam: ['Hanoi', 'Ha Long Bay', 'Da Nang', 'Hoi An', 'Ho Chi Minh City']
+  // --- NORTH INDIA & HIMALAYAS ---
+  spiti: [
+    'Shimla',
+    'Narkanda',
+    'Rampur',
+    'Sarahan',
+    'Sangla',
+    'Chitkul',
+    'Kalpa',
+    'Pooh',
+    'Nako',
+    'Gue (Mummy Village)',
+    'Tabo',
+    'Dhankar',
+    'Pin Valley (Mudh)',
+    'Kaza',
+    'Ki / Key Monastery',
+    'Kibber',
+    'Chicham Bridge',
+    'Hikkim (Highest Post Office)',
+    'Komic (Highest Village)',
+    'Langza (Fossil Village)',
+    'Losar',
+    'Kunzum Pass',
+    'Chandratal Lake',
+    'Batal',
+    'Sissu / Atal Tunnel',
+    'Manali'
+  ],
+  spitivalley: [
+    'Shimla',
+    'Narkanda',
+    'Rampur',
+    'Sarahan',
+    'Sangla',
+    'Chitkul',
+    'Kalpa',
+    'Pooh',
+    'Nako',
+    'Gue (Mummy Village)',
+    'Tabo',
+    'Dhankar',
+    'Pin Valley (Mudh)',
+    'Kaza',
+    'Ki / Key Monastery',
+    'Kibber',
+    'Chicham Bridge',
+    'Hikkim (Highest Post Office)',
+    'Komic (Highest Village)',
+    'Langza (Fossil Village)',
+    'Losar',
+    'Kunzum Pass',
+    'Chandratal Lake',
+    'Batal',
+    'Sissu / Atal Tunnel',
+    'Manali'
+  ],
+  ladakh: [
+    'Leh',
+    'Shey Palace',
+    'Thiksey Monastery',
+    'Hemis Monastery',
+    'Sham Valley',
+    'Sangam (Indus-Zanskar)',
+    'Magnetic Hill',
+    'Gurudwara Pathar Sahib',
+    'Alchi',
+    'Likir',
+    'Lamayuru (Moonland)',
+    'Khardung La Pass',
+    'Nubra Valley',
+    'Diskit',
+    'Hunder (Sand Dunes)',
+    'Turtuk (Balti Village)',
+    'Thang (Zero Point)',
+    'Pangong Tso',
+    'Spangmik',
+    'Tangtse',
+    'Chang La Pass',
+    'Tso Moriri',
+    'Tso Kar',
+    'Kargil',
+    'Dras',
+    'Zanskar (Padum)'
+  ],
+  lehladakh: [
+    'Leh',
+    'Shey Palace',
+    'Thiksey Monastery',
+    'Hemis Monastery',
+    'Sham Valley',
+    'Sangam (Indus-Zanskar)',
+    'Magnetic Hill',
+    'Gurudwara Pathar Sahib',
+    'Alchi',
+    'Likir',
+    'Lamayuru (Moonland)',
+    'Khardung La Pass',
+    'Nubra Valley',
+    'Diskit',
+    'Hunder (Sand Dunes)',
+    'Turtuk (Balti Village)',
+    'Thang (Zero Point)',
+    'Pangong Tso',
+    'Spangmik',
+    'Tangtse',
+    'Chang La Pass',
+    'Tso Moriri',
+    'Tso Kar',
+    'Kargil',
+    'Dras',
+    'Zanskar (Padum)'
+  ],
+  kashmir: [
+    'Srinagar',
+    'Dal Lake',
+    'Gulmarg',
+    'Pahalgam',
+    'Aru Valley',
+    'Betaab Valley',
+    'Chandanwari',
+    'Baisaran Valley (Mini Switzerland)',
+    'Sonamarg',
+    'Thajiwas Glacier',
+    'Zero Point (Sonamarg)',
+    'Doodhpathri',
+    'Yusmarg',
+    'Gurez Valley',
+    'Sinthan Top',
+    'Anantnag',
+    'Verinag'
+  ],
+  himachal: [
+    'Shimla',
+    'Kufri',
+    'Chail',
+    'Narkanda',
+    'Mashobra',
+    'Kullu',
+    'Manali',
+    'Solang Valley',
+    'Rohtang Pass',
+    'Atal Tunnel',
+    'Sissu',
+    'Kasol',
+    'Manikaran',
+    'Tosh',
+    'Chalal',
+    'Malana',
+    'Jibhi',
+    'Tirthan Valley',
+    'Shoja / Jalori Pass',
+    'Dharamshala',
+    'McLeodGanj',
+    'Dharamkot',
+    'Triund',
+    'Palampur',
+    'Bir Billing',
+    'Dalhousie',
+    'Khajjiar',
+    'Chamba'
+  ],
+  himachalpradesh: [
+    'Shimla',
+    'Kufri',
+    'Chail',
+    'Narkanda',
+    'Mashobra',
+    'Kullu',
+    'Manali',
+    'Solang Valley',
+    'Rohtang Pass',
+    'Atal Tunnel',
+    'Sissu',
+    'Kasol',
+    'Manikaran',
+    'Tosh',
+    'Chalal',
+    'Malana',
+    'Jibhi',
+    'Tirthan Valley',
+    'Shoja / Jalori Pass',
+    'Dharamshala',
+    'McLeodGanj',
+    'Dharamkot',
+    'Triund',
+    'Palampur',
+    'Bir Billing',
+    'Dalhousie',
+    'Khajjiar',
+    'Chamba'
+  ],
+  uttarakhand: [
+    'Rishikesh',
+    'Haridwar',
+    'Dehradun',
+    'Mussoorie',
+    'Dhanaulti',
+    'Kanatal',
+    'Nainital',
+    'Bhimtal',
+    'Naukuchiatal',
+    'Sattal',
+    'Mukteshwar',
+    'Ranikhet',
+    'Almora',
+    'Kausani',
+    'Binsar',
+    'Jim Corbett',
+    'Auli',
+    'Joshimath',
+    'Badrinath',
+    'Kedarnath',
+    'Gangotri',
+    'Yamunotri',
+    'Chopta',
+    'Tungnath',
+    'Valley of Flowers',
+    'Chakrata',
+    'Lansdowne'
+  ],
+
+  // --- RAJASTHAN & DESERT ---
+  rajasthan: [
+    'Jaipur',
+    'Udaipur',
+    'Jodhpur',
+    'Jaisalmer',
+    'Sam Sand Dunes',
+    'Pushkar',
+    'Ajmer',
+    'Mount Abu',
+    'Bikaner',
+    'Ranthambore',
+    'Kumbhalgarh',
+    'Chittorgarh',
+    'Jawai',
+    'Mandawa',
+    'Bharatpur',
+    'Sariska / Alwar',
+    'Bundi',
+    'Neemrana'
+  ],
+
+  // --- GOLDEN TRIANGLE ---
+  goldentriangle: [
+    'Delhi',
+    'Agra',
+    'Jaipur',
+    'Fatehpur Sikri',
+    'Mathura',
+    'Vrindavan'
+  ],
+
+  // --- BEACHES & WEST ---
+  goa: [
+    'North Goa',
+    'South Goa',
+    'Panaji (Fontainhas)',
+    'Calangute',
+    'Baga',
+    'Anjuna',
+    'Candolim',
+    'Vagator',
+    'Morjim',
+    'Arambol',
+    'Colva',
+    'Benaulim',
+    'Palolem',
+    'Agonda',
+    'Old Goa',
+    'Dudhsagar Waterfalls'
+  ],
+  maharashtra: [
+    'Mumbai',
+    'Pune',
+    'Lonavala & Khandala',
+    'Mahabaleshwar',
+    'Panchgani',
+    'Alibaug',
+    'Matheran',
+    'Lavasa',
+    'Shirdi',
+    'Nashik (Sula Vineyards)',
+    'Igatpuri',
+    'Aurangabad (Ajanta & Ellora)',
+    'Tarkarli (Malvan)',
+    'Tadoba National Park'
+  ],
+  gujarat: [
+    'Ahmedabad',
+    'Rann of Kutch (Dhordo / White Desert)',
+    'Bhuj',
+    'Gir National Park',
+    'Somnath',
+    'Dwarka',
+    'Statue of Unity (Kevadia)',
+    'Diu Island',
+    'Saputara'
+  ],
+
+  // --- SOUTH INDIA ---
+  kerala: [
+    'Kochi (Fort Kochi)',
+    'Munnar',
+    'Thekkady (Periyar)',
+    'Alleppey (Houseboats)',
+    'Kumarakom',
+    'Kovalam',
+    'Varkala (Cliff Beach)',
+    'Wayanad',
+    'Poovar Island',
+    'Athirappilly Waterfalls',
+    'Bekal',
+    'Marari Beach',
+    'Vagamon',
+    'Kanyakumari'
+  ],
+  karnataka: [
+    'Bangalore',
+    'Mysore',
+    'Coorg (Madikeri)',
+    'Chikmagalur',
+    'Kabini / Nagarhole',
+    'Bandipur',
+    'Hampi',
+    'Gokarna (Om Beach)',
+    'Murudeshwar',
+    'Dandeli',
+    'Udupi & Mangalore',
+    'Badami',
+    'Sakleshpur'
+  ],
+  tamilnadu: [
+    'Chennai',
+    'Mahabalipuram',
+    'Pondicherry (Auroville)',
+    'Madurai (Meenakshi Temple)',
+    'Rameswaram (Dhanushkodi)',
+    'Kanyakumari',
+    'Ooty (Nilgiris)',
+    'Coonoor',
+    'Kodaikanal',
+    'Thanjavur',
+    'Chettinad',
+    'Coimbatore',
+    'Yercaud'
+  ],
+  pondicherry: [
+    'Pondicherry (White Town)',
+    'Auroville',
+    'Paradise Beach',
+    'Promenade Beach',
+    'Mahabalipuram',
+    'Chennai'
+  ],
+
+  // --- CENTRAL INDIA ---
+  madhyapradesh: [
+    'Bhopal',
+    'Indore',
+    'Ujjain (Mahakaleshwar)',
+    'Omkareshwar',
+    'Mandu',
+    'Maheshwar',
+    'Gwalior',
+    'Orchha',
+    'Khajuraho',
+    'Bandhavgarh',
+    'Kanha',
+    'Pench',
+    'Pachmarhi',
+    'Jabalpur (Bhedaghat)'
+  ],
+
+  // --- EAST & NORTHEAST ---
+  meghalaya: [
+    'Guwahati',
+    'Shillong',
+    'Umiam Lake',
+    'Cherrapunji (Sohra)',
+    'Mawlynnong (Cleanest Village)',
+    'Dawki (Umngot River)',
+    'Shnongpdeng',
+    'Jowai (Krang Suri)',
+    'Nongriat (Double Decker Living Root Bridge)'
+  ],
+  northeast: [
+    'Guwahati',
+    'Shillong',
+    'Cherrapunji',
+    'Dawki',
+    'Kaziranga',
+    'Tawang',
+    'Dirang',
+    'Bomdila',
+    'Majuli Island',
+    'Ziro Valley'
+  ],
+  sikkim: [
+    'Gangtok',
+    'Tsomgo Lake & Nathula',
+    'Lachen',
+    'Gurudongmar Lake',
+    'Lachung',
+    'Yumthang Valley (Zero Point)',
+    'Pelling (Skywalk)',
+    'Ravangla (Buddha Park)',
+    'Namchi (Char Dham)',
+    'Darjeeling (Tiger Hill)',
+    'Kalimpong',
+    'Mirik'
+  ],
+  sikkimanddarjeeling: [
+    'Gangtok',
+    'Tsomgo Lake & Nathula',
+    'Lachen',
+    'Gurudongmar Lake',
+    'Lachung',
+    'Yumthang Valley (Zero Point)',
+    'Pelling (Skywalk)',
+    'Ravangla (Buddha Park)',
+    'Namchi (Char Dham)',
+    'Darjeeling (Tiger Hill)',
+    'Kalimpong',
+    'Mirik'
+  ],
+  darjeeling: [
+    'Darjeeling',
+    'Tiger Hill',
+    'Batasia Loop',
+    'Ghoom',
+    'Mirik',
+    'Kalimpong',
+    'Kurseong',
+    'Gangtok'
+  ],
+  arunachal: [
+    'Guwahati',
+    'Bhalukpong',
+    'Dirang',
+    'Sela Pass',
+    'Tawang',
+    'Bum La Pass',
+    'Madhuri Lake',
+    'Bomdila',
+    'Ziro'
+  ],
+  arunachalpradesh: [
+    'Guwahati',
+    'Bhalukpong',
+    'Dirang',
+    'Sela Pass',
+    'Tawang',
+    'Bum La Pass',
+    'Madhuri Lake',
+    'Bomdila',
+    'Ziro'
+  ],
+  assam: [
+    'Guwahati',
+    'Kaziranga National Park',
+    'Majuli Island',
+    'Manas National Park',
+    'Tezpur',
+    'Jorhat',
+    'Sivasagar'
+  ],
+  andaman: [
+    'Port Blair',
+    'Havelock Island (Radhanagar Beach)',
+    'Elephant Beach (Havelock)',
+    'Neil Island (Bharatpur & Laxmanpur)',
+    'Natural Bridge (Neil Island)',
+    'Ross Island',
+    'North Bay Island',
+    'Baratang Island',
+    'Diglipur'
+  ],
+  andamanandnicobar: [
+    'Port Blair',
+    'Havelock Island (Radhanagar Beach)',
+    'Elephant Beach (Havelock)',
+    'Neil Island (Bharatpur & Laxmanpur)',
+    'Natural Bridge (Neil Island)',
+    'Ross Island',
+    'North Bay Island',
+    'Baratang Island',
+    'Diglipur'
+  ],
+
+  // --- INTERNATIONAL DESTINATIONS ---
+  bali: [
+    'Kuta',
+    'Seminyak',
+    'Canggu',
+    'Ubud (Monkey Forest & Rice Terraces)',
+    'Tegalalang',
+    'Nusa Dua',
+    'Jimbaran (Sunset Seafood)',
+    'Uluwatu (Cliff Temple & Kecak Dance)',
+    'Nusa Penida (Kelingking & Diamond Beach)',
+    'Sanur',
+    'Tanah Lot',
+    'Kintamani (Mount Batur)',
+    'Bedugul (Ulun Danu)',
+    'Lovina',
+    'Gili Trawangan',
+    'Lombok'
+  ],
+  indonesia: [
+    'Bali (Kuta & Seminyak)',
+    'Canggu',
+    'Ubud',
+    'Nusa Dua',
+    'Uluwatu',
+    'Nusa Penida',
+    'Gili Islands',
+    'Lombok',
+    'Jakarta',
+    'Komodo Island',
+    'Yogyakarta'
+  ],
+  dubai: [
+    'Dubai Downtown (Burj Khalifa & Mall)',
+    'Dubai Marina & JBR Walk',
+    'Palm Jumeirah (Atlantis)',
+    'Deira & Bur Dubai (Gold Souk)',
+    'Dubai Desert Safari Dunes (BBQ Camp)',
+    'Abu Dhabi (Sheikh Zayed Grand Mosque)',
+    'Yas Island (Ferrari World)',
+    'Sharjah',
+    'Ras Al Khaimah',
+    'Hatta'
+  ],
+  uae: [
+    'Dubai Downtown (Burj Khalifa & Mall)',
+    'Dubai Marina & JBR Walk',
+    'Palm Jumeirah (Atlantis)',
+    'Deira & Bur Dubai (Gold Souk)',
+    'Dubai Desert Safari Dunes (BBQ Camp)',
+    'Abu Dhabi (Sheikh Zayed Grand Mosque)',
+    'Yas Island (Ferrari World)',
+    'Sharjah',
+    'Ras Al Khaimah',
+    'Hatta'
+  ],
+  abudhabi: [
+    'Abu Dhabi City',
+    'Sheikh Zayed Grand Mosque',
+    'Yas Island (Ferrari World & Warner Bros)',
+    'Saadiyat Island (Louvre Abu Dhabi)',
+    'Corniche',
+    'Dubai'
+  ],
+  thailand: [
+    'Bangkok (Grand Palace & Wat Arun)',
+    'Pattaya (Walking Street)',
+    'Coral Island (Koh Larn)',
+    'Phuket (Patong & Kata Beach)',
+    'Big Buddha & Old Phuket Town',
+    'Krabi (Ao Nang)',
+    'Railay Beach',
+    'Phi Phi Islands (Maya Bay)',
+    'James Bond Island',
+    '4 Islands Tour (Krabi)',
+    'Koh Samui',
+    'Koh Phangan',
+    'Chiang Mai (Doi Suthep)',
+    'Chiang Rai (White Temple)',
+    'Hua Hin'
+  ],
+  phuket: [
+    'Phuket (Patong Beach)',
+    'Kata & Karon Beach',
+    'Phuket Old Town',
+    'Big Buddha Phuket',
+    'Phi Phi Islands (Maya Bay)',
+    'James Bond Island',
+    'Krabi',
+    'Similan Islands'
+  ],
+  krabi: [
+    'Krabi (Ao Nang)',
+    'Railay Beach',
+    'Phi Phi Islands',
+    '4 Islands Tour',
+    'Hong Island',
+    'Emerald Pool & Hot Springs',
+    'Phuket'
+  ],
+  vietnam: [
+    'Hanoi (Old Quarter & Hoan Kiem Lake)',
+    'Halong Bay (Overnight Cruise)',
+    'Lan Ha Bay',
+    'Ninh Binh (Trang An & Hang Mua)',
+    'Da Nang (My Khe Beach & Dragon Bridge)',
+    'Ba Na Hills (Golden Bridge Hands)',
+    'Hoi An (Ancient Lantern Town)',
+    'Hue (Imperial Citadel)',
+    'Ho Chi Minh City (Saigon)',
+    'Cu Chi Tunnels',
+    'Mekong Delta',
+    'Phu Quoc Island',
+    'Sapa (Fansipan Peak & Rice Terraces)'
+  ],
+  singapore: [
+    'Singapore City Downtown',
+    'Marina Bay Sands & SkyPark',
+    'Gardens by the Bay (Supertree & Cloud Forest)',
+    'Sentosa Island (Universal Studios)',
+    'S.E.A. Aquarium (Sentosa)',
+    'Chinatown & Buddha Tooth Relic',
+    'Little India',
+    'Clarke Quay (Nightlife & Cruise)',
+    'Orchard Road',
+    'Jewel Changi (Rain Vortex)'
+  ],
+  malaysia: [
+    'Kuala Lumpur (Petronas Twin Towers)',
+    'Batu Caves',
+    'Bukit Bintang (KL Downtown)',
+    'Genting Highlands (SkyWay & Theme Park)',
+    'Langkawi (Sky Bridge & Cable Car)',
+    'Pantai Cenang (Langkawi)',
+    'Penang / George Town',
+    'Malacca / Melaka (Dutch Square)',
+    'Cameron Highlands (Tea Gardens)',
+    'Sunway Lagoon'
+  ],
+  maldives: [
+    'Male City',
+    'Hulhumale',
+    'Maafushi Island (Local Island)',
+    'Private Resort Water Villa Island',
+    'South Ari Atoll (Whale Shark Safari)',
+    'North Male Atoll',
+    'Baa Atoll (Hanifaru Bay Manta Rays)',
+    'Sandbank Picnic & Snorkeling Island',
+    'Rasdhoo Island'
+  ],
+  switzerland: [
+    'Zurich (Old Town & Lake Zurich)',
+    'Lucerne (Chapel Bridge & Lake)',
+    'Mount Titlis (Rotair & Ice Cliff)',
+    'Interlaken (Between Lakes)',
+    'Jungfraujoch (Top of Europe)',
+    'Grindelwald (First Cliff Walk)',
+    'Lauterbrunnen (Valley of Waterfalls)',
+    'Zermatt (Matterhorn View)',
+    'Geneva (Jet d’Eau)',
+    'Montreux & Vevey (Chillon Castle)',
+    'Bern',
+    'Engelberg'
+  ],
+  europe: [
+    'Paris (Eiffel Tower & Louvre)',
+    'Amsterdam (Canal Cruise & Zaanse Schans)',
+    'Brussels & Bruges (Belgium)',
+    'Zurich & Lucerne (Switzerland)',
+    'Interlaken & Jungfraujoch (Switzerland)',
+    'Rome (Colosseum & Vatican City)',
+    'Florence (Duomo & Uffizi)',
+    'Venice (Gondola Ride & St. Mark’s)',
+    'Milan (Duomo di Milano)',
+    'Prague (Charles Bridge & Old Town)',
+    'Vienna (Schonbrunn Palace)',
+    'Budapest (Parliament & Danube)',
+    'Munich & Neuschwanstein Castle',
+    'Barcelona (Sagrada Familia)',
+    'Madrid (Royal Palace)'
+  ],
+  srilanka: [
+    'Colombo',
+    'Kandy (Temple of the Tooth)',
+    'Nuwara Eliya (Tea Estates)',
+    'Ella (Nine Arch Bridge)',
+    'Scenic Blue Train (Kandy to Ella)',
+    'Bentota (Water Sports & Beach)',
+    'Galle (UNESCO Dutch Fort)',
+    'Mirissa (Whale Watching & Beach)',
+    'Yala National Park (Leopard Safari)',
+    'Sigiriya (Lion Rock Fortress)',
+    'Dambulla (Cave Temple)'
+  ],
+  nepal: [
+    'Kathmandu (Pashupatinath & Boudhanath)',
+    'Swayambhunath (Monkey Temple)',
+    'Pokhara (Phewa Lake & Sarangkot)',
+    'World Peace Pagoda (Pokhara)',
+    'Nagarkot (Himalayan Sunrise)',
+    'Chitwan National Park (Safari)',
+    'Lumbini (Birthplace of Buddha)',
+    'Bhaktapur Durbar Square',
+    'Chandragiri Cable Car'
+  ],
+  bhutan: [
+    'Paro (Tiger’s Nest Monastery)',
+    'Thimphu (Buddha Point & Dzong)',
+    'Punakha (Punakha Dzong & Bridge)',
+    'Dochula Pass (108 Chortens)',
+    'Phobjikha Valley (Gangtey)',
+    'Wangdue Phodrang',
+    'Haa Valley'
+  ],
+  mauritius: [
+    'Port Louis (Caudan Waterfront)',
+    'Grand Baie (North Coast)',
+    'Flic-en-Flac (West Coast)',
+    'Chamarel (Seven Coloured Earth)',
+    'Belle Mare (East Coast Watersports)',
+    'Ile aux Cerfs Island (Catamaran)',
+    'Le Morne (Underwater Waterfall Viewpoint)',
+    'Casela Nature Parks (Safari)'
+  ],
+  turkey: [
+    'Istanbul (Hagia Sophia, Blue Mosque & Bosphorus)',
+    'Grand Bazaar & Spice Market',
+    'Cappadocia (Hot Air Balloon & Goreme)',
+    'Underground City (Derinkuyu)',
+    'Antalya (Kaleici Old Town & Duden Falls)',
+    'Pamukkale (Thermal Travertines & Hierapolis)',
+    'Bodrum',
+    'Kusadasi / Ephesus (Ancient Ruins)',
+    'Fethiye (Oludeniz Blue Lagoon)'
+  ],
+  georgia: [
+    'Tbilisi (Old Town & Sulphur Baths)',
+    'Kazbegi / Stepantsminda (Gergeti Trinity)',
+    'Gudauri (Ski Resort & Monument)',
+    'Ananuri Fortress',
+    'Batumi (Black Sea Coast & Boulevard)',
+    'Sighnaghi (Wine Region)',
+    'Borjomi (Mineral Springs)',
+    'Mtskheta (Ancient Capital)'
+  ],
+  azerbaijan: [
+    'Baku (Flame Towers & Old City)',
+    'Icherisheher (Maiden Tower)',
+    'Heydar Aliyev Center',
+    'Gobustan (Mud Volcanoes & Petroglyphs)',
+    'Ateshgah (Fire Temple) & Yanar Dag',
+    'Gabala (Tufandag & Nohur Lake)',
+    'Shahdag (Mountain & Ski Resort)',
+    'Sheki (Khans Palace)'
+  ],
+  baku: [
+    'Baku (Flame Towers & Old City)',
+    'Icherisheher (Maiden Tower)',
+    'Heydar Aliyev Center',
+    'Gobustan (Mud Volcanoes & Petroglyphs)',
+    'Ateshgah (Fire Temple) & Yanar Dag',
+    'Gabala (Tufandag & Nohur Lake)',
+    'Shahdag (Mountain & Ski Resort)',
+    'Sheki'
+  ],
+  kazakhstan: [
+    'Almaty City (Panfilov & Zenkov)',
+    'Kok Tobe Hill & Cable Car',
+    'Shymbulak Mountain Resort & Medeu',
+    'Kolsai Lakes (Pearls of Tien Shan)',
+    'Kaindy Lake (Submerged Forest)',
+    'Charyn Canyon (Valley of Castles)',
+    'Big Almaty Lake',
+    'Astana / Nur-Sultan (Baiterek)'
+  ],
+  almaty: [
+    'Almaty City (Panfilov & Zenkov)',
+    'Kok Tobe Hill & Cable Car',
+    'Shymbulak Mountain Resort & Medeu',
+    'Kolsai Lakes (Pearls of Tien Shan)',
+    'Kaindy Lake (Submerged Forest)',
+    'Charyn Canyon (Valley of Castles)',
+    'Big Almaty Lake'
+  ],
+  uzbekistan: [
+    'Tashkent (Chorsu Bazaar & Metro)',
+    'Samarkand (Registan Square)',
+    'Shah-i-Zinda & Gur-e-Amir',
+    'Bukhara (Po-i-Kalyan & Ark)',
+    'Khiva (Itchan Kala Fortress)'
+  ],
+  japan: [
+    'Tokyo (Shinjuku, Shibuya & Ginza)',
+    'Asakusa Senso-ji & Akihabara',
+    'Mount Fuji & Lake Kawaguchiko',
+    'Hakone (Hot Springs & Lake Ashi)',
+    'Kyoto (Fushimi Inari & Arashiyama)',
+    'Kinkaku-ji (Golden Pavilion)',
+    'Nara (Deer Park & Todai-ji)',
+    'Osaka (Dotonbori & Castle)',
+    'Hiroshima & Miyajima Island'
+  ],
+  egypt: [
+    'Cairo (Giza Pyramids & Sphinx)',
+    'Grand Egyptian Museum & Khan el-Khalili',
+    'Alexandria (Citadel & Library)',
+    'Luxor (Valley of the Kings & Karnak)',
+    'Luxor Hot Air Balloon',
+    'Aswan (Philae Temple & High Dam)',
+    'Nile River Felucca',
+    'Abu Simbel (Temples of Ramses II)',
+    'Hurghada (Red Sea Scuba)',
+    'Sharm El Sheikh (Ras Mohammed)'
+  ],
+  kenya: [
+    'Nairobi (Giraffe Centre)',
+    'Masai Mara (Safari & Great Migration)',
+    'Lake Nakuru (Flamingos)',
+    'Amboseli (Mt. Kilimanjaro View)',
+    'Lake Naivasha',
+    'Zanzibar (Tanzania Extension)'
+  ],
+  tanzania: [
+    'Serengeti National Park',
+    'Ngorongoro Crater',
+    'Tarangire National Park',
+    'Lake Manyara',
+    'Mount Kilimanjaro',
+    'Zanzibar (Stone Town & Beaches)'
+  ]
 };
 
 const DEFAULT_EXPERIENCES_BY_CITY: Record<string, { name: string; guidedTour?: boolean; description?: string }[]> = {
@@ -275,7 +1084,11 @@ function LookupField({ value = '', onChange, options = [], placeholder, classNam
   const filteredOptions = useMemo(() => {
     const q = (search || '').trim().toLowerCase();
     if (!q) return normalizedOptions;
-    return normalizedOptions.filter(o => (o.label || '').toLowerCase().includes(q));
+    return normalizedOptions.filter(o =>
+      (o.label || '').toLowerCase().includes(q) ||
+      (o.value || '').toLowerCase().includes(q) ||
+      (o.badge || '').toLowerCase().includes(q)
+    );
   }, [normalizedOptions, search]);
 
   return (
@@ -806,38 +1619,113 @@ export default function SheetItineraryPage() {
     }
   }, [quotationCalculations, isQuoteManuallyEdited, kids]);
 
-  // Destination Options
+  // Destination Options (Comprehensive Domestic & International Catalog)
   const destinationOptions = useMemo(() => {
-    const defaultList = [
-      'Rajasthan',
-      'Kashmir',
-      'Kerala',
-      'Himachal',
-      'Uttarakhand',
-      'Goa',
-      'Andaman',
-      'Golden Triangle',
-      'Dubai',
-      'Bali',
-      'Thailand',
-      'Vietnam'
+    const curatedDestinations: Array<{ label: string; value: string; badge: string }> = [
+      // --- Domestic India Destinations ---
+      { label: 'Spiti Valley', value: 'Spiti Valley', badge: 'India' },
+      { label: 'Leh Ladakh', value: 'Leh Ladakh', badge: 'India' },
+      { label: 'Kashmir', value: 'Kashmir', badge: 'India' },
+      { label: 'Himachal Pradesh', value: 'Himachal Pradesh', badge: 'India' },
+      { label: 'Uttarakhand', value: 'Uttarakhand', badge: 'India' },
+      { label: 'Rajasthan', value: 'Rajasthan', badge: 'India' },
+      { label: 'Kerala', value: 'Kerala', badge: 'India' },
+      { label: 'Goa', value: 'Goa', badge: 'India' },
+      { label: 'Andaman & Nicobar Islands', value: 'Andaman', badge: 'India' },
+      { label: 'Meghalaya', value: 'Meghalaya', badge: 'India' },
+      { label: 'Sikkim & Darjeeling', value: 'Sikkim', badge: 'India' },
+      { label: 'Golden Triangle (Delhi, Agra, Jaipur)', value: 'Golden Triangle', badge: 'India' },
+      { label: 'Karnataka & South India', value: 'Karnataka', badge: 'India' },
+      { label: 'Tamil Nadu & Pondicherry', value: 'Tamil Nadu', badge: 'India' },
+      { label: 'Madhya Pradesh', value: 'Madhya Pradesh', badge: 'India' },
+      { label: 'Maharashtra', value: 'Maharashtra', badge: 'India' },
+      { label: 'Gujarat', value: 'Gujarat', badge: 'India' },
+      { label: 'Arunachal Pradesh', value: 'Arunachal Pradesh', badge: 'India' },
+      { label: 'Assam', value: 'Assam', badge: 'India' },
+
+      // --- International Destinations ---
+      { label: 'Bali (Indonesia)', value: 'Bali', badge: 'International' },
+      { label: 'Dubai & Abu Dhabi (UAE)', value: 'Dubai', badge: 'International' },
+      { label: 'Thailand (Bangkok, Phuket, Krabi)', value: 'Thailand', badge: 'International' },
+      { label: 'Vietnam (Hanoi, Da Nang, Saigon)', value: 'Vietnam', badge: 'International' },
+      { label: 'Singapore', value: 'Singapore', badge: 'International' },
+      { label: 'Malaysia (Kuala Lumpur, Langkawi)', value: 'Malaysia', badge: 'International' },
+      { label: 'Maldives', value: 'Maldives', badge: 'International' },
+      { label: 'Switzerland', value: 'Switzerland', badge: 'International' },
+      { label: 'Europe (Multi-Country Schengen)', value: 'Europe', badge: 'International' },
+      { label: 'Sri Lanka', value: 'Sri Lanka', badge: 'International' },
+      { label: 'Nepal', value: 'Nepal', badge: 'International' },
+      { label: 'Bhutan', value: 'Bhutan', badge: 'International' },
+      { label: 'Mauritius', value: 'Mauritius', badge: 'International' },
+      { label: 'Turkey (Istanbul, Cappadocia)', value: 'Turkey', badge: 'International' },
+      { label: 'Georgia (Tbilisi, Kazbegi)', value: 'Georgia', badge: 'International' },
+      { label: 'Azerbaijan (Baku)', value: 'Azerbaijan', badge: 'International' },
+      { label: 'Kazakhstan (Almaty)', value: 'Kazakhstan', badge: 'International' },
+      { label: 'Uzbekistan (Tashkent, Samarkand)', value: 'Uzbekistan', badge: 'International' },
+      { label: 'Japan (Tokyo, Kyoto, Osaka)', value: 'Japan', badge: 'International' },
+      { label: 'Egypt (Cairo, Luxor, Aswan)', value: 'Egypt', badge: 'International' },
+      { label: 'Kenya & Tanzania (Safari)', value: 'Kenya', badge: 'International' }
     ];
-    return Array.from(new Set([...sheetDestinations, ...defaultList]));
+
+    // Merge with any destinations from Zoho CRM
+    const existingKeys = new Set(curatedDestinations.map(d => d.value.toLowerCase().replace(/[^a-z0-9]/g, '')));
+    sheetDestinations.forEach(sd => {
+      const k = sd.toLowerCase().replace(/[^a-z0-9]/g, '');
+      if (k && !existingKeys.has(k)) {
+        curatedDestinations.push({
+          label: sd,
+          value: sd,
+          badge: 'Zoho CRM'
+        });
+        existingKeys.add(k);
+      }
+    });
+
+    return curatedDestinations;
   }, [sheetDestinations]);
 
   // Available Cities for Selected Destination
   const availableCitiesForDestination = useMemo(() => {
-    const destClean = destination.trim().toLowerCase();
+    const destClean = (destination || '').trim().toLowerCase();
+    const destAlpha = destClean.replace(/[^a-z0-9]/g, '');
     const sheetMatches: string[] = [];
 
+    // 1. Check Zoho CRM master data cities
     Object.keys(sheetCitiesByDest).forEach(dKey => {
-      const k = dKey.toLowerCase();
-      if (k === destClean || k.includes(destClean) || destClean.includes(k)) {
+      const k = dKey.toLowerCase().replace(/[^a-z0-9]/g, '');
+      if (k && (k === destAlpha || k.includes(destAlpha) || destAlpha.includes(k))) {
         sheetMatches.push(...sheetCitiesByDest[dKey]);
       }
     });
 
-    const defaultMatches = DEFAULT_CITIES_BY_DESTINATION[destClean.replace(/[^a-z0-9]/g, '')] || [];
+    // 2. Direct or fuzzy lookup in DEFAULT_CITIES_BY_DESTINATION
+    let defaultMatches: string[] = [];
+    if (DEFAULT_CITIES_BY_DESTINATION[destAlpha]) {
+      defaultMatches = DEFAULT_CITIES_BY_DESTINATION[destAlpha];
+    } else {
+      // Substring check across keys
+      for (const [key, cities] of Object.entries(DEFAULT_CITIES_BY_DESTINATION)) {
+        if (destAlpha.includes(key) || key.includes(destAlpha)) {
+          defaultMatches = cities;
+          break;
+        }
+      }
+      // Token-level check (e.g., "Spiti Valley Road Trip" -> matches "spiti")
+      if (defaultMatches.length === 0) {
+        const tokens = destClean.split(/[\s,/-]+/).filter(t => t.length >= 3);
+        for (const token of tokens) {
+          const tAlpha = token.replace(/[^a-z0-9]/g, '');
+          for (const [key, cities] of Object.entries(DEFAULT_CITIES_BY_DESTINATION)) {
+            if (key === tAlpha || key.includes(tAlpha) || tAlpha.includes(key)) {
+              defaultMatches = cities;
+              break;
+            }
+          }
+          if (defaultMatches.length > 0) break;
+        }
+      }
+    }
+
     const combined = Array.from(new Set([...sheetMatches, ...defaultMatches]));
 
     if (combined.length === 0) {
