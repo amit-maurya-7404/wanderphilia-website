@@ -96,26 +96,87 @@ const DEFAULT_EXPERIENCES_BY_CITY: Record<string, { name: string; guidedTour?: b
   ]
 };
 
+const MONTH_MAP: Record<string, string> = {
+  jan: '01', feb: '02', mar: '03', apr: '04', may: '05', jun: '06',
+  jul: '07', aug: '08', sep: '09', oct: '10', nov: '11', dec: '12'
+};
+
+const parseMonthStr = (m: string): string => {
+  const clean = String(m || '').toLowerCase().slice(0, 3);
+  return MONTH_MAP[clean] || String(m).padStart(2, '0');
+};
+
 // Safe date parser to YYYY-MM-DD for HTML date inputs
 const toDateInputValue = (val: any): string => {
   if (!val) return '';
   const s = String(val).trim();
   if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
   if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.slice(0, 10);
-  const parts = s.split(/[-/]/);
-  if (parts.length === 3) {
+  const parts = s.split(/[-/\s]/).filter(Boolean);
+  if (parts.length >= 3) {
     if (parts[0].length === 4) {
-      return `${parts[0]}-${parts[1].padStart(2, '0')}-${parts[2].padStart(2, '0')}`;
+      return `${parts[0]}-${parseMonthStr(parts[1])}-${parts[2].padStart(2, '0')}`;
     }
     if (parts[2].length === 4) {
-      return `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+      return `${parts[2]}-${parseMonthStr(parts[1])}-${parts[0].padStart(2, '0')}`;
     }
   }
   const d = new Date(s);
   if (!isNaN(d.getTime())) {
-    return d.toISOString().split('T')[0];
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
   return '';
+};
+
+// Add days to YYYY-MM-DD string cleanly
+const addDaysToDateStr = (dateStr: string, days: number): string => {
+  if (!dateStr || !/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return '';
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const dt = new Date(y, m - 1, d);
+  dt.setDate(dt.getDate() + days);
+  const year = dt.getFullYear();
+  const month = String(dt.getMonth() + 1).padStart(2, '0');
+  const day = String(dt.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+// Calculate Days and Nights between two YYYY-MM-DD strings
+const calcDaysBetween = (startStr: string, endStr: string): { days: number; nights: number } | null => {
+  if (!startStr || !endStr || !/^\d{4}-\d{2}-\d{2}$/.test(startStr) || !/^\d{4}-\d{2}-\d{2}$/.test(endStr)) {
+    return null;
+  }
+  const [sy, sm, sd] = startStr.split('-').map(Number);
+  const [ey, em, ed] = endStr.split('-').map(Number);
+  const diffMs = new Date(ey, em - 1, ed).getTime() - new Date(sy, sm - 1, sd).getTime();
+  const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
+  if (diffDays < 0) return null;
+  const nights = diffDays === 0 ? 1 : diffDays;
+  const days = diffDays === 0 ? 1 : diffDays + 1;
+  return { days, nights };
+};
+
+// Format YYYY-MM-DD to "20 Oct (Tue)"
+const formatToReadableDate = (dateStr: string): string => {
+  if (!dateStr || !/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return dateStr || '';
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const dt = new Date(y, m - 1, d);
+  return `${d} ${months[m - 1]} (${days[dt.getDay()]})`;
+};
+
+// Format Hotel Stay Dates range
+const formatStayDateRange = (startStr: string, endStr: string, nights?: number): string => {
+  if (!startStr || !endStr || !/^\d{4}-\d{2}-\d{2}$/.test(startStr) || !/^\d{4}-\d{2}-\d{2}$/.test(endStr)) {
+    return '';
+  }
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const [sy, sm, sd] = startStr.split('-').map(Number);
+  const [ey, em, ed] = endStr.split('-').map(Number);
+  return `${sd} ${months[sm - 1]} - ${ed} ${months[em - 1]}${nights ? ` (${nights} Nts)` : ''}`;
 };
 
 // --- REUSABLE LOOKUP FIELD COMPONENT ---
@@ -771,6 +832,22 @@ export default function SheetItineraryPage() {
     }
   }, [destination, filteredZohoFixedItineraries, showAllZohoFixedItineraries, selectedFixedItineraryId]);
 
+  // Helper to recompute stayDates for hotels list
+  const computeHotelStayDates = (startStr: string, hotelList: HotelItem[]): HotelItem[] => {
+    if (!startStr || !/^\d{4}-\d{2}-\d{2}$/.test(startStr) || !Array.isArray(hotelList)) return hotelList;
+    let currentStart = startStr;
+    return hotelList.map(h => {
+      const n = Math.max(1, Number(h.nights) || 1);
+      const currentEnd = addDaysToDateStr(currentStart, n);
+      const stayDates = formatStayDateRange(currentStart, currentEnd, n);
+      currentStart = currentEnd;
+      return {
+        ...h,
+        stayDates
+      };
+    });
+  };
+
   // Helper to derive Hotel Stays & Nights from Day Rows based on City 2 (night stay city takes precedence)
   const deriveHotelsFromDayRows = (
     rows: TableDayRow[] | any[],
@@ -806,7 +883,7 @@ export default function SheetItineraryPage() {
     const cat = currentCategory || masterHotelCategory || 'Deluxe';
     const pool = existingHotels || hotels;
 
-    return stays.slice(0, 6).map((stay, idx) => {
+    const derived = stays.slice(0, 6).map((stay, idx) => {
       const existing = pool.find(
         h => (h.city || '').toLowerCase().trim() === stay.city.toLowerCase().trim()
       );
@@ -820,6 +897,8 @@ export default function SheetItineraryPage() {
         stayDates: existing?.stayDates || ''
       };
     });
+
+    return startDate ? computeHotelStayDates(startDate, derived) : derived;
   };
 
   // Track sequence of night stay cities (City 2 takes precedence over City 1)
@@ -1097,11 +1176,24 @@ export default function SheetItineraryPage() {
       if (endD) setEndDate(endD);
 
       // 6. Days & Nights Count
-      const daysCount = Number(l.noOfDays || raw.No_of_Days);
+      let daysCount = Number(l.noOfDays || raw.No_of_Days);
+      let nightsCount = Number(l.noOfNights || raw.No_of_Nights);
+
+      if (startD && endD) {
+        const dateDiff = calcDaysBetween(startD, endD);
+        if (dateDiff) {
+          if (!daysCount || daysCount <= 1) daysCount = dateDiff.days;
+          if (!nightsCount) nightsCount = dateDiff.nights;
+        }
+      } else if (startD && daysCount > 0) {
+        const computedEnd = addDaysToDateStr(startD, daysCount > 1 ? daysCount - 1 : 1);
+        setEndDate(computedEnd);
+      }
+
       if (daysCount > 0) {
-        handleDaysCountChange(daysCount);
-        const nightsCount = Number(l.noOfNights || raw.No_of_Nights) || (daysCount > 1 ? daysCount - 1 : 1);
-        setNoOfNights(nightsCount);
+        handleDaysCountChange(daysCount, false);
+        const effectiveNights = nightsCount || (daysCount > 1 ? daysCount - 1 : 1);
+        setNoOfNights(effectiveNights);
       }
 
       // 7. Adults & Kids
@@ -1233,7 +1325,8 @@ export default function SheetItineraryPage() {
           category: hotelCat || masterHotelCategory || 'Deluxe',
           stayDates: h.stayDates || ''
         }));
-        setHotels(mappedHotels);
+        const withStayDates = startD ? computeHotelStayDates(startD, mappedHotels) : mappedHotels;
+        setHotels(withStayDates);
       }
 
       // 14. Day Activities (Subform: Activities_and_Experiences_1)
@@ -1278,15 +1371,19 @@ export default function SheetItineraryPage() {
         });
         setDayRows(mappedRows);
         setNoOfDays(mappedRows.length);
-        setNoOfNights(mappedRows.length > 1 ? mappedRows.length - 1 : 1);
+        const effNts = mappedRows.length > 1 ? mappedRows.length - 1 : 1;
+        setNoOfNights(effNts);
+        if (startD && (!endD || endD <= startD)) {
+          setEndDate(addDaysToDateStr(startD, effNts));
+        }
 
         // If specific hotels were not populated in lead, auto-derive from City 2 of day activities
         const hasSpecificHotels = Array.isArray(l.hotels) && l.hotels.length > 0 && l.hotels.some((h: any) => (h.hotelName && h.hotelName !== 'Hotel') || h.city);
         if (!hasSpecificHotels) {
           setIsHotelsManuallyCustomized(false);
-          const derivedHotels = deriveHotelsFromDayRows(mappedRows, l.noOfNights || (mappedRows.length > 1 ? mappedRows.length - 1 : 1), hotelCat || masterHotelCategory);
+          const derivedHotels = deriveHotelsFromDayRows(mappedRows, effNts, hotelCat || masterHotelCategory);
           if (derivedHotels.length > 0) {
-            setHotels(derivedHotels);
+            setHotels(startD ? computeHotelStayDates(startD, derivedHotels) : derivedHotels);
           }
         }
       }
@@ -1505,11 +1602,17 @@ export default function SheetItineraryPage() {
     }
   };
 
-  // Sync dayRows count when noOfDays changes
-  const handleDaysCountChange = (newCount: number) => {
+  // Sync dayRows count when noOfDays changes (with optional auto-update of End Date)
+  const handleDaysCountChange = (newCount: number, autoUpdateEndDate = true) => {
     const count = Math.max(1, newCount);
     setNoOfDays(count);
-    setNoOfNights(count > 1 ? count - 1 : 1);
+    const nights = count > 1 ? count - 1 : 1;
+    setNoOfNights(nights);
+
+    if (autoUpdateEndDate && startDate && /^\d{4}-\d{2}-\d{2}$/.test(startDate)) {
+      const newEnd = addDaysToDateStr(startDate, nights);
+      setEndDate(newEnd);
+    }
 
     setDayRows(prev => {
       if (prev.length === count) return prev;
@@ -1523,6 +1626,46 @@ export default function SheetItineraryPage() {
       }
       return prev.slice(0, count);
     });
+  };
+
+  // Handle Start Date Change: keeps days/nights in sync and shifts end date & hotel stay dates
+  const handleStartDateChange = (newStart: string) => {
+    setStartDate(newStart);
+    if (newStart && /^\d{4}-\d{2}-\d{2}$/.test(newStart)) {
+      const nights = Number(noOfNights) > 0 ? Number(noOfNights) : (Number(noOfDays) > 1 ? Number(noOfDays) - 1 : 1);
+      const computedEnd = addDaysToDateStr(newStart, nights);
+      setEndDate(computedEnd);
+      setHotels(prev => computeHotelStayDates(newStart, prev));
+    }
+  };
+
+  // Handle End Date Change: calculates new duration, updates days, nights, dayRows, and hotel stay dates
+  const handleEndDateChange = (newEnd: string) => {
+    setEndDate(newEnd);
+    if (newEnd && startDate && /^\d{4}-\d{2}-\d{2}$/.test(newEnd) && /^\d{4}-\d{2}-\d{2}$/.test(startDate)) {
+      const res = calcDaysBetween(startDate, newEnd);
+      if (res && res.days > 0) {
+        setNoOfDays(res.days);
+        setNoOfNights(res.nights);
+        handleDaysCountChange(res.days, false);
+        setHotels(prev => computeHotelStayDates(startDate, prev));
+      }
+    }
+  };
+
+  // Handle Nights Count Change: updates nights, days, dayRows, and adjusts End Date
+  const handleNightsCountChange = (newNights: number) => {
+    const nights = Math.max(1, newNights);
+    setNoOfNights(nights);
+    const days = nights + 1;
+    setNoOfDays(days);
+
+    if (startDate && /^\d{4}-\d{2}-\d{2}$/.test(startDate)) {
+      const newEnd = addDaysToDateStr(startDate, nights);
+      setEndDate(newEnd);
+    }
+
+    handleDaysCountChange(days, false);
   };
 
   // Handle Kids count change & automatically open child details modal when kids > 0
@@ -1828,6 +1971,9 @@ export default function SheetItineraryPage() {
         h.roomCategory = meta.rooms[0].roomCategory || h.roomCategory;
       }
       updated[index] = h;
+      if (startDate && field === 'nights') {
+        return computeHotelStayDates(startDate, updated);
+      }
       return updated;
     });
   };
@@ -2070,7 +2216,7 @@ export default function SheetItineraryPage() {
               <Input
                 type="date"
                 value={startDate}
-                onChange={e => setStartDate(e.target.value)}
+                onChange={e => handleStartDateChange(e.target.value)}
                 className="bg-white border border-slate-400 text-xs h-10 font-medium text-slate-900 focus-visible:ring-orange-500"
               />
             </div>
@@ -2079,7 +2225,7 @@ export default function SheetItineraryPage() {
               <Input
                 type="date"
                 value={endDate}
-                onChange={e => setEndDate(e.target.value)}
+                onChange={e => handleEndDateChange(e.target.value)}
                 className="bg-white border border-slate-400 text-xs h-10 font-medium text-slate-900 focus-visible:ring-orange-500"
               />
             </div>
@@ -2105,7 +2251,7 @@ export default function SheetItineraryPage() {
                   value={noOfNights}
                   onChange={e => {
                     const val = Number(e.target.value.replace(/\D/g, '')) || 1;
-                    setNoOfNights(val);
+                    handleNightsCountChange(val);
                   }}
                   className="bg-white border border-slate-400 text-xs h-10 text-center font-bold text-slate-900 focus-visible:ring-orange-500"
                   title="Nights"
@@ -2582,13 +2728,20 @@ export default function SheetItineraryPage() {
               {hotels.map((h, idx) => (
                 <div key={idx} className="p-4 bg-slate-50/70 border border-slate-300 rounded-xl relative">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-bold text-orange-700 flex items-center gap-1.5">
-                      <Hotel className="w-3.5 h-3.5" />
-                      Hotel #{idx + 1}
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-orange-100 border border-orange-200 text-orange-800 font-extrabold">
-                        {h.category || masterHotelCategory || 'Deluxe'}
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="text-xs font-bold text-orange-700 flex items-center gap-1.5">
+                        <Hotel className="w-3.5 h-3.5" />
+                        Hotel #{idx + 1}
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-orange-100 border border-orange-200 text-orange-800 font-extrabold">
+                          {h.category || masterHotelCategory || 'Deluxe'}
+                        </span>
                       </span>
-                    </span>
+                      {h.stayDates && (
+                        <span className="text-[10px] px-2 py-0.5 rounded-md bg-white border border-slate-300 text-slate-700 font-mono font-semibold">
+                          📅 {h.stayDates}
+                        </span>
+                      )}
+                    </div>
                     {hotels.length > 1 && (
                       <button
                         onClick={() => removeHotel(idx)}
@@ -2923,8 +3076,13 @@ export default function SheetItineraryPage() {
                       <td className={`sticky left-0 z-10 px-3 py-3 border-r-2 border-slate-400 font-extrabold shadow-[2px_0_6px_-1px_rgba(0,0,0,0.15)] ${day.guidedTour ? 'bg-amber-100/70 text-slate-950' : 'bg-slate-50 text-slate-950'
                         }`}>
                         <div className="flex items-center gap-1.5">
-                          <span className="px-2.5 py-1 bg-white rounded border border-slate-400 text-slate-900 font-bold font-mono text-xs shadow-2xs">
-                            {day.dayText}
+                          <span className="px-2.5 py-1 bg-white rounded border border-slate-400 text-slate-900 font-bold font-mono text-xs shadow-2xs flex flex-col items-start leading-tight">
+                            <span>{day.dayText}</span>
+                            {startDate && (
+                              <span className="text-[10px] text-orange-600 font-medium font-sans mt-0.5 whitespace-nowrap">
+                                {formatToReadableDate(addDaysToDateStr(startDate, dIdx))}
+                              </span>
+                            )}
                           </span>
                         </div>
                       </td>
