@@ -441,6 +441,49 @@ export default function SheetItineraryPage() {
     return totalPerPersonActivityCost * (Number(adults) || 2);
   }, [totalPerPersonActivityCost, adults]);
 
+  // Helper to look up an experience's description and cost across all loaded catalogs
+  const findExperienceInCatalogs = (expName: string, preferredCity?: string) => {
+    if (!expName || !expName.trim()) return null;
+    const clean = expName.trim().toLowerCase();
+
+    // 1. Search in preferred city first
+    if (preferredCity) {
+      const pClean = preferredCity.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+      const cityList = sheetExpByCity[pClean] || [];
+      const match = cityList.find(
+        (c: any) =>
+          (c.name || '').trim().toLowerCase() === clean ||
+          (c.name || '').toLowerCase().includes(clean) ||
+          clean.includes((c.name || '').toLowerCase())
+      );
+      if (match && (match.description || match.templateDescription)) return match;
+    }
+
+    // 2. Search across all cities in sheetExpByCity
+    for (const list of Object.values(sheetExpByCity)) {
+      const match = (list || []).find(
+        (c: any) =>
+          (c.name || '').trim().toLowerCase() === clean ||
+          (c.name || '').toLowerCase().includes(clean) ||
+          clean.includes((c.name || '').toLowerCase())
+      );
+      if (match && (match.description || match.templateDescription)) return match;
+    }
+
+    // 3. Search in default experiences
+    for (const list of Object.values(DEFAULT_EXPERIENCES_BY_CITY)) {
+      const match = (list || []).find(
+        (c: any) =>
+          (c.name || '').trim().toLowerCase() === clean ||
+          (c.name || '').toLowerCase().includes(clean) ||
+          clean.includes((c.name || '').toLowerCase())
+      );
+      if (match && match.description) return match;
+    }
+
+    return null;
+  };
+
   // --- LIVE COMPREHENSIVE COST & QUOTATION ENGINE (EXACT ZOHO DELUGE FORMULA) ---
   const quotationCalculations = useMemo(() => {
     const adultPax = Math.max(1, Number(adults) || 1);
@@ -599,6 +642,7 @@ export default function SheetItineraryPage() {
     sharingType,
     marginPercent,
     sheetHotelsByCity,
+    sheetExpByCity,
     zohoVehicles,
     totalPerPersonActivityCost,
     destination
@@ -817,48 +861,6 @@ export default function SheetItineraryPage() {
     ];
   }, [zohoVehicles]);
 
-  // Helper to look up an experience's description and cost across all loaded catalogs
-  const findExperienceInCatalogs = (expName: string, preferredCity?: string) => {
-    if (!expName || !expName.trim()) return null;
-    const clean = expName.trim().toLowerCase();
-
-    // 1. Search in preferred city first
-    if (preferredCity) {
-      const pClean = preferredCity.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
-      const cityList = sheetExpByCity[pClean] || [];
-      const match = cityList.find(
-        (c: any) =>
-          (c.name || '').trim().toLowerCase() === clean ||
-          (c.name || '').toLowerCase().includes(clean) ||
-          clean.includes((c.name || '').toLowerCase())
-      );
-      if (match && (match.description || match.templateDescription)) return match;
-    }
-
-    // 2. Search across all cities in sheetExpByCity
-    for (const list of Object.values(sheetExpByCity)) {
-      const match = (list || []).find(
-        (c: any) =>
-          (c.name || '').trim().toLowerCase() === clean ||
-          (c.name || '').toLowerCase().includes(clean) ||
-          clean.includes((c.name || '').toLowerCase())
-      );
-      if (match && (match.description || match.templateDescription)) return match;
-    }
-
-    // 3. Search in default experiences
-    for (const list of Object.values(DEFAULT_EXPERIENCES_BY_CITY)) {
-      const match = (list || []).find(
-        (c: any) =>
-          (c.name || '').trim().toLowerCase() === clean ||
-          (c.name || '').toLowerCase().includes(clean) ||
-          clean.includes((c.name || '').toLowerCase())
-      );
-      if (match && match.description) return match;
-    }
-
-    return null;
-  };
   const getExperiencesLookupForDay = (city1?: string, city2?: string) => {
     const map = new Map<string, { label: string; value: string; badge?: string; meta?: any }>();
     const citiesToInclude = Array.from(new Set([city1, city2].filter(Boolean) as string[]));
@@ -3207,7 +3209,7 @@ export default function SheetItineraryPage() {
                 <div className="bg-white p-2.5 rounded-lg border border-slate-200">
                   <span className="text-[10px] text-slate-500 block font-bold">1. Hotels Total:</span>
                   <span className="text-xs font-extrabold text-slate-900 font-mono">
-                    ₹{quotationCalculations.totalHotelsCost.toLocaleString('en-IN')}
+                    ₹{Number(quotationCalculations.totalHotelsCost || 0).toLocaleString('en-IN')}
                   </span>
                   <span className="text-[10px] text-slate-400 block mt-0.5">
                     {hotels.reduce((acc, h) => acc + (Number(h.nights) || 1), 0)} Nts • {quotationCalculations.rooms} Rms
@@ -3217,17 +3219,17 @@ export default function SheetItineraryPage() {
                 <div className="bg-white p-2.5 rounded-lg border border-slate-200">
                   <span className="text-[10px] text-slate-500 block font-bold">2. Transport / Cab:</span>
                   <span className="text-xs font-extrabold text-slate-900 font-mono">
-                    ₹{quotationCalculations.totalVehicleCost.toLocaleString('en-IN')}
+                    ₹{Number(quotationCalculations.totalVehicleCost || 0).toLocaleString('en-IN')}
                   </span>
                   <span className="text-[10px] text-slate-400 block mt-0.5">
-                    {noOfDays} Days • ₹{quotationCalculations.perHeadTransportCost}/pax
+                    {noOfDays} Days • ₹{Number(quotationCalculations.perHeadTransportCost || 0).toLocaleString('en-IN')}/pax
                   </span>
                 </div>
 
                 <div className="bg-white p-2.5 rounded-lg border border-slate-200">
                   <span className="text-[10px] text-slate-500 block font-bold">3. Activities / Sights:</span>
                   <span className="text-xs font-extrabold text-slate-900 font-mono">
-                    ₹{quotationCalculations.totalActivitiesCost.toLocaleString('en-IN')}
+                    ₹{Number(quotationCalculations.totalActivitiesCost || 0).toLocaleString('en-IN')}
                   </span>
                   <span className="text-[10px] text-slate-400 block mt-0.5">
                     SIC &amp; Private Share
@@ -3237,7 +3239,7 @@ export default function SheetItineraryPage() {
                 <div className="bg-white p-2.5 rounded-lg border border-slate-200">
                   <span className="text-[10px] text-slate-500 block font-bold">4. Guided Tour:</span>
                   <span className="text-xs font-extrabold text-slate-900 font-mono">
-                    ₹{quotationCalculations.totalGuideCost.toLocaleString('en-IN')}
+                    ₹{Number(quotationCalculations.totalGuideCost || 0).toLocaleString('en-IN')}
                   </span>
                   <span className="text-[10px] text-slate-400 block mt-0.5">
                     ₹2,000/guided day
@@ -3247,7 +3249,7 @@ export default function SheetItineraryPage() {
                 <div className="bg-white p-2.5 rounded-lg border border-slate-200">
                   <span className="text-[10px] text-slate-500 block font-bold">Base Package:</span>
                   <span className="text-xs font-extrabold text-slate-900 font-mono">
-                    ₹{quotationCalculations.calculatedBase.toLocaleString('en-IN')}
+                    ₹{Number(quotationCalculations.calculatedBase || 0).toLocaleString('en-IN')}
                   </span>
                   <span className="text-[10px] text-slate-400 block mt-0.5">
                     Deluge Net Cost
@@ -3257,17 +3259,17 @@ export default function SheetItineraryPage() {
                 <div className="bg-white p-2.5 rounded-lg border border-slate-200">
                   <span className="text-[10px] text-slate-500 block font-bold">Margin ({quotationCalculations.marginPct}%):</span>
                   <span className="text-xs font-extrabold text-orange-600 font-mono">
-                    +₹{quotationCalculations.marginAmount.toLocaleString('en-IN')}
+                    +₹{Number(quotationCalculations.marginAmount || 0).toLocaleString('en-IN')}
                   </span>
                   <span className="text-[10px] text-slate-400 block mt-0.5">
-                    5% GST: +₹{quotationCalculations.gstAmount.toLocaleString('en-IN')}
+                    5% GST: +₹{Number(quotationCalculations.gstAmount || 0).toLocaleString('en-IN')}
                   </span>
                 </div>
 
                 <div className="bg-emerald-50 p-2.5 rounded-lg border border-emerald-300">
                   <span className="text-[10px] text-emerald-800 block font-extrabold uppercase">Calculated Total:</span>
                   <span className="text-sm font-extrabold text-emerald-950 font-mono">
-                    ₹{quotationCalculations.calculatedFinalQuote.toLocaleString('en-IN')}
+                    ₹{Number(quotationCalculations.calculatedFinalQuote || 0).toLocaleString('en-IN')}
                   </span>
                   <span className="text-[10px] text-emerald-700 block mt-0.5 font-semibold">
                     With GST &amp; Margin
@@ -3277,11 +3279,11 @@ export default function SheetItineraryPage() {
                 <div className="bg-blue-50 p-2.5 rounded-lg border border-blue-300">
                   <span className="text-[10px] text-blue-800 block font-extrabold uppercase">Per Pax Cost:</span>
                   <span className="text-xs font-extrabold text-blue-950 font-mono block">
-                    Adult: ₹{quotationCalculations.calculatedPerAdult.toLocaleString('en-IN')}
+                    Adult: ₹{Number(quotationCalculations.calculatedPerAdult || 0).toLocaleString('en-IN')}
                   </span>
                   {kids > 0 && (
                     <span className="text-[11px] font-extrabold text-orange-700 font-mono block mt-0.5">
-                      Child: ₹{quotationCalculations.calculatedPerKid.toLocaleString('en-IN')}
+                      Child: ₹{Number(quotationCalculations.calculatedPerKid || 0).toLocaleString('en-IN')}
                     </span>
                   )}
                 </div>
@@ -3302,12 +3304,12 @@ export default function SheetItineraryPage() {
                   </span>
                   {kids > 0 && (
                     <span className="px-2 py-0.5 rounded bg-white border border-slate-300 text-slate-800 font-medium">
-                      Child Hotel Share: <strong>₹{quotationCalculations.childHotelShare.toLocaleString('en-IN')}</strong>
+                      Child Hotel Share: <strong>₹{Number(quotationCalculations.childHotelShare || 0).toLocaleString('en-IN')}</strong>
                     </span>
                   )}
                 </div>
                 <div className="text-[10px] text-slate-500 font-mono">
-                  Exact distribution: (Adults × ₹{quotationCalculations.delugePerAdultCost.toLocaleString('en-IN')}) {kids > 0 ? `+ (Kids × ₹${quotationCalculations.delugePerChildCost.toLocaleString('en-IN')})` : ''} = ₹{quotationCalculations.calculatedBase.toLocaleString('en-IN')}
+                  Exact distribution: (Adults × ₹{Number(quotationCalculations.delugePerAdultCost || 0).toLocaleString('en-IN')}) {kids > 0 ? `+ (Kids × ₹${Number(quotationCalculations.delugePerChildCost || 0).toLocaleString('en-IN')})` : ''} = ₹{Number(quotationCalculations.calculatedBase || 0).toLocaleString('en-IN')}
                 </div>
               </div>
             </div>
