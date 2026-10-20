@@ -1360,6 +1360,39 @@ function ActivityHoverTooltip({
   );
 }
 
+// Small inline badge displayed under an experience input in the itinerary table
+function ActivityCostBadge({
+  item,
+  adults,
+  kidsDetails,
+  fallbackCost
+}: {
+  item: any;
+  adults: number;
+  kidsDetails: ChildDetail[];
+  fallbackCost?: number;
+}) {
+  if (!item && !fallbackCost) return null;
+  const sicA = Number(item?.sicAdult ?? item?.Cost_Per_Person) || 0;
+  const priv = Number(item?.privateCost ?? item?.Private_Cost) || 0;
+  const kidsAbove3 = (kidsDetails || []).filter(k => (Number(k.age) || 0) > 3).length;
+  const eligiblePax = Math.max(1, (Number(adults) || 2) + kidsAbove3);
+  const cost = sicA > 0 ? sicA : (priv > 0 ? Math.round(priv / eligiblePax) : (fallbackCost || 0));
+
+  if (cost <= 0) return null;
+
+  return (
+    <div className="mt-1 flex items-center justify-between text-[10px] px-1.5 py-0.5 rounded bg-emerald-50 border border-emerald-300 text-emerald-900 leading-tight shadow-2xs">
+      <span className="font-bold truncate text-[9px] text-emerald-800">
+        {sicA > 0 ? 'SIC' : `Private (₹${priv.toLocaleString('en-IN')})`}
+      </span>
+      <span className="font-mono font-extrabold text-emerald-950 ml-1 shrink-0">
+        +₹{cost.toLocaleString('en-IN')}/pax
+      </span>
+    </div>
+  );
+}
+
 // Calculate recommended room count strictly based on Zoho Deluge automation (Max 3 per room capacity)
 export function calculateRecommendedRooms(
   adultsCount: number,
@@ -1579,8 +1612,9 @@ export default function SheetItineraryPage() {
     const eligiblePax = Math.max(1, (Number(adults) || 2) + kidsAbove3);
 
     dayRows.forEach(row => {
+      // 1. Regular experiences
       (row.experiences || []).forEach((expName, idx) => {
-        if (!expName) return;
+        if (!expName || !expName.trim()) return;
         const catalogItem = findExperienceInCatalogs(expName, row.city || row.city2);
         const sicA = Number(catalogItem?.sicAdult ?? catalogItem?.Cost_Per_Person) || 0;
         const priv = Number(catalogItem?.privateCost ?? catalogItem?.Private_Cost) || 0;
@@ -1592,13 +1626,22 @@ export default function SheetItineraryPage() {
           sum += Number(row.experienceCosts?.[idx]) || 0;
         }
       });
+
+      // 2. En-route experiences
+      (row.enRouteExperiences || []).forEach((spotName) => {
+        if (!spotName || !spotName.trim()) return;
+        const catalogItem = findExperienceInCatalogs(spotName, row.city || row.city2);
+        const sicA = Number(catalogItem?.sicAdult ?? catalogItem?.Cost_Per_Person) || 0;
+        const priv = Number(catalogItem?.privateCost ?? catalogItem?.Private_Cost) || 0;
+        if (sicA > 0) {
+          sum += sicA;
+        } else if (priv > 0) {
+          sum += Math.round(priv / eligiblePax);
+        }
+      });
     });
     return sum;
   }, [dayRows, adults, kidsDetails, sheetExpByCity, findExperienceInCatalogs]);
-
-  const totalActivityCost = useMemo(() => {
-    return totalPerPersonActivityCost * (Number(adults) || 2);
-  }, [totalPerPersonActivityCost, adults]);
 
   // --- LIVE COMPREHENSIVE COST & QUOTATION ENGINE (EXACT ZOHO DELUGE FORMULA) ---
   const quotationCalculations = useMemo(() => {
@@ -1681,20 +1724,40 @@ export default function SheetItineraryPage() {
     // 3. Day Rows & Activities Setup (SIC vs Private, Guided Tour ₹2000)
     const mappedDayRows = dayRows.map(row => {
       const activities: Array<{ name?: string; costPerPerson?: number; costPerChild?: number; privateCost?: number }> = [];
+
+      // Regular Experiences
       (row.experiences || []).forEach((expName, eIdx) => {
-        if (!expName) return;
+        if (!expName || !expName.trim()) return;
         const catalogItem = findExperienceInCatalogs(expName, row.city || row.city2);
+        const sicAdult = Number(catalogItem?.sicAdult ?? catalogItem?.Cost_Per_Person) || 0;
+        const sicChild = Number(catalogItem?.sicChild ?? catalogItem?.Cost_per_child) || 0;
+        const privateCost = Number(catalogItem?.privateCost ?? catalogItem?.Private_Cost) || 0;
+        const manualCost = Number(row.experienceCosts?.[eIdx]) || 0;
+
+        activities.push({
+          name: expName.trim(),
+          costPerPerson: sicAdult > 0 ? sicAdult : (privateCost === 0 && manualCost > 0 ? manualCost : 0),
+          costPerChild: sicChild,
+          privateCost: privateCost
+        });
+      });
+
+      // En-route Experiences
+      (row.enRouteExperiences || []).forEach((spotName) => {
+        if (!spotName || !spotName.trim()) return;
+        const catalogItem = findExperienceInCatalogs(spotName, row.city || row.city2);
         const sicAdult = Number(catalogItem?.sicAdult ?? catalogItem?.Cost_Per_Person) || 0;
         const sicChild = Number(catalogItem?.sicChild ?? catalogItem?.Cost_per_child) || 0;
         const privateCost = Number(catalogItem?.privateCost ?? catalogItem?.Private_Cost) || 0;
 
         activities.push({
-          name: expName,
+          name: spotName.trim(),
           costPerPerson: sicAdult,
           costPerChild: sicChild,
           privateCost: privateCost
         });
       });
+
       return {
         dayNumber: row.dayNumber,
         guidedTour: !!row.guidedTour,
@@ -1784,8 +1847,12 @@ export default function SheetItineraryPage() {
     sheetExpByCity,
     zohoVehicles,
     totalPerPersonActivityCost,
-    destination
   ]);
+
+  // Total Activity Cost for the whole booking (Auto-calculated from all day activities & en-route spots)
+  const totalActivityCost = useMemo(() => {
+    return Number(quotationCalculations.totalActivitiesCost || 0);
+  }, [quotationCalculations.totalActivitiesCost]);
 
   // Auto-calculate rooms as per adults and kids whenever they change
   useEffect(() => {
@@ -2733,6 +2800,45 @@ export default function SheetItineraryPage() {
       }
       if (data.experiencesByCity) {
         setSheetExpByCity(data.experiencesByCity);
+        // Automatically sync dayRows experience costs with the newly loaded master activities data!
+        setDayRows(prev => prev.map(row => {
+          const kidsAbove3 = (kidsDetails || []).filter(k => (Number(k.age) || 0) > 3).length;
+          const eligiblePax = Math.max(1, (Number(adults) || 2) + kidsAbove3);
+          const updatedCosts = [...(row.experienceCosts || [0, 0, 0, 0])];
+          (row.experiences || []).forEach((expName, idx) => {
+            if (!expName || !expName.trim()) return;
+            const clean = expName.trim().toLowerCase();
+            let match: any = null;
+            if (row.city || row.city2) {
+              const pClean = (row.city || row.city2).trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+              match = (data.experiencesByCity[pClean] || []).find((c: any) =>
+                (c.name || '').trim().toLowerCase() === clean ||
+                (c.name || '').toLowerCase().includes(clean) ||
+                clean.includes((c.name || '').toLowerCase())
+              );
+            }
+            if (!match) {
+              for (const list of Object.values(data.experiencesByCity)) {
+                match = (list as any[] || []).find((c: any) =>
+                  (c.name || '').trim().toLowerCase() === clean ||
+                  (c.name || '').toLowerCase().includes(clean) ||
+                  clean.includes((c.name || '').toLowerCase())
+                );
+                if (match) break;
+              }
+            }
+            if (match) {
+              const sicA = Number(match.sicAdult ?? match.Cost_Per_Person) || 0;
+              const priv = Number(match.privateCost ?? match.Private_Cost) || 0;
+              if (sicA > 0) {
+                updatedCosts[idx] = sicA;
+              } else if (priv > 0) {
+                updatedCosts[idx] = Math.round(priv / eligiblePax);
+              }
+            }
+          });
+          return { ...row, experienceCosts: updatedCosts };
+        }));
       }
       if (data.hotelsByCity) {
         setSheetHotelsByCity(data.hotelsByCity);
@@ -2859,11 +2965,17 @@ export default function SheetItineraryPage() {
           const rawEnRoute = r.enRouteExperiences || r.enRouteSpots;
           const enRouteExperiences = Array.isArray(rawEnRoute) && rawEnRoute.length > 0 ? rawEnRoute : [''];
 
-          // Auto-resolve costs
+          // Auto-resolve costs (SIC vs Private divided among adults + kids > 3 yrs)
+          const kidsAbove3 = (kidsDetails || []).filter(k => (Number(k.age) || 0) > 3).length;
+          const eligiblePax = Math.max(1, (Number(adults) || 2) + kidsAbove3);
           const costs = exps.map((expName: string) => {
             if (!expName) return 0;
             const found = findExperienceInCatalogs(expName, r.city || r.city2);
-            return found?.ppCost || 0;
+            const sicA = Number(found?.sicAdult ?? found?.Cost_Per_Person) || 0;
+            const priv = Number(found?.privateCost ?? found?.Private_Cost) || 0;
+            if (sicA > 0) return sicA;
+            if (priv > 0) return Math.round(priv / eligiblePax);
+            return Number(found?.ppCost) || 0;
           });
 
           // Auto-resolve descriptions from catalog if missing
@@ -2897,6 +3009,7 @@ export default function SheetItineraryPage() {
           };
         });
         setDayRows(updatedRows);
+        setIsQuoteManuallyEdited(false);
 
         // Also suggest hotel stays according to City 2 in the itinerary
         setIsHotelsManuallyCustomized(false);
@@ -3093,6 +3206,7 @@ export default function SheetItineraryPage() {
 
   // Select Experience (Auto-fills Description and records ppCost from sheet)
   const handleSelectExperience = (dayIdx: number, expIdx: number, expName: string, meta?: any) => {
+    setIsQuoteManuallyEdited(false);
     setDayRows(prev => {
       const updated = [...prev];
       const row = { ...updated[dayIdx] };
@@ -3134,6 +3248,7 @@ export default function SheetItineraryPage() {
 
   // Select Optional Experience
   const handleSelectOptionalExperience = (dayIdx: number, optIdx: number, optName: string, meta?: any) => {
+    setIsQuoteManuallyEdited(false);
     setDayRows(prev => {
       const updated = [...prev];
       const row = { ...updated[dayIdx] };
@@ -3232,6 +3347,7 @@ export default function SheetItineraryPage() {
   };
 
   const updateEnRouteSpot = (dayIdx: number, spotIdx: number, val: string) => {
+    setIsQuoteManuallyEdited(false);
     setDayRows(prev => {
       const updated = [...prev];
       const row = { ...updated[dayIdx] };
@@ -4642,7 +4758,7 @@ export default function SheetItineraryPage() {
                 </p>
               </div>
 
-              {/* Live Cost Calculation Badge & Quick Apply */}
+              {/* Live Cost Calculation Badge */}
               <div className="flex flex-wrap items-center gap-3">
                 <div className="bg-emerald-50/80 border border-emerald-300 px-4 py-2 rounded-xl flex items-center gap-3">
                   <div>
@@ -4653,24 +4769,16 @@ export default function SheetItineraryPage() {
                   </div>
                   <div className="h-6 w-px bg-emerald-300" />
                   <div>
-                    <span className="text-[10px] text-slate-600 block font-bold">Total for {adults} Adults:</span>
+                    <span className="text-[10px] text-slate-600 block font-bold">Total Activity Cost:</span>
                     <span className="text-xs font-extrabold text-emerald-800 font-mono">
                       ₹{totalActivityCost.toLocaleString('en-IN')}
                     </span>
                   </div>
-                  {totalActivityCost > 0 && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setBaseQuotation(String(totalActivityCost));
-                        if (!marginPercent) setFinalQuotation(String(totalActivityCost));
-                      }}
-                      className="ml-1 text-[11px] bg-emerald-600 hover:bg-emerald-700 text-white border border-emerald-700 px-2.5 py-1 rounded font-bold transition-colors shadow-2xs"
-                      title="Apply this activity cost as the Base Quotation"
-                    >
-                      Apply to Quote
-                    </button>
-                  )}
+                  <div className="h-6 w-px bg-emerald-300" />
+                  <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-800 bg-emerald-100/90 px-2.5 py-1 rounded-lg border border-emerald-300 shadow-2xs">
+                    <Check className="w-3.5 h-3.5 text-emerald-700" />
+                    <span>Auto-Added to Quotation</span>
+                  </div>
                 </div>
 
                 <Button
@@ -4828,19 +4936,26 @@ export default function SheetItineraryPage() {
                       <td className="px-3 py-2.5 border-r border-slate-300">
                         <div className="space-y-1.5">
                           {(day.enRouteExperiences || ['']).map((spot, sIdx) => (
-                            <div key={sIdx} className="flex items-center gap-1">
-                              <ActivityHoverTooltip
+                            <div key={sIdx} className="space-y-1">
+                              <div className="flex items-center gap-1">
+                                <ActivityHoverTooltip
+                                  item={findExperienceInCatalogs(spot, day.city || day.city2)}
+                                  adults={adults}
+                                  kidsDetails={kidsDetails}
+                                >
+                                  <LookupField
+                                    value={spot}
+                                    onChange={val => updateEnRouteSpot(dIdx, sIdx, val)}
+                                    options={getEnRouteLookupForDay(day.city, day.city2)}
+                                    placeholder="En-route spot..."
+                                  />
+                                </ActivityHoverTooltip>
+                              </div>
+                              <ActivityCostBadge
                                 item={findExperienceInCatalogs(spot, day.city || day.city2)}
                                 adults={adults}
                                 kidsDetails={kidsDetails}
-                              >
-                                <LookupField
-                                  value={spot}
-                                  onChange={val => updateEnRouteSpot(dIdx, sIdx, val)}
-                                  options={getEnRouteLookupForDay(day.city, day.city2)}
-                                  placeholder="En-route spot..."
-                                />
-                              </ActivityHoverTooltip>
+                              />
                             </div>
                           ))}
                           <button
@@ -4877,6 +4992,12 @@ export default function SheetItineraryPage() {
                             placeholder={day.city2 ? `Exp 1 (${day.city} / ${day.city2})...` : `Exp 1 in ${day.city}...`}
                           />
                         </ActivityHoverTooltip>
+                        <ActivityCostBadge
+                          item={findExperienceInCatalogs(day.experiences[0], day.city || day.city2)}
+                          adults={adults}
+                          kidsDetails={kidsDetails}
+                          fallbackCost={day.experienceCosts?.[0]}
+                        />
                       </td>
 
                       {/* 7. Experience 2 */}
@@ -4893,6 +5014,12 @@ export default function SheetItineraryPage() {
                             placeholder={day.city2 ? `Exp 2 (${day.city} / ${day.city2})...` : `Exp 2 in ${day.city}...`}
                           />
                         </ActivityHoverTooltip>
+                        <ActivityCostBadge
+                          item={findExperienceInCatalogs(day.experiences[1], day.city || day.city2)}
+                          adults={adults}
+                          kidsDetails={kidsDetails}
+                          fallbackCost={day.experienceCosts?.[1]}
+                        />
                       </td>
 
                       {/* 8. Experience 3 */}
@@ -4909,6 +5036,12 @@ export default function SheetItineraryPage() {
                             placeholder={day.city2 ? `Exp 3 (${day.city} / ${day.city2})...` : `Exp 3 in ${day.city}...`}
                           />
                         </ActivityHoverTooltip>
+                        <ActivityCostBadge
+                          item={findExperienceInCatalogs(day.experiences[2], day.city || day.city2)}
+                          adults={adults}
+                          kidsDetails={kidsDetails}
+                          fallbackCost={day.experienceCosts?.[2]}
+                        />
                       </td>
 
                       {/* 9. Experience 4 (with + Add Spot option) */}
@@ -4926,21 +5059,35 @@ export default function SheetItineraryPage() {
                               placeholder={day.city2 ? `Exp 4 (${day.city} / ${day.city2})...` : `Exp 4 in ${day.city}...`}
                             />
                           </ActivityHoverTooltip>
+                          <ActivityCostBadge
+                            item={findExperienceInCatalogs(day.experiences[3], day.city || day.city2)}
+                            adults={adults}
+                            kidsDetails={kidsDetails}
+                            fallbackCost={day.experienceCosts?.[3]}
+                          />
                           {/* Extra experiences beyond index 3 */}
                           {(day.experiences || []).slice(4).map((extraExp, extraIdx) => (
-                            <div key={extraIdx + 4} className="flex items-center gap-1">
-                              <ActivityHoverTooltip
+                            <div key={extraIdx + 4} className="space-y-1">
+                              <div className="flex items-center gap-1">
+                                <ActivityHoverTooltip
+                                  item={findExperienceInCatalogs(extraExp, day.city || day.city2)}
+                                  adults={adults}
+                                  kidsDetails={kidsDetails}
+                                >
+                                  <LookupField
+                                    value={extraExp || ''}
+                                    onChange={(val, meta) => handleSelectExperience(dIdx, extraIdx + 4, val, meta)}
+                                    options={getExperiencesLookupForDay(day.city, day.city2)}
+                                    placeholder={`Exp ${extraIdx + 5}...`}
+                                  />
+                                </ActivityHoverTooltip>
+                              </div>
+                              <ActivityCostBadge
                                 item={findExperienceInCatalogs(extraExp, day.city || day.city2)}
                                 adults={adults}
                                 kidsDetails={kidsDetails}
-                              >
-                                <LookupField
-                                  value={extraExp || ''}
-                                  onChange={(val, meta) => handleSelectExperience(dIdx, extraIdx + 4, val, meta)}
-                                  options={getExperiencesLookupForDay(day.city, day.city2)}
-                                  placeholder={`Exp ${extraIdx + 5}...`}
-                                />
-                              </ActivityHoverTooltip>
+                                fallbackCost={day.experienceCosts?.[extraIdx + 4]}
+                              />
                             </div>
                           ))}
                           <button
