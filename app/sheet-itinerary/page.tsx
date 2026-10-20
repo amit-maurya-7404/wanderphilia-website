@@ -1154,7 +1154,7 @@ function LookupField({ value = '', onChange, options = [], placeholder, classNam
       </div>
 
       {isOpen && !disabled && (
-        <div className="absolute z-50 left-0 w-full min-w-[300px] max-w-[420px] mt-1 max-h-60 overflow-y-auto bg-white border border-slate-300 rounded-lg shadow-2xl py-1 text-xs divide-y divide-slate-100">
+        <div className="absolute z-50 left-0 w-full min-w-[320px] max-w-[460px] mt-1 max-h-60 overflow-y-auto overflow-x-hidden bg-white border border-slate-300 rounded-lg shadow-2xl py-1 text-xs divide-y divide-slate-100">
           {filteredOptions.length > 0 ? (
             filteredOptions.map((opt, i) => {
               const isSelected = !opt.disabled && safeValue.toLowerCase() === (opt.value || '').toLowerCase();
@@ -1169,7 +1169,7 @@ function LookupField({ value = '', onChange, options = [], placeholder, classNam
                     setSearch(opt.value);
                     setIsOpen(false);
                   }}
-                  className={`w-full text-left px-3 py-2 flex items-center justify-between transition-colors ${
+                  className={`w-full text-left px-3 py-2 flex items-center justify-between gap-2 transition-colors ${
                     opt.disabled
                       ? 'bg-slate-50 text-slate-400 italic cursor-not-allowed select-none'
                       : isSelected
@@ -1177,12 +1177,14 @@ function LookupField({ value = '', onChange, options = [], placeholder, classNam
                       : 'text-slate-800 hover:bg-slate-50 hover:text-slate-900'
                   }`}
                 >
-                  <span className="truncate font-semibold">{opt.label}</span>
+                  <span className="truncate font-semibold flex-1 min-w-0">{opt.label}</span>
                   {opt.badge && (
-                    <span className={`ml-2 text-[10px] px-1.5 py-0.5 rounded border shrink-0 font-mono ${
+                    <span className={`text-[10px] px-1.5 py-0.5 rounded border shrink-0 whitespace-nowrap font-medium ${
                       opt.disabled
                         ? 'bg-slate-100 border-slate-200 text-slate-400 font-normal'
-                        : 'bg-orange-100 border-orange-200 text-orange-800 font-bold'
+                        : isSelected
+                        ? 'bg-orange-100 border-orange-300 text-orange-900 font-bold'
+                        : 'bg-slate-100 border-slate-200 text-slate-700'
                     }`}>
                       {opt.badge}
                     </span>
@@ -1365,26 +1367,28 @@ function ActivityCostBadge({
   item,
   adults,
   kidsDetails,
-  fallbackCost
+  fallbackCost,
+  fallbackPrivateCost
 }: {
   item: any;
   adults: number;
   kidsDetails: ChildDetail[];
   fallbackCost?: number;
+  fallbackPrivateCost?: number;
 }) {
-  if (!item && !fallbackCost) return null;
+  if (!item && !fallbackCost && !fallbackPrivateCost) return null;
   const sicA = Number(item?.sicAdult ?? item?.Cost_Per_Person) || 0;
-  const priv = Number(item?.privateCost ?? item?.Private_Cost) || 0;
+  const priv = Number(item?.privateCost ?? item?.Private_Cost) || Number(fallbackPrivateCost) || 0;
   const kidsAbove3 = (kidsDetails || []).filter(k => (Number(k.age) || 0) > 3).length;
   const eligiblePax = Math.max(1, (Number(adults) || 2) + kidsAbove3);
   const cost = sicA > 0 ? sicA : (priv > 0 ? Math.round(priv / eligiblePax) : (fallbackCost || 0));
 
-  if (cost <= 0) return null;
+  if (cost <= 0 && priv <= 0) return null;
 
   return (
     <div className="mt-1 flex items-center justify-between text-[10px] px-1.5 py-0.5 rounded bg-emerald-50 border border-emerald-300 text-emerald-900 leading-tight shadow-2xs">
       <span className="font-bold truncate text-[9px] text-emerald-800">
-        {sicA > 0 ? 'SIC' : `Private (₹${priv.toLocaleString('en-IN')})`}
+        {sicA > 0 ? 'SIC' : (priv > 0 ? `Private (₹${priv.toLocaleString('en-IN')})` : 'Activity')}
       </span>
       <span className="font-mono font-extrabold text-emerald-950 ml-1 shrink-0">
         +₹{cost.toLocaleString('en-IN')}/pax
@@ -1435,9 +1439,11 @@ interface TableDayRow {
   experiences: string[]; // Experience 1, 2, 3, 4 ...
   descriptions: string[]; // Description 1, 2, 3, 4 ...
   experienceCosts: number[]; // Per person costs
+  experiencePrivateCosts?: number[]; // Flat private costs if applicable
   optionalExperiences: string[]; // Optional Experience 1, 2
   optionalDescriptions: string[]; // Optional Description 1, 2
   optionalExperienceCosts: number[]; // Optional costs
+  optionalExperiencePrivateCosts?: number[]; // Optional private costs
 }
 
 export default function SheetItineraryPage() {
@@ -1531,9 +1537,11 @@ export default function SheetItineraryPage() {
     experiences: ['', '', '', ''],
     descriptions: ['', '', '', ''],
     experienceCosts: [0, 0, 0, 0],
+    experiencePrivateCosts: [0, 0, 0, 0],
     optionalExperiences: ['', ''],
     optionalDescriptions: ['', ''],
-    optionalExperienceCosts: [0, 0]
+    optionalExperienceCosts: [0, 0],
+    optionalExperiencePrivateCosts: [0, 0]
   });
 
   // Table Day Rows State (Spreadsheet Column Grid)
@@ -1562,43 +1570,67 @@ export default function SheetItineraryPage() {
   const [genError, setGenError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
-  // Helper to look up an experience's description and cost across all loaded catalogs
-  const findExperienceInCatalogs = useCallback((expName: string, preferredCity?: string) => {
+  // Helper to look up an experience across all loaded catalogs
+  // Priority: 1. Exact match in preferred cities -> 2. Exact match across all cities -> 3. Substring match
+  const findExperienceInCatalogs = useCallback((expName: string, preferredCity?: string, preferredCity2?: string) => {
     if (!expName || !expName.trim()) return null;
     const clean = expName.trim().toLowerCase();
 
-    // 1. Search in preferred city first
+    const checkExact = (c: any) => (c?.name || '').trim().toLowerCase() === clean;
+    const checkSub = (c: any) => {
+      const n = (c?.name || '').trim().toLowerCase();
+      return n && (n.includes(clean) || clean.includes(n));
+    };
+
+    const getCityList = (cName?: string) => {
+      if (!cName) return [];
+      const key = cName.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+      return sheetExpByCity[key] || [];
+    };
+
+    // 1. Exact match in preferred cities
     if (preferredCity) {
-      const pClean = preferredCity.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
-      const cityList = sheetExpByCity[pClean] || [];
-      const match = cityList.find(
-        (c: any) =>
-          (c.name || '').trim().toLowerCase() === clean ||
-          (c.name || '').toLowerCase().includes(clean) ||
-          clean.includes((c.name || '').toLowerCase())
-      );
+      const match = getCityList(preferredCity).find(checkExact);
+      if (match) return match;
+    }
+    if (preferredCity2) {
+      const match = getCityList(preferredCity2).find(checkExact);
       if (match) return match;
     }
 
-    // 2. Search across all cities in sheetExpByCity
+    // 2. Exact match across all cities in sheetExpByCity
     for (const list of Object.values(sheetExpByCity)) {
-      const match = (list || []).find(
-        (c: any) =>
-          (c.name || '').trim().toLowerCase() === clean ||
-          (c.name || '').toLowerCase().includes(clean) ||
-          clean.includes((c.name || '').toLowerCase())
-      );
+      const match = (list || []).find(checkExact);
       if (match) return match;
     }
 
-    // 3. Search in default experiences
+    // 3. Exact match in default experiences
     for (const list of Object.values(DEFAULT_EXPERIENCES_BY_CITY)) {
-      const match = (list || []).find(
-        (c: any) =>
-          (c.name || '').trim().toLowerCase() === clean ||
-          (c.name || '').toLowerCase().includes(clean) ||
-          clean.includes((c.name || '').toLowerCase())
-      );
+      const match = (list || []).find(checkExact);
+      if (match) return match;
+    }
+
+    // 4. Fallback: Substring match in preferred cities (preferring priced items)
+    const prefCandidates: any[] = [];
+    if (preferredCity) prefCandidates.push(...getCityList(preferredCity).filter(checkSub));
+    if (preferredCity2) prefCandidates.push(...getCityList(preferredCity2).filter(checkSub));
+    if (prefCandidates.length > 0) {
+      const withPrice = prefCandidates.find(c => (Number(c.privateCost ?? c.Private_Cost) || 0) > 0 || (Number(c.sicAdult ?? c.Cost_Per_Person) || 0) > 0);
+      return withPrice || prefCandidates[0];
+    }
+
+    // 5. Fallback: Substring match anywhere in sheetExpByCity (preferring priced items)
+    for (const list of Object.values(sheetExpByCity)) {
+      const subs = (list || []).filter(checkSub);
+      if (subs.length > 0) {
+        const withPrice = subs.find(c => (Number(c.privateCost ?? c.Private_Cost) || 0) > 0 || (Number(c.sicAdult ?? c.Cost_Per_Person) || 0) > 0);
+        return withPrice || subs[0];
+      }
+    }
+
+    // 6. Fallback: Substring in default experiences
+    for (const list of Object.values(DEFAULT_EXPERIENCES_BY_CITY)) {
+      const match = (list || []).find(checkSub);
       if (match) return match;
     }
 
@@ -1615,9 +1647,9 @@ export default function SheetItineraryPage() {
       // 1. Regular experiences
       (row.experiences || []).forEach((expName, idx) => {
         if (!expName || !expName.trim()) return;
-        const catalogItem = findExperienceInCatalogs(expName, row.city || row.city2);
+        const catalogItem = findExperienceInCatalogs(expName, row.city, row.city2);
         const sicA = Number(catalogItem?.sicAdult ?? catalogItem?.Cost_Per_Person) || 0;
-        const priv = Number(catalogItem?.privateCost ?? catalogItem?.Private_Cost) || 0;
+        const priv = Number(catalogItem?.privateCost ?? catalogItem?.Private_Cost) || Number(row.experiencePrivateCosts?.[idx]) || 0;
         if (sicA > 0) {
           sum += sicA;
         } else if (priv > 0) {
@@ -1630,7 +1662,7 @@ export default function SheetItineraryPage() {
       // 2. En-route experiences
       (row.enRouteExperiences || []).forEach((spotName) => {
         if (!spotName || !spotName.trim()) return;
-        const catalogItem = findExperienceInCatalogs(spotName, row.city || row.city2);
+        const catalogItem = findExperienceInCatalogs(spotName, row.city, row.city2);
         const sicA = Number(catalogItem?.sicAdult ?? catalogItem?.Cost_Per_Person) || 0;
         const priv = Number(catalogItem?.privateCost ?? catalogItem?.Private_Cost) || 0;
         if (sicA > 0) {
@@ -1728,10 +1760,10 @@ export default function SheetItineraryPage() {
       // Regular Experiences
       (row.experiences || []).forEach((expName, eIdx) => {
         if (!expName || !expName.trim()) return;
-        const catalogItem = findExperienceInCatalogs(expName, row.city || row.city2);
+        const catalogItem = findExperienceInCatalogs(expName, row.city, row.city2);
         const sicAdult = Number(catalogItem?.sicAdult ?? catalogItem?.Cost_Per_Person) || 0;
         const sicChild = Number(catalogItem?.sicChild ?? catalogItem?.Cost_per_child) || 0;
-        const privateCost = Number(catalogItem?.privateCost ?? catalogItem?.Private_Cost) || 0;
+        const privateCost = Number(catalogItem?.privateCost ?? catalogItem?.Private_Cost) || Number(row.experiencePrivateCosts?.[eIdx]) || 0;
         const manualCost = Number(row.experienceCosts?.[eIdx]) || 0;
 
         activities.push({
@@ -1745,7 +1777,7 @@ export default function SheetItineraryPage() {
       // En-route Experiences
       (row.enRouteExperiences || []).forEach((spotName) => {
         if (!spotName || !spotName.trim()) return;
-        const catalogItem = findExperienceInCatalogs(spotName, row.city || row.city2);
+        const catalogItem = findExperienceInCatalogs(spotName, row.city, row.city2);
         const sicAdult = Number(catalogItem?.sicAdult ?? catalogItem?.Cost_Per_Person) || 0;
         const sicChild = Number(catalogItem?.sicChild ?? catalogItem?.Cost_per_child) || 0;
         const privateCost = Number(catalogItem?.privateCost ?? catalogItem?.Private_Cost) || 0;
@@ -2251,18 +2283,17 @@ export default function SheetItineraryPage() {
           let priceBadge = '';
           let perHeadCost = 0;
           if (sicA > 0 || sicC > 0) {
-            priceBadge = `SIC: ₹${sicA.toLocaleString('en-IN')}/adult${sicC > 0 ? `, ₹${sicC.toLocaleString('en-IN')}/kid` : ''}`;
+            priceBadge = `₹${sicA.toLocaleString('en-IN')}/pax (SIC)`;
             perHeadCost = sicA;
           } else if (priv > 0) {
             const privateShare = Math.round(priv / eligiblePax);
-            priceBadge = `Private: ₹${priv.toLocaleString('en-IN')} (₹${privateShare.toLocaleString('en-IN')}/head for ${eligiblePax} pax)`;
+            priceBadge = `₹${priv.toLocaleString('en-IN')} Private`;
             perHeadCost = privateShare;
           }
 
           const cityBadge = citiesToInclude.length > 1 ? cName : undefined;
           const locationBadge = e.locationType === 'En-route' ? 'En-route' : undefined;
-          const categoryBadge = e.category || undefined;
-          const badges = [cityBadge, locationBadge, categoryBadge, priceBadge].filter(Boolean).join(' • ');
+          const badges = [cityBadge, locationBadge, priceBadge || e.category || 'Sightseeing'].filter(Boolean).join(' • ');
 
           map.set(key, {
             label: e.name,
@@ -2722,7 +2753,7 @@ export default function SheetItineraryPage() {
               let d = String(e.description || e.subTitle || '').trim();
               let cost = Number(e.ppCost) || 0;
               if (expName) {
-                const found = findExperienceInCatalogs(expName, act.city || act.city2);
+                const found = findExperienceInCatalogs(expName, act.city, act.city2);
                 if (!d) {
                   d = found?.description || found?.templateDescription || '';
                 }
@@ -2968,13 +2999,24 @@ export default function SheetItineraryPage() {
           // Auto-resolve costs (SIC vs Private divided among adults + kids > 3 yrs)
           const kidsAbove3 = (kidsDetails || []).filter(k => (Number(k.age) || 0) > 3).length;
           const eligiblePax = Math.max(1, (Number(adults) || 2) + kidsAbove3);
+          const privCosts: number[] = [];
           const costs = exps.map((expName: string) => {
-            if (!expName) return 0;
-            const found = findExperienceInCatalogs(expName, r.city || r.city2);
+            if (!expName) {
+              privCosts.push(0);
+              return 0;
+            }
+            const found = findExperienceInCatalogs(expName, r.city, r.city2);
             const sicA = Number(found?.sicAdult ?? found?.Cost_Per_Person) || 0;
             const priv = Number(found?.privateCost ?? found?.Private_Cost) || 0;
-            if (sicA > 0) return sicA;
-            if (priv > 0) return Math.round(priv / eligiblePax);
+            if (sicA > 0) {
+              privCosts.push(0);
+              return sicA;
+            }
+            if (priv > 0) {
+              privCosts.push(priv);
+              return Math.round(priv / eligiblePax);
+            }
+            privCosts.push(0);
             return Number(found?.ppCost) || 0;
           });
 
@@ -2982,14 +3024,14 @@ export default function SheetItineraryPage() {
           const resolvedDescs = exps.map((expName: string, i: number) => {
             if (!expName) return '';
             if (descs[i] && descs[i].trim()) return descs[i].trim();
-            const found = findExperienceInCatalogs(expName, r.city || r.city2);
+            const found = findExperienceInCatalogs(expName, r.city, r.city2);
             return found?.description || found?.templateDescription || '';
           });
 
           const resolvedOptDescs = optExps.map((optName: string, i: number) => {
             if (!optName) return '';
             if (optDescs[i] && optDescs[i].trim()) return optDescs[i].trim();
-            const found = findExperienceInCatalogs(optName, r.city || r.city2);
+            const found = findExperienceInCatalogs(optName, r.city, r.city2);
             return found?.description || found?.templateDescription || '';
           });
 
@@ -3005,7 +3047,9 @@ export default function SheetItineraryPage() {
             optionalExperiences: optExps,
             optionalDescriptions: resolvedOptDescs,
             experienceCosts: costs,
-            optionalExperienceCosts: [0, 0]
+            experiencePrivateCosts: privCosts,
+            optionalExperienceCosts: [0, 0],
+            optionalExperiencePrivateCosts: [0, 0]
           };
         });
         setDayRows(updatedRows);
@@ -3163,7 +3207,7 @@ export default function SheetItineraryPage() {
         const updatedDescs = [...row.descriptions];
         row.experiences.forEach((expName, idx) => {
           if (expName && (!updatedDescs[idx] || !updatedDescs[idx].trim())) {
-            const found = findExperienceInCatalogs(expName, row.city || row.city2);
+            const found = findExperienceInCatalogs(expName, row.city, row.city2);
             if (found?.description || found?.templateDescription) {
               updatedDescs[idx] = found.description || found.templateDescription;
             }
@@ -3173,7 +3217,7 @@ export default function SheetItineraryPage() {
         const updatedOptDescs = [...row.optionalDescriptions];
         row.optionalExperiences.forEach((optName, idx) => {
           if (optName && (!updatedOptDescs[idx] || !updatedOptDescs[idx].trim())) {
-            const found = findExperienceInCatalogs(optName, row.city || row.city2);
+            const found = findExperienceInCatalogs(optName, row.city, row.city2);
             if (found?.description || found?.templateDescription) {
               updatedOptDescs[idx] = found.description || found.templateDescription;
             }
@@ -3213,11 +3257,12 @@ export default function SheetItineraryPage() {
       const exps = [...row.experiences];
       const descs = [...row.descriptions];
       const costs = [...row.experienceCosts];
+      const privCosts = [...(row.experiencePrivateCosts || [0, 0, 0, 0])];
 
       exps[expIdx] = expName;
       const found = (meta && (meta.description !== undefined || meta.privateCost !== undefined || meta.sicAdult !== undefined))
         ? meta
-        : findExperienceInCatalogs(expName, row.city || row.city2);
+        : findExperienceInCatalogs(expName, row.city, row.city2);
 
       if (found?.description || found?.templateDescription) {
         descs[expIdx] = found.description || found.templateDescription;
@@ -3230,17 +3275,21 @@ export default function SheetItineraryPage() {
 
       if (sicA > 0 || sicC > 0) {
         costs[expIdx] = sicA;
+        privCosts[expIdx] = 0;
       } else if (priv > 0) {
         const kidsAbove3 = (kidsDetails || []).filter(k => (Number(k.age) || 0) > 3).length;
         const eligiblePax = Math.max(1, (Number(adults) || 2) + kidsAbove3);
         costs[expIdx] = Math.round(priv / eligiblePax);
+        privCosts[expIdx] = priv;
       } else {
         costs[expIdx] = Number(meta?.ppCost) || 0;
+        privCosts[expIdx] = 0;
       }
 
       row.experiences = exps;
       row.descriptions = descs;
       row.experienceCosts = costs;
+      row.experiencePrivateCosts = privCosts;
       updated[dayIdx] = row;
       return updated;
     });
@@ -3255,11 +3304,12 @@ export default function SheetItineraryPage() {
       const opts = [...row.optionalExperiences];
       const descs = [...row.optionalDescriptions];
       const costs = [...row.optionalExperienceCosts];
+      const privCosts = [...(row.optionalExperiencePrivateCosts || [0, 0])];
 
       opts[optIdx] = optName;
       const found = (meta && (meta.description !== undefined || meta.privateCost !== undefined || meta.sicAdult !== undefined))
         ? meta
-        : findExperienceInCatalogs(optName, row.city || row.city2);
+        : findExperienceInCatalogs(optName, row.city, row.city2);
 
       if (found?.description || found?.templateDescription) {
         descs[optIdx] = found.description || found.templateDescription;
@@ -3271,17 +3321,21 @@ export default function SheetItineraryPage() {
 
       if (sicA > 0 || sicC > 0) {
         costs[optIdx] = sicA;
+        privCosts[optIdx] = 0;
       } else if (priv > 0) {
         const kidsAbove3 = (kidsDetails || []).filter(k => (Number(k.age) || 0) > 3).length;
         const eligiblePax = Math.max(1, (Number(adults) || 2) + kidsAbove3);
         costs[optIdx] = Math.round(priv / eligiblePax);
+        privCosts[optIdx] = priv;
       } else {
         costs[optIdx] = Number(meta?.ppCost) || 0;
+        privCosts[optIdx] = 0;
       }
 
       row.optionalExperiences = opts;
       row.optionalDescriptions = descs;
       row.optionalExperienceCosts = costs;
+      row.optionalExperiencePrivateCosts = privCosts;
       updated[dayIdx] = row;
       return updated;
     });
@@ -4939,7 +4993,7 @@ export default function SheetItineraryPage() {
                             <div key={sIdx} className="space-y-1">
                               <div className="flex items-center gap-1">
                                 <ActivityHoverTooltip
-                                  item={findExperienceInCatalogs(spot, day.city || day.city2)}
+                                  item={findExperienceInCatalogs(spot, day.city, day.city2)}
                                   adults={adults}
                                   kidsDetails={kidsDetails}
                                 >
@@ -4952,7 +5006,7 @@ export default function SheetItineraryPage() {
                                 </ActivityHoverTooltip>
                               </div>
                               <ActivityCostBadge
-                                item={findExperienceInCatalogs(spot, day.city || day.city2)}
+                                item={findExperienceInCatalogs(spot, day.city, day.city2)}
                                 adults={adults}
                                 kidsDetails={kidsDetails}
                               />
@@ -4981,7 +5035,7 @@ export default function SheetItineraryPage() {
                       {/* 6. Experience 1 */}
                       <td className="px-3 py-2.5 border-r border-slate-300">
                         <ActivityHoverTooltip
-                          item={findExperienceInCatalogs(day.experiences[0], day.city || day.city2)}
+                          item={findExperienceInCatalogs(day.experiences[0], day.city, day.city2)}
                           adults={adults}
                           kidsDetails={kidsDetails}
                         >
@@ -4993,17 +5047,18 @@ export default function SheetItineraryPage() {
                           />
                         </ActivityHoverTooltip>
                         <ActivityCostBadge
-                          item={findExperienceInCatalogs(day.experiences[0], day.city || day.city2)}
+                          item={findExperienceInCatalogs(day.experiences[0], day.city, day.city2)}
                           adults={adults}
                           kidsDetails={kidsDetails}
                           fallbackCost={day.experienceCosts?.[0]}
+                          fallbackPrivateCost={day.experiencePrivateCosts?.[0]}
                         />
                       </td>
 
                       {/* 7. Experience 2 */}
                       <td className="px-3 py-2.5 border-r border-slate-300">
                         <ActivityHoverTooltip
-                          item={findExperienceInCatalogs(day.experiences[1], day.city || day.city2)}
+                          item={findExperienceInCatalogs(day.experiences[1], day.city, day.city2)}
                           adults={adults}
                           kidsDetails={kidsDetails}
                         >
@@ -5015,17 +5070,18 @@ export default function SheetItineraryPage() {
                           />
                         </ActivityHoverTooltip>
                         <ActivityCostBadge
-                          item={findExperienceInCatalogs(day.experiences[1], day.city || day.city2)}
+                          item={findExperienceInCatalogs(day.experiences[1], day.city, day.city2)}
                           adults={adults}
                           kidsDetails={kidsDetails}
                           fallbackCost={day.experienceCosts?.[1]}
+                          fallbackPrivateCost={day.experiencePrivateCosts?.[1]}
                         />
                       </td>
 
                       {/* 8. Experience 3 */}
                       <td className="px-3 py-2.5 border-r border-slate-300">
                         <ActivityHoverTooltip
-                          item={findExperienceInCatalogs(day.experiences[2], day.city || day.city2)}
+                          item={findExperienceInCatalogs(day.experiences[2], day.city, day.city2)}
                           adults={adults}
                           kidsDetails={kidsDetails}
                         >
@@ -5037,10 +5093,11 @@ export default function SheetItineraryPage() {
                           />
                         </ActivityHoverTooltip>
                         <ActivityCostBadge
-                          item={findExperienceInCatalogs(day.experiences[2], day.city || day.city2)}
+                          item={findExperienceInCatalogs(day.experiences[2], day.city, day.city2)}
                           adults={adults}
                           kidsDetails={kidsDetails}
                           fallbackCost={day.experienceCosts?.[2]}
+                          fallbackPrivateCost={day.experiencePrivateCosts?.[2]}
                         />
                       </td>
 
@@ -5048,7 +5105,7 @@ export default function SheetItineraryPage() {
                       <td className="px-3 py-2.5 border-r border-slate-300">
                         <div className="space-y-1.5">
                           <ActivityHoverTooltip
-                            item={findExperienceInCatalogs(day.experiences[3], day.city || day.city2)}
+                            item={findExperienceInCatalogs(day.experiences[3], day.city, day.city2)}
                             adults={adults}
                             kidsDetails={kidsDetails}
                           >
@@ -5060,17 +5117,18 @@ export default function SheetItineraryPage() {
                             />
                           </ActivityHoverTooltip>
                           <ActivityCostBadge
-                            item={findExperienceInCatalogs(day.experiences[3], day.city || day.city2)}
+                            item={findExperienceInCatalogs(day.experiences[3], day.city, day.city2)}
                             adults={adults}
                             kidsDetails={kidsDetails}
                             fallbackCost={day.experienceCosts?.[3]}
+                            fallbackPrivateCost={day.experiencePrivateCosts?.[3]}
                           />
                           {/* Extra experiences beyond index 3 */}
                           {(day.experiences || []).slice(4).map((extraExp, extraIdx) => (
                             <div key={extraIdx + 4} className="space-y-1">
                               <div className="flex items-center gap-1">
                                 <ActivityHoverTooltip
-                                  item={findExperienceInCatalogs(extraExp, day.city || day.city2)}
+                                  item={findExperienceInCatalogs(extraExp, day.city, day.city2)}
                                   adults={adults}
                                   kidsDetails={kidsDetails}
                                 >
@@ -5083,10 +5141,11 @@ export default function SheetItineraryPage() {
                                 </ActivityHoverTooltip>
                               </div>
                               <ActivityCostBadge
-                                item={findExperienceInCatalogs(extraExp, day.city || day.city2)}
+                                item={findExperienceInCatalogs(extraExp, day.city, day.city2)}
                                 adults={adults}
                                 kidsDetails={kidsDetails}
                                 fallbackCost={day.experienceCosts?.[extraIdx + 4]}
+                                fallbackPrivateCost={day.experiencePrivateCosts?.[extraIdx + 4]}
                               />
                             </div>
                           ))}
@@ -5103,7 +5162,7 @@ export default function SheetItineraryPage() {
                       {/* 10. Optional Experience 1 */}
                       <td className="px-3 py-2.5 border-r border-slate-300">
                         <ActivityHoverTooltip
-                          item={findExperienceInCatalogs(day.optionalExperiences[0], day.city || day.city2)}
+                          item={findExperienceInCatalogs(day.optionalExperiences[0], day.city, day.city2)}
                           adults={adults}
                           kidsDetails={kidsDetails}
                         >
@@ -5119,7 +5178,7 @@ export default function SheetItineraryPage() {
                       {/* 11. Optional Experience 2 */}
                       <td className="px-3 py-2.5 border-r border-slate-300">
                         <ActivityHoverTooltip
-                          item={findExperienceInCatalogs(day.optionalExperiences[1], day.city || day.city2)}
+                          item={findExperienceInCatalogs(day.optionalExperiences[1], day.city, day.city2)}
                           adults={adults}
                           kidsDetails={kidsDetails}
                         >
