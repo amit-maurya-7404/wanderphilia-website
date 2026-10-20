@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useRef, useEffect } from 'react';
+import { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
 import { Button } from '@/components/ui/button';
@@ -1529,36 +1529,8 @@ export default function SheetItineraryPage() {
   const [genError, setGenError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
-  // --- ACTIVITY PER PERSON COST CALCULATION (SIC vs Private divided by adults + kids > 3 yrs) ---
-  const totalPerPersonActivityCost = useMemo(() => {
-    let sum = 0;
-    const kidsAbove3 = (kidsDetails || []).filter(k => (Number(k.age) || 0) > 3).length;
-    const eligiblePax = Math.max(1, (Number(adults) || 2) + kidsAbove3);
-
-    dayRows.forEach(row => {
-      (row.experiences || []).forEach((expName, idx) => {
-        if (!expName) return;
-        const catalogItem = findExperienceInCatalogs(expName, row.city || row.city2);
-        const sicA = Number(catalogItem?.sicAdult ?? catalogItem?.Cost_Per_Person) || 0;
-        const priv = Number(catalogItem?.privateCost ?? catalogItem?.Private_Cost) || 0;
-        if (sicA > 0) {
-          sum += sicA;
-        } else if (priv > 0) {
-          sum += Math.round(priv / eligiblePax);
-        } else {
-          sum += Number(row.experienceCosts?.[idx]) || 0;
-        }
-      });
-    });
-    return sum;
-  }, [dayRows, adults, kidsDetails, sheetExpByCity]);
-
-  const totalActivityCost = useMemo(() => {
-    return totalPerPersonActivityCost * (Number(adults) || 2);
-  }, [totalPerPersonActivityCost, adults]);
-
   // Helper to look up an experience's description and cost across all loaded catalogs
-  const findExperienceInCatalogs = (expName: string, preferredCity?: string) => {
+  const findExperienceInCatalogs = useCallback((expName: string, preferredCity?: string) => {
     if (!expName || !expName.trim()) return null;
     const clean = expName.trim().toLowerCase();
 
@@ -1598,7 +1570,35 @@ export default function SheetItineraryPage() {
     }
 
     return null;
-  };
+  }, [sheetExpByCity]);
+
+  // --- ACTIVITY PER PERSON COST CALCULATION (SIC vs Private divided by adults + kids > 3 yrs) ---
+  const totalPerPersonActivityCost = useMemo(() => {
+    let sum = 0;
+    const kidsAbove3 = (kidsDetails || []).filter(k => (Number(k.age) || 0) > 3).length;
+    const eligiblePax = Math.max(1, (Number(adults) || 2) + kidsAbove3);
+
+    dayRows.forEach(row => {
+      (row.experiences || []).forEach((expName, idx) => {
+        if (!expName) return;
+        const catalogItem = findExperienceInCatalogs(expName, row.city || row.city2);
+        const sicA = Number(catalogItem?.sicAdult ?? catalogItem?.Cost_Per_Person) || 0;
+        const priv = Number(catalogItem?.privateCost ?? catalogItem?.Private_Cost) || 0;
+        if (sicA > 0) {
+          sum += sicA;
+        } else if (priv > 0) {
+          sum += Math.round(priv / eligiblePax);
+        } else {
+          sum += Number(row.experienceCosts?.[idx]) || 0;
+        }
+      });
+    });
+    return sum;
+  }, [dayRows, adults, kidsDetails, sheetExpByCity, findExperienceInCatalogs]);
+
+  const totalActivityCost = useMemo(() => {
+    return totalPerPersonActivityCost * (Number(adults) || 2);
+  }, [totalPerPersonActivityCost, adults]);
 
   // --- LIVE COMPREHENSIVE COST & QUOTATION ENGINE (EXACT ZOHO DELUGE FORMULA) ---
   const quotationCalculations = useMemo(() => {
