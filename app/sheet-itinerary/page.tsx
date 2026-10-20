@@ -5695,7 +5695,7 @@ export default function SheetItineraryPage() {
 
         {/* Section: Itinerary History Section */}
         <div className="mt-14 pt-8 border-t border-slate-300">
-          <ItineraryHistorySection />
+          <ItineraryHistorySection lastGeneratedId={genSuccess?.id} />
         </div>
       </main>
 

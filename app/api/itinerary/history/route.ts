@@ -16,16 +16,27 @@ export async function GET(req: NextRequest) {
     const db = await getDb();
     const collection = db.collection<ItineraryDocument>('itineraries');
 
-    // 1. Fetch from MongoDB
-    const docs = await collection.find({}).sort({ createdAt: -1, _id: -1 }).limit(limit).toArray();
+    // 1. Fetch from MongoDB (Sort by newest activity first)
+    const docs = await collection.find({}).sort({ updatedAt: -1, createdAt: -1, _id: -1 }).limit(limit).toArray();
 
     // 2. Fetch Manual Itineraries
     const manualList = getAllManualItineraries();
 
     // 3. Format MongoDB Documents
     const dbItems = docs.map((doc) => {
-      const createdDate = doc.createdAt ? new Date(doc.createdAt) : new Date();
+      let createdDate: Date;
+      if (doc.createdAt) {
+        createdDate = new Date(doc.createdAt);
+      } else if (doc.updatedAt) {
+        createdDate = new Date(doc.updatedAt);
+      } else if (doc._id && typeof (doc._id as any).getTimestamp === 'function') {
+        createdDate = (doc._id as any).getTimestamp();
+      } else {
+        createdDate = new Date('2026-09-01T00:00:00.000Z');
+      }
+
       const updatedDate = doc.updatedAt ? new Date(doc.updatedAt) : createdDate;
+      const latestActivityMs = Math.max(createdDate.getTime(), updatedDate.getTime());
 
       let optNum = doc.optionNumber;
       if (!optNum) {
@@ -75,7 +86,7 @@ export async function GET(req: NextRequest) {
         source: 'Zoho CRM / AI Generated',
         createdAt: createdDate.toISOString(),
         updatedAt: updatedDate.toISOString(),
-        rawDate: createdDate.getTime()
+        rawDate: latestActivityMs
       };
     });
 
