@@ -14,6 +14,7 @@ import {
   updateZohoLeadPaymentStatus,
   findZohoLeadId
 } from '@/lib/zoho';
+import { syncBookingAndTaskOnPayment } from '@/lib/zoho-booking-automation';
 import { sendEmail, ADMIN_NOTIFICATION_EMAIL } from '@/lib/email';
 import { sendWhatsApp } from '@/lib/whatsapp';
 import { contactPhoneDisplay } from '@/lib/contact';
@@ -444,6 +445,60 @@ export async function POST(req: NextRequest) {
       console.warn(`[Zoho CRM Warning] No valid Zoho Lead ID found to attach invoice. Query: ${customerEmail} / ${customerMobile}`);
     }
 
+    // 6.5 Auto-Convert/Create Zoho CRM Booking (Deals) & Operations Task (48h SLA)
+    let zohoBookingResult = null;
+    try {
+      const fullOrigin =
+        req.headers.get('origin') ||
+        (req.headers.get('host') ? `https://${req.headers.get('host')}` : '') ||
+        process.env.NEXT_PUBLIC_BASE_URL ||
+        'https://wanderphilia.com';
+      const winningItineraryUrl = `${fullOrigin}/itinerary/${itineraryId || itinerary?.id || ''}`;
+
+      // Resolve hotels list from itinerary (MongoDB) or manualItinerary or rawZohoData
+      const resolvedHotels = (Array.isArray(itinerary?.rawZohoData?.hotels) && itinerary.rawZohoData.hotels.length > 0)
+        ? itinerary.rawZohoData.hotels
+        : ((Array.isArray((itinerary as any)?.hotels) && (itinerary as any).hotels.length > 0)
+          ? (itinerary as any).hotels
+          : (Array.isArray(manualItinerary?.stay) ? manualItinerary.stay : []));
+
+      zohoBookingResult = await syncBookingAndTaskOnPayment({
+        itineraryId: itineraryId || itinerary?.id || '',
+        itineraryUrl: winningItineraryUrl,
+        paymentId: razorpay_payment_id,
+        orderId: razorpay_order_id,
+        paymentType: paymentType || 'advance',
+        paidAmount,
+        newTotalPaid,
+        newBalanceDue,
+        totalQuotationAmount,
+        invoiceNumber,
+        zohoLeadId: zohoLeadId || undefined,
+        customerName,
+        customerEmail,
+        customerMobile,
+        destination,
+        departureCity: (itinerary?.leadDetails as any)?.departureCity || (itinerary?.rawZohoData as any)?.Departure_City,
+        travelStartDate,
+        travelEndDate,
+        duration: `${noOfNights} Nights / ${noOfDays} Days`,
+        numberOfGuests,
+        adults,
+        kids,
+        roomsCount: (itinerary as any)?.roomsCount || (itinerary?.leadDetails as any)?.roomsCount || 1,
+        sharingType: (itinerary as any)?.sharingType || (itinerary?.leadDetails as any)?.sharingType || 'Double Sharing',
+        preferredRoomCategory: itinerary?.roomCategory || (itinerary?.leadDetails as any)?.preferredRoomCategory || 'Deluxe Room',
+        vehicleType: itinerary?.vehicleType || (itinerary?.leadDetails as any)?.vehicleType || (itinerary?.rawZohoData as any)?.Vehicle_Type || 'Dedicated Private Cab',
+        mealPlan: itinerary?.mealPlan || (itinerary?.leadDetails as any)?.mealPlan || (itinerary?.rawZohoData as any)?.Meal_Plan || 'Breakfast & Dinner',
+        hotels: resolvedHotels,
+        specialRequirements: (itinerary?.leadDetails as any)?.notes || undefined,
+      });
+
+      console.log('[Zoho CRM Auto-Booking Sync Result]:', zohoBookingResult);
+    } catch (bookingSyncErr) {
+      console.error('[Zoho CRM Auto-Booking Sync Exception]:', bookingSyncErr);
+    }
+
     // 7. Update MongoDB Itinerary Record
     const paymentRecord = {
       paymentId: razorpay_payment_id,
@@ -473,6 +528,8 @@ export async function POST(req: NextRequest) {
               advanceAmountPaid: newTotalPaid,
               balancePendingAmount: newBalanceDue,
               paymentStage,
+              zohoDealId: zohoBookingResult?.dealId || undefined,
+              zohoTaskId: zohoBookingResult?.taskId || undefined,
               rawZohoData: {
                 ...(itinerary.rawZohoData || {}),
                 Lead_Status: newBalanceDue <= 0 ? 'Confirmed' : 'Booking',
@@ -483,6 +540,8 @@ export async function POST(req: NextRequest) {
                 Last_Order_Id: razorpay_order_id,
                 Invoice_Number: invoiceNumber,
                 Payment_Date: now.toISOString(),
+                Zoho_Deal_Id: zohoBookingResult?.dealId || undefined,
+                Zoho_Task_Id: zohoBookingResult?.taskId || undefined,
               },
               updatedAt: now,
             },
@@ -877,6 +936,7 @@ export async function POST(req: NextRequest) {
       orderId: razorpay_order_id,
       zohoAttached: zohoAttachmentSuccess,
       zohoLeadId,
+      zohoBooking: zohoBookingResult,
     });
   } catch (error: any) {
     console.error('[POST /api/itinerary/payment/verify Error]:', error);
