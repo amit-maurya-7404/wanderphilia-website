@@ -13,9 +13,9 @@ export async function GET(req: NextRequest) {
     const leadId = (searchParams.get('leadId') || '').trim();
     const mobile = (searchParams.get('mobile') || searchParams.get('phone') || '').trim();
 
-    if (!inquiryId && !leadId && !mobile) {
+    if (!inquiryId && !leadId) {
       return NextResponse.json(
-        { success: false, error: 'Please provide inquiryId, leadId, or mobile query parameter.' },
+        { success: false, error: 'Please provide inquiryId or leadId query parameter.' },
         { status: 400 }
       );
     }
@@ -25,37 +25,34 @@ export async function GET(req: NextRequest) {
 
     const orConditions: any[] = [];
 
-    if (inquiryId) {
+    if (inquiryId && inquiryId.trim().length >= 2) {
+      const cleanInq = inquiryId.trim();
       orConditions.push(
-        { inquiryId: inquiryId },
-        { 'rawZohoData.Inquiry_ID': inquiryId },
-        { 'rawZohoData.inquiryId': inquiryId },
-        { 'leadDetails.inquiryId': inquiryId },
-        // Also match case-insensitively if needed
-        { inquiryId: { $regex: `^${inquiryId}$`, $options: 'i' } },
-        { 'rawZohoData.Inquiry_ID': { $regex: `^${inquiryId}$`, $options: 'i' } }
+        { inquiryId: cleanInq },
+        { 'rawZohoData.Inquiry_ID': cleanInq },
+        { 'rawZohoData.inquiryId': cleanInq },
+        { 'leadDetails.inquiryId': cleanInq },
+        { inquiryId: { $regex: `^${cleanInq}$`, $options: 'i' } },
+        { 'rawZohoData.Inquiry_ID': { $regex: `^${cleanInq}$`, $options: 'i' } }
       );
     }
 
-    if (leadId) {
+    if (leadId && leadId.trim().length >= 10) {
+      const cleanLeadId = leadId.trim();
       orConditions.push(
-        { zohoLeadId: leadId },
-        { 'rawZohoData.id': leadId },
-        { 'rawZohoData.Lead_ID': leadId }
+        { zohoLeadId: cleanLeadId },
+        { 'rawZohoData.id': cleanLeadId },
+        { 'rawZohoData.Lead_ID': cleanLeadId }
       );
     }
 
-    if (mobile) {
-      const cleanMobile = mobile.replace(/\D/g, '').slice(-10);
-      if (cleanMobile.length >= 10) {
-        orConditions.push(
-          { mobile: { $regex: cleanMobile } },
-          { 'leadDetails.mobile': { $regex: cleanMobile } },
-          { 'leadDetails.phone': { $regex: cleanMobile } },
-          { 'rawZohoData.Mobile': { $regex: cleanMobile } },
-          { 'rawZohoData.Phone': { $regex: cleanMobile } }
-        );
-      }
+    if (orConditions.length === 0) {
+      return NextResponse.json({
+        success: true,
+        foundCount: 0,
+        existingOptions: {},
+        hasOptions: false
+      });
     }
 
     const docs = await collection.find({ $or: orConditions }).sort({ updatedAt: -1, createdAt: -1 }).toArray();

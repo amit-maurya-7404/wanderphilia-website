@@ -2538,15 +2538,14 @@ export default function SheetItineraryPage() {
   };
 
   // Check if any itinerary options already exist in MongoDB for this Inquiry ID / Lead
-  const checkExistingItineraryOptions = async (targetInquiryId: string, targetLeadId?: string, targetMobile?: string) => {
-    if (!targetInquiryId && !targetLeadId && !targetMobile) return;
+  const checkExistingItineraryOptions = async (targetInquiryId: string, targetLeadId?: string) => {
+    if (!targetInquiryId && !targetLeadId) return;
     setCheckingOptions(true);
     setOptionLockAlert(null);
     try {
       const params = new URLSearchParams();
       if (targetInquiryId) params.set('inquiryId', targetInquiryId);
       if (targetLeadId) params.set('leadId', targetLeadId);
-      if (targetMobile) params.set('mobile', targetMobile);
 
       const res = await fetch(`/api/itinerary/check-options?${params.toString()}`);
       const data = await res.json();
@@ -2592,7 +2591,7 @@ export default function SheetItineraryPage() {
       setInquiryId(resolvedInquiryId);
 
       // Check existing options in MongoDB for this Inquiry ID right away
-      checkExistingItineraryOptions(resolvedInquiryId, l.zohoLeadId || l.id, l.mobile || raw.Mobile || raw.Phone);
+      checkExistingItineraryOptions(resolvedInquiryId, l.zohoLeadId || l.id);
 
       // 2. Client Name
       const fName = l.firstName || raw.First_Name || '';
@@ -3946,7 +3945,7 @@ export default function SheetItineraryPage() {
       if (!res.ok || !data.success) throw new Error(data.error || 'Failed to generate itinerary.');
       setGenSuccess(data);
       if (payload.inquiryId) {
-        checkExistingItineraryOptions(payload.inquiryId, undefined, mobile);
+        checkExistingItineraryOptions(payload.inquiryId);
       }
     } catch (err: any) {
       setGenError(err.message || 'Error occurred while generating itinerary.');
@@ -4149,6 +4148,12 @@ export default function SheetItineraryPage() {
               <Input
                 value={inquiryId}
                 onChange={e => setInquiryId(e.target.value)}
+                onBlur={e => {
+                  const val = e.target.value.trim();
+                  if (val) {
+                    checkExistingItineraryOptions(val);
+                  }
+                }}
                 placeholder="e.g. INQ-1042"
                 className="bg-slate-100 border border-slate-400 text-xs h-10 font-mono font-bold text-orange-600 focus-visible:ring-orange-500"
               />
