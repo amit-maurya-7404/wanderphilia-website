@@ -8,7 +8,12 @@ import { RiWhatsappLine } from 'react-icons/ri'
 export function MobileBottomNav() {
   const pathname = usePathname()
 
-  if (pathname?.startsWith('/payment') || pathname?.startsWith('/booking')) {
+  if (
+    pathname?.startsWith('/payment') ||
+    pathname?.startsWith('/booking') ||
+    pathname?.includes('sheet-itinerary') ||
+    pathname?.includes('itinerary')
+  ) {
     return null
   }
 

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { usePathname } from 'next/navigation'
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -18,6 +19,14 @@ interface RequestCallbackDialogProps {
 }
 
 export function RequestCallbackDialog({ open, onOpenChange, title, price, isQuote }: RequestCallbackDialogProps) {
+  const pathname = usePathname() || ''
+  const isExcluded =
+    pathname.startsWith('/sheet-itinerary') ||
+    pathname.startsWith('/itinerary') ||
+    pathname.includes('itinerary') ||
+    pathname.startsWith('/manual-itinerary') ||
+    pathname.startsWith('/itinerary-custom')
+
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [countryCode, setCountryCode] = useState(DEFAULT_COUNTRY_CODE)
@@ -83,7 +92,7 @@ export function RequestCallbackDialog({ open, onOpenChange, title, price, isQuot
     }
   }
 
-  if (!open) {
+  if (!open || isExcluded) {
     return null
   }
 

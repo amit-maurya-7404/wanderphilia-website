@@ -8,6 +8,9 @@ export function MobileBottomNavConditional() {
   
   // Hide on trip detail pages, christmas & new year detail pages, booking, itinerary, etc.
   const hideMobileNav =
+    pathname.startsWith('/sheet-itinerary') ||
+    pathname.includes('sheet-itinerary') ||
+    pathname.includes('itinerary') ||
     pathname.startsWith('/trips/') ||
     pathname.startsWith('/christmas-new-year/trips/') ||
     pathname.startsWith('/christmas-and-new-year/trips/') ||

@@ -296,8 +296,12 @@ export async function syncBookingAndTaskOnPayment(
     const dealStage = params.newBalanceDue <= 0 ? 'Payment completed' : 'Payment Pending';
     const paymentStatus = params.newBalanceDue <= 0 ? 'Fully Paid' : 'Advance Paid';
 
+    // Ensure URL is a valid public URL (Zoho CRM URL validator rejects localhost)
+    const cleanItineraryUrl = (params.itineraryUrl || `https://wanderphilia.com/itinerary/${params.itineraryId}`)
+      .replace(/https?:\/\/localhost(:\d+)?/i, 'https://wanderphilia.com');
+
     // 1. Check if Deal/Booking already exists (Multi-stage payment / idempotent check)
-    const existingDeal = await findExistingDeal(params.itineraryId, params.itineraryUrl);
+    const existingDeal = await findExistingDeal(params.itineraryId, cleanItineraryUrl);
 
     let dealId = '';
     let dealName = '';
@@ -318,7 +322,7 @@ export async function syncBookingAndTaskOnPayment(
         Stage: dealStage,
         Payment_Status: paymentStatus,
         Payment_Gateway_Details: `Latest Payment ID: ${params.paymentId} (${params.paymentType}: INR ${params.paidAmount}) on ${new Date().toLocaleString('en-IN')}`,
-        Itinerary_URL: params.itineraryUrl,
+        Itinerary_URL: cleanItineraryUrl,
       };
 
       const updateUrl = getZohoApiUrl(`/crm/v3/Deals/${dealId}`);
@@ -335,9 +339,15 @@ export async function syncBookingAndTaskOnPayment(
       isNewDeal = true;
       dealName = `${params.customerName} - ${params.destination} Tour`;
 
+      const safeStartDate = formattedStartDate || new Date().toISOString().split('T')[0];
+      const safeEndDate = formattedEndDate || closingDate;
+
       const dealData: Record<string, any> = {
         Deal_Name: dealName,
-        Closing_Date: closingDate,
+        Pipeline: 'Wanderphilia Pipeline',
+        Closing_Date: safeEndDate,
+        Start_Date: safeStartDate,
+        End_Date: safeEndDate,
         Stage: dealStage,
         Amount: params.totalQuotationAmount,
         Cost: params.totalQuotationAmount,
@@ -346,7 +356,7 @@ export async function syncBookingAndTaskOnPayment(
         Payment_Status: paymentStatus,
         Payment_Mode: 'Online / Razorpay',
         Payment_Gateway_Details: `Payment ID: ${params.paymentId} (${params.paymentType}: INR ${params.paidAmount})`,
-        Itinerary_URL: params.itineraryUrl,
+        Itinerary_URL: cleanItineraryUrl,
         Itinerary_Unique_ID: params.itineraryId,
         Destination: params.destination,
         Destinations: params.destination,
@@ -364,41 +374,57 @@ export async function syncBookingAndTaskOnPayment(
         ...buildDealHotelPayload(params.hotels),
       };
 
-      if (formattedStartDate) dealData.Start_Date = formattedStartDate;
-      if (formattedEndDate) dealData.End_Date = formattedEndDate;
-
       // Try Converting Lead if zohoLeadId is available
       if (params.zohoLeadId) {
         try {
           const convertUrl = getZohoApiUrl(`/crm/v3/Leads/${params.zohoLeadId}/actions/convert`);
-          const convertRes = await fetch(convertUrl, {
+          
+          let convertPayload: Record<string, any> = {
+            overwrite: true,
+            notify_lead_owner: true,
+            notify_new_entity_owner: true,
+            Deals: dealData,
+          };
+
+          let convertRes = await fetch(convertUrl, {
             method: 'POST',
             headers: {
               Authorization: `Zoho-oauthtoken ${accessToken}`,
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-              data: [
-                {
-                  overwrite: true,
-                  notify_lead_owner: true,
-                  notify_new_entity_owner: true,
-                  Deals: dealData,
-                },
-              ],
-            }),
+            body: JSON.stringify({ data: [convertPayload] }),
           });
 
-          if (convertRes.ok) {
-            const convertJson = await convertRes.json();
-            if (convertJson.data && convertJson.data[0] && convertJson.data[0].Deals) {
-              dealId = String(convertJson.data[0].Deals);
-              leadConverted = true;
-              console.log(`[Zoho Auto-Booking] Successfully converted Lead ${params.zohoLeadId} into Deal ${dealId}`);
-            }
+          let convertJson = await convertRes.json().catch(() => null);
+
+          // Handle if Contact already exists (Zoho DUPLICATE_DATA error)
+          if (
+            !convertRes.ok &&
+            convertJson?.data?.[0]?.code === 'DUPLICATE_DATA' &&
+            convertJson?.data?.[0]?.details?.duplicate_record?.id
+          ) {
+            const existingContactId = String(convertJson.data[0].details.duplicate_record.id);
+            console.log(`[Zoho Auto-Booking] Linking existing Contact ${existingContactId} for Lead conversion...`);
+            convertPayload.Contacts = { id: existingContactId };
+
+            convertRes = await fetch(convertUrl, {
+              method: 'POST',
+              headers: {
+                Authorization: `Zoho-oauthtoken ${accessToken}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ data: [convertPayload] }),
+            });
+            convertJson = await convertRes.json().catch(() => null);
+          }
+
+          if (convertRes.ok && convertJson?.data?.[0]?.Deals) {
+            const dealsResult = convertJson.data[0].Deals;
+            dealId = typeof dealsResult === 'object' && dealsResult.id ? String(dealsResult.id) : String(dealsResult);
+            leadConverted = true;
+            console.log(`[Zoho Auto-Booking] Successfully converted Lead ${params.zohoLeadId} into Deal ${dealId}`);
           } else {
-            const errText = await convertRes.text();
-            console.warn('[Zoho Lead Convert Fallback]: Direct Deal creation needed. Status:', convertRes.status, errText);
+            console.warn('[Zoho Lead Convert Fallback]: Direct Deal creation needed.', convertJson);
           }
         } catch (convertErr) {
           console.warn('[Zoho Lead Convert Exception]:', convertErr);
@@ -425,7 +451,7 @@ export async function syncBookingAndTaskOnPayment(
           }
         } else {
           const errText = await dealRes.text();
-          throw new Error(`Failed to create Deal in Zoho CRM: ${errText}`);
+          console.error('[Zoho Direct Deal Creation Failed]:', errText);
         }
       }
     }
@@ -456,7 +482,7 @@ export async function syncBookingAndTaskOnPayment(
           Sharing_Type: params.sharingType || 'Double Sharing',
           Preferred_Room_Category: params.preferredRoomCategory || 'Deluxe Room',
           Vehicle_Type: params.vehicleType || 'Dedicated Private Cab',
-          Itinerary_URL: params.itineraryUrl,
+          Itinerary_URL: cleanItineraryUrl,
           Itinerary_Unique_ID: params.itineraryId,
           Hotel_Booked: false,
           Transport_Arranged: false,

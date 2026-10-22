@@ -29,7 +29,10 @@ interface ChatMessage {
 export function AITripPlanner() {
   const pathname = usePathname() || ''
   const isExcluded =
+    pathname.startsWith('/sheet-itinerary') ||
+    pathname.includes('sheet-itinerary') ||
     pathname.startsWith('/itinerary') ||
+    pathname.includes('itinerary') ||
     pathname.startsWith('/manual-itinerary') ||
     pathname.startsWith('/itinerary-custom') ||
     pathname.startsWith('/booking') ||

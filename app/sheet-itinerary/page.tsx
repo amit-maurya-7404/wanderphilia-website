@@ -35,7 +35,9 @@ import {
   Baby,
   RotateCcw,
   Clock,
-  Info
+  Info,
+  Lock,
+  Unlock
 } from 'lucide-react';
 import { ItineraryHistorySection } from '@/components/itinerary/itinerary-history-section';
 import {
@@ -1479,6 +1481,24 @@ export default function SheetItineraryPage() {
   const [fetchingZoho, setFetchingZoho] = useState(false);
   const [zohoSyncMsg, setZohoSyncMsg] = useState<string | null>(null);
 
+  // Existing Generated Options for this Inquiry / Lead
+  const [existingOptions, setExistingOptions] = useState<Record<number, {
+    id: string;
+    slug: string;
+    url: string;
+    optionNumber: number;
+    title: string;
+    destination: string;
+    quote: number | null;
+    advancePaid: number | null;
+    balanceDue: number | null;
+    createdAt: string;
+    updatedAt: string;
+  }>>({});
+  const [unlockedOptions, setUnlockedOptions] = useState<Record<number, boolean>>({});
+  const [optionLockAlert, setOptionLockAlert] = useState<string | null>(null);
+  const [checkingOptions, setCheckingOptions] = useState(false);
+
   // Zoho Fixed Itineraries Template Module
   const [zohoFixedItineraries, setZohoFixedItineraries] = useState<any[]>([]);
   const [selectedFixedItineraryId, setSelectedFixedItineraryId] = useState('');
@@ -2517,11 +2537,49 @@ export default function SheetItineraryPage() {
     ];
   };
 
+  // Check if any itinerary options already exist in MongoDB for this Inquiry ID / Lead
+  const checkExistingItineraryOptions = async (targetInquiryId: string, targetLeadId?: string, targetMobile?: string) => {
+    if (!targetInquiryId && !targetLeadId && !targetMobile) return;
+    setCheckingOptions(true);
+    setOptionLockAlert(null);
+    try {
+      const params = new URLSearchParams();
+      if (targetInquiryId) params.set('inquiryId', targetInquiryId);
+      if (targetLeadId) params.set('leadId', targetLeadId);
+      if (targetMobile) params.set('mobile', targetMobile);
+
+      const res = await fetch(`/api/itinerary/check-options?${params.toString()}`);
+      const data = await res.json();
+      if (data.success && data.existingOptions) {
+        setExistingOptions(data.existingOptions);
+        setUnlockedOptions({});
+        const existingNums = Object.keys(data.existingOptions).map(Number);
+        if (existingNums.length > 0) {
+          // If currently selected option is already generated, auto-switch to next available
+          setSelectedOption(prev => {
+            if (existingNums.includes(prev)) {
+              const nextAvailable = [1, 2, 3].find(n => !existingNums.includes(n));
+              return nextAvailable || prev;
+            }
+            return prev;
+          });
+        }
+      } else {
+        setExistingOptions({});
+      }
+    } catch (checkErr) {
+      console.warn('[Check Existing Options]:', checkErr);
+    } finally {
+      setCheckingOptions(false);
+    }
+  };
+
   // Sync from Zoho Lead
   const handleFetchFromZoho = async () => {
     if (!zohoInquiryInput.trim()) return;
     setFetchingZoho(true);
     setZohoSyncMsg(null);
+    setOptionLockAlert(null);
     try {
       const res = await fetch(`/api/zoho/fetch-lead?query=${encodeURIComponent(zohoInquiryInput.trim())}`);
       const data = await res.json();
@@ -2532,6 +2590,9 @@ export default function SheetItineraryPage() {
       // 1. Inquiry ID
       const resolvedInquiryId = l.inquiryId || raw.Inquiry_ID || zohoInquiryInput.trim();
       setInquiryId(resolvedInquiryId);
+
+      // Check existing options in MongoDB for this Inquiry ID right away
+      checkExistingItineraryOptions(resolvedInquiryId, l.zohoLeadId || l.id, l.mobile || raw.Mobile || raw.Phone);
 
       // 2. Client Name
       const fName = l.firstName || raw.First_Name || '';
@@ -3884,6 +3945,9 @@ export default function SheetItineraryPage() {
       const data = await res.json();
       if (!res.ok || !data.success) throw new Error(data.error || 'Failed to generate itinerary.');
       setGenSuccess(data);
+      if (payload.inquiryId) {
+        checkExistingItineraryOptions(payload.inquiryId, undefined, mobile);
+      }
     } catch (err: any) {
       setGenError(err.message || 'Error occurred while generating itinerary.');
     } finally {
@@ -3976,6 +4040,12 @@ export default function SheetItineraryPage() {
                 placeholder="Zoho Inquiry ID..."
                 value={zohoInquiryInput}
                 onChange={e => setZohoInquiryInput(e.target.value)}
+                onKeyDown={e => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleFetchFromZoho();
+                  }
+                }}
                 className="h-8 bg-white border border-slate-400 text-xs w-40 text-slate-900 placeholder:text-slate-500 font-medium focus-visible:ring-orange-500"
               />
               <Button
@@ -4003,6 +4073,73 @@ export default function SheetItineraryPage() {
           {zohoSyncMsg && (
             <div className="mb-4 text-xs font-semibold px-3 py-2 rounded-lg bg-blue-50 border border-blue-300 text-blue-800">
               {zohoSyncMsg}
+            </div>
+          )}
+
+          {/* Existing Itinerary Links Found For This Inquiry */}
+          {Object.keys(existingOptions).length > 0 && (
+            <div className="mb-4 p-4 rounded-xl bg-amber-50/90 border border-amber-300 shadow-2xs">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-2.5">
+                <div className="flex items-center gap-2 font-bold text-xs text-amber-950">
+                  <Lock className="w-4 h-4 text-amber-700" />
+                  Existing Itinerary Option Links for {inquiryId || 'this inquiry'}:
+                </div>
+                <span className="text-[11px] text-amber-800 font-medium">
+                  Already generated options are locked below to avoid accidental overwrite.
+                </span>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
+                {[1, 2, 3].map(optNum => {
+                  const exist = existingOptions[optNum];
+                  if (!exist) {
+                    return (
+                      <div key={optNum} className="p-2.5 rounded-lg bg-white/70 border border-dashed border-slate-300 text-xs flex items-center justify-between text-slate-500">
+                        <span className="font-semibold text-slate-600">Option {optNum}</span>
+                        <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded">
+                          Available to Create
+                        </span>
+                      </div>
+                    );
+                  }
+                  return (
+                    <div key={optNum} className="p-2.5 rounded-lg bg-white border border-amber-300 text-xs flex flex-col gap-1.5 shadow-2xs">
+                      <div className="flex items-center justify-between">
+                        <span className="font-extrabold text-slate-900 flex items-center gap-1">
+                          <Lock className="w-3 h-3 text-amber-700" />
+                          Option {optNum} (Link Exists)
+                        </span>
+                        {exist.quote && (
+                          <span className="text-[11px] font-bold text-orange-600">
+                            ₹{exist.quote.toLocaleString('en-IN')}
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-[11px] text-slate-500 truncate" title={exist.title}>
+                        {exist.title}
+                      </p>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        <a
+                          href={exist.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 px-2.5 py-1 bg-orange-500 hover:bg-orange-600 text-white rounded text-[11px] font-bold transition-colors"
+                        >
+                          <ExternalLink className="w-3 h-3" />
+                          Open Link ↗
+                        </a>
+                        <button
+                          type="button"
+                          onClick={() => copyToClipboard(typeof window !== 'undefined' ? `${window.location.origin}${exist.url}` : exist.url)}
+                          className="inline-flex items-center gap-1 px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded text-[11px] font-semibold border border-slate-200"
+                        >
+                          <Copy className="w-3 h-3" />
+                          Copy
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           )}
 
@@ -5596,49 +5733,170 @@ export default function SheetItineraryPage() {
           </div>
 
           {/* SECTION 7: OPTION SELECTOR & GENERATION TRIGGER */}
-          <div className="bg-white border border-slate-300 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-5">
-            <div>
+          <div className="bg-white border border-slate-300 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row md:items-start justify-between gap-5">
+            <div className="flex-1">
               <div className="text-sm font-bold text-slate-800 mb-2 flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-orange-600" />
                 Select Itinerary Option:
               </div>
-              <div className="flex items-center gap-2 bg-slate-100 p-1.5 rounded-xl border border-slate-300 inline-flex">
-                {[1, 2, 3].map(optNum => (
-                  <button
-                    key={optNum}
-                    onClick={() => setSelectedOption(optNum)}
-                    className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${selectedOption === optNum
-                        ? 'bg-orange-500 text-white shadow-xs'
-                        : 'text-slate-600 hover:text-slate-900'
+
+              {/* Option Selector Buttons */}
+              <div className="flex flex-wrap items-center gap-2 bg-slate-100 p-1.5 rounded-xl border border-slate-300 inline-flex">
+                {[1, 2, 3].map(optNum => {
+                  const existing = existingOptions[optNum];
+                  const isLocked = Boolean(existing && !unlockedOptions[optNum]);
+                  const isSelected = selectedOption === optNum;
+
+                  return (
+                    <button
+                      key={optNum}
+                      type="button"
+                      onClick={() => {
+                        if (isLocked) {
+                          setOptionLockAlert(`Option ${optNum} link already exists (${existing.slug}). Cannot select to prevent accidental overwrite. Click "Open Link" to view it, or unlock it below if you intentionally want to overwrite.`);
+                          return;
+                        }
+                        setOptionLockAlert(null);
+                        setSelectedOption(optNum);
+                      }}
+                      className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+                        isLocked
+                          ? 'bg-slate-200 text-slate-500 border border-slate-300 cursor-not-allowed hover:bg-slate-200'
+                          : isSelected
+                            ? 'bg-orange-500 text-white shadow-xs'
+                            : 'text-slate-600 hover:text-slate-900 hover:bg-white'
                       }`}
-                  >
-                    Option {optNum}
-                    {selectedOption === optNum && <Check className="w-3.5 h-3.5 stroke-[3]" />}
-                  </button>
-                ))}
+                      title={isLocked ? `Option ${optNum} already generated. Locked to prevent overwrite.` : `Select Option ${optNum}`}
+                    >
+                      {isLocked ? (
+                        <>
+                          <Lock className="w-3.5 h-3.5 text-amber-700" />
+                          Option {optNum} (Link Exists)
+                        </>
+                      ) : (
+                        <>
+                          Option {optNum}
+                          {isSelected && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+                        </>
+                      )}
+                    </button>
+                  );
+                })}
               </div>
+
+              {/* Lock Alert if User Tries Clicking a Locked Option */}
+              {optionLockAlert && (
+                <div className="mt-3 text-xs font-semibold px-3.5 py-2.5 rounded-xl bg-amber-50 border border-amber-300 text-amber-900 flex items-center justify-between gap-3 animate-in fade-in duration-200">
+                  <div className="flex items-center gap-2">
+                    <Lock className="w-4 h-4 text-amber-700 shrink-0" />
+                    <span>{optionLockAlert}</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setOptionLockAlert(null)}
+                    className="text-amber-700 hover:text-amber-950 font-bold text-xs shrink-0"
+                  >
+                    ✕
+                  </button>
+                </div>
+              )}
+
+              {/* Action Buttons for Already Generated Options */}
+              {Object.keys(existingOptions).length > 0 && (
+                <div className="mt-3.5 pt-3 border-t border-slate-200/80 space-y-2">
+                  <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
+                    Existing Generated Links for this Lead:
+                  </span>
+                  <div className="flex flex-col sm:flex-row flex-wrap gap-2">
+                    {[1, 2, 3].map(optNum => {
+                      const exist = existingOptions[optNum];
+                      if (!exist) return null;
+                      const isUnlocked = Boolean(unlockedOptions[optNum]);
+
+                      return (
+                        <div
+                          key={optNum}
+                          className="flex items-center gap-2 bg-amber-50/90 border border-amber-300 rounded-xl px-3 py-1.5 shadow-2xs text-xs"
+                        >
+                          <span className="font-extrabold text-amber-950 flex items-center gap-1">
+                            <Lock className="w-3 h-3 text-amber-700" />
+                            Option {optNum}:
+                          </span>
+
+                          <a
+                            href={exist.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 px-2.5 py-1 bg-orange-500 hover:bg-orange-600 text-white rounded-md text-[11px] font-bold transition-colors shadow-2xs"
+                          >
+                            <ExternalLink className="w-3 h-3" />
+                            Open Option {optNum} Link ↗
+                          </a>
+
+                          <button
+                            type="button"
+                            onClick={() => copyToClipboard(typeof window !== 'undefined' ? `${window.location.origin}${exist.url}` : exist.url)}
+                            className="inline-flex items-center gap-1 px-2 py-1 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-md text-[11px] font-semibold"
+                            title="Copy Option Link"
+                          >
+                            <Copy className="w-3 h-3" />
+                            Copy
+                          </button>
+
+                          {!isUnlocked ? (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setUnlockedOptions(prev => ({ ...prev, [optNum]: true }));
+                                setSelectedOption(optNum);
+                                setOptionLockAlert(null);
+                              }}
+                              className="text-[11px] text-amber-800 hover:text-amber-950 underline ml-1 font-semibold cursor-pointer"
+                              title="Unlock this option if you want to edit and regenerate it"
+                            >
+                              Unlock to edit 🔓
+                            </button>
+                          ) : (
+                            <span className="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full flex items-center gap-0.5">
+                              <Unlock className="w-2.5 h-2.5" /> Unlocked
+                            </span>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
               <p className="text-[11px] text-slate-500 mt-2">
                 Option 1, 2, and 3 generate separate luxury itinerary links.
               </p>
             </div>
 
-            <Button
-              onClick={handleGenerateItinerary}
-              disabled={generating}
-              className="h-12 px-8 bg-orange-500 hover:bg-orange-600 text-white font-extrabold text-sm rounded-xl shadow-md shadow-orange-500/20 transition-all flex items-center gap-2.5 shrink-0 self-start md:self-auto"
-            >
-              {generating ? (
-                <>
-                  <RefreshCw className="w-4 h-4 animate-spin" />
-                  Generating Itinerary with AI...
-                </>
-              ) : (
-                <>
-                  <Sparkles className="w-4 h-4" />
-                  Generate Option {selectedOption} Itinerary ↗
-                </>
+            <div className="shrink-0 self-start md:self-auto flex flex-col items-end gap-1.5">
+              <Button
+                onClick={handleGenerateItinerary}
+                disabled={generating || Boolean(existingOptions[selectedOption] && !unlockedOptions[selectedOption])}
+                className="h-12 px-8 bg-orange-500 hover:bg-orange-600 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-extrabold text-sm rounded-xl shadow-md shadow-orange-500/20 transition-all flex items-center gap-2.5"
+              >
+                {generating ? (
+                  <>
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                    Generating Itinerary with AI...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-4 h-4" />
+                    Generate Option {selectedOption} Itinerary ↗
+                  </>
+                )}
+              </Button>
+              {Boolean(existingOptions[selectedOption] && !unlockedOptions[selectedOption]) && (
+                <span className="text-[11px] font-bold text-amber-800 flex items-center gap-1">
+                  <Lock className="w-3 h-3" /> Option {selectedOption} is locked (Link exists).
+                </span>
               )}
-            </Button>
+            </div>
           </div>
 
           {genError && (

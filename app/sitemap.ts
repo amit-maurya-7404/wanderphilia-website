@@ -54,5 +54,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: new Date(),
   }))
 
-  return [...routeEntries, ...tripEntries, ...blogEntries, ...categoryEntries]
+  // Ensure internal team routes (sheet-itinerary, admin) and private client itinerary links are NEVER in sitemap
+  return [...routeEntries, ...tripEntries, ...blogEntries, ...categoryEntries].filter(
+    (e) =>
+      !e.url.includes('/sheet-itinerary') &&
+      !e.url.includes('/itinerary') &&
+      !e.url.includes('/admin')
+  )
 }

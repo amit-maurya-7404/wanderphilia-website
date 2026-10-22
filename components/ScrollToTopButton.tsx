@@ -1,9 +1,12 @@
 
 "use client";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { FaAngleUp } from "react-icons/fa6";
 
 const ScrollToTopButton = () => {
+    const pathname = usePathname() || "";
+    const isExcluded = pathname.includes("sheet-itinerary");
     const [visible, setVisible] = useState(false);
 
     useEffect(() => {
@@ -21,6 +24,10 @@ const ScrollToTopButton = () => {
             behavior: "smooth",
         });
     };
+
+    if (isExcluded) {
+        return null;
+    }
 
     return (
         <button
