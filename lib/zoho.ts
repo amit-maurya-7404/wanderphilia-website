@@ -500,33 +500,46 @@ export async function findZohoLeadId(query: {
 }): Promise<string | null> {
   try {
     const accessToken = await getZohoAccessToken();
-    let criteria = '';
 
-    if (query.inquiryId) {
-      criteria = `(Inquiry_ID:equals:${encodeURIComponent(query.inquiryId.trim())})`;
-    } else if (query.email && query.mobile) {
-      criteria = `((Email:equals:${encodeURIComponent(query.email.trim())})or(Mobile:equals:${encodeURIComponent(query.mobile.trim())}))`;
-    } else if (query.email) {
-      criteria = `(Email:equals:${encodeURIComponent(query.email.trim())})`;
-    } else if (query.mobile) {
-      criteria = `(Mobile:equals:${encodeURIComponent(query.mobile.trim())})`;
+    const searchCriteria = async (crit: string): Promise<string | null> => {
+      try {
+        const searchUrl = getZohoApiUrl(`/crm/v3/Leads/search?criteria=${crit}`);
+        const response = await fetch(searchUrl, {
+          headers: { 'Authorization': `Zoho-oauthtoken ${accessToken}` },
+          cache: 'no-store',
+        });
+        if (!response.ok || response.status === 204) return null;
+        const json = await response.json();
+        if (json.data && json.data[0] && json.data[0].id) {
+          return String(json.data[0].id);
+        }
+      } catch {
+        // continue
+      }
+      return null;
+    };
+
+    // 1. Search by Inquiry_ID
+    if (query.inquiryId && query.inquiryId.trim()) {
+      const id = await searchCriteria(`(Inquiry_ID:equals:${encodeURIComponent(query.inquiryId.trim())})`);
+      if (id) return id;
     }
 
-    if (!criteria) return null;
-
-    const searchUrl = getZohoApiUrl(`/crm/v3/Leads/search?criteria=${criteria}`);
-    const response = await fetch(searchUrl, {
-      headers: { 'Authorization': `Zoho-oauthtoken ${accessToken}` },
-      cache: 'no-store',
-    });
-
-    if (response.status === 204) return null;
-    if (!response.ok) return null;
-
-    const json = await response.json();
-    if (json.data && json.data[0] && json.data[0].id) {
-      return String(json.data[0].id);
+    // 2. Search by Mobile
+    if (query.mobile && query.mobile.trim()) {
+      const cleanMobile = query.mobile.replace(/\D/g, '').slice(-10);
+      if (cleanMobile) {
+        const id = await searchCriteria(`(Mobile:equals:${cleanMobile})`);
+        if (id) return id;
+      }
     }
+
+    // 3. Search by Email
+    if (query.email && query.email.trim()) {
+      const id = await searchCriteria(`(Email:equals:${encodeURIComponent(query.email.trim())})`);
+      if (id) return id;
+    }
+
     return null;
   } catch (err) {
     console.error(`[findZohoLeadId Error]:`, err);

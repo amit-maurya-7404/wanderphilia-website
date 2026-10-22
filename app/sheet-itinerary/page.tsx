@@ -1478,6 +1478,7 @@ export default function SheetItineraryPage() {
 
   // Optional Zoho Sync (Inquiry / Lead)
   const [zohoInquiryInput, setZohoInquiryInput] = useState('');
+  const [zohoLeadId, setZohoLeadId] = useState<string>('');
   const [fetchingZoho, setFetchingZoho] = useState(false);
   const [zohoSyncMsg, setZohoSyncMsg] = useState<string | null>(null);
 
@@ -2586,9 +2587,13 @@ export default function SheetItineraryPage() {
       const l = data.lead;
       const raw = l.rawLeadData || {};
 
-      // 1. Inquiry ID
+      // 1. Inquiry ID & Zoho Lead ID
       const resolvedInquiryId = l.inquiryId || raw.Inquiry_ID || zohoInquiryInput.trim();
       setInquiryId(resolvedInquiryId);
+      const resolvedZohoLeadId = l.zohoLeadId || l.leadId || l.id || raw.id || '';
+      if (resolvedZohoLeadId) {
+        setZohoLeadId(String(resolvedZohoLeadId));
+      }
 
       // Check existing options in MongoDB for this Inquiry ID right away
       checkExistingItineraryOptions(resolvedInquiryId, l.zohoLeadId || l.id);
@@ -3900,6 +3905,7 @@ export default function SheetItineraryPage() {
 
     const payload = {
       inquiryId: inquiryId || `GS-${Date.now().toString().slice(-6)}`,
+      zohoLeadId: zohoLeadId || undefined,
       firstName,
       lastName,
       fullName: fullName || `${firstName} ${lastName}`.trim() || 'Valued Guest',

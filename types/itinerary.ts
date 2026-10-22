@@ -103,6 +103,9 @@ export interface ItineraryDocument {
   noOfDays?: number; // e.g. from Zoho Leads.No. of Days
   noOfNights?: number; // e.g. from Zoho Leads.No. of Nights
   inquiryId?: string;
+  zohoLeadId?: string;
+  zohoDealId?: string;
+  zohoTaskId?: string;
   leadDetails?: ItineraryLeadDetails;
   stay?: ItineraryStayDetails;
   hotelName?: string;

@@ -397,15 +397,28 @@ export async function syncBookingAndTaskOnPayment(
 
           let convertJson = await convertRes.json().catch(() => null);
 
-          // Handle if Contact already exists (Zoho DUPLICATE_DATA error)
-          if (
+          // Handle if Contact or Account already exists (Zoho DUPLICATE_DATA error)
+          const isDuplicate =
             !convertRes.ok &&
-            convertJson?.data?.[0]?.code === 'DUPLICATE_DATA' &&
-            convertJson?.data?.[0]?.details?.duplicate_record?.id
-          ) {
-            const existingContactId = String(convertJson.data[0].details.duplicate_record.id);
-            console.log(`[Zoho Auto-Booking] Linking existing Contact ${existingContactId} for Lead conversion...`);
-            convertPayload.Contacts = { id: existingContactId };
+            (convertJson?.code === 'DUPLICATE_DATA' ||
+              convertJson?.data?.[0]?.code === 'DUPLICATE_DATA');
+
+          const duplicateRecordId =
+            convertJson?.details?.duplicate_record?.id ||
+            convertJson?.data?.[0]?.details?.duplicate_record?.id;
+
+          const duplicateModule =
+            convertJson?.details?.duplicate_record?.module?.api_name ||
+            convertJson?.data?.[0]?.details?.duplicate_record?.module?.api_name;
+
+          if (isDuplicate && duplicateRecordId) {
+            const existingId = String(duplicateRecordId);
+            console.log(`[Zoho Auto-Booking] Linking existing ${duplicateModule || 'Contact'} ${existingId} for Lead conversion...`);
+            if (duplicateModule === 'Accounts') {
+              convertPayload.Accounts = { id: existingId };
+            } else {
+              convertPayload.Contacts = { id: existingId };
+            }
 
             convertRes = await fetch(convertUrl, {
               method: 'POST',

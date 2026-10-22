@@ -25,6 +25,7 @@ export async function POST(req: NextRequest) {
     }
 
     const inquiryId = String(rawBody.inquiryId || rawBody.inquiry_id || rawBody.Inquiry_ID || '').trim();
+    const zohoLeadId = String(rawBody.zohoLeadId || rawBody.leadId || rawBody.id || '').trim();
     const firstName = String(rawBody.firstName || rawBody.first_name || '').trim();
     const lastName = String(rawBody.lastName || rawBody.last_name || '').trim();
     const fullName = String(rawBody.fullName || rawBody.full_name || [firstName, lastName].filter(Boolean).join(' ') || 'Valued Guest').trim();
@@ -194,6 +195,7 @@ export async function POST(req: NextRequest) {
       noOfDays: noOfDays || aiContent.noOfDays || 5,
       noOfNights: noOfNights || aiContent.noOfNights || 4,
       inquiryId: inquiryId,
+      zohoLeadId: zohoLeadId || undefined,
       hotelName: primaryHotel,
       roomCategory: primaryRoom,
       mealPlan: mealPlan || aiContent.mealPlan,
@@ -265,6 +267,8 @@ export async function POST(req: NextRequest) {
       status: 'active',
       rawZohoData: {
         source: 'google-sheet',
+        id: zohoLeadId || undefined,
+        zohoLeadId: zohoLeadId || undefined,
         inquiryId,
         Inquiry_ID: inquiryId,
         Full_Name: fullName,

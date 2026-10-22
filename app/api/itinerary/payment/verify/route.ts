@@ -379,7 +379,10 @@ export async function POST(req: NextRequest) {
 
     // 7. Push to Zoho CRM (Attachment, Field Updates & Note)
     let zohoAttachmentSuccess = false;
-    let zohoLeadId = passedLeadId || (itinerary?.rawZohoData?.id ? String(itinerary.rawZohoData.id) : null);
+    let zohoLeadId = passedLeadId ||
+      ((itinerary as any)?.zohoLeadId ? String((itinerary as any).zohoLeadId) : null) ||
+      (itinerary?.rawZohoData?.id ? String(itinerary.rawZohoData.id) : null) ||
+      (itinerary?.rawZohoData?.zohoLeadId ? String(itinerary.rawZohoData.zohoLeadId) : null);
 
     if (!zohoLeadId) {
       zohoLeadId = await findZohoLeadId({
