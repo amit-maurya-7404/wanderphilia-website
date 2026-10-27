@@ -4140,7 +4140,8 @@ export function itineraryDocumentToManualItinerary(itinerary: ItineraryDocument)
     'Customised Trip'
   );
   const guests = itinerary.leadDetails?.guests || itinerary.rawZohoData?.Number_Of_Guest || itinerary.rawZohoData?.Number_Of_Guests || 2;
-  const heroImage = itinerary.heroImage || '/images/about_hero4.jpg';
+  const isTadobaDest = destination.toLowerCase().includes('tadoba') || (itinerary.id && itinerary.id.toLowerCase().includes('tadoba'));
+  const heroImage = itinerary.heroImage || itinerary.rawZohoData?.heroImage || (isTadobaDest ? '/images/tadoba/tadoba_hero.jpg' : '/images/about_hero4.jpg');
 
   const rawStartDate = toSafeString(itinerary.leadDetails?.startDate || itinerary.rawZohoData?.Preferred_Start_date || itinerary.startDate, '');
   const rawEndDate = toSafeString(itinerary.leadDetails?.endDate || itinerary.rawZohoData?.Travel_End_Date || itinerary.endDate, '');
@@ -4166,7 +4167,14 @@ export function itineraryDocumentToManualItinerary(itinerary: ItineraryDocument)
   const isVietnamDest = destination.toLowerCase().includes('vietnam') || (itinerary.id && itinerary.id.toLowerCase().includes('vietnam'));
   const isAlibaugDest = destination.toLowerCase().includes('alibaug') || (itinerary.id && itinerary.id.toLowerCase().includes('alibaug'));
 
-  const defaultCollagePool = isRajasthanDest ? [
+  const defaultCollagePool = isTadobaDest ? [
+    '/images/tadoba/tadoba_safari.jpg',
+    '/images/tadoba/tadoba_lake.jpg',
+    '/images/tadoba/tadoba_resort.jpg',
+    '/images/tadoba/tadoba_deer.jpg',
+    '/images/tadoba/tadoba_leopard.jpg',
+    '/images/tadoba/tadoba_sunset.jpg'
+  ] : (isRajasthanDest ? [
     '/images/Rajasthan/rajasthan1.jpeg',
     '/images/Rajasthan/rajasthan2.jpeg',
     '/images/Rajasthan/rajasthan3.jpeg',
@@ -4194,11 +4202,13 @@ export function itineraryDocumentToManualItinerary(itinerary: ItineraryDocument)
     '/images/himachal3.jpg',
     '/images/himachal4.jpg',
     '/images/himachal5.jpg'
-  ]));
+  ])));
 
-  const collageImages = itinerary.galleryImages && itinerary.galleryImages.length >= 6
+  const collageImages = (itinerary.galleryImages && itinerary.galleryImages.length >= 6)
     ? itinerary.galleryImages.slice(0, 6)
-    : defaultCollagePool;
+    : (itinerary.rawZohoData?.galleryImages && itinerary.rawZohoData.galleryImages.length >= 6)
+      ? itinerary.rawZohoData.galleryImages.slice(0, 6)
+      : defaultCollagePool;
 
   // Route & Route Summary
   const routeCities: string[] = [];

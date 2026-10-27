@@ -165,11 +165,19 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
   const staySummary = activeOption?.routeSummary || itinerary.routeSummary || `${numNights}N ${destination}`;
 
   // 6 Collage images for Page 2
+  const isTadobaDest = destination.toLowerCase().includes('tadoba') || (itinerary.id && itinerary.id.toLowerCase().includes('tadoba'));
   const isRajasthanDest = destination.toLowerCase().includes('rajasthan') || (itinerary.id && itinerary.id.toLowerCase().includes('rajasthan')) || (itinerary.id && itinerary.id.toLowerCase().includes('4002b3f4'));
   const isVietnamDest = destination.toLowerCase().includes('vietnam') || (itinerary.id && itinerary.id.toLowerCase().includes('vietnam'));
   const isAlibaugDest = destination.toLowerCase().includes('alibaug') || (itinerary.id && itinerary.id.toLowerCase().includes('alibaug'));
 
-  const defaultCollage = isRajasthanDest ? [
+  const defaultCollage = isTadobaDest ? [
+    '/images/tadoba/tadoba_safari.jpg',
+    '/images/tadoba/tadoba_lake.jpg',
+    '/images/tadoba/tadoba_resort.jpg',
+    '/images/tadoba/tadoba_deer.jpg',
+    '/images/tadoba/tadoba_leopard.jpg',
+    '/images/tadoba/tadoba_sunset.jpg'
+  ] : (isRajasthanDest ? [
     '/images/Rajasthan/rajasthan1.jpeg',
     '/images/Rajasthan/rajasthan2.jpeg',
     '/images/Rajasthan/rajasthan3.jpeg',
@@ -197,7 +205,7 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
     '/images/himachal3.jpg',
     '/images/himachal4.jpg',
     '/images/himachal5.jpg'
-  ]));
+  ])));
 
   const collageImages = itinerary.galleryImages && itinerary.galleryImages.length >= 6
     ? itinerary.galleryImages.slice(0, 6)

@@ -41,8 +41,12 @@ import {
   ListChecks,
   XCircle,
   ArrowUp,
-  ArrowDown
+  ArrowDown,
+  Camera,
+  UploadCloud,
+  Image as ImageIcon
 } from 'lucide-react';
+import { getLuxuryImagesForDestination } from '@/lib/itinerary-images';
 import { ItineraryHistorySection } from '@/components/itinerary/itinerary-history-section';
 import {
   calculateRoomsAndBeds,
@@ -1877,6 +1881,95 @@ export default function SheetItineraryPage() {
         return exc;
       });
     });
+  };
+
+  // Media & Gallery Configuration (Hero Cover & Page 2 6-Collage Grid)
+  const [heroImage, setHeroImage] = useState<string>('/images/tadoba/tadoba_hero.jpg');
+  const [galleryImages, setGalleryImages] = useState<string[]>([
+    '/images/tadoba/tadoba_safari.jpg',
+    '/images/tadoba/tadoba_lake.jpg',
+    '/images/tadoba/tadoba_resort.jpg',
+    '/images/tadoba/tadoba_deer.jpg',
+    '/images/tadoba/tadoba_leopard.jpg',
+    '/images/tadoba/tadoba_sunset.jpg'
+  ]);
+  const [isCustomImagesEdited, setIsCustomImagesEdited] = useState<boolean>(false);
+  const [uploadingSlot, setUploadingSlot] = useState<string | null>(null);
+
+  // Auto-sync images with destination if user hasn't manually customized them
+  useEffect(() => {
+    if (isCustomImagesEdited) return;
+    const destImgs = getLuxuryImagesForDestination(destination);
+    setHeroImage(destImgs.hero);
+    setGalleryImages(destImgs.gallery.slice(0, 6));
+  }, [destination, isCustomImagesEdited]);
+
+  const handleUploadSlot = async (file: File, slot: 'hero' | number) => {
+    if (!file) return;
+    setUploadingSlot(String(slot));
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const res = await fetch('/api/upload', { method: 'POST', body: formData });
+      const data = await res.json();
+      if (!res.ok || !data.url) throw new Error(data.error || 'Failed to upload image');
+      if (slot === 'hero') {
+        setHeroImage(data.url);
+      } else {
+        setGalleryImages(prev => {
+          const next = [...prev];
+          next[slot] = data.url;
+          return next;
+        });
+      }
+      setIsCustomImagesEdited(true);
+    } catch (err: any) {
+      alert(err.message || 'Error uploading image');
+    } finally {
+      setUploadingSlot(null);
+    }
+  };
+
+  const handleBatchUploadImages = async (files: FileList | File[]) => {
+    if (!files || files.length === 0) return;
+    setUploadingSlot('batch');
+    try {
+      const uploadedUrls: string[] = [];
+      for (let i = 0; i < Math.min(files.length, 7); i++) {
+        const file = files[i];
+        const formData = new FormData();
+        formData.append('file', file);
+        const res = await fetch('/api/upload', { method: 'POST', body: formData });
+        const data = await res.json();
+        if (res.ok && data.url) {
+          uploadedUrls.push(data.url);
+        }
+      }
+      if (uploadedUrls.length > 0) {
+        setHeroImage(uploadedUrls[0]);
+        if (uploadedUrls.length > 1) {
+          setGalleryImages(prev => {
+            const next = [...prev];
+            for (let j = 1; j < uploadedUrls.length; j++) {
+              next[j - 1] = uploadedUrls[j];
+            }
+            return next;
+          });
+        }
+        setIsCustomImagesEdited(true);
+      }
+    } catch (err: any) {
+      alert(err.message || 'Batch upload failed');
+    } finally {
+      setUploadingSlot(null);
+    }
+  };
+
+  const handleResetImagesToDefault = () => {
+    const destImgs = getLuxuryImagesForDestination(destination);
+    setHeroImage(destImgs.hero);
+    setGalleryImages(destImgs.gallery.slice(0, 6));
+    setIsCustomImagesEdited(false);
   };
 
   // Generation State
@@ -4117,6 +4210,9 @@ export default function SheetItineraryPage() {
           if (Array.isArray(d.inclusions) && d.inclusions.length > 0) setInclusions(d.inclusions);
           if (Array.isArray(d.exclusions) && d.exclusions.length > 0) setExclusions(d.exclusions);
           if (d.isCustomInclusionsEdited !== undefined) setIsCustomInclusionsEdited(d.isCustomInclusionsEdited);
+          if (d.heroImage) setHeroImage(d.heroImage);
+          if (Array.isArray(d.galleryImages) && d.galleryImages.length > 0) setGalleryImages(d.galleryImages);
+          if (d.isCustomImagesEdited !== undefined) setIsCustomImagesEdited(d.isCustomImagesEdited);
           if (d.isQuoteManuallyEdited !== undefined) setIsQuoteManuallyEdited(d.isQuoteManuallyEdited);
           if (d.zohoSyncMsg) setZohoSyncMsg(d.zohoSyncMsg);
           setHasSavedDraft(true);
@@ -4173,6 +4269,9 @@ export default function SheetItineraryPage() {
           inclusions,
           exclusions,
           isCustomInclusionsEdited,
+          heroImage,
+          galleryImages,
+          isCustomImagesEdited,
           isQuoteManuallyEdited,
           zohoSyncMsg,
           savedAt: new Date().toISOString()
@@ -4225,6 +4324,9 @@ export default function SheetItineraryPage() {
     inclusions,
     exclusions,
     isCustomInclusionsEdited,
+    heroImage,
+    galleryImages,
+    isCustomImagesEdited,
     isQuoteManuallyEdited,
     zohoSyncMsg
   ]);
@@ -4333,7 +4435,9 @@ export default function SheetItineraryPage() {
       balancePendingAmount: balanceAmount ? Number(balanceAmount) : undefined,
       specialRequirements,
       inclusions: inclusions.map(s => s.trim()).filter(Boolean),
-      exclusions: exclusions.map(s => s.trim()).filter(Boolean)
+      exclusions: exclusions.map(s => s.trim()).filter(Boolean),
+      heroImage: heroImage ? heroImage.trim() : undefined,
+      galleryImages: galleryImages.filter(Boolean)
     };
 
     try {
@@ -6486,7 +6590,251 @@ export default function SheetItineraryPage() {
             </div>
           </div>
 
-          {/* SECTION 8: OPTION SELECTOR & GENERATION TRIGGER */}
+          {/* SECTION 8: ITINERARY PHOTOS & MEDIA GALLERY (COVER & PAGE 2 COLLAGE) */}
+          <div className="bg-white border border-slate-300 rounded-2xl p-6 shadow-sm space-y-6">
+            {/* Header */}
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+              <div className="flex items-start sm:items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-orange-100 border border-orange-200 text-orange-600 flex items-center justify-center font-bold shrink-0">
+                  <Camera className="w-5 h-5 text-orange-600" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-slate-900 flex flex-wrap items-center gap-2">
+                    8. Itinerary Photos &amp; Media Gallery (Cover &amp; Page 2 Collage)
+                    {isCustomImagesEdited ? (
+                      <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300">
+                        Custom / Uploaded Photos
+                      </span>
+                    ) : (
+                      <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 flex items-center gap-1">
+                        <Check className="w-3 h-3 text-emerald-700 stroke-[3]" />
+                        Official {destination || 'Destination'} Library Loaded
+                      </span>
+                    )}
+                  </h3>
+                  <p className="text-xs text-slate-600 mt-0.5">
+                    These photos define the visual beauty of the generated proposal. Page 1 uses the Cover Hero Banner, and Page 2 showcases the 6-photo mosaic collage.
+                  </p>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-wrap items-center gap-2 shrink-0">
+                <label className="inline-flex items-center gap-1.5 text-xs font-bold text-white bg-orange-600 hover:bg-orange-700 px-3.5 py-2 rounded-xl transition-all cursor-pointer shadow-xs active:scale-95">
+                  <UploadCloud className="w-4 h-4" />
+                  {uploadingSlot === 'batch' ? 'Uploading...' : 'Upload Photos from Computer'}
+                  <input
+                    type="file"
+                    multiple
+                    accept="image/jpeg,image/png,image/webp"
+                    className="hidden"
+                    disabled={uploadingSlot !== null}
+                    onChange={e => {
+                      if (e.target.files && e.target.files.length > 0) {
+                        handleBatchUploadImages(e.target.files);
+                      }
+                    }}
+                  />
+                </label>
+
+                {isCustomImagesEdited && (
+                  <button
+                    type="button"
+                    onClick={handleResetImagesToDefault}
+                    className="inline-flex items-center gap-1 text-xs font-bold text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-3 py-2 rounded-xl transition-colors cursor-pointer"
+                    title="Reset to official destination photos"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5" />
+                    Reset to Defaults
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Photos Grid */}
+            <div className="space-y-6">
+              {/* PAGE 1: HERO / COVER BANNER */}
+              <div className="border border-slate-200 rounded-xl p-4 bg-slate-50/60">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-bold text-slate-900 uppercase tracking-wide">
+                      Page 1: Main Cover Photo (Hero Banner)
+                    </span>
+                    <span className="text-[10px] font-semibold text-slate-500 bg-white border border-slate-200 px-2 py-0.5 rounded-md">
+                      Landscape 16:9 Banner
+                    </span>
+                  </div>
+                  {heroImage && (
+                    <span className="text-[11px] text-emerald-700 font-bold flex items-center gap-1">
+                      <Check className="w-3 h-3 stroke-[3]" /> Photo Set
+                    </span>
+                  )}
+                </div>
+
+                <div className="flex flex-col md:flex-row gap-4 items-start">
+                  {/* Thumbnail Preview */}
+                  <div className="w-full md:w-64 h-36 rounded-xl overflow-hidden bg-slate-200 border border-slate-300 relative shrink-0 shadow-inner group">
+                    {heroImage ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={heroImage}
+                        alt="Page 1 Cover Hero"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex flex-col items-center justify-center text-slate-400 gap-1">
+                        <ImageIcon className="w-8 h-8 opacity-50" />
+                        <span className="text-[11px]">No cover photo</span>
+                      </div>
+                    )}
+                    {uploadingSlot === 'hero' && (
+                      <div className="absolute inset-0 bg-black/60 flex items-center justify-center text-white text-xs font-bold gap-2">
+                        <RefreshCw className="w-4 h-4 animate-spin" /> Uploading...
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Upload & URL Input */}
+                  <div className="flex-1 space-y-3 w-full">
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                        Image URL or File Upload:
+                      </label>
+                      <div className="flex items-center gap-2">
+                        <Input
+                          type="text"
+                          value={heroImage}
+                          onChange={e => {
+                            setHeroImage(e.target.value);
+                            setIsCustomImagesEdited(true);
+                          }}
+                          placeholder="e.g. /images/tadoba/tadoba_hero.jpg or https://..."
+                          className="bg-white border-slate-300 text-xs h-9 font-medium"
+                        />
+                        <label className="shrink-0 inline-flex items-center gap-1 text-xs font-bold text-slate-800 bg-white hover:bg-slate-100 border border-slate-300 h-9 px-3 rounded-lg cursor-pointer transition-colors shadow-2xs">
+                          <UploadCloud className="w-3.5 h-3.5 text-orange-600" /> Upload
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={e => {
+                              if (e.target.files?.[0]) handleUploadSlot(e.target.files[0], 'hero');
+                            }}
+                          />
+                        </label>
+                      </div>
+                    </div>
+                    <p className="text-[11px] text-slate-500 leading-relaxed">
+                      This picture is displayed as the full-width front cover hero header on Page 1 of the client's proposal. Choose an eye-catching, high-resolution landscape photo.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* PAGE 2: 6-PHOTO MOSAIC SHOWCASE COLLAGE */}
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <div>
+                    <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wide">
+                      Page 2: Experience &amp; Highlights Collage (6 Photos)
+                    </h4>
+                    <span className="text-[11px] text-slate-500">
+                      These 6 photos form the visual mosaic on Page 2 (Safari, Wildlife, Stays, Scenic Landscapes).
+                    </span>
+                  </div>
+                  <span className="text-[11px] font-bold text-orange-600 bg-orange-50 border border-orange-200 px-2 py-0.5 rounded-md">
+                    6 / 6 Slots
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                  {[0, 1, 2, 3, 4, 5].map(idx => {
+                    const currentImg = galleryImages[idx] || '';
+                    const slotLabels = [
+                      'Photo #1 • Main Experience / Landscape',
+                      'Photo #2 • Safari / Wildlife Encounter',
+                      'Photo #3 • Luxury Resort / Camp Stay',
+                      'Photo #4 • Scenic Trail / Nature Spot',
+                      'Photo #5 • Wildlife Activity / Fauna',
+                      'Photo #6 • Sunset / Evening Moments'
+                    ];
+
+                    return (
+                      <div
+                        key={idx}
+                        className="bg-slate-50/70 border border-slate-200 rounded-xl p-3 flex flex-col justify-between gap-2.5 hover:border-orange-300 transition-colors"
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] font-bold text-slate-700 truncate" title={slotLabels[idx]}>
+                            {slotLabels[idx]}
+                          </span>
+                          <span className="w-5 h-5 rounded-full bg-slate-200 text-slate-700 text-[10px] font-bold flex items-center justify-center shrink-0">
+                            {idx + 1}
+                          </span>
+                        </div>
+
+                        {/* Image Preview */}
+                        <div className="w-full h-28 rounded-lg overflow-hidden bg-slate-200 border border-slate-300 relative group">
+                          {currentImg ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                              src={currentImg}
+                              alt={`Collage ${idx + 1}`}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex flex-col items-center justify-center text-slate-400 gap-1">
+                              <ImageIcon className="w-6 h-6 opacity-40" />
+                              <span className="text-[10px]">Empty Slot</span>
+                            </div>
+                          )}
+                          {uploadingSlot === String(idx) && (
+                            <div className="absolute inset-0 bg-black/60 flex items-center justify-center text-white text-[11px] font-bold gap-1.5">
+                              <RefreshCw className="w-3.5 h-3.5 animate-spin" /> Uploading...
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Upload & URL Input */}
+                        <div className="space-y-1.5">
+                          <div className="flex items-center gap-1.5">
+                            <Input
+                              type="text"
+                              value={currentImg}
+                              onChange={e => {
+                                const v = e.target.value;
+                                setGalleryImages(prev => {
+                                  const copy = [...prev];
+                                  copy[idx] = v;
+                                  return copy;
+                                });
+                                setIsCustomImagesEdited(true);
+                              }}
+                              placeholder="Image path or URL..."
+                              className="bg-white border-slate-300 text-[11px] h-8 font-medium px-2"
+                            />
+                            <label className="shrink-0 inline-flex items-center gap-1 text-[11px] font-bold text-slate-700 bg-white hover:bg-slate-100 border border-slate-300 h-8 px-2 rounded cursor-pointer transition-colors">
+                              <UploadCloud className="w-3 h-3 text-orange-600" />
+                              <input
+                                type="file"
+                                accept="image/*"
+                                className="hidden"
+                                onChange={e => {
+                                  if (e.target.files?.[0]) handleUploadSlot(e.target.files[0], idx);
+                                }}
+                              />
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* SECTION 9: OPTION SELECTOR & GENERATION TRIGGER */}
           <div className="bg-white border border-slate-300 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row md:items-start justify-between gap-5">
             <div className="flex-1">
               <div className="text-sm font-bold text-slate-800 mb-2 flex items-center gap-2">

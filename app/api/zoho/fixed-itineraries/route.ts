@@ -134,7 +134,9 @@ export async function GET(req: NextRequest) {
     let page = 1;
     let hasMore = true;
     while (hasMore && page <= 5) {
-      const listUrl = getZohoApiUrl(`/crm/v3/Products?fields=id,Product_Name,Event_Category,Product_Category,No_of_Days,No_of_Nights,Destination_Type,Destinations,Itinerary_Category,Destination_State,City&page=${page}&per_page=200`);
+      // Query the "Active Itineraries" Custom View (cvid: 843125000000030026) so only active itineraries appear
+      const cvidParam = 'cvid=843125000000030026&';
+      const listUrl = getZohoApiUrl(`/crm/v3/Products?${cvidParam}fields=id,Product_Name,Event_Category,Product_Category,No_of_Days,No_of_Nights,Destination_Type,Destinations,Itinerary_Category,Destination_State,City,Product_Active&page=${page}&per_page=200`);
       const listRes = await fetch(listUrl, {
         headers: fetchHeaders,
         cache: 'no-store',

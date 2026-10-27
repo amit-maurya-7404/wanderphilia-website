@@ -193,6 +193,15 @@ export async function POST(req: NextRequest) {
     // 3. Resolve Curated Destination Images
     const images = getLuxuryImagesForDestination(destination || aiContent.destination);
 
+    const customHeroImage = rawBody.heroImage ? String(rawBody.heroImage).trim() : undefined;
+    const customGalleryImages = Array.isArray(rawBody.galleryImages) && rawBody.galleryImages.length > 0
+      ? rawBody.galleryImages.map((s: any) => String(s).trim()).filter(Boolean)
+      : undefined;
+    const resolvedHeroImage = customHeroImage || images.hero;
+    const resolvedGalleryImages = (customGalleryImages && customGalleryImages.length >= 6)
+      ? customGalleryImages.slice(0, 6)
+      : (customGalleryImages && customGalleryImages.length > 0 ? [...customGalleryImages, ...images.gallery].slice(0, 6) : images.gallery);
+
     // 4. Assemble Itinerary Document
     const itineraryDoc: ItineraryDocument = {
       id: uniqueId,
@@ -274,8 +283,8 @@ export async function POST(req: NextRequest) {
       amenities: aiContent.amenities,
       packingTips: aiContent.packingTips,
       importantNotes: aiContent.importantNotes,
-      heroImage: images.hero,
-      galleryImages: images.gallery,
+      heroImage: resolvedHeroImage,
+      galleryImages: resolvedGalleryImages,
       status: 'active',
       rawZohoData: {
         source: 'google-sheet',
@@ -293,6 +302,8 @@ export async function POST(req: NextRequest) {
         Vehicle_Type: vehicleType,
         Travel_Style: travelStyle,
         Trip_Type: tripType,
+        heroImage: resolvedHeroImage,
+        galleryImages: resolvedGalleryImages,
         Hotel_Name: primaryHotel,
         Room_Category: primaryRoom,
         Meal_Plan: mealPlan,

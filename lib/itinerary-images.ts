@@ -136,6 +136,24 @@ export const destinationLuxuryImages: Record<string, string[]> = {
   meghalaya: [
     '/images/meghalaya.jpg',
     '/images/about_hero4.jpg'
+  ],
+  tadoba: [
+    '/images/tadoba/tadoba_hero.jpg',
+    '/images/tadoba/tadoba_safari.jpg',
+    '/images/tadoba/tadoba_lake.jpg',
+    '/images/tadoba/tadoba_resort.jpg',
+    '/images/tadoba/tadoba_deer.jpg',
+    '/images/tadoba/tadoba_leopard.jpg',
+    '/images/tadoba/tadoba_sunset.jpg'
+  ],
+  'tadoba national park': [
+    '/images/tadoba/tadoba_hero.jpg',
+    '/images/tadoba/tadoba_safari.jpg',
+    '/images/tadoba/tadoba_lake.jpg',
+    '/images/tadoba/tadoba_resort.jpg',
+    '/images/tadoba/tadoba_deer.jpg',
+    '/images/tadoba/tadoba_leopard.jpg',
+    '/images/tadoba/tadoba_sunset.jpg'
   ]
 };
 
