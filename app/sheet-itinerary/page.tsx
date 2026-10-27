@@ -37,7 +37,11 @@ import {
   Clock,
   Info,
   Lock,
-  Unlock
+  Unlock,
+  ListChecks,
+  XCircle,
+  ArrowUp,
+  ArrowDown
 } from 'lucide-react';
 import { ItineraryHistorySection } from '@/components/itinerary/itinerary-history-section';
 import {
@@ -336,7 +340,25 @@ const DEFAULT_CITIES_BY_DESTINATION: Record<string, string[]> = {
     'Igatpuri',
     'Aurangabad (Ajanta & Ellora)',
     'Tarkarli (Malvan)',
-    'Tadoba National Park'
+    'Tadoba',
+    'Tadoba National Park',
+    'Nagpur'
+  ],
+  tadoba: [
+    'Tadoba',
+    'Tadoba National Park',
+    'Nagpur',
+    'Chandrapur',
+    'Moharli',
+    'Kolara'
+  ],
+  tadobanationalpark: [
+    'Tadoba',
+    'Tadoba National Park',
+    'Nagpur',
+    'Chandrapur',
+    'Moharli',
+    'Kolara'
   ],
   gujarat: [
     'Ahmedabad',
@@ -1448,6 +1470,115 @@ interface TableDayRow {
   optionalExperiencePrivateCosts?: number[]; // Optional private costs
 }
 
+// --- DYNAMIC INCLUSIONS & EXCLUSIONS BUILDERS ---
+export const POPULAR_INCLUSIONS_PRESETS = [
+  'Private AC Vehicle for all transfers & sightseeing',
+  'Accommodation in verified Deluxe / Luxury hotels',
+  'Daily Buffet Breakfast at all hotels',
+  'Daily Buffet Breakfast & Dinner (MAP Plan)',
+  'Airport / Railway Station Pickup & Drop-off Transfers',
+  'Driver allowance, fuel, toll taxes, parking & state permits',
+  'All transfers & sightseeing as per day-wise itinerary',
+  'English Speaking Local Tour Guide for sightseeing tours',
+  'All Monument & Heritage Sightseeing Entry Tickets',
+  'Complimentary Shikara Ride / Camel Safari experience',
+  '24/7 Dedicated On-Trip Ground Support & Concierge',
+  'Applicable hotel taxes included in quoted package'
+];
+
+export const POPULAR_EXCLUSIONS_PRESETS = [
+  '5% GST (unless specifically included in quote breakdown)',
+  'Airfare / Train fare (Domestic & International)',
+  'Monument & Activity Entry Tickets during sightseeing',
+  'Personal expenses (laundry, room service, telephone, tips)',
+  'Early check-in (before 2:00 PM) & Late check-out (after 11:00 AM)',
+  'Any lunch, snacks, or drinks not specified in inclusions',
+  'Travel & Medical Emergency Insurance',
+  'Adventure activities, rides & camera fees',
+  'Unforeseen expenses due to flight delays, weather or roadblocks'
+];
+
+export function buildDynamicDefaultInclusions(params: {
+  destination?: string;
+  vehicleType?: string;
+  mealPlan?: string;
+  noOfNights?: number;
+  roomCategory?: string;
+  masterHotelCategory?: string;
+  dayRows?: TableDayRow[];
+}): string[] {
+  const dest = (params.destination || 'Rajasthan').trim() || 'Rajasthan';
+  const rawVeh = (params.vehicleType || 'AC Vehicle').trim();
+  const cleanVehicle = rawVeh.toLowerCase().startsWith('private') ? rawVeh : `Private ${rawVeh}`;
+  const nights = Number(params.noOfNights) > 0 ? Number(params.noOfNights) : 4;
+  const room = (params.roomCategory || params.masterHotelCategory || 'Deluxe').trim();
+  const meal = (params.mealPlan || 'Breakfast & Dinner').trim();
+
+  // Extract distinct sightseeing / experiences from dayRows
+  const uniqueExperiences: string[] = [];
+  const seen = new Set<string>();
+
+  if (Array.isArray(params.dayRows)) {
+    params.dayRows.forEach(row => {
+      const isGuided = Boolean(row.guidedTour);
+
+      if (Array.isArray(row.enRouteExperiences)) {
+        row.enRouteExperiences.forEach((er: string) => {
+          const clean = (er || '').trim();
+          if (clean && !seen.has(clean.toLowerCase())) {
+            seen.add(clean.toLowerCase());
+            const hasGuidedTag = /\(\s*guided\s*tour\s*\)/i.test(clean);
+            const prefix = clean.toLowerCase().startsWith('en-route') ? clean : `En-route: ${clean}`;
+            uniqueExperiences.push(isGuided && !hasGuidedTag ? `${prefix} (Guided Tour)` : prefix);
+          }
+        });
+      }
+
+      if (Array.isArray(row.experiences)) {
+        row.experiences.forEach((exp: string) => {
+          const clean = (exp || '').trim();
+          if (clean && !seen.has(clean.toLowerCase())) {
+            seen.add(clean.toLowerCase());
+            const hasGuidedTag = /\(\s*guided\s*tour\s*\)/i.test(clean);
+            uniqueExperiences.push(isGuided && !hasGuidedTag ? `${clean} (Guided Tour)` : clean);
+          }
+        });
+      }
+    });
+  }
+
+  const hasLunch = /lunch|all\s*meals|apai/i.test(meal);
+  const mealDesc = hasLunch
+    ? `Meals ${meal} (Breakfast, Lunch & Dinner as per itinerary schedule).`
+    : `Meals ${meal} (Breakfast except 1st Day, Dinner on last day).`;
+
+  return [
+    `${cleanVehicle} for the complete ${dest} itinerary and Airport / Station Transfers.`,
+    `Accommodation in verified ${room} Properties For ${nights} Nights.`,
+    mealDesc,
+    `Driver allowance, fuel charges, state permits, toll taxes and parking charges.`,
+    `All transfers and sightseeing tours as per the day-wise itinerary schedule.`,
+    ...uniqueExperiences,
+    `Assistance during hotel check-in and check-out.`,
+    `Applicable hotel taxes included in the quoted package.`
+  ];
+}
+
+export function buildDynamicDefaultExclusions(mealPlanStr?: string): string[] {
+  const hasLunch = /lunch|all\s*meals|apai/i.test(mealPlanStr || '');
+  return [
+    `5% GST (unless explicitly included in pricing breakdown).`,
+    `Early check-in (before 2:00 PM) & late check-out (after 11:00 AM) at hotels.`,
+    `Airfare or Train fare other than specifically mentioned in inclusions.`,
+    `Monument entry tickets, camera fees, or audio guides during sightseeing.`,
+    `Personal expenses (room service, laundry, telephone calls, tips & alcoholic drinks).`,
+    hasLunch
+      ? `Any additional meals, snacks, or alcoholic drinks not mentioned in the Package Inclusions.`
+      : `Any lunch or additional meals not mentioned in the Package Inclusions.`,
+    `Unforeseen costs due to flight delays, weather conditions, landslides or roadblocks.`
+  ];
+}
+
 export default function SheetItineraryPage() {
   const [selectedOption, setSelectedOption] = useState<number>(1);
 
@@ -1584,6 +1715,168 @@ export default function SheetItineraryPage() {
   const [balanceAmount, setBalanceAmount] = useState<string>('');
   const [specialRequirements, setSpecialRequirements] = useState('');
   const [isQuoteManuallyEdited, setIsQuoteManuallyEdited] = useState<boolean>(false);
+
+  // Inclusions & Exclusions State
+  const [inclusions, setInclusions] = useState<string[]>(() =>
+    buildDynamicDefaultInclusions({
+      destination: 'Rajasthan',
+      vehicleType: 'AC Innova Crysta',
+      mealPlan: 'Breakfast & Dinner',
+      noOfNights: 4,
+      masterHotelCategory: 'Deluxe'
+    })
+  );
+  const [exclusions, setExclusions] = useState<string[]>(() => buildDynamicDefaultExclusions());
+  const [isCustomInclusionsEdited, setIsCustomInclusionsEdited] = useState<boolean>(false);
+  const [newInclusionText, setNewInclusionText] = useState<string>('');
+  const [newExclusionText, setNewExclusionText] = useState<string>('');
+
+  // Auto-sync inclusions with current trip parameters if user hasn't manually customized them
+  useEffect(() => {
+    if (isCustomInclusionsEdited) return;
+    const primaryRoom = hotels[0]?.roomCategory || masterHotelCategory || 'Deluxe';
+    const dynamicDefaults = buildDynamicDefaultInclusions({
+      destination,
+      vehicleType,
+      mealPlan,
+      noOfNights,
+      roomCategory: primaryRoom,
+      masterHotelCategory,
+      dayRows
+    });
+    setInclusions(dynamicDefaults);
+  }, [destination, vehicleType, mealPlan, noOfNights, hotels, masterHotelCategory, dayRows, isCustomInclusionsEdited]);
+
+  // Inclusions & Exclusions Action Handlers
+  const handleAddInclusion = (textToAdd?: string) => {
+    const text = (textToAdd !== undefined ? textToAdd : newInclusionText).trim();
+    if (!text) return;
+    setInclusions(prev => (prev.includes(text) ? prev : [...prev, text]));
+    if (textToAdd === undefined) setNewInclusionText('');
+    setIsCustomInclusionsEdited(true);
+  };
+
+  const handleUpdateInclusion = (index: number, newText: string) => {
+    setInclusions(prev => {
+      const copy = [...prev];
+      copy[index] = newText;
+      return copy;
+    });
+    setIsCustomInclusionsEdited(true);
+  };
+
+  const handleRemoveInclusion = (index: number) => {
+    setInclusions(prev => prev.filter((_, i) => i !== index));
+    setIsCustomInclusionsEdited(true);
+  };
+
+  const handleMoveInclusion = (index: number, direction: 'up' | 'down') => {
+    setInclusions(prev => {
+      if ((direction === 'up' && index === 0) || (direction === 'down' && index === prev.length - 1)) {
+        return prev;
+      }
+      const targetIndex = direction === 'up' ? index - 1 : index + 1;
+      const copy = [...prev];
+      const temp = copy[index];
+      copy[index] = copy[targetIndex];
+      copy[targetIndex] = temp;
+      return copy;
+    });
+    setIsCustomInclusionsEdited(true);
+  };
+
+  const handleAddExclusion = (textToAdd?: string) => {
+    const text = (textToAdd !== undefined ? textToAdd : newExclusionText).trim();
+    if (!text) return;
+    setExclusions(prev => (prev.includes(text) ? prev : [...prev, text]));
+    if (textToAdd === undefined) setNewExclusionText('');
+    setIsCustomInclusionsEdited(true);
+  };
+
+  const handleUpdateExclusion = (index: number, newText: string) => {
+    setExclusions(prev => {
+      const copy = [...prev];
+      copy[index] = newText;
+      return copy;
+    });
+    setIsCustomInclusionsEdited(true);
+  };
+
+  const handleRemoveExclusion = (index: number) => {
+    setExclusions(prev => prev.filter((_, i) => i !== index));
+    setIsCustomInclusionsEdited(true);
+  };
+
+  const handleMoveExclusion = (index: number, direction: 'up' | 'down') => {
+    setExclusions(prev => {
+      if ((direction === 'up' && index === 0) || (direction === 'down' && index === prev.length - 1)) {
+        return prev;
+      }
+      const targetIndex = direction === 'up' ? index - 1 : index + 1;
+      const copy = [...prev];
+      const temp = copy[index];
+      copy[index] = copy[targetIndex];
+      copy[targetIndex] = temp;
+      return copy;
+    });
+    setIsCustomInclusionsEdited(true);
+  };
+
+  const handleRegenerateDefaults = () => {
+    const primaryRoom = hotels[0]?.roomCategory || masterHotelCategory || 'Deluxe';
+    const dynInc = buildDynamicDefaultInclusions({
+      destination,
+      vehicleType,
+      mealPlan,
+      noOfNights,
+      roomCategory: primaryRoom,
+      masterHotelCategory,
+      dayRows
+    });
+    const dynExc = buildDynamicDefaultExclusions();
+    setInclusions(dynInc);
+    setExclusions(dynExc);
+    setIsCustomInclusionsEdited(false);
+  };
+
+  const handleClearAllInclusions = () => {
+    setInclusions([]);
+    setIsCustomInclusionsEdited(true);
+  };
+
+  const handleClearAllExclusions = () => {
+    setExclusions([]);
+    setIsCustomInclusionsEdited(true);
+  };
+
+  const handleMealPlanChange = (newMeal: string) => {
+    setMealPlan(newMeal);
+    const hasLunch = /lunch|all\s*meals|apai/i.test(newMeal);
+    const newMealLine = hasLunch
+      ? `Meals ${newMeal} (Breakfast, Lunch & Dinner as per itinerary schedule).`
+      : `Meals ${newMeal} (Breakfast except 1st Day, Dinner on last day).`;
+
+    setInclusions(prev => {
+      const idx = prev.findIndex(item => /^meals\b/i.test(item.trim()) || /breakfast/i.test(item));
+      if (idx !== -1) {
+        const copy = [...prev];
+        copy[idx] = newMealLine;
+        return copy;
+      }
+      return [...prev, newMealLine];
+    });
+
+    setExclusions(prev => {
+      return prev.map(exc => {
+        if (/lunch/i.test(exc)) {
+          return hasLunch
+            ? `Any additional meals, snacks, or alcoholic drinks not mentioned in the Package Inclusions.`
+            : `Any lunch or additional meals not mentioned in the Package Inclusions.`;
+        }
+        return exc;
+      });
+    });
+  };
 
   // Generation State
   const [generating, setGenerating] = useState(false);
@@ -2594,6 +2887,7 @@ export default function SheetItineraryPage() {
       if (resolvedZohoLeadId) {
         setZohoLeadId(String(resolvedZohoLeadId));
       }
+      setIsCustomInclusionsEdited(false);
 
       // Check existing options in MongoDB for this Inquiry ID right away
       checkExistingItineraryOptions(resolvedInquiryId, l.zohoLeadId || l.id);
@@ -2780,6 +3074,28 @@ export default function SheetItineraryPage() {
       // 12. Special Requirements
       if (raw.Specific_Requirements || raw.Description) {
         setSpecialRequirements(raw.Specific_Requirements || raw.Description || '');
+      }
+
+      // 12.1 Inclusions & Exclusions from Zoho Lead
+      if (raw.Inclusions || raw.Package_Inclusions || l.inclusions) {
+        const rawInc = raw.Inclusions || raw.Package_Inclusions || l.inclusions;
+        const parsedList = Array.isArray(rawInc)
+          ? rawInc.map((s: any) => String(s).trim()).filter(Boolean)
+          : String(rawInc).split(/\r?\n|•|-|\*/).map(s => s.trim()).filter(s => s.length > 2);
+        if (parsedList.length > 0) {
+          setInclusions(parsedList);
+          setIsCustomInclusionsEdited(true);
+        }
+      }
+      if (raw.Exclusions || raw.Package_Exclusions || l.exclusions) {
+        const rawExc = raw.Exclusions || raw.Package_Exclusions || l.exclusions;
+        const parsedList = Array.isArray(rawExc)
+          ? rawExc.map((s: any) => String(s).trim()).filter(Boolean)
+          : String(rawExc).split(/\r?\n|•|-|\*/).map(s => s.trim()).filter(s => s.length > 2);
+        if (parsedList.length > 0) {
+          setExclusions(parsedList);
+          setIsCustomInclusionsEdited(true);
+        }
       }
 
       // 13. Hotels if populated in Zoho Lead
@@ -3730,6 +4046,9 @@ export default function SheetItineraryPage() {
           if (d.advanceAmount) setAdvanceAmount(d.advanceAmount);
           if (d.balanceAmount) setBalanceAmount(d.balanceAmount);
           if (d.specialRequirements) setSpecialRequirements(d.specialRequirements);
+          if (Array.isArray(d.inclusions) && d.inclusions.length > 0) setInclusions(d.inclusions);
+          if (Array.isArray(d.exclusions) && d.exclusions.length > 0) setExclusions(d.exclusions);
+          if (d.isCustomInclusionsEdited !== undefined) setIsCustomInclusionsEdited(d.isCustomInclusionsEdited);
           if (d.isQuoteManuallyEdited !== undefined) setIsQuoteManuallyEdited(d.isQuoteManuallyEdited);
           if (d.zohoSyncMsg) setZohoSyncMsg(d.zohoSyncMsg);
           setHasSavedDraft(true);
@@ -3783,6 +4102,9 @@ export default function SheetItineraryPage() {
           advanceAmount,
           balanceAmount,
           specialRequirements,
+          inclusions,
+          exclusions,
+          isCustomInclusionsEdited,
           isQuoteManuallyEdited,
           zohoSyncMsg,
           savedAt: new Date().toISOString()
@@ -3832,6 +4154,9 @@ export default function SheetItineraryPage() {
     advanceAmount,
     balanceAmount,
     specialRequirements,
+    inclusions,
+    exclusions,
+    isCustomInclusionsEdited,
     isQuoteManuallyEdited,
     zohoSyncMsg
   ]);
@@ -3938,7 +4263,9 @@ export default function SheetItineraryPage() {
       perKidPrice: perKidPrice ? Number(perKidPrice) : undefined,
       advanceAmountPaid: advanceAmount ? Number(advanceAmount) : undefined,
       balancePendingAmount: balanceAmount ? Number(balanceAmount) : undefined,
-      specialRequirements
+      specialRequirements,
+      inclusions: inclusions.map(s => s.trim()).filter(Boolean),
+      exclusions: exclusions.map(s => s.trim()).filter(Boolean)
     };
 
     try {
@@ -4618,12 +4945,14 @@ export default function SheetItineraryPage() {
                 <label className="block text-xs font-bold text-slate-800 mb-1">Meal Plan</label>
                 <select
                   value={mealPlan}
-                  onChange={e => setMealPlan(e.target.value)}
+                  onChange={e => handleMealPlanChange(e.target.value)}
                   className="w-full bg-white border border-slate-400 text-slate-900 font-medium text-xs h-9 rounded-md px-3 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
                 >
                   <option value="Breakfast & Dinner">Breakfast &amp; Dinner (MAPAI)</option>
+                  <option value="Breakfast, Lunch & Dinner">Breakfast, Lunch &amp; Dinner (All Meals / APAI)</option>
+                  <option value="All Meals">All Meals (Breakfast, Lunch &amp; Dinner)</option>
                   <option value="Breakfast Only">Breakfast Only (CP)</option>
-                  <option value="All Meals">All Meals (APAI)</option>
+                  <option value="Breakfast & Lunch">Breakfast &amp; Lunch</option>
                   <option value="Room Only">Room Only (EP)</option>
                 </select>
               </div>
@@ -5743,7 +6072,343 @@ export default function SheetItineraryPage() {
             </div>
           </div>
 
-          {/* SECTION 7: OPTION SELECTOR & GENERATION TRIGGER */}
+          {/* SECTION 7: PACKAGE INCLUSIONS & EXCLUSIONS */}
+          <div className="bg-white border border-slate-300 rounded-2xl p-6 shadow-sm space-y-6">
+            {/* Section Header */}
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+              <div className="flex items-start sm:items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-orange-100 border border-orange-200 text-orange-600 flex items-center justify-center font-bold shrink-0">
+                  <ListChecks className="w-5 h-5 text-orange-600" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
+                    Section 7: Package Inclusions &amp; Exclusions
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Customize the exact package inclusions and exclusions displayed to the guest on their itinerary quotation.
+                  </p>
+                </div>
+              </div>
+
+              {/* Status & Actions */}
+              <div className="flex flex-wrap items-center gap-2">
+                {isCustomInclusionsEdited ? (
+                  <span className="text-[11px] font-bold text-amber-800 bg-amber-50 border border-amber-300 px-3 py-1.5 rounded-xl flex items-center gap-1.5 shadow-2xs">
+                    <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+                    Custom Edited ({inclusions.length} Inc • {exclusions.length} Exc)
+                  </span>
+                ) : (
+                  <span className="text-[11px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-300 px-3 py-1.5 rounded-xl flex items-center gap-1.5 shadow-2xs">
+                    <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
+                    Auto-Synced with Itinerary ({inclusions.length} Inc • {exclusions.length} Exc)
+                  </span>
+                )}
+
+                <button
+                  type="button"
+                  onClick={handleRegenerateDefaults}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl border border-slate-300 transition-all hover:shadow-2xs active:scale-95 cursor-pointer"
+                  title="Reset to dynamic smart defaults based on vehicle, hotel nights, meal plan & day experiences"
+                >
+                  <RotateCcw className="w-3.5 h-3.5 text-slate-600" />
+                  Reset to Smart Defaults
+                </button>
+              </div>
+            </div>
+
+            {/* Inclusions & Exclusions 2-Column Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* --- INCLUSIONS COLUMN --- */}
+              <div className="bg-emerald-50/50 border border-emerald-200/90 rounded-2xl p-4 sm:p-5 flex flex-col gap-4">
+                {/* Column Header */}
+                <div className="flex items-center justify-between gap-2 pb-3 border-b border-emerald-200">
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-lg bg-emerald-600 text-white flex items-center justify-center">
+                      <CheckCircle2 className="w-4 h-4" />
+                    </div>
+                    <span className="font-bold text-sm text-emerald-950 uppercase tracking-wide">
+                      What's Included
+                    </span>
+                    <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
+                      {inclusions.length} Points
+                    </span>
+                  </div>
+
+                  {inclusions.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={handleClearAllInclusions}
+                      className="text-[11px] text-slate-500 hover:text-rose-600 font-semibold transition-colors cursor-pointer"
+                      title="Clear all inclusions"
+                    >
+                      Clear All
+                    </button>
+                  )}
+                </div>
+
+                {/* Quick Add Presets */}
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800/80 block mb-1.5">
+                    Quick Add Inclusions Presets:
+                  </span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {POPULAR_INCLUSIONS_PRESETS.map((preset, pIdx) => {
+                      const isAdded = inclusions.some(item => item.toLowerCase() === preset.toLowerCase());
+                      return (
+                        <button
+                          key={pIdx}
+                          type="button"
+                          onClick={() => handleAddInclusion(preset)}
+                          disabled={isAdded}
+                          className={`text-[11px] px-2.5 py-1 rounded-lg font-semibold border transition-all flex items-center gap-1 ${
+                            isAdded
+                              ? 'bg-emerald-200/60 border-emerald-300 text-emerald-900 cursor-default opacity-80'
+                              : 'bg-white hover:bg-emerald-100 border-emerald-300 text-emerald-900 hover:border-emerald-400 cursor-pointer shadow-2xs active:scale-95'
+                          }`}
+                        >
+                          {isAdded ? <Check className="w-3 h-3 text-emerald-700 stroke-[3]" /> : <Plus className="w-3 h-3 text-emerald-600" />}
+                          {preset}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Inclusions List */}
+                <div className="space-y-2.5 flex-1">
+                  {inclusions.length === 0 ? (
+                    <div className="text-center py-6 px-4 bg-white/70 border border-dashed border-emerald-300 rounded-xl text-xs text-slate-500">
+                      No inclusions listed yet. Click presets above or enter custom points below.
+                    </div>
+                  ) : (
+                    inclusions.map((item, idx) => (
+                      <div
+                        key={idx}
+                        className="bg-white border border-emerald-200/80 hover:border-emerald-400 rounded-xl p-2.5 flex items-start gap-2 shadow-2xs transition-all group focus-within:ring-2 focus-within:ring-emerald-500/40 focus-within:border-emerald-500"
+                      >
+                        <span className="w-5 h-5 rounded-full bg-emerald-600 text-white font-bold text-[10px] flex items-center justify-center shrink-0 mt-1 shadow-2xs">
+                          {idx + 1}
+                        </span>
+
+                        <textarea
+                          rows={Math.max(1, Math.min(3, Math.ceil((item.length || 1) / 48)))}
+                          value={item}
+                          onChange={e => handleUpdateInclusion(idx, e.target.value)}
+                          placeholder="Describe included item..."
+                          className="flex-1 text-xs text-slate-800 font-medium bg-transparent border-0 focus:outline-hidden p-1 resize-y leading-relaxed"
+                        />
+
+                        {/* Order & Delete Buttons */}
+                        <div className="flex items-center gap-0.5 shrink-0 opacity-70 group-hover:opacity-100 transition-opacity">
+                          <button
+                            type="button"
+                            onClick={() => handleMoveInclusion(idx, 'up')}
+                            disabled={idx === 0}
+                            className={`p-1 rounded hover:bg-slate-100 text-slate-500 ${
+                              idx === 0 ? 'opacity-30 cursor-not-allowed' : 'hover:text-slate-800 cursor-pointer'
+                            }`}
+                            title="Move Up"
+                          >
+                            <ArrowUp className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleMoveInclusion(idx, 'down')}
+                            disabled={idx === inclusions.length - 1}
+                            className={`p-1 rounded hover:bg-slate-100 text-slate-500 ${
+                              idx === inclusions.length - 1 ? 'opacity-30 cursor-not-allowed' : 'hover:text-slate-800 cursor-pointer'
+                            }`}
+                            title="Move Down"
+                          >
+                            <ArrowDown className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveInclusion(idx)}
+                            className="p-1 rounded hover:bg-rose-50 text-slate-400 hover:text-rose-600 transition-colors cursor-pointer ml-0.5"
+                            title="Delete inclusion"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+
+                {/* Add New Inclusion Input */}
+                <div className="pt-2 border-t border-emerald-200 flex items-center gap-2">
+                  <Input
+                    type="text"
+                    value={newInclusionText}
+                    onChange={e => setNewInclusionText(e.target.value)}
+                    onKeyDown={e => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        handleAddInclusion();
+                      }
+                    }}
+                    placeholder="Type new inclusion (press Enter to add)..."
+                    className="bg-white border-emerald-300 text-xs h-9 text-slate-800 placeholder:text-slate-400 font-medium focus-visible:ring-emerald-500"
+                  />
+                  <Button
+                    type="button"
+                    onClick={() => handleAddInclusion()}
+                    disabled={!newInclusionText.trim()}
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs h-9 px-3.5 rounded-xl shrink-0 flex items-center gap-1 shadow-xs"
+                  >
+                    <Plus className="w-4 h-4" /> Add
+                  </Button>
+                </div>
+              </div>
+
+              {/* --- EXCLUSIONS COLUMN --- */}
+              <div className="bg-rose-50/50 border border-rose-200/90 rounded-2xl p-4 sm:p-5 flex flex-col gap-4">
+                {/* Column Header */}
+                <div className="flex items-center justify-between gap-2 pb-3 border-b border-rose-200">
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-lg bg-rose-600 text-white flex items-center justify-center">
+                      <XCircle className="w-4 h-4" />
+                    </div>
+                    <span className="font-bold text-sm text-rose-950 uppercase tracking-wide">
+                      What's Excluded
+                    </span>
+                    <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800 border border-rose-300">
+                      {exclusions.length} Points
+                    </span>
+                  </div>
+
+                  {exclusions.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={handleClearAllExclusions}
+                      className="text-[11px] text-slate-500 hover:text-rose-600 font-semibold transition-colors cursor-pointer"
+                      title="Clear all exclusions"
+                    >
+                      Clear All
+                    </button>
+                  )}
+                </div>
+
+                {/* Quick Add Presets */}
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-rose-800/80 block mb-1.5">
+                    Quick Add Exclusions Presets:
+                  </span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {POPULAR_EXCLUSIONS_PRESETS.map((preset, pIdx) => {
+                      const isAdded = exclusions.some(item => item.toLowerCase() === preset.toLowerCase());
+                      return (
+                        <button
+                          key={pIdx}
+                          type="button"
+                          onClick={() => handleAddExclusion(preset)}
+                          disabled={isAdded}
+                          className={`text-[11px] px-2.5 py-1 rounded-lg font-semibold border transition-all flex items-center gap-1 ${
+                            isAdded
+                              ? 'bg-rose-200/60 border-rose-300 text-rose-900 cursor-default opacity-80'
+                              : 'bg-white hover:bg-rose-100 border-rose-300 text-rose-900 hover:border-rose-400 cursor-pointer shadow-2xs active:scale-95'
+                          }`}
+                        >
+                          {isAdded ? <Check className="w-3 h-3 text-rose-700 stroke-[3]" /> : <Plus className="w-3 h-3 text-rose-600" />}
+                          {preset}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Exclusions List */}
+                <div className="space-y-2.5 flex-1">
+                  {exclusions.length === 0 ? (
+                    <div className="text-center py-6 px-4 bg-white/70 border border-dashed border-rose-300 rounded-xl text-xs text-slate-500">
+                      No exclusions listed yet. Click presets above or enter custom points below.
+                    </div>
+                  ) : (
+                    exclusions.map((item, idx) => (
+                      <div
+                        key={idx}
+                        className="bg-white border border-rose-200/80 hover:border-rose-400 rounded-xl p-2.5 flex items-start gap-2 shadow-2xs transition-all group focus-within:ring-2 focus-within:ring-rose-500/40 focus-within:border-rose-500"
+                      >
+                        <span className="w-5 h-5 rounded-full bg-rose-600 text-white font-bold text-[10px] flex items-center justify-center shrink-0 mt-1 shadow-2xs">
+                          {idx + 1}
+                        </span>
+
+                        <textarea
+                          rows={Math.max(1, Math.min(3, Math.ceil((item.length || 1) / 48)))}
+                          value={item}
+                          onChange={e => handleUpdateExclusion(idx, e.target.value)}
+                          placeholder="Describe excluded item..."
+                          className="flex-1 text-xs text-slate-800 font-medium bg-transparent border-0 focus:outline-hidden p-1 resize-y leading-relaxed"
+                        />
+
+                        {/* Order & Delete Buttons */}
+                        <div className="flex items-center gap-0.5 shrink-0 opacity-70 group-hover:opacity-100 transition-opacity">
+                          <button
+                            type="button"
+                            onClick={() => handleMoveExclusion(idx, 'up')}
+                            disabled={idx === 0}
+                            className={`p-1 rounded hover:bg-slate-100 text-slate-500 ${
+                              idx === 0 ? 'opacity-30 cursor-not-allowed' : 'hover:text-slate-800 cursor-pointer'
+                            }`}
+                            title="Move Up"
+                          >
+                            <ArrowUp className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleMoveExclusion(idx, 'down')}
+                            disabled={idx === exclusions.length - 1}
+                            className={`p-1 rounded hover:bg-slate-100 text-slate-500 ${
+                              idx === exclusions.length - 1 ? 'opacity-30 cursor-not-allowed' : 'hover:text-slate-800 cursor-pointer'
+                            }`}
+                            title="Move Down"
+                          >
+                            <ArrowDown className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveExclusion(idx)}
+                            className="p-1 rounded hover:bg-rose-50 text-slate-400 hover:text-rose-600 transition-colors cursor-pointer ml-0.5"
+                            title="Delete exclusion"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+
+                {/* Add New Exclusion Input */}
+                <div className="pt-2 border-t border-rose-200 flex items-center gap-2">
+                  <Input
+                    type="text"
+                    value={newExclusionText}
+                    onChange={e => setNewExclusionText(e.target.value)}
+                    onKeyDown={e => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        handleAddExclusion();
+                      }
+                    }}
+                    placeholder="Type new exclusion (press Enter to add)..."
+                    className="bg-white border-rose-300 text-xs h-9 text-slate-800 placeholder:text-slate-400 font-medium focus-visible:ring-rose-500"
+                  />
+                  <Button
+                    type="button"
+                    onClick={() => handleAddExclusion()}
+                    disabled={!newExclusionText.trim()}
+                    className="bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs h-9 px-3.5 rounded-xl shrink-0 flex items-center gap-1 shadow-xs"
+                  >
+                    <Plus className="w-4 h-4" /> Add
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* SECTION 8: OPTION SELECTOR & GENERATION TRIGGER */}
           <div className="bg-white border border-slate-300 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row md:items-start justify-between gap-5">
             <div className="flex-1">
               <div className="text-sm font-bold text-slate-800 mb-2 flex items-center gap-2">

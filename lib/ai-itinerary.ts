@@ -261,12 +261,39 @@ export function getRouteTransitInfo(city1: string, city2: string): { distanceKm:
 export function getMealPlanForDay(
   dayIndex: number,
   totalDays: number,
-  isInternational: boolean
+  isInternational: boolean,
+  mealPlanStr?: string
 ): string {
   const isFirstDay = dayIndex === 1;
   const isLastDay = dayIndex === totalDays;
+  const plan = (mealPlanStr || '').toLowerCase();
 
-  if (isInternational) {
+  const hasLunch = plan.includes('lunch') || plan.includes('all meals') || plan.includes('all meal') || plan.includes('apai');
+  const hasDinner = plan.includes('dinner') || plan.includes('map') || plan.includes('all meals') || plan.includes('all meal') || plan.includes('apai');
+  const isRoomOnly = plan.includes('room only') || plan.includes('ep');
+  const isBreakfastOnly = (plan.includes('breakfast only') || plan.includes('cp')) && !hasDinner && !hasLunch;
+
+  if (isRoomOnly) {
+    return 'Room Only (No Meals)';
+  }
+
+  if (isBreakfastOnly) {
+    return isFirstDay ? 'No Meals Included' : 'Breakfast Only';
+  }
+
+  if (hasLunch && hasDinner) {
+    if (isFirstDay) return 'Lunch & Dinner';
+    if (isLastDay) return 'Breakfast & Lunch';
+    return 'Breakfast, Lunch & Dinner';
+  }
+
+  if (hasLunch && !hasDinner) {
+    if (isFirstDay) return 'Lunch Only';
+    if (isLastDay) return 'Breakfast & Lunch';
+    return 'Breakfast & Lunch';
+  }
+
+  if (isInternational && !hasDinner) {
     if (isFirstDay) {
       return 'No Meals Included';
     }
@@ -812,7 +839,7 @@ export function buildCleanDayPlansFromZoho(
       const isFirst = i === 1;
       const isLast = i === totalCount;
       const stayLocation = getStayForDay(i, destination);
-      const dayMeals = getMealPlanForDay(i, totalCount, isIntl);
+      const dayMeals = getMealPlanForDay(i, totalCount, isIntl, fallbackMealPlan);
 
       const title = isFirst
         ? 'Arrival & Hotel Check-in'
@@ -893,7 +920,7 @@ export function buildCleanDayPlansFromZoho(
 
     const targetCity = isInterCityTravel ? toCity : city1;
     const stayLocation = getStayForDay(dayNum, targetCity);
-    const dayMeals = getMealPlanForDay(dayNum, totalCount, isIntl);
+    const dayMeals = getMealPlanForDay(dayNum, totalCount, isIntl, fallbackMealPlan);
 
     const transitInfo = isInterCityTravel ? getRouteTransitInfo(fromCity, toCity) : null;
     const transitBadge = transitInfo?.badge ? ` ${transitInfo.badge}` : '';
@@ -1229,26 +1256,34 @@ export function generateLuxuryFallback(raw: Record<string, any>): GeneratedItine
     });
   });
 
-  const exactInclusions: string[] = [
-    `Private ${(vehicle || 'AC Vehicle').replace(/^Private\s+/i, '')} for the complete ${dest} itinerary and Airport Transfers.`,
-    `Accomodation in ${room} Properties For ${noOfNights} Nights.`,
-    `Meals ${mealPlan ? mealPlan : 'Breakfast & Dinner'} ( Breakfast Except 1st Day , Dinner Last Day )`,
-    `Driver allowance, fuel, toll taxes, parking charges and applicable road taxes.`,
-    `All transfers and sightseeing as per the day-wise itinerary. Entry fees are excluded unless specifically mentioned.`,
-    ...uniqueExpList,
-    `Assistance during hotel check-in and check-out.`,
-    `Applicable taxes included in the quoted package, wherever applicable.`
-  ];
+  const exactInclusions: string[] = (Array.isArray(raw.inclusions) && raw.inclusions.length > 0)
+    ? raw.inclusions.map((s: any) => String(s).trim()).filter(Boolean)
+    : (Array.isArray(raw.rawLeadData?.inclusions) && raw.rawLeadData.inclusions.length > 0)
+      ? raw.rawLeadData.inclusions.map((s: any) => String(s).trim()).filter(Boolean)
+      : [
+          `Private ${(vehicle || 'AC Vehicle').replace(/^Private\s+/i, '')} for the complete ${dest} itinerary and Airport Transfers.`,
+          `Accomodation in ${room} Properties For ${noOfNights} Nights.`,
+          `Meals ${mealPlan ? mealPlan : 'Breakfast & Dinner'} ( Breakfast Except 1st Day , Dinner Last Day )`,
+          `Driver allowance, fuel, toll taxes, parking charges and applicable road taxes.`,
+          `All transfers and sightseeing as per the day-wise itinerary. Entry fees are excluded unless specifically mentioned.`,
+          ...uniqueExpList,
+          `Assistance during hotel check-in and check-out.`,
+          `Applicable taxes included in the quoted package, wherever applicable.`
+        ];
 
-  const exactExclusions: string[] = [
-    `5% GST.`,
-    `Early check-in (Before 1:00 PM) & Late Check-out (After 11:00 AM) at the hotel.`,
-    `Any additional expenses of personal nature.`,
-    `Additional accommodation/food costs incurred due to any delayed travel.`,
-    `Any lunch and other meals not mentioned in Package Inclusions.`,
-    `Any Airfare / Rail fare other than what is mentioned in "Inclusions" or any type of transportation.`,
-    `Monument entry fees during Sightseeing.`
-  ];
+  const exactExclusions: string[] = (Array.isArray(raw.exclusions) && raw.exclusions.length > 0)
+    ? raw.exclusions.map((s: any) => String(s).trim()).filter(Boolean)
+    : (Array.isArray(raw.rawLeadData?.exclusions) && raw.rawLeadData.exclusions.length > 0)
+      ? raw.rawLeadData.exclusions.map((s: any) => String(s).trim()).filter(Boolean)
+      : [
+          `5% GST.`,
+          `Early check-in (Before 1:00 PM) & Late Check-out (After 11:00 AM) at the hotel.`,
+          `Any additional expenses of personal nature.`,
+          `Additional accommodation/food costs incurred due to any delayed travel.`,
+          `Any lunch and other meals not mentioned in Package Inclusions.`,
+          `Any Airfare / Rail fare other than what is mentioned in "Inclusions" or any type of transportation.`,
+          `Monument entry fees during Sightseeing.`
+        ];
 
   const isIntl = isInternationalTrip(dest, destType);
   const gstPercentage = raw.gstPercentage !== undefined ? Number(raw.gstPercentage) : 5;
@@ -1811,8 +1846,12 @@ Generate the clean itinerary JSON now.`;
       balancePendingAmount: fallback.balancePendingAmount,
       highlights: Array.isArray(parsed.highlights) && parsed.highlights.length > 0 ? parsed.highlights : fallback.highlights,
       dayPlans: cleanDayPlans, // STRICT: ALWAYS uses the genuine Zoho-mapped day plans
-      inclusions: Array.isArray(parsed.inclusions) && parsed.inclusions.length > 0 ? parsed.inclusions : fallback.inclusions,
-      exclusions: Array.isArray(parsed.exclusions) && parsed.exclusions.length > 0 ? parsed.exclusions : fallback.exclusions,
+      inclusions: (Array.isArray(rawZohoData.inclusions) && rawZohoData.inclusions.length > 0)
+        ? rawZohoData.inclusions.map((s: any) => String(s).trim()).filter(Boolean)
+        : (Array.isArray(parsed.inclusions) && parsed.inclusions.length > 0 ? parsed.inclusions : fallback.inclusions),
+      exclusions: (Array.isArray(rawZohoData.exclusions) && rawZohoData.exclusions.length > 0)
+        ? rawZohoData.exclusions.map((s: any) => String(s).trim()).filter(Boolean)
+        : (Array.isArray(parsed.exclusions) && parsed.exclusions.length > 0 ? parsed.exclusions : fallback.exclusions),
       amenities: Array.isArray(parsed.amenities) && parsed.amenities.length > 0 ? parsed.amenities : fallback.amenities,
       packingTips: Array.isArray(parsed.packingTips) && parsed.packingTips.length > 0 ? parsed.packingTips : fallback.packingTips,
       importantNotes: Array.isArray(parsed.importantNotes) && parsed.importantNotes.length > 0 ? parsed.importantNotes : fallback.importantNotes,

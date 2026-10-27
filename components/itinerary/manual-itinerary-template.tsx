@@ -440,6 +440,16 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                       {vehicleType} with Dedicated Chauffeur Cum Guide
                     </div>
                   </div>
+
+                  <div>
+                    <div className="text-[10px] uppercase font-extrabold text-stone-500 tracking-wider">
+                      Meal Plan:
+                    </div>
+                    <div className="text-xs sm:text-sm font-bold text-stone-900 mt-0.5 flex items-center gap-1.5">
+                      <Utensils className="w-3.5 h-3.5 text-[#6E1E14]" />
+                      <span>{mealPlan}</span>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Theme Highlights Pills */}
@@ -541,11 +551,17 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                 <h3 className="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-[#6E1E14] flex items-center gap-1.5">
                   <Hotel className="w-4 h-4 text-[#6E1E14]" /> Handpicked Accommodations
                 </h3>
-                {activeOption && (
-                  <span className="text-[10px] sm:text-xs font-bold bg-amber-100 text-[#6E1E14] px-2.5 py-0.5 rounded-full border border-amber-300">
-                    {activeOption.badge || activeOption.title}
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] sm:text-xs font-bold bg-emerald-50 text-emerald-800 px-2.5 py-0.5 rounded-full border border-emerald-300 flex items-center gap-1">
+                    <Utensils className="w-3 h-3 text-emerald-600" />
+                    {mealPlan}
                   </span>
-                )}
+                  {activeOption && (
+                    <span className="text-[10px] sm:text-xs font-bold bg-amber-100 text-[#6E1E14] px-2.5 py-0.5 rounded-full border border-amber-300">
+                      {activeOption.badge || activeOption.title}
+                    </span>
+                  )}
+                </div>
               </div>
 
               <div className="overflow-x-auto rounded-xl border-2 border-[#6E1E14] shadow-xs">

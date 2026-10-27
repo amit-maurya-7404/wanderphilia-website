@@ -97,6 +97,14 @@ export async function POST(req: NextRequest) {
     // Process Day Activities
     const dayActivities = Array.isArray(rawBody.dayActivities) ? rawBody.dayActivities : [];
 
+    // Process Inclusions & Exclusions
+    const customInclusions = Array.isArray(rawBody.inclusions) && rawBody.inclusions.length > 0
+      ? rawBody.inclusions.map((s: any) => String(s).trim()).filter(Boolean)
+      : undefined;
+    const customExclusions = Array.isArray(rawBody.exclusions) && rawBody.exclusions.length > 0
+      ? rawBody.exclusions.map((s: any) => String(s).trim()).filter(Boolean)
+      : undefined;
+
     // Normalize for AI Generator
     const normalizedPayload = {
       destination,
@@ -126,6 +134,8 @@ export async function POST(req: NextRequest) {
       specialRequirements: notes,
       hotels,
       dayActivities,
+      inclusions: customInclusions,
+      exclusions: customExclusions,
       rawLeadData: {
         source: 'google-sheet',
         inquiryId,
@@ -141,7 +151,9 @@ export async function POST(req: NextRequest) {
         jainMealCount: rawBody.jainMealCount || 0,
         childrenDetails: rawBody.childrenDetails || [],
         hotels,
-        dayActivities
+        dayActivities,
+        inclusions: customInclusions,
+        exclusions: customExclusions
       },
       normalized: {
         name: fullName,
@@ -257,8 +269,8 @@ export async function POST(req: NextRequest) {
       },
       highlights: aiContent.highlights,
       dayPlans: aiContent.dayPlans,
-      inclusions: aiContent.inclusions,
-      exclusions: aiContent.exclusions,
+      inclusions: customInclusions || aiContent.inclusions,
+      exclusions: customExclusions || aiContent.exclusions,
       amenities: aiContent.amenities,
       packingTips: aiContent.packingTips,
       importantNotes: aiContent.importantNotes,
@@ -297,7 +309,9 @@ export async function POST(req: NextRequest) {
         Per_Adult_Price: aiContent.perAdultPrice || perAdultPrice,
         Per_Kid_Price: aiContent.perKidPrice || perKidPrice,
         hotels,
-        dayActivities
+        dayActivities,
+        inclusions: customInclusions || aiContent.inclusions,
+        exclusions: customExclusions || aiContent.exclusions
       },
       createdAt: new Date(),
       updatedAt: new Date()
