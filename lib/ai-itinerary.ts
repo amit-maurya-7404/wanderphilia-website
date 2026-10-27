@@ -920,7 +920,9 @@ export function buildCleanDayPlansFromZoho(
 
     const targetCity = isInterCityTravel ? toCity : city1;
     const stayLocation = getStayForDay(dayNum, targetCity);
-    const dayMeals = getMealPlanForDay(dayNum, totalCount, isIntl, fallbackMealPlan);
+    const dayMeals = (act.meals !== undefined && act.meals !== null)
+      ? String(act.meals).trim()
+      : getMealPlanForDay(dayNum, totalCount, isIntl, fallbackMealPlan);
 
     const transitInfo = isInterCityTravel ? getRouteTransitInfo(fromCity, toCity) : null;
     const transitBadge = transitInfo?.badge ? ` ${transitInfo.badge}` : '';

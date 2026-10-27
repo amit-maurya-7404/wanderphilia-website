@@ -30,6 +30,10 @@ export interface ZohoDayActivity {
   inclusionsDescriptions?: string[];
   experiences: ZohoExperienceItem[];
   pdfDescription?: string;
+  meals?: string;
+  breakfast?: boolean;
+  lunch?: boolean;
+  dinner?: boolean;
 }
 
 export interface NormalizedZohoLead {

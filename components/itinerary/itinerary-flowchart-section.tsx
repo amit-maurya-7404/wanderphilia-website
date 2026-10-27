@@ -189,18 +189,22 @@ export function ItineraryFlowchartSection({
                 </div>
 
                 {/* Meals & Hotel Summary Strip */}
-                <div className="pt-4 border-t border-stone-100 flex items-center justify-between flex-wrap gap-3 text-xs font-bold text-[#6E1E14]">
-                  <div className="flex items-center gap-1.5">
-                    <Utensils className="w-4 h-4 text-orange-600 shrink-0" />
-                    <span>Meals: <strong className="text-stone-900">{day.meals || 'Breakfast & Dinner'}</strong></span>
+                {(day.meals || (day.stayLocation && day.stayLocation.trim().length > 0)) && (
+                  <div className="pt-4 border-t border-stone-100 flex items-center justify-between flex-wrap gap-3 text-xs font-bold text-[#6E1E14]">
+                    {day.meals && (
+                      <div className="flex items-center gap-1.5">
+                        <Utensils className="w-4 h-4 text-orange-600 shrink-0" />
+                        <span>Meals: <strong className="text-stone-900">{day.meals}</strong></span>
+                      </div>
+                    )}
+                    {day.stayLocation && day.stayLocation.trim().length > 0 && (
+                      <div className="flex items-center gap-1.5 text-stone-700">
+                        <HotelIcon className="w-3.5 h-3.5 text-orange-600 shrink-0" />
+                        <span>Hotel: <strong className="text-stone-900">{day.stayLocation}</strong></span>
+                      </div>
+                    )}
                   </div>
-                  {day.stayLocation && day.stayLocation.trim().length > 0 && (
-                    <div className="flex items-center gap-1.5 text-stone-700">
-                      <HotelIcon className="w-3.5 h-3.5 text-orange-600 shrink-0" />
-                      <span>Hotel: <strong className="text-stone-900">{day.stayLocation}</strong></span>
-                    </div>
-                  )}
-                </div>
+                )}
 
               </div>
             )}

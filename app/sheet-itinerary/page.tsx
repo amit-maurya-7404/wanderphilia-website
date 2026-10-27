@@ -1456,6 +1456,70 @@ interface HotelItem {
   childWithoutBedPrice?: number;
 }
 
+// Helper to determine default meals included for a specific day based on the trip's overall meal plan
+export function getDefaultMealsForDay(
+  dayNum: number,
+  totalDays: number,
+  currentMealPlan: string
+): { breakfast: boolean; lunch: boolean; dinner: boolean } {
+  const plan = (currentMealPlan || '').toLowerCase();
+  const tot = Math.max(1, totalDays);
+  const isFirstDay = dayNum === 1;
+  const isLastDay = dayNum === tot && tot > 1;
+
+  // Room Only / EP
+  if (plan.includes('room only') || plan.includes('ep')) {
+    return { breakfast: false, lunch: false, dinner: false };
+  }
+
+  // All Meals / APAI
+  if (plan.includes('all meals') || plan.includes('all meal') || plan.includes('apai') || plan.includes('ap')) {
+    if (tot === 1) {
+      return { breakfast: true, lunch: true, dinner: true };
+    }
+    return {
+      breakfast: !isFirstDay,
+      lunch: true,
+      dinner: !isLastDay
+    };
+  }
+
+  // Breakfast Only / CP
+  if ((plan.includes('breakfast only') || plan.includes('cp')) && !plan.includes('dinner') && !plan.includes('map')) {
+    if (tot === 1) {
+      return { breakfast: true, lunch: false, dinner: false };
+    }
+    return {
+      breakfast: !isFirstDay,
+      lunch: false,
+      dinner: false
+    };
+  }
+
+  // Default: MAP / Breakfast & Dinner (standard domestic itinerary)
+  if (tot === 1) {
+    return { breakfast: true, lunch: false, dinner: true };
+  }
+  return {
+    breakfast: !isFirstDay,
+    lunch: false,
+    dinner: !isLastDay
+  };
+}
+
+// Helper to format string summary from day meal flags
+export function formatDayMeals(breakfast?: boolean, lunch?: boolean, dinner?: boolean): string {
+  const items: string[] = [];
+  if (breakfast) items.push('Breakfast');
+  if (lunch) items.push('Lunch');
+  if (dinner) items.push('Dinner');
+
+  if (items.length === 0) return '';
+  if (items.length === 1) return items[0];
+  if (items.length === 2) return `${items[0]} & ${items[1]}`;
+  return 'Breakfast, Lunch & Dinner';
+}
+
 // Table Grid Row Interface matching user's requested columns
 interface TableDayRow {
   dayNumber: number;
@@ -1472,6 +1536,9 @@ interface TableDayRow {
   optionalDescriptions: string[]; // Optional Description 1, 2
   optionalExperienceCosts: number[]; // Optional costs
   optionalExperiencePrivateCosts?: number[]; // Optional private costs
+  breakfast?: boolean;
+  lunch?: boolean;
+  dinner?: boolean;
 }
 
 // --- DYNAMIC INCLUSIONS & EXCLUSIONS BUILDERS ---
@@ -1684,30 +1751,41 @@ export default function SheetItineraryPage() {
   const [isHotelsManuallyCustomized, setIsHotelsManuallyCustomized] = useState<boolean>(false);
 
   // Helper to create an initial Table Row
-  const createInitialDayRow = (dayNum: number, city?: string): TableDayRow => ({
-    dayNumber: dayNum,
-    dayText: `Day ${dayNum}`,
-    guidedTour: false,
-    city: city || 'Jaipur',
-    enRouteExperiences: [''],
-    city2: '',
-    experiences: ['', '', '', ''],
-    descriptions: ['', '', '', ''],
-    experienceCosts: [0, 0, 0, 0],
-    experiencePrivateCosts: [0, 0, 0, 0],
-    optionalExperiences: ['', ''],
-    optionalDescriptions: ['', ''],
-    optionalExperienceCosts: [0, 0],
-    optionalExperiencePrivateCosts: [0, 0]
-  });
+  const createInitialDayRow = (
+    dayNum: number,
+    city?: string,
+    totalDays = 5,
+    currentMealPlan = 'Breakfast & Dinner'
+  ): TableDayRow => {
+    const dMeals = getDefaultMealsForDay(dayNum, totalDays, currentMealPlan);
+    return {
+      dayNumber: dayNum,
+      dayText: `Day ${dayNum}`,
+      guidedTour: false,
+      city: city || 'Jaipur',
+      enRouteExperiences: [''],
+      city2: '',
+      experiences: ['', '', '', ''],
+      descriptions: ['', '', '', ''],
+      experienceCosts: [0, 0, 0, 0],
+      experiencePrivateCosts: [0, 0, 0, 0],
+      optionalExperiences: ['', ''],
+      optionalDescriptions: ['', ''],
+      optionalExperienceCosts: [0, 0],
+      optionalExperiencePrivateCosts: [0, 0],
+      breakfast: dMeals.breakfast,
+      lunch: dMeals.lunch,
+      dinner: dMeals.dinner
+    };
+  };
 
   // Table Day Rows State (Spreadsheet Column Grid)
   const [dayRows, setDayRows] = useState<TableDayRow[]>([
-    createInitialDayRow(1, 'Jaipur'),
-    createInitialDayRow(2, 'Jaipur'),
-    createInitialDayRow(3, 'Jodhpur'),
-    createInitialDayRow(4, 'Jaisalmer'),
-    createInitialDayRow(5, 'Udaipur')
+    createInitialDayRow(1, 'Jaipur', 5, 'Breakfast & Dinner'),
+    createInitialDayRow(2, 'Jaipur', 5, 'Breakfast & Dinner'),
+    createInitialDayRow(3, 'Jodhpur', 5, 'Breakfast & Dinner'),
+    createInitialDayRow(4, 'Jaisalmer', 5, 'Breakfast & Dinner'),
+    createInitialDayRow(5, 'Udaipur', 5, 'Breakfast & Dinner')
   ]);
 
   // Pricing & Margins
@@ -1856,6 +1934,21 @@ export default function SheetItineraryPage() {
 
   const handleMealPlanChange = (newMeal: string) => {
     setMealPlan(newMeal);
+
+    // Sync day-wise meal checkboxes to match newly selected meal plan
+    setDayRows(prev => {
+      const tot = prev.length;
+      return prev.map(row => {
+        const dMeals = getDefaultMealsForDay(row.dayNumber, tot, newMeal);
+        return {
+          ...row,
+          breakfast: dMeals.breakfast,
+          lunch: dMeals.lunch,
+          dinner: dMeals.dinner
+        };
+      });
+    });
+
     const hasLunch = /lunch|all\s*meals|apai/i.test(newMeal);
     const newMealLine = hasLunch
       ? `Meals ${newMeal} (Breakfast, Lunch & Dinner as per itinerary schedule).`
@@ -1879,6 +1972,32 @@ export default function SheetItineraryPage() {
             : `Any lunch or additional meals not mentioned in the Package Inclusions.`;
         }
         return exc;
+      });
+    });
+  };
+
+  // Toggle meal checkbox (breakfast, lunch, dinner) for a specific day
+  const updateDayMeal = (dayIdx: number, mealType: 'breakfast' | 'lunch' | 'dinner', checked: boolean) => {
+    setDayRows(prev => {
+      const updated = [...prev];
+      const row = { ...updated[dayIdx], [mealType]: checked };
+      updated[dayIdx] = row;
+      return updated;
+    });
+  };
+
+  // Reset all days to default meal schedule according to current mealPlan
+  const handleResetAllDayMealsToPlan = () => {
+    setDayRows(prev => {
+      const tot = prev.length;
+      return prev.map(row => {
+        const dMeals = getDefaultMealsForDay(row.dayNumber, tot, mealPlan);
+        return {
+          ...row,
+          breakfast: dMeals.breakfast,
+          lunch: dMeals.lunch,
+          dinner: dMeals.dinner
+        };
       });
     });
   };
@@ -3591,7 +3710,10 @@ export default function SheetItineraryPage() {
             experienceCosts: costs,
             experiencePrivateCosts: privCosts,
             optionalExperienceCosts: [0, 0],
-            optionalExperiencePrivateCosts: [0, 0]
+            optionalExperiencePrivateCosts: [0, 0],
+            breakfast: r.breakfast !== undefined ? Boolean(r.breakfast) : getDefaultMealsForDay(r.dayNumber || 1, itin.dayRows.length, itin.mealPlan || mealPlan).breakfast,
+            lunch: r.lunch !== undefined ? Boolean(r.lunch) : getDefaultMealsForDay(r.dayNumber || 1, itin.dayRows.length, itin.mealPlan || mealPlan).lunch,
+            dinner: r.dinner !== undefined ? Boolean(r.dinner) : getDefaultMealsForDay(r.dayNumber || 1, itin.dayRows.length, itin.mealPlan || mealPlan).dinner
           };
         });
         setDayRows(updatedRows);
@@ -3638,7 +3760,7 @@ export default function SheetItineraryPage() {
         const added: TableDayRow[] = [];
         const defaultCity = availableCitiesForDestination[0] || destination;
         for (let i = prev.length + 1; i <= count; i++) {
-          added.push(createInitialDayRow(i, defaultCity));
+          added.push(createInitialDayRow(i, defaultCity, count, mealPlan));
         }
         return [...prev, ...added];
       }
@@ -3896,7 +4018,7 @@ export default function SheetItineraryPage() {
   const addDay = () => {
     const nextDayNum = dayRows.length + 1;
     const defaultCity = availableCitiesForDestination[0] || destination;
-    setDayRows(prev => [...prev, createInitialDayRow(nextDayNum, defaultCity)]);
+    setDayRows(prev => [...prev, createInitialDayRow(nextDayNum, defaultCity, nextDayNum, mealPlan)]);
     setNoOfDays(nextDayNum);
     const nights = nextDayNum > 1 ? nextDayNum - 1 : 1;
     setNoOfNights(nights);
@@ -4197,8 +4319,18 @@ export default function SheetItineraryPage() {
             });
             setHotels(sanitizedHotels);
           }
-          if (d.isHotelsManuallyCustomized !== undefined) setIsHotelsManuallyCustomized(d.isHotelsManuallyCustomized);
-          if (Array.isArray(d.dayRows) && d.dayRows.length > 0) setDayRows(d.dayRows);
+          if (Array.isArray(d.dayRows) && d.dayRows.length > 0) {
+            const sanitizedDayRows = d.dayRows.map((row: any, idx: number) => {
+              const dMeals = getDefaultMealsForDay(row.dayNumber || idx + 1, d.dayRows.length, d.mealPlan || mealPlan);
+              return {
+                ...row,
+                breakfast: row.breakfast !== undefined ? Boolean(row.breakfast) : dMeals.breakfast,
+                lunch: row.lunch !== undefined ? Boolean(row.lunch) : dMeals.lunch,
+                dinner: row.dinner !== undefined ? Boolean(row.dinner) : dMeals.dinner
+              };
+            });
+            setDayRows(sanitizedDayRows);
+          }
           if (d.baseQuotation) setBaseQuotation(d.baseQuotation);
           if (d.marginPercent) setMarginPercent(d.marginPercent);
           if (d.finalQuotation) setFinalQuotation(d.finalQuotation);
@@ -4386,6 +4518,8 @@ export default function SheetItineraryPage() {
         }
       });
 
+      const dayMealsStr = formatDayMeals(d.breakfast, d.lunch, d.dinner);
+
       return {
         dayNumber: d.dayNumber,
         dayText: d.dayText,
@@ -4394,7 +4528,11 @@ export default function SheetItineraryPage() {
         guidedTour: d.guidedTour,
         enRouteExperiences: d.enRouteExperiences.filter(Boolean).join(', ') || undefined,
         experiences: allExperiences,
-        optionalExperiences: allOptional
+        optionalExperiences: allOptional,
+        meals: dayMealsStr,
+        breakfast: d.breakfast,
+        lunch: d.lunch,
+        dinner: d.dinner
       };
     });
 
@@ -5507,6 +5645,18 @@ export default function SheetItineraryPage() {
                 </Button>
 
                 <Button
+                  type="button"
+                  onClick={handleResetAllDayMealsToPlan}
+                  variant="outline"
+                  size="sm"
+                  className="h-9 text-xs border border-amber-400 text-amber-800 hover:bg-amber-50 bg-white font-bold rounded-xl flex items-center gap-1.5 shrink-0"
+                  title={`Reset all days to default meal schedule (${mealPlan})`}
+                >
+                  <Utensils className="w-3.5 h-3.5 text-amber-600" />
+                  Reset Day Meals
+                </Button>
+
+                <Button
                   onClick={addDay}
                   variant="outline"
                   size="sm"
@@ -5531,7 +5681,14 @@ export default function SheetItineraryPage() {
                     <th className="px-3 py-3 w-28 text-center border-r border-slate-300 text-slate-800 font-bold">
                       Guided Tour
                     </th>
-                    {/* 3. City */}
+                    {/* 3. Meals Included */}
+                    <th className="px-3 py-3 w-64 border-r border-slate-300 text-amber-950 font-bold bg-amber-50/70">
+                      <div className="flex items-center gap-1.5">
+                        <Utensils className="w-3.5 h-3.5 text-amber-700 shrink-0" />
+                        <span>Meals Included</span>
+                      </div>
+                    </th>
+                    {/* 4. City */}
                     <th className="px-3 py-3 w-44 border-r border-slate-300 text-slate-800 font-bold">
                       City
                     </th>
@@ -5635,7 +5792,84 @@ export default function SheetItineraryPage() {
                         </label>
                       </td>
 
-                      {/* 3. City */}
+                      {/* 3. Meals Included (Breakfast, Lunch, Dinner toggles) */}
+                      <td className="px-3 py-2 border-r border-slate-300 bg-amber-50/20">
+                        <div className="flex flex-col gap-1.5 min-w-[210px]">
+                          <div className="flex items-center gap-1.5">
+                            {/* Breakfast Toggle */}
+                            <label
+                              title="Include Breakfast on this day"
+                              className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-bold cursor-pointer border select-none transition-all ${
+                                day.breakfast !== false
+                                  ? 'bg-amber-100/90 border-amber-300 text-amber-900 shadow-2xs'
+                                  : 'bg-white border-slate-200 text-slate-400 opacity-60 hover:opacity-90'
+                              }`}
+                            >
+                              <input
+                                type="checkbox"
+                                checked={day.breakfast !== false}
+                                onChange={e => updateDayMeal(dIdx, 'breakfast', e.target.checked)}
+                                className="w-3.5 h-3.5 accent-amber-600 rounded cursor-pointer"
+                              />
+                              <span>B</span>
+                              <span className="hidden xl:inline text-[10px] font-medium text-amber-800">reakfast</span>
+                            </label>
+
+                            {/* Lunch Toggle */}
+                            <label
+                              title="Include Lunch on this day"
+                              className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-bold cursor-pointer border select-none transition-all ${
+                                Boolean(day.lunch)
+                                  ? 'bg-orange-100/90 border-orange-300 text-orange-900 shadow-2xs'
+                                  : 'bg-white border-slate-200 text-slate-400 opacity-60 hover:opacity-90'
+                              }`}
+                            >
+                              <input
+                                type="checkbox"
+                                checked={Boolean(day.lunch)}
+                                onChange={e => updateDayMeal(dIdx, 'lunch', e.target.checked)}
+                                className="w-3.5 h-3.5 accent-orange-600 rounded cursor-pointer"
+                              />
+                              <span>L</span>
+                              <span className="hidden xl:inline text-[10px] font-medium text-orange-800">unch</span>
+                            </label>
+
+                            {/* Dinner Toggle */}
+                            <label
+                              title="Include Dinner on this day"
+                              className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-bold cursor-pointer border select-none transition-all ${
+                                day.dinner !== false
+                                  ? 'bg-indigo-100/90 border-indigo-300 text-indigo-900 shadow-2xs'
+                                  : 'bg-white border-slate-200 text-slate-400 opacity-60 hover:opacity-90'
+                              }`}
+                            >
+                              <input
+                                type="checkbox"
+                                checked={day.dinner !== false}
+                                onChange={e => updateDayMeal(dIdx, 'dinner', e.target.checked)}
+                                className="w-3.5 h-3.5 accent-indigo-600 rounded cursor-pointer"
+                              />
+                              <span>D</span>
+                              <span className="hidden xl:inline text-[10px] font-medium text-indigo-800">inner</span>
+                            </label>
+                          </div>
+
+                          {/* Live preview badge */}
+                          <div className="flex items-center gap-1">
+                            {formatDayMeals(day.breakfast, day.lunch, day.dinner) ? (
+                              <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 truncate">
+                                ✓ {formatDayMeals(day.breakfast, day.lunch, day.dinner)}
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-rose-50 text-rose-600 border border-rose-200 italic">
+                                No Meals Included
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+
+                      {/* 4. City */}
                       <td className="px-3 py-2.5 border-r border-slate-300">
                         <LookupField
                           value={day.city}

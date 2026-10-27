@@ -4706,9 +4706,13 @@ export function itineraryDocumentToManualItinerary(itinerary: ItineraryDocument)
       optionalNote,
       stayLocation: cleanStayLocation,
       image: dp.image || collageImages[idx % collageImages.length],
-      meals: (/lunch|all\s*meals|apai/i.test(mealPlan) && (!dp.meals || !/lunch/i.test(dp.meals)))
-        ? (idx === 0 ? 'Lunch & Dinner' : (idx === numDays - 1 ? 'Breakfast & Lunch' : 'Breakfast, Lunch & Dinner'))
-        : (dp.meals || (/breakfast\s*only|cp\b/i.test(mealPlan) ? (idx === 0 ? 'No Meals Included' : 'Breakfast Only') : (idx === 0 ? 'Dinner' : (idx === numDays - 1 ? 'Breakfast' : 'Breakfast & Dinner'))))
+      meals: (dp.meals !== undefined && dp.meals !== null)
+        ? dp.meals
+        : (/lunch|all\s*meals|apai/i.test(mealPlan)
+            ? (idx === 0 ? 'Lunch & Dinner' : (idx === numDays - 1 ? 'Breakfast & Lunch' : 'Breakfast, Lunch & Dinner'))
+            : (/breakfast\s*only|cp\b/i.test(mealPlan)
+                ? (idx === 0 ? 'No Meals Included' : 'Breakfast Only')
+                : (idx === 0 ? 'Dinner' : (idx === numDays - 1 ? 'Breakfast' : 'Breakfast & Dinner'))))
     };
   });
 
