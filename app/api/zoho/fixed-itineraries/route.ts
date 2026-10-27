@@ -129,38 +129,61 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    // Otherwise, return list of available fixed itineraries
-    const listUrl = getZohoApiUrl('/crm/v3/Products?fields=id,Product_Name,Event_Category,Product_Category,No_of_Days,No_of_Nights,Destination_Type,Destinations,Itinerary_Category&per_page=100');
-    const listRes = await fetch(listUrl, {
-      headers: fetchHeaders,
-      cache: 'no-store',
-      next: { revalidate: 0 }
-    });
+    // Otherwise, return full list of available fixed itineraries from Zoho CRM (across all pages)
+    const rawList: any[] = [];
+    let page = 1;
+    let hasMore = true;
+    while (hasMore && page <= 5) {
+      const listUrl = getZohoApiUrl(`/crm/v3/Products?fields=id,Product_Name,Event_Category,Product_Category,No_of_Days,No_of_Nights,Destination_Type,Destinations,Itinerary_Category,Destination_State,City&page=${page}&per_page=200`);
+      const listRes = await fetch(listUrl, {
+        headers: fetchHeaders,
+        cache: 'no-store',
+        next: { revalidate: 0 }
+      });
 
-    if (!listRes.ok) {
-      return NextResponse.json(
-        { success: false, error: `Failed to fetch itineraries list from Zoho CRM (Status: ${listRes.status})` },
-        { status: listRes.status }
-      );
+      if (!listRes.ok) {
+        if (page === 1) {
+          return NextResponse.json(
+            { success: false, error: `Failed to fetch itineraries list from Zoho CRM (Status: ${listRes.status})` },
+            { status: listRes.status }
+          );
+        }
+        break;
+      }
+
+      const listJson = await listRes.json();
+      const pageData = listJson.data || [];
+      rawList.push(...pageData);
+      hasMore = Boolean(listJson.info?.more_records);
+      page++;
+      if (pageData.length === 0) break;
     }
-
-    const listJson = await listRes.json();
-    const rawList = listJson.data || [];
 
     const itineraries = rawList.map((item: any) => ({
       id: item.id,
       name: item.Product_Name || 'Untitled Itinerary',
-      destination: item.Event_Category || item.Destinations || item.Product_Category || '',
+      destination: item.Event_Category || item.Destinations || item.Destination_State || item.City || item.Product_Category || '',
       destinationType: item.Destination_Type || 'India',
       category: item.Itinerary_Category || item.Product_Category || '',
       noOfDays: item.No_of_Days || null,
       noOfNights: item.No_of_Nights || null
     }));
 
-    return NextResponse.json({
-      success: true,
-      itineraries
-    });
+    return new NextResponse(
+      JSON.stringify({
+        success: true,
+        itineraries
+      }),
+      {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json',
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
+      }
+    );
   } catch (error) {
     console.error('[Zoho Fixed Itineraries API Error]:', error);
     return NextResponse.json(

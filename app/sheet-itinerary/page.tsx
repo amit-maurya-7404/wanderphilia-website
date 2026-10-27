@@ -1635,6 +1635,7 @@ export default function SheetItineraryPage() {
   const [zohoFixedItineraries, setZohoFixedItineraries] = useState<any[]>([]);
   const [selectedFixedItineraryId, setSelectedFixedItineraryId] = useState('');
   const [loadingZohoFixed, setLoadingZohoFixed] = useState(false);
+  const [isRefreshingFixedItineraries, setIsRefreshingFixedItineraries] = useState(false);
   const [zohoFixedMsg, setZohoFixedMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   // Master Data Source: 'zoho' (default) or 'sheet'
@@ -2244,6 +2245,8 @@ export default function SheetItineraryPage() {
       { label: 'Tamil Nadu & Pondicherry', value: 'Tamil Nadu', badge: 'India' },
       { label: 'Madhya Pradesh', value: 'Madhya Pradesh', badge: 'India' },
       { label: 'Maharashtra', value: 'Maharashtra', badge: 'India' },
+      { label: 'Tadoba (Tiger Safari)', value: 'Tadoba', badge: 'India' },
+      { label: 'Tadoba National Park', value: 'Tadoba National Park', badge: 'India' },
       { label: 'Gujarat', value: 'Gujarat', badge: 'India' },
       { label: 'Arunachal Pradesh', value: 'Arunachal Pradesh', badge: 'India' },
       { label: 'Assam', value: 'Assam', badge: 'India' },
@@ -2383,6 +2386,23 @@ export default function SheetItineraryPage() {
       // e.g. Jawai, Jodhpur, Jaisalmer, Jaipur, Udaipur all belong to Rajasthan!
       const hasCityMatch = knownCities.some(city => itemNameAlpha.includes(city));
       if (hasCityMatch) {
+        return true;
+      }
+
+      // 5. Item destination matches any known city belonging to this destination
+      // e.g. item.destination is 'Tadoba' and destination is 'Maharashtra'
+      const hasDestCityMatch = knownCities.some(city => itemDestAlpha === city || itemDestAlpha.includes(city) || city.includes(itemDestAlpha));
+      if (hasDestCityMatch) {
+        return true;
+      }
+
+      // 6. Special cross-match for Tadoba and Maharashtra
+      const isTadobaDest = destAlpha.includes('tadoba');
+      const isTadobaItem = itemDestAlpha.includes('tadoba') || itemNameAlpha.includes('tadoba');
+      if (isTadobaDest && (isTadobaItem || itemDestAlpha.includes('maharashtra'))) {
+        return true;
+      }
+      if (destAlpha.includes('maharashtra') && isTadobaItem) {
         return true;
       }
 
@@ -2891,6 +2911,7 @@ export default function SheetItineraryPage() {
 
       // Check existing options in MongoDB for this Inquiry ID right away
       checkExistingItineraryOptions(resolvedInquiryId, l.zohoLeadId || l.id);
+      handleRefreshZohoFixedItineraries();
 
       // 2. Client Name
       const fName = l.firstName || raw.First_Name || '';
@@ -3211,7 +3232,13 @@ export default function SheetItineraryPage() {
         setSheetCitiesByDest(data.citiesByDestination);
       }
       if (data.experiencesByCity) {
-        setSheetExpByCity(data.experiencesByCity);
+        const eByCity = { ...data.experiencesByCity };
+        if (eByCity.tadobanationalpark && !eByCity.tadoba) {
+          eByCity.tadoba = eByCity.tadobanationalpark;
+        } else if (eByCity.tadoba && !eByCity.tadobanationalpark) {
+          eByCity.tadobanationalpark = eByCity.tadoba;
+        }
+        setSheetExpByCity(eByCity);
         // Automatically sync dayRows experience costs with the newly loaded master activities data!
         setDayRows(prev => prev.map(row => {
           const kidsAbove3 = (kidsDetails || []).filter(k => (Number(k.age) || 0) > 3).length;
@@ -3253,7 +3280,13 @@ export default function SheetItineraryPage() {
         }));
       }
       if (data.hotelsByCity) {
-        setSheetHotelsByCity(data.hotelsByCity);
+        const hByCity = { ...data.hotelsByCity };
+        if (hByCity.tadobanationalpark && !hByCity.tadoba) {
+          hByCity.tadoba = hByCity.tadobanationalpark;
+        } else if (hByCity.tadoba && !hByCity.tadobanationalpark) {
+          hByCity.tadobanationalpark = hByCity.tadoba;
+        }
+        setSheetHotelsByCity(hByCity);
       }
       if (Array.isArray(data.vehicles)) {
         setZohoVehicles(data.vehicles);
@@ -3307,23 +3340,58 @@ export default function SheetItineraryPage() {
     }
   };
 
-  // Auto connect to Zoho CRM Master Modules on mount & load Zoho fixed itineraries list
+  // Load Zoho fixed itineraries list directly from Zoho CRM Products (with real-time cache-busting)
+  const handleRefreshZohoFixedItineraries = useCallback(async (isManual = false) => {
+    setIsRefreshingFixedItineraries(true);
+    try {
+      const res = await fetch(`/api/zoho/fixed-itineraries?_t=${Date.now()}`, {
+        cache: 'no-store'
+      });
+      const data = await res.json();
+      if (data.success && Array.isArray(data.itineraries)) {
+        setZohoFixedItineraries(data.itineraries);
+        if (isManual) {
+          setZohoFixedMsg({
+            type: 'success',
+            text: `Synced ${data.itineraries.length} itineraries from Zoho CRM Products!`
+          });
+          setTimeout(() => setZohoFixedMsg(null), 4000);
+        }
+      }
+    } catch (err) {
+      console.warn('Failed to load Zoho fixed itineraries list:', err);
+      if (isManual) {
+        setZohoFixedMsg({
+          type: 'error',
+          text: 'Failed to sync with Zoho CRM. Please try again.'
+        });
+      }
+    } finally {
+      setIsRefreshingFixedItineraries(false);
+    }
+  }, []);
+
+  // Auto connect to Zoho CRM Master Modules on mount & auto-sync fixed itineraries list
   useEffect(() => {
     handleFetchZohoMasterData();
+    handleRefreshZohoFixedItineraries();
 
-    async function loadZohoFixedTemplates() {
-      try {
-        const res = await fetch('/api/zoho/fixed-itineraries');
-        const data = await res.json();
-        if (data.success && Array.isArray(data.itineraries)) {
-          setZohoFixedItineraries(data.itineraries);
-        }
-      } catch (err) {
-        console.warn('Failed to load Zoho fixed itineraries list:', err);
-      }
-    }
-    loadZohoFixedTemplates();
-  }, []);
+    // Auto-fetch fresh itineraries from Zoho CRM whenever user switches back to this browser tab!
+    const handleWindowFocus = () => {
+      handleRefreshZohoFixedItineraries();
+    };
+    window.addEventListener('focus', handleWindowFocus);
+
+    // Auto-sync every 60 seconds
+    const intervalId = setInterval(() => {
+      handleRefreshZohoFixedItineraries();
+    }, 60000);
+
+    return () => {
+      window.removeEventListener('focus', handleWindowFocus);
+      clearInterval(intervalId);
+    };
+  }, [handleRefreshZohoFixedItineraries]);
 
   // Apply Zoho Fixed Itinerary Template into Grid
   const handleApplyZohoFixedItinerary = async (idToUse?: string) => {
@@ -5192,11 +5260,21 @@ export default function SheetItineraryPage() {
                   <FileSpreadsheet className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                  <h3 className="text-sm font-bold text-slate-900 flex flex-wrap items-center gap-2">
                     Load Pre-saved Itinerary from Zoho CRM
                     <span className="text-[10px] px-2 py-0.5 rounded-full bg-orange-200 text-orange-950 font-extrabold uppercase">
                       Zoho Itineraries Module
                     </span>
+                    <button
+                      type="button"
+                      onClick={() => handleRefreshZohoFixedItineraries(true)}
+                      disabled={isRefreshingFixedItineraries}
+                      className="inline-flex items-center gap-1.5 text-[11px] font-bold text-orange-800 hover:text-orange-950 bg-white hover:bg-orange-100 border border-orange-300 rounded-lg px-2.5 py-1 transition-all cursor-pointer shadow-2xs active:scale-95 disabled:opacity-60"
+                      title="Fetch latest itineraries created in Zoho CRM Products"
+                    >
+                      <RefreshCw className={`w-3 h-3 text-orange-600 ${isRefreshingFixedItineraries ? 'animate-spin' : ''}`} />
+                      {isRefreshingFixedItineraries ? 'Syncing...' : 'Sync from Zoho'}
+                    </button>
                   </h3>
                   <p className="text-xs text-slate-600 mt-0.5">
                     Select a fixed itinerary to auto-populate all Days, Cities, Guided Tours, En-route spots, Experiences &amp; Descriptions directly into the grid!
@@ -5214,7 +5292,7 @@ export default function SheetItineraryPage() {
                     <option value="">
                       {filteredZohoFixedItineraries.length > 0
                         ? `-- Select ${destination} Itinerary from Zoho (${filteredZohoFixedItineraries.length}) --`
-                        : `-- No itineraries found for ${destination} --`}
+                        : `-- No itineraries found for ${destination} (Click Show All below) --`}
                     </option>
                     {filteredZohoFixedItineraries.map(item => (
                       <option key={item.id} value={item.id}>
