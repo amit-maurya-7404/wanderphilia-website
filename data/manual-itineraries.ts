@@ -3705,7 +3705,267 @@ export const alibaugCorporateEscapeManualItinerary: ManualItinerary = {
   fullPaymentOnly: true
 };
 
+
+export const lakshadweepParekhManualItinerary: ManualItinerary = {
+  id: 'lakshadweep-parekh',
+  slug: 'lakshadweep-coral-luxe-xl-parekh-family',
+  title: 'Lakshadweep Coral Luxe XL – 5N/6D Island Escape',
+  subtitle: 'Curated Island Experience for Parekh & Family',
+  duration: '5 Nights / 6 Days',
+  numNights: 5,
+  numDays: 6,
+  dates: '5 Nights / 6 Days Curated Tour',
+  route: 'Agatti Island → Thinnakara Island & Sandbank → Kalpitty Rocky Island → Agatti Island',
+  routeSummary: '5N Agatti Island (Excursions to Thinnakara Island & Kalpitty Rocky Island)',
+  destination: 'Lakshadweep, India',
+  travelStyle: 'Luxury Tropical Island Holiday',
+  tripType: 'Private Group Tour (14 Adults)',
+  leadName: 'Parekh & Family',
+  adults: 14,
+  kids: 0,
+  perAdultPrice: 30635,
+  baseAmount: 428890,
+  gstPercentage: 5,
+  gstAmount: 21445,
+  finalQuotationAmount: 450335,
+  advanceAmountPaid: 0,
+  balancePendingAmount: 450335,
+  paymentStage: 'unpaid',
+  childPricingNote: 'Base Cost: ₹30,635 per person (without tax) × 14 Adults = ₹4,28,890 + 5% GST (₹21,445) = Total ₹4,50,335/- for 14 Adults (7 Rooms on Double Sharing Basis at PP Villa, APAI Plan).',
+  vehicleType: 'Speedboat & Island Transfers with Personal Travel Captain',
+  mealPlan: 'APAI Plan (Breakfast, Lunch, Evening Tea & Dinner included)',
+  heroImage: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1920&q=80',
+  galleryImages: [
+    'https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1495954484750-af469f2f9be5?auto=format&fit=crop&w=1200&q=80'
+  ],
+  moments: [
+    '5 Nights at PP Villa (Premium Category, 7 Rooms Double Sharing)',
+    'Scenic boat ride to Thinnakara Island and walk on pristine Sandbank',
+    'Guided snorkeling session amidst crystal turquoise coral reefs',
+    'Glass-Bottom Boat Ride to view vibrant marine life & coral formations',
+    'Excursion to Kalpitty Rocky Island with panoramic sunset lagoon vistas',
+    'Peaceful sunset kayaking session across the calm turquoise waters',
+    'Vibrant Traditional Folklore Night featuring authentic island art forms',
+    'APAI Meal Plan: Wholesome Breakfast, Lunch, Evening Tea & Dinner daily',
+    'Dedicated Personal Travel Captain throughout the trip'
+  ],
+  highlights: [
+    '5 Nights at PP Villa (Premium Category, 7 Rooms Double Sharing)',
+    'Scenic boat ride to Thinnakara Island and walk on pristine Sandbank',
+    'Guided snorkeling session amidst crystal turquoise coral reefs',
+    'Glass-Bottom Boat Ride to view vibrant marine life & coral formations',
+    'Excursion to Kalpitty Rocky Island with panoramic sunset lagoon vistas',
+    'Peaceful sunset kayaking session across the calm turquoise waters',
+    'Vibrant Traditional Folklore Night featuring authentic island art forms',
+    'APAI Meal Plan: Wholesome Breakfast, Lunch, Evening Tea & Dinner daily',
+    'Dedicated Personal Travel Captain throughout the trip'
+  ],
+  accommodations: [
+    {
+      city: 'Agatti Island',
+      nights: 5,
+      hotelName: 'PP Villa (Premium Category)',
+      roomCategory: '7 Rooms on Double Sharing Basis (Air-Conditioned)'
+    }
+  ],
+  dayPlans: [
+    {
+      day: 1,
+      date: 'Day 01',
+      title: 'Day 1 | Arrival at AGATTI & Island Orientation',
+      route: 'Arrival at Agatti Airport → Agatti Island',
+      intro: 'Welcome to the breathtaking turquoise paradise of Lakshadweep. Arrive at Agatti Airport, receive a warm island welcome, and begin your tropical getaway.',
+      timeline: [
+        'Arrival at Agatti Airport and a warm welcome by a representative',
+        'Transfer to accommodation (PP Villa) with a refreshing welcome drink',
+        'Rest at the property and settle in',
+        'Enjoy a delicious lunch at the resort',
+        'Evening tea break with light refreshments',
+        'Guided tour of Agatti Island: Visit to Agatti Museum (closed on Sundays)',
+        'Explore the scenic Eastern Jetty',
+        'Relax at a serene beach by the turquoise blue lagoon',
+        'Return to property for dinner'
+      ],
+      stayLocation: 'Agatti Island (PP Villa)',
+      image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80',
+      meals: 'Lunch and Dinner'
+    },
+    {
+      day: 2,
+      date: 'Day 02',
+      title: 'Day 2 | Isle Escapes & Ocean Whispers (Thinnakara Island & Sandbank)',
+      route: 'Agatti Island → Thinnakara Island & Sandbank',
+      intro: 'Set out on a scenic boat ride across azure waters to Thinnakara Island and walk on its pristine white sandbank.',
+      timeline: [
+        'Begin the day with a wholesome breakfast at the resort',
+        'Set out on a scenic 1.5-hour boat ride to Thinnakara Island',
+        'Walk together on the stunning white Sandbank surrounded by crystal clear lagoon waters',
+        'Enjoy a guided snorkeling session at Thinnakara (included in package)',
+        'Enjoy a beachfront lunch (served on board or on the island, depending on tide)',
+        'OR (In unforeseen situations): Enjoy the Lucky Dolphin Cruise and a 360° island tour for a unique view of Agatti’s beauty. Spot playful dolphins and graceful green turtles along the way',
+        'Return to Agatti by evening and relax with a warm cup of tea',
+        'Dinner at the property'
+      ],
+      stayLocation: 'Agatti Island (PP Villa)',
+      image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1200&q=80',
+      meals: 'Breakfast, Lunch & Dinner'
+    },
+    {
+      day: 3,
+      date: 'Day 03',
+      title: 'Day 3 | Kalpitty Rocky Island Excursion & Glass-Bottom Boat Ride',
+      route: 'Agatti Island → Kalpitty Rocky Island',
+      intro: 'A leisurely island morning followed by vibrant underwater marine discovery and an excursion to Kalpitty Rocky Island.',
+      timeline: [
+        'Start the day at leisure — relax at the resort or choose your own activity',
+        'Breakfast at the resort',
+        'Optional water activities (at additional cost): Scuba diving, jet skiing, speedboat rides, deep-sea fishing, and more',
+        'Lunch at the resort',
+        'Evening visit to Kalpitty Rocky Island',
+        'Enjoy a Glass-Bottom Boat Ride to view vibrant corals and rich marine life',
+        'Return to property for dinner'
+      ],
+      sections: [
+        {
+          title: 'Optional Water Activities (available on-site at additional cost):',
+          items: [
+            'Scuba diving with certified dive instructors',
+            'Jet skiing across the turquoise lagoon',
+            'Speedboat rides',
+            'Deep-sea fishing excursion'
+          ],
+          type: 'optional'
+        }
+      ],
+      stayLocation: 'Agatti Island (PP Villa)',
+      image: 'https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?auto=format&fit=crop&w=1200&q=80',
+      meals: 'Breakfast, Lunch & Dinner'
+    },
+    {
+      day: 4,
+      date: 'Day 04',
+      title: 'Day 4 | Sun-kissed Serenity & Golden Hour Sunset Kayaking',
+      route: 'Agatti Island & Lagoon Kayaking',
+      intro: 'Unwind at your own pace before taking to the calm waters of the lagoon for an unforgettable sunset kayaking session.',
+      timeline: [
+        'Start your day at your own pace — relish a wholesome breakfast followed by free time to relax, read, or take a stroll along the shoreline',
+        'After a delightful lunch, take some time to unwind before gearing up for an exciting evening',
+        'As the sun begins to set, embark on a peaceful Kayaking session across the calm lagoon waters — a perfect blend of adventure and tranquillity, wrapped in golden hues of Lakshadweep’s sunset skies',
+        'Return to resort for evening tea and a delicious dinner'
+      ],
+      stayLocation: 'Agatti Island (PP Villa)',
+      image: 'https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?auto=format&fit=crop&w=1200&q=80',
+      meals: 'Breakfast, Lunch & Dinner'
+    },
+    {
+      day: 5,
+      date: 'Day 05',
+      title: 'Day 5 | Island Rhythms & Vibrant Traditional Folklore Night',
+      route: 'Agatti Island Culture & Traditional Folk Dances',
+      intro: 'Soak up the sun on pristine beaches, take a refreshing lagoon dip, and immerse yourself in the authentic island folklore culture as dusk falls.',
+      timeline: [
+        'Enjoy the day at your leisure — soak up the sun on pristine beaches, take a refreshing dip in the turquoise lagoon, or simply unwind amidst the island’s serene beauty',
+        'Delicious lunch and evening tea at the resort',
+        'As evening falls, step into the heart of Lakshadweep’s cultural soul with a vibrant traditional folklore night',
+        'Local artists enchant you with age-old island folk performances that echo the rhythm of the sea and the spirit of the community',
+        'Experience mesmerizing art forms like: Parichakali, Kolkali, Attom, Ulekkamuttu, and Bandiya',
+        'Grand dinner gathering at the property'
+      ],
+      sections: [
+        {
+          title: 'Experience Mesmerizing Traditional Art Forms:',
+          items: [
+            'Parichakali (Traditional sword & shield rhythmic dance)',
+            'Kolkali (Celebrated stick dance with ancient island folk songs)',
+            'Attom & Ulekkamuttu (Energetic cultural celebrations)',
+            'Bandiya (Melodic island folk musical performance)'
+          ],
+          type: 'celebration'
+        }
+      ],
+      stayLocation: 'Agatti Island (PP Villa)',
+      image: 'https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=1200&q=80',
+      meals: 'Breakfast, Lunch & Dinner'
+    },
+    {
+      day: 6,
+      date: 'Day 06',
+      title: 'Day 6 | Departure Day — Cherished Island Memories',
+      route: 'Agatti Island → Agatti Airport Departure',
+      intro: 'Savor your final morning breakfast in Lakshadweep before transferring to Agatti Airport for your departure flight.',
+      timeline: [
+        'Wholesome breakfast at the resort',
+        'Check-out and transfer to Agatti Airport for departure',
+        'Depart with cherished memories of Lakshadweep’s natural beauty, turquoise waters, and tranquil island charm'
+      ],
+      stayLocation: 'Departure',
+      image: 'https://images.unsplash.com/photo-1495954484750-af469f2f9be5?auto=format&fit=crop&w=1200&q=80',
+      meals: 'Breakfast',
+      signOff: 'Wishing Parekh & Family a memorable journey with Wanderphilia! 🌊🏝️'
+    }
+  ],
+  inclusions: [
+    'Lakshadweep Entry Permit & Documentation',
+    'Heritage Fee',
+    'Airport Transfers (Pickup & Drop)',
+    'Accommodation (Air-conditioned rooms)',
+    'APAI PLAN (Breakfast, Lunch & Dinner)',
+    'Personal Travel Captain throughout the trip',
+    'Guided Agatti Island Sightseeing',
+    'Glass Bottom Boat Ride',
+    'Guided Snorkeling',
+    'Kalpitty Island Excursion',
+    'Kayaking',
+    'Thinnakara Island & Sandbank visit OR (In Unforeseen Situations) Dolphin watch & 360° Island tour'
+  ],
+  exclusions: [
+    'Airfare',
+    'Personal Expenses: Expenses for personal items such as beverages, laundry, mineral water, and changes to the itinerary.',
+    'Meals outside itinerary',
+    'Additional Boating charges: Boating activities beyond those listed in the inclusions.',
+    'Unforeseen Circumstances: Any extra costs arising from flight or vessel delays/cancellations due to weather, political events, or technical issues.',
+    'Government Taxes: Any changes in statutory taxes or applicable rates post-booking.',
+    'Unlisted Inclusions',
+    'Gratuities: Tips for drivers, guides, and service personnel.',
+    'Excluded Water Sports: Activities not mentioned in the inclusions (like SCUBA).',
+    'Travel Insurance: Not included; guests are advised to obtain comprehensive coverage independently.',
+    'Personal Health & Medication'
+  ],
+  thingsToCarry: [
+    'Hard copy of the Lakshadweep permit document (must be carried at all times)',
+    'Original Aadhaar card / Govt photo ID and passport-size photographs',
+    'Light cotton clothes & comfortable swimwear',
+    'Hat or cap for sun protection',
+    'Sunglasses and high-SPF sunscreen',
+    'Insect repellent',
+    'Personal medications and first-aid essentials',
+    'Waterproof bag / pouch for valuables & phones',
+    'Flip-flops or waterproof sandals',
+    'Reusable water bottle',
+    'Phone charger and power bank',
+    'Airtel or BSNL SIM (preferred for better network coverage in Lakshadweep)'
+  ],
+  enableOnlineBooking: false,
+  fullPaymentOnly: false
+};
+
 export const manualItinerariesRegistry: Record<string, ManualItinerary> = {
+  'lakshadweep-parekh': lakshadweepParekhManualItinerary,
+  'lakshadweep-parekh-family': lakshadweepParekhManualItinerary,
+  'parekh-lakshadweep': lakshadweepParekhManualItinerary,
+  'parekh-family-lakshadweep': lakshadweepParekhManualItinerary,
+  'parekh': lakshadweepParekhManualItinerary,
+  'parekh-family': lakshadweepParekhManualItinerary,
+  'lakshadweep-coral-luxe-xl-parekh-family': lakshadweepParekhManualItinerary,
+  'lakshadweep-coral-luxe': lakshadweepParekhManualItinerary,
+  'lakshadweep': lakshadweepParekhManualItinerary,
+  'wp-lakshadweep-parekh': lakshadweepParekhManualItinerary,
+
   'wp-041c1bdc': rajasthanSachinManualItinerary,
   '041c1bdc': rajasthanSachinManualItinerary,
   'rajasthan-sachin': rajasthanSachinManualItinerary,
@@ -3838,6 +4098,7 @@ export function getManualItinerary(idOrSlug: string): ManualItinerary | null {
 
 export function getAllManualItineraries(): ManualItinerary[] {
   return [
+    lakshadweepParekhManualItinerary,
     himachalExplorerManualItinerary,
     winterSpitiYatinManualItinerary,
     vietnamAneeshManualItinerary,

@@ -18,6 +18,8 @@ export default function robots(): MetadataRoute.Robots {
         '/manual-itinerary/',
         '/itinerary-custom',
         '/itinerary-custom/',
+        '/itinerary-test',
+        '/itinerary-test/',
       ],
     },
     sitemap: 'https://wanderphilia.com/sitemap.xml',
