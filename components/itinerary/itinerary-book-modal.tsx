@@ -25,7 +25,8 @@ import {
   Building2,
   FileText,
   Calendar,
-  Users
+  Users,
+  X
 } from 'lucide-react';
 import { Parachute } from '@/components/parachute-icon';
 import { RiWhatsappLine } from 'react-icons/ri';
@@ -409,15 +410,29 @@ export function ItineraryBookModal({
 
   return (
     <Dialog open={open && !isRazorpayOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg sm:max-w-xl p-0 overflow-hidden bg-[#FAF8F5] border border-stone-300 rounded-2xl sm:rounded-3xl shadow-2xl max-h-[92vh] sm:max-h-[88vh] flex flex-col w-[94vw] sm:w-full">
+      <DialogContent 
+        showCloseButton={false}
+        className="max-w-lg sm:max-w-xl p-0 overflow-hidden bg-[#FAF8F5] border border-stone-300 rounded-2xl sm:rounded-3xl shadow-2xl max-h-[92vh] sm:max-h-[88vh] flex flex-col w-[94vw] sm:w-full"
+      >
 
         {/* MODAL HEADER */}
         <div className="bg-gradient-to-r from-[#6E1E14] via-[#5C1810] to-[#3D0F0A] text-white p-4 sm:p-6 shrink-0 relative overflow-hidden">
+          {/* Prominent White Close Button */}
+          <button
+            type="button"
+            onClick={() => onOpenChange(false)}
+            disabled={isVerifying}
+            className="absolute top-3.5 right-3.5 sm:top-4 sm:right-4 z-50 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/20 hover:bg-white/35 active:scale-95 text-white flex items-center justify-center transition-all cursor-pointer backdrop-blur-md border border-white/35 shadow-md hover:shadow-lg focus:outline-hidden disabled:opacity-40 disabled:cursor-not-allowed group"
+            aria-label="Close booking modal"
+          >
+            <X className="w-5 h-5 sm:w-6 sm:h-6 text-white stroke-[2.5] group-hover:scale-110 transition-transform" />
+          </button>
+
           <div className="absolute right-0 top-0 translate-x-4 -translate-y-4 opacity-10 pointer-events-none">
             <CreditCard className="w-36 h-36 text-amber-300" />
           </div>
 
-          <div className="relative z-10 space-y-1.5">
+          <div className="relative z-10 space-y-1.5 pr-11 sm:pr-14">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <span className="inline-flex items-center gap-1.5 bg-amber-400 text-stone-950 text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full tracking-wider">
                 <Parachute size={13} className="w-3.5 h-3.5 text-stone-950" /> Secure Online Booking

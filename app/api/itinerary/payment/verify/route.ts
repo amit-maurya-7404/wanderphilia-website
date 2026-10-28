@@ -477,6 +477,7 @@ export async function POST(req: NextRequest) {
         totalQuotationAmount,
         invoiceNumber,
         zohoLeadId: zohoLeadId || undefined,
+        existingDealId: itinerary?.zohoDealId || (itinerary?.rawZohoData as any)?.Zoho_Deal_Id || undefined,
         customerName,
         customerEmail,
         customerMobile,

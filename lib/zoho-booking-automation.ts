@@ -13,6 +13,7 @@ export interface BookingPaymentSyncParams {
   totalQuotationAmount: number;
   invoiceNumber: string;
   zohoLeadId?: string;
+  existingDealId?: string;
   customerName: string;
   customerEmail?: string;
   customerMobile?: string;
@@ -113,6 +114,20 @@ async function findExistingDeal(
 }
 
 /**
+ * Safely resolves a lookup ID object for Zoho CRM lookup fields.
+ * If the input already contains a numeric Zoho ID, returns `{ id: String(id) }`.
+ * Never returns a plain text string to prevent INVALID_DATA (expected_data_type: bigint) crashes.
+ */
+function resolveHotelLookupId(hotel: any): { id: string } | undefined {
+  if (!hotel) return undefined;
+  const rawId = hotel.id || hotel.hotelId || hotel.zohoHotelId;
+  if (rawId && /^\d{15,22}$/.test(String(rawId).trim())) {
+    return { id: String(rawId).trim() };
+  }
+  return undefined;
+}
+
+/**
  * Builds the Hotel fields payload for Deals module
  */
 function buildDealHotelPayload(hotels: BookingPaymentSyncParams['hotels'] = []): Record<string, any> {
@@ -120,7 +135,8 @@ function buildDealHotelPayload(hotels: BookingPaymentSyncParams['hotels'] = []):
 
   // Hotel 1
   if (hotels[0]) {
-    if (hotels[0].hotelName) payload.st_Hotel = hotels[0].hotelName;
+    const lookup = resolveHotelLookupId(hotels[0]);
+    if (lookup) payload.st_Hotel = lookup;
     if (hotels[0].city) payload.st_Hotel_City = hotels[0].city;
     if (hotels[0].nights) payload.st_Hotel_Nights = Number(hotels[0].nights);
     if (hotels[0].stayDates) payload.st_Hotel_Stay_Dates = hotels[0].stayDates;
@@ -129,7 +145,8 @@ function buildDealHotelPayload(hotels: BookingPaymentSyncParams['hotels'] = []):
 
   // Hotel 2
   if (hotels[1]) {
-    if (hotels[1].hotelName) payload.nd_Hotel = hotels[1].hotelName;
+    const lookup = resolveHotelLookupId(hotels[1]);
+    if (lookup) payload.nd_Hotel = lookup;
     if (hotels[1].city) payload.nd_Hotel_City = hotels[1].city;
     if (hotels[1].nights) payload.nd_Hotel_Nights = Number(hotels[1].nights);
     if (hotels[1].stayDates) payload.nd_Hotel_Stay_Dates = hotels[1].stayDates;
@@ -138,7 +155,8 @@ function buildDealHotelPayload(hotels: BookingPaymentSyncParams['hotels'] = []):
 
   // Hotel 3
   if (hotels[2]) {
-    if (hotels[2].hotelName) payload.rd_Hotel = hotels[2].hotelName;
+    const lookup = resolveHotelLookupId(hotels[2]);
+    if (lookup) payload.rd_Hotel = lookup;
     if (hotels[2].city) payload.rd_Hotel_City = hotels[2].city;
     if (hotels[2].nights) payload.rd_Hotel_Nights = Number(hotels[2].nights);
     if (hotels[2].stayDates) payload.rd_Hotel_Stay_Dates = hotels[2].stayDates;
@@ -147,7 +165,8 @@ function buildDealHotelPayload(hotels: BookingPaymentSyncParams['hotels'] = []):
 
   // Hotel 4 (API: th_Hotel2 in Deals)
   if (hotels[3]) {
-    if (hotels[3].hotelName) payload.th_Hotel2 = hotels[3].hotelName;
+    const lookup = resolveHotelLookupId(hotels[3]);
+    if (lookup) payload.th_Hotel2 = lookup;
     if (hotels[3].city) payload.th_Hotel_City = hotels[3].city;
     if (hotels[3].nights) payload.th_Hotel_Nights2 = Number(hotels[3].nights);
     if (hotels[3].stayDates) payload.th_Hotel_Stay_Dates2 = hotels[3].stayDates;
@@ -156,7 +175,8 @@ function buildDealHotelPayload(hotels: BookingPaymentSyncParams['hotels'] = []):
 
   // Hotel 5 (API: th_Hotel1 in Deals)
   if (hotels[4]) {
-    if (hotels[4].hotelName) payload.th_Hotel1 = hotels[4].hotelName;
+    const lookup = resolveHotelLookupId(hotels[4]);
+    if (lookup) payload.th_Hotel1 = lookup;
     if (hotels[4].city) payload.th_Hotel_City1 = hotels[4].city;
     if (hotels[4].nights) payload.th_Hotel_Nights1 = Number(hotels[4].nights);
     if (hotels[4].stayDates) payload.th_Hotel_Stay_Dates1 = hotels[4].stayDates;
@@ -165,7 +185,8 @@ function buildDealHotelPayload(hotels: BookingPaymentSyncParams['hotels'] = []):
 
   // Hotel 6 (API: th_Hotel in Deals)
   if (hotels[5]) {
-    if (hotels[5].hotelName) payload.th_Hotel = hotels[5].hotelName;
+    const lookup = resolveHotelLookupId(hotels[5]);
+    if (lookup) payload.th_Hotel = lookup;
     if (hotels[5].city) payload.th_Hotel_City2 = hotels[5].city;
     if (hotels[5].nights) payload.th_Hotel_Nights = Number(hotels[5].nights);
     if (hotels[5].stayDates) payload.th_Hotel_Stay_Dates = hotels[5].stayDates;
@@ -183,7 +204,8 @@ function buildTaskHotelPayload(hotels: BookingPaymentSyncParams['hotels'] = []):
 
   // Hotel 1
   if (hotels[0]) {
-    if (hotels[0].hotelName) payload.st_Hotel = hotels[0].hotelName;
+    const lookup = resolveHotelLookupId(hotels[0]);
+    if (lookup) payload.st_Hotel = lookup;
     if (hotels[0].city) payload.st_Hotel_city = hotels[0].city;
     if (hotels[0].nights) payload.st_Hotel_Nights = Number(hotels[0].nights);
     if (hotels[0].stayDates) payload.st_Hotel_Stay_Dates = hotels[0].stayDates;
@@ -192,7 +214,8 @@ function buildTaskHotelPayload(hotels: BookingPaymentSyncParams['hotels'] = []):
 
   // Hotel 2
   if (hotels[1]) {
-    if (hotels[1].hotelName) payload.nd_Hotel = hotels[1].hotelName;
+    const lookup = resolveHotelLookupId(hotels[1]);
+    if (lookup) payload.nd_Hotel = lookup;
     if (hotels[1].city) payload.nd_Hotel_City = hotels[1].city;
     if (hotels[1].nights) payload.nd_Hotel_Nights = Number(hotels[1].nights);
     if (hotels[1].stayDates) payload.nd_Hotel_Stay_Dates = hotels[1].stayDates;
@@ -201,7 +224,8 @@ function buildTaskHotelPayload(hotels: BookingPaymentSyncParams['hotels'] = []):
 
   // Hotel 3
   if (hotels[2]) {
-    if (hotels[2].hotelName) payload.rd_Hotel = hotels[2].hotelName;
+    const lookup = resolveHotelLookupId(hotels[2]);
+    if (lookup) payload.rd_Hotel = lookup;
     if (hotels[2].city) payload.rd_Hotel_City = hotels[2].city;
     if (hotels[2].nights) payload.rd_Hotel_Nights = Number(hotels[2].nights);
     if (hotels[2].stayDates) payload.rd_Hotel_Stay_Dates = hotels[2].stayDates;
@@ -210,7 +234,8 @@ function buildTaskHotelPayload(hotels: BookingPaymentSyncParams['hotels'] = []):
 
   // Hotel 4 (In Tasks: th_Hotel1, th_Hotel_city1, th_Hotel_Nights2, th_Hotel_Stay_Dates2)
   if (hotels[3]) {
-    if (hotels[3].hotelName) payload.th_Hotel1 = hotels[3].hotelName;
+    const lookup = resolveHotelLookupId(hotels[3]);
+    if (lookup) payload.th_Hotel1 = lookup;
     if (hotels[3].city) payload.th_Hotel_city1 = hotels[3].city;
     if (hotels[3].nights) payload.th_Hotel_Nights2 = Number(hotels[3].nights);
     if (hotels[3].stayDates) payload.th_Hotel_Stay_Dates2 = hotels[3].stayDates;
@@ -219,7 +244,8 @@ function buildTaskHotelPayload(hotels: BookingPaymentSyncParams['hotels'] = []):
 
   // Hotel 5 (In Tasks: th_Hotel, th_Hotel_City, th_Hotel_Nights1, th_Hotel_Stay_Dates1)
   if (hotels[4]) {
-    if (hotels[4].hotelName) payload.th_Hotel = hotels[4].hotelName;
+    const lookup = resolveHotelLookupId(hotels[4]);
+    if (lookup) payload.th_Hotel = lookup;
     if (hotels[4].city) payload.th_Hotel_City = hotels[4].city;
     if (hotels[4].nights) payload.th_Hotel_Nights1 = Number(hotels[4].nights);
     if (hotels[4].stayDates) payload.th_Hotel_Stay_Dates1 = hotels[4].stayDates;
@@ -228,7 +254,8 @@ function buildTaskHotelPayload(hotels: BookingPaymentSyncParams['hotels'] = []):
 
   // Hotel 6 (In Tasks: th_Hotel2, th_Hotel_City2, th_Hotel_Nights, th_Hotel_Stay_Dates)
   if (hotels[5]) {
-    if (hotels[5].hotelName) payload.th_Hotel2 = hotels[5].hotelName;
+    const lookup = resolveHotelLookupId(hotels[5]);
+    if (lookup) payload.th_Hotel2 = lookup;
     if (hotels[5].city) payload.th_Hotel_City2 = hotels[5].city;
     if (hotels[5].nights) payload.th_Hotel_Nights = Number(hotels[5].nights);
     if (hotels[5].stayDates) payload.th_Hotel_Stay_Dates = hotels[5].stayDates;
@@ -301,7 +328,12 @@ export async function syncBookingAndTaskOnPayment(
       .replace(/https?:\/\/localhost(:\d+)?/i, 'https://wanderphilia.com');
 
     // 1. Check if Deal/Booking already exists (Multi-stage payment / idempotent check)
-    const existingDeal = await findExistingDeal(params.itineraryId, cleanItineraryUrl);
+    let existingDeal: any = null;
+    if (params.existingDealId && /^\d+$/.test(String(params.existingDealId).trim())) {
+      existingDeal = { id: String(params.existingDealId).trim() };
+    } else {
+      existingDeal = await findExistingDeal(params.itineraryId, cleanItineraryUrl);
+    }
 
     let dealId = '';
     let dealName = '';
@@ -363,7 +395,7 @@ export async function syncBookingAndTaskOnPayment(
         Departure_City: params.departureCity || '',
         Number_of_Guests: params.numberOfGuests || 2,
         Number_of_Adults: params.adults || 2,
-        No_of_Kids: params.kids ? Number(params.kids) : 0,
+        No_of_Kids: params.kids !== undefined && params.kids !== null ? String(params.kids) : '0',
         Rooms_Count: params.roomsCount || 1,
         Sharing_Type: params.sharingType || 'Double Sharing',
         Preferred_Room_Category: params.preferredRoomCategory || 'Deluxe Room',
