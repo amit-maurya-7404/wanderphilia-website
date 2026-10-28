@@ -3709,7 +3709,7 @@ export const alibaugCorporateEscapeManualItinerary: ManualItinerary = {
 export const lakshadweepParekhManualItinerary: ManualItinerary = {
   id: 'lakshadweep-parekh',
   slug: 'lakshadweep-coral-luxe-xl-parekh-family',
-  title: 'Lakshadweep Coral Luxe XL – 5N/6D Island Escape',
+  title: 'Lakshadweep – Island Escape',
   subtitle: 'Curated Island Experience for Parekh & Family',
   duration: '5 Nights / 6 Days',
   numNights: 5,
@@ -4735,29 +4735,29 @@ export function itineraryDocumentToManualItinerary(itinerary: ItineraryDocument)
     : (Array.isArray(itinerary.rawZohoData?.inclusions) && itinerary.rawZohoData.inclusions.length > 0)
       ? itinerary.rawZohoData.inclusions.map((s: any) => String(s).trim()).filter(Boolean)
       : [
-          `Private ${cleanVehicle} for the complete ${destination} itinerary and Airport Transfers.`,
-          `Accomodation in ${hotelCategory} Properties For ${numNights} Nights.`,
-          `Meals ${mealPlan} ( Breakfast Except 1st Day , Dinner Last Day )`,
-          `Driver allowance, fuel, toll taxes, parking charges and applicable road taxes.`,
-          `All transfers and sightseeing as per the day-wise itinerary. Entry fees are excluded unless specifically mentioned.`,
-          ...dynamicExperiences,
-          `Assistance during hotel check-in and check-out.`,
-          `Applicable taxes included in the quoted package, wherever applicable.`
-        ];
+        `Private ${cleanVehicle} for the complete ${destination} itinerary and Airport Transfers.`,
+        `Accomodation in ${hotelCategory} Properties For ${numNights} Nights.`,
+        `Meals ${mealPlan} ( Breakfast Except 1st Day , Dinner Last Day )`,
+        `Driver allowance, fuel, toll taxes, parking charges and applicable road taxes.`,
+        `All transfers and sightseeing as per the day-wise itinerary. Entry fees are excluded unless specifically mentioned.`,
+        ...dynamicExperiences,
+        `Assistance during hotel check-in and check-out.`,
+        `Applicable taxes included in the quoted package, wherever applicable.`
+      ];
 
   const displayExclusions: string[] = (Array.isArray(itinerary.exclusions) && itinerary.exclusions.length > 0)
     ? itinerary.exclusions.map((s: any) => String(s).trim()).filter(Boolean)
     : (Array.isArray(itinerary.rawZohoData?.exclusions) && itinerary.rawZohoData.exclusions.length > 0)
       ? itinerary.rawZohoData.exclusions.map((s: any) => String(s).trim()).filter(Boolean)
       : [
-          `5% GST.`,
-          `Early check-in (Before 1:00 PM) & Late Check-out (After 11:00 AM) at the hotel.`,
-          `Any additional expenses of personal nature.`,
-          `Additional accommodation/food costs incurred due to any delayed travel.`,
-          `Any lunch and other meals not mentioned in Package Inclusions.`,
-          `Any Airfare / Rail fare other than what is mentioned in "Inclusions" or any type of transportation.`,
-          `Monument entry fees during Sightseeing.`
-        ];
+        `5% GST.`,
+        `Early check-in (Before 1:00 PM) & Late Check-out (After 11:00 AM) at the hotel.`,
+        `Any additional expenses of personal nature.`,
+        `Additional accommodation/food costs incurred due to any delayed travel.`,
+        `Any lunch and other meals not mentioned in Package Inclusions.`,
+        `Any Airfare / Rail fare other than what is mentioned in "Inclusions" or any type of transportation.`,
+        `Monument entry fees during Sightseeing.`
+      ];
 
   const thingsToCarry = (itinerary.packingTips && itinerary.packingTips.length > 0)
     ? itinerary.packingTips
@@ -4970,10 +4970,10 @@ export function itineraryDocumentToManualItinerary(itinerary: ItineraryDocument)
       meals: (dp.meals !== undefined && dp.meals !== null)
         ? dp.meals
         : (/lunch|all\s*meals|apai/i.test(mealPlan)
-            ? (idx === 0 ? 'Lunch & Dinner' : (idx === numDays - 1 ? 'Breakfast & Lunch' : 'Breakfast, Lunch & Dinner'))
-            : (/breakfast\s*only|cp\b/i.test(mealPlan)
-                ? (idx === 0 ? 'No Meals Included' : 'Breakfast Only')
-                : (idx === 0 ? 'Dinner' : (idx === numDays - 1 ? 'Breakfast' : 'Breakfast & Dinner'))))
+          ? (idx === 0 ? 'Lunch & Dinner' : (idx === numDays - 1 ? 'Breakfast & Lunch' : 'Breakfast, Lunch & Dinner'))
+          : (/breakfast\s*only|cp\b/i.test(mealPlan)
+            ? (idx === 0 ? 'No Meals Included' : 'Breakfast Only')
+            : (idx === 0 ? 'Dinner' : (idx === numDays - 1 ? 'Breakfast' : 'Breakfast & Dinner'))))
     };
   });
 

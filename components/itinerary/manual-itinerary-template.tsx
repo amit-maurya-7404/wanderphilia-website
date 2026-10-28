@@ -127,10 +127,14 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
 
   const leadName = itinerary.leadName || 'Valued Traveler';
   const cleanedName = leadName.replace(/^(Mr\.|Mr|Mrs\.|Mrs|Ms\.|Ms|Dr\.|Dr|Shri)\s+/i, '').trim();
-  const firstName = cleanedName && cleanedName !== 'Valued Traveler' ? cleanedName.split(' ')[0] : 'Your';
-  const possessiveName = firstName.toLowerCase() === 'your'
+  const isFamilyOrGroup = /(&\s*Family|and\s*Family|\bFamily\b|\bTeam\b|\bGroup\b)/i.test(cleanedName);
+  const displayName = cleanedName && cleanedName !== 'Valued Traveler'
+    ? (isFamilyOrGroup ? cleanedName : cleanedName.split(' ')[0])
+    : 'Your';
+  const firstName = displayName;
+  const possessiveName = displayName.toLowerCase() === 'your'
     ? 'Your'
-    : (firstName.endsWith('s') || firstName.endsWith('S') ? `${firstName}'` : `${firstName}'s`);
+    : (displayName.endsWith('s') || displayName.endsWith('S') ? `${displayName}'` : `${displayName}'s`);
   const destination = itinerary.destination || 'Selected Destination';
   const numDays = activeOption?.numDays || itinerary.numDays || 5;
   const numNights = activeOption?.numNights || itinerary.numNights || 4;
