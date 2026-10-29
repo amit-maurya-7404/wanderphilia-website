@@ -46,6 +46,9 @@ export interface ItineraryLeadDetails {
   perKidPrice?: number;
   adults?: number;
   kids?: number;
+  kidsDetails?: any[];
+  childrenDetails?: any[];
+  hotels?: any[];
   baseAmount?: number;
   gstPercentage?: number;
   tcsPercentage?: number;
@@ -118,6 +121,9 @@ export interface ItineraryDocument {
   perKidPrice?: number;
   adults?: number;
   kids?: number;
+  kidsDetails?: any[];
+  childrenDetails?: any[];
+  hotels?: any[];
   baseAmount?: number;
   gstPercentage?: number;
   tcsPercentage?: number;

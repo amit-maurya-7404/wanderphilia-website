@@ -119,16 +119,69 @@ async function findExistingDeal(
   }
 }
 
+// Cache for Zoho Hotel mapping (name.toLowerCase() -> Zoho Record ID)
+let cachedZohoHotelsMap: Map<string, string> | null = null;
+let lastHotelsFetchTime = 0;
+
+/**
+ * Fetches and caches the mapping of all Zoho CRM Hotels (Name.toLowerCase() -> Record ID)
+ */
+async function getZohoHotelsMap(accessToken: string): Promise<Map<string, string>> {
+  const now = Date.now();
+  if (cachedZohoHotelsMap && (now - lastHotelsFetchTime < 10 * 60 * 1000)) {
+    return cachedZohoHotelsMap;
+  }
+  const map = new Map<string, string>();
+  try {
+    const url = getZohoApiUrl('/crm/v3/Hotel?fields=id,Name&per_page=200');
+    const res = await fetch(url, {
+      headers: { Authorization: `Zoho-oauthtoken ${accessToken}` },
+      cache: 'no-store',
+    });
+    if (res.ok) {
+      const json = await res.json();
+      if (Array.isArray(json.data)) {
+        for (const item of json.data) {
+          if (item.Name && item.id) {
+            map.set(item.Name.trim().toLowerCase(), String(item.id).trim());
+          }
+        }
+      }
+    }
+  } catch (err) {
+    console.warn('[Zoho Hotels Map Warning]:', err);
+  }
+  cachedZohoHotelsMap = map;
+  lastHotelsFetchTime = now;
+  return map;
+}
+
 /**
  * Safely resolves a lookup ID object for Zoho CRM lookup fields.
  * If the input already contains a numeric Zoho ID, returns `{ id: String(id) }`.
+ * If hotelsMap is provided, searches by hotelName/name.
  * Never returns a plain text string to prevent INVALID_DATA (expected_data_type: bigint) crashes.
  */
-function resolveHotelLookupId(hotel: any): { id: string } | undefined {
+function resolveHotelLookupId(hotel: any, hotelsMap?: Map<string, string>): { id: string } | undefined {
   if (!hotel) return undefined;
   const rawId = hotel.id || hotel.hotelId || hotel.zohoHotelId;
   if (rawId && /^\d{15,22}$/.test(String(rawId).trim())) {
     return { id: String(rawId).trim() };
+  }
+  const hName = (hotel.hotelName || hotel.name || '').trim().toLowerCase();
+  if (hName && hotelsMap) {
+    let matchId = hotelsMap.get(hName);
+    if (!matchId) {
+      for (const [name, id] of hotelsMap.entries()) {
+        if (name === hName || name.includes(hName) || hName.includes(name)) {
+          matchId = id;
+          break;
+        }
+      }
+    }
+    if (matchId) {
+      return { id: matchId };
+    }
   }
   return undefined;
 }
@@ -136,12 +189,12 @@ function resolveHotelLookupId(hotel: any): { id: string } | undefined {
 /**
  * Builds the Hotel fields payload for Deals module
  */
-function buildDealHotelPayload(hotels: BookingPaymentSyncParams['hotels'] = []): Record<string, any> {
+function buildDealHotelPayload(hotels: BookingPaymentSyncParams['hotels'] = [], hotelsMap?: Map<string, string>): Record<string, any> {
   const payload: Record<string, any> = {};
 
   // Hotel 1
   if (hotels[0]) {
-    const lookup = resolveHotelLookupId(hotels[0]);
+    const lookup = resolveHotelLookupId(hotels[0], hotelsMap);
     if (lookup) payload.st_Hotel = lookup;
     if (hotels[0].city) payload.st_Hotel_City = hotels[0].city;
     if (hotels[0].nights) payload.st_Hotel_Nights = Number(hotels[0].nights);
@@ -151,7 +204,7 @@ function buildDealHotelPayload(hotels: BookingPaymentSyncParams['hotels'] = []):
 
   // Hotel 2
   if (hotels[1]) {
-    const lookup = resolveHotelLookupId(hotels[1]);
+    const lookup = resolveHotelLookupId(hotels[1], hotelsMap);
     if (lookup) payload.nd_Hotel = lookup;
     if (hotels[1].city) payload.nd_Hotel_City = hotels[1].city;
     if (hotels[1].nights) payload.nd_Hotel_Nights = Number(hotels[1].nights);
@@ -161,7 +214,7 @@ function buildDealHotelPayload(hotels: BookingPaymentSyncParams['hotels'] = []):
 
   // Hotel 3
   if (hotels[2]) {
-    const lookup = resolveHotelLookupId(hotels[2]);
+    const lookup = resolveHotelLookupId(hotels[2], hotelsMap);
     if (lookup) payload.rd_Hotel = lookup;
     if (hotels[2].city) payload.rd_Hotel_City = hotels[2].city;
     if (hotels[2].nights) payload.rd_Hotel_Nights = Number(hotels[2].nights);
@@ -171,7 +224,7 @@ function buildDealHotelPayload(hotels: BookingPaymentSyncParams['hotels'] = []):
 
   // Hotel 4 (API: th_Hotel2 in Deals)
   if (hotels[3]) {
-    const lookup = resolveHotelLookupId(hotels[3]);
+    const lookup = resolveHotelLookupId(hotels[3], hotelsMap);
     if (lookup) payload.th_Hotel2 = lookup;
     if (hotels[3].city) payload.th_Hotel_City = hotels[3].city;
     if (hotels[3].nights) payload.th_Hotel_Nights2 = Number(hotels[3].nights);
@@ -181,7 +234,7 @@ function buildDealHotelPayload(hotels: BookingPaymentSyncParams['hotels'] = []):
 
   // Hotel 5 (API: th_Hotel1 in Deals)
   if (hotels[4]) {
-    const lookup = resolveHotelLookupId(hotels[4]);
+    const lookup = resolveHotelLookupId(hotels[4], hotelsMap);
     if (lookup) payload.th_Hotel1 = lookup;
     if (hotels[4].city) payload.th_Hotel_City1 = hotels[4].city;
     if (hotels[4].nights) payload.th_Hotel_Nights1 = Number(hotels[4].nights);
@@ -191,7 +244,7 @@ function buildDealHotelPayload(hotels: BookingPaymentSyncParams['hotels'] = []):
 
   // Hotel 6 (API: th_Hotel in Deals)
   if (hotels[5]) {
-    const lookup = resolveHotelLookupId(hotels[5]);
+    const lookup = resolveHotelLookupId(hotels[5], hotelsMap);
     if (lookup) payload.th_Hotel = lookup;
     if (hotels[5].city) payload.th_Hotel_City2 = hotels[5].city;
     if (hotels[5].nights) payload.th_Hotel_Nights = Number(hotels[5].nights);
@@ -205,12 +258,12 @@ function buildDealHotelPayload(hotels: BookingPaymentSyncParams['hotels'] = []):
 /**
  * Builds the Hotel fields payload for Tasks module
  */
-function buildTaskHotelPayload(hotels: BookingPaymentSyncParams['hotels'] = []): Record<string, any> {
+function buildTaskHotelPayload(hotels: BookingPaymentSyncParams['hotels'] = [], hotelsMap?: Map<string, string>): Record<string, any> {
   const payload: Record<string, any> = {};
 
   // Hotel 1
   if (hotels[0]) {
-    const lookup = resolveHotelLookupId(hotels[0]);
+    const lookup = resolveHotelLookupId(hotels[0], hotelsMap);
     if (lookup) payload.st_Hotel = lookup;
     if (hotels[0].city) payload.st_Hotel_city = hotels[0].city;
     if (hotels[0].nights) payload.st_Hotel_Nights = Number(hotels[0].nights);
@@ -220,7 +273,7 @@ function buildTaskHotelPayload(hotels: BookingPaymentSyncParams['hotels'] = []):
 
   // Hotel 2
   if (hotels[1]) {
-    const lookup = resolveHotelLookupId(hotels[1]);
+    const lookup = resolveHotelLookupId(hotels[1], hotelsMap);
     if (lookup) payload.nd_Hotel = lookup;
     if (hotels[1].city) payload.nd_Hotel_City = hotels[1].city;
     if (hotels[1].nights) payload.nd_Hotel_Nights = Number(hotels[1].nights);
@@ -230,7 +283,7 @@ function buildTaskHotelPayload(hotels: BookingPaymentSyncParams['hotels'] = []):
 
   // Hotel 3
   if (hotels[2]) {
-    const lookup = resolveHotelLookupId(hotels[2]);
+    const lookup = resolveHotelLookupId(hotels[2], hotelsMap);
     if (lookup) payload.rd_Hotel = lookup;
     if (hotels[2].city) payload.rd_Hotel_City = hotels[2].city;
     if (hotels[2].nights) payload.rd_Hotel_Nights = Number(hotels[2].nights);
@@ -240,7 +293,7 @@ function buildTaskHotelPayload(hotels: BookingPaymentSyncParams['hotels'] = []):
 
   // Hotel 4 (In Tasks: th_Hotel1, th_Hotel_city1, th_Hotel_Nights2, th_Hotel_Stay_Dates2)
   if (hotels[3]) {
-    const lookup = resolveHotelLookupId(hotels[3]);
+    const lookup = resolveHotelLookupId(hotels[3], hotelsMap);
     if (lookup) payload.th_Hotel1 = lookup;
     if (hotels[3].city) payload.th_Hotel_city1 = hotels[3].city;
     if (hotels[3].nights) payload.th_Hotel_Nights2 = Number(hotels[3].nights);
@@ -250,7 +303,7 @@ function buildTaskHotelPayload(hotels: BookingPaymentSyncParams['hotels'] = []):
 
   // Hotel 5 (In Tasks: th_Hotel, th_Hotel_City, th_Hotel_Nights1, th_Hotel_Stay_Dates1)
   if (hotels[4]) {
-    const lookup = resolveHotelLookupId(hotels[4]);
+    const lookup = resolveHotelLookupId(hotels[4], hotelsMap);
     if (lookup) payload.th_Hotel = lookup;
     if (hotels[4].city) payload.th_Hotel_City = hotels[4].city;
     if (hotels[4].nights) payload.th_Hotel_Nights1 = Number(hotels[4].nights);
@@ -260,7 +313,7 @@ function buildTaskHotelPayload(hotels: BookingPaymentSyncParams['hotels'] = []):
 
   // Hotel 6 (In Tasks: th_Hotel2, th_Hotel_City2, th_Hotel_Nights, th_Hotel_Stay_Dates)
   if (hotels[5]) {
-    const lookup = resolveHotelLookupId(hotels[5]);
+    const lookup = resolveHotelLookupId(hotels[5], hotelsMap);
     if (lookup) payload.th_Hotel2 = lookup;
     if (hotels[5].city) payload.th_Hotel_City2 = hotels[5].city;
     if (hotels[5].nights) payload.th_Hotel_Nights = Number(hotels[5].nights);
@@ -274,7 +327,7 @@ function buildTaskHotelPayload(hotels: BookingPaymentSyncParams['hotels'] = []):
 /**
  * Builds the Hotel fields payload for the custom 'Operations' module
  */
-function buildOperationsHotelPayload(hotels: BookingPaymentSyncParams['hotels'] = []): Record<string, any> {
+function buildOperationsHotelPayload(hotels: BookingPaymentSyncParams['hotels'] = [], hotelsMap?: Map<string, string>): Record<string, any> {
   const payload: Record<string, any> = {};
 
   for (let i = 1; i <= 6; i++) {
@@ -282,7 +335,7 @@ function buildOperationsHotelPayload(hotels: BookingPaymentSyncParams['hotels'] 
     const prefix = `Hotel_${i}`;
     payload[`${prefix}_Booked`] = false;
     if (h) {
-      const lookup = resolveHotelLookupId(h);
+      const lookup = resolveHotelLookupId(h, hotelsMap);
       if (lookup) payload[prefix] = lookup;
       if (h.city) payload[`${prefix}_City`] = h.city;
       if (h.nights !== undefined && h.nights !== null) payload[`${prefix}_Nights`] = Number(h.nights);
@@ -414,6 +467,37 @@ async function buildOperationsActivitiesSubform(
 }
 
 /**
+ * Safely looks up an Itinerary in Zoho CRM Itineraries module
+ */
+async function findZohoItineraryLookup(
+  accessToken: string,
+  destination: string,
+  itineraryId?: string
+): Promise<{ id: string } | undefined> {
+  if (itineraryId && /^\d{15,22}$/.test(String(itineraryId).trim())) {
+    return { id: String(itineraryId).trim() };
+  }
+  try {
+    if (destination) {
+      const searchUrl = getZohoApiUrl(`/crm/v3/Itineraries/search?criteria=(Destination:equals:${encodeURIComponent(destination.trim())})`);
+      const res = await fetch(searchUrl, {
+        headers: { Authorization: `Zoho-oauthtoken ${accessToken}` },
+        cache: 'no-store',
+      });
+      if (res.ok && res.status !== 204) {
+        const json = await res.json().catch(() => null);
+        if (json?.data && json.data.length > 0 && json.data[0].id) {
+          return { id: String(json.data[0].id) };
+        }
+      }
+    }
+  } catch (err) {
+    console.warn('[Zoho Itinerary Lookup Warning]:', err);
+  }
+  return undefined;
+}
+
+/**
  * Creates or updates a record in the custom 'Operations' module in Zoho CRM
  */
 async function syncOperationsRecord(
@@ -427,7 +511,7 @@ async function syncOperationsRecord(
   try {
     let existingOpsId = '';
 
-    // 1. Search for existing Operations record linked to this Deal ID
+    // 1. Search for existing Operations record linked to this Deal ID or Customer Name
     if (dealId) {
       try {
         const searchCriteria = `(Booking_Id:equals:${encodeURIComponent(dealId.trim())})`;
@@ -445,6 +529,26 @@ async function syncOperationsRecord(
       } catch (searchErr) {
         console.warn('[Zoho Operations Search Warning]:', searchErr);
       }
+
+      // If not found yet, also search by Customer Name to catch shell records created by Zoho CRM workflow rules
+      if (!existingOpsId && params.customerName) {
+        try {
+          const nameCriteria = `(Customer_Name:equals:${encodeURIComponent(params.customerName.trim())})`;
+          const nameUrl = getZohoApiUrl(`/crm/v3/Operations/search?criteria=${nameCriteria}`);
+          const nameRes = await fetch(nameUrl, {
+            headers: { Authorization: `Zoho-oauthtoken ${accessToken}` },
+            cache: 'no-store',
+          });
+          if (nameRes.ok && nameRes.status !== 204) {
+            const nameJson = await nameRes.json().catch(() => null);
+            if (nameJson?.data && nameJson.data.length > 0 && nameJson.data[0].id) {
+              existingOpsId = String(nameJson.data[0].id);
+            }
+          }
+        } catch (nameErr) {
+          console.warn('[Zoho Operations Name Search Warning]:', nameErr);
+        }
+      }
     }
 
     const resolvedDays = params.noOfDays ||
@@ -455,6 +559,9 @@ async function syncOperationsRecord(
     const resolvedHotelCategory = params.hotelCategory ||
       params.hotels?.[0]?.category ||
       'Deluxe';
+
+    // Fetch dynamic Hotels lookup map so Hotel 1, Hotel 2, etc. link to Zoho Hotel IDs
+    const hotelsMap = await getZohoHotelsMap(accessToken);
 
     const opsPayload: Record<string, any> = {
       Name: `${params.customerName} - ${params.destination} Tour`,
@@ -472,8 +579,44 @@ async function syncOperationsRecord(
       Hotel_Category: resolvedHotelCategory,
       Status: 'Pending',
       Itinerary_URL: cleanItineraryUrl,
-      ...buildOperationsHotelPayload(params.hotels),
+      ...buildOperationsHotelPayload(params.hotels, hotelsMap),
     };
+
+    // Try linking Itinerary Lookup in Operations
+    const itinLookup = await findZohoItineraryLookup(accessToken, params.destination, params.itineraryId);
+    if (itinLookup) {
+      opsPayload.Itinerary = itinLookup;
+    }
+
+    // Map Kids & Age and Child 1-5 details
+    const kidsList = Array.isArray(params.kidsDetails) ? params.kidsDetails : [];
+    const kidsCount = params.kids !== undefined && params.kids !== null ? Number(params.kids) : kidsList.length;
+
+    if (kidsCount > 0) {
+      const ageSummary = kidsList.slice(0, kidsCount).map((c, idx) => {
+        const age = c.age !== undefined && c.age !== null ? c.age : 'N/A';
+        const bed = c.bedPreference || 'Without Bed';
+        return `Child ${idx + 1}: ${age} yrs (${bed})`;
+      }).join(', ');
+      opsPayload.Kids_Age = ageSummary || `${kidsCount} Kid(s)`;
+    } else {
+      opsPayload.Kids_Age = '0';
+    }
+
+    for (let cIdx = 1; cIdx <= 5; cIdx++) {
+      const child = kidsList[cIdx - 1];
+      if (child && cIdx <= kidsCount) {
+        if (child.age !== undefined && child.age !== null) {
+          opsPayload[`Child_${cIdx}_Age`] = String(child.age);
+        }
+        if (child.bedPreference) {
+          opsPayload[`Child_${cIdx}_Bed_Preference`] = String(child.bedPreference);
+        }
+      } else {
+        opsPayload[`Child_${cIdx}_Age`] = null;
+        opsPayload[`Child_${cIdx}_Bed_Preference`] = null;
+      }
+    }
 
     if (formattedStartDate) opsPayload.Start_Date = formattedStartDate;
     if (formattedEndDate) opsPayload.End_Date = formattedEndDate;
@@ -771,6 +914,7 @@ export async function syncBookingAndTaskOnPayment(
 
   try {
     const accessToken = await getZohoAccessToken();
+    const hotelsMap = await getZohoHotelsMap(accessToken);
     const formattedStartDate = parseToZohoDate(params.travelStartDate);
     const formattedEndDate = parseToZohoDate(params.travelEndDate);
 
@@ -864,7 +1008,7 @@ export async function syncBookingAndTaskOnPayment(
         Phone: params.customerMobile || '',
         Country_Code: '+91',
         Description: buildBriefingDescription(params),
-        ...buildDealHotelPayload(params.hotels),
+        ...buildDealHotelPayload(params.hotels, hotelsMap),
       };
 
       // Try Converting Lead if zohoLeadId is available
@@ -924,20 +1068,53 @@ export async function syncBookingAndTaskOnPayment(
             convertJson = await convertRes.json().catch(() => null);
           }
 
-          if (convertRes.ok && convertJson?.data?.[0]?.Deals) {
-            const dealsResult = convertJson.data[0].Deals;
-            dealId = typeof dealsResult === 'object' && dealsResult.id ? String(dealsResult.id) : String(dealsResult);
+          const rawDeals =
+            convertJson?.data?.[0]?.Deals ||
+            convertJson?.data?.[0]?.deals ||
+            convertJson?.data?.[0]?.deal_id ||
+            convertJson?.data?.[0]?.Deal_Id ||
+            convertJson?.data?.[0]?.details?.id ||
+            convertJson?.details?.id;
+
+          if (rawDeals) {
+            dealId = typeof rawDeals === 'object' && rawDeals.id ? String(rawDeals.id) : String(rawDeals);
             leadConverted = true;
             console.log(`[Zoho Auto-Booking] Successfully converted Lead ${params.zohoLeadId} into Deal ${dealId}`);
           } else {
-            console.warn('[Zoho Lead Convert Fallback]: Direct Deal creation needed.', convertJson);
+            console.warn('[Zoho Lead Convert Fallback]: Checking if Lead was already converted...', convertJson);
+            try {
+              const leadCheckRes = await fetch(getZohoApiUrl(`/crm/v3/Leads/${params.zohoLeadId}?fields=Converted,Converted_Deal`), {
+                headers: { Authorization: `Zoho-oauthtoken ${accessToken}` },
+                cache: 'no-store',
+              });
+              if (leadCheckRes.ok) {
+                const leadCheck = await leadCheckRes.json().catch(() => null);
+                const convDeal = leadCheck?.data?.[0]?.Converted_Deal;
+                if (convDeal?.id) {
+                  dealId = String(convDeal.id);
+                  leadConverted = true;
+                  console.log(`[Zoho Auto-Booking] Lead ${params.zohoLeadId} already has Converted Deal ${dealId}`);
+                }
+              }
+            } catch (leadCheckErr) {
+              console.warn('[Zoho Lead Check Exception]:', leadCheckErr);
+            }
           }
         } catch (convertErr) {
           console.warn('[Zoho Lead Convert Exception]:', convertErr);
         }
       }
 
-      // If Lead Conversion didn't produce dealId, create Deal directly
+      // Prevent duplicate deal creation: Check if a deal was already created for this payment or itinerary
+      if (!dealId) {
+        const existingByPayment = await findExistingDeal(params.itineraryId, cleanItineraryUrl);
+        if (existingByPayment && existingByPayment.id) {
+          dealId = String(existingByPayment.id);
+          console.log(`[Zoho Auto-Booking] Found existing Deal ${dealId} by itinerary match before direct creation.`);
+        }
+      }
+
+      // If Lead Conversion didn't produce dealId and no existing deal was found, create Deal directly
       if (!dealId) {
         const createDealUrl = getZohoApiUrl('/crm/v3/Deals');
         const dealRes = await fetch(createDealUrl, {
@@ -998,7 +1175,7 @@ export async function syncBookingAndTaskOnPayment(
           Mobile: params.customerMobile || '',
           Phone: params.customerMobile || '',
           Description: buildBriefingDescription(params),
-          ...buildTaskHotelPayload(params.hotels),
+          ...buildTaskHotelPayload(params.hotels, hotelsMap),
         };
 
         if (formattedStartDate) taskData.Travel_Start_Date = formattedStartDate;

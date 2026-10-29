@@ -465,6 +465,17 @@ export async function POST(req: NextRequest) {
           ? (itinerary as any).hotels
           : (Array.isArray(manualItinerary?.stay) ? manualItinerary.stay : []));
 
+      const resolvedKidsDetails =
+        (Array.isArray((itinerary as any)?.kidsDetails) && (itinerary as any).kidsDetails.length > 0)
+          ? (itinerary as any).kidsDetails
+          : ((Array.isArray((itinerary as any)?.childrenDetails) && (itinerary as any).childrenDetails.length > 0)
+            ? (itinerary as any).childrenDetails
+            : ((Array.isArray((itinerary?.leadDetails as any)?.kidsDetails) && (itinerary?.leadDetails as any).kidsDetails.length > 0)
+              ? (itinerary?.leadDetails as any).kidsDetails
+              : ((Array.isArray((itinerary?.rawZohoData as any)?.kidsDetails) && (itinerary?.rawZohoData as any).kidsDetails.length > 0)
+                ? (itinerary?.rawZohoData as any).kidsDetails
+                : ((Array.isArray(body?.kidsDetails) && body.kidsDetails.length > 0) ? body.kidsDetails : []))));
+
       zohoBookingResult = await syncBookingAndTaskOnPayment({
         itineraryId: itineraryId || itinerary?.id || '',
         itineraryUrl: winningItineraryUrl,
@@ -491,6 +502,7 @@ export async function POST(req: NextRequest) {
         numberOfGuests,
         adults,
         kids,
+        kidsDetails: resolvedKidsDetails,
         roomsCount: (itinerary as any)?.roomsCount || (itinerary?.leadDetails as any)?.roomsCount || 1,
         sharingType: (itinerary as any)?.sharingType || (itinerary?.leadDetails as any)?.sharingType || 'Double Sharing',
         preferredRoomCategory: itinerary?.roomCategory || (itinerary?.leadDetails as any)?.preferredRoomCategory || 'Deluxe Room',

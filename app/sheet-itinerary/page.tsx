@@ -4507,7 +4507,83 @@ export default function SheetItineraryPage() {
       try {
         localStorage.removeItem(DRAFT_STORAGE_KEY);
       } catch (e) {}
-      window.location.reload();
+
+      // Reset client & inquiry details
+      setInquiryId('');
+      setZohoInquiryInput('');
+      setZohoLeadId('');
+      setFirstName('');
+      setLastName('');
+      setFullName('');
+      setEmail('');
+      setMobile('');
+      setDepartureCity('');
+      setDestination('');
+      setStartDate('');
+      setEndDate('');
+      setNoOfDays(1);
+      setNoOfNights(1);
+      setAdults(2);
+      setKids(0);
+      setKidsDetails([]);
+      setRoomsCount(1);
+      setIsRoomsManuallySet(false);
+      setSharingType('Double Sharing');
+      setTravelStyle('Family Trip');
+      setVehicleType('');
+      setMealPlan('Breakfast & Dinner');
+      setMasterHotelCategory('Deluxe');
+
+      // Reset hotels to 1 clean blank row
+      setHotels([
+        { index: 1, hotelName: '', city: '', nights: 1, roomCategory: '', category: 'Deluxe', stayDates: '', basePrice: 0, extraBedPrice: 0, childWithoutBedPrice: 0 }
+      ]);
+      setIsHotelsManuallyCustomized(true);
+
+      // Reset day rows to 1 clean blank day
+      setDayRows([
+        {
+          dayNumber: 1,
+          dayText: 'Day 1',
+          guidedTour: false,
+          city: '',
+          enRouteExperiences: [''],
+          city2: '',
+          experiences: ['', '', '', ''],
+          descriptions: ['', '', '', ''],
+          experienceCosts: [0, 0, 0, 0],
+          experiencePrivateCosts: [0, 0, 0, 0],
+          optionalExperiences: ['', ''],
+          optionalDescriptions: ['', ''],
+          optionalExperienceCosts: [0, 0],
+          optionalExperiencePrivateCosts: [0, 0],
+          breakfast: false,
+          lunch: false,
+          dinner: true
+        }
+      ]);
+
+      // Reset inclusions & exclusions to clean empty
+      setInclusions([]);
+      setExclusions([]);
+      setIsCustomInclusionsEdited(true);
+
+      // Reset pricing & margins
+      setBaseQuotation('');
+      setMarginPercent('');
+      setFinalQuotation('');
+      setPerAdultPrice('');
+      setPerKidPrice('');
+      setAdvanceAmount('');
+      setBalanceAmount('');
+      setSpecialRequirements('');
+      setIsQuoteManuallyEdited(true);
+
+      // Clear sync messages & alerts
+      setZohoSyncMsg(null);
+      setGenError(null);
+      setGenSuccess(null);
+      setHasSavedDraft(false);
     }
   };
   const handleMarginChange = (val: string) => {
@@ -5894,15 +5970,17 @@ export default function SheetItineraryPage() {
 
                           {/* Live preview badge */}
                           <div className="flex items-center gap-1">
-                            {formatDayMeals(day.breakfast, day.lunch, day.dinner) ? (
-                              <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 truncate">
-                                ✓ {formatDayMeals(day.breakfast, day.lunch, day.dinner)}
-                              </span>
-                            ) : (
-                              <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-rose-50 text-rose-600 border border-rose-200 italic">
-                                No Meals Included
-                              </span>
-                            )}
+                            <span
+                              className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] truncate ${
+                                formatDayMeals(day.breakfast, day.lunch, day.dinner)
+                                  ? 'font-bold bg-emerald-50 text-emerald-800 border border-emerald-200'
+                                  : 'font-medium bg-rose-50 text-rose-600 border border-rose-200 italic'
+                              }`}
+                            >
+                              {formatDayMeals(day.breakfast, day.lunch, day.dinner)
+                                ? `✓ ${formatDayMeals(day.breakfast, day.lunch, day.dinner)}`
+                                : 'No Meals Included'}
+                            </span>
                           </div>
                         </div>
                       </td>
