@@ -588,26 +588,18 @@ async function syncOperationsRecord(
       opsPayload.Itinerary = itinLookup;
     }
 
-    // Map Kids & Age and Child 1-5 details
+    // Map Kids_Age (Integer count of kids in Zoho CRM) and Child 1-5 details
     const kidsList = Array.isArray(params.kidsDetails) ? params.kidsDetails : [];
     const kidsCount = params.kids !== undefined && params.kids !== null ? Number(params.kids) : kidsList.length;
 
-    if (kidsCount > 0) {
-      const ageSummary = kidsList.slice(0, kidsCount).map((c, idx) => {
-        const age = c.age !== undefined && c.age !== null ? c.age : 'N/A';
-        const bed = c.bedPreference || 'Without Bed';
-        return `Child ${idx + 1}: ${age} yrs (${bed})`;
-      }).join(', ');
-      opsPayload.Kids_Age = ageSummary || `${kidsCount} Kid(s)`;
-    } else {
-      opsPayload.Kids_Age = '0';
-    }
+    // IMPORTANT: 'Kids_Age' field in Zoho CRM Operations is of type INTEGER (expected_data_type: integer)
+    opsPayload.Kids_Age = Number(kidsCount) || 0;
 
     for (let cIdx = 1; cIdx <= 5; cIdx++) {
       const child = kidsList[cIdx - 1];
       if (child && cIdx <= kidsCount) {
         if (child.age !== undefined && child.age !== null) {
-          opsPayload[`Child_${cIdx}_Age`] = String(child.age);
+          opsPayload[`Child_${cIdx}_Age`] = Number(child.age) || 0;
         }
         if (child.bedPreference) {
           opsPayload[`Child_${cIdx}_Bed_Preference`] = String(child.bedPreference);
