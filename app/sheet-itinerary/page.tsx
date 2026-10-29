@@ -1462,30 +1462,65 @@ export function getDefaultMealsForDay(
   totalDays: number,
   currentMealPlan: string
 ): { breakfast: boolean; lunch: boolean; dinner: boolean } {
-  const plan = (currentMealPlan || '').toLowerCase();
+  const plan = (currentMealPlan || '').toLowerCase().trim();
   const tot = Math.max(1, totalDays);
   const isFirstDay = dayNum === 1;
   const isLastDay = dayNum === tot && tot > 1;
 
-  // Room Only / EP
-  if (plan.includes('room only') || plan.includes('ep')) {
+  // 1. Room Only / EP (No Meals)
+  if (
+    plan.includes('room only') ||
+    plan === 'ep' ||
+    plan.includes('(ep)') ||
+    plan.includes('no meals') ||
+    plan.includes('without food')
+  ) {
     return { breakfast: false, lunch: false, dinner: false };
   }
 
-  // All Meals / APAI
-  if (plan.includes('all meals') || plan.includes('all meal') || plan.includes('apai') || plan.includes('ap')) {
+  // 2. All Meals / APAI / Breakfast, Lunch & Dinner
+  const isAllMeals =
+    plan.includes('all meals') ||
+    plan.includes('all meal') ||
+    plan.includes('apai') ||
+    plan.includes('(ap)') ||
+    plan.includes('ap ') ||
+    plan === 'ap' ||
+    (plan.includes('breakfast') && plan.includes('lunch') && plan.includes('dinner')) ||
+    (plan.includes('lunch') && plan.includes('dinner'));
+
+  if (isAllMeals) {
     if (tot === 1) {
       return { breakfast: true, lunch: true, dinner: true };
     }
     return {
       breakfast: !isFirstDay,
-      lunch: true,
+      lunch: !isLastDay,
       dinner: !isLastDay
     };
   }
 
-  // Breakfast Only / CP
-  if ((plan.includes('breakfast only') || plan.includes('cp')) && !plan.includes('dinner') && !plan.includes('map')) {
+  // 3. Breakfast & Lunch
+  if (plan.includes('breakfast') && plan.includes('lunch')) {
+    if (tot === 1) {
+      return { breakfast: true, lunch: true, dinner: false };
+    }
+    return {
+      breakfast: !isFirstDay,
+      lunch: true,
+      dinner: false
+    };
+  }
+
+  // 4. Breakfast Only / CP
+  const isBreakfastOnly =
+    plan.includes('breakfast only') ||
+    plan.includes('cp') ||
+    plan.includes('(cp)') ||
+    plan.includes('only breakfast') ||
+    (plan.includes('breakfast') && !plan.includes('dinner') && !plan.includes('lunch'));
+
+  if (isBreakfastOnly) {
     if (tot === 1) {
       return { breakfast: true, lunch: false, dinner: false };
     }
@@ -1496,7 +1531,7 @@ export function getDefaultMealsForDay(
     };
   }
 
-  // Default: MAP / Breakfast & Dinner (standard domestic itinerary)
+  // 5. Default: MAP / Breakfast & Dinner (standard domestic itinerary)
   if (tot === 1) {
     return { breakfast: true, lunch: false, dinner: true };
   }
@@ -3391,7 +3426,10 @@ export default function SheetItineraryPage() {
             experienceCosts: costs,
             optionalExperiences: ['', ''],
             optionalDescriptions: ['', ''],
-            optionalExperienceCosts: [0, 0]
+            optionalExperienceCosts: [0, 0],
+            breakfast: act.breakfast !== undefined ? Boolean(act.breakfast) : getDefaultMealsForDay(act.dayNumber || idx + 1, (raw.dayActivities || []).length || 5, rawMeal || mealPlan).breakfast,
+            lunch: act.lunch !== undefined ? Boolean(act.lunch) : getDefaultMealsForDay(act.dayNumber || idx + 1, (raw.dayActivities || []).length || 5, rawMeal || mealPlan).lunch,
+            dinner: act.dinner !== undefined ? Boolean(act.dinner) : getDefaultMealsForDay(act.dayNumber || idx + 1, (raw.dayActivities || []).length || 5, rawMeal || mealPlan).dinner,
           };
         });
         setDayRows(mappedRows);
@@ -5800,14 +5838,14 @@ export default function SheetItineraryPage() {
                             <label
                               title="Include Breakfast on this day"
                               className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-bold cursor-pointer border select-none transition-all ${
-                                day.breakfast !== false
+                                Boolean(day.breakfast)
                                   ? 'bg-amber-100/90 border-amber-300 text-amber-900 shadow-2xs'
                                   : 'bg-white border-slate-200 text-slate-400 opacity-60 hover:opacity-90'
                               }`}
                             >
                               <input
                                 type="checkbox"
-                                checked={day.breakfast !== false}
+                                checked={Boolean(day.breakfast)}
                                 onChange={e => updateDayMeal(dIdx, 'breakfast', e.target.checked)}
                                 className="w-3.5 h-3.5 accent-amber-600 rounded cursor-pointer"
                               />
@@ -5838,14 +5876,14 @@ export default function SheetItineraryPage() {
                             <label
                               title="Include Dinner on this day"
                               className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-bold cursor-pointer border select-none transition-all ${
-                                day.dinner !== false
+                                Boolean(day.dinner)
                                   ? 'bg-indigo-100/90 border-indigo-300 text-indigo-900 shadow-2xs'
                                   : 'bg-white border-slate-200 text-slate-400 opacity-60 hover:opacity-90'
                               }`}
                             >
                               <input
                                 type="checkbox"
-                                checked={day.dinner !== false}
+                                checked={Boolean(day.dinner)}
                                 onChange={e => updateDayMeal(dIdx, 'dinner', e.target.checked)}
                                 className="w-3.5 h-3.5 accent-indigo-600 rounded cursor-pointer"
                               />

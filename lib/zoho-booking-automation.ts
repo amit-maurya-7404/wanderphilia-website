@@ -31,6 +31,8 @@ export interface BookingPaymentSyncParams {
   preferredRoomCategory?: string;
   vehicleType?: string;
   mealPlan?: string;
+  hotelCategory?: string;
+  dayActivities?: any[];
   hotels?: Array<{
     hotelName?: string;
     city?: string;
@@ -40,6 +42,8 @@ export interface BookingPaymentSyncParams {
     stayDates?: string;
   }>;
   specialRequirements?: string;
+  noOfDays?: number;
+  noOfNights?: number;
 }
 
 export interface BookingSyncResult {
@@ -48,6 +52,8 @@ export interface BookingSyncResult {
   dealName?: string;
   isNewDeal?: boolean;
   taskId?: string;
+  operationsId?: string;
+  financeId?: string;
   leadConverted?: boolean;
   error?: string;
 }
@@ -266,6 +272,461 @@ function buildTaskHotelPayload(hotels: BookingPaymentSyncParams['hotels'] = []):
 }
 
 /**
+ * Builds the Hotel fields payload for the custom 'Operations' module
+ */
+function buildOperationsHotelPayload(hotels: BookingPaymentSyncParams['hotels'] = []): Record<string, any> {
+  const payload: Record<string, any> = {};
+
+  for (let i = 1; i <= 6; i++) {
+    const h = hotels[i - 1];
+    const prefix = `Hotel_${i}`;
+    payload[`${prefix}_Booked`] = false;
+    if (h) {
+      const lookup = resolveHotelLookupId(h);
+      if (lookup) payload[prefix] = lookup;
+      if (h.city) payload[`${prefix}_City`] = h.city;
+      if (h.nights !== undefined && h.nights !== null) payload[`${prefix}_Nights`] = Number(h.nights);
+      if (h.stayDates) payload[`${prefix}_Dates`] = h.stayDates;
+      if (h.category) payload[`${prefix}_Category`] = h.category;
+    } else {
+      payload[prefix] = null;
+      payload[`${prefix}_City`] = null;
+      payload[`${prefix}_Nights`] = 0;
+      payload[`${prefix}_Dates`] = null;
+      payload[`${prefix}_Category`] = null;
+    }
+  }
+
+  payload.Transport_Booked = false;
+  payload.Activities_Booked = false;
+  payload.All_Hotels_Booked = false;
+
+  return payload;
+}
+
+// Cache for Zoho Activities mapping (name -> Zoho Record ID)
+let cachedZohoActivitiesMap: Map<string, string> | null = null;
+let lastActivitiesFetchTime = 0;
+
+/**
+ * Fetches and caches the mapping of all Zoho CRM Activities & Experiences (Name.toLowerCase() -> Record ID)
+ */
+async function getZohoActivitiesMap(accessToken: string): Promise<Map<string, string>> {
+  const now = Date.now();
+  if (cachedZohoActivitiesMap && (now - lastActivitiesFetchTime < 10 * 60 * 1000)) {
+    return cachedZohoActivitiesMap;
+  }
+  const map = new Map<string, string>();
+  try {
+    const url = getZohoApiUrl('/crm/v3/Activities_and_Experiences?fields=id,Name&per_page=200');
+    const res = await fetch(url, {
+      headers: { Authorization: `Zoho-oauthtoken ${accessToken}` },
+      cache: 'no-store',
+    });
+    if (res.ok) {
+      const json = await res.json();
+      if (Array.isArray(json.data)) {
+        for (const item of json.data) {
+          if (item.Name && item.id) {
+            map.set(item.Name.trim().toLowerCase(), String(item.id).trim());
+          }
+        }
+      }
+    }
+  } catch (err) {
+    console.warn('[Zoho Activities Map Warning]:', err);
+  }
+  cachedZohoActivitiesMap = map;
+  lastActivitiesFetchTime = now;
+  return map;
+}
+
+/**
+ * Builds the subform rows for Activities_and_Experiences_operations
+ */
+async function buildOperationsActivitiesSubform(
+  accessToken: string,
+  dayActivities: any[] = [],
+  destination: string = ''
+): Promise<any[]> {
+  if (!Array.isArray(dayActivities) || dayActivities.length === 0) {
+    return [];
+  }
+
+  const activitiesMap = await getZohoActivitiesMap(accessToken);
+  const rows: any[] = [];
+
+  for (let i = 0; i < dayActivities.length; i++) {
+    const day = dayActivities[i];
+    const dayText = day.dayText || `Day ${day.dayNumber || day.day || (i + 1)}`;
+    const dayCity = day.city || day.stayLocation || destination || '';
+
+    const row: Record<string, any> = {
+      Days: dayText,
+      City: dayCity,
+      Guided_Tour: Boolean(day.guidedTour),
+    };
+
+    if (day.city2) {
+      row.City_2 = day.city2;
+    }
+
+    let rawExps: any[] = [];
+    if (Array.isArray(day.experiences) && day.experiences.length > 0) {
+      rawExps = day.experiences;
+    } else if (Array.isArray(day.activities) && day.activities.length > 0) {
+      rawExps = day.activities;
+    }
+
+    for (let expIdx = 0; expIdx < Math.min(rawExps.length, 4); expIdx++) {
+      const exp = rawExps[expIdx];
+      const slot = expIdx + 1;
+      const expName = typeof exp === 'string' ? exp : (exp?.name || exp?.title || '');
+      const expDesc = typeof exp === 'object' ? (exp?.description || exp?.inclusions || expName) : expName;
+
+      let actId = typeof exp === 'object' ? (exp?.id || exp?.activityId || exp?.zohoId) : null;
+      if (!actId && expName) {
+        const cleanName = expName.trim().toLowerCase();
+        actId = activitiesMap.get(cleanName);
+        if (!actId) {
+          for (const [name, id] of activitiesMap.entries()) {
+            if (name.includes(cleanName) || cleanName.includes(name)) {
+              actId = id;
+              break;
+            }
+          }
+        }
+      }
+
+      if (actId && /^\d{15,22}$/.test(String(actId).trim())) {
+        row[`Experience_${slot}`] = { id: String(actId).trim() };
+      }
+
+      if (expDesc) {
+        row[`Inclusions_Description_${slot}`] = String(expDesc).substring(0, 500);
+      }
+    }
+
+    rows.push(row);
+  }
+
+  return rows;
+}
+
+/**
+ * Creates or updates a record in the custom 'Operations' module in Zoho CRM
+ */
+async function syncOperationsRecord(
+  accessToken: string,
+  dealId: string,
+  params: BookingPaymentSyncParams,
+  cleanItineraryUrl: string,
+  formattedStartDate: string | null,
+  formattedEndDate: string | null
+): Promise<string> {
+  try {
+    let existingOpsId = '';
+
+    // 1. Search for existing Operations record linked to this Deal ID
+    if (dealId) {
+      try {
+        const searchCriteria = `(Booking_Id:equals:${encodeURIComponent(dealId.trim())})`;
+        const searchUrl = getZohoApiUrl(`/crm/v3/Operations/search?criteria=${searchCriteria}`);
+        const searchRes = await fetch(searchUrl, {
+          headers: { Authorization: `Zoho-oauthtoken ${accessToken}` },
+          cache: 'no-store',
+        });
+        if (searchRes.ok && searchRes.status !== 204) {
+          const searchJson = await searchRes.json().catch(() => null);
+          if (searchJson?.data && searchJson.data.length > 0 && searchJson.data[0].id) {
+            existingOpsId = String(searchJson.data[0].id);
+          }
+        }
+      } catch (searchErr) {
+        console.warn('[Zoho Operations Search Warning]:', searchErr);
+      }
+    }
+
+    const resolvedDays = params.noOfDays ||
+      (params.duration ? parseInt(params.duration.split('Days')[0]?.split('/')[1] || '1', 10) : 1);
+    const resolvedNights = params.noOfNights ||
+      (params.duration ? parseInt(params.duration.split('Nights')[0] || '1', 10) : 1);
+
+    const resolvedHotelCategory = params.hotelCategory ||
+      params.hotels?.[0]?.category ||
+      'Deluxe';
+
+    const opsPayload: Record<string, any> = {
+      Name: `${params.customerName} - ${params.destination} Tour`,
+      Booking_Id: dealId,
+      Customer_Name: params.customerName,
+      Email: params.customerEmail || undefined,
+      Destination: params.destination,
+      No_of_Days: resolvedDays,
+      No_of_Nights: resolvedNights,
+      No_of_Guests: params.numberOfGuests || 2,
+      No_of_Adults: params.adults || 2,
+      Rooms_Count: params.roomsCount || 1,
+      Sharing_Type: params.sharingType || 'Double Sharing',
+      Room_Category: params.preferredRoomCategory || 'Deluxe Room',
+      Hotel_Category: resolvedHotelCategory,
+      Status: 'Pending',
+      Itinerary_URL: cleanItineraryUrl,
+      ...buildOperationsHotelPayload(params.hotels),
+    };
+
+    if (formattedStartDate) opsPayload.Start_Date = formattedStartDate;
+    if (formattedEndDate) opsPayload.End_Date = formattedEndDate;
+
+    // Build activities subform
+    const subformRows = await buildOperationsActivitiesSubform(
+      accessToken,
+      params.dayActivities,
+      params.destination
+    );
+
+    if (subformRows.length > 0) {
+      if (existingOpsId) {
+        try {
+          const existingRecRes = await fetch(
+            getZohoApiUrl(`/crm/v3/Operations/${existingOpsId}?fields=Activities_and_Experiences_operations`),
+            {
+              headers: { Authorization: `Zoho-oauthtoken ${accessToken}` },
+              cache: 'no-store',
+            }
+          );
+          if (existingRecRes.ok) {
+            const existingJson = await existingRecRes.json();
+            const existingSubform = existingJson.data?.[0]?.Activities_and_Experiences_operations || [];
+
+            const mergedRows: any[] = [];
+            for (let i = 0; i < subformRows.length; i++) {
+              if (existingSubform[i]?.id) {
+                mergedRows.push({ ...subformRows[i], id: existingSubform[i].id });
+              } else {
+                mergedRows.push(subformRows[i]);
+              }
+            }
+            for (let i = subformRows.length; i < existingSubform.length; i++) {
+              if (existingSubform[i]?.id) {
+                mergedRows.push({ id: existingSubform[i].id, _delete: null });
+              }
+            }
+            opsPayload.Activities_and_Experiences_operations = mergedRows;
+          } else {
+            opsPayload.Activities_and_Experiences_operations = subformRows;
+          }
+        } catch {
+          opsPayload.Activities_and_Experiences_operations = subformRows;
+        }
+      } else {
+        opsPayload.Activities_and_Experiences_operations = subformRows;
+      }
+    }
+
+    if (existingOpsId) {
+      // Update existing record
+      const updateUrl = getZohoApiUrl(`/crm/v3/Operations/${existingOpsId}`);
+      const updateRes = await fetch(updateUrl, {
+        method: 'PUT',
+        headers: {
+          Authorization: `Zoho-oauthtoken ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ data: [opsPayload] }),
+      });
+      if (updateRes.ok) {
+        console.log(`[Zoho Operations Module] Successfully updated existing Operations record ${existingOpsId}`);
+        return existingOpsId;
+      } else {
+        const errText = await updateRes.text();
+        console.warn('[Zoho Operations Module Update Warning]:', errText);
+      }
+    } else {
+      // Create new record
+      const createUrl = getZohoApiUrl('/crm/v3/Operations');
+      const createRes = await fetch(createUrl, {
+        method: 'POST',
+        headers: {
+          Authorization: `Zoho-oauthtoken ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ data: [opsPayload] }),
+      });
+      if (createRes.ok) {
+        const createJson = await createRes.json();
+        const newOpsId = String(createJson.data?.[0]?.details?.id || '');
+        console.log(`[Zoho Operations Module] Successfully created new Operations record ${newOpsId}`);
+        return newOpsId;
+      } else {
+        const errText = await createRes.text();
+        console.error('[Zoho Operations Module Create Failed]:', errText);
+      }
+    }
+
+    return existingOpsId;
+  } catch (err) {
+    console.error('[Zoho Operations Module Exception]:', err);
+    return '';
+  }
+}
+
+/**
+ * Creates or updates a record in the custom 'Finance' module in Zoho CRM with client revenue details.
+ * Vendor costs and final hotel allotments are updated later when Operations confirms them.
+ */
+async function syncFinanceRecord(
+  accessToken: string,
+  dealId: string,
+  params: BookingPaymentSyncParams
+): Promise<string> {
+  try {
+    let existingFinId = '';
+
+    // 1. Search for existing Finance record linked to this Booking_ID
+    if (dealId) {
+      try {
+        const searchCriteria = `(Booking_ID:equals:${encodeURIComponent(dealId.trim())})`;
+        const searchUrl = getZohoApiUrl(`/crm/v3/Finance/search?criteria=${searchCriteria}`);
+        const searchRes = await fetch(searchUrl, {
+          headers: { Authorization: `Zoho-oauthtoken ${accessToken}` },
+          cache: 'no-store',
+        });
+        if (searchRes.ok && searchRes.status !== 204) {
+          const searchJson = await searchRes.json().catch(() => null);
+          if (searchJson?.data && searchJson.data.length > 0 && searchJson.data[0].id) {
+            existingFinId = String(searchJson.data[0].id);
+          }
+        }
+      } catch (searchErr) {
+        console.warn('[Zoho Finance Search Warning]:', searchErr);
+      }
+    }
+
+    const paymentStatus = params.newBalanceDue <= 0 ? 'Full Paid' : 'Advance Paid';
+
+    const finPayload: Record<string, any> = {
+      Name: `${params.customerName} - ${params.destination} Tour`,
+      Booking_ID: dealId,
+      Email: params.customerEmail || undefined,
+      Total_Receivable_Amount: params.totalQuotationAmount,
+      Total_Amount_Received: params.newTotalPaid,
+      Balance_Receivable: params.newBalanceDue,
+      Payment_Status: paymentStatus,
+      Status: 'Pending',
+    };
+
+    // Build activities subform for Finance
+    const rawSubformRows = await buildOperationsActivitiesSubform(
+      accessToken,
+      params.dayActivities,
+      params.destination
+    );
+
+    const financeSubformRows = rawSubformRows.map((r) => {
+      const row: Record<string, any> = {
+        Days: r.Days,
+        City: r.City,
+        Guided_Tour: Boolean(r.Guided_Tour),
+      };
+      if (r.City_2) row.City_2 = r.City_2;
+      if (r.En_route_Experiences || r.En_Route_Experiences) {
+        row.En_route_Experiences = r.En_route_Experiences || r.En_Route_Experiences;
+      }
+      if (r.Experience_1) row.Experience_1 = r.Experience_1;
+      if (r.Experience_2) row.Experience_2 = r.Experience_2;
+      if (r.Experience_3) row.Experience_3 = r.Experience_3;
+      if (r.Experience_4) row.Experience_4 = r.Experience_4;
+      return row;
+    });
+
+    if (financeSubformRows.length > 0) {
+      if (existingFinId) {
+        try {
+          const existingFinRes = await fetch(
+            getZohoApiUrl(`/crm/v3/Finance/${existingFinId}?fields=Activities_and_experiences_cost_By_guide`),
+            {
+              headers: { Authorization: `Zoho-oauthtoken ${accessToken}` },
+              cache: 'no-store',
+            }
+          );
+          if (existingFinRes.ok) {
+            const existingJson = await existingFinRes.json();
+            const existingSubform = existingJson.data?.[0]?.Activities_and_experiences_cost_By_guide || [];
+
+            const mergedRows: any[] = [];
+            for (let i = 0; i < financeSubformRows.length; i++) {
+              if (existingSubform[i]?.id) {
+                mergedRows.push({ ...financeSubformRows[i], id: existingSubform[i].id });
+              } else {
+                mergedRows.push(financeSubformRows[i]);
+              }
+            }
+            for (let i = financeSubformRows.length; i < existingSubform.length; i++) {
+              if (existingSubform[i]?.id) {
+                mergedRows.push({ id: existingSubform[i].id, _delete: null });
+              }
+            }
+            finPayload.Activities_and_experiences_cost_By_guide = mergedRows;
+          } else {
+            finPayload.Activities_and_experiences_cost_By_guide = financeSubformRows;
+          }
+        } catch {
+          finPayload.Activities_and_experiences_cost_By_guide = financeSubformRows;
+        }
+      } else {
+        finPayload.Activities_and_experiences_cost_By_guide = financeSubformRows;
+      }
+    }
+
+    if (existingFinId) {
+      // Update existing record (e.g. multi-stage installment / balance payments)
+      const updateUrl = getZohoApiUrl(`/crm/v3/Finance/${existingFinId}`);
+      const updateRes = await fetch(updateUrl, {
+        method: 'PUT',
+        headers: {
+          Authorization: `Zoho-oauthtoken ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ data: [finPayload] }),
+      });
+      if (updateRes.ok) {
+        console.log(`[Zoho Finance Module] Successfully updated existing Finance record ${existingFinId}`);
+        return existingFinId;
+      } else {
+        const errText = await updateRes.text();
+        console.warn('[Zoho Finance Module Update Warning]:', errText);
+      }
+    } else {
+      // Create new record
+      const createUrl = getZohoApiUrl('/crm/v3/Finance');
+      const createRes = await fetch(createUrl, {
+        method: 'POST',
+        headers: {
+          Authorization: `Zoho-oauthtoken ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ data: [finPayload] }),
+      });
+      if (createRes.ok) {
+        const createJson = await createRes.json();
+        const newFinId = String(createJson.data?.[0]?.details?.id || '');
+        console.log(`[Zoho Finance Module] Successfully created new Finance record ${newFinId}`);
+        return newFinId;
+      } else {
+        const errText = await createRes.text();
+        console.error('[Zoho Finance Module Create Failed]:', errText);
+      }
+    }
+
+    return existingFinId;
+  } catch (err) {
+    console.error('[Zoho Finance Module Exception]:', err);
+    return '';
+  }
+}
+
+/**
  * Creates a formatted briefing description for Operations
  */
 function buildBriefingDescription(params: BookingPaymentSyncParams): string {
@@ -410,7 +871,7 @@ export async function syncBookingAndTaskOnPayment(
       if (params.zohoLeadId) {
         try {
           const convertUrl = getZohoApiUrl(`/crm/v3/Leads/${params.zohoLeadId}/actions/convert`);
-          
+
           let convertPayload: Record<string, any> = {
             overwrite: true,
             notify_lead_owner: true,
@@ -569,6 +1030,31 @@ export async function syncBookingAndTaskOnPayment(
     }
 
     result.taskId = taskId;
+
+    // 2.5 CREATE OR UPDATE RECORD IN ZOHO 'OPERATIONS' CUSTOM MODULE
+    let operationsId = '';
+    if (dealId) {
+      operationsId = await syncOperationsRecord(
+        accessToken,
+        dealId,
+        params,
+        cleanItineraryUrl,
+        formattedStartDate,
+        formattedEndDate
+      );
+    }
+    result.operationsId = operationsId;
+
+    // 2.6 CREATE OR UPDATE RECORD IN ZOHO 'FINANCE' CUSTOM MODULE (Client Revenue Details)
+    let financeId = '';
+    if (dealId) {
+      financeId = await syncFinanceRecord(
+        accessToken,
+        dealId,
+        params
+      );
+    }
+    result.financeId = financeId;
     result.success = Boolean(dealId);
 
     // 3. SEND INSTANT EMAIL ALERT TO BHAVIN
