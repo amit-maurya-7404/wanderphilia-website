@@ -4056,11 +4056,11 @@ export const srilankaShravyaManualItinerary: ManualItinerary = {
   heroImage: '/images/srilanka/hero.jpg',
   galleryImages: [
     '/images/srilanka/sigiriya-rock.jpg',
-    '/images/srilanka/nuwara-eliya.jpg',
     '/images/srilanka/nine-arches-bridge.jpg',
+    '/images/srilanka/nuwara-eliya.jpg',
     '/images/srilanka/yala.jpg',
     '/images/srilanka/mirissa-beach.jpg',
-    '/images/srilanka/bentota-beach.jpg',
+    '/images/srilanka/coconut-tree-hill.jpg',
     '/images/srilanka/pinnawala.jpg',
     '/images/srilanka/colombo.jpg'
   ],
@@ -4291,7 +4291,7 @@ export const srilankaShravyaManualItinerary: ManualItinerary = {
         'Bid farewell to the paradise island of Sri Lanka with unforgettable family memories'
       ],
       stayLocation: 'Departure',
-      image: '/images/srilanka/bentota-beach.jpg',
+      image: '/images/srilanka/coconut-tree-hill.jpg',
       meals: 'Breakfast',
       signOff: 'Wishing Ms. Shravya & Family a wondrous and magical journey with Wanderphilia! 🇱🇰✨'
     }

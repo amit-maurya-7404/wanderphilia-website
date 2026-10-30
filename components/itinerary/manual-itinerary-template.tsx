@@ -227,11 +227,11 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
 
   const srilankaPhotos = [
     '/images/srilanka/sigiriya-rock.jpg',
-    '/images/srilanka/nuwara-eliya.jpg',
     '/images/srilanka/nine-arches-bridge.jpg',
+    '/images/srilanka/nuwara-eliya.jpg',
     '/images/srilanka/yala.jpg',
     '/images/srilanka/mirissa-beach.jpg',
-    '/images/srilanka/bentota-beach.jpg'
+    '/images/srilanka/coconut-tree-hill.jpg'
   ];
 
   const collageImages = isSriLankaDest
