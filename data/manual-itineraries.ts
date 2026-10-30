@@ -3958,6 +3958,13 @@ export const lakshadweepParekhWithFlightsManualItinerary: ManualItinerary = {
   ...lakshadweepParekhManualItinerary,
   id: 'lakshadweep-parekh-with-flights',
   slug: 'lakshadweep-parekh-with-flights',
+  inclusions: [
+    'Round-Trip Airfare: Navi Mumbai (NMI) ↔ Agatti (AGX) via FLY91',
+    ...lakshadweepParekhManualItinerary.inclusions
+  ],
+  exclusions: lakshadweepParekhManualItinerary.exclusions.filter(
+    (item) => !item.toLowerCase().includes('airfare')
+  ),
   flightQuotations: [
     {
       optionId: 'fly91-lakshadweep-parekh',

@@ -609,6 +609,11 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
             </div>
           )}
 
+          {/* ✈️ FLIGHT DETAILS & PRICING (Directly below Accommodations) */}
+          {currentFlightQuotations && currentFlightQuotations.length > 0 && (
+            <ManualFlightQuotationSection flightQuotations={currentFlightQuotations} />
+          )}
+
           {/* Inclusions & Exclusions Two-Column Layout */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
 
@@ -1124,11 +1129,6 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                 </div>
               )}
             </div>
-          )}
-
-          {/* ✈️ FLIGHT QUOTATIONS & SCHEDULE (Placed below the Tour Quotation) */}
-          {currentFlightQuotations && currentFlightQuotations.length > 0 && (
-            <ManualFlightQuotationSection flightQuotations={currentFlightQuotations} />
           )}
 
           {/* Bottom Rust Bar */}
