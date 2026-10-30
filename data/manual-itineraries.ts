@@ -3954,7 +3954,68 @@ export const lakshadweepParekhManualItinerary: ManualItinerary = {
   fullPaymentOnly: false
 };
 
+export const lakshadweepParekhWithFlightsManualItinerary: ManualItinerary = {
+  ...lakshadweepParekhManualItinerary,
+  id: 'lakshadweep-parekh-with-flights',
+  slug: 'lakshadweep-parekh-with-flights',
+  flightQuotations: [
+    {
+      optionId: 'fly91-lakshadweep-parekh',
+      optionTitle: 'Preferred Flights (FLY91 Direct)',
+      totalPrice: 420000,
+      perPersonPrice: 30000,
+      paxDetails: '14 Adults (Round-Trip Return Airfare)',
+      isExcludedFromPackage: true,
+      note: 'Flight costs of ₹30,000 per person are separate and NOT included in the land package quotation above. Airfares are indicative and subject to real-time seat availability at the time of final booking confirmation.',
+      sectors: [
+        {
+          fromCity: 'Navi Mumbai',
+          toCity: 'Lakshadweep',
+          fromAirport: 'Navi Mumbai International Airport',
+          toAirport: 'Agatti Airport',
+          fromCode: 'NMI',
+          toCode: 'AGX',
+          airline: 'FLY91',
+          flightNumber: 'IC 1702',
+          journeyType: 'Onward Journey',
+          departureDate: 'Sat, 09 Jan 2027',
+          departureTime: '11:00',
+          arrivalDate: 'Sat, 09 Jan 2027',
+          arrivalTime: '14:35',
+          duration: '3 h 35 m',
+          stops: 'Non Stop',
+          cabinClass: 'ECONOMY',
+          baggage: '15 kg Check-in + 7 kg Cabin',
+          refundPolicy: 'Standard Airline Policy'
+        },
+        {
+          fromCity: 'Lakshadweep',
+          toCity: 'Navi Mumbai',
+          fromAirport: 'Agatti Airport',
+          toAirport: 'Navi Mumbai International Airport',
+          fromCode: 'AGX',
+          toCode: 'NMI',
+          airline: 'FLY91',
+          flightNumber: 'IC 1703',
+          journeyType: 'Return Journey',
+          departureDate: 'Thu, 14 Jan 2027',
+          departureTime: '14:55',
+          arrivalDate: 'Thu, 14 Jan 2027',
+          arrivalTime: '19:00',
+          duration: '4 h 5 m',
+          stops: 'Non Stop',
+          cabinClass: 'ECONOMY',
+          baggage: '15 kg Check-in + 7 kg Cabin',
+          refundPolicy: 'Standard Airline Policy'
+        }
+      ]
+    }
+  ]
+};
+
 export const manualItinerariesRegistry: Record<string, ManualItinerary> = {
+  'lakshadweep-parekh-with-flights': lakshadweepParekhWithFlightsManualItinerary,
+  'parekh-with-flights': lakshadweepParekhWithFlightsManualItinerary,
   'lakshadweep-parekh': lakshadweepParekhManualItinerary,
   'lakshadweep-parekh-family': lakshadweepParekhManualItinerary,
   'parekh-lakshadweep': lakshadweepParekhManualItinerary,
@@ -4098,6 +4159,7 @@ export function getManualItinerary(idOrSlug: string): ManualItinerary | null {
 
 export function getAllManualItineraries(): ManualItinerary[] {
   return [
+    lakshadweepParekhWithFlightsManualItinerary,
     lakshadweepParekhManualItinerary,
     himachalExplorerManualItinerary,
     winterSpitiYatinManualItinerary,

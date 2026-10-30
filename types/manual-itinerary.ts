@@ -46,12 +46,20 @@ export interface FlightSector {
   price?: number;
   paxDetails?: string;
   refundPolicy?: string;
+  journeyType?: string;
+  fromAirport?: string;
+  toAirport?: string;
+  fromCode?: string;
+  toCode?: string;
+  cabinClass?: string;
 }
 
 export interface FlightQuotationOption {
   optionId?: string;
   optionTitle: string;
   totalPrice: number;
+  perPersonPrice?: number;
+  isExcludedFromPackage?: boolean;
   paxDetails?: string;
   sectors: FlightSector[];
   note?: string;
