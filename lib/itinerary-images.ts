@@ -24,6 +24,22 @@ export const availableDummyImages: string[] = [
 ];
 
 export const destinationLuxuryImages: Record<string, string[]> = {
+  'sri lanka': [
+    '/images/srilanka/sigiriya-rock.jpg',
+    '/images/srilanka/nuwara-eliya.jpg',
+    '/images/srilanka/nine-arches-bridge.jpg',
+    '/images/srilanka/yala.jpg',
+    '/images/srilanka/mirissa-beach.jpg',
+    '/images/srilanka/bentota-beach.jpg'
+  ],
+  srilanka: [
+    '/images/srilanka/sigiriya-rock.jpg',
+    '/images/srilanka/nuwara-eliya.jpg',
+    '/images/srilanka/nine-arches-bridge.jpg',
+    '/images/srilanka/yala.jpg',
+    '/images/srilanka/mirissa-beach.jpg',
+    '/images/srilanka/bentota-beach.jpg'
+  ],
   rajasthan: [
     '/images/Rajasthan/rajasthan1.jpeg',
     '/images/Rajasthan/rajasthan2.jpeg',

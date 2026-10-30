@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ManualItinerary } from '@/types/manual-itinerary';
@@ -62,7 +62,7 @@ function SafeImage({
   fill,
   priority,
   className,
-  fallback = '/images/himachal.jpg'
+  fallback = '/images/srilanka/sigiriya-rock.jpg'
 }: {
   src: string;
   alt: string;
@@ -73,12 +73,17 @@ function SafeImage({
 }) {
   const [imgSrc, setImgSrc] = useState(src || fallback);
 
+  useEffect(() => {
+    setImgSrc(src || fallback);
+  }, [src, fallback]);
+
   return (
     <Image
       src={imgSrc || fallback}
       alt={alt}
       fill={fill}
       priority={priority}
+      unoptimized
       className={className}
       onError={() => {
         if (imgSrc !== fallback) {
@@ -140,7 +145,8 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
   const numNights = activeOption?.numNights || itinerary.numNights || 4;
   const travelStyle = itinerary.travelStyle || 'Curated Travel Experience';
   const tripType = itinerary.tripType || 'Customised Tour';
-  const heroImage = itinerary.heroImage || '/images/about_hero4.jpg';
+  const isSriLankaEarly = destination.toLowerCase().includes('sri lanka') || destination.toLowerCase().includes('srilanka') || (itinerary.id && itinerary.id.toLowerCase().includes('srilanka'));
+  const heroImage = itinerary.heroImage || (isSriLankaEarly ? '/images/srilanka/hero.jpg' : '/images/about_hero4.jpg');
   const vehicleType = activeOption?.vehicleType || itinerary.vehicleType || 'Private AC Vehicle';
   const mealPlan = activeOption?.mealPlan || itinerary.mealPlan || 'Breakfast & Dinner';
 
@@ -169,12 +175,20 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
   const staySummary = activeOption?.routeSummary || itinerary.routeSummary || `${numNights}N ${destination}`;
 
   // 6 Collage images for Page 2
+  const isSriLankaDest = destination.toLowerCase().includes('sri lanka') || destination.toLowerCase().includes('srilanka') || (itinerary.id && itinerary.id.toLowerCase().includes('srilanka'));
   const isTadobaDest = destination.toLowerCase().includes('tadoba') || (itinerary.id && itinerary.id.toLowerCase().includes('tadoba'));
   const isRajasthanDest = destination.toLowerCase().includes('rajasthan') || (itinerary.id && itinerary.id.toLowerCase().includes('rajasthan')) || (itinerary.id && itinerary.id.toLowerCase().includes('4002b3f4'));
   const isVietnamDest = destination.toLowerCase().includes('vietnam') || (itinerary.id && itinerary.id.toLowerCase().includes('vietnam'));
   const isAlibaugDest = destination.toLowerCase().includes('alibaug') || (itinerary.id && itinerary.id.toLowerCase().includes('alibaug'));
 
-  const defaultCollage = isTadobaDest ? [
+  const defaultCollage = isSriLankaDest ? [
+    '/images/srilanka/sigiriya-rock.jpg',
+    '/images/srilanka/nuwara-eliya.jpg',
+    '/images/srilanka/nine-arches-bridge.jpg',
+    '/images/srilanka/yala.jpg',
+    '/images/srilanka/mirissa-beach.jpg',
+    '/images/srilanka/bentota-beach.jpg'
+  ] : isTadobaDest ? [
     '/images/tadoba/tadoba_safari.jpg',
     '/images/tadoba/tadoba_lake.jpg',
     '/images/tadoba/tadoba_resort.jpg',
@@ -211,9 +225,20 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
     '/images/himachal5.jpg'
   ])));
 
-  const collageImages = itinerary.galleryImages && itinerary.galleryImages.length >= 6
-    ? itinerary.galleryImages.slice(0, 6)
-    : defaultCollage;
+  const srilankaPhotos = [
+    '/images/srilanka/sigiriya-rock.jpg',
+    '/images/srilanka/nuwara-eliya.jpg',
+    '/images/srilanka/nine-arches-bridge.jpg',
+    '/images/srilanka/yala.jpg',
+    '/images/srilanka/mirissa-beach.jpg',
+    '/images/srilanka/bentota-beach.jpg'
+  ];
+
+  const collageImages = isSriLankaDest
+    ? (itinerary.galleryImages && itinerary.galleryImages.length >= 6 ? itinerary.galleryImages.slice(0, 6) : srilankaPhotos)
+    : (itinerary.galleryImages && itinerary.galleryImages.length >= 6
+      ? itinerary.galleryImages.slice(0, 6)
+      : defaultCollage);
 
   // Payment stage calculations
   const alreadyPaid = Number(itinerary.advanceAmountPaid || 0);
@@ -480,6 +505,7 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                       src={img}
                       alt={`Highlight ${i + 1}`}
                       fill
+                      fallback={img}
                       className="object-cover hover:scale-105 transition-transform duration-500"
                     />
                   </div>

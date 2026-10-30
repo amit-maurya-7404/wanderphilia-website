@@ -4039,30 +4039,30 @@ export const srilankaShravyaManualItinerary: ManualItinerary = {
   adults: 4,
   kids: 1,
   kidsDetails: '3 Kids: 16 Yrs & 12 Yrs (charged at Adult Rate) + 11 Yrs (with Dedicated Extra Bed)',
-  perAdultPrice: 39800,
-  perKidPrice: 34595,
-  childPricingNote: '4 Adults @ ₹39,800 + 5% GST (₹1,990) + 2% TCS (₹796) = ₹42,586/- per adult (Total: ₹1,70,344) • 1 Child (11 yrs with Extra Bed) @ ₹34,595 + 5% GST (₹1,730) + 2% TCS (₹692) = ₹37,017/-. Total Investment: ₹2,07,361/-.',
-  baseAmount: 193795,
+  perAdultPrice: 44300,
+  perKidPrice: 39095,
+  childPricingNote: '4 Adults @ ₹44,300 + 5% GST (₹2,215) + 2% TCS (₹886) = ₹47,401/- per adult (Total: ₹1,89,604) • 1 Child (11 yrs with Extra Bed) @ ₹39,095 + 5% GST (₹1,955) + 2% TCS (₹782) = ₹41,832/-. Total Investment: ₹2,31,436/-.',
+  baseAmount: 216295,
   gstPercentage: 5,
-  gstAmount: 9690,
+  gstAmount: 10815,
   tcsPercentage: 2,
-  tcsAmount: 3876,
-  finalQuotationAmount: 207361,
+  tcsAmount: 4326,
+  finalQuotationAmount: 231436,
   advanceAmountPaid: 0,
-  balancePendingAmount: 207361,
+  balancePendingAmount: 231436,
   paymentStage: 'unpaid',
   vehicleType: 'Private AC Toyota HighRoof KDH 9-Seater Van with Professional English-Speaking Chauffeur Guide (9 Seater / 9 Luggage)',
   mealPlan: 'Daily Breakfast at all Hotels (Total 7 Breakfasts)',
-  heroImage: 'https://images.unsplash.com/photo-1586861635167-e5223aadc9fe?auto=format&fit=crop&w=1600&q=80',
+  heroImage: '/images/srilanka/hero.jpg',
   galleryImages: [
-    'https://images.unsplash.com/photo-1586861635167-e5223aadc9fe?auto=format&fit=crop&w=1200&q=80',
-    'https://images.unsplash.com/photo-1577717903315-1691ae25ab3f?auto=format&fit=crop&w=1200&q=80',
-    'https://images.unsplash.com/photo-1546708973-b339540b5162?auto=format&fit=crop&w=1200&q=80',
-    'https://images.unsplash.com/photo-1561731216-c3a4d99437d5?auto=format&fit=crop&w=1200&q=80',
-    'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80',
-    'https://images.unsplash.com/photo-1564760055775-d63b17a55c44?auto=format&fit=crop&w=1200&q=80',
-    'https://images.unsplash.com/photo-1589182373726-e4f658ab50f0?auto=format&fit=crop&w=1200&q=80',
-    'https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&w=1200&q=80'
+    '/images/srilanka/sigiriya-rock.jpg',
+    '/images/srilanka/nuwara-eliya.jpg',
+    '/images/srilanka/nine-arches-bridge.jpg',
+    '/images/srilanka/yala.jpg',
+    '/images/srilanka/mirissa-beach.jpg',
+    '/images/srilanka/bentota-beach.jpg',
+    '/images/srilanka/pinnawala.jpg',
+    '/images/srilanka/colombo.jpg'
   ],
   moments: [
     'Climb the 1,200 ancient steps of Sigiriya to witness sunrise over King Ravana’s legendary realm',
@@ -4142,7 +4142,7 @@ export const srilankaShravyaManualItinerary: ManualItinerary = {
         }
       ],
       stayLocation: 'Sigiriya (Sigiriya Kingdom Resort / Similar)',
-      image: 'https://images.unsplash.com/photo-1564760055775-d63b17a55c44?auto=format&fit=crop&w=1200&q=80',
+      image: '/images/srilanka/pinnawala.jpg',
       meals: 'Meals as per plan'
     },
     {
@@ -4174,7 +4174,7 @@ export const srilankaShravyaManualItinerary: ManualItinerary = {
         }
       ],
       stayLocation: 'Nuwara Eliya (Oak Ray Summer Breeze / Similar)',
-      image: 'https://images.unsplash.com/photo-1586861635167-e5223aadc9fe?auto=format&fit=crop&w=1200&q=80',
+      image: '/images/srilanka/sigiriya-rock.jpg',
       meals: 'Breakfast'
     },
     {
@@ -4194,7 +4194,7 @@ export const srilankaShravyaManualItinerary: ManualItinerary = {
         'Overnight stay in Nuwara Eliya'
       ],
       stayLocation: 'Nuwara Eliya (Oak Ray Summer Breeze / Similar)',
-      image: 'https://images.unsplash.com/photo-1546708973-b339540b5162?auto=format&fit=crop&w=1200&q=80',
+      image: '/images/srilanka/nuwara-eliya.jpg',
       meals: 'Breakfast'
     },
     {
@@ -4215,7 +4215,7 @@ export const srilankaShravyaManualItinerary: ManualItinerary = {
         'Overnight stay in Yala'
       ],
       stayLocation: 'Yala National Park (Yala Rain Tree / Similar)',
-      image: 'https://images.unsplash.com/photo-1577717903315-1691ae25ab3f?auto=format&fit=crop&w=1200&q=80',
+      image: '/images/srilanka/nine-arches-bridge.jpg',
       meals: 'Breakfast'
     },
     {
@@ -4236,7 +4236,7 @@ export const srilankaShravyaManualItinerary: ManualItinerary = {
         'Overnight stay in Bentota'
       ],
       stayLocation: 'Bentota (Club Bentota / Similar)',
-      image: 'https://images.unsplash.com/photo-1561731216-c3a4d99437d5?auto=format&fit=crop&w=1200&q=80',
+      image: '/images/srilanka/yala.jpg',
       meals: 'Breakfast'
     },
     {
@@ -4255,7 +4255,7 @@ export const srilankaShravyaManualItinerary: ManualItinerary = {
         'Overnight stay in Bentota'
       ],
       stayLocation: 'Bentota (Club Bentota / Similar)',
-      image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80',
+      image: '/images/srilanka/mirissa-beach.jpg',
       meals: 'Breakfast'
     },
     {
@@ -4274,7 +4274,7 @@ export const srilankaShravyaManualItinerary: ManualItinerary = {
         'Overnight stay in Colombo'
       ],
       stayLocation: 'Colombo (Mandarina Colombo / Similar)',
-      image: 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&w=1200&q=80',
+      image: '/images/srilanka/colombo.jpg',
       meals: 'Breakfast'
     },
     {
@@ -4291,7 +4291,7 @@ export const srilankaShravyaManualItinerary: ManualItinerary = {
         'Bid farewell to the paradise island of Sri Lanka with unforgettable family memories'
       ],
       stayLocation: 'Departure',
-      image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80',
+      image: '/images/srilanka/bentota-beach.jpg',
       meals: 'Breakfast',
       signOff: 'Wishing Ms. Shravya & Family a wondrous and magical journey with Wanderphilia! 🇱🇰✨'
     }
@@ -4309,6 +4309,7 @@ export const srilankaShravyaManualItinerary: ManualItinerary = {
     'Temple of the Sacred Tooth Relic visit in Kandy',
     'Ashok Vatika (Seetha Amman Temple & Hakgala Gardens) & Gregory Lake exploration in Nuwara Eliya',
     'Iconic Nine Arches Bridge, Ravana Falls & Ravana Cave sightseeing in Ella',
+    'Exclusive Private 4x4 Jeep Safari in Yala National Park (Private Jeep & Chauffeur Safari)',
     'Yala National Park wilderness transition',
     'Mirissa Beach & Weligama Surfers Beach visits',
     'Bentota coastal day & Madu Ganga scenic river boat excursion',
@@ -4321,7 +4322,7 @@ export const srilankaShravyaManualItinerary: ManualItinerary = {
     'International Airfare & Airport Departure Taxes',
     'Sri Lanka Electronic Travel Authorization (ETA / Tourist Visa)',
     'Monument & attraction entry tickets (Sigiriya Rock, Kandy Temple, Pinnawala, etc. to be paid at actuals)',
-    'Yala National Park 4x4 Jeep Safari vehicle & park entry permit fees',
+    'Yala National Park entrance ticket fees at actuals (Private 4x4 Safari Jeep Included in Package)',
     'Scenic Ella Train tickets (subject to real-time seat availability at the time of booking)',
     'Water sports activities (Jet Ski, Parasailing, Banana Boat, Surfing, Scuba Diving)',
     'Lunches, Dinners & beverages not specified in the inclusions',

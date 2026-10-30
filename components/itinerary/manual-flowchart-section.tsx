@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { ManualDayPlan } from '@/types/manual-itinerary';
 import {
@@ -25,7 +25,7 @@ function SafeImage({
   fill,
   priority,
   className,
-  fallback = '/images/himachal.jpg'
+  fallback = '/images/srilanka/sigiriya-rock.jpg'
 }: {
   src: string;
   alt: string;
@@ -36,12 +36,17 @@ function SafeImage({
 }) {
   const [imgSrc, setImgSrc] = useState(src || fallback);
 
+  useEffect(() => {
+    setImgSrc(src || fallback);
+  }, [src, fallback]);
+
   return (
     <Image
       src={imgSrc || fallback}
       alt={alt}
       fill={fill}
       priority={priority}
+      unoptimized
       className={className}
       onError={() => {
         if (imgSrc !== fallback) {
@@ -176,7 +181,7 @@ export function ManualFlowchartSection({
 
         // Ensure image is valid
         let dayImage = day.image;
-        if (!dayImage || dayImage.startsWith('http') || !dayImage.startsWith('/')) {
+        if (!dayImage || (!dayImage.startsWith('/') && !dayImage.startsWith('http'))) {
           dayImage = imagePool[idx % imagePool.length];
         }
 
