@@ -35,6 +35,11 @@ const nextConfig = {
         destination: '/',
         permanent: false,
       },
+      {
+        source: '/srilanka-shravya',
+        destination: '/itinerary/srilanka-shravya',
+        permanent: false,
+      },
     ]
   },
 }
