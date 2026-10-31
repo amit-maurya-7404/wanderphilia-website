@@ -476,8 +476,13 @@ export async function POST(req: NextRequest) {
                 ? (itinerary?.rawZohoData as any).kidsDetails
                 : ((Array.isArray(body?.kidsDetails) && body.kidsDetails.length > 0) ? body.kidsDetails : []))));
 
+      const resolvedItinLookupId = (itinerary?.rawZohoData as any)?.pickItineraryId ||
+        (itinerary?.rawZohoData as any)?.Itinerary?.id ||
+        (typeof (itinerary?.rawZohoData as any)?.Itinerary === 'string' && /^\d{15,22}$/.test(String((itinerary?.rawZohoData as any).Itinerary).trim()) ? String((itinerary?.rawZohoData as any).Itinerary).trim() : '') ||
+        itineraryId || itinerary?.id || '';
+
       zohoBookingResult = await syncBookingAndTaskOnPayment({
-        itineraryId: itineraryId || itinerary?.id || '',
+        itineraryId: resolvedItinLookupId,
         itineraryUrl: winningItineraryUrl,
         paymentId: razorpay_payment_id,
         orderId: razorpay_order_id,
@@ -503,11 +508,11 @@ export async function POST(req: NextRequest) {
         adults,
         kids,
         kidsDetails: resolvedKidsDetails,
-        roomsCount: (itinerary as any)?.roomsCount || (itinerary?.leadDetails as any)?.roomsCount || 1,
-        sharingType: (itinerary as any)?.sharingType || (itinerary?.leadDetails as any)?.sharingType || 'Double Sharing',
-        preferredRoomCategory: itinerary?.roomCategory || (itinerary?.leadDetails as any)?.preferredRoomCategory || 'Deluxe Room',
+        roomsCount: (itinerary as any)?.roomsCount || (itinerary?.leadDetails as any)?.roomsCount || (itinerary?.rawZohoData as any)?.roomsCount || (itinerary?.rawZohoData as any)?.Rooms_Count || 1,
+        sharingType: (itinerary as any)?.sharingType || (itinerary?.leadDetails as any)?.sharingType || (itinerary?.rawZohoData as any)?.Sharing_Type || 'Double Sharing',
+        preferredRoomCategory: itinerary?.roomCategory || (itinerary?.leadDetails as any)?.preferredRoomCategory || (itinerary?.rawZohoData as any)?.Preferred_Room_Category || 'Deluxe Room',
         hotelCategory: (itinerary as any)?.hotelCategory || (itinerary?.rawZohoData as any)?.Hotel_Category || resolvedHotels?.[0]?.category || 'Deluxe',
-        vehicleType: itinerary?.vehicleType || (itinerary?.leadDetails as any)?.vehicleType || (itinerary?.rawZohoData as any)?.Vehicle_Type || 'Dedicated Private Cab',
+        vehicleType: itinerary?.vehicleType || (itinerary?.rawZohoData as any)?.Vehicle_Type || (itinerary?.leadDetails as any)?.vehicleType || manualItinerary?.vehicleType || 'Dedicated Private Cab',
         mealPlan: itinerary?.mealPlan || (itinerary?.leadDetails as any)?.mealPlan || (itinerary?.rawZohoData as any)?.Meal_Plan || 'Breakfast & Dinner',
         hotels: resolvedHotels,
         dayActivities: (itinerary as any)?.dayActivities || itinerary?.rawZohoData?.dayActivities || itinerary?.dayPlans || (manualItinerary as any)?.itinerary || [],

@@ -325,28 +325,113 @@ function buildTaskHotelPayload(hotels: BookingPaymentSyncParams['hotels'] = [], 
 }
 
 /**
- * Builds the Hotel fields payload for the custom 'Operations' module
+ * Safely fetches hotel details from Zoho CRM Hotel module to extract Room_Rates_Pricing
  */
-function buildOperationsHotelPayload(hotels: BookingPaymentSyncParams['hotels'] = [], hotelsMap?: Map<string, string>): Record<string, any> {
+const hotelRateCache = new Map<string, any>();
+
+async function getHotelRates(accessToken: string, hotelId: string): Promise<any> {
+  if (hotelRateCache.has(hotelId)) {
+    return hotelRateCache.get(hotelId);
+  }
+  try {
+    const url = getZohoApiUrl(`/crm/v3/Hotel/${hotelId}`);
+    const res = await fetch(url, {
+      headers: { Authorization: `Zoho-oauthtoken ${accessToken}` },
+      cache: 'no-store'
+    });
+    if (res.ok) {
+      const json = await res.json().catch(() => null);
+      if (json?.data && json.data[0]) {
+        hotelRateCache.set(hotelId, json.data[0]);
+        return json.data[0];
+      }
+    }
+  } catch (err) {
+    console.warn(`[Zoho Hotel Rate Fetch Warning for ${hotelId}]:`, err);
+  }
+  return null;
+}
+
+export interface OperationsHotelPayloadResult {
+  payload: Record<string, any>;
+  hotelBreakdowns: Array<{
+    index: number;
+    lookup: { id: string } | null;
+    cost: number | null;
+  }>;
+}
+
+/**
+ * Builds the Hotel fields payload for the custom 'Operations' module.
+ * Calculates Hotel_X_Cost using Price_Per_Night (actual net payable rate) x nights x rooms.
+ */
+async function buildOperationsHotelPayload(
+  accessToken: string,
+  hotels: BookingPaymentSyncParams['hotels'] = [],
+  hotelsMap?: Map<string, string>,
+  roomsCount: number = 1,
+  billableExtraBeds: number = 0,
+  childNoBedCount: number = 0
+): Promise<OperationsHotelPayloadResult> {
   const payload: Record<string, any> = {};
+  const hotelBreakdowns: OperationsHotelPayloadResult['hotelBreakdowns'] = [];
 
   for (let i = 1; i <= 6; i++) {
     const h = hotels[i - 1];
     const prefix = `Hotel_${i}`;
     payload[`${prefix}_Booked`] = false;
+
     if (h) {
       const lookup = resolveHotelLookupId(h, hotelsMap);
       if (lookup) payload[prefix] = lookup;
       if (h.city) payload[`${prefix}_City`] = h.city;
-      if (h.nights !== undefined && h.nights !== null) payload[`${prefix}_Nights`] = Number(h.nights);
+      const nights = Number(h.nights || 1);
+      payload[`${prefix}_Nights`] = nights;
       if (h.stayDates) payload[`${prefix}_Dates`] = h.stayDates;
       if (h.category) payload[`${prefix}_Category`] = h.category;
+
+      let singleHotelCost: number | null = null;
+      if (lookup?.id) {
+        const hotelRecord = await getHotelRates(accessToken, lookup.id);
+        if (hotelRecord) {
+          const ratesSubform: any[] = Array.isArray(hotelRecord.Room_Rates_Pricing) ? hotelRecord.Room_Rates_Pricing : [];
+          if (ratesSubform.length > 0) {
+            let matchedRow = ratesSubform[0];
+            const targetCat = (h.category || h.roomCategory || '').trim().toLowerCase();
+            if (targetCat) {
+              for (const row of ratesSubform) {
+                const rowCat = String(row.Room_Category || '').trim().toLowerCase();
+                if (rowCat === targetCat || rowCat.includes(targetCat) || targetCat.includes(rowCat)) {
+                  matchedRow = row;
+                  break;
+                }
+              }
+            }
+
+            // Price_Per_Night is the actual B2B net payable rate to the hotel
+            const pricePerNight = Number(matchedRow.Price_Per_Night || matchedRow.Base_Price || 0);
+            const extraBedRate = Number(matchedRow.Extra_Bed || 0);
+            const childNoBedRate = Number(matchedRow.Child_without_bed || 0);
+
+            const roomTotal = pricePerNight * Math.max(1, roomsCount) * nights;
+            const extraBedTotal = extraBedRate * billableExtraBeds * nights;
+            const childNoBedTotal = childNoBedRate * childNoBedCount * nights;
+
+            singleHotelCost = Math.round(roomTotal + extraBedTotal + childNoBedTotal);
+          }
+        }
+      }
+
+      payload[`${prefix}_Cost`] = singleHotelCost;
+      hotelBreakdowns.push({ index: i, lookup: lookup || null, cost: singleHotelCost });
     } else {
       payload[prefix] = null;
       payload[`${prefix}_City`] = null;
       payload[`${prefix}_Nights`] = 0;
       payload[`${prefix}_Dates`] = null;
       payload[`${prefix}_Category`] = null;
+      payload[`${prefix}_Cost`] = null;
+      hotelBreakdowns.push({ index: i, lookup: null, cost: null });
     }
   }
 
@@ -354,7 +439,7 @@ function buildOperationsHotelPayload(hotels: BookingPaymentSyncParams['hotels'] 
   payload.Activities_Booked = false;
   payload.All_Hotels_Booked = false;
 
-  return payload;
+  return { payload, hotelBreakdowns };
 }
 
 // Cache for Zoho Activities mapping (name -> Zoho Record ID)
@@ -420,6 +505,15 @@ async function buildOperationsActivitiesSubform(
       Guided_Tour: Boolean(day.guidedTour),
     };
 
+    // If there are multiple en-route experiences, join them with comma so they fit in the single CRM field
+    const enrouteVal = day.enRouteExperiences || day.en_route_experiences || day.enRoute || '';
+    const enrouteStr = Array.isArray(enrouteVal)
+      ? enrouteVal.filter(Boolean).join(', ')
+      : String(enrouteVal || '').trim();
+    if (enrouteStr) {
+      row.En_route_Experiences = enrouteStr;
+    }
+
     if (day.city2) {
       row.City_2 = day.city2;
     }
@@ -431,6 +525,7 @@ async function buildOperationsActivitiesSubform(
       rawExps = day.activities;
     }
 
+    // Zoho CRM subform supports exactly 4 Experience slots (Experience_1 to Experience_4)
     for (let expIdx = 0; expIdx < Math.min(rawExps.length, 4); expIdx++) {
       const exp = rawExps[expIdx];
       const slot = expIdx + 1;
@@ -460,6 +555,19 @@ async function buildOperationsActivitiesSubform(
       }
     }
 
+    // If more than 4 experiences exist, append the extra ones to Inclusions_Description_4 so no data is lost
+    if (rawExps.length > 4) {
+      const extraNames = rawExps
+        .slice(4)
+        .map(e => (typeof e === 'string' ? e : (e?.name || e?.title || '')))
+        .filter(Boolean);
+      if (extraNames.length > 0) {
+        const extraNote = `(Also includes: ${extraNames.join(', ')})`;
+        const currentDesc = row.Inclusions_Description_4 || '';
+        row.Inclusions_Description_4 = (currentDesc ? `${currentDesc} ${extraNote}` : extraNote).substring(0, 500);
+      }
+    }
+
     rows.push(row);
   }
 
@@ -467,7 +575,149 @@ async function buildOperationsActivitiesSubform(
 }
 
 /**
- * Safely looks up an Itinerary in Zoho CRM Itineraries module
+ * Resolves the vehicle record and finds the lowest-cost vendor from Vendor_Pricing subform.
+ */
+async function resolveVehicleAndLowestVendor(
+  accessToken: string,
+  vehicleType: string | undefined,
+  destination: string,
+  totalPax: number,
+  days: number
+): Promise<{
+  vehicleLookup: { id: string } | null;
+  vendorLookup: { id: string } | null;
+  vehicleCost: number | null;
+}> {
+  try {
+    let matchedVehicle: any = null;
+
+    // 1. Try matching by Name in Vehicles module
+    if (vehicleType && vehicleType.trim()) {
+      const vName = vehicleType.trim();
+      const searchUrl = getZohoApiUrl(`/crm/v3/Vehicles/search?criteria=(Name:equals:${encodeURIComponent(vName)})`);
+      const sRes = await fetch(searchUrl, {
+        headers: { Authorization: `Zoho-oauthtoken ${accessToken}` },
+        cache: 'no-store'
+      });
+      if (sRes.ok && sRes.status !== 204) {
+        const sJson = await sRes.json().catch(() => null);
+        if (sJson?.data && sJson.data[0]) {
+          matchedVehicle = sJson.data[0];
+        }
+      }
+    }
+
+    // 2. If not matched, fetch vehicles list and match by name substring or capacity & destination
+    if (!matchedVehicle) {
+      const allVehUrl = getZohoApiUrl('/crm/v3/Vehicles?fields=id,Name,Cost,Min_Capacity,Max_Capacity,State&per_page=100');
+      const allRes = await fetch(allVehUrl, {
+        headers: { Authorization: `Zoho-oauthtoken ${accessToken}` },
+        cache: 'no-store'
+      });
+      if (allRes.ok && allRes.status !== 204) {
+        const allJson = await allRes.json().catch(() => null);
+        const list: any[] = Array.isArray(allJson?.data) ? allJson.data : [];
+
+        // Check if vehicleType contains or is contained in any vehicle Name
+        if (vehicleType) {
+          const vLower = vehicleType.toLowerCase();
+          matchedVehicle = list.find(v => v.Name && (vLower.includes(v.Name.toLowerCase()) || v.Name.toLowerCase().includes(vLower)));
+        }
+
+        // Auto-match by destination / State and pax capacity
+        if (!matchedVehicle && destination) {
+          const destLower = destination.toLowerCase();
+          matchedVehicle = list.find(v => 
+            v.State && v.State.toLowerCase() === destLower &&
+            totalPax >= Number(v.Min_Capacity || 0) &&
+            totalPax <= Number(v.Max_Capacity || 99)
+          );
+        }
+
+        // Fallback: match any vehicle fitting pax capacity
+        if (!matchedVehicle) {
+          matchedVehicle = list.find(v =>
+            totalPax >= Number(v.Min_Capacity || 0) &&
+            totalPax <= Number(v.Max_Capacity || 99)
+          );
+        }
+      }
+    }
+
+    if (!matchedVehicle || !matchedVehicle.id) {
+      return { vehicleLookup: null, vendorLookup: null, vehicleCost: null };
+    }
+
+    // Fetch full vehicle record to load the complete Vendor_Pricing subform
+    let fullVehicle = matchedVehicle;
+    try {
+      const singleUrl = getZohoApiUrl(`/crm/v3/Vehicles/${matchedVehicle.id}`);
+      const singleRes = await fetch(singleUrl, {
+        headers: { Authorization: `Zoho-oauthtoken ${accessToken}` },
+        cache: 'no-store'
+      });
+      if (singleRes.ok) {
+        const singleJson = await singleRes.json().catch(() => null);
+        if (singleJson?.data && singleJson.data[0]) {
+          fullVehicle = singleJson.data[0];
+        }
+      }
+    } catch (e) {
+      console.warn('[Fetch Full Vehicle Warning]:', e);
+    }
+
+    const vehicleLookup = { id: String(fullVehicle.id) };
+    let vendorLookup: { id: string } | null = null;
+    let dailyCost = Number(fullVehicle.Cost || 0);
+
+    const vendorPricingList: any[] = Array.isArray(fullVehicle.Vendor_Pricing) ? fullVehicle.Vendor_Pricing : [];
+    const validVendors = vendorPricingList.filter(row => {
+      const c = Number(row.Cost_Per_day);
+      return !isNaN(c) && c > 0;
+    });
+
+    if (validVendors.length > 0) {
+      // Sort ascending by Cost_Per_day to select the lowest-price vendor
+      validVendors.sort((a, b) => Number(a.Cost_Per_day) - Number(b.Cost_Per_day));
+      const lowestVendorRow = validVendors[0];
+      dailyCost = Number(lowestVendorRow.Cost_Per_day);
+
+      const vName = lowestVendorRow.Vendor_Name;
+      if (vName && String(vName).trim()) {
+        try {
+          const searchVUrl = getZohoApiUrl(`/crm/v3/Vendors/search?criteria=(Vendor_Name:equals:${encodeURIComponent(String(vName).trim())})`);
+          const vRes = await fetch(searchVUrl, {
+            headers: { Authorization: `Zoho-oauthtoken ${accessToken}` },
+            cache: 'no-store'
+          });
+          if (vRes.ok && vRes.status !== 204) {
+            const vJson = await vRes.json().catch(() => null);
+            if (vJson?.data && vJson.data[0] && vJson.data[0].id) {
+              vendorLookup = { id: String(vJson.data[0].id) };
+            }
+          }
+        } catch (vErr) {
+          console.warn('[Vendor Search Warning]:', vErr);
+        }
+      }
+    }
+
+    const totalDays = Math.max(1, Number(days) || 1);
+    const vehicleCost = Math.round(dailyCost * totalDays);
+
+    return {
+      vehicleLookup,
+      vendorLookup,
+      vehicleCost: vehicleCost > 0 ? vehicleCost : null
+    };
+  } catch (err) {
+    console.warn('[Resolve Vehicle Lowest Vendor Error]:', err);
+    return { vehicleLookup: null, vendorLookup: null, vehicleCost: null };
+  }
+}
+
+/**
+ * Safely looks up an Itinerary in Zoho CRM Products (Itineraries) module
  */
 async function findZohoItineraryLookup(
   accessToken: string,
@@ -479,7 +729,8 @@ async function findZohoItineraryLookup(
   }
   try {
     if (destination) {
-      const searchUrl = getZohoApiUrl(`/crm/v3/Itineraries/search?criteria=(Destination:equals:${encodeURIComponent(destination.trim())})`);
+      // In Zoho CRM, Itineraries module internally maps to Products
+      const searchUrl = getZohoApiUrl(`/crm/v3/Products/search?criteria=(Destination:equals:${encodeURIComponent(destination.trim())})`);
       const res = await fetch(searchUrl, {
         headers: { Authorization: `Zoho-oauthtoken ${accessToken}` },
         cache: 'no-store',
@@ -490,11 +741,38 @@ async function findZohoItineraryLookup(
           return { id: String(json.data[0].id) };
         }
       }
+
+      // Also try Product_Name matching destination
+      const nameUrl = getZohoApiUrl(`/crm/v3/Products/search?criteria=(Product_Name:equals:${encodeURIComponent(destination.trim())})`);
+      const nameRes = await fetch(nameUrl, {
+        headers: { Authorization: `Zoho-oauthtoken ${accessToken}` },
+        cache: 'no-store',
+      });
+      if (nameRes.ok && nameRes.status !== 204) {
+        const json = await nameRes.json().catch(() => null);
+        if (json?.data && json.data.length > 0 && json.data[0].id) {
+          return { id: String(json.data[0].id) };
+        }
+      }
     }
   } catch (err) {
     console.warn('[Zoho Itinerary Lookup Warning]:', err);
   }
   return undefined;
+}
+
+export interface SyncOperationsResult {
+  operationsId: string;
+  vehicleDetails: {
+    vehicleLookup: { id: string } | null;
+    vendorLookup: { id: string } | null;
+    vehicleCost: number | null;
+  };
+  hotelBreakdowns: Array<{
+    index: number;
+    lookup: { id: string } | null;
+    cost: number | null;
+  }>;
 }
 
 /**
@@ -507,10 +785,16 @@ async function syncOperationsRecord(
   cleanItineraryUrl: string,
   formattedStartDate: string | null,
   formattedEndDate: string | null
-): Promise<string> {
-  try {
-    let existingOpsId = '';
+): Promise<SyncOperationsResult> {
+  let existingOpsId = '';
+  let vehicleDetailsResult: SyncOperationsResult['vehicleDetails'] = {
+    vehicleLookup: null,
+    vendorLookup: null,
+    vehicleCost: null
+  };
+  let hotelBreakdownsResult: SyncOperationsResult['hotelBreakdowns'] = [];
 
+  try {
     // 1. Search for existing Operations record linked to this Deal ID or Customer Name
     if (dealId) {
       try {
@@ -563,6 +847,46 @@ async function syncOperationsRecord(
     // Fetch dynamic Hotels lookup map so Hotel 1, Hotel 2, etc. link to Zoho Hotel IDs
     const hotelsMap = await getZohoHotelsMap(accessToken);
 
+    // Calculate extra bed counts and child without bed counts
+    const kidsList = Array.isArray(params.kidsDetails) ? params.kidsDetails : [];
+    let billableExtraBeds = 0;
+    let childNoBedCount = 0;
+    for (const k of kidsList) {
+      const pref = String(k.bedPreference || '').toLowerCase();
+      if (pref.includes('extra bed') || pref === 'with bed') {
+        billableExtraBeds++;
+      } else if (pref.includes('without bed') || pref.includes('no bed')) {
+        childNoBedCount++;
+      }
+    }
+    const sharingTypeStr = String(params.sharingType || 'Double Sharing').toLowerCase();
+    const adultsCount = Number(params.adults || 2);
+    if (sharingTypeStr.includes('double') && adultsCount > 1 && adultsCount % 2 !== 0 && kidsList.length === 0) {
+      billableExtraBeds++;
+    }
+
+    // Build Hotel payload with live Price_Per_Night calculations
+    const { payload: hotelPayload, hotelBreakdowns } = await buildOperationsHotelPayload(
+      accessToken,
+      params.hotels,
+      hotelsMap,
+      params.roomsCount || 1,
+      billableExtraBeds,
+      childNoBedCount
+    );
+    hotelBreakdownsResult = hotelBreakdowns;
+
+    // Resolve Vehicle & Lowest-Priced Vendor
+    const totalPax = (Number(params.numberOfGuests) || (adultsCount + (params.kids || kidsList.length))) || 2;
+    const vehicleDetails = await resolveVehicleAndLowestVendor(
+      accessToken,
+      params.vehicleType,
+      params.destination,
+      totalPax,
+      resolvedDays
+    );
+    vehicleDetailsResult = vehicleDetails;
+
     const opsPayload: Record<string, any> = {
       Name: `${params.customerName} - ${params.destination} Tour`,
       Booking_Id: dealId,
@@ -579,17 +903,27 @@ async function syncOperationsRecord(
       Hotel_Category: resolvedHotelCategory,
       Status: 'Pending',
       Itinerary_URL: cleanItineraryUrl,
-      ...buildOperationsHotelPayload(params.hotels, hotelsMap),
+      ...hotelPayload,
     };
 
-    // Try linking Itinerary Lookup in Operations
+    // Populate Vehicle Type, Lowest Vendor Name, and Vehicle Cost
+    if (vehicleDetails.vehicleLookup) {
+      opsPayload.Vehicle_Type = vehicleDetails.vehicleLookup;
+    }
+    if (vehicleDetails.vendorLookup) {
+      opsPayload.Vendor_Name = vehicleDetails.vendorLookup;
+    }
+    if (vehicleDetails.vehicleCost !== null && vehicleDetails.vehicleCost !== undefined) {
+      opsPayload.Vehicle_Cost = vehicleDetails.vehicleCost;
+    }
+
+    // Try linking Itinerary Lookup in Operations (Products module)
     const itinLookup = await findZohoItineraryLookup(accessToken, params.destination, params.itineraryId);
     if (itinLookup) {
       opsPayload.Itinerary = itinLookup;
     }
 
     // Map Kids_Age (Integer count of kids in Zoho CRM) and Child 1-5 details
-    const kidsList = Array.isArray(params.kidsDetails) ? params.kidsDetails : [];
     const kidsCount = params.kids !== undefined && params.kids !== null ? Number(params.kids) : kidsList.length;
 
     // IMPORTANT: 'Kids_Age' field in Zoho CRM Operations is of type INTEGER (expected_data_type: integer)
@@ -672,7 +1006,11 @@ async function syncOperationsRecord(
       });
       if (updateRes.ok) {
         console.log(`[Zoho Operations Module] Successfully updated existing Operations record ${existingOpsId}`);
-        return existingOpsId;
+        return {
+          operationsId: existingOpsId,
+          vehicleDetails: vehicleDetailsResult,
+          hotelBreakdowns: hotelBreakdownsResult
+        };
       } else {
         const errText = await updateRes.text();
         console.warn('[Zoho Operations Module Update Warning]:', errText);
@@ -692,28 +1030,52 @@ async function syncOperationsRecord(
         const createJson = await createRes.json();
         const newOpsId = String(createJson.data?.[0]?.details?.id || '');
         console.log(`[Zoho Operations Module] Successfully created new Operations record ${newOpsId}`);
-        return newOpsId;
+        return {
+          operationsId: newOpsId,
+          vehicleDetails: vehicleDetailsResult,
+          hotelBreakdowns: hotelBreakdownsResult
+        };
       } else {
         const errText = await createRes.text();
         console.error('[Zoho Operations Module Create Failed]:', errText);
       }
     }
 
-    return existingOpsId;
+    return {
+      operationsId: existingOpsId,
+      vehicleDetails: vehicleDetailsResult,
+      hotelBreakdowns: hotelBreakdownsResult
+    };
   } catch (err) {
     console.error('[Zoho Operations Module Exception]:', err);
-    return '';
+    return {
+      operationsId: '',
+      vehicleDetails: vehicleDetailsResult,
+      hotelBreakdowns: hotelBreakdownsResult
+    };
   }
 }
 
 /**
  * Creates or updates a record in the custom 'Finance' module in Zoho CRM with client revenue details.
- * Vendor costs and final hotel allotments are updated later when Operations confirms them.
+ * Hotel payable costs and Vehicle vendor costs are synced directly so Finance can process dispatches.
  */
 async function syncFinanceRecord(
   accessToken: string,
   dealId: string,
-  params: BookingPaymentSyncParams
+  params: BookingPaymentSyncParams,
+  syncMeta?: {
+    vehicleDetails?: {
+      vehicleLookup: { id: string } | null;
+      vendorLookup: { id: string } | null;
+      vehicleCost: number | null;
+    };
+    hotelBreakdowns?: Array<{
+      index: number;
+      lookup: { id: string } | null;
+      cost: number | null;
+    }>;
+  }
 ): Promise<string> {
   try {
     let existingFinId = '';
@@ -750,6 +1112,44 @@ async function syncFinanceRecord(
       Payment_Status: paymentStatus,
       Status: 'Pending',
     };
+
+    // Populate Vehicle & Vendor in Finance
+    if (syncMeta?.vehicleDetails?.vehicleLookup) {
+      finPayload.Vehicle_Name = syncMeta.vehicleDetails.vehicleLookup;
+    }
+    if (syncMeta?.vehicleDetails?.vendorLookup) {
+      finPayload.Vendor_Name = syncMeta.vehicleDetails.vendorLookup;
+    }
+    if (syncMeta?.vehicleDetails?.vehicleCost !== null && syncMeta?.vehicleDetails?.vehicleCost !== undefined) {
+      finPayload.Total_Transport_Cost = syncMeta.vehicleDetails.vehicleCost;
+    }
+
+    // Populate Hotels & Costs in Finance
+    if (Array.isArray(syncMeta?.hotelBreakdowns) && syncMeta.hotelBreakdowns.length > 0) {
+      const h1 = syncMeta.hotelBreakdowns.find(h => h.index === 1);
+      if (h1?.lookup) finPayload.Hotel_Name = h1.lookup;
+      if (h1?.cost !== null && h1?.cost !== undefined) finPayload.Total_Hotel_Cost = h1.cost;
+
+      const h2 = syncMeta.hotelBreakdowns.find(h => h.index === 2);
+      if (h2?.lookup) finPayload.Hotel_2_Name = h2.lookup;
+      if (h2?.cost !== null && h2?.cost !== undefined) finPayload.Total_Hotel_2_Cost = h2.cost;
+
+      const h3 = syncMeta.hotelBreakdowns.find(h => h.index === 3);
+      if (h3?.lookup) finPayload.Hotel_3_Name = h3.lookup;
+      if (h3?.cost !== null && h3?.cost !== undefined) finPayload.Total_Hotel_3_Cost = h3.cost;
+
+      const h4 = syncMeta.hotelBreakdowns.find(h => h.index === 4);
+      if (h4?.lookup) finPayload.Hotel_4_Name = h4.lookup;
+      if (h4?.cost !== null && h4?.cost !== undefined) finPayload.Total_Hotel_4_Cost = h4.cost;
+
+      const h5 = syncMeta.hotelBreakdowns.find(h => h.index === 5);
+      if (h5?.lookup) finPayload.Hotel_5_Name = h5.lookup;
+      if (h5?.cost !== null && h5?.cost !== undefined) finPayload.Total_Hotel_5_Cost = h5.cost;
+
+      const h6 = syncMeta.hotelBreakdowns.find(h => h.index === 6);
+      if (h6?.lookup) finPayload.Hotel_6_Name = h6.lookup;
+      if (h6?.cost !== null && h6?.cost !== undefined) finPayload.Total_Hotel_6_Cost = h6.cost;
+    }
 
     // Build activities subform for Finance
     const rawSubformRows = await buildOperationsActivitiesSubform(
@@ -1202,8 +1602,9 @@ export async function syncBookingAndTaskOnPayment(
 
     // 2.5 CREATE OR UPDATE RECORD IN ZOHO 'OPERATIONS' CUSTOM MODULE
     let operationsId = '';
+    let opsSyncResult: SyncOperationsResult | null = null;
     if (dealId) {
-      operationsId = await syncOperationsRecord(
+      opsSyncResult = await syncOperationsRecord(
         accessToken,
         dealId,
         params,
@@ -1211,6 +1612,7 @@ export async function syncBookingAndTaskOnPayment(
         formattedStartDate,
         formattedEndDate
       );
+      operationsId = opsSyncResult.operationsId;
     }
     result.operationsId = operationsId;
 
@@ -1220,7 +1622,11 @@ export async function syncBookingAndTaskOnPayment(
       financeId = await syncFinanceRecord(
         accessToken,
         dealId,
-        params
+        params,
+        {
+          vehicleDetails: opsSyncResult?.vehicleDetails,
+          hotelBreakdowns: opsSyncResult?.hotelBreakdowns
+        }
       );
     }
     result.financeId = financeId;
