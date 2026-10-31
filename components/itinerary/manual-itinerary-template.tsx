@@ -399,17 +399,7 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
           </div>
         </section>
 
-        {/* ========================================================= */}
-        {/* MULTI-QUOTATION OPTION SWITCHER (IF MULTIPLE OPTIONS EXIST) */}
-        {/* ========================================================= */}
-        {itinerary.options && itinerary.options.length > 1 && (
-          <ManualOptionSwitcher
-            options={itinerary.options}
-            selectedOptionId={selectedOptionId}
-            onSelectOption={handleSelectOption}
-            itinerarySlug={itinerary.slug || itinerary.id}
-          />
-        )}
+
 
         {/* ========================================================= */}
         {/* PAGE 2: TRIP OVERVIEW & HIGHLIGHTS COLLAGE                 */}
@@ -582,57 +572,122 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
             </p>
           </div>
 
-          {/* Accommodations Table */}
-          {currentAccommodations && currentAccommodations.length > 0 && (
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
+          {/* Accommodations Table(s) */}
+          {itinerary.options && itinerary.options.length > 1 && itinerary.options.some(o => o.accommodations && o.accommodations.length > 0) ? (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between border-b border-[#6E1E14]/15 pb-2">
                 <h3 className="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-[#6E1E14] flex items-center gap-1.5">
-                  <Hotel className="w-4 h-4 text-[#6E1E14]" /> Handpicked Accommodations
+                  <Hotel className="w-4 h-4 text-[#6E1E14]" /> Handpicked Accommodations & Stay Options
                 </h3>
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] sm:text-xs font-bold bg-emerald-50 text-emerald-800 px-2.5 py-0.5 rounded-full border border-emerald-300 flex items-center gap-1">
-                    <Utensils className="w-3 h-3 text-emerald-600" />
-                    {mealPlan}
-                  </span>
-                  {activeOption && (
-                    <span className="text-[10px] sm:text-xs font-bold bg-amber-100 text-[#6E1E14] px-2.5 py-0.5 rounded-full border border-amber-300">
-                      {activeOption.badge || activeOption.title}
-                    </span>
-                  )}
-                </div>
+                <span className="text-[10px] sm:text-xs font-bold bg-emerald-50 text-emerald-800 px-2.5 py-0.5 rounded-full border border-emerald-300 flex items-center gap-1">
+                  <Utensils className="w-3 h-3 text-emerald-600" />
+                  {mealPlan}
+                </span>
               </div>
 
-              <div className="overflow-x-auto rounded-xl border-2 border-[#6E1E14] shadow-xs">
-                <table className="w-full text-left border-collapse text-xs sm:text-sm">
-                  <thead>
-                    <tr className="bg-[#6E1E14] text-white uppercase text-[11px] font-black tracking-wider">
-                      <th className="p-3.5 border-r border-white/20">Destination</th>
-                      <th className="p-3.5 border-r border-white/20">Duration</th>
-                      <th className="p-3.5 border-r border-white/20">Property Name</th>
-                      <th className="p-3.5">Room Category</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[#6E1E14]/20 font-semibold text-stone-900 bg-white">
-                    {currentAccommodations.map((acc, idx) => (
-                      <tr key={idx} className={idx % 2 === 1 ? 'bg-[#FFF8F5]' : 'bg-white'}>
-                        <td className="p-3.5 border-r border-[#6E1E14]/20 uppercase font-bold text-[#6E1E14]">
-                          {acc.city}
-                        </td>
-                        <td className="p-3.5 border-r border-[#6E1E14]/20 font-extrabold">
-                          {acc.nights} Night{acc.nights > 1 ? 's' : ''}
-                        </td>
-                        <td className="p-3.5 border-r border-[#6E1E14]/20 font-extrabold">
-                          {acc.hotelName || 'Deluxe Property'}
-                        </td>
-                        <td className="p-3.5">
-                          {acc.roomCategory || 'Triple Sharing Basis'}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div className="space-y-5">
+                {itinerary.options.map((opt, optIdx) => (
+                  <div key={opt.id || optIdx} className="space-y-3 bg-stone-50/70 p-4 sm:p-5 rounded-2xl border-2 border-stone-200 shadow-2xs">
+                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-stone-200/80 pb-2.5">
+                      <div className="flex items-center gap-2">
+                        <span className="w-6 h-6 rounded-full bg-[#6E1E14] text-white flex items-center justify-center text-xs font-black shadow-xs">
+                          {optIdx + 1}
+                        </span>
+                        <h4 className="text-xs sm:text-sm font-black uppercase tracking-wider text-[#6E1E14]">
+                          {opt.title}
+                        </h4>
+                      </div>
+                      <span className="text-[10px] sm:text-xs font-bold bg-amber-100 text-[#6E1E14] px-2.5 py-0.5 rounded-full border border-amber-300">
+                        {opt.badge || opt.title}
+                      </span>
+                    </div>
+
+                    <div className="overflow-x-auto rounded-xl border-2 border-[#6E1E14] shadow-xs">
+                      <table className="w-full text-left border-collapse text-xs sm:text-sm">
+                        <thead>
+                          <tr className="bg-[#6E1E14] text-white uppercase text-[11px] font-black tracking-wider">
+                            <th className="p-3.5 border-r border-white/20">Destination</th>
+                            <th className="p-3.5 border-r border-white/20">Duration</th>
+                            <th className="p-3.5 border-r border-white/20">Property Name</th>
+                            <th className="p-3.5">Room Category</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-[#6E1E14]/20 font-semibold text-stone-900 bg-white">
+                          {(opt.accommodations || []).map((acc, idx) => (
+                            <tr key={idx} className={idx % 2 === 1 ? 'bg-[#FFF8F5]' : 'bg-white'}>
+                              <td className="p-3.5 border-r border-[#6E1E14]/20 uppercase font-bold text-[#6E1E14]">
+                                {acc.city}
+                              </td>
+                              <td className="p-3.5 border-r border-[#6E1E14]/20 font-extrabold">
+                                {acc.nights} Night{acc.nights > 1 ? 's' : ''}
+                              </td>
+                              <td className="p-3.5 border-r border-[#6E1E14]/20 font-extrabold">
+                                {acc.hotelName || 'Deluxe Property'}
+                              </td>
+                              <td className="p-3.5">
+                                {acc.roomCategory || 'Triple Sharing Basis'}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
+          ) : (
+            currentAccommodations && currentAccommodations.length > 0 && (
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-[#6E1E14] flex items-center gap-1.5">
+                    <Hotel className="w-4 h-4 text-[#6E1E14]" /> Handpicked Accommodations
+                  </h3>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] sm:text-xs font-bold bg-emerald-50 text-emerald-800 px-2.5 py-0.5 rounded-full border border-emerald-300 flex items-center gap-1">
+                      <Utensils className="w-3 h-3 text-emerald-600" />
+                      {mealPlan}
+                    </span>
+                    {activeOption && (
+                      <span className="text-[10px] sm:text-xs font-bold bg-amber-100 text-[#6E1E14] px-2.5 py-0.5 rounded-full border border-amber-300">
+                        {activeOption.badge || activeOption.title}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="overflow-x-auto rounded-xl border-2 border-[#6E1E14] shadow-xs">
+                  <table className="w-full text-left border-collapse text-xs sm:text-sm">
+                    <thead>
+                      <tr className="bg-[#6E1E14] text-white uppercase text-[11px] font-black tracking-wider">
+                        <th className="p-3.5 border-r border-white/20">Destination</th>
+                        <th className="p-3.5 border-r border-white/20">Duration</th>
+                        <th className="p-3.5 border-r border-white/20">Property Name</th>
+                        <th className="p-3.5">Room Category</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[#6E1E14]/20 font-semibold text-stone-900 bg-white">
+                      {currentAccommodations.map((acc, idx) => (
+                        <tr key={idx} className={idx % 2 === 1 ? 'bg-[#FFF8F5]' : 'bg-white'}>
+                          <td className="p-3.5 border-r border-[#6E1E14]/20 uppercase font-bold text-[#6E1E14]">
+                            {acc.city}
+                          </td>
+                          <td className="p-3.5 border-r border-[#6E1E14]/20 font-extrabold">
+                            {acc.nights} Night{acc.nights > 1 ? 's' : ''}
+                          </td>
+                          <td className="p-3.5 border-r border-[#6E1E14]/20 font-extrabold">
+                            {acc.hotelName || 'Deluxe Property'}
+                          </td>
+                          <td className="p-3.5">
+                            {acc.roomCategory || 'Triple Sharing Basis'}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )
           )}
 
           {/* ✈️ FLIGHT DETAILS & PRICING (Directly below Accommodations) */}
@@ -699,59 +754,82 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
             </div>
           )}
 
-          {/* PACKAGE QUOTATION & INVESTMENT SUMMARY CARD */}
-          {(currentFinalQuotationAmount || currentPerAdultPrice) && (
-            <div className="bg-gradient-to-br from-[#6E1E14] via-[#5C1810] to-stone-900 rounded-2xl p-5 sm:p-8 text-white shadow-xl space-y-5 border border-amber-500/30">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-white/15 pb-4">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[11px] font-black uppercase tracking-widest text-amber-300">
-                      Tour Quotation
-                    </span>
-                    {activeOption && (
-                      <span className="text-[10px] bg-amber-400/30 text-amber-300 px-2 py-0.5 rounded-full font-bold border border-amber-400/40">
-                        {activeOption.badge || activeOption.title}
-                      </span>
-                    )}
+          {/* PACKAGE QUOTATION & INVESTMENT SUMMARY CARDS */}
+          {(() => {
+            const renderPricingCard = (
+              opt: {
+                id?: string;
+                title?: string;
+                badge?: string;
+                adults?: number;
+                kids?: number;
+                perAdultPrice?: number;
+                perKidPrice?: number;
+                baseAmount?: number;
+                gstPercentage?: number;
+                gstAmount?: number;
+                tcsPercentage?: number;
+                tcsAmount?: number;
+                finalQuotationAmount?: number;
+                childPricingNote?: string;
+              },
+              cardKey?: string | number
+            ) => {
+              const adultsCount = (opt.adults ?? itinerary.adults) || 2;
+              const kidsCount = opt.kids ?? itinerary.kids;
+              const gstPct = opt.gstPercentage !== undefined ? opt.gstPercentage : currentGstPct;
+              const tcsPct = opt.tcsPercentage !== undefined ? opt.tcsPercentage : currentTcsPct;
+              const baseTotal = opt.baseAmount || (opt.finalQuotationAmount ? Math.round(opt.finalQuotationAmount / (tcsPct > 0 ? (1 + (gstPct + tcsPct) / 100) : (1 + gstPct / 100))) : 638400);
+              const gstTotal = opt.gstAmount !== undefined ? opt.gstAmount : Math.round(baseTotal * (gstPct / 100));
+              const tcsTotal = opt.tcsAmount !== undefined ? opt.tcsAmount : (tcsPct > 0 ? Math.round(baseTotal * (tcsPct / 100)) : 0);
+              const grandTotal = opt.finalQuotationAmount || (baseTotal + gstTotal + tcsTotal);
+
+              const hasKidPrice = Boolean(opt.perKidPrice && opt.perKidPrice > 0);
+              const adultBase = opt.perAdultPrice || Math.round(baseTotal / adultsCount);
+              const adultGst = Math.round(adultBase * (gstPct / 100));
+              const adultTcs = tcsPct > 0 ? Math.round(adultBase * (tcsPct / 100)) : 0;
+              const adultGrand = adultBase + adultGst + adultTcs;
+
+              const kidBase = opt.perKidPrice || 0;
+              const kidGst = Math.round(kidBase * (gstPct / 100));
+              const kidTcs = tcsPct > 0 ? Math.round(kidBase * (tcsPct / 100)) : 0;
+              const kidGrand = kidBase + kidGst + kidTcs;
+
+              const cardBadge = opt.badge || (opt.title ? opt.title.split(':')[0] : 'Tour Quotation');
+
+              return (
+                <div
+                  key={opt.id || cardKey || 'quotation-card'}
+                  className="bg-gradient-to-br from-[#6E1E14] via-[#5C1810] to-stone-900 rounded-2xl p-5 sm:p-8 text-white shadow-xl space-y-5 border border-amber-500/30"
+                >
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-white/15 pb-4">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[11px] font-black uppercase tracking-widest text-amber-300">
+                          Tour Quotation
+                        </span>
+                        {cardBadge && (
+                          <span className="text-[10px] bg-amber-400/30 text-amber-300 px-2.5 py-0.5 rounded-full font-bold border border-amber-400/40">
+                            {cardBadge}
+                          </span>
+                        )}
+                      </div>
+                      <h3 className={`${playfair.className} text-xl sm:text-2xl font-black text-white`}>
+                        Investment & Pricing Summary
+                      </h3>
+                    </div>
+                    <div className="bg-amber-400/20 text-amber-300 border border-amber-400/40 text-[11px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
+                      {kidsCount && kidsCount > 0
+                        ? `${adultsCount} Adults + ${kidsCount} Kids (Family Tour)`
+                        : adultsCount === 1
+                          ? 'Per Person Rate (1 Guest)'
+                          : `${adultsCount} Adults Included`}
+                    </div>
                   </div>
-                  <h3 className={`${playfair.className} text-xl sm:text-2xl font-black text-white`}>
-                    Investment & Pricing Summary
-                  </h3>
-                </div>
-                <div className="bg-amber-400/20 text-amber-300 border border-amber-400/40 text-[11px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
-                  {(activeOption?.kids ?? itinerary.kids) && (activeOption?.kids ?? itinerary.kids)! > 0
-                    ? `${(activeOption?.adults ?? itinerary.adults) || 2} Adults + ${activeOption?.kids ?? itinerary.kids} Kids (Family Tour)`
-                    : (activeOption?.adults ?? itinerary.adults) === 1
-                      ? 'Per Person Rate (1 Guest)'
-                      : `${(activeOption?.adults ?? itinerary.adults) || 2} Adults Included`}
-                </div>
-              </div>
 
-              {/* Pricing calculations */}
-              {(() => {
-                const adultsCount = (activeOption?.adults ?? itinerary.adults) || 2;
-                const baseTotal = currentBaseAmount || (currentFinalQuotationAmount ? Math.round(currentFinalQuotationAmount / (currentTcsPct > 0 ? (1 + (currentGstPct + currentTcsPct)/100) : (1 + currentGstPct/100))) : 638400);
-                const gstPct = currentGstPct;
-                const tcsPct = currentTcsPct;
-                const gstTotal = currentGstAmount !== undefined ? currentGstAmount : Math.round(baseTotal * (gstPct / 100));
-                const tcsTotal = currentTcsAmount !== undefined ? currentTcsAmount : (tcsPct > 0 ? Math.round(baseTotal * (tcsPct / 100)) : 0);
-                const grandTotal = currentFinalQuotationAmount || (baseTotal + gstTotal + tcsTotal);
-
-                const hasKidPrice = Boolean(currentPerKidPrice && currentPerKidPrice > 0);
-                const adultBase = currentPerAdultPrice || Math.round(baseTotal / adultsCount);
-                const adultGst = Math.round(adultBase * (gstPct / 100));
-                const adultTcs = tcsPct > 0 ? Math.round(adultBase * (tcsPct / 100)) : 0;
-                const adultGrand = adultBase + adultGst + adultTcs;
-
-                const kidBase = currentPerKidPrice || 0;
-                const kidGst = Math.round(kidBase * (gstPct / 100));
-                const kidTcs = tcsPct > 0 ? Math.round(kidBase * (tcsPct / 100)) : 0;
-                const kidGrand = kidBase + kidGst + kidTcs;
-
-                if (hasKidPrice) {
-                  return (
+                  {hasKidPrice ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
-                      {/* 1. Per Adult Cost */}
+                      {/* 1. Cost Per Adult */}
                       <div className="bg-white/10 backdrop-blur-md rounded-xl p-3.5 sm:p-4 border border-white/15 flex flex-col justify-between space-y-2">
                         <div className="space-y-1">
                           <div className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-amber-300 flex items-center justify-between">
@@ -839,323 +917,338 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                         )}
                       </div>
                     </div>
-                  );
-                }
-
-                // Standard Per Guest layout when no kid price
-                const basePerGuest = Math.round(baseTotal / adultsCount);
-                const gstPerGuest = Math.round(gstTotal / adultsCount);
-                const tcsPerGuest = tcsTotal > 0 ? Math.round(tcsTotal / adultsCount) : 0;
-                const grandTotalPerGuest = Math.round(grandTotal / adultsCount);
-
-                return (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5">
-                    {/* 1. Cost Per Guest (Base + Taxes + Grand Total) */}
-                    <div className="bg-white/10 backdrop-blur-md rounded-xl p-3.5 sm:p-4 border border-white/15 flex flex-col justify-between space-y-2">
-                      <div className="space-y-1">
-                        <div className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-amber-300 flex items-center justify-between">
-                          <span>Cost Per Guest</span>
-                          <Users className="w-4 h-4 text-amber-300" />
-                        </div>
-                        <div className="text-xl sm:text-2xl font-black text-white">
-                          ₹{basePerGuest.toLocaleString('en-IN')}/-
-                        </div>
-                        <div className="space-y-0.5 pt-0.5 text-[11px] text-amber-200/95 font-semibold leading-tight">
-                          <div>+ {gstPct}% GST: ₹{gstPerGuest.toLocaleString('en-IN')}/-</div>
-                          {tcsTotal > 0 && <div>+ {tcsPct}% TCS: ₹{tcsPerGuest.toLocaleString('en-IN')}/-</div>}
-                        </div>
-                      </div>
-                      <div className="pt-2 border-t border-white/15 text-[11px] text-white/90 font-medium flex items-center justify-between">
-                        <span className="text-white/70">Grand Total:</span>
-                        <span className="text-amber-300 font-black text-xs sm:text-sm">₹{grandTotalPerGuest.toLocaleString('en-IN')}/-</span>
-                      </div>
-                    </div>
-
-                    {/* 2. Total Package Cost (Base + Taxes + Grand Total) */}
-                    <div className="bg-white/10 backdrop-blur-md rounded-xl p-3.5 sm:p-4 border border-white/15 flex flex-col justify-between space-y-2">
-                      <div className="space-y-1">
-                        <div className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-amber-300 flex items-center justify-between">
-                          <span>Total Package Cost</span>
-                          <Parachute size={16} className="w-4 h-4 text-amber-300" />
-                        </div>
-                        <div className="text-xl sm:text-2xl font-black text-white">
-                          ₹{baseTotal.toLocaleString('en-IN')}/-
-                        </div>
-                        <div className="space-y-0.5 pt-0.5 text-[11px] text-amber-200/95 font-semibold leading-tight">
-                          <div>+ {gstPct}% GST: ₹{gstTotal.toLocaleString('en-IN')}/-</div>
-                          {tcsTotal > 0 && <div>+ {tcsPct}% TCS: ₹{tcsTotal.toLocaleString('en-IN')}/-</div>}
-                        </div>
-                      </div>
-                      <div className="pt-2 border-t border-white/15 text-[11px] text-white/90 font-medium flex items-center justify-between">
-                        <span className="text-white/70">Grand Total:</span>
-                        <span className="text-amber-300 font-black text-xs sm:text-sm">₹{grandTotal.toLocaleString('en-IN')}/-</span>
-                      </div>
-                    </div>
-
-                    {/* 3. Flexible Payment Stages */}
-                    <div className="bg-white/10 backdrop-blur-md rounded-xl p-3.5 sm:p-4 border border-white/15 space-y-1 sm:col-span-2 md:col-span-1">
-                      <div className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-emerald-300 flex items-center justify-between">
-                        <span>{isFullPaymentOnly ? 'Payment Terms' : 'Flexible Payment Stages'}</span>
-                        <CreditCard className="w-4 h-4 text-emerald-300" />
-                      </div>
-                      {isFullPaymentOnly ? (
-                        <div className="text-[11px] text-white/90 space-y-1 pt-0.5 font-semibold">
-                          <div>• 100% Full Payment: ₹{grandTotal.toLocaleString('en-IN')}/-</div>
-                          <div className="text-[10px] text-amber-200/90 font-normal leading-tight">
-                            Full amount is payable in a single transaction to confirm booking.
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="text-[11px] text-white/90 space-y-0.5 pt-0.5 font-semibold">
-                          <div>• 10% Token: ₹{Math.round(grandTotal * 0.10).toLocaleString('en-IN')}/- (Locks dates & proposal)</div>
-                          <div>• 50% Advance: ₹{Math.round(grandTotal * 0.50).toLocaleString('en-IN')}/- (Due in 7 days)</div>
-                          <div>• Final Balance: Due 15 days before departure</div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                );
-              })()}
-
-              {/* Child Pricing & Sharing Note (if provided) */}
-              {currentChildPricingNote && (
-                <div className="bg-white/10 backdrop-blur-md rounded-xl p-3.5 border border-amber-400/40 text-xs text-amber-200/95 font-medium flex items-start gap-2.5">
-                  <span className="text-amber-300 font-bold shrink-0">ℹ</span>
-                  <span>{currentChildPricingNote}</span>
-                </div>
-              )}
-
-              {/* INTERACTIVE PAYMENT INSTALLMENT OPTIONS */}
-              {isOnlineBookingEnabled && !isFullyPaid && (
-                <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 sm:p-5 border border-white/20 space-y-3.5 mt-3">
-                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/15 pb-2.5">
-                    <div className="space-y-0.5">
-                      <div className="text-[10px] font-extrabold uppercase tracking-wider text-amber-300 flex items-center gap-1.5">
-                        <CreditCard className="w-3.5 h-3.5" />
-                        <span>Payment Options • Online Booking</span>
-                      </div>
-                      <h4 className="text-sm sm:text-base font-black text-white">
-                        Choose Your Installment & Book Instantly
-                      </h4>
-                    </div>
-                    <span className="text-[10px] bg-amber-400/20 text-amber-300 font-bold px-2.5 py-1 rounded-full border border-amber-400/30">
-                      Razorpay Verified
-                    </span>
-                  </div>
-
-                  {alreadyPaid <= 0 ? (
-                    /* 3 OPTIONS FOR FRESH BOOKINGS (0% PAID) */
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                      {/* 1. 10% Token Payment */}
-                      <div className="bg-white/95 rounded-xl p-3.5 border-2 border-amber-200/80 shadow-xs flex flex-col justify-between space-y-3 text-stone-900 transition hover:shadow-md hover:border-amber-400">
-                        <div className="space-y-1.5">
-                          <div className="flex items-center justify-between">
-                            <span className="bg-amber-100 text-amber-900 text-[9px] font-black uppercase px-2 py-0.5 rounded-full tracking-wider">
-                              10% Token
-                            </span>
-                            <span className="text-[10px] font-bold text-stone-500">Stage 1</span>
-                          </div>
-                          <h5 className="text-xs font-black text-stone-900">Token Amount</h5>
-                          <div className="text-lg sm:text-xl font-black text-[#6E1E14]">
-                            ₹{tenPercentAmount.toLocaleString('en-IN')}/-
-                          </div>
-                          <p className="text-[10px] text-stone-600 leading-tight">
-                            Locks your itinerary proposal, dates & slot reservations. 50% advance payable within 7 days.
-                          </p>
-                        </div>
-
-                        <button
-                          type="button"
-                          onClick={() => handleOpenBookModal('token')}
-                          className="w-full h-9 rounded-lg bg-stone-900 hover:bg-[#6E1E14] text-white text-[11px] font-black uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-sm transition hover:scale-[1.02] active:scale-95 cursor-pointer"
-                        >
-                          <Lock className="w-3 h-3 text-amber-300" />
-                          <span>Book with 10% Token</span>
-                        </button>
-                      </div>
-
-                      {/* 2. 50% Advance Payment (Recommended) */}
-                      <div className="bg-white/95 rounded-xl p-3.5 border-2 border-amber-400 shadow-md ring-2 ring-amber-400/20 flex flex-col justify-between space-y-3 text-stone-900 transition hover:shadow-lg relative">
-                        <div className="space-y-1.5">
-                          <div className="flex items-center justify-between">
-                            <span className="bg-amber-400 text-stone-950 text-[9px] font-black uppercase px-2 py-0.5 rounded-full tracking-wider">
-                              ★ Recommended
-                            </span>
-                            <span className="text-[10px] font-bold text-amber-800">Stage 2</span>
-                          </div>
-                          <h5 className="text-xs font-black text-stone-900">50% Advance</h5>
-                          <div className="text-lg sm:text-xl font-black text-[#6E1E14]">
-                            ₹{fiftyPercentAmount.toLocaleString('en-IN')}/-
-                          </div>
-                          <p className="text-[10px] text-stone-600 leading-tight">
-                            Locks handpicked hotel stays, activities & dedicated chauffeur transport. Balance due 15 days before departure.
-                          </p>
-                        </div>
-
-                        <button
-                          type="button"
-                          onClick={() => handleOpenBookModal('advance')}
-                          className="w-full h-9 rounded-lg bg-[#6E1E14] hover:bg-[#5C1810] text-white text-[11px] font-black uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-md transition hover:scale-[1.02] active:scale-95 cursor-pointer"
-                        >
-                          <Lock className="w-3 h-3 text-amber-300" />
-                          <span>Book with 50% Advance</span>
-                        </button>
-                      </div>
-
-                      {/* 3. 100% Full Payment */}
-                      <div className="bg-white/95 rounded-xl p-3.5 border-2 border-emerald-300 shadow-xs flex flex-col justify-between space-y-3 text-stone-900 transition hover:shadow-md hover:border-emerald-500">
-                        <div className="space-y-1.5">
-                          <div className="flex items-center justify-between">
-                            <span className="bg-emerald-100 text-emerald-900 text-[9px] font-black uppercase px-2 py-0.5 rounded-full tracking-wider">
-                              ✓ 100% Cleared
-                            </span>
-                            <span className="text-[10px] font-bold text-emerald-700">One-Shot</span>
-                          </div>
-                          <h5 className="text-xs font-black text-stone-900">Full Payment</h5>
-                          <div className="text-lg sm:text-xl font-black text-stone-900">
-                            ₹{totalQuotationAmount.toLocaleString('en-IN')}/-
-                          </div>
-                          <p className="text-[10px] text-stone-600 leading-tight">
-                            Zero pending dues, instant confirmed booking kit & official GST tax invoice sent immediately.
-                          </p>
-                        </div>
-
-                        <button
-                          type="button"
-                          onClick={() => handleOpenBookModal('full')}
-                          className="w-full h-9 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white text-[11px] font-black uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-sm transition hover:scale-[1.02] active:scale-95 cursor-pointer"
-                        >
-                          <CheckCircle2 className="w-3 h-3 text-emerald-200" />
-                          <span>Pay Full 100%</span>
-                        </button>
-                      </div>
-                    </div>
-                  ) : isTokenPaid ? (
-                    /* 2 OPTIONS WHEN 10% TOKEN IS ALREADY PAID */
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {/* Remaining Advance (40%) */}
-                      <div className="bg-white/95 rounded-xl p-3.5 border-2 border-amber-400 shadow-md flex flex-col justify-between space-y-3 text-stone-900">
-                        <div className="space-y-1.5">
-                          <div className="flex items-center justify-between">
-                            <span className="bg-amber-400 text-stone-950 text-[9px] font-black uppercase px-2 py-0.5 rounded-full tracking-wider">
-                              Next Stage (40%)
-                            </span>
-                          </div>
-                          <h5 className="text-xs font-black text-stone-900">Pay Remaining Advance</h5>
-                          <div className="text-lg sm:text-xl font-black text-[#6E1E14]">
-                            ₹{Math.max(0, fiftyPercentAmount - alreadyPaid).toLocaleString('en-IN')}/-
-                          </div>
-                          <p className="text-[10px] text-stone-600 leading-tight">
-                            Completes 50% advance to lock hotel stays. Final balance due 15 days before travel.
-                          </p>
-                        </div>
-
-                        <button
-                          type="button"
-                          onClick={() => handleOpenBookModal('remaining_advance')}
-                          className="w-full h-9 rounded-lg bg-[#6E1E14] hover:bg-[#5C1810] text-white text-[11px] font-black uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-md transition cursor-pointer"
-                        >
-                          <Lock className="w-3 h-3 text-amber-300" />
-                          <span>Pay Remaining Advance</span>
-                        </button>
-                      </div>
-
-                      {/* Remaining Full Balance (90%) */}
-                      <div className="bg-white/95 rounded-xl p-3.5 border-2 border-emerald-300 shadow-xs flex flex-col justify-between space-y-3 text-stone-900">
-                        <div className="space-y-1.5">
-                          <div className="flex items-center justify-between">
-                            <span className="bg-emerald-100 text-emerald-900 text-[9px] font-black uppercase px-2 py-0.5 rounded-full tracking-wider">
-                              Clear All Dues
-                            </span>
-                          </div>
-                          <h5 className="text-xs font-black text-stone-900">Clear Full Balance</h5>
-                          <div className="text-lg sm:text-xl font-black text-stone-900">
-                            ₹{remainingBalanceAmount.toLocaleString('en-IN')}/-
-                          </div>
-                          <p className="text-[10px] text-stone-600 leading-tight">
-                            Clears 100% quotation immediately with 0 balance pending.
-                          </p>
-                        </div>
-
-                        <button
-                          type="button"
-                          onClick={() => handleOpenBookModal('remaining_balance')}
-                          className="w-full h-9 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white text-[11px] font-black uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-sm transition cursor-pointer"
-                        >
-                          <CheckCircle2 className="w-3 h-3 text-emerald-200" />
-                          <span>Pay Remaining Balance</span>
-                        </button>
-                      </div>
-                    </div>
                   ) : (
-                    /* REMAINING 50% BALANCE */
-                    <div className="bg-white/95 rounded-xl p-3.5 border-2 border-[#6E1E14] shadow-md flex flex-col sm:flex-row items-center justify-between gap-3 text-stone-900">
-                      <div className="space-y-1 text-center sm:text-left">
-                        <span className="bg-amber-400 text-stone-950 text-[9px] font-black uppercase px-2 py-0.5 rounded-full tracking-wider">
-                          Final Stage
-                        </span>
-                        <h5 className="text-sm font-black text-stone-900">Pay Remaining 50% Balance</h5>
-                        <p className="text-[10px] text-stone-600">Due 15 days before departure to release all hotel vouchers & chauffeur transport.</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5">
+                      {/* 1. Cost Per Guest */}
+                      <div className="bg-white/10 backdrop-blur-md rounded-xl p-3.5 sm:p-4 border border-white/15 flex flex-col justify-between space-y-2">
+                        <div className="space-y-1">
+                          <div className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-amber-300 flex items-center justify-between">
+                            <span>Cost Per Guest</span>
+                            <Users className="w-4 h-4 text-amber-300" />
+                          </div>
+                          <div className="text-xl sm:text-2xl font-black text-white">
+                            ₹{adultBase.toLocaleString('en-IN')}/-
+                          </div>
+                          <div className="space-y-0.5 pt-0.5 text-[11px] text-amber-200/95 font-semibold leading-tight">
+                            <div>+ {gstPct}% GST: ₹{adultGst.toLocaleString('en-IN')}/-</div>
+                            {tcsTotal > 0 && <div>+ {tcsPct}% TCS: ₹{adultTcs.toLocaleString('en-IN')}/-</div>}
+                          </div>
+                        </div>
+                        <div className="pt-2 border-t border-white/15 text-[11px] text-white/90 font-medium flex items-center justify-between">
+                          <span className="text-white/70">Grand Total:</span>
+                          <span className="text-amber-300 font-black text-xs sm:text-sm">₹{adultGrand.toLocaleString('en-IN')}/-</span>
+                        </div>
                       </div>
 
-                      <div className="flex items-center gap-3 shrink-0">
-                        <div className="text-xl font-black text-[#6E1E14]">
-                          ₹{remainingBalanceAmount.toLocaleString('en-IN')}/-
+                      {/* 2. Total Package Cost */}
+                      <div className="bg-white/10 backdrop-blur-md rounded-xl p-3.5 sm:p-4 border border-white/15 flex flex-col justify-between space-y-2">
+                        <div className="space-y-1">
+                          <div className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-amber-300 flex items-center justify-between">
+                            <span>Total Package Cost</span>
+                            <Parachute size={16} className="w-4 h-4 text-amber-300" />
+                          </div>
+                          <div className="text-xl sm:text-2xl font-black text-white">
+                            ₹{baseTotal.toLocaleString('en-IN')}/-
+                          </div>
+                          <div className="space-y-0.5 pt-0.5 text-[11px] text-amber-200/95 font-semibold leading-tight">
+                            <div>+ {gstPct}% GST: ₹{gstTotal.toLocaleString('en-IN')}/-</div>
+                            {tcsTotal > 0 && <div>+ {tcsPct}% TCS: ₹{tcsTotal.toLocaleString('en-IN')}/-</div>}
+                          </div>
                         </div>
-                        <button
-                          type="button"
-                          onClick={() => handleOpenBookModal('remaining_balance')}
-                          className="h-10 px-5 rounded-lg bg-[#6E1E14] hover:bg-[#5C1810] text-white text-xs font-black uppercase tracking-wider flex items-center gap-1.5 shadow-md transition cursor-pointer"
-                        >
-                          <Lock className="w-3.5 h-3.5 text-amber-300" />
-                          <span>Pay Balance Now</span>
-                        </button>
+                        <div className="pt-2 border-t border-white/15 text-[11px] text-white/90 font-medium flex items-center justify-between">
+                          <span className="text-white/70">Grand Total:</span>
+                          <span className="text-amber-300 font-black text-xs sm:text-sm">₹{grandTotal.toLocaleString('en-IN')}/-</span>
+                        </div>
+                      </div>
+
+                      {/* 3. Flexible Payment Stages */}
+                      <div className="bg-white/10 backdrop-blur-md rounded-xl p-3.5 sm:p-4 border border-white/15 space-y-1 sm:col-span-2 md:col-span-1">
+                        <div className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-emerald-300 flex items-center justify-between">
+                          <span>{isFullPaymentOnly ? 'Payment Terms' : 'Flexible Payment Stages'}</span>
+                          <CreditCard className="w-4 h-4 text-emerald-300" />
+                        </div>
+                        {isFullPaymentOnly ? (
+                          <div className="text-[11px] text-white/90 space-y-1 pt-0.5 font-semibold">
+                            <div>• 100% Full Payment: ₹{grandTotal.toLocaleString('en-IN')}/-</div>
+                            <div className="text-[10px] text-amber-200/90 font-normal leading-tight">
+                              Full amount is payable in a single transaction to confirm booking.
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="text-[11px] text-white/90 space-y-0.5 pt-0.5 font-semibold">
+                            <div>• 10% Token: ₹{Math.round(grandTotal * 0.10).toLocaleString('en-IN')}/- (Locks dates & proposal)</div>
+                            <div>• 50% Advance: ₹{Math.round(grandTotal * 0.50).toLocaleString('en-IN')}/- (Due in 7 days)</div>
+                            <div>• Final Balance: Due 15 days before departure</div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   )}
-                </div>
-              )}
 
-              {/* LIVE VERIFIED PAYMENT STATUS CARD (IF ALREADY PAID) */}
-              {isOnlineBookingEnabled && alreadyPaid > 0 && (
-                <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-emerald-400/40 space-y-2 mt-3">
-                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/15 pb-2">
-                    <div className="flex items-center gap-2">
-                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-                      <span className="text-xs font-black uppercase tracking-wider text-emerald-300">
-                        {isFullyPaid ? '✓ 100% Tour Confirmed & Cleared' : (isAdvancePaid ? '✓ 50% Advance Paid & Locked' : '✓ 10% Token Paid & Proposal Locked')}
+                  {/* Child Pricing & Sharing Note (if provided) */}
+                  {opt.childPricingNote && (
+                    <div className="bg-white/10 backdrop-blur-md rounded-xl p-3.5 border border-amber-400/40 text-xs text-amber-200/95 font-medium flex items-start gap-2.5">
+                      <span className="text-amber-300 font-bold shrink-0">ℹ</span>
+                      <span>{opt.childPricingNote}</span>
+                    </div>
+                  )}
+                </div>
+              );
+            };
+
+            return (
+              <div className="space-y-6">
+                {/* Render Multiple Quotation Cards or Single Card */}
+                {itinerary.options && itinerary.options.length > 1 ? (
+                  <div className="space-y-6">
+                    {itinerary.options.map((opt, idx) => renderPricingCard(opt, opt.id || idx))}
+                  </div>
+                ) : (
+                  (currentFinalQuotationAmount || currentPerAdultPrice) &&
+                  renderPricingCard({
+                    title: activeOption?.title || 'Investment & Pricing Summary',
+                    badge: activeOption?.badge || activeOption?.title,
+                    adults: activeOption?.adults ?? itinerary.adults,
+                    kids: activeOption?.kids ?? itinerary.kids,
+                    perAdultPrice: currentPerAdultPrice,
+                    perKidPrice: currentPerKidPrice,
+                    baseAmount: currentBaseAmount,
+                    gstPercentage: currentGstPct,
+                    gstAmount: currentGstAmount,
+                    tcsPercentage: currentTcsPct,
+                    tcsAmount: currentTcsAmount,
+                    finalQuotationAmount: currentFinalQuotationAmount,
+                    childPricingNote: currentChildPricingNote
+                  }, 'single-quotation')
+                )}
+
+                {/* INTERACTIVE PAYMENT INSTALLMENT OPTIONS */}
+                {isOnlineBookingEnabled && !isFullyPaid && (
+                  <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 sm:p-5 border border-white/20 space-y-3.5 mt-3">
+                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/15 pb-2.5">
+                      <div className="space-y-0.5">
+                        <div className="text-[10px] font-extrabold uppercase tracking-wider text-amber-300 flex items-center gap-1.5">
+                          <CreditCard className="w-3.5 h-3.5" />
+                          <span>Payment Options • Online Booking</span>
+                        </div>
+                        <h4 className="text-sm sm:text-base font-black text-white">
+                          Choose Your Installment & Book Instantly
+                        </h4>
+                      </div>
+                      <span className="text-[10px] bg-amber-400/20 text-amber-300 font-bold px-2.5 py-1 rounded-full border border-amber-400/30">
+                        Razorpay Verified
                       </span>
                     </div>
-                    <span className="text-[11px] bg-emerald-500/20 text-emerald-300 font-extrabold px-2.5 py-0.5 rounded-full border border-emerald-400/30">
-                      Payment Verified
-                    </span>
-                  </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 text-xs">
-                    <div className="bg-emerald-950/50 p-3 rounded-xl border border-emerald-500/30 flex items-center justify-between">
-                      <span className="text-stone-300 font-semibold">Total Paid to Date:</span>
-                      <span className="font-black text-emerald-300 text-sm sm:text-base">₹{alreadyPaid.toLocaleString('en-IN')}/-</span>
-                    </div>
+                    {alreadyPaid <= 0 ? (
+                      /* 3 OPTIONS FOR FRESH BOOKINGS (0% PAID) */
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        {/* 1. 10% Token Payment */}
+                        <div className="bg-white/95 rounded-xl p-3.5 border-2 border-amber-200/80 shadow-xs flex flex-col justify-between space-y-3 text-stone-900 transition hover:shadow-md hover:border-amber-400">
+                          <div className="space-y-1.5">
+                            <div className="flex items-center justify-between">
+                              <span className="bg-amber-100 text-amber-900 text-[9px] font-black uppercase px-2 py-0.5 rounded-full tracking-wider">
+                                10% Token
+                              </span>
+                              <span className="text-[10px] font-bold text-stone-500">Stage 1</span>
+                            </div>
+                            <h5 className="text-xs font-black text-stone-900">Token Amount</h5>
+                            <div className="text-lg sm:text-xl font-black text-[#6E1E14]">
+                              ₹{tenPercentAmount.toLocaleString('en-IN')}/-
+                            </div>
+                            <p className="text-[10px] text-stone-600 leading-tight">
+                              Locks your itinerary proposal, dates & slot reservations. 50% advance payable within 7 days.
+                            </p>
+                          </div>
 
-                    <div className="bg-amber-950/50 p-3 rounded-xl border border-amber-500/30 flex items-center justify-between">
-                      <span className="text-stone-300 font-semibold">Remaining Balance:</span>
-                      <span className="font-black text-amber-300 text-sm sm:text-base">₹{remainingBalanceAmount.toLocaleString('en-IN')}/-</span>
-                    </div>
-                  </div>
+                          <button
+                            type="button"
+                            onClick={() => handleOpenBookModal('token')}
+                            className="w-full h-9 rounded-lg bg-stone-900 hover:bg-[#6E1E14] text-white text-[11px] font-black uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-sm transition hover:scale-[1.02] active:scale-95 cursor-pointer"
+                          >
+                            <Lock className="w-3 h-3 text-amber-300" />
+                            <span>Pay 10% Token</span>
+                          </button>
+                        </div>
 
-                  <p className="text-[11px] text-amber-200/90 font-medium pt-0.5">
-                    {isTokenPaid ? (
-                      <>Next Stage: <b>₹{(fiftyPercentAmount - alreadyPaid).toLocaleString('en-IN')} Advance</b> payable within 7 days. Final balance due 15 days before travel.</>
-                    ) : isAdvancePaid ? (
-                      <>Next Stage: <b>Final Balance ₹{remainingBalanceAmount.toLocaleString('en-IN')}</b> payable 15 days before departure.</>
+                        {/* 2. 50% Advance Payment */}
+                        <div className="bg-white/95 rounded-xl p-3.5 border-2 border-[#6E1E14] shadow-xs flex flex-col justify-between space-y-3 text-stone-900 relative transition hover:shadow-md">
+                          <div className="absolute -top-2.5 right-3 bg-[#6E1E14] text-amber-300 text-[9px] font-black uppercase px-2 py-0.5 rounded-full tracking-wider shadow-xs">
+                            Recommended
+                          </div>
+                          <div className="space-y-1.5">
+                            <div className="flex items-center justify-between">
+                              <span className="bg-emerald-100 text-emerald-900 text-[9px] font-black uppercase px-2 py-0.5 rounded-full tracking-wider">
+                                50% Advance
+                              </span>
+                              <span className="text-[10px] font-bold text-stone-500">Stage 2</span>
+                            </div>
+                            <h5 className="text-xs font-black text-stone-900">Advance Amount</h5>
+                            <div className="text-lg sm:text-xl font-black text-[#6E1E14]">
+                              ₹{fiftyPercentAmount.toLocaleString('en-IN')}/-
+                            </div>
+                            <p className="text-[10px] text-stone-600 leading-tight">
+                              Immediately secures hotel rooms & confirms your private chauffeur transport.
+                            </p>
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() => handleOpenBookModal('advance')}
+                            className="w-full h-9 rounded-lg bg-[#6E1E14] hover:bg-[#5C1810] text-white text-[11px] font-black uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-md transition hover:scale-[1.02] active:scale-95 cursor-pointer"
+                          >
+                            <Lock className="w-3 h-3 text-amber-300" />
+                            <span>Pay 50% Advance</span>
+                          </button>
+                        </div>
+
+                        {/* 3. 100% Full Payment */}
+                        <div className="bg-white/95 rounded-xl p-3.5 border-2 border-stone-300 shadow-xs flex flex-col justify-between space-y-3 text-stone-900 transition hover:shadow-md hover:border-stone-400">
+                          <div className="space-y-1.5">
+                            <div className="flex items-center justify-between">
+                              <span className="bg-stone-200 text-stone-900 text-[9px] font-black uppercase px-2 py-0.5 rounded-full tracking-wider">
+                                100% Full
+                              </span>
+                              <span className="text-[10px] font-bold text-stone-500">One-Shot</span>
+                            </div>
+                            <h5 className="text-xs font-black text-stone-900">Full Payment</h5>
+                            <div className="text-lg sm:text-xl font-black text-stone-900">
+                              ₹{totalQuotationAmount.toLocaleString('en-IN')}/-
+                            </div>
+                            <p className="text-[10px] text-stone-600 leading-tight">
+                              Clears 100% tour quotation upfront. Get priority voucher release.
+                            </p>
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() => handleOpenBookModal('full')}
+                            className="w-full h-9 rounded-lg bg-stone-800 hover:bg-stone-950 text-white text-[11px] font-black uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-sm transition hover:scale-[1.02] active:scale-95 cursor-pointer"
+                          >
+                            <Lock className="w-3 h-3 text-amber-300" />
+                            <span>Pay Full Amount</span>
+                          </button>
+                        </div>
+                      </div>
+                    ) : isTokenPaid ? (
+                      /* TOKEN PAID: OFFER ADVANCE UPGRADE OR REMAINING BALANCE */
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div className="bg-white/95 rounded-xl p-3.5 border-2 border-[#6E1E14] shadow-xs flex flex-col justify-between space-y-2 text-stone-900">
+                          <div>
+                            <span className="bg-amber-100 text-amber-900 text-[9px] font-black uppercase px-2 py-0.5 rounded-full tracking-wider">
+                              Next Step
+                            </span>
+                            <h5 className="text-xs font-black text-stone-900 mt-1">Upgrade to 50% Advance</h5>
+                            <div className="text-lg font-black text-[#6E1E14]">
+                              ₹{(fiftyPercentAmount - alreadyPaid).toLocaleString('en-IN')}/-
+                            </div>
+                            <p className="text-[10px] text-stone-600 leading-tight mt-1">
+                              Fulfills advance requirement to secure all hotel room bookings immediately.
+                            </p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleOpenBookModal('advance')}
+                            className="w-full h-9 rounded-lg bg-[#6E1E14] hover:bg-[#5C1810] text-white text-[11px] font-black uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-md transition cursor-pointer"
+                          >
+                            <Lock className="w-3 h-3 text-amber-300" />
+                            <span>Pay Advance Balance</span>
+                          </button>
+                        </div>
+
+                        <div className="bg-white/95 rounded-xl p-3.5 border-2 border-emerald-300 shadow-xs flex flex-col justify-between space-y-2 text-stone-900">
+                          <div>
+                            <span className="bg-emerald-100 text-emerald-900 text-[9px] font-black uppercase px-2 py-0.5 rounded-full tracking-wider">
+                              Clear All
+                            </span>
+                            <h5 className="text-xs font-black text-stone-900 mt-1">Pay Remaining Balance</h5>
+                            <div className="text-lg font-black text-stone-900">
+                              ₹{remainingBalanceAmount.toLocaleString('en-IN')}/-
+                            </div>
+                            <p className="text-[10px] text-stone-600 leading-tight mt-1">
+                              Clears 100% quotation immediately with 0 balance pending.
+                            </p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleOpenBookModal('remaining_balance')}
+                            className="w-full h-9 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white text-[11px] font-black uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-md transition cursor-pointer"
+                          >
+                            <CheckCircle2 className="w-3 h-3 text-emerald-200" />
+                            <span>Pay Remaining Balance</span>
+                          </button>
+                        </div>
+                      </div>
                     ) : (
-                      <>All hotel stays & private chauffeur transport are fully confirmed. Zero pending dues!</>
+                      /* REMAINING 50% BALANCE */
+                      <div className="bg-white/95 rounded-xl p-3.5 border-2 border-[#6E1E14] shadow-md flex flex-col sm:flex-row items-center justify-between gap-3 text-stone-900">
+                        <div className="space-y-1 text-center sm:text-left">
+                          <span className="bg-amber-400 text-stone-950 text-[9px] font-black uppercase px-2 py-0.5 rounded-full tracking-wider">
+                            Final Stage
+                          </span>
+                          <h5 className="text-sm font-black text-stone-900">Pay Remaining 50% Balance</h5>
+                          <p className="text-[10px] text-stone-600">Due 15 days before departure to release all hotel vouchers & chauffeur transport.</p>
+                        </div>
+
+                        <div className="flex items-center gap-3 shrink-0">
+                          <div className="text-xl font-black text-[#6E1E14]">
+                            ₹{remainingBalanceAmount.toLocaleString('en-IN')}/-
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleOpenBookModal('remaining_balance')}
+                            className="h-10 px-5 rounded-lg bg-[#6E1E14] hover:bg-[#5C1810] text-white text-xs font-black uppercase tracking-wider flex items-center gap-1.5 shadow-md transition cursor-pointer"
+                          >
+                            <Lock className="w-3.5 h-3.5 text-amber-300" />
+                            <span>Pay Balance Now</span>
+                          </button>
+                        </div>
+                      </div>
                     )}
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
+                  </div>
+                )}
+
+                {/* LIVE VERIFIED PAYMENT STATUS CARD (IF ALREADY PAID) */}
+                {isOnlineBookingEnabled && alreadyPaid > 0 && (
+                  <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-emerald-400/40 space-y-2 mt-3">
+                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/15 pb-2">
+                      <div className="flex items-center gap-2">
+                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+                        <span className="text-xs font-black uppercase tracking-wider text-emerald-300">
+                          {isFullyPaid ? '✓ 100% Tour Confirmed & Cleared' : (isAdvancePaid ? '✓ 50% Advance Paid & Locked' : '✓ 10% Token Paid & Proposal Locked')}
+                        </span>
+                      </div>
+                      <span className="text-[11px] bg-emerald-500/20 text-emerald-300 font-extrabold px-2.5 py-0.5 rounded-full border border-emerald-400/30">
+                        Payment Verified
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 text-xs">
+                      <div className="bg-emerald-950/50 p-3 rounded-xl border border-emerald-500/30 flex items-center justify-between">
+                        <span className="text-stone-300 font-semibold">Total Paid to Date:</span>
+                        <span className="font-black text-emerald-300 text-sm sm:text-base">₹{alreadyPaid.toLocaleString('en-IN')}/-</span>
+                      </div>
+
+                      <div className="bg-amber-950/50 p-3 rounded-xl border border-amber-500/30 flex items-center justify-between">
+                        <span className="text-stone-300 font-semibold">Remaining Balance:</span>
+                        <span className="font-black text-amber-300 text-sm sm:text-base">₹{remainingBalanceAmount.toLocaleString('en-IN')}/-</span>
+                      </div>
+                    </div>
+
+                    <p className="text-[11px] text-amber-200/90 font-medium pt-0.5">
+                      {isTokenPaid ? (
+                        <>Next Stage: <b>₹{(fiftyPercentAmount - alreadyPaid).toLocaleString('en-IN')} Advance</b> payable within 7 days. Final balance due 15 days before travel.</>
+                      ) : isAdvancePaid ? (
+                        <>Next Stage: <b>Final Balance ₹{remainingBalanceAmount.toLocaleString('en-IN')}</b> payable 15 days before departure.</>
+                      ) : (
+                        <>All hotel stays & private chauffeur transport are fully confirmed. Zero pending dues!</>
+                      )}
+                    </p>
+                  </div>
+                )}
+              </div>
+            );
+          })()}
 
           {/* Bottom Rust Bar */}
           <div className="bg-[#6E1E14] text-white py-3 px-6 text-center text-[10px] sm:text-xs font-bold tracking-wide rounded-xl">

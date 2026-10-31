@@ -4346,7 +4346,318 @@ export const srilankaShravyaManualItinerary: ManualItinerary = {
   fullPaymentOnly: false
 };
 
+
+export const vietnamShravyaManualItinerary: ManualItinerary = {
+  id: 'vietnam-shravya',
+  slug: 'vietnam-shravya',
+  title: 'Vietnam Exclusive — Misty Sapa, Hanoi Heritage, Ninh Binh Karst Caves & Da Nang Golden Bridge',
+  subtitle: '6 Nights / 7 Days Private Family Tour for Mrs. Shravya & Family',
+  duration: '6 Nights / 7 Days | 30th Nov – 06th Dec',
+  numNights: 6,
+  numDays: 7,
+  dates: '30 November – 06 December 2026',
+  route: 'Hanoi Airport → Sapa (Cat Cat & Fansipan Peak) → Hanoi (Old Quarter) → Ninh Binh (Tam Coc Caves) → Da Nang (Son Tra & Hoi An) → Ba Na Hills (Golden Bridge) → Da Nang Airport',
+  routeSummary: '2N Sapa | 2N Ha Noi | 2N Da Nang',
+  destination: 'Vietnam',
+  travelStyle: 'Customised Private Family Tour (Cultural Heritage, Mountain Treks, Karst Caves & Coastal Wonders)',
+  tripType: 'Private Family Tour (4 Adults + 1 Child with Dedicated Extra Bed)',
+  leadName: 'Mrs Shravya & Family',
+  vehicleType: 'Private AC Van with Dedicated Professional Chauffeur & English-Speaking Guide',
+  mealPlan: 'Daily Breakfast at Hotels (except Day 1)',
+  heroImage: '/images/vietnam/vietnam-hero.jpg',
+  galleryImages: [
+    '/images/vietnam/vietnam-hero.jpg',
+    '/images/vietnam/sapa-catcat.jpg',
+    '/images/vietnam/fansipan-peak.jpg',
+    '/images/vietnam/hanoi-heritage.jpg',
+    '/images/vietnam/ninh-binh-tam-coc.jpg',
+    '/images/vietnam/bana-hills-bridge.jpg',
+    '/images/vietnam/hoi-an-lanterns.jpg',
+    '/images/vietnam/da-nang-coast.jpg'
+  ],
+  moments: [
+    'Scenic mountain drive into the misty highlands of Sapa',
+    'Cat Cat Village hiking through traditional Hmong wooden houses & waterfalls',
+    'Conquering Fansipan Legend Peak (3,143m) – Roof of Indochina via Muong Hoa train, cable car & funicular',
+    'Historical Hanoi: Temple of Literature, scenic Hoan Kiem Lake, Ngoc Son Temple & French Quarter',
+    'Sampan bamboo boat ride through Tam Coc’s three limestone caves in Ninh Binh',
+    'Peaceful cycling through rural countryside & visiting ancient Bich Dong Pagoda & Hoa Lu',
+    'Coastal Da Nang arrival, Son Tra Peninsula & 67m Lady Buddha statue overlooking the sea',
+    'Exploring Marble Mountains (Ngu Hanh Son) ancient caves & panoramic stone stairs',
+    'Enchanting walking tour through Hoi An Ancient Town lantern-lit pedestrian streets (UNESCO World Heritage)',
+    'Ba Na Hills cable car, walking the iconic Golden Bridge held by colossal giant stone hands & French Village',
+    'Da Nang city bridges by night: Han River Bridge, Dragon Bridge & romantic Love Bridge'
+  ],
+  adults: 4,
+  kids: 1,
+  kidsDetails: '4 Adults + 1 Child (11 years old with dedicated extra bed)',
+
+  // Baseline values (Option 1: 3-Star Hotels)
+  perAdultPrice: 55458,
+  perKidPrice: 27458,
+  baseAmount: 249290,
+  gstPercentage: 5,
+  gstAmount: 12465,
+  tcsPercentage: 2,
+  tcsAmount: 4986,
+  finalQuotationAmount: 266741,
+  childPricingNote: 'Option 1 (3★): 4 Adults @ ₹55,458/- + 1 Child (11 yrs with extra bed) @ ₹27,458/- = ₹2,49,290/- (+ 5% GST ₹12,465 + 2% TCS ₹4,986 = ₹2,66,741/- Total). Option 2 (4★): 4 Adults @ ₹62,458/- + 1 Child (11 yrs with extra bed) @ ₹30,958/- = ₹2,80,790/- (+ 5% GST ₹14,040 + 2% TCS ₹5,616 = ₹3,00,446/- Total).',
+
+  // Interactive Multi-Option Quotations (3 Star vs 4 Star)
+  options: [
+    {
+      id: 'option-1',
+      title: 'Option 1: 3★ Comfort Heritage Package',
+      subtitle: 'Sapa Village (Superior) • La Dolce Vita Hanoi (Superior) • Sepon Blue Da Nang (Deluxe)',
+      badge: '3-Star Handpicked',
+      isDefault: true,
+      perAdultPrice: 55458,
+      perKidPrice: 27458,
+      adults: 4,
+      kids: 1,
+      baseAmount: 249290,
+      gstPercentage: 5,
+      gstAmount: 12465,
+      tcsPercentage: 2,
+      tcsAmount: 4986,
+      finalQuotationAmount: 266741,
+      childPricingNote: '4 Adults @ ₹55,458/- per adult (₹2,21,832) + 1 Child (11 yrs with extra bed) @ ₹27,458/-. Total Base Cost: ₹2,49,290/- (+ 5% GST ₹12,465 + 2% TCS ₹4,986 = ₹2,66,741/- Total).',
+      accommodations: [
+        { city: 'Sapa', nights: 2, hotelName: 'Sapa Village Hotel / Similar', roomCategory: 'Superior Room' },
+        { city: 'Ha Noi', nights: 2, hotelName: 'La Dolce Vita Hotel / Similar', roomCategory: 'Superior Room' },
+        { city: 'Da Nang', nights: 2, hotelName: 'Sepon Blue Hotel / Similar', roomCategory: 'Deluxe Room' }
+      ]
+    },
+    {
+      id: 'option-2',
+      title: 'Option 2: 4★ Premium Luxury Package',
+      subtitle: 'De Sapa Hotel (Deluxe) • La Casa Hotel Hanoi (Premium) • Canvas Hotel Da Nang (Classic King)',
+      badge: '4-Star Premium',
+      isDefault: false,
+      perAdultPrice: 62458,
+      perKidPrice: 30958,
+      adults: 4,
+      kids: 1,
+      baseAmount: 280790,
+      gstPercentage: 5,
+      gstAmount: 14040,
+      tcsPercentage: 2,
+      tcsAmount: 5616,
+      finalQuotationAmount: 300446,
+      childPricingNote: '4 Adults @ ₹62,458/- per adult (₹2,49,832) + 1 Child (11 yrs with extra bed) @ ₹30,958/-. Total Base Cost: ₹2,80,790/- (+ 5% GST ₹14,040 + 2% TCS ₹5,616 = ₹3,00,446/- Total).',
+      accommodations: [
+        { city: 'Sapa', nights: 2, hotelName: 'De Sapa Hotel / Similar', roomCategory: 'Deluxe Room' },
+        { city: 'Ha Noi', nights: 2, hotelName: 'La Casa Hotel / Similar', roomCategory: 'Premium Room' },
+        { city: 'Da Nang', nights: 2, hotelName: 'Canvas Hotel / Similar', roomCategory: 'Classic King Room' }
+      ]
+    }
+  ],
+
+  // Default Stays (Option 1: 3-Star Hotels)
+  accommodations: [
+    { city: 'Sapa', nights: 2, hotelName: 'Sapa Village Hotel / Similar', roomCategory: 'Superior Room' },
+    { city: 'Ha Noi', nights: 2, hotelName: 'La Dolce Vita Hotel / Similar', roomCategory: 'Superior Room' },
+    { city: 'Da Nang', nights: 2, hotelName: 'Sepon Blue Hotel / Similar', roomCategory: 'Deluxe Room' }
+  ],
+
+  dayPlans: [
+    {
+      day: 1,
+      date: 'Day 01 • 30th Nov',
+      title: 'Day 1 | Hanoi Arrival → Scenic Drive to Sapa & Cat Cat Village Hiking',
+      route: 'Hanoi Airport (HAN) → Sapa Highlands',
+      durationNote: 'Approx. 6 Hrs Scenic Mountain Drive',
+      intro: 'Welcome to Vietnam! Arrive at Hanoi Airport in the early morning where your private chauffeur and guide meet you for a scenic drive into the mountains of Sapa, followed by cultural hiking through Cat Cat Village.',
+      timeline: [
+        'Early morning arrival at Noi Bai International Airport (Hanoi) and warm welcome by our private chauffeur guide',
+        'Embark on a scenic 6-hour mountain drive through northern Vietnam’s verdant hills and terraced valleys to Sapa',
+        'Transfer to the hotel for check-in (early check-in not included) and enjoy a brief refreshing rest',
+        'Afternoon hiking through Cat Cat Village — walk along scenic paved stone paths, cascading waterfalls, and traditional Black H’mong stilt wooden houses',
+        'Witness local artisans at traditional weaving, silver-crafting and batik workshops',
+        'Immerse in the breathtaking highland mountain panoramas and terraced valley scenery',
+        'Return to the hotel in Sapa for a relaxing evening at leisure amidst the cool mountain breeze',
+        'Overnight stay in Sapa'
+      ],
+      stayLocation: 'Sapa',
+      image: '/images/vietnam/sapa-catcat.jpg',
+      meals: 'On own / In-flight'
+    },
+    {
+      day: 2,
+      date: 'Day 02 • 01st Dec',
+      title: 'Day 2 | Fansipan Legend Peak ("Roof of Indochina") & Sapa Mountain Town Tour',
+      route: 'Sapa Town ↔ Mount Fansipan Summit (3,143m)',
+      durationNote: 'Full Day Mountain & Town Exploration',
+      intro: 'Journey above the clouds to the summit of Fansipan Peak (3,143m), the highest peak in Indochina, via the world’s most advanced cable car system and mountain funicular.',
+      timeline: [
+        'Energizing mountain breakfast at the hotel',
+        'Board the charming Muong Hoa mountain train (round-trip) gliding across deep green valleys',
+        'Ride the record-breaking Fansipan Cable Car (round-trip) soaring over floating clouds and dramatic terraced rice fields',
+        'Take the summit funicular (one-way uphill) and ascend to the iconic Fansipan Summit marker at 3,143 meters',
+        'Admire panoramic views of the Hoang Lien Son mountain range, sacred Buddhist shrines, and the giant Bronze Amitabha Buddha statue',
+        'Descend back to Sapa town and explore iconic central landmarks: the historic Stone Church (Notre Dame Cathedral Sapa), town square, and highland markets',
+        'Return to the hotel and enjoy the rest of the evening at leisure exploring Sapa’s cozy alpine cafés',
+        'Overnight stay in Sapa'
+      ],
+      stayLocation: 'Sapa',
+      image: '/images/vietnam/fansipan-peak.jpg',
+      meals: 'Breakfast'
+    },
+    {
+      day: 3,
+      date: 'Day 03 • 02nd Dec',
+      title: 'Day 3 | Sapa Check-Out → Scenic Drive to Hanoi & Capital Heritage Tour',
+      route: 'Sapa → Hanoi Capital',
+      durationNote: 'Approx. 5–6 Hrs Drive',
+      intro: 'Descend from the misty highlands back to the thousand-year-old capital city of Hanoi, exploring its most revered historic universities, legendary lakes, and bustling colonial Old Quarter.',
+      timeline: [
+        'Breakfast at the hotel followed by check-out in Sapa',
+        'Scenic highway drive from Sapa back to Hanoi Capital',
+        'Discover the Temple of Literature (Van Mieu), Vietnam’s first national university founded in 1070 dedicated to Confucius',
+        'Stroll along the picturesque tree-lined promenade of Hoan Kiem Lake (Lake of the Restored Sword)',
+        'Cross the scarlet-painted classic The Huc Bridge to visit sacred Ngoc Son Temple situated on Jade Island',
+        'Explore the vibrant 36 ancient guild streets of Hanoi’s historic Old Quarter',
+        'Transfer to your Hanoi hotel for check-in and leisure time to sample authentic Vietnamese egg coffee and local street delicacies',
+        'Overnight stay in Ha Noi'
+      ],
+      stayLocation: 'Ha Noi',
+      image: '/images/vietnam/hanoi-heritage.jpg',
+      meals: 'Breakfast'
+    },
+    {
+      day: 4,
+      date: 'Day 04 • 03rd Dec',
+      title: 'Day 4 | Full Day Ninh Binh Excursion — Tam Coc Bamboo Boat Ride & Ancient Hoa Lu',
+      route: 'Hanoi ↔ Ninh Binh (Tam Coc, Bich Dong & Hoa Lu)',
+      durationNote: 'Approx. 2 Hrs Drive Each Way',
+      intro: 'Discover the fairytale landscape of Ninh Binh, often called the "Ha Long Bay on Land," with a peaceful sampan boat cruise through karst mountain caves and countryside cycling.',
+      timeline: [
+        'Hearty morning breakfast at the hotel',
+        'Depart Hanoi for Ninh Binh province through the lush Red River Delta',
+        'Board a traditional hand-rowed bamboo sampan boat along the Ngo Dong River in Tam Coc, gliding through three magnificent natural limestone caves: Hang Ca, Hang Hai, and Hang Ba',
+        'Leisurely bicycle ride through peaceful village roads, limestone peaks, and rural rice fields',
+        'Visit Bich Dong Pagoda — an ancient three-tiered pagoda built into a dramatic mountainside cave cliff (dating back to 1428)',
+        'Explore Hoa Lu Ancient Capital, the legendary 10th-century political center of Vietnam under the Dinh and Le dynasties',
+        'Return drive to Hanoi and enjoy a relaxed evening at leisure',
+        'Overnight stay in Ha Noi'
+      ],
+      stayLocation: 'Ha Noi',
+      image: '/images/vietnam/ninh-binh-tam-coc.jpg',
+      meals: 'Breakfast'
+    },
+    {
+      day: 5,
+      date: 'Day 05 • 04th Dec',
+      title: 'Day 5 | Flight to Da Nang → Son Tra Peninsula, Marble Mountains & Hoi An Ancient Town',
+      route: 'Hanoi Airport → Da Nang Airport → Son Tra → Marble Mountains → Hoi An',
+      durationNote: 'Domestic Flight (approx. 1.2 hrs) + Private Tour',
+      intro: 'Fly south to coastal Da Nang, admire the 67m Lady Buddha statue on Son Tra Peninsula, climb the holy Marble Mountains caves, and immerse in the magical lantern-lit streets of Hoi An.',
+      timeline: [
+        'Breakfast at Hanoi hotel and check-out',
+        'Private transfer to Hanoi Airport for your morning flight to Da Nang (flight to arrive before noon)',
+        'Warm greeting on arrival at Da Nang Airport by your private chauffeur and guide',
+        'Visit Son Tra Peninsula and Linh Ung Pagoda, home to Vietnam’s tallest 67-meter Lady Buddha statue overlooking the crystal-blue ocean',
+        'Explore Marble Mountains (Ngu Hanh Son) — a cluster of five limestone hills representing the five elements, with hidden Buddhist sanctuaries, limestone grottoes, and panoramic summits',
+        'Transfer to Hoi An Ancient Town (UNESCO World Heritage Site)',
+        'Guided walking tour through atmospheric lantern-strung lanes, ancient merchant houses, Fujian Assembly Hall, and the iconic 400-year-old Japanese Covered Bridge',
+        'Witness the magical evening transition as thousands of handcrafted silk lanterns illuminate the Thu Bon River',
+        'Return to Da Nang and check in to your beachside hotel',
+        'Overnight stay in Da Nang'
+      ],
+      stayLocation: 'Da Nang',
+      image: '/images/vietnam/hoi-an-lanterns.jpg',
+      meals: 'Breakfast'
+    },
+    {
+      day: 6,
+      date: 'Day 06 • 05th Dec',
+      title: 'Day 6 | Ba Na Hills Full Day — Iconic Golden Bridge, French Village & City Bridges',
+      route: 'Da Nang ↔ Ba Na Hills (1,487m)',
+      durationNote: 'Full Day Mountain Theme Park & Bridges Excursion',
+      intro: 'Ascend Ba Na Hills on one of the world’s longest cable cars, stroll across the iconic Golden Bridge supported by giant stone hands, and discover Da Nang’s illuminated evening bridges.',
+      timeline: [
+        'Delightful buffet breakfast at the hotel',
+        'Scenic drive to the foothills of Ba Na Hills and embark on the Guinness record-holding cable car ride',
+        'Walk across the world-famous Golden Bridge (Cau Vang) — an ethereal 150m walkway suspended among the clouds and cradled by two colossal moss-covered giant hands',
+        'Explore the charming cobblestone streets and fairytale gothic spires of the French Village',
+        'Enjoy family rides, indoor games, and attractions inside Fantasy Park (Exclusions: Debay Wine Cellar, Wax Museum, Alpine Coaster, and 10D Movie)',
+        'Ride the scenic cable car back down to the foothills and transfer back to Da Nang',
+        'Evening Da Nang city bridge exploration: visit Han River Bridge, Han Market, the majestic fire-and-water Dragon Bridge, and the romantic Love Lock Bridge',
+        'Overnight stay in Da Nang'
+      ],
+      stayLocation: 'Da Nang',
+      image: '/images/vietnam/bana-hills-bridge.jpg',
+      meals: 'Breakfast'
+    },
+    {
+      day: 7,
+      date: 'Day 07 • 06th Dec',
+      title: 'Day 7 | Leisurely Morning by the Coast & Departure from Da Nang',
+      route: 'Da Nang Hotel → Da Nang International Airport (DAD)',
+      durationNote: 'Private Airport Transfer',
+      intro: 'Savor your final tropical morning in Da Nang before checking out and transferring privately to Da Nang International Airport for your departure flight back home.',
+      timeline: [
+        'Leisurely breakfast at the hotel overlooking the coastline or pool',
+        'Morning free at leisure for last-minute souvenir shopping or beachside relaxation',
+        'Hotel check-out (late check-out not included)',
+        'Private chauffeur transfer to Da Nang International Airport (DAD) in time for your return flight',
+        'Bid farewell to Vietnam with unforgettable memories of northern mist, imperial heritage, and coastal wonders'
+      ],
+      stayLocation: 'Departure',
+      image: '/images/vietnam/da-nang-coast.jpg',
+      meals: 'Breakfast',
+      signOff: 'Wishing Mrs. Shravya & Family an extraordinary and heartwarming Vietnam holiday with Wanderphilia! 🇻🇳✨'
+    }
+  ],
+  inclusions: [
+    '6 Nights Accommodation as per selected hotel tier (2N Sapa, 2N Hanoi, 2N Da Nang)',
+    'Daily Breakfast at the hotels (except Day 1 on early arrival)',
+    'Private air-conditioned Van throughout the tour for all sightseeing and airport transfers as mentioned',
+    'Professional English-speaking local tour guides during all guided excursions as detailed in the itinerary',
+    'Cat Cat Village hiking tour with local guide in Sapa',
+    'Fansipan Legend Peak full mountain experience: round-trip Muong Hoa mountain train, round-trip Fansipan Cable Car, and one-way summit funicular to the peak',
+    'Hanoi Capital Heritage Tour: Temple of Literature, Hoan Kiem Lake, Ngoc Son Temple & Old Quarter',
+    'Full Day Ninh Binh Excursion: Tam Coc 3-caves bamboo boat cruise, countryside cycling, Bich Dong Pagoda & Hoa Lu Ancient Capital',
+    'Da Nang & Son Tra Peninsula tour: Linh Ung Pagoda & 67m Lady Buddha statue',
+    'Marble Mountains (Ngu Hanh Son) exploration and cave temples',
+    'Hoi An Ancient Town guided walking tour (UNESCO World Heritage Site)',
+    'Ba Na Hills full-day tour: return cable car, world-famous Golden Bridge, French Village & Fantasy Park entry',
+    'Da Nang city exploration: Han Bridge, Dragon Bridge, Love Lock Bridge & Han Market',
+    'Complimentary bottled drinking water during tours (2 bottles/pax/day)',
+    'All local tolls, parking fees, driver allowances, government tourism taxes & service charges included'
+  ],
+  exclusions: [
+    'International Flight Tickets & Domestic Flights (Hanoi to Da Nang domestic flight available on request)',
+    'Meals not specifically mentioned in the itinerary (Lunches & Dinners)',
+    'Compulsory tipping for driver and tour guide: USD 5 / pax / day on days with tour guide',
+    'Vietnam E-Visa fees',
+    'Ba Na Hills optional attractions: Debay Wine Cellar, Wax Museum, Alpine Coaster, and 10D Movie',
+    'Early hotel check-in & late hotel check-out charges',
+    'Personal expenses: laundry, telephone calls, alcoholic beverages, room service, camera permits, and shopping',
+    'Applicable GST (5%) & TCS (2%) as per Government of India international travel regulations'
+  ],
+  thingsToCarry: [
+    'Original Passport with minimum 6 months validity from return travel date & printed Vietnam E-Visa approval',
+    'Universal travel adapter (Vietnam primarily uses Type A / C / F round and flat two-pin sockets, 220V)',
+    'Comfortable trekking sneakers or hiking shoes for Cat Cat Village stone steps and Marble Mountains caves',
+    'Light warm jacket / windcheater for Sapa and Fansipan Summit (highland temperatures are significantly cooler)',
+    'Modest clothing covering shoulders and knees for visiting Buddhist pagodas, temples, and sacred sanctuaries',
+    'Sun protection: high-SPF sunscreen, sunglasses, and wide-brim hat for Da Nang beaches and Ninh Binh boating',
+    'Light raincoat or compact umbrella (highland weather in Sapa can change quickly)',
+    'Personal prescribed medications, basic motion sickness remedies, and mosquito repellent',
+    'Forex Card / Credit Card & some Vietnamese Dong (VND) or USD for tipping and incidental market purchases'
+  ],
+  enableOnlineBooking: false,
+  fullPaymentOnly: false
+};
+
 export const manualItinerariesRegistry: Record<string, ManualItinerary> = {
+  'vietnam-shravya': vietnamShravyaManualItinerary,
+  'vietnam-shravya-family': vietnamShravyaManualItinerary,
+  'mrs-shravya-vietnam': vietnamShravyaManualItinerary,
+  'shravya-vietnam': vietnamShravyaManualItinerary,
+  'vietnam-shravya-7d': vietnamShravyaManualItinerary,
+
   'srilanka-shravya': srilankaShravyaManualItinerary,
   'srilanka-shravya-30nov': srilankaShravyaManualItinerary,
   'shravya-srilanka': srilankaShravyaManualItinerary,
@@ -4498,6 +4809,7 @@ export function getManualItinerary(idOrSlug: string): ManualItinerary | null {
 
 export function getAllManualItineraries(): ManualItinerary[] {
   return [
+    vietnamShravyaManualItinerary,
     srilankaShravyaManualItinerary,
     lakshadweepParekhWithFlightsManualItinerary,
     lakshadweepParekhManualItinerary,
