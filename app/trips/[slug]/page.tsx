@@ -15,7 +15,7 @@ import { TripHeroCarousel } from '@/components/trip-hero-carousel'
 import { RequestCallbackDialog } from '@/components/request-callback-dialog'
 import { DownloadTourPdfDialog } from '@/components/download-tour-pdf-dialog'
 import { RiWhatsappLine } from 'react-icons/ri'
-import { trips } from '@/lib/data'
+import { trips, Trip } from '@/lib/data'
 import { destinationItineraryImages } from '@/lib/section-mappings'
 import { MapPin, Calendar, Users, Star, Phone, MessageCircle, ChevronDown, Download, X, Check, ChevronLeft, ChevronRight, Car, Hotel, Camera, Utensils, Plane, Building2, FileText, User, Share2, Compass } from 'lucide-react'
 import { Parachute } from '@/components/parachute-icon'
@@ -863,7 +863,26 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
   const slug = (resolvedParams?.slug || clientParams?.slug) as string | undefined
   console.log("=== CATCH-ALL TRIP PAGE RENDERING ===", { slug, resolvedParams, clientParams })
   const total = selections.reduce((sum, item) => sum + item.price, 0)
-  const trip = useMemo(() => slug ? trips.find(t => t.slug === slug) : undefined, [slug])
+  const staticTrip = useMemo(() => slug ? trips.find(t => t.slug === slug || t.id === slug) : undefined, [slug])
+  const [dynamicTrip, setDynamicTrip] = useState<Trip | null>(null)
+  const [loadingDynamic, setLoadingDynamic] = useState(false)
+
+  useEffect(() => {
+    if (!staticTrip && slug) {
+      setLoadingDynamic(true)
+      fetch(`/api/trips?slug=${encodeURIComponent(slug)}`)
+        .then(res => (res.ok ? res.json() : null))
+        .then(data => {
+          if (data && !data.error) {
+            setDynamicTrip(data as Trip)
+          }
+        })
+        .catch(() => {})
+        .finally(() => setLoadingDynamic(false))
+    }
+  }, [staticTrip, slug])
+
+  const trip: Trip | undefined = staticTrip || (dynamicTrip as Trip) || undefined
 
   // Calculate lowest price from costing table
   const lowestPrice = useMemo(() => {
@@ -1149,6 +1168,16 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
   }, [activeTab])
 
   if (!slug) return null
+  if (loadingDynamic && !trip) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-10 h-10 border-4 border-[#ff5d09] border-t-transparent rounded-full animate-spin" />
+          <p className="text-sm font-medium text-slate-600">Loading tour package...</p>
+        </div>
+      </div>
+    )
+  }
   if (!trip) return notFound()
 
   const staySummary = trip.route || trip.staySummary || trip.customRoute || getStaySummary(trip.itinerary)

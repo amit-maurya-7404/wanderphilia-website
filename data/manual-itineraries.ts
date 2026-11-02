@@ -4651,7 +4651,351 @@ export const vietnamShravyaManualItinerary: ManualItinerary = {
   fullPaymentOnly: false
 };
 
+export const meghalayaShravyaManualItinerary: ManualItinerary = {
+  id: 'meghalaya-kaziranga-shravya',
+  slug: 'meghalaya-with-kaziranga-mrs-shravya',
+  title: 'Meghalaya with Kaziranga 7N / 8 Days',
+  subtitle: 'Curated Meghalaya & Kaziranga Expedition for Mrs. Shravya | 30 Nov – 07 Dec',
+  duration: '7 Nights / 8 Days | 30 November – 07 December',
+  numNights: 7,
+  numDays: 8,
+  dates: '30 November – 07 December',
+  route: 'Guwahati → Shillong → Jowai → Dawki → Mawlynnong → Cherrapunji → Shillong → Kaziranga → Guwahati Airport',
+  routeSummary: 'Shillong 2N | Jowai 1N | Cherrapunji 2N | Kaziranga 2N',
+  destination: 'Meghalaya & Kaziranga',
+  travelStyle: 'Curated Private Tour',
+  tripType: 'Private Tour (5 Adults)',
+  leadName: 'Mrs Shravya',
+  vehicleType: '01 TOYOTA INNOVA Crysta CAR',
+  mealPlan: 'Daily Breakfast at the hotel',
+  heroImage: 'https://images.unsplash.com/photo-1565716665452-2a4e3445b378?auto=format&fit=crop&w=1200&q=80',
+  galleryImages: [
+    'https://images.unsplash.com/photo-1565716665452-2a4e3445b378?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1654788111018-9096236d54ac?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1521437620269-f477f5437820?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1698429358246-807d8972da9a?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1613644383947-26a22b8c04f2?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1675296098616-53e3d4a1dd57?auto=format&fit=crop&w=1200&q=80'
+  ],
+  moments: [
+    'Scenic drive from Guwahati, Umiam Lake viewpoint & evening stroll at Police Bazaar',
+    'Swimming in the turquoise waters of Krang Suri Waterfalls & Lalong Park in Jowai',
+    'Crystal-clear waters of Dawki Umngot River & Asia’s Cleanest Village Mawlynnong',
+    'Trekking 3,500 steps down to the 200-year-old Double Decker Living Root Bridge at Nongriat',
+    'Nohkalikai Falls, Seven Sisters Falls, Mawsmai Cave & dramatic Cherrapunji canyons',
+    'Scenic journey across lush Assam tea plantations into Kaziranga National Park',
+    'Elephant safari & 02 Jeep safaris across Kohora & Bagori ranges for One-Horned Rhino sightings'
+  ],
+  highlights: [
+    'Umiam Lake / Barapani viewpoint & evening at Police Bazaar, Shillong',
+    'Krang Suri Waterfalls swimming & beautiful Jaintia Hills waterfalls in Jowai',
+    'Crystal-clear waters of Umngot River Dawki & Indo-Bangladesh Tamabil border',
+    'Asia’s Cleanest Village Mawlynnong, Balancing Rock & Living Root Bridge',
+    'Nongriat 3500 Steps Trek to the 200-Year-Old Double Decker Living Root Bridge',
+    'Nohkalikai Falls, Seven Sisters Falls, Mawsmai Cave & Cherrapunji vistas',
+    '02 Kaziranga Jeep Safaris (Central Kohora & Bagori Ranges) & Orchid Park'
+  ],
+  accommodations: [
+    { city: 'Shillong', nights: 2, hotelName: 'HOTEL WOODBINE', roomCategory: '02 ROOMS + 01 EXTRA MATTRESS WITH COMPLIMENTARY BREAKFAST' },
+    { city: 'Jowai', nights: 1, hotelName: 'LOOMKYNTOOR RESORT', roomCategory: '02 ROOMS + 01 EXTRA MATTRESS WITH COMPLIMENTARY BREAKFAST' },
+    { city: 'Cherrapunjee', nights: 2, hotelName: 'RI SOHRA RESORT', roomCategory: '02 ROOMS + 01 EXTRA MATTRESS WITH COMPLIMENTARY BREAKFAST' },
+    { city: 'Kaziranga', nights: 2, hotelName: 'FOXTAIL ORCHID RESORT', roomCategory: '02 ROOMS + 01 EXTRA MATTRESS WITH COMPLIMENTARY BREAKFAST' }
+  ],
+  dayPlans: [
+    {
+      day: 1,
+      date: '30 Nov',
+      title: 'Day 1 | Arrival in Guwahati, Scenic Drive to Shillong via Umiam Lake & Police Bazaar',
+      route: 'Guwahati Airport / Station → Umiam Lake → Shillong (100 KM)',
+      durationNote: '100 KM / 3-4 Hrs',
+      intro: 'Pickup from Guwahati Airport / Rly Station and transfer to Shillong with scenic sightseeing on the way.',
+      timeline: [
+        'Pickup from Guwahati Airport / Rly Station',
+        'Visit Umiam Lake / Barapani viewpoint',
+        'Check-in at Shillong Hotel',
+        'Evening free at Police Bazaar',
+        'Overnight in Shillong [1N]'
+      ],
+      stayLocation: 'HOTEL WOODBINE, Shillong',
+      image: 'https://images.unsplash.com/photo-1565716665452-2a4e3445b378?auto=format&fit=crop&w=1200&q=80',
+      meals: 'Complimentary as per hotel'
+    },
+    {
+      day: 2,
+      date: '01 Dec',
+      title: 'Day 2 | Shillong to Jowai Tour — Lalong Park, Thadlaskein Lake & Krang Suri Waterfalls',
+      route: 'Shillong → Lalong Park → Krang Suri → Jowai (60 KM)',
+      durationNote: '60 KM / 2 Hrs',
+      intro: 'After breakfast, check out and drive to Jowai for waterfall and viewpoint sightseeing.',
+      timeline: [
+        'After breakfast, check out and drive to Jowai',
+        'Lalong Park viewpoint',
+        'Thadlaskein Lake',
+        'Krang Suri Waterfalls - Most beautiful waterfall of Jaintia Hills (Swimming allowed, entry ticket on spot)',
+        'Tyrshi Falls',
+        'Check-in at hotel in Jowai',
+        'Overnight in Jowai [1N]'
+      ],
+      sections: [
+        {
+          title: 'Sightseeing Points:',
+          items: [
+            'Lalong Park viewpoint',
+            'Thadlaskein Lake',
+            'Krang Suri Waterfalls - Most beautiful waterfall of Jaintia Hills (Swimming allowed, entry ticket on spot)',
+            'Tyrshi Falls'
+          ]
+        }
+      ],
+      stayLocation: 'LOOMKYNTOOR RESORT, Jowai',
+      image: 'https://images.unsplash.com/photo-1654788111018-9096236d54ac?auto=format&fit=crop&w=1200&q=80',
+      meals: 'Complimentary Breakfast'
+    },
+    {
+      day: 3,
+      date: '02 Dec',
+      title: 'Day 3 | Jowai to Cherrapunji via Crystal-Clear Dawki Umngot River & Mawlynnong Village',
+      route: 'Jowai → Dawki Umngot River → Mawlynnong → Cherrapunji (190 KM)',
+      durationNote: '190 KM Drive',
+      intro: 'After early breakfast, check-out and explore Dawki and Mawlynnong before heading to Cherrapunji.',
+      timeline: [
+        'After early breakfast, check-out',
+        'Drive to Dawki',
+        'Umngot River - Crystal-clear river boating (direct payment)',
+        'India - Bangladesh Border at Tamabil',
+        'Drive to Mawlynnong',
+        'Asia\'s Cleanest Village',
+        'Balancing Rock',
+        'Living Root Bridge at Riwai Village',
+        'Evening drive to Cherrapunji / Sohra',
+        'Check-in Hotel',
+        'Overnight in Cherrapunji [1N]'
+      ],
+      sections: [
+        {
+          title: 'Drive to Dawki:',
+          items: [
+            'Umngot River - Crystal-clear river boating (direct payment)',
+            'India - Bangladesh Border at Tamabil'
+          ]
+        },
+        {
+          title: 'Drive to Mawlynnong:',
+          items: [
+            'Asia\'s Cleanest Village',
+            'Balancing Rock',
+            'Living Root Bridge at Riwai Village'
+          ]
+        }
+      ],
+      stayLocation: 'RI SOHRA RESORT, Cherrapunjee',
+      image: 'https://images.unsplash.com/photo-1521437620269-f477f5437820?auto=format&fit=crop&w=1200&q=80',
+      meals: 'Complimentary Breakfast'
+    },
+    {
+      day: 4,
+      date: '03 Dec',
+      title: 'Day 4 | Nongriat Trek — 200-Year-Old Double Decker Living Root Bridge & Natural Blue Pools',
+      route: 'Cherrapunji ↔ Nongriat Double Decker Root Bridge Trek',
+      durationNote: 'Full Day Trek',
+      intro: 'After breakfast start trek (8 AM) to the historic living root bridge and natural pools.',
+      timeline: [
+        'After breakfast start trek (8 AM)',
+        '3500 Steps down & up - Moderate trek (3.5 - 4 Hrs total)',
+        'Single Root Bridge',
+        'Double Decker Root Bridge at Nongriat Village (200 Years old)',
+        'Natural Blue Swimming Pools',
+        'Optional Rainbow Falls trek - Extra 1.5 Hrs (Guide must)',
+        'Return to hotel',
+        'Overnight in Cherrapunji [2N]'
+      ],
+      sections: [
+        {
+          title: 'Full Day Points:',
+          items: [
+            '3500 Steps down & up - Moderate trek (3.5 - 4 Hrs total)',
+            'Single Root Bridge',
+            'Double Decker Root Bridge at Nongriat Village (200 Years old)',
+            'Natural Blue Swimming Pools',
+            'Optional Rainbow Falls trek - Extra 1.5 Hrs (Guide must)'
+          ]
+        }
+      ],
+      stayLocation: 'RI SOHRA RESORT, Cherrapunjee',
+      image: 'https://images.unsplash.com/photo-1698429358246-807d8972da9a?auto=format&fit=crop&w=1200&q=80',
+      meals: 'Complimentary Breakfast'
+    },
+    {
+      day: 5,
+      date: '04 Dec',
+      title: 'Day 5 | Cherrapunji to Shillong — Nohkalikai Falls, Seven Sisters Falls & Caves Exploration',
+      route: 'Cherrapunji Sightseeing → Mawkdok Valley → Shillong (60 KM)',
+      durationNote: '60 KM / 2 Hrs',
+      intro: 'After breakfast checkout, Cherrapunji local sightseeing, and drive back to Shillong.',
+      timeline: [
+        'After breakfast checkout',
+        'Nohkalikai Falls - Highest plunge waterfall in India',
+        'Seven Sisters Falls',
+        'Mawsmai Cave / Arwah Cave',
+        'Eco Park, Wah Kaba Falls, Dainthlen Falls',
+        'Mawkdok Valley View Point',
+        'Drive to Shillong',
+        'Shillong local if time permits: Elephant Falls, Ward\'s Lake',
+        'Check-in Hotel',
+        'Overnight in Shillong [2N]'
+      ],
+      sections: [
+        {
+          title: 'Cherrapunji Local Sightseeing:',
+          items: [
+            'Nohkalikai Falls - Highest plunge waterfall in India',
+            'Seven Sisters Falls',
+            'Mawsmai Cave / Arwah Cave',
+            'Eco Park, Wah Kaba Falls, Dainthlen Falls',
+            'Mawkdok Valley View Point'
+          ]
+        }
+      ],
+      stayLocation: 'HOTEL WOODBINE, Shillong',
+      image: 'https://images.unsplash.com/photo-1613644383947-26a22b8c04f2?auto=format&fit=crop&w=1200&q=80',
+      meals: 'Complimentary Breakfast'
+    },
+    {
+      day: 6,
+      date: '05 Dec',
+      title: 'Day 6 | Shillong to Kaziranga National Park — Scenic Highway Transfer via Assam Tea Gardens',
+      route: 'Shillong → Nongpoh → Nagaon → Kaziranga (280 KM)',
+      durationNote: '280 KM / 7-8 Hrs',
+      intro: 'After breakfast early checkout and transfer drive to Kaziranga National Park in Assam.',
+      timeline: [
+        'After breakfast early checkout',
+        'Long drive to Kaziranga via Nongpoh - Nagaon',
+        'Reach Kaziranga by evening',
+        'Check-in at the resort',
+        'Evening free - Optional Bihu Dance / Karbi Folk Dance',
+        'Overnight in Kaziranga [1N]'
+      ],
+      stayLocation: 'FOXTAIL ORCHID RESORT, Kaziranga',
+      image: 'https://images.unsplash.com/photo-1758390285043-43c547cce665?auto=format&fit=crop&w=1200&q=80',
+      meals: 'Complimentary Breakfast'
+    },
+    {
+      day: 7,
+      date: '06 Dec',
+      title: 'Day 7 | Kaziranga Wildlife Safaris — Elephant Safari, Central Range Jeep Safari & Orchid Park',
+      route: 'Kaziranga National Park (Bagori Range & Central Kohora Range)',
+      durationNote: 'Full Day Safaris',
+      intro: 'Early morning safari, central range safari, and afternoon cultural visits in Kaziranga.',
+      timeline: [
+        '05:15 AM - Elephant Safari - Bagori Range - 1 Hour(Payable by the client)',
+        'One Horned Rhino close sighting of a one-horned rhino',
+        'Return for breakfast at the resort',
+        '09:00 AM - Jeep Safari - Central Range (Kohora) - 2.5 to 3 Hrs',
+        'Jeep safari for Tiger, Rhino, Wild Buffalo, Elephant',
+        'Afternoon: Visit Kaziranga Orchid Park',
+        'Assam Tea Garden visit',
+        'Overnight in Kaziranga [2N]'
+      ],
+      sections: [
+        {
+          title: '05:15 AM - Elephant Safari - Bagori Range - 1 Hour(Payable by the client):',
+          items: [
+            'One Horned Rhino close sighting of a one-horned rhino'
+          ]
+        },
+        {
+          title: '09:00 AM - Jeep Safari - Central Range (Kohora) - 2.5 to 3 Hrs:',
+          items: [
+            'Jeep safari for Tiger, Rhino, Wild Buffalo, Elephant'
+          ]
+        },
+        {
+          title: 'Afternoon:',
+          items: [
+            'Visit Kaziranga Orchid Park',
+            'Assam Tea Garden visit'
+          ]
+        }
+      ],
+      stayLocation: 'FOXTAIL ORCHID RESORT, Kaziranga',
+      image: 'https://images.unsplash.com/photo-1675296098616-53e3d4a1dd57?auto=format&fit=crop&w=1200&q=80',
+      meals: 'Complimentary Breakfast'
+    },
+    {
+      day: 8,
+      date: '07 Dec',
+      title: 'Day 8 | Kaziranga Morning Bagori Jeep Safari & Transfer Drop to Guwahati Airport',
+      route: 'Kaziranga National Park → Guwahati Airport Drop (200 KM)',
+      durationNote: '200 KM / 5 Hrs',
+      intro: 'Morning jeep safari ride at Bagori Range and transfer drop to Guwahati Airport.',
+      timeline: [
+        'After breakfast, 01 Jeep Safari ride at Bagori Range',
+        'Later, drive to Guwahati Airport',
+        'Drop at GHY Airport - Tour Ends.'
+      ],
+      stayLocation: 'Drop at GHY Airport - Tour Ends',
+      image: 'https://images.unsplash.com/photo-1776601797873-396d38b7a1a9?auto=format&fit=crop&w=1200&q=80',
+      meals: 'Complimentary Breakfast',
+      signOff: 'Wishing Mrs. Shravya & Family a wondrous and memorable journey with Wanderphilia! 🌿🦏'
+    }
+  ],
+  inclusions: [
+    'Accommodation on a double-sharing basis (02 Rooms + 01 Extra Mattress)',
+    'Daily Breakfast at the hotel',
+    'Private Innova Crysta with professional driver for the entire tour',
+    'Airport pickup and drop-off as per itinerary',
+    'All tolls, parking, driver allowance, permits',
+    'On-ground assistance',
+    '02 JEEP SAFARI RIDE',
+    'Goods & Services Tax (5% GST) included'
+  ],
+  exclusions: [
+    'Airfare / Train tickets',
+    'Lunch, beverages',
+    'Kaziranga Elephant Safari Ride',
+    'Entry fees, camera charges, boating, guide charges',
+    'Room heater, laundry, tips & personal expenses',
+    'Any cost due to landslide, road block, natural calamity - to be borne directly on spot',
+    'Insurance or anything not in inclusions.'
+  ],
+  thingsToCarry: [
+    'Valid Government photo ID proof (Aadhaar Card / Voter ID / Passport) for all guests',
+    'Comfortable walking & trekking shoes with good grip for Double Decker Root Bridge (3,500 steps)',
+    'Light warm layers / fleece jacket (temperatures in Shillong & Cherrapunji can get cool)',
+    'Comfortable cotton clothing for Kaziranga safaris (earthy / khaki tones recommended)',
+    'Sun protection: Sunglasses, sunscreen lotion, and hat/cap',
+    'Umbrella / light raincoat & waterproof bag for electronics during waterfall visits',
+    'Mosquito / insect repellent and personal first-aid / medication'
+  ],
+  adults: 5,
+  kids: 0,
+  perAdultPrice: 32400,
+  baseAmount: 162000,
+  gstPercentage: 5,
+  gstAmount: 8100,
+  tcsPercentage: 0,
+  tcsAmount: 0,
+  finalQuotationAmount: 170100,
+  childPricingNote: '₹32,400/- per person + 5% GST (₹1,620) = ₹34,020/- per person for 5 Adults (Total: ₹1,62,000/- Base + ₹8,100/- 5% GST = ₹1,70,100/- Total for 5 Guests in 02 Rooms + 01 Extra Mattress with Complimentary Breakfast & 01 Toyota Innova Crysta Car).',
+  enableOnlineBooking: false,
+  fullPaymentOnly: false
+};
+
 export const manualItinerariesRegistry: Record<string, ManualItinerary> = {
+  // Meghalaya with Kaziranga (Mrs. Shravya)
+  'meghalaya-with-kaziranga-mrs-shravya': meghalayaShravyaManualItinerary,
+  'meghalaya-kaziranga-shravya': meghalayaShravyaManualItinerary,
+  'meghalaya-shravya': meghalayaShravyaManualItinerary,
+  'shravya-meghalaya': meghalayaShravyaManualItinerary,
+  'mrs-shravya-meghalaya': meghalayaShravyaManualItinerary,
+  'shravya-meghalaya-kaziranga': meghalayaShravyaManualItinerary,
+  'meghalaya-kaziranga-7n8d': meghalayaShravyaManualItinerary,
+  'meghalaya-kaziranga': meghalayaShravyaManualItinerary,
+  'meghalaya': meghalayaShravyaManualItinerary,
+  'kaziranga': meghalayaShravyaManualItinerary,
+  'wp-meghalaya-shravya': meghalayaShravyaManualItinerary,
+  'wp-shravya-meghalaya': meghalayaShravyaManualItinerary,
+
   'vietnam-shravya': vietnamShravyaManualItinerary,
   'vietnam-shravya-family': vietnamShravyaManualItinerary,
   'mrs-shravya-vietnam': vietnamShravyaManualItinerary,
@@ -4809,6 +5153,7 @@ export function getManualItinerary(idOrSlug: string): ManualItinerary | null {
 
 export function getAllManualItineraries(): ManualItinerary[] {
   return [
+    meghalayaShravyaManualItinerary,
     vietnamShravyaManualItinerary,
     srilankaShravyaManualItinerary,
     lakshadweepParekhWithFlightsManualItinerary,
@@ -4837,6 +5182,7 @@ export function manualItineraryToDocument(manual: ManualItinerary): ItineraryDoc
   const isRajasthan = manual.destination.toLowerCase().includes('rajasthan') || manual.id.includes('4002b3f4');
   const isSpiti = manual.destination.toLowerCase().includes('spiti') || manual.id.includes('spiti') || manual.destination.toLowerCase().includes('kinnaur');
   const isAlibaug = manual.destination.toLowerCase().includes('alibaug') || manual.id.includes('alibaug');
+  const isMeghalaya = manual.destination.toLowerCase().includes('meghalaya') || manual.destination.toLowerCase().includes('kaziranga') || manual.destination.toLowerCase().includes('assam');
   const defaultHighlights = isVietnam ? [
     'Ho Chi Minh City Highlights & Cu Chi Underground Tunnels',
     'Phu Quoc Island: 3 Islands Speedboat, VinWonders & Vinpearl Safari',
@@ -4891,7 +5237,7 @@ export function manualItineraryToDocument(manual: ManualItinerary): ItineraryDoc
     subTitle: manual.subtitle || `${manual.numNights} Nights / ${manual.numDays} Days Signature Experience`,
     description: `Custom ${manual.duration} expedition exploring ${manual.route}`,
     destination: manual.destination,
-    stateOrCountry: isSriLanka ? 'Sri Lanka' : (isVietnam ? 'Vietnam' : (isRajasthan ? 'Rajasthan, India' : (isSpiti ? 'Himachal Pradesh (Spiti & Kinnaur), India' : (isAlibaug ? 'Maharashtra, India' : 'Himachal Pradesh, India')))),
+    stateOrCountry: isSriLanka ? 'Sri Lanka' : (isVietnam ? 'Vietnam' : (isRajasthan ? 'Rajasthan, India' : (isSpiti ? 'Himachal Pradesh (Spiti & Kinnaur), India' : (isAlibaug ? 'Maharashtra, India' : (isMeghalaya ? 'Meghalaya & Assam, India' : 'Himachal Pradesh, India'))))),
     travelStyle: manual.travelStyle || 'Signature Tour',
     tripType: manual.tripType || 'Customised Trip',
     vehicleType: manual.vehicleType || 'Private AC Van with Dedicated Driver',

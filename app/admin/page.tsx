@@ -2,6 +2,9 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import { Button } from '@/components/ui/button'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { Map, LogOut, PlusCircle, Sparkles } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 
@@ -45,6 +48,18 @@ function classNames(...classes: (string | false | null | undefined)[]) {
 }
 
 export default function AdminPage() {
+  const router = useRouter()
+  const [loggingOut, setLoggingOut] = useState(false)
+  const handleLogout = async () => {
+    setLoggingOut(true)
+    try {
+      await fetch('/api/admin/logout', { method: 'POST' })
+      router.push('/admin/login')
+      router.refresh()
+    } catch {
+      setLoggingOut(false)
+    }
+  }
   const [gallery, setGallery] = useState(initialGallery)
   const [reel, setReel] = useState(initialReel)
   const [review, setReview] = useState(initialReview)
@@ -204,6 +219,29 @@ export default function AdminPage() {
     <div className="min-h-screen bg-slate-50 text-slate-900">
       <div className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
         <div className="rounded-4xl bg-white p-8 shadow-xl ring-1 ring-slate-200 sm:p-10">
+          {/* Top Admin Navigation Bar */}
+          <div className="flex flex-wrap items-center justify-between gap-4 pb-6 mb-8 border-b border-slate-200">
+            <div className="flex items-center gap-3">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-orange-100 text-[#ff5d09] border border-orange-200">
+                <Sparkles className="w-3.5 h-3.5" /> Authenticated Admin Portal
+              </span>
+            </div>
+            <div className="flex items-center gap-3">
+              <Link
+                href="/admin/website-itinerary"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-[#ff5d09] hover:bg-orange-600 text-white font-medium text-xs rounded-xl shadow-md transition-all hover:shadow-orange-500/20"
+              >
+                <PlusCircle className="w-4 h-4" /> Add Website Itinerary (Zoho Powered)
+              </Link>
+              <button
+                onClick={handleLogout}
+                disabled={loggingOut}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium rounded-xl transition-all cursor-pointer"
+              >
+                <LogOut className="w-3.5 h-3.5" /> {loggingOut ? 'Logging out...' : 'Sign Out'}
+              </button>
+            </div>
+          </div>
           <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.3em] text-primary">Admin Panel</p>
