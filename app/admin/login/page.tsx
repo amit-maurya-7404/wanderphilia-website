@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import Image from 'next/image';
 import { Lock, Mail, Eye, EyeOff, ShieldCheck, AlertCircle, ArrowRight, Loader2 } from 'lucide-react';
 
-export default function AdminLoginPage() {
+export const dynamic = 'force-dynamic';
+
+function AdminLoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const from = searchParams.get('from') || '/admin';
@@ -148,3 +149,15 @@ export default function AdminLoginPage() {
   );
 }
 
+export default function AdminLoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-slate-950 flex flex-col justify-center items-center px-4 font-sans text-white">
+        <Loader2 className="w-8 h-8 animate-spin text-orange-500 mb-3" />
+        <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider">Loading Admin Portal...</p>
+      </div>
+    }>
+      <AdminLoginForm />
+    </Suspense>
+  );
+}
