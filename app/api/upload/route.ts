@@ -31,22 +31,26 @@ export async function POST(request: NextRequest) {
     const extension = file.name.split('.').pop()
     const filename = `${timestamp}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`
 
-    // Ensure upload directory exists
-    const uploadDir = join(process.cwd(), 'public', 'images', 'uploads')
+    // Attempt local filesystem storage with serverless (Vercel) fallback
     try {
-      await mkdir(uploadDir, { recursive: true })
-    } catch (error) {
-      // Directory might already exist, continue
+      const uploadDir = join(process.cwd(), 'public', 'images', 'uploads')
+      try {
+        await mkdir(uploadDir, { recursive: true })
+      } catch (err) {
+        // Directory might already exist
+      }
+
+      const filepath = join(uploadDir, filename)
+      await writeFile(filepath, buffer)
+
+      const url = `/images/uploads/${filename}`
+      return NextResponse.json({ url, filename })
+    } catch (fsError) {
+      console.warn('Local filesystem write failed (read-only environment detected). Using Data URL fallback.')
+      const base64Data = buffer.toString('base64')
+      const dataUrl = `data:${file.type};base64,${base64Data}`
+      return NextResponse.json({ url: dataUrl, filename })
     }
-
-    // Save file
-    const filepath = join(uploadDir, filename)
-    await writeFile(filepath, buffer)
-
-    // Return the public URL
-    const url = `/images/uploads/${filename}`
-
-    return NextResponse.json({ url, filename })
   } catch (error) {
     console.error('Error uploading file:', error)
     return NextResponse.json({ error: 'Failed to upload file' }, { status: 500 })

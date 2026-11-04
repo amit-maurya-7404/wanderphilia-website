@@ -97,6 +97,17 @@ export async function POST(request: NextRequest) {
     });
 
     if (existing) {
+      tripData.createdAt = existing.createdAt || new Date();
+      tripData.updatedAt = new Date();
+      const historyEntry = {
+        timestamp: new Date().toISOString(),
+        action: 'updated',
+        title: tripData.title,
+        updatedBy: 'experiences@wanderphilia.com'
+      };
+      const existingHistory = Array.isArray(existing.history) ? existing.history : [];
+      (tripData as any).history = [...existingHistory, historyEntry];
+
       await collection.updateOne(
         { _id: existing._id },
         {
@@ -110,6 +121,13 @@ export async function POST(request: NextRequest) {
       });
     } else {
       tripData.createdAt = new Date();
+      tripData.updatedAt = new Date();
+      (tripData as any).history = [{
+        timestamp: new Date().toISOString(),
+        action: 'created',
+        title: tripData.title,
+        updatedBy: 'experiences@wanderphilia.com'
+      }];
       const result = await collection.insertOne(tripData);
       return NextResponse.json(
         {

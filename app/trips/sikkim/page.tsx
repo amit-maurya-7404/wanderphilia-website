@@ -12,6 +12,7 @@ import { TripHeroCarousel } from '@/components/trip-hero-carousel'
 import { RequestCallbackDialog } from '@/components/request-callback-dialog'
 import { trips, getLowestPriceForTrips } from '@/lib/data'
 import { getSectionMapping } from '@/lib/section-mappings'
+import { useDestinationTrips } from '@/lib/use-dynamic-trips'
 import { DurationFilter } from '@/components/duration-filter'
 import { NoPackagesCallbackForm } from '@/components/no-packages-callback-form'
 import { ChevronLeft, ChevronRight, Star, Phone, MessageCircle } from 'lucide-react'
@@ -58,18 +59,12 @@ export default function SikkimPage() {
   const [galleryError, setGalleryError] = useState<string | null>(null)
 
   // Central mapping system for trip sections
-  const sectionMap = getSectionMapping(categoryId)
-
-  // Helper function to get trips by section
-  const getTripsBySection = (section: keyof typeof sectionMap) => {
-    const tripIds = sectionMap[section]
-    return trips.filter(trip => tripIds.includes(trip.id))
-  }
+  const { getTripsBySection, sectionMap, dynamicTrips } = useDestinationTrips(categoryId)
 
   // Get all trips for this category (available packages)
   const categoryTrips = useMemo(() => {
     return getTripsBySection('available')
-  }, [])
+  }, [getTripsBySection, dynamicTrips])
 
   // Get first trip for category description/type
   const firstTrip = categoryTrips[0]
@@ -82,7 +77,7 @@ export default function SikkimPage() {
   // Get related packages (other India destinations)
   const relatedPackages = useMemo(() => {
     return getTripsBySection('related')
-  }, [])
+  }, [getTripsBySection, dynamicTrips])
 
   // Create carousel images - use trip images from category or fallback to dummy images
   const carouselImages = useMemo(() => {
@@ -168,12 +163,12 @@ export default function SikkimPage() {
   // Family Packages Data
   const familyPackages = useMemo(() => {
     return getTripsBySection('family')
-  }, [])
+  }, [getTripsBySection, dynamicTrips])
 
   // Customized Packages Data
   const customizedPackages = useMemo(() => {
     return getTripsBySection('custom')
-  }, [])
+  }, [getTripsBySection, dynamicTrips])
 
   const [selectedDuration, setSelectedDuration] = useState<number | null>(null)
 

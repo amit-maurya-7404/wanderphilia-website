@@ -3,7 +3,9 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
+import { trips as staticTrips } from '@/lib/data';
 import {
   Sparkles,
   ArrowLeft,
@@ -17,7 +19,7 @@ import {
   Trash2,
   Copy,
   Upload,
-  Calendar,
+  Calendar as CalendarIcon,
   MapPin,
   Clock,
   Layers,
@@ -35,7 +37,15 @@ import {
   ShieldCheck,
   Globe,
   Star,
-  Users
+  Users,
+  ChevronLeft,
+  ChevronRight,
+  Utensils,
+  Wand2,
+  FileText,
+  X,
+  ImageIcon,
+  FolderOpen
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -53,36 +63,69 @@ const POPULAR_DESTINATIONS = [
   'Uttarakhand',
   'Kerala',
   'Andaman',
+  'Goa',
   'Bali',
   'Thailand',
   'Vietnam',
   'Bhutan',
   'Nepal',
   'Singapore',
+  'Sri Lanka',
   'Dubai'
+];
+
+// Hotel Categories matching Zoho CRM
+const HOTEL_CATEGORIES = ['Standard', 'Deluxe', 'Super Deluxe', 'Premium', 'Luxury'];
+
+// Meal Plan Options
+const MEAL_PLANS = [
+  { code: 'MAPAI', label: 'MAPAI (Breakfast & Dinner Included)' },
+  { code: 'CPAI', label: 'CPAI (Breakfast Only)' },
+  { code: 'APAI', label: 'APAI (All Meals: Breakfast, Lunch & Dinner)' },
+  { code: 'EPAI', label: 'EPAI (Room Only, No Meals)' }
+];
+
+// Preset Pricing Options
+const DEFAULT_PRICING_OPTIONS = [
+  { id: 'doubleSharing', label: 'Double Sharing Basis', defaultPrice: '26999', checked: true },
+  { id: 'tripleSharing', label: 'Triple Sharing Basis', defaultPrice: '24999', checked: true },
+  { id: 'quadSharing', label: 'Quad Sharing Basis', defaultPrice: '22999', checked: false },
+  { id: 'soloRider', label: 'Solo Rider / Single Room', defaultPrice: '34999', checked: false },
+  { id: 'bikeSolo', label: 'With Bike (Solo Rider)', defaultPrice: '32999', checked: false },
+  { id: 'bikeDual', label: 'With Bike (Dual / Pillion)', defaultPrice: '26999', checked: false },
+  { id: 'tempoSeat', label: 'Tempo Traveller / Cab Seat', defaultPrice: '24999', checked: false },
+  { id: 'childWithBed', label: 'Child with Extra Bed', defaultPrice: '14999', checked: false },
+  { id: 'childWithoutBed', label: 'Child without Bed', defaultPrice: '9999', checked: false }
 ];
 
 interface DayPlanItem {
   day: number;
   title: string;
+  city?: string;
   stayHotel: string;
   meals: {
     breakfast: boolean;
     lunch: boolean;
     dinner: boolean;
   };
-  timeline: string[]; // Sightseeing & Experiences
+  timeline: string[];
   image?: string;
 }
 
-interface CostingItem {
-  label: string;
-  value: string;
+interface HotelStayRow {
+  city: string;
+  nights: number;
+  category: string;
+  hotelId: string;
+  hotelName: string;
+  roomCategory: string;
+  basePrice: number;
+  mealPlan: string;
 }
 
 interface BatchDateItem {
   month: string;
-  ranges: string;
+  ranges: string[];
 }
 
 interface Placements {
@@ -102,8 +145,27 @@ interface Placements {
   };
 }
 
-export default function WebsiteItineraryPage() {
+// Helper to strictly ensure hotel name has "/ Similar"
+export function formatHotelWithSimilar(name: string): string {
+  if (!name || !name.trim()) return '';
+  const trimmed = name.trim();
+  if (/\/ similar/i.test(trimmed)) return trimmed;
+  return `${trimmed} / Similar`;
+}
+
+function WebsiteItineraryInner() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const editSlug = searchParams?.get('edit');
+
+  // Edit Mode & Validation State
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [loadingEditTrip, setLoadingEditTrip] = useState(false);
+  const [validationModalOpen, setValidationModalOpen] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<string[]>([]);
+
+  // Top-Level Mode: Customized Tour vs Group Tour
+  const [tourType, setTourType] = useState<'Group' | 'Customized'>('Group');
 
   // Zoho Itineraries (Products) State
   const [zohoItineraries, setZohoItineraries] = useState<any[]>([]);
@@ -111,15 +173,12 @@ export default function WebsiteItineraryPage() {
   const [selectedZohoId, setSelectedZohoId] = useState('');
   const [zohoFilterSearch, setZohoFilterSearch] = useState('');
 
-  // Zoho Master Data State
+  // Zoho Master Data (Hotels, Destinations)
   const [zohoMaster, setZohoMaster] = useState<{
-    activities: any[];
-    hotels: any[];
-    vehicles: any[];
-  }>({ activities: [], hotels: [], vehicles: [] });
+    hotelsByCity: Record<string, any[]>;
+    destinations: string[];
+  }>({ hotelsByCity: {}, destinations: [] });
   const [loadingZohoMaster, setLoadingZohoMaster] = useState(false);
-  const [activeMasterDayIndex, setActiveMasterDayIndex] = useState<number | null>(null);
-  const [masterSearchQuery, setMasterSearchQuery] = useState('');
 
   // Basic Info Form State
   const [title, setTitle] = useState('');
@@ -132,24 +191,23 @@ export default function WebsiteItineraryPage() {
   const [durationNights, setDurationNights] = useState<number>(5);
   const [price, setPrice] = useState<number>(24999);
   const [difficulty, setDifficulty] = useState<'Easy' | 'Moderate' | 'Hard' | 'Easy to Moderate'>('Moderate');
-  const [groupSize, setGroupSize] = useState<string>('12-16 Persons');
+  const [groupSize, setGroupSize] = useState<number>(15);
   const [rating, setRating] = useState<number>(4.9);
   const [description, setDescription] = useState('');
   const [route, setRoute] = useState('');
   const [staySummary, setStaySummary] = useState('');
   const [highlights, setHighlights] = useState<string[]>([
-    'Scenic High-Altitude Mountain Passes',
-    'Curated Stays & Delicious Meals',
-    'Experienced Local Trip Captain & Guide',
-    'Seamless Private & Group Transfers'
+    'Scenic High-Altitude Mountain Passes & Breathtaking Panoramas',
+    'Handpicked Premium Stays with Delicious Local & Buffet Meals',
+    'Experienced Local Trip Captain & 24/7 Dedicated On-Ground Support',
+    'Seamless All-Permits, Entry Passes & Sightseeing Transfers Included'
   ]);
 
-  // Pricing & Costing Breakdown
-  const [costingDetails, setCostingDetails] = useState<CostingItem[]>([
-    { label: 'Double Sharing Basis', value: '₹26,999/- per person' },
-    { label: 'Triple Sharing Basis', value: '₹24,999/- per person' },
-    { label: 'Solo Rider / Single Room', value: '₹34,999/- per person' }
-  ]);
+  // Pricing Options Matrix
+  const [pricingOptions, setPricingOptions] = useState(DEFAULT_PRICING_OPTIONS);
+  const [customPricingLabel, setCustomPricingLabel] = useState('');
+  const [customPricingPrice, setCustomPricingPrice] = useState('');
+  const [showAddCustomPrice, setShowAddCustomPrice] = useState(false);
 
   // Media
   const [heroImage, setHeroImage] = useState('/images/LL2.jpg');
@@ -160,47 +218,76 @@ export default function WebsiteItineraryPage() {
   ]);
   const [uploadingImage, setUploadingImage] = useState(false);
 
+  // Destination Image Visual Picker State
+  const [imagePickerOpen, setImagePickerOpen] = useState(false);
+  const [imagePickerTarget, setImagePickerTarget] = useState<'hero' | 'gallery' | number | null>(null);
+  const [imagePickerDest, setImagePickerDest] = useState<string>('Rajasthan');
+  const [availableDestinations, setAvailableDestinations] = useState<string[]>([]);
+  const [destImages, setDestImages] = useState<string[]>([]);
+  const [loadingDestImages, setLoadingDestImages] = useState(false);
+  const [selectedGalleryPicks, setSelectedGalleryPicks] = useState<string[]>([]);
+
   // Day-wise Plans
   const [dayPlans, setDayPlans] = useState<DayPlanItem[]>([
     {
       day: 1,
-      title: 'Arrival & Acclimatization',
-      stayHotel: 'Deluxe Hotel',
+      title: 'Arrival & Acclimatization in Leh',
+      city: 'Leh',
+      stayHotel: 'Deluxe Hotel in Leh / Similar',
       meals: { breakfast: false, lunch: false, dinner: true },
       timeline: [
-        'Airport pickup and transfer to hotel',
-        'Rest and mandatory high-altitude acclimatization',
-        'Evening stroll in local market',
-        'Trip briefing & welcome dinner'
+        'Arrival at airport, meet our tour representative, and transfer to hotel.',
+        'Complete smooth hotel check-in formalities and rest for high-altitude acclimatization.',
+        'Evening leisure walk through the vibrant Leh local market.',
+        'Trip briefing followed by a delicious welcome dinner.'
       ],
       image: '/images/LL2.jpg'
     }
   ]);
 
+  // Hotel Stays (Calculated from Day Plans & Zoho CRM Hotels)
+  const [hotelStays, setHotelStays] = useState<HotelStayRow[]>([
+    {
+      city: 'Leh',
+      nights: 2,
+      category: 'Deluxe',
+      hotelId: '',
+      hotelName: 'Deluxe Hotel in Leh / Similar',
+      roomCategory: 'Deluxe Room',
+      basePrice: 0,
+      mealPlan: 'MAPAI'
+    }
+  ]);
+  const [globalHotelCategory, setGlobalHotelCategory] = useState<string>('Deluxe');
+  const [globalMealPlan, setGlobalMealPlan] = useState<string>('MAPAI');
+
   // Inclusions & Exclusions
   const [inclusions, setInclusions] = useState<string[]>([
-    'Accommodation on sharing basis as per selected package',
-    'Buffet Breakfast & Dinner as mentioned in day plans',
-    'All inner line permits, environmental fees & wildlife charges',
-    'Dedicated Tempo Traveller / SUV for entire trip as per plan',
-    '24/7 On-Ground Support & Professional Trip Captain'
+    'Accommodation on sharing basis as per selected package & hotel category',
+    'Buffet Breakfast & Dinner as mentioned in the day-by-day plan',
+    'All inner line permits, environmental fees, wildlife charges & border entry passes',
+    'Dedicated Tempo Traveller / SUV vehicle for entire trip with fuel, toll & parking',
+    'Professional Trip Captain / Tour Guide & 24/7 on-ground assistance',
+    'First-aid medical kit and emergency oxygen cylinder on board'
   ]);
 
   const [exclusions, setExclusions] = useState<string[]>([
-    'Airfare / Train tickets to and from reporting hub',
+    'Airfare / Train tickets to and from the starting hub',
     '5% GST / TCS as applicable',
     'Lunches, snacks and extra personal beverages',
-    'Adventure activities (ATV, Rafting, Camel Safari, Paragliding, etc.)',
-    'Any personal expenses or medical insurance'
+    'Adventure activities (ATV Ride, River Rafting, Camel Safari, Paragliding, etc.)',
+    'Personal expenses, room heater charges, tips or personal travel insurance'
   ]);
 
-  // Batch Dates
+  // Interactive Visual Batch Calendar State
+  const [currentCalendarDate, setCurrentCalendarDate] = useState(new Date(2026, 4, 1)); // Default May 2026
+  const [hoveredDayNum, setHoveredDayNum] = useState<number | null>(null);
   const [batchDates, setBatchDates] = useState<BatchDateItem[]>([
-    { month: 'May 2026', ranges: '10 May - 15 May, 20 May - 25 May' },
-    { month: 'June 2026', ranges: '05 Jun - 10 Jun, 18 Jun - 23 Jun' }
+    { month: 'May 2026', ranges: ['10 May - 15 May', '20 May - 25 May'] },
+    { month: 'June 2026', ranges: ['05 Jun - 10 Jun', '18 Jun - 23 Jun'] }
   ]);
 
-  // Page & Placement Selection Matrix (Target requirement)
+  // Page Placements Matrix
   const [placements, setPlacements] = useState<Placements>({
     homepage: true,
     indiaTrips: true,
@@ -218,8 +305,9 @@ export default function WebsiteItineraryPage() {
     }
   });
 
-  // Saving / UI Feedback State
+  // Saving / AI / Modal Feedback State
   const [saving, setSaving] = useState(false);
+  const [generatingHeadings, setGeneratingHeadings] = useState(false);
   const [saveSuccessMsg, setSaveSuccessMsg] = useState<string | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [exportModalOpen, setExportModalOpen] = useState(false);
@@ -227,7 +315,16 @@ export default function WebsiteItineraryPage() {
   const [generatedCode, setGeneratedCode] = useState('');
   const [copiedCode, setCopiedCode] = useState(false);
 
-  // Auto-generate slug from title
+  // Auto-slugify helper
+  const cleanSlug = (text: string) => {
+    return text
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s-]/g, '')
+      .replace(/[\s_-]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  };
+
   const handleTitleChange = (val: string) => {
     setTitle(val);
     if (!slug || slug === cleanSlug(title)) {
@@ -235,14 +332,172 @@ export default function WebsiteItineraryPage() {
     }
   };
 
-  function cleanSlug(text: string) {
-    return text
-      .toLowerCase()
-      .trim()
-      .replace(/[^\w\s-]/g, '')
-      .replace(/[\s_-]+/g, '-')
-      .replace(/^-+|-+$/g, '');
-  }
+  // 0. Load Itinerary for Editing if edit query param is present
+  useEffect(() => {
+    if (!editSlug) return;
+    setIsEditMode(true);
+    setLoadingEditTrip(true);
+
+    const loadTripToEdit = async () => {
+      try {
+        let tripData: any = null;
+
+        // Try MongoDB first
+        const res = await fetch(`/api/trips?slug=${encodeURIComponent(editSlug)}`);
+        if (res.ok) {
+          const json = await res.json();
+          if (json && !json.error && json.title) {
+            tripData = json;
+          }
+        }
+
+        // Fallback to staticTrips if not in MongoDB
+        if (!tripData) {
+          tripData = staticTrips.find(t => t.slug === editSlug || t.id === editSlug);
+        }
+
+        if (tripData) {
+          setTitle(tripData.title || '');
+          setSlug(tripData.slug || editSlug);
+          setDestination(tripData.destination || 'Leh Ladakh');
+          setCategory(tripData.category || tripData.destination || 'Leh Ladakh');
+          setRegion(tripData.region || 'North India');
+          setTripType(tripData.tripType === 'International' ? 'International' : 'India');
+          setTourType(tripData.tourType || (tripData.title?.toLowerCase().includes('group') ? 'Group' : 'Customized'));
+
+          if (tripData.duration) setDurationDays(Number(tripData.duration));
+          if (tripData.nights) setDurationNights(Number(tripData.nights));
+          if (tripData.difficulty) setDifficulty(tripData.difficulty);
+          if (tripData.groupSize) setGroupSize(Number(tripData.groupSize));
+          if (tripData.rating) setRating(Number(tripData.rating));
+          if (tripData.description) setDescription(tripData.description);
+          if (tripData.route) setRoute(tripData.route);
+          if (tripData.staySummary) setStaySummary(tripData.staySummary);
+          if (tripData.image) setHeroImage(tripData.image);
+
+          if (Array.isArray(tripData.gallery) && tripData.gallery.length > 0) {
+            setGalleryImages(tripData.gallery);
+          } else if (Array.isArray(tripData.images) && tripData.images.length > 0) {
+            setGalleryImages(tripData.images);
+          }
+
+          if (Array.isArray(tripData.highlights)) setHighlights(tripData.highlights);
+          if (Array.isArray(tripData.included) || Array.isArray(tripData.inclusions)) {
+            setInclusions(tripData.included || tripData.inclusions);
+          }
+          if (Array.isArray(tripData.notIncluded) || Array.isArray(tripData.exclusions)) {
+            setExclusions(tripData.notIncluded || tripData.exclusions);
+          }
+          if (Array.isArray(tripData.batchDates)) setBatchDates(tripData.batchDates);
+          if (tripData.placements) setPlacements(tripData.placements);
+
+          // Pricing
+          if (Array.isArray(tripData.costingDetails) && tripData.costingDetails.length > 0) {
+            setPricingOptions(prev => prev.map(p => {
+              const matched = tripData.costingDetails.find((c: any) =>
+                c.label?.toLowerCase() === p.label?.toLowerCase() ||
+                p.label?.toLowerCase().includes(c.label?.toLowerCase())
+              );
+              if (matched) {
+                const numericPrice = String(matched.value || '').replace(/\D+/g, '');
+                return { ...p, checked: true, defaultPrice: numericPrice || p.defaultPrice };
+              }
+              return p;
+            }));
+          } else if (tripData.price) {
+            setPrice(Number(tripData.price));
+            setPricingOptions(prev => prev.map((p, idx) => idx === 0 ? { ...p, checked: true, defaultPrice: String(tripData.price) } : p));
+          }
+
+          // Itinerary / Day plans
+          if (Array.isArray(tripData.itinerary) && tripData.itinerary.length > 0) {
+            const mappedDays: DayPlanItem[] = tripData.itinerary.map((d: any, idx: number) => {
+              const rawDesc = Array.isArray(d.description) ? d.description : (typeof d.description === 'string' ? d.description.split('\n') : []);
+              return {
+                day: d.day || idx + 1,
+                title: d.title || `Day ${idx + 1}`,
+                city: d.city || '',
+                stayHotel: formatHotelWithSimilar(d.stayHotel || ''),
+                image: d.image || tripData.image || '',
+                timeline: rawDesc.filter((l: string) => !l.toLowerCase().startsWith('meals:') && !l.toLowerCase().startsWith('hotel:') && !l.toLowerCase().startsWith('accommodation:')),
+                meals: {
+                  breakfast: rawDesc.some((l: string) => l.toLowerCase().includes('breakfast')),
+                  lunch: rawDesc.some((l: string) => l.toLowerCase().includes('lunch')),
+                  dinner: rawDesc.some((l: string) => l.toLowerCase().includes('dinner'))
+                }
+              };
+            });
+            setDayPlans(mappedDays);
+            computeHotelStaysFromDayPlans(mappedDays);
+          }
+
+          setSaveSuccessMsg(`Loaded "${tripData.title}" in Edit Mode.`);
+          setTimeout(() => setSaveSuccessMsg(null), 3000);
+        }
+      } catch (err: any) {
+        setSaveError('Failed to load trip for editing: ' + err.message);
+      } finally {
+        setLoadingEditTrip(false);
+      }
+    };
+
+    loadTripToEdit();
+  }, [editSlug]);
+
+  // Compulsory Fields Validation Engine
+  const getValidationErrors = (): string[] => {
+    const errors: string[] = [];
+    if (!title.trim() || title.trim().length < 4) {
+      errors.push('Trip Title is required (minimum 4 characters).');
+    }
+    if (!slug.trim() || slug.trim().length < 3) {
+      errors.push('URL Slug is required (e.g. leh-ladakh-tour).');
+    }
+    if (!destination.trim()) {
+      errors.push('Destination is required.');
+    }
+    if (!heroImage || !heroImage.trim()) {
+      errors.push('Hero Banner photo is required. Please upload or pick an image.');
+    }
+
+    const checkedPrices = pricingOptions.filter(p => p.checked && parseInt(p.defaultPrice.replace(/\D+/g, ''), 10) > 0);
+    if (checkedPrices.length === 0) {
+      errors.push('At least one Pricing Sharing Option must be checked with a valid price (> ₹0).');
+    }
+
+    if (!dayPlans || dayPlans.length === 0) {
+      errors.push('At least 1 Day Plan is required.');
+    } else {
+      dayPlans.forEach((dp, idx) => {
+        if (!dp.title.trim()) {
+          errors.push(`Day ${dp.day} is missing a Day Title.`);
+        }
+        const hasPoints = dp.timeline.some(t => t.trim().length > 0);
+        if (!hasPoints) {
+          errors.push(`Day ${dp.day} must have at least one timeline or activity point.`);
+        }
+      });
+    }
+
+    if (tourType === 'Group') {
+      const totalBatchRanges = batchDates.reduce((acc, b) => acc + (b.ranges?.length || 0), 0);
+      if (totalBatchRanges === 0) {
+        errors.push('For Group Tour Packages, at least 1 Departure Batch date range must be added in the Calendar.');
+      }
+      if (!groupSize || groupSize <= 0) {
+        errors.push('Group Size must be greater than 0.');
+      }
+    }
+
+    const hasPlacement = placements.homepage || placements.indiaTrips || placements.internationalTrips ||
+      placements.upcomingTours || placements.honeymoon || placements.christmasNewYear || placements.destinationPage;
+    if (!hasPlacement) {
+      errors.push('Please select at least one Page Placement where this itinerary will be displayed.');
+    }
+
+    return errors;
+  };
+
 
   // 1. Fetch Zoho Fixed Itineraries (Products)
   const fetchZohoFixedItineraries = async () => {
@@ -260,7 +515,7 @@ export default function WebsiteItineraryPage() {
     }
   };
 
-  // 2. Fetch Zoho Master Data (Activities, Hotels, Vehicles)
+  // 2. Fetch Zoho Master Data
   const fetchZohoMasterData = async () => {
     setLoadingZohoMaster(true);
     try {
@@ -268,9 +523,8 @@ export default function WebsiteItineraryPage() {
       const data = await res.json();
       if (data.success) {
         setZohoMaster({
-          activities: data.activities || [],
-          hotels: data.hotels || [],
-          vehicles: data.vehicles || []
+          hotelsByCity: data.hotelsByCity || {},
+          destinations: data.destinations || []
         });
       }
     } catch (err) {
@@ -280,12 +534,328 @@ export default function WebsiteItineraryPage() {
     }
   };
 
+  // 3. Fetch Destination Images for Visual Picker
+  const fetchDestinationImages = async (destName: string) => {
+    setLoadingDestImages(true);
+    try {
+      const res = await fetch(`/api/destination-images?destination=${encodeURIComponent(destName)}`);
+      const data = await res.json();
+      if (data.success) {
+        setDestImages(data.images || []);
+        if (data.destinations?.length) {
+          setAvailableDestinations(data.destinations);
+        }
+      }
+    } catch (err) {
+      console.error('[Failed to fetch destination images]:', err);
+    } finally {
+      setLoadingDestImages(false);
+    }
+  };
+
   useEffect(() => {
     fetchZohoFixedItineraries();
     fetchZohoMasterData();
+    fetchDestinationImages(destination || 'Rajasthan');
   }, []);
 
-  // Handle Importing a full Fixed Itinerary from Zoho Products
+  // Open Image Picker
+  const handleOpenImagePicker = (target: 'hero' | 'gallery' | number) => {
+    setImagePickerTarget(target);
+    setImagePickerDest(destination || 'Rajasthan');
+    fetchDestinationImages(destination || 'Rajasthan');
+    setSelectedGalleryPicks([]);
+    setImagePickerOpen(true);
+  };
+
+  // Select Image from Library
+  const handleSelectImageFromLibrary = (imgUrl: string) => {
+    if (imagePickerTarget === 'hero') {
+      setHeroImage(imgUrl);
+      setImagePickerOpen(false);
+    } else if (imagePickerTarget === 'gallery') {
+      if (selectedGalleryPicks.includes(imgUrl)) {
+        setSelectedGalleryPicks(selectedGalleryPicks.filter(i => i !== imgUrl));
+      } else {
+        setSelectedGalleryPicks([...selectedGalleryPicks, imgUrl]);
+      }
+    } else if (typeof imagePickerTarget === 'number') {
+      setDayPlans(prev => {
+        const copy = [...prev];
+        copy[imagePickerTarget].image = imgUrl;
+        return copy;
+      });
+      setImagePickerOpen(false);
+    }
+  };
+
+  // Confirm Gallery Picks
+  const handleConfirmGalleryPicks = () => {
+    if (selectedGalleryPicks.length > 0) {
+      setGalleryImages(prev => Array.from(new Set([...prev, ...selectedGalleryPicks])));
+    }
+    setImagePickerOpen(false);
+  };
+
+  // Sync Days Count
+  const handleDurationDaysChange = (newCount: number) => {
+    const days = Math.max(1, newCount);
+    setDurationDays(days);
+    setDurationNights(Math.max(1, days - 1));
+
+    setDayPlans(prev => {
+      if (prev.length < days) {
+        const copy = [...prev];
+        for (let i = prev.length + 1; i <= days; i++) {
+          copy.push({
+            day: i,
+            title: `Day ${i}: Sightseeing & Exploration`,
+            city: destination,
+            stayHotel: formatHotelWithSimilar(`Hotel in ${destination}`),
+            meals: { breakfast: true, lunch: false, dinner: true },
+            timeline: ['Morning breakfast at hotel', 'Explore local scenic spots', 'Overnight stay'],
+            image: heroImage || '/images/LL2.jpg'
+          });
+        }
+        return copy;
+      } else if (prev.length > days) {
+        return prev.slice(0, days);
+      }
+      return prev;
+    });
+  };
+
+  // Robust Hotel Lookup with intelligent city name matching and fallbacks
+  const getHotelsForCity = (cityName: string): any[] => {
+    if (!cityName || !zohoMaster.hotelsByCity) return [];
+    const cleanKey = cityName.toLowerCase().replace(/[^a-z0-9]/g, '');
+    if (zohoMaster.hotelsByCity[cleanKey]?.length) {
+      return zohoMaster.hotelsByCity[cleanKey];
+    }
+    // Substring match on keys (e.g. "nubra" matches "nubravalley")
+    const allKeys = Object.keys(zohoMaster.hotelsByCity);
+    const matchedKey = allKeys.find(k => k.includes(cleanKey) || cleanKey.includes(k));
+    if (matchedKey && zohoMaster.hotelsByCity[matchedKey]?.length) {
+      return zohoMaster.hotelsByCity[matchedKey];
+    }
+    // Deep match across hotel records
+    const allHotels = Object.values(zohoMaster.hotelsByCity).flat();
+    const cleanLower = cityName.toLowerCase().trim();
+    const matched = allHotels.filter(h => {
+      const hCity = (h.city || '').toLowerCase().trim();
+      const hDest = (h.destination || '').toLowerCase().trim();
+      return (
+        (hCity && (hCity.includes(cleanLower) || cleanLower.includes(hCity))) ||
+        (hDest && (hDest.includes(cleanLower) || cleanLower.includes(hDest)))
+      );
+    });
+    return matched;
+  };
+
+  // Auto-Group Hotel Stays from Day Plans
+  const computeHotelStaysFromDayPlans = (plans: DayPlanItem[]) => {
+    const stays: { city: string; nights: number }[] = [];
+    plans.forEach((dp, idx) => {
+      if (idx === plans.length - 1 && plans.length > 1 && !dp.stayHotel) {
+        return;
+      }
+      const c = (dp.city || dp.stayHotel?.split('in ')?.[1]?.replace(/\/ similar/i, '').trim() || destination || 'Main City').trim();
+      if (stays.length > 0 && stays[stays.length - 1].city.toLowerCase() === c.toLowerCase()) {
+        stays[stays.length - 1].nights += 1;
+      } else {
+        stays.push({ city: c, nights: 1 });
+      }
+    });
+
+    const newRows: HotelStayRow[] = stays.map(s => {
+      const availableHotels = getHotelsForCity(s.city);
+      const matched = availableHotels.find(h =>
+        h.category?.toLowerCase() === globalHotelCategory.toLowerCase()
+      ) || availableHotels[0];
+
+      const room = matched?.rooms?.[0]?.roomCategory || 'Deluxe Room';
+      const basePrice = matched?.rooms?.[0]?.basePrice || 0;
+      const hotelRawName = matched?.hotelName || `Hotel in ${s.city}`;
+
+      return {
+        city: s.city,
+        nights: s.nights,
+        category: globalHotelCategory,
+        hotelId: matched?.id || '',
+        hotelName: formatHotelWithSimilar(hotelRawName),
+        roomCategory: room,
+        basePrice,
+        mealPlan: globalMealPlan
+      };
+    });
+
+    setHotelStays(newRows);
+  };
+
+  // Apply Global Meal Plan
+  const handleApplyGlobalMealPlan = (planCode: string) => {
+    setGlobalMealPlan(planCode);
+    setHotelStays(prev => prev.map(s => ({ ...s, mealPlan: planCode })));
+
+    const hasBreakfast = planCode !== 'EPAI';
+    const hasDinner = planCode === 'MAPAI' || planCode === 'APAI';
+    const hasLunch = planCode === 'APAI';
+
+    setDayPlans(prev =>
+      prev.map(d => ({
+        ...d,
+        meals: {
+          breakfast: hasBreakfast,
+          lunch: hasLunch,
+          dinner: hasDinner
+        }
+      }))
+    );
+  };
+
+  // Apply Global Hotel Category
+  const handleApplyGlobalHotelCategory = (cat: string) => {
+    setGlobalHotelCategory(cat);
+    setHotelStays(prev =>
+      prev.map(s => {
+        const availableHotels = getHotelsForCity(s.city);
+        const matched = availableHotels.find(h => h.category?.toLowerCase() === cat.toLowerCase()) || availableHotels[0];
+        const room = matched?.rooms?.[0]?.roomCategory || 'Deluxe Room';
+        const basePrice = matched?.rooms?.[0]?.basePrice || 0;
+        const rawName = matched?.hotelName || s.hotelName;
+
+        return {
+          ...s,
+          category: cat,
+          hotelId: matched?.id || '',
+          hotelName: formatHotelWithSimilar(rawName),
+          roomCategory: room,
+          basePrice
+        };
+      })
+    );
+  };
+
+  // Update Individual Hotel Row
+  const handleHotelSelect = (stayIdx: number, hotelId: string) => {
+    const stay = hotelStays[stayIdx];
+    const hotels = getHotelsForCity(stay.city);
+    const found = hotels.find(h => h.id === hotelId);
+
+    if (!found) return;
+
+    // Pick lowest base price room category automatically!
+    const lowestRoom = found.rooms?.[0]?.roomCategory || 'Deluxe Room';
+    const lowestPrice = found.rooms?.[0]?.basePrice || 0;
+    const formattedHotel = formatHotelWithSimilar(found.hotelName);
+
+    setHotelStays(prev => {
+      const copy = [...prev];
+      copy[stayIdx] = {
+        ...copy[stayIdx],
+        hotelId: found.id,
+        hotelName: formattedHotel,
+        roomCategory: lowestRoom,
+        basePrice: lowestPrice
+      };
+      return copy;
+    });
+
+    // Sync stay hotel name to day plans for this city
+    setDayPlans(prev =>
+      prev.map(d => {
+        if (d.city?.toLowerCase() === stay.city.toLowerCase()) {
+          return { ...d, stayHotel: `${formattedHotel} (${lowestRoom})` };
+        }
+        return d;
+      })
+    );
+  };
+
+  const handleRoomSelect = (stayIdx: number, roomCat: string) => {
+    const stay = hotelStays[stayIdx];
+    const hotels = getHotelsForCity(stay.city);
+    const found = hotels.find(h => h.id === stay.hotelId);
+    const room = found?.rooms?.find((r: any) => r.roomCategory === roomCat);
+
+    setHotelStays(prev => {
+      const copy = [...prev];
+      copy[stayIdx] = {
+        ...copy[stayIdx],
+        roomCategory: roomCat,
+        basePrice: room?.basePrice || 0
+      };
+      return copy;
+    });
+
+    setDayPlans(prev =>
+      prev.map(d => {
+        if (d.city?.toLowerCase() === stay.city.toLowerCase()) {
+          return { ...d, stayHotel: `${stay.hotelName} (${roomCat})` };
+        }
+        return d;
+      })
+    );
+  };
+
+  // Auto-Logistics Statements Engine
+  const injectAutoLogisticsStatements = (rawDays: DayPlanItem[]) => {
+    const total = rawDays.length;
+    return rawDays.map((dp, idx) => {
+      const isFirst = idx === 0;
+      const isLast = idx === total - 1;
+      const currentCity = dp.city || destination;
+      const prevCity = idx > 0 ? (rawDays[idx - 1].city || destination) : '';
+
+      const isIntercity = idx > 0 && currentCity.toLowerCase() !== prevCity.toLowerCase();
+      const timelinePoints = [...dp.timeline];
+
+      if (isFirst) {
+        const hasArrival = timelinePoints.some(p => /arrival|arrive|pickup/i.test(p));
+        if (!hasArrival) {
+          timelinePoints.unshift(
+            tripType === 'International'
+              ? `Arrival at ${destination} International Airport, meet our representative, and transfer to your hotel.`
+              : `Arrival at ${destination} Airport / Railway Station, meet our tour captain/driver, and transfer to hotel.`
+          );
+        }
+        const hasCheckin = timelinePoints.some(p => /check-in|check in/i.test(p));
+        if (!hasCheckin) {
+          timelinePoints.splice(1, 0, `Complete smooth hotel check-in formalities and freshen up.`);
+        }
+      }
+
+      if (isIntercity) {
+        const hasTransit = timelinePoints.some(p => /proceed to|drive to|transfer to/i.test(p));
+        if (!hasTransit) {
+          timelinePoints.unshift(
+            `Enjoy morning breakfast, check out from hotel in ${prevCity}, and proceed on a scenic drive to ${currentCity}.`
+          );
+          timelinePoints.splice(1, 0, `Upon arrival in ${currentCity}, check in to your hotel and relax.`);
+        }
+      }
+
+      if (isLast && total > 1) {
+        const hasDepart = timelinePoints.some(p => /departure|return flight|drop-off/i.test(p));
+        if (!hasDepart) {
+          timelinePoints.unshift(`Enjoy morning breakfast at the hotel and complete check-out formalities.`);
+          timelinePoints.push(
+            tripType === 'International'
+              ? `Transfer to ${destination} International Airport for your flight back home with wonderful memories.`
+              : `Transfer to ${destination} Airport / Railway Station for your onward journey with unforgettable memories.`
+          );
+        }
+      }
+
+      return {
+        ...dp,
+        timeline: timelinePoints,
+        stayHotel: formatHotelWithSimilar(dp.stayHotel)
+      };
+    });
+  };
+
+  // Import Zoho CRM Fixed Itinerary
   const handleImportZohoProduct = async (zohoId: string) => {
     if (!zohoId) return;
     setSelectedZohoId(zohoId);
@@ -300,8 +870,8 @@ export default function WebsiteItineraryPage() {
       }
 
       const itin = data.itinerary;
-      setTitle(itin.name || 'Curated Journey');
-      setSlug(cleanSlug(itin.name || 'curated-journey'));
+      setTitle(itin.name || 'Curated Tour Package');
+      setSlug(cleanSlug(itin.name || 'curated-tour-package'));
 
       if (itin.destination) {
         setDestination(itin.destination);
@@ -311,6 +881,8 @@ export default function WebsiteItineraryPage() {
           ...prev,
           destinationCategory: lowerDest
         }));
+        setImagePickerDest(itin.destination);
+        fetchDestinationImages(itin.destination);
       }
 
       const isInt = itin.destinationType?.toLowerCase() === 'international';
@@ -326,12 +898,10 @@ export default function WebsiteItineraryPage() {
       setDurationDays(numDays);
       setDurationNights(numNights);
 
-      // Build Day Plans from Zoho Day Rows
       if (Array.isArray(itin.dayRows) && itin.dayRows.length > 0) {
-        const newDays: DayPlanItem[] = itin.dayRows.map((row: any, idx: number) => {
+        const rawDays: DayPlanItem[] = itin.dayRows.map((row: any, idx: number) => {
           const experiences: string[] = [];
 
-          // Collect valid experience names
           if (Array.isArray(row.experiences)) {
             row.experiences.forEach((exp: string, expIdx: number) => {
               if (exp && exp.trim()) {
@@ -342,34 +912,30 @@ export default function WebsiteItineraryPage() {
             });
           }
 
-          if (row.city2 && !experiences.some(e => e.includes(row.city2))) {
-            experiences.unshift(`Transfer to ${row.city2}`);
-          }
+          const city = row.city || row.city2 || destination;
 
           return {
             day: row.dayNumber || idx + 1,
-            title: row.city ? `Day ${idx + 1}: ${row.city} Exploration` : `Day ${idx + 1}`,
-            stayHotel: row.city ? `Hotel / Resort in ${row.city}` : 'Comfortable Stay',
+            title: row.city ? `Day ${idx + 1}: ${row.city} Sightseeing` : `Day ${idx + 1}`,
+            city,
+            stayHotel: formatHotelWithSimilar(`Hotel in ${city}`),
             meals: {
-              breakfast: true,
+              breakfast: idx > 0,
               lunch: false,
-              dinner: true
+              dinner: idx < itin.dayRows.length - 1
             },
-            timeline: experiences.length > 0 ? experiences : [
-              'Morning breakfast at hotel',
-              'Scenic drive and exploration of local highlights',
-              'Overnight stay at hotel'
-            ],
+            timeline: experiences.length > 0 ? experiences : ['Explore local attractions', 'Overnight stay'],
             image: heroImage || '/images/LL2.jpg'
           };
         });
 
-        setDayPlans(newDays);
+        const enrichedDays = injectAutoLogisticsStatements(rawDays);
+        setDayPlans(enrichedDays);
+        computeHotelStaysFromDayPlans(enrichedDays);
 
-        // Auto-compute stay summary
         const cityStays: Record<string, number> = {};
         itin.dayRows.forEach((r: any) => {
-          const c = r.city || r.city2 || 'Dest';
+          const c = r.city || r.city2 || destination;
           if (c) cityStays[c] = (cityStays[c] || 0) + 1;
         });
         const summaryStr = Object.entries(cityStays)
@@ -377,7 +943,6 @@ export default function WebsiteItineraryPage() {
           .join(' | ');
         setStaySummary(summaryStr);
 
-        // Auto-compute route
         const routeCities = Array.from(
           new Set(itin.dayRows.map((r: any) => r.city || r.city2).filter(Boolean))
         );
@@ -386,7 +951,7 @@ export default function WebsiteItineraryPage() {
         }
       }
 
-      setSaveSuccessMsg(`Successfully imported "${itin.name}" from Zoho CRM!`);
+      setSaveSuccessMsg(`Successfully imported "${itin.name}" with full logistics!`);
       setTimeout(() => setSaveSuccessMsg(null), 4000);
     } catch (err: any) {
       setSaveError(err.message || 'Error importing Zoho itinerary');
@@ -395,7 +960,42 @@ export default function WebsiteItineraryPage() {
     }
   };
 
-  // Image Upload Handler
+  // AI Generate Catchy Day Titles
+  const handleGenerateAIHeadings = async () => {
+    setGeneratingHeadings(true);
+    setSaveError(null);
+    try {
+      const res = await fetch('/api/ai/day-headings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          destination,
+          dayPlans
+        })
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.success || !data.headings) {
+        throw new Error(data.error || 'Failed to generate AI headings');
+      }
+
+      setDayPlans(prev =>
+        prev.map(d => {
+          const aiTitle = data.headings[d.day];
+          return aiTitle ? { ...d, title: aiTitle } : d;
+        })
+      );
+
+      setSaveSuccessMsg('✨ AI Catchy Day Titles generated and applied successfully!');
+      setTimeout(() => setSaveSuccessMsg(null), 4000);
+    } catch (err: any) {
+      setSaveError(err.message || 'Error generating AI titles');
+    } finally {
+      setGeneratingHeadings(false);
+    }
+  };
+
+  // Image Upload Handlers
   const handleImageUpload = async (file: File, type: 'hero' | 'gallery' | 'day', dayIndex?: number) => {
     setUploadingImage(true);
     setSaveError(null);
@@ -429,53 +1029,106 @@ export default function WebsiteItineraryPage() {
     }
   };
 
-  // Add Day
-  const handleAddDay = () => {
-    const nextDayNum = dayPlans.length + 1;
-    setDayPlans(prev => [
-      ...prev,
-      {
-        day: nextDayNum,
-        title: `Day ${nextDayNum}: Sightseeing & Exploration`,
-        stayHotel: 'Comfortable Hotel',
-        meals: { breakfast: true, lunch: false, dinner: true },
-        timeline: ['Morning breakfast', 'Sightseeing excursion', 'Overnight stay'],
-        image: heroImage || '/images/LL2.jpg'
-      }
-    ]);
-    setDurationDays(nextDayNum);
-    setDurationNights(Math.max(1, nextDayNum - 1));
+  // Multi-file gallery upload
+  const handleMultiGalleryUpload = async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    setUploadingImage(true);
+    try {
+      const uploadPromises = Array.from(files).map(async file => {
+        const formData = new FormData();
+        formData.append('file', file);
+        const res = await fetch('/api/upload', { method: 'POST', body: formData });
+        const data = await res.json();
+        return data.url;
+      });
+
+      const urls = await Promise.all(uploadPromises);
+      const validUrls = urls.filter(Boolean);
+      setGalleryImages(prev => Array.from(new Set([...prev, ...validUrls])));
+    } catch (err: any) {
+      setSaveError('Failed to upload some gallery images');
+    } finally {
+      setUploadingImage(false);
+    }
   };
 
-  // Delete Day
-  const handleDeleteDay = (idx: number) => {
-    if (dayPlans.length <= 1) return;
-    const filtered = dayPlans.filter((_, i) => i !== idx);
-    const renumbered = filtered.map((d, i) => ({ ...d, day: i + 1 }));
-    setDayPlans(renumbered);
-    setDurationDays(renumbered.length);
-    setDurationNights(Math.max(1, renumbered.length - 1));
+  // Pricing Helpers
+  const activeCostingDetails = useMemo(() => {
+    return pricingOptions
+      .filter(p => p.checked && p.defaultPrice.trim())
+      .map(p => ({
+        label: p.label,
+        value: `₹${parseInt(p.defaultPrice.replace(/\D+/g, ''), 10)?.toLocaleString('en-IN') || 0}/- per person`
+      }));
+  }, [pricingOptions]);
+
+  useEffect(() => {
+    const prices = pricingOptions
+      .filter(p => p.checked && p.defaultPrice)
+      .map(p => parseInt(p.defaultPrice.replace(/\D+/g, ''), 10))
+      .filter(p => !isNaN(p) && p > 0);
+
+    if (prices.length > 0) {
+      setPrice(Math.min(...prices));
+    }
+  }, [pricingOptions]);
+
+  // Calendar Helpers
+  const monthNames = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+
+  const calendarYear = currentCalendarDate.getFullYear();
+  const calendarMonth = currentCalendarDate.getMonth();
+  const daysInMonth = new Date(calendarYear, calendarMonth + 1, 0).getDate();
+  const firstDayOfWeek = new Date(calendarYear, calendarMonth, 1).getDay();
+
+  // 1-Click Batch Date Selection (Auto-Calculates End Date from durationDays!)
+  const handleCalendarDayClick = (dayNum: number) => {
+    const startDate = new Date(calendarYear, calendarMonth, dayNum);
+    // End date is exactly (durationDays - 1) days after start date!
+    const endDate = new Date(calendarYear, calendarMonth, dayNum + durationDays - 1);
+
+    const startMonthStr = monthNames[startDate.getMonth()].slice(0, 3);
+    const endMonthStr = monthNames[endDate.getMonth()].slice(0, 3);
+    const monthKey = `${monthNames[startDate.getMonth()]} ${startDate.getFullYear()}`;
+
+    const rangeStr = `${startDate.getDate()} ${startMonthStr} - ${endDate.getDate()} ${endMonthStr}`;
+
+    setBatchDates(prev => {
+      const existing = prev.find(b => b.month === monthKey);
+      if (existing) {
+        if (!existing.ranges.includes(rangeStr)) {
+          existing.ranges.push(rangeStr);
+        } else {
+          // Toggle off if already exists
+          existing.ranges = existing.ranges.filter(r => r !== rangeStr);
+          if (existing.ranges.length === 0) {
+            return prev.filter(b => b.month !== monthKey);
+          }
+        }
+        return [...prev];
+      } else {
+        return [...prev, { month: monthKey, ranges: [rangeStr] }];
+      }
+    });
   };
 
   // Build Final Trip Payload
   const buildTripPayload = () => {
     const cleanId = slug.toUpperCase().replace(/[^A-Z0-9]/g, '-');
 
-    // Transform day plans to website Trip itinerary format
     const itinerary = dayPlans.map(d => {
       const descLines: string[] = [];
-
-      // Add timeline bullet points
       d.timeline.forEach(point => {
         if (point.trim()) descLines.push(point.trim());
       });
 
-      // Add Hotel line
       if (d.stayHotel && d.stayHotel.trim()) {
-        descLines.push(`Accommodation: ${d.stayHotel.trim()}`);
+        descLines.push(`Accommodation: ${formatHotelWithSimilar(d.stayHotel)}`);
       }
 
-      // Add Meals line
       const mealsIncluded: string[] = [];
       if (d.meals.breakfast) mealsIncluded.push('Breakfast');
       if (d.meals.lunch) mealsIncluded.push('Lunch');
@@ -492,14 +1145,6 @@ export default function WebsiteItineraryPage() {
       };
     });
 
-    // Transform batch dates
-    const formattedBatchDates = batchDates
-      .filter(b => b.month.trim() && b.ranges.trim())
-      .map(b => ({
-        month: b.month.trim(),
-        ranges: b.ranges.split(',').map(r => r.trim()).filter(Boolean)
-      }));
-
     return {
       id: cleanId,
       title: title.trim(),
@@ -508,14 +1153,15 @@ export default function WebsiteItineraryPage() {
       destination: destination.trim(),
       category: category.trim(),
       tripType,
+      tourType,
       region: region.trim(),
       duration: durationDays,
       nights: durationNights,
       price: Number(price) || 0,
       difficulty,
-      groupSize: parseInt(groupSize.replace(/\D+/g, ''), 10) || 15,
+      groupSize: tourType === 'Group' ? groupSize : 0,
       rating: Number(rating) || 4.9,
-      description: description.trim() || `${durationDays} Days / ${durationNights} Nights luxury journey in ${destination}.`,
+      description: description.trim() || `${durationDays} Days / ${durationNights} Nights journey in ${destination}.`,
       route: route.trim(),
       staySummary: staySummary.trim(),
       highlights: highlights.filter(h => h.trim().length > 0),
@@ -527,20 +1173,28 @@ export default function WebsiteItineraryPage() {
         alt: title.trim()
       })),
       itinerary,
-      costingDetails: costingDetails.filter(c => c.label.trim() && c.value.trim()),
+      costingDetails: activeCostingDetails,
       included: inclusions.filter(i => i.trim().length > 0),
       inclusions: inclusions.filter(i => i.trim().length > 0),
       notIncluded: exclusions.filter(e => e.trim().length > 0),
       exclusions: exclusions.filter(e => e.trim().length > 0),
-      batchDates: formattedBatchDates,
+      accommodations: hotelStays.map(s => ({
+        city: s.city,
+        hotel: formatHotelWithSimilar(s.hotelName),
+        nights: `${s.nights}N`,
+        roomCategory: s.roomCategory
+      })),
+      batchDates: tourType === 'Group' ? batchDates : [],
       placements
     };
   };
 
-  // Submit / Save to MongoDB
+  // Submit / Save to MongoDB with Strict Compulsory Fields Validation
   const handleSaveToMongoDB = async () => {
-    if (!title.trim() || !slug.trim()) {
-      setSaveError('Please enter both Trip Title and URL Slug.');
+    const errors = getValidationErrors();
+    if (errors.length > 0) {
+      setValidationErrors(errors);
+      setValidationModalOpen(true);
       return;
     }
 
@@ -611,7 +1265,6 @@ export default function WebsiteItineraryPage() {
     setTimeout(() => setCopiedCode(false), 2500);
   };
 
-  // Filtered Zoho Itineraries for dropdown
   const filteredZohoItins = useMemo(() => {
     if (!zohoFilterSearch.trim()) return zohoItineraries;
     const q = zohoFilterSearch.toLowerCase();
@@ -623,26 +1276,36 @@ export default function WebsiteItineraryPage() {
   }, [zohoItineraries, zohoFilterSearch]);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans pb-24 selection:bg-orange-500 selection:text-white">
-      {/* Top Sticky Header */}
-      <header className="sticky top-0 z-50 bg-slate-950/90 backdrop-blur-md border-b border-slate-800/80 px-4 sm:px-8 py-3.5 flex items-center justify-between gap-4">
+    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans pb-28 selection:bg-orange-500 selection:text-white">
+      {/* Top Header */}
+      <header className="sticky top-0 z-50 bg-slate-950/95 backdrop-blur-md border-b border-slate-800/80 px-4 sm:px-8 py-3.5 flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <Link
             href="/admin"
-            className="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white transition-colors border border-slate-800"
+            className="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white transition-colors border border-slate-800 cursor-pointer"
             title="Back to Admin"
           >
             <ArrowLeft className="w-4 h-4" />
           </Link>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-sm font-bold text-white tracking-tight">Website Itinerary Creator</span>
-              <span className="px-2 py-0.5 text-[10px] font-semibold bg-orange-500/10 text-orange-400 border border-orange-500/20 rounded-full flex items-center gap-1">
-                <Sparkles className="w-3 h-3" /> Zoho CRM Sync
+              <span className="text-sm font-bold text-white tracking-tight">
+                {isEditMode ? 'Edit Website Itinerary' : 'Website Itinerary Creator'}
               </span>
+              {isEditMode ? (
+                <span className="px-2 py-0.5 text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 rounded-full flex items-center gap-1">
+                  ✏️ EDIT MODE
+                </span>
+              ) : (
+                <span className="px-2 py-0.5 text-[10px] font-semibold bg-orange-500/10 text-orange-400 border border-orange-500/20 rounded-full flex items-center gap-1">
+                  <Sparkles className="w-3 h-3" /> Zoho CRM Synced
+                </span>
+              )}
             </div>
             <p className="text-[11px] text-slate-400">
-              Publish complete tour packages with Zoho CRM master data & custom page placement
+              {isEditMode
+                ? 'Editing live tour package. Changes update MongoDB Atlas and live customer pages.'
+                : 'Publish complete luxury packages with Zoho CRM master data & custom page placements'}
             </p>
           </div>
         </div>
@@ -658,22 +1321,12 @@ export default function WebsiteItineraryPage() {
             <Eye className="w-3.5 h-3.5 text-blue-400 mr-1.5" /> Preview Itinerary
           </Button>
 
-          {slug && (
-            <Link
-              href={`/trips/${slug}`}
-              target="_blank"
-              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white text-xs font-medium border border-slate-800 transition-colors"
-            >
-              <ExternalLink className="w-3.5 h-3.5 text-slate-400" /> Open /trips/{slug}
-            </Link>
-          )}
-
           <Button
             type="button"
             variant="outline"
             size="sm"
             onClick={handleOpenExportModal}
-            className="border-slate-800 bg-slate-900/80 hover:bg-slate-800 text-slate-300 text-xs h-9"
+            className="border-slate-800 bg-slate-900/80 hover:bg-slate-800 text-slate-300 text-xs h-9 cursor-pointer"
           >
             <Code className="w-3.5 h-3.5 mr-1.5 text-amber-400" /> Export Code
           </Button>
@@ -725,9 +1378,50 @@ export default function WebsiteItineraryPage() {
         </div>
       )}
 
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 mt-6 space-y-6">
-        {/* 1. Zoho CRM Integration Banner */}
-        <section className="bg-slate-900/90 border border-slate-800/80 rounded-2xl p-5 shadow-xl relative overflow-hidden">
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 mt-6 pb-32 space-y-6">
+        {/* TOP LEVEL SWITCH: Customized Tour vs Group Tour */}
+        <section className="bg-slate-900/90 border border-slate-800/90 rounded-2xl p-4 sm:p-5 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div>
+            <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">Select Tour Format</span>
+            <p className="text-[11px] text-slate-400 mt-0.5">
+              Group tours include batch departure calendars & group sizes; Customized tours are fully flexible.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2 bg-slate-950 p-1 rounded-xl border border-slate-800">
+            <button
+              type="button"
+              onClick={() => {
+                setTourType('Group');
+                setPlacements(prev => ({ ...prev, upcomingTours: true }));
+              }}
+              className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                tourType === 'Group'
+                  ? 'bg-[#ff5d09] text-white shadow-md'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <Users className="w-3.5 h-3.5" /> Group Tour Package
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setTourType('Customized');
+                setPlacements(prev => ({ ...prev, upcomingTours: false }));
+              }}
+              className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                tourType === 'Customized'
+                  ? 'bg-[#ff5d09] text-white shadow-md'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <Compass className="w-3.5 h-3.5" /> Customized Private Tour
+            </button>
+          </div>
+        </section>
+
+        {/* 1. Zoho CRM Quick Import (Fixed Itineraries) */}
+        <section className="bg-slate-900/90 border border-slate-800/80 rounded-2xl p-5 shadow-xl">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
               <div className="flex items-center gap-2">
@@ -737,46 +1431,44 @@ export default function WebsiteItineraryPage() {
                 </h2>
               </div>
               <p className="text-xs text-slate-400 mt-1">
-                Select any itinerary from Zoho CRM Products to auto-fill day plans, activities, duration & route.
+                Select any itinerary from Zoho Products to auto-fill days, cities, activities & auto-logistics.
               </p>
             </div>
 
-            <div className="flex items-center gap-2.5">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={fetchZohoFixedItineraries}
-                disabled={loadingZohoItineraries}
-                className="border-slate-800 bg-slate-950 hover:bg-slate-800 text-slate-300 text-xs h-8"
-              >
-                <RefreshCw className={`w-3 h-3 mr-1.5 ${loadingZohoItineraries ? 'animate-spin text-orange-400' : ''}`} />
-                Refresh Zoho List
-              </Button>
-            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={fetchZohoFixedItineraries}
+              disabled={loadingZohoItineraries}
+              className="border-slate-800 bg-slate-950 hover:bg-slate-800 text-slate-300 text-xs h-8 cursor-pointer"
+            >
+              <RefreshCw className={`w-3 h-3 mr-1.5 ${loadingZohoItineraries ? 'animate-spin text-orange-400' : ''}`} />
+              Refresh Zoho List
+            </Button>
           </div>
 
           <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3">
-            <div className="md:col-span-1">
+            <div>
               <div className="relative">
                 <Search className="w-3.5 h-3.5 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
-                  placeholder="Search Zoho Itineraries..."
+                  placeholder="Filter by name/destination..."
                   value={zohoFilterSearch}
                   onChange={(e) => setZohoFilterSearch(e.target.value)}
-                  className="w-full pl-9 pr-3 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-orange-500"
+                  className="w-full pl-9 pr-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-orange-500"
                 />
               </div>
             </div>
 
-            <div className="md:col-span-2 flex items-center gap-2">
+            <div className="md:col-span-2">
               <select
                 value={selectedZohoId}
                 onChange={(e) => handleImportZohoProduct(e.target.value)}
                 disabled={loadingZohoItineraries}
-                className="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-orange-500 truncate"
+                className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-orange-500 truncate cursor-pointer"
               >
-                <option value="">-- Click to choose Zoho CRM Itinerary to auto-fill --</option>
+                <option value="">-- Choose Zoho CRM Itinerary to auto-fill --</option>
                 {filteredZohoItins.map((itin) => (
                   <option key={itin.id} value={itin.id}>
                     {itin.name} {itin.destination ? `(${itin.destination})` : ''} {itin.noOfDays ? `[${itin.noOfDays}D/${itin.noOfNights || itin.noOfDays - 1}N]` : ''}
@@ -787,19 +1479,17 @@ export default function WebsiteItineraryPage() {
           </div>
         </section>
 
-        {/* 2. Page & Placement Selection Matrix (Target user requirement) */}
-        <section className="bg-slate-900/90 border border-orange-500/20 rounded-2xl p-6 shadow-xl relative">
-          <div className="flex items-center gap-2 mb-2">
+        {/* 2. Page & Placement Selection Matrix */}
+        <section className="bg-slate-900/90 border border-orange-500/20 rounded-2xl p-6 shadow-xl space-y-4">
+          <div className="flex items-center gap-2">
             <Globe className="w-4 h-4 text-[#ff5d09]" />
-            <h2 className="text-base font-bold text-white tracking-tight">
-              Website Placements & Display Selection
-            </h2>
+            <h2 className="text-base font-bold text-white tracking-tight">Website Placements & Sections</h2>
           </div>
-          <p className="text-xs text-slate-400 mb-6">
-            Choose exactly which website pages and sections this tour package will appear in.
+          <p className="text-xs text-slate-400">
+            Select the exact website pages and destination sections where this itinerary must appear.
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {/* Homepage */}
             <label className={`flex items-start gap-3 p-3.5 rounded-xl border transition-all cursor-pointer ${placements.homepage ? 'bg-orange-500/10 border-orange-500/40 text-white' : 'bg-slate-950/60 border-slate-800 text-slate-400 hover:border-slate-700'}`}>
               <input
@@ -842,19 +1532,21 @@ export default function WebsiteItineraryPage() {
               </div>
             </label>
 
-            {/* Upcoming Group Tours */}
-            <label className={`flex items-start gap-3 p-3.5 rounded-xl border transition-all cursor-pointer ${placements.upcomingTours ? 'bg-orange-500/10 border-orange-500/40 text-white' : 'bg-slate-950/60 border-slate-800 text-slate-400 hover:border-slate-700'}`}>
-              <input
-                type="checkbox"
-                checked={placements.upcomingTours}
-                onChange={(e) => setPlacements({ ...placements, upcomingTours: e.target.checked })}
-                className="mt-0.5 rounded accent-[#ff5d09] w-4 h-4"
-              />
-              <div>
-                <p className="text-xs font-bold">Upcoming Group Tours</p>
-                <p className="text-[11px] text-slate-400">Shows at /upcoming-tours with batch calendar</p>
-              </div>
-            </label>
+            {/* Upcoming Group Tours (Only if Group tour) */}
+            {tourType === 'Group' && (
+              <label className={`flex items-start gap-3 p-3.5 rounded-xl border transition-all cursor-pointer ${placements.upcomingTours ? 'bg-orange-500/10 border-orange-500/40 text-white' : 'bg-slate-950/60 border-slate-800 text-slate-400 hover:border-slate-700'}`}>
+                <input
+                  type="checkbox"
+                  checked={placements.upcomingTours}
+                  onChange={(e) => setPlacements({ ...placements, upcomingTours: e.target.checked })}
+                  className="mt-0.5 rounded accent-[#ff5d09] w-4 h-4"
+                />
+                <div>
+                  <p className="text-xs font-bold">Upcoming Group Tours</p>
+                  <p className="text-[11px] text-slate-400">Shows at /upcoming-tours with calendar</p>
+                </div>
+              </label>
+            )}
 
             {/* Honeymoon Packages */}
             <label className={`flex items-start gap-3 p-3.5 rounded-xl border transition-all cursor-pointer ${placements.honeymoon ? 'bg-orange-500/10 border-orange-500/40 text-white' : 'bg-slate-950/60 border-slate-800 text-slate-400 hover:border-slate-700'}`}>
@@ -885,18 +1577,12 @@ export default function WebsiteItineraryPage() {
             </label>
           </div>
 
-          {/* Destination Specific Section Mapping */}
-          <div className="mt-6 pt-5 border-t border-slate-800">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-              <div>
-                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-300">
-                  Destination Page & Sub-Sections (Section Mappings)
-                </h3>
-                <p className="text-[11px] text-slate-400">
-                  Select destination URL key and the exact tabs where package appears.
-                </p>
-              </div>
-
+          {/* Destination Specific Sections */}
+          <div className="pt-4 border-t border-slate-800">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+              <label className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+                Destination Sub-Page & Sections:
+              </label>
               <div className="flex items-center gap-2">
                 <span className="text-xs text-slate-400 font-mono">/trips/</span>
                 <input
@@ -907,7 +1593,7 @@ export default function WebsiteItineraryPage() {
                     destinationCategory: e.target.value.toLowerCase().trim().replace(/[^a-z0-9-]/g, '')
                   })}
                   placeholder="e.g. rajasthan, leh-ladakh, spiti, bali"
-                  className="px-3 py-1 bg-slate-950 border border-slate-800 rounded-lg text-xs font-mono text-orange-400 w-36 focus:outline-none focus:border-orange-500"
+                  className="px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs font-mono text-orange-400 w-40 focus:outline-none focus:border-orange-500"
                 />
               </div>
             </div>
@@ -962,7 +1648,7 @@ export default function WebsiteItineraryPage() {
                   })}
                   className="rounded accent-[#ff5d09]"
                 />
-                <span>Related / Recommended</span>
+                <span>Related Trips</span>
               </label>
             </div>
           </div>
@@ -972,7 +1658,7 @@ export default function WebsiteItineraryPage() {
         <section className="bg-slate-900/90 border border-slate-800/80 rounded-2xl p-6 shadow-xl space-y-4">
           <div className="flex items-center gap-2">
             <Compass className="w-4 h-4 text-orange-500" />
-            <h2 className="text-base font-bold text-white tracking-tight">Trip Details & SEO URL</h2>
+            <h2 className="text-base font-bold text-white tracking-tight">Basic Details & Meta</h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -983,7 +1669,7 @@ export default function WebsiteItineraryPage() {
               <Input
                 value={title}
                 onChange={(e) => handleTitleChange(e.target.value)}
-                placeholder="e.g. 6 Days Leh - Leh Bike Group Trip with Nubra Valley & Pangong Lake"
+                placeholder="e.g. 6 Days Leh Ladakh Bike Group Expedition"
                 className="bg-slate-950 border-slate-800 text-white text-xs py-2"
               />
             </div>
@@ -996,7 +1682,7 @@ export default function WebsiteItineraryPage() {
                 <Input
                   value={slug}
                   onChange={(e) => setSlug(cleanSlug(e.target.value))}
-                  placeholder="e.g. leh-leh-bike-group-trip"
+                  placeholder="e.g. leh-ladakh-bike-expedition"
                   className="bg-slate-950 border-slate-800 text-orange-400 font-mono text-xs py-2"
                 />
                 <Button
@@ -1004,7 +1690,7 @@ export default function WebsiteItineraryPage() {
                   size="sm"
                   variant="outline"
                   onClick={() => setSlug(cleanSlug(title))}
-                  className="border-slate-800 bg-slate-950 text-slate-400 text-xs shrink-0"
+                  className="border-slate-800 bg-slate-950 text-slate-400 text-xs shrink-0 cursor-pointer"
                 >
                   Regenerate
                 </Button>
@@ -1026,7 +1712,7 @@ export default function WebsiteItineraryPage() {
                     internationalTrips: val === 'International'
                   }));
                 }}
-                className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-orange-500"
+                className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-orange-500 cursor-pointer"
               >
                 <option value="India">India (Domestic)</option>
                 <option value="International">International</option>
@@ -1034,12 +1720,13 @@ export default function WebsiteItineraryPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">Destination / State</label>
+              <label className="block text-xs font-medium text-slate-300 mb-1.5">Destination</label>
               <Input
                 value={destination}
                 onChange={(e) => {
                   setDestination(e.target.value);
                   setCategory(e.target.value);
+                  setImagePickerDest(e.target.value);
                 }}
                 placeholder="e.g. Leh Ladakh"
                 className="bg-slate-950 border-slate-800 text-white text-xs py-2"
@@ -1052,11 +1739,7 @@ export default function WebsiteItineraryPage() {
                 type="number"
                 min="1"
                 value={durationDays}
-                onChange={(e) => {
-                  const d = parseInt(e.target.value, 10) || 1;
-                  setDurationDays(d);
-                  setDurationNights(Math.max(1, d - 1));
-                }}
+                onChange={(e) => handleDurationDaysChange(parseInt(e.target.value, 10) || 1)}
                 className="bg-slate-950 border-slate-800 text-white text-xs py-2"
               />
             </div>
@@ -1073,43 +1756,47 @@ export default function WebsiteItineraryPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {/* Difficulty Pills */}
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">Starting Price (₹)</label>
-              <Input
-                type="number"
-                value={price}
-                onChange={(e) => setPrice(parseInt(e.target.value, 10) || 0)}
-                className="bg-slate-950 border-slate-800 text-emerald-400 font-bold text-xs py-2"
-              />
+              <label className="block text-xs font-medium text-slate-300 mb-1.5">Trip Difficulty</label>
+              <div className="grid grid-cols-2 gap-1.5">
+                {(['Easy', 'Moderate', 'Hard', 'Easy to Moderate'] as const).map(diff => (
+                  <button
+                    key={diff}
+                    type="button"
+                    onClick={() => setDifficulty(diff)}
+                    className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
+                      difficulty === diff
+                        ? 'bg-orange-500/20 text-orange-400 border-orange-500/50'
+                        : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    {diff}
+                  </button>
+                ))}
+              </div>
             </div>
 
-            <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">Difficulty</label>
-              <select
-                value={difficulty}
-                onChange={(e) => setDifficulty(e.target.value as any)}
-                className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-orange-500"
-              >
-                <option value="Easy">Easy</option>
-                <option value="Easy to Moderate">Easy to Moderate</option>
-                <option value="Moderate">Moderate</option>
-                <option value="Hard">Hard</option>
-              </select>
-            </div>
+            {/* Group Size (Only if Group Tour) */}
+            {tourType === 'Group' && (
+              <div>
+                <label className="block text-xs font-medium text-slate-300 mb-1.5">
+                  Max Group Size (Persons)
+                </label>
+                <Input
+                  type="number"
+                  min="2"
+                  value={groupSize}
+                  onChange={(e) => setGroupSize(parseInt(e.target.value, 10) || 15)}
+                  className="bg-slate-950 border-slate-800 text-white text-xs py-2"
+                />
+              </div>
+            )}
 
+            {/* Rating */}
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">Group Size</label>
-              <Input
-                value={groupSize}
-                onChange={(e) => setGroupSize(e.target.value)}
-                placeholder="e.g. 12-16 Persons"
-                className="bg-slate-950 border-slate-800 text-white text-xs py-2"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">Rating</label>
+              <label className="block text-xs font-medium text-slate-300 mb-1.5">Customer Rating (★)</label>
               <Input
                 type="number"
                 step="0.1"
@@ -1145,27 +1832,29 @@ export default function WebsiteItineraryPage() {
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1.5">Overview / Narrative Description</label>
+            <label className="block text-xs font-medium text-slate-300 mb-1.5">Overview Paragraph</label>
             <Textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={3}
-              placeholder="Are you ready for an unforgettable adventure in the breathtaking landscapes..."
+              placeholder="Are you ready for an unforgettable adventure in the breathtaking landscapes of..."
               className="bg-slate-950 border-slate-800 text-white text-xs"
             />
           </div>
 
-          {/* Highlights */}
+          {/* Key Highlights with Add Button */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="block text-xs font-medium text-slate-300">Trip Highlights</label>
-              <button
+              <label className="block text-xs font-medium text-slate-300">Key Highlights</label>
+              <Button
                 type="button"
+                size="sm"
+                variant="outline"
                 onClick={() => setHighlights([...highlights, ''])}
-                className="text-[11px] text-orange-400 hover:text-orange-300 flex items-center gap-1"
+                className="text-xs text-orange-400 hover:text-orange-300 border-slate-800 h-7 px-2.5 cursor-pointer"
               >
-                <Plus className="w-3 h-3" /> Add Highlight
-              </button>
+                <Plus className="w-3 h-3 mr-1" /> Add Highlight
+              </Button>
             </div>
             <div className="space-y-2">
               {highlights.map((h, idx) => (
@@ -1183,7 +1872,7 @@ export default function WebsiteItineraryPage() {
                   <button
                     type="button"
                     onClick={() => setHighlights(highlights.filter((_, i) => i !== idx))}
-                    className="text-slate-500 hover:text-red-400 p-1"
+                    className="text-slate-500 hover:text-red-400 p-1 cursor-pointer"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
@@ -1193,76 +1882,158 @@ export default function WebsiteItineraryPage() {
           </div>
         </section>
 
-        {/* 4. Costing & Sharing Breakdown */}
+        {/* 4. Pricing Checkbox Matrix */}
         <section className="bg-slate-900/90 border border-slate-800/80 rounded-2xl p-6 shadow-xl space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <DollarSign className="w-4 h-4 text-emerald-400" />
-              <h2 className="text-base font-bold text-white tracking-tight">Costing Details & Sharing Rates</h2>
+              <div>
+                <h2 className="text-base font-bold text-white tracking-tight">Pricing & Costing Options</h2>
+                <p className="text-xs text-slate-400">
+                  Select only the options you offer; checked items will appear on the website costing table.
+                </p>
+              </div>
             </div>
-            <button
-              type="button"
-              onClick={() => setCostingDetails([...costingDetails, { label: '', value: '' }])}
-              className="text-xs text-orange-400 hover:text-orange-300 flex items-center gap-1"
-            >
-              <Plus className="w-3.5 h-3.5" /> Add Costing Row
-            </button>
+
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-slate-400">Starting Price:</span>
+              <span className="text-emerald-400 font-extrabold text-sm font-mono">
+                ₹{price?.toLocaleString('en-IN') || 0}
+              </span>
+            </div>
           </div>
 
-          <div className="space-y-2.5">
-            {costingDetails.map((c, idx) => (
-              <div key={idx} className="flex items-center gap-3">
-                <Input
-                  value={c.label}
-                  onChange={(e) => {
-                    const copy = [...costingDetails];
-                    copy[idx].label = e.target.value;
-                    setCostingDetails(copy);
-                  }}
-                  placeholder="e.g. Double Sharing Basis"
-                  className="bg-slate-950 border-slate-800 text-white text-xs w-1/2 py-2"
-                />
-                <Input
-                  value={c.value}
-                  onChange={(e) => {
-                    const copy = [...costingDetails];
-                    copy[idx].value = e.target.value;
-                    setCostingDetails(copy);
-                  }}
-                  placeholder="e.g. ₹24,999/- per person"
-                  className="bg-slate-950 border-slate-800 text-emerald-400 font-semibold text-xs w-1/2 py-2"
-                />
-                <button
-                  type="button"
-                  onClick={() => setCostingDetails(costingDetails.filter((_, i) => i !== idx))}
-                  className="text-slate-500 hover:text-red-400 p-1"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {pricingOptions.map((opt, idx) => (
+              <div
+                key={opt.id}
+                className={`p-3.5 rounded-xl border transition-all ${
+                  opt.checked
+                    ? 'bg-slate-950 border-emerald-500/40'
+                    : 'bg-slate-950/40 border-slate-800/80 opacity-70'
+                }`}
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <label className="flex items-center gap-2 text-xs font-semibold text-slate-200 cursor-pointer grow">
+                    <input
+                      type="checkbox"
+                      checked={opt.checked}
+                      onChange={(e) => {
+                        const copy = [...pricingOptions];
+                        copy[idx].checked = e.target.checked;
+                        setPricingOptions(copy);
+                      }}
+                      className="rounded accent-emerald-500 w-4 h-4 cursor-pointer"
+                    />
+                    <span>{opt.label}</span>
+                  </label>
+                </div>
+
+                {opt.checked && (
+                  <div className="mt-2.5 flex items-center gap-2">
+                    <span className="text-xs text-emerald-400 font-mono font-bold">₹</span>
+                    <Input
+                      value={opt.defaultPrice}
+                      onChange={(e) => {
+                        const copy = [...pricingOptions];
+                        copy[idx].defaultPrice = e.target.value.replace(/\D+/g, '');
+                        setPricingOptions(copy);
+                      }}
+                      placeholder="e.g. 24999"
+                      className="bg-slate-900 border-slate-800 text-emerald-400 font-bold text-xs py-1"
+                    />
+                  </div>
+                )}
               </div>
             ))}
           </div>
+
+          {/* Add Custom Pricing Option */}
+          <div className="pt-2">
+            {!showAddCustomPrice ? (
+              <button
+                type="button"
+                onClick={() => setShowAddCustomPrice(true)}
+                className="text-xs text-orange-400 hover:text-orange-300 flex items-center gap-1 cursor-pointer font-medium"
+              >
+                <Plus className="w-3.5 h-3.5" /> Add Another Custom Pricing Option
+              </button>
+            ) : (
+              <div className="flex items-center gap-3 p-3 bg-slate-950 border border-slate-800 rounded-xl">
+                <Input
+                  value={customPricingLabel}
+                  onChange={(e) => setCustomPricingLabel(e.target.value)}
+                  placeholder="Option Name (e.g. Luxury Glamping Tent)"
+                  className="bg-slate-900 border-slate-800 text-white text-xs w-1/2"
+                />
+                <Input
+                  value={customPricingPrice}
+                  onChange={(e) => setCustomPricingPrice(e.target.value.replace(/\D+/g, ''))}
+                  placeholder="Price in ₹"
+                  className="bg-slate-900 border-slate-800 text-emerald-400 text-xs w-1/4"
+                />
+                <Button
+                  type="button"
+                  size="sm"
+                  onClick={() => {
+                    if (customPricingLabel.trim()) {
+                      setPricingOptions([
+                        ...pricingOptions,
+                        {
+                          id: `custom-${Date.now()}`,
+                          label: customPricingLabel.trim(),
+                          defaultPrice: customPricingPrice || '0',
+                          checked: true
+                        }
+                      ]);
+                      setCustomPricingLabel('');
+                      setCustomPricingPrice('');
+                      setShowAddCustomPrice(false);
+                    }
+                  }}
+                  className="bg-[#ff5d09] text-white text-xs px-3"
+                >
+                  Add
+                </Button>
+                <button
+                  type="button"
+                  onClick={() => setShowAddCustomPrice(false)}
+                  className="text-slate-400 hover:text-white p-1"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            )}
+          </div>
         </section>
 
-        {/* 5. Media & Photos */}
-        <section className="bg-slate-900/90 border border-slate-800/80 rounded-2xl p-6 shadow-xl space-y-4">
+        {/* 5. Photos & Visual Media with Visual Destination Image Picker */}
+        <section className="bg-slate-900/90 border border-slate-800/80 rounded-2xl p-6 shadow-xl space-y-6">
           <div className="flex items-center gap-2">
             <Tag className="w-4 h-4 text-orange-500" />
-            <h2 className="text-base font-bold text-white tracking-tight">Hero Banner & Gallery Images</h2>
+            <div>
+              <h2 className="text-base font-bold text-white tracking-tight">Photos & Visual Media</h2>
+              <p className="text-xs text-slate-400">
+                Choose visually from Destination Library thumbnails or upload new files directly.
+              </p>
+            </div>
           </div>
 
-          {/* Hero Image */}
-          <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1.5">Hero Banner Image</label>
-            <div className="flex flex-col sm:flex-row items-center gap-3">
-              <Input
-                value={heroImage}
-                onChange={(e) => setHeroImage(e.target.value)}
-                placeholder="/images/LL2.jpg"
-                className="bg-slate-950 border-slate-800 text-white text-xs py-2 grow"
-              />
-              <label className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium rounded-xl cursor-pointer flex items-center gap-1.5 shrink-0 transition-colors">
-                <Upload className="w-3.5 h-3.5" /> Upload File
+          {/* Hero Banner Image */}
+          <div className="space-y-2">
+            <label className="block text-xs font-bold text-slate-300">A. Hero Banner Image (Main Header & Card)</label>
+            <div className="flex flex-wrap items-center gap-3">
+              <Button
+                type="button"
+                size="sm"
+                onClick={() => handleOpenImagePicker('hero')}
+                className="bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs h-9 px-4 rounded-xl shadow-md cursor-pointer flex items-center gap-2"
+              >
+                <ImageIcon className="w-4 h-4" /> Pick from Destination Library
+              </Button>
+
+              <label className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-xl cursor-pointer flex items-center gap-1.5 transition-colors">
+                <Upload className="w-3.5 h-3.5 text-orange-400" /> Upload Custom File
                 <input
                   type="file"
                   accept="image/*"
@@ -1272,39 +2043,66 @@ export default function WebsiteItineraryPage() {
                   }}
                 />
               </label>
+
+              <span className="text-[11px] text-slate-400 font-mono truncate max-w-xs">{heroImage}</span>
             </div>
+
             {heroImage && (
-              <div className="mt-2.5 relative h-32 w-full sm:w-64 rounded-xl overflow-hidden border border-slate-800">
-                <Image src={heroImage} alt="Hero Preview" fill className="object-cover" />
+              <div
+                onClick={() => handleOpenImagePicker('hero')}
+                className="relative h-40 w-full sm:w-80 rounded-2xl overflow-hidden border-2 border-slate-800 hover:border-orange-500 cursor-pointer group mt-2 transition-all shadow-lg"
+              >
+                <Image src={heroImage} alt="Hero Banner Preview" fill className="object-cover group-hover:scale-105 transition-transform" />
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-xs font-bold text-white gap-1.5">
+                  <ImageIcon className="w-4 h-4" /> Change Hero Photo
+                </div>
               </div>
             )}
           </div>
 
           {/* Gallery Images */}
-          <div className="pt-4 border-t border-slate-800">
-            <div className="flex items-center justify-between mb-2">
-              <label className="block text-xs font-medium text-slate-300">Gallery / Collage Images</label>
-              <label className="text-xs text-orange-400 hover:text-orange-300 flex items-center gap-1 cursor-pointer">
-                <Upload className="w-3 h-3" /> Upload to Gallery
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={(e) => {
-                    if (e.target.files?.[0]) handleImageUpload(e.target.files[0], 'gallery');
-                  }}
-                />
-              </label>
+          <div className="pt-4 border-t border-slate-800 space-y-3">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <label className="block text-xs font-bold text-slate-300">
+                  B. Gallery Images (Photo Collage Slider)
+                </label>
+                <p className="text-[11px] text-slate-400">
+                  Select multiple destination photos from library or multi-upload from computer.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  onClick={() => handleOpenImagePicker('gallery')}
+                  className="bg-orange-500/20 hover:bg-orange-500/30 text-orange-400 border border-orange-500/40 text-xs h-8 px-3 rounded-xl cursor-pointer flex items-center gap-1.5 font-bold"
+                >
+                  <FolderOpen className="w-3.5 h-3.5" /> Pick from Library
+                </Button>
+
+                <label className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold cursor-pointer flex items-center gap-1.5 transition-colors">
+                  <Upload className="w-3.5 h-3.5" /> Multi-Upload
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    className="hidden"
+                    onChange={(e) => handleMultiGalleryUpload(e.target.files)}
+                  />
+                </label>
+              </div>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3">
               {galleryImages.map((img, idx) => (
-                <div key={idx} className="relative group rounded-xl overflow-hidden border border-slate-800 bg-slate-950 h-28">
+                <div key={idx} className="relative group rounded-xl overflow-hidden border border-slate-800 bg-slate-950 h-24">
                   <Image src={img} alt={`Gallery ${idx + 1}`} fill className="object-cover" />
                   <button
                     type="button"
                     onClick={() => setGalleryImages(galleryImages.filter((_, i) => i !== idx))}
-                    className="absolute top-1.5 right-1.5 bg-black/70 hover:bg-red-600 text-white p-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="absolute top-1 right-1 bg-black/80 hover:bg-red-600 text-white p-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
                   >
                     <Trash2 className="w-3 h-3" />
                   </button>
@@ -1312,44 +2110,277 @@ export default function WebsiteItineraryPage() {
               ))}
             </div>
           </div>
+
+          {/* Day-Wise Photo Upload Slots */}
+          <div className="pt-4 border-t border-slate-800 space-y-3">
+            <div>
+              <label className="block text-xs font-bold text-slate-300">
+                C. Day-Wise Individual Photos ({durationDays} Days = {durationDays} Slots)
+              </label>
+              <p className="text-[11px] text-slate-400">
+                Click "Pick Photo" on any day to choose visually from destination library thumbnails!
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+              {dayPlans.map((dp, dIdx) => (
+                <div
+                  key={dIdx}
+                  className="p-3 bg-slate-950 border border-slate-800 rounded-xl flex items-center gap-3"
+                >
+                  <div
+                    onClick={() => handleOpenImagePicker(dIdx)}
+                    className="relative w-16 h-16 rounded-lg overflow-hidden border border-slate-800 hover:border-orange-500 cursor-pointer bg-slate-900 shrink-0 group"
+                  >
+                    {dp.image ? (
+                      <Image src={dp.image} alt={`Day ${dp.day}`} fill className="object-cover group-hover:scale-105 transition-transform" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-[10px] text-slate-600">
+                        Pick Image
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <ImageIcon className="w-3.5 h-3.5 text-white" />
+                    </div>
+                  </div>
+
+                  <div className="grow space-y-1">
+                    <p className="text-xs font-bold text-white">Day {dp.day} Photo</p>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        type="button"
+                        size="sm"
+                        onClick={() => handleOpenImagePicker(dIdx)}
+                        className="bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] h-7 px-2.5 rounded-lg cursor-pointer flex items-center gap-1 font-semibold"
+                      >
+                        <ImageIcon className="w-3 h-3 text-orange-400" /> Pick Photo
+                      </Button>
+
+                      <label className="px-2 py-1 bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white text-[11px] rounded-lg cursor-pointer flex items-center gap-1 shrink-0">
+                        <Upload className="w-3 h-3" /> Upload
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => {
+                            if (e.target.files?.[0]) handleImageUpload(e.target.files[0], 'day', dIdx);
+                          }}
+                        />
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </section>
 
-        {/* 6. Day-Wise Itinerary Builder */}
+        {/* 6. Hotels & Stays: Integrated directly with Zoho CRM Hotel Module with "/ Similar" */}
+        <section className="bg-slate-900/90 border border-slate-800/80 rounded-2xl p-6 shadow-xl space-y-5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <Hotel className="w-4 h-4 text-amber-400" />
+              <div>
+                <h2 className="text-base font-bold text-white tracking-tight">
+                  Hotels & Accommodations (Zoho CRM Module Synced)
+                </h2>
+                <p className="text-xs text-slate-400">
+                  Hotel names automatically carry <span className="text-amber-400 font-mono">/ Similar</span> on the website.
+                </p>
+              </div>
+            </div>
+
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => computeHotelStaysFromDayPlans(dayPlans)}
+              className="border-slate-800 text-xs h-8 cursor-pointer"
+            >
+              <RefreshCw className="w-3 h-3 mr-1 text-orange-400" /> Re-sync Stays from Days
+            </Button>
+          </div>
+
+          {/* Global Category & Meal Plan Selectors */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-slate-950 border border-slate-800 rounded-xl">
+            <div>
+              <label className="block text-xs font-bold text-slate-300 mb-1.5">
+                Default Hotel Category (for all stays)
+              </label>
+              <div className="flex flex-wrap gap-1.5">
+                {HOTEL_CATEGORIES.map(cat => (
+                  <button
+                    key={cat}
+                    type="button"
+                    onClick={() => handleApplyGlobalHotelCategory(cat)}
+                    className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                      globalHotelCategory === cat
+                        ? 'bg-amber-400 text-slate-950'
+                        : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-300 mb-1.5">
+                Default Meal Plan
+              </label>
+              <select
+                value={globalMealPlan}
+                onChange={(e) => handleApplyGlobalMealPlan(e.target.value)}
+                className="w-full px-3 py-1.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-orange-500 cursor-pointer"
+              >
+                {MEAL_PLANS.map(m => (
+                  <option key={m.code} value={m.code}>{m.label}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Hotel Stays Rows */}
+          <div className="space-y-3">
+            {hotelStays.map((stay, idx) => {
+              const availableHotels = getHotelsForCity(stay.city);
+              const selectedHotelObj = availableHotels.find(h => h.id === stay.hotelId || formatHotelWithSimilar(h.hotelName) === stay.hotelName);
+
+              return (
+                <div
+                  key={idx}
+                  className="p-4 bg-slate-950/80 border border-slate-800 rounded-xl space-y-3"
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-2.5">
+                    <div className="flex items-center gap-2">
+                      <span className="w-5 h-5 rounded-full bg-amber-400/20 text-amber-400 font-bold text-xs flex items-center justify-center">
+                        {idx + 1}
+                      </span>
+                      <span className="text-xs font-bold text-white">
+                        {stay.city} ({stay.nights} Nights)
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <span className="text-[11px] text-slate-400">Category:</span>
+                      <select
+                        value={stay.category}
+                        onChange={(e) => {
+                          const copy = [...hotelStays];
+                          copy[idx].category = e.target.value;
+                          setHotelStays(copy);
+                        }}
+                        className="px-2 py-1 bg-slate-900 border border-slate-800 rounded text-xs text-amber-400"
+                      >
+                        {HOTEL_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {/* Hotel Dropdown (From Zoho CRM) */}
+                    <div>
+                      <label className="block text-[11px] font-medium text-slate-400 mb-1">
+                        Select Hotel in {stay.city} ({availableHotels.length} options in Zoho)
+                      </label>
+                      <select
+                        value={stay.hotelId || ''}
+                        onChange={(e) => handleHotelSelect(idx, e.target.value)}
+                        className="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-orange-500 cursor-pointer"
+                      >
+                        <option value="">-- Choose Hotel from Zoho CRM --</option>
+                        {availableHotels.map(h => (
+                          <option key={h.id} value={h.id}>
+                            {h.hotelName} / Similar ({h.category || 'Deluxe'}) {h.starRating ? `[${h.starRating}★]` : ''}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Room Category (With lowest base price auto-selected) */}
+                    <div>
+                      <label className="block text-[11px] font-medium text-slate-400 mb-1">
+                        Room Category (Lowest Base Price Auto-Selected)
+                      </label>
+                      <select
+                        value={stay.roomCategory}
+                        onChange={(e) => handleRoomSelect(idx, e.target.value)}
+                        disabled={!selectedHotelObj?.rooms?.length}
+                        className="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-emerald-400 font-semibold focus:outline-none focus:border-orange-500 cursor-pointer"
+                      >
+                        {selectedHotelObj?.rooms && selectedHotelObj.rooms.length > 0 ? (
+                          selectedHotelObj.rooms.map((r: any, rIdx: number) => (
+                            <option key={rIdx} value={r.roomCategory}>
+                              {r.roomCategory} {r.basePrice > 0 ? `(₹${r.basePrice}/night)` : ''}
+                            </option>
+                          ))
+                        ) : (
+                          <option value="Deluxe Room">Standard / Deluxe Room</option>
+                        )}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* 7. Day-Wise Plan: Timeline Bullets, Auto-Logistics & AI Headings */}
         <section className="bg-slate-900/90 border border-slate-800/80 rounded-2xl p-6 shadow-xl space-y-6">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-orange-500" />
+                <CalendarIcon className="w-4 h-4 text-orange-500" />
                 <h2 className="text-base font-bold text-white tracking-tight">
                   Day-by-Day Detailed Plan ({dayPlans.length} Days)
                 </h2>
               </div>
               <p className="text-xs text-slate-400 mt-0.5">
-                Each day supports timeline points, stays, meals and image.
+                Arrivals, departures & intercity drives are auto-injected. Click AI Headings for luxury titles!
               </p>
             </div>
 
-            <Button
-              type="button"
-              size="sm"
-              onClick={handleAddDay}
-              className="bg-orange-500 hover:bg-orange-600 text-white text-xs h-8"
-            >
-              <Plus className="w-3.5 h-3.5 mr-1" /> Add Day
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                type="button"
+                size="sm"
+                onClick={handleGenerateAIHeadings}
+                disabled={generatingHeadings}
+                className="bg-purple-600 hover:bg-purple-700 text-white text-xs h-8 px-3 cursor-pointer shadow-md"
+              >
+                <Wand2 className={`w-3.5 h-3.5 mr-1 ${generatingHeadings ? 'animate-spin' : ''}`} />
+                {generatingHeadings ? 'Writing AI Titles...' : '✨ AI Generate Day Titles'}
+              </Button>
+
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                onClick={() => {
+                  setDayPlans(injectAutoLogisticsStatements(dayPlans));
+                  setSaveSuccessMsg('Auto-logistics statements injected into days!');
+                  setTimeout(() => setSaveSuccessMsg(null), 3000);
+                }}
+                className="border-slate-800 text-xs h-8 cursor-pointer"
+              >
+                Re-apply Auto-Logistics
+              </Button>
+            </div>
           </div>
 
           <div className="space-y-4">
             {dayPlans.map((day, dayIdx) => (
               <div
                 key={dayIdx}
-                className="bg-slate-950/70 border border-slate-800/90 rounded-2xl p-4 sm:p-5 relative space-y-3.5"
+                className="bg-slate-950/70 border border-slate-800/90 rounded-2xl p-4 sm:p-5 space-y-3"
               >
                 {/* Day Header */}
                 <div className="flex items-center justify-between gap-3 border-b border-slate-800/70 pb-3">
                   <div className="flex items-center gap-2.5 grow">
-                    <span className="w-6 h-6 rounded-lg bg-orange-500/20 text-[#ff5d09] font-bold text-xs flex items-center justify-center shrink-0">
-                      {day.day}
+                    <span className="w-7 h-7 rounded-lg bg-[#ff5d09] text-white font-bold text-xs flex items-center justify-center shrink-0">
+                      D{day.day}
                     </span>
                     <Input
                       value={day.title}
@@ -1358,36 +2389,39 @@ export default function WebsiteItineraryPage() {
                         copy[dayIdx].title = e.target.value;
                         setDayPlans(copy);
                       }}
-                      placeholder={`Day ${day.day} Title (e.g. Day ${day.day}: Arrival & City Tour)`}
+                      placeholder={`Day ${day.day} Title`}
                       className="bg-transparent border-0 text-white font-bold text-sm focus-visible:ring-0 p-0 h-auto"
                     />
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={() => handleDeleteDay(dayIdx)}
-                    disabled={dayPlans.length <= 1}
-                    className="text-slate-500 hover:text-red-400 disabled:opacity-30 p-1"
-                    title="Delete Day"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      value={day.city || ''}
+                      onChange={(e) => {
+                        const copy = [...dayPlans];
+                        copy[dayIdx].city = e.target.value;
+                        setDayPlans(copy);
+                      }}
+                      placeholder="City/Stop"
+                      className="bg-slate-900 border-slate-800 text-xs h-7 w-28 text-orange-400 font-semibold"
+                    />
+                  </div>
                 </div>
 
                 {/* Day Details: Stay & Meals */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                   <div>
                     <label className="block text-[11px] font-medium text-slate-400 mb-1 flex items-center gap-1">
-                      <Hotel className="w-3 h-3 text-amber-400" /> Overnight Stay / Hotel
+                      <Hotel className="w-3 h-3 text-amber-400" /> Stay / Hotel
                     </label>
                     <Input
                       value={day.stayHotel}
                       onChange={(e) => {
                         const copy = [...dayPlans];
-                        copy[dayIdx].stayHotel = e.target.value;
+                        copy[dayIdx].stayHotel = formatHotelWithSimilar(e.target.value);
                         setDayPlans(copy);
                       }}
-                      placeholder="e.g. Deluxe Hotel in Leh / Camp in Nubra"
+                      placeholder="e.g. Deluxe Hotel in Leh / Similar"
                       className="bg-slate-900 border-slate-800 text-white text-xs py-1.5"
                     />
                   </div>
@@ -1440,11 +2474,11 @@ export default function WebsiteItineraryPage() {
                   </div>
                 </div>
 
-                {/* Timeline / Sightseeing points */}
+                {/* Timeline Points */}
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
                     <label className="block text-[11px] font-medium text-slate-400">
-                      Day Flow / Sightseeing & Activities (Timeline bullets)
+                      Day Flow / Timeline Bullets (Sightseeing, Drives & Experiences)
                     </label>
                     <button
                       type="button"
@@ -1453,7 +2487,7 @@ export default function WebsiteItineraryPage() {
                         copy[dayIdx].timeline.push('');
                         setDayPlans(copy);
                       }}
-                      className="text-[11px] text-orange-400 hover:text-orange-300 flex items-center gap-1"
+                      className="text-[11px] text-orange-400 hover:text-orange-300 flex items-center gap-1 cursor-pointer"
                     >
                       <Plus className="w-3 h-3" /> Add Point
                     </button>
@@ -1462,7 +2496,7 @@ export default function WebsiteItineraryPage() {
                   <div className="space-y-1.5">
                     {day.timeline.map((point, pIdx) => (
                       <div key={pIdx} className="flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-slate-600 shrink-0" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-orange-400 shrink-0" />
                         <Input
                           value={point}
                           onChange={(e) => {
@@ -1470,7 +2504,7 @@ export default function WebsiteItineraryPage() {
                             copy[dayIdx].timeline[pIdx] = e.target.value;
                             setDayPlans(copy);
                           }}
-                          placeholder={`Activity / Experience #${pIdx + 1}`}
+                          placeholder={`Activity / Bullet #${pIdx + 1}`}
                           className="bg-slate-900 border-slate-800 text-white text-xs py-1"
                         />
                         <button
@@ -1480,7 +2514,7 @@ export default function WebsiteItineraryPage() {
                             copy[dayIdx].timeline = copy[dayIdx].timeline.filter((_, i) => i !== pIdx);
                             setDayPlans(copy);
                           }}
-                          className="text-slate-600 hover:text-red-400 p-1"
+                          className="text-slate-600 hover:text-red-400 p-1 cursor-pointer"
                         >
                           <Trash2 className="w-3 h-3" />
                         </button>
@@ -1488,37 +2522,12 @@ export default function WebsiteItineraryPage() {
                     ))}
                   </div>
                 </div>
-
-                {/* Day Image */}
-                <div className="pt-2 flex flex-col sm:flex-row items-center gap-3">
-                  <Input
-                    value={day.image || ''}
-                    onChange={(e) => {
-                      const copy = [...dayPlans];
-                      copy[dayIdx].image = e.target.value;
-                      setDayPlans(copy);
-                    }}
-                    placeholder="Day Image URL (defaults to hero image)"
-                    className="bg-slate-900 border-slate-800 text-slate-300 text-xs py-1.5 grow"
-                  />
-                  <label className="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded-lg cursor-pointer flex items-center gap-1 shrink-0">
-                    <Upload className="w-3 h-3" /> Upload Day Image
-                    <input
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={(e) => {
-                        if (e.target.files?.[0]) handleImageUpload(e.target.files[0], 'day', dayIdx);
-                      }}
-                    />
-                  </label>
-                </div>
               </div>
             ))}
           </div>
         </section>
 
-        {/* 7. Inclusions & Exclusions */}
+        {/* 8. Inclusions & Exclusions */}
         <section className="bg-slate-900/90 border border-slate-800/80 rounded-2xl p-6 shadow-xl space-y-4">
           <div className="flex items-center gap-2">
             <ShieldCheck className="w-4 h-4 text-emerald-400" />
@@ -1526,7 +2535,6 @@ export default function WebsiteItineraryPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Inclusions */}
             <div>
               <div className="flex items-center justify-between mb-2">
                 <label className="text-xs font-bold text-emerald-400 uppercase tracking-wider">
@@ -1535,7 +2543,7 @@ export default function WebsiteItineraryPage() {
                 <button
                   type="button"
                   onClick={() => setInclusions([...inclusions, ''])}
-                  className="text-xs text-orange-400 hover:text-orange-300 flex items-center gap-1"
+                  className="text-xs text-orange-400 hover:text-orange-300 flex items-center gap-1 cursor-pointer"
                 >
                   <Plus className="w-3 h-3" /> Add Inclusion
                 </button>
@@ -1555,7 +2563,7 @@ export default function WebsiteItineraryPage() {
                     <button
                       type="button"
                       onClick={() => setInclusions(inclusions.filter((_, i) => i !== idx))}
-                      className="text-slate-500 hover:text-red-400 p-1"
+                      className="text-slate-500 hover:text-red-400 p-1 cursor-pointer"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -1564,7 +2572,6 @@ export default function WebsiteItineraryPage() {
               </div>
             </div>
 
-            {/* Exclusions */}
             <div>
               <div className="flex items-center justify-between mb-2">
                 <label className="text-xs font-bold text-red-400 uppercase tracking-wider">
@@ -1573,7 +2580,7 @@ export default function WebsiteItineraryPage() {
                 <button
                   type="button"
                   onClick={() => setExclusions([...exclusions, ''])}
-                  className="text-xs text-orange-400 hover:text-orange-300 flex items-center gap-1"
+                  className="text-xs text-orange-400 hover:text-orange-300 flex items-center gap-1 cursor-pointer"
                 >
                   <Plus className="w-3 h-3" /> Add Exclusion
                 </button>
@@ -1593,7 +2600,7 @@ export default function WebsiteItineraryPage() {
                     <button
                       type="button"
                       onClick={() => setExclusions(exclusions.filter((_, i) => i !== idx))}
-                      className="text-slate-500 hover:text-red-400 p-1"
+                      className="text-slate-500 hover:text-red-400 p-1 cursor-pointer"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -1604,60 +2611,182 @@ export default function WebsiteItineraryPage() {
           </div>
         </section>
 
-        {/* 8. Batch Dates (for upcoming group tours) */}
-        <section className="bg-slate-900/90 border border-slate-800/80 rounded-2xl p-6 shadow-xl space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-orange-500" />
-              <h2 className="text-base font-bold text-white tracking-tight">
-                Upcoming Group Tour Batches
-              </h2>
-            </div>
-            <button
-              type="button"
-              onClick={() => setBatchDates([...batchDates, { month: '', ranges: '' }])}
-              className="text-xs text-orange-400 hover:text-orange-300 flex items-center gap-1"
-            >
-              <Plus className="w-3 h-3" /> Add Batch Month
-            </button>
-          </div>
+        {/* 9. Interactive Visual Batch Calendar with Auto-Calculated End Date & Hover Preview */}
+        {tourType === 'Group' && (
+          <section className="bg-slate-900/90 border border-slate-800/80 rounded-2xl p-6 shadow-xl space-y-5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <CalendarIcon className="w-4 h-4 text-orange-500" />
+                <div>
+                  <h2 className="text-base font-bold text-white tracking-tight">
+                    Interactive Batch Calendar ({durationDays} Days / {durationNights} Nights)
+                  </h2>
+                  <p className="text-xs text-slate-400">
+                    Hover on any date to preview the full batch; click once to automatically select the {durationDays}-day batch!
+                  </p>
+                </div>
+              </div>
 
-          <div className="space-y-2.5">
-            {batchDates.map((b, idx) => (
-              <div key={idx} className="flex items-center gap-3">
-                <Input
-                  value={b.month}
-                  onChange={(e) => {
-                    const copy = [...batchDates];
-                    copy[idx].month = e.target.value;
-                    setBatchDates(copy);
-                  }}
-                  placeholder="e.g. May 2026"
-                  className="bg-slate-950 border-slate-800 text-white text-xs w-1/3 py-2"
-                />
-                <Input
-                  value={b.ranges}
-                  onChange={(e) => {
-                    const copy = [...batchDates];
-                    copy[idx].ranges = e.target.value;
-                    setBatchDates(copy);
-                  }}
-                  placeholder="e.g. 10 May - 15 May, 20 May - 25 May"
-                  className="bg-slate-950 border-slate-800 text-white text-xs w-2/3 py-2"
-                />
+              {hoveredDayNum && (
+                <div className="px-3.5 py-1.5 bg-orange-500/20 text-orange-300 border border-orange-500/40 rounded-xl text-xs font-semibold flex items-center gap-2 animate-in fade-in">
+                  <span className="w-2 h-2 rounded-full bg-orange-400 animate-ping" />
+                  <span>
+                    Hovering: {hoveredDayNum} {monthNames[calendarMonth].slice(0, 3)} → Batch will be:{' '}
+                    <strong>
+                      {hoveredDayNum} {monthNames[calendarMonth].slice(0, 3)} -{' '}
+                      {new Date(calendarYear, calendarMonth, hoveredDayNum + durationDays - 1).getDate()}{' '}
+                      {monthNames[new Date(calendarYear, calendarMonth, hoveredDayNum + durationDays - 1).getMonth()].slice(0, 3)}
+                    </strong>{' '}
+                    ({durationDays} Days)
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {/* Interactive Calendar UI */}
+            <div className="bg-slate-950 p-5 rounded-2xl border border-slate-800 max-w-lg mx-auto">
+              <div className="flex items-center justify-between mb-4">
                 <button
                   type="button"
-                  onClick={() => setBatchDates(batchDates.filter((_, i) => i !== idx))}
-                  className="text-slate-500 hover:text-red-400 p-1"
+                  onClick={() => setCurrentCalendarDate(new Date(calendarYear, calendarMonth - 1, 1))}
+                  className="p-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 cursor-pointer"
                 >
-                  <Trash2 className="w-4 h-4" />
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <span className="text-sm font-bold text-white">
+                  {monthNames[calendarMonth]} {calendarYear}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setCurrentCalendarDate(new Date(calendarYear, calendarMonth + 1, 1))}
+                  className="p-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 cursor-pointer"
+                >
+                  <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
-            ))}
-          </div>
-        </section>
 
-        {/* Bottom Floating Publish Bar */}
+              <div className="grid grid-cols-7 gap-1 text-center mb-2">
+                {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map(d => (
+                  <span key={d} className="text-[10px] font-bold text-slate-500">{d}</span>
+                ))}
+              </div>
+
+              <div
+                className="grid grid-cols-7 gap-1"
+                onMouseLeave={() => setHoveredDayNum(null)}
+              >
+                {Array.from({ length: firstDayOfWeek }).map((_, i) => (
+                  <div key={`empty-${i}`} className="h-8" />
+                ))}
+
+                {Array.from({ length: daysInMonth }).map((_, i) => {
+                  const dayNum = i + 1;
+
+                  // Check if dayNum is inside the hovered range
+                  const isHoveredInRange =
+                    hoveredDayNum !== null &&
+                    dayNum >= hoveredDayNum &&
+                    dayNum <= (hoveredDayNum + durationDays - 1);
+
+                  // Check if this date falls within any added batch range
+                  const currentDateVal = new Date(calendarYear, calendarMonth, dayNum).setHours(0, 0, 0, 0);
+                  let isInRange = false;
+                  const monthShortList = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+
+                  batchDates.forEach(b => {
+                    const yMatch = b.month.match(/(\d{4})/);
+                    const bYear = yMatch ? parseInt(yMatch[1], 10) : calendarYear;
+
+                    b.ranges.forEach(r => {
+                      const parts = r.split('-').map(s => s.trim());
+                      if (parts.length === 2) {
+                        const sParts = parts[0].split(/\s+/);
+                        const eParts = parts[1].split(/\s+/);
+                        if (sParts.length >= 2 && eParts.length >= 2) {
+                          const sD = parseInt(sParts[0], 10);
+                          const sM = monthShortList.indexOf(sParts[1].toLowerCase().slice(0, 3));
+                          const eD = parseInt(eParts[0], 10);
+                          const eM = monthShortList.indexOf(eParts[1].toLowerCase().slice(0, 3));
+
+                          if (sM !== -1 && eM !== -1) {
+                            const eYear = eM < sM ? bYear + 1 : bYear;
+                            const startVal = new Date(bYear, sM, sD).setHours(0, 0, 0, 0);
+                            const endVal = new Date(eYear, eM, eD).setHours(0, 0, 0, 0);
+                            if (currentDateVal >= startVal && currentDateVal <= endVal) {
+                              isInRange = true;
+                            }
+                          }
+                        }
+                      }
+                    });
+                  });
+
+                  return (
+                    <button
+                      key={dayNum}
+                      type="button"
+                      onMouseEnter={() => setHoveredDayNum(dayNum)}
+                      onClick={() => handleCalendarDayClick(dayNum)}
+                      className={`h-8 rounded-lg text-xs font-semibold flex items-center justify-center transition-all cursor-pointer ${
+                        isInRange
+                          ? 'bg-[#ff5d09] text-white shadow-md font-bold'
+                          : isHoveredInRange
+                            ? 'bg-orange-500/35 text-orange-200 border border-orange-500/50 shadow-inner'
+                            : 'bg-slate-900/60 text-slate-300 hover:bg-slate-800 hover:text-white'
+                      }`}
+                    >
+                      {dayNum}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Configured Batches Summary */}
+            <div className="space-y-3 pt-2">
+              <label className="block text-xs font-bold text-slate-300">
+                Configured Batches (Formatted for Website):
+              </label>
+              <div className="space-y-2">
+                {batchDates.map((b, idx) => (
+                  <div
+                    key={idx}
+                    className="p-3 bg-slate-950 border border-slate-800 rounded-xl flex flex-wrap items-center justify-between gap-3 text-xs"
+                  >
+                    <span className="font-bold text-orange-400">{b.month}:</span>
+                    <div className="flex flex-wrap items-center gap-1.5 grow">
+                      {b.ranges.map((r, rIdx) => (
+                        <span
+                          key={rIdx}
+                          className="px-2.5 py-1 bg-slate-900 text-white rounded-lg border border-slate-800 flex items-center gap-1.5"
+                        >
+                          <span>{r}</span>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const copy = [...batchDates];
+                              copy[idx].ranges = copy[idx].ranges.filter((_, i) => i !== rIdx);
+                              if (copy[idx].ranges.length === 0) {
+                                setBatchDates(copy.filter((_, i) => i !== idx));
+                              } else {
+                                setBatchDates(copy);
+                              }
+                            }}
+                            className="text-slate-400 hover:text-red-400 cursor-pointer"
+                          >
+                            ✕
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Bottom Floating Action Bar */}
         <div className="sticky bottom-6 z-40 bg-slate-900/95 border border-slate-800 rounded-2xl p-4 shadow-2xl backdrop-blur-xl flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <span className="w-3 h-3 rounded-full bg-emerald-400" />
@@ -1677,13 +2806,32 @@ export default function WebsiteItineraryPage() {
             >
               <Eye className="w-3.5 h-3.5 mr-1 text-blue-400" /> Preview Itinerary
             </Button>
+            {getValidationErrors().length > 0 ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setValidationErrors(getValidationErrors());
+                  setValidationModalOpen(true);
+                }}
+                className="text-[11px] font-semibold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1.5 rounded-lg flex items-center gap-1 hover:bg-amber-500/20 transition-colors cursor-pointer"
+              >
+                <AlertCircle className="w-3.5 h-3.5 text-amber-400" />
+                <span>{getValidationErrors().length} required fields missing</span>
+              </button>
+            ) : (
+              <span className="text-[11px] font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1.5 rounded-lg flex items-center gap-1">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                <span>All required fields ready</span>
+              </span>
+            )}
+
 
             <Button
               type="button"
               variant="outline"
               size="sm"
               onClick={handleOpenExportModal}
-              className="border-slate-800 bg-slate-950 text-slate-300 text-xs grow sm:grow-0"
+              className="border-slate-800 bg-slate-950 text-slate-300 text-xs grow sm:grow-0 cursor-pointer"
             >
               <Code className="w-3.5 h-3.5 mr-1 text-amber-400" /> Export Code
             </Button>
@@ -1695,11 +2843,163 @@ export default function WebsiteItineraryPage() {
               className="bg-gradient-to-r from-[#ff5d09] to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-medium text-xs h-9 shadow-lg shadow-orange-600/25 px-5 grow sm:grow-0 cursor-pointer"
             >
               {saving ? <RefreshCw className="w-3.5 h-3.5 mr-1.5 animate-spin" /> : <Save className="w-3.5 h-3.5 mr-1.5" />}
-              {saving ? 'Publishing Itinerary...' : 'Publish to Website (Live)'}
+              {saving ? 'Publishing...' : (isEditMode ? 'Update Itinerary (Live)' : 'Publish to Website (Live)')}
             </Button>
           </div>
         </div>
       </main>
+
+      {/* VISUAL DESTINATION IMAGE PICKER MODAL (Grid of Thumbnails) */}
+      {imagePickerOpen && (
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-4xl w-full my-auto shadow-2xl flex flex-col max-h-[88vh] overflow-hidden">
+            {/* Header */}
+            <div className="px-6 py-4 bg-slate-950 border-b border-slate-800 flex items-center justify-between gap-4 shrink-0">
+              <div className="flex items-center gap-3">
+                <span className="p-2 rounded-xl bg-orange-500/10 text-orange-400 border border-orange-500/20">
+                  <ImageIcon className="w-4 h-4" />
+                </span>
+                <div>
+                  <h3 className="text-sm font-bold text-white tracking-tight">
+                    Destination Photo Library
+                  </h3>
+                  <p className="text-[11px] text-slate-400">
+                    Click any thumbnail card to select it directly!
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                {imagePickerTarget === 'gallery' && (
+                  <Button
+                    type="button"
+                    size="sm"
+                    onClick={handleConfirmGalleryPicks}
+                    className="bg-[#ff5d09] text-white text-xs px-3 h-8"
+                  >
+                    Add Selected ({selectedGalleryPicks.length}) to Gallery
+                  </Button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => setImagePickerOpen(false)}
+                  className="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center text-sm font-bold cursor-pointer"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+
+            {/* Destination Filter Picker Bar */}
+            <div className="px-6 py-3 bg-slate-950/70 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3 shrink-0">
+              <div className="flex items-center gap-2 grow">
+                <span className="text-xs font-bold text-slate-300">Choose Destination:</span>
+                <select
+                  value={imagePickerDest}
+                  onChange={(e) => {
+                    setImagePickerDest(e.target.value);
+                    fetchDestinationImages(e.target.value);
+                  }}
+                  className="px-3 py-1.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-orange-400 font-bold focus:outline-none focus:border-orange-500 cursor-pointer"
+                >
+                  {availableDestinations.map(d => (
+                    <option key={d} value={d}>{d}</option>
+                  ))}
+                </select>
+              </div>
+
+              <span className="text-xs text-slate-400">
+                {destImages.length} images available
+              </span>
+            </div>
+
+            {/* Visual Thumbnail Grid */}
+            <div className="overflow-y-auto p-4 sm:p-6 bg-slate-950 grow">
+              {loadingDestImages ? (
+                <div className="py-20 flex flex-col items-center justify-center gap-2 text-slate-400">
+                  <RefreshCw className="w-6 h-6 animate-spin text-orange-400" />
+                  <p className="text-xs font-medium">Loading destination photos...</p>
+                </div>
+              ) : destImages.length === 0 ? (
+                <div className="py-20 text-center text-slate-500 text-xs">
+                  No images found for this category. Try selecting another destination above or upload a custom photo.
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3.5">
+                  {destImages.map((img, i) => {
+                    const isSelected = selectedGalleryPicks.includes(img) || heroImage === img;
+
+                    return (
+                      <div
+                        key={i}
+                        onClick={() => handleSelectImageFromLibrary(img)}
+                        className={`relative rounded-xl overflow-hidden border-2 bg-slate-900 h-32 cursor-pointer group transition-all ${
+                          isSelected
+                            ? 'border-orange-500 ring-2 ring-orange-500/50'
+                            : 'border-slate-800 hover:border-slate-600'
+                        }`}
+                      >
+                        <Image
+                          src={img}
+                          alt={`Library ${i + 1}`}
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform"
+                        />
+                        <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-xs font-bold text-white">
+                          Click to Select
+                        </div>
+
+                        {isSelected && (
+                          <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-orange-500 text-white flex items-center justify-center text-xs font-bold shadow-md">
+                            ✓
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* Footer with Direct File Upload Option */}
+            <div className="px-6 py-3.5 bg-slate-950 border-t border-slate-800 flex items-center justify-between shrink-0">
+              <label className="text-xs text-orange-400 hover:text-orange-300 font-bold flex items-center gap-1.5 cursor-pointer">
+                <Upload className="w-3.5 h-3.5" /> Or Upload a New Photo From Computer
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={async (e) => {
+                    if (e.target.files?.[0]) {
+                      const file = e.target.files[0];
+                      const formData = new FormData();
+                      formData.append('file', file);
+                      const res = await fetch('/api/upload', { method: 'POST', body: formData });
+                      const data = await res.json();
+                      if (data.url) {
+                        handleSelectImageFromLibrary(data.url);
+                        if (imagePickerTarget !== 'gallery') {
+                          setImagePickerOpen(false);
+                        }
+                      }
+                    }
+                  }}
+                />
+              </label>
+
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setImagePickerOpen(false)}
+                className="border-slate-800 text-xs"
+              >
+                Close
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Export Code Modal */}
       {exportModalOpen && (
@@ -1717,7 +3017,7 @@ export default function WebsiteItineraryPage() {
               <button
                 type="button"
                 onClick={() => setExportModalOpen(false)}
-                className="text-slate-400 hover:text-white text-lg font-bold p-1"
+                className="text-slate-400 hover:text-white text-lg font-bold p-1 cursor-pointer"
               >
                 ✕
               </button>
@@ -1737,7 +3037,7 @@ export default function WebsiteItineraryPage() {
                   variant="outline"
                   size="sm"
                   onClick={() => setExportModalOpen(false)}
-                  className="border-slate-800 text-xs"
+                  className="border-slate-800 text-xs cursor-pointer"
                 >
                   Close
                 </Button>
@@ -1745,7 +3045,7 @@ export default function WebsiteItineraryPage() {
                   type="button"
                   size="sm"
                   onClick={handleCopyExportCode}
-                  className="bg-[#ff5d09] hover:bg-orange-600 text-white text-xs"
+                  className="bg-[#ff5d09] hover:bg-orange-600 text-white text-xs cursor-pointer"
                 >
                   {copiedCode ? <Check className="w-3.5 h-3.5 mr-1" /> : <Copy className="w-3.5 h-3.5 mr-1" />}
                   {copiedCode ? 'Copied!' : 'Copy Code'}
@@ -1834,7 +3134,6 @@ export default function WebsiteItineraryPage() {
                     {title || 'Untitled Tour Package'}
                   </h1>
 
-                  {/* Route & Stays */}
                   {(route || staySummary) && (
                     <div className="flex flex-wrap items-center gap-4 text-xs sm:text-sm text-slate-200 pt-1">
                       {route && (
@@ -1873,8 +3172,10 @@ export default function WebsiteItineraryPage() {
                   <p className="text-sm font-bold text-white mt-1">{difficulty}</p>
                 </div>
                 <div className="p-3 border-l border-slate-800">
-                  <p className="text-[11px] text-slate-400 uppercase tracking-wider">Group Size</p>
-                  <p className="text-sm font-bold text-white mt-1">{groupSize}</p>
+                  <p className="text-[11px] text-slate-400 uppercase tracking-wider">Tour Format</p>
+                  <p className="text-sm font-bold text-white mt-1">
+                    {tourType === 'Group' ? `Group Tour (${groupSize} Pax)` : 'Customized Private'}
+                  </p>
                 </div>
                 <div className="p-3 border-l border-slate-800">
                   <p className="text-[11px] text-slate-400 uppercase tracking-wider">Destination</p>
@@ -1882,32 +3183,10 @@ export default function WebsiteItineraryPage() {
                 </div>
               </div>
 
-              {/* Overview & Highlights */}
-              <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-6 space-y-4">
-                <h3 className="text-base font-bold text-white">Trip Overview</h3>
-                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                  {description || 'No overview description provided yet.'}
-                </p>
-
-                {highlights.length > 0 && (
-                  <div className="pt-4 border-t border-slate-800">
-                    <h4 className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-3">Key Highlights</h4>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                      {highlights.filter(Boolean).map((h, i) => (
-                        <div key={i} className="flex items-start gap-2.5 text-xs text-slate-200">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-orange-400 shrink-0 mt-0.5" />
-                          <span>{h}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-
               {/* Day-by-Day Itinerary Flow */}
               <div className="space-y-4">
                 <h3 className="text-base font-bold text-white flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-orange-400" />
+                  <CalendarIcon className="w-4 h-4 text-orange-400" />
                   Day-Wise Detailed Itinerary ({dayPlans.length} Days)
                 </h3>
 
@@ -1958,7 +3237,7 @@ export default function WebsiteItineraryPage() {
                       {day.stayHotel && (
                         <div className="pt-2 text-xs text-slate-400 flex items-center gap-1.5">
                           <Hotel className="w-3.5 h-3.5 text-amber-400" />
-                          <span>Overnight Accommodation: <strong className="text-white">{day.stayHotel}</strong></span>
+                          <span>Overnight: <strong className="text-white">{formatHotelWithSimilar(day.stayHotel)}</strong></span>
                         </div>
                       )}
                     </div>
@@ -1967,14 +3246,14 @@ export default function WebsiteItineraryPage() {
               </div>
 
               {/* Costing Breakdown Table */}
-              {costingDetails.length > 0 && (
+              {activeCostingDetails.length > 0 && (
                 <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-6 space-y-3">
                   <h3 className="text-base font-bold text-white flex items-center gap-2">
                     <DollarSign className="w-4 h-4 text-emerald-400" />
                     Package Costing & Sharing Options
                   </h3>
                   <div className="divide-y divide-slate-800 rounded-xl border border-slate-800 overflow-hidden">
-                    {costingDetails.filter(c => c.label && c.value).map((c, i) => (
+                    {activeCostingDetails.map((c, i) => (
                       <div key={i} className="flex items-center justify-between p-3.5 bg-slate-950/60 text-xs">
                         <span className="text-slate-300 font-medium">{c.label}</span>
                         <span className="text-emerald-400 font-bold">{c.value}</span>
@@ -1984,7 +3263,7 @@ export default function WebsiteItineraryPage() {
                 </div>
               )}
 
-              {/* Inclusions & Exclusions Columns */}
+              {/* Inclusions & Exclusions */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-3">
                   <h4 className="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
@@ -2015,65 +3294,34 @@ export default function WebsiteItineraryPage() {
                 </div>
               </div>
 
-              {/* Placements Matrix Info */}
-              <div className="bg-orange-500/10 border border-orange-500/30 rounded-2xl p-5 space-y-2">
-                <h4 className="text-xs font-bold text-orange-400 uppercase tracking-wider">
-                  Configured Website Placements
-                </h4>
-                <div className="flex flex-wrap gap-2 text-xs">
-                  {placements.homepage && (
-                    <span className="px-2.5 py-1 bg-slate-900 border border-slate-800 rounded-lg text-slate-200">
-                      ✓ Homepage Featured
-                    </span>
-                  )}
-                  {placements.indiaTrips && (
-                    <span className="px-2.5 py-1 bg-slate-900 border border-slate-800 rounded-lg text-slate-200">
-                      ✓ /india-trips
-                    </span>
-                  )}
-                  {placements.internationalTrips && (
-                    <span className="px-2.5 py-1 bg-slate-900 border border-slate-800 rounded-lg text-slate-200">
-                      ✓ /international-trips
-                    </span>
-                  )}
-                  {placements.upcomingTours && (
-                    <span className="px-2.5 py-1 bg-slate-900 border border-slate-800 rounded-lg text-slate-200">
-                      ✓ /upcoming-tours
-                    </span>
-                  )}
-                  {placements.destinationCategory && (
-                    <span className="px-2.5 py-1 bg-slate-900 border border-slate-800 rounded-lg text-orange-300">
-                      ✓ Destination: /trips/{placements.destinationCategory}
-                    </span>
-                  )}
-                  {placements.sections.available && (
-                    <span className="px-2 py-0.5 bg-emerald-500/20 text-emerald-300 rounded text-[11px]">
-                      Section: Available
-                    </span>
-                  )}
-                  {placements.sections.family && (
-                    <span className="px-2 py-0.5 bg-blue-500/20 text-blue-300 rounded text-[11px]">
-                      Section: Family
-                    </span>
-                  )}
-                  {placements.sections.custom && (
-                    <span className="px-2 py-0.5 bg-purple-500/20 text-purple-300 rounded text-[11px]">
-                      Section: Custom
-                    </span>
-                  )}
-                  {placements.sections.related && (
-                    <span className="px-2 py-0.5 bg-amber-500/20 text-amber-300 rounded text-[11px]">
-                      Section: Related
-                    </span>
-                  )}
+              {/* Batch Calendar (For Group Tour) */}
+              {tourType === 'Group' && batchDates.length > 0 && (
+                <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-3">
+                  <h4 className="text-xs font-bold text-orange-400 uppercase tracking-wider flex items-center gap-1.5">
+                    <CalendarIcon className="w-4 h-4" /> Upcoming Departure Batches
+                  </h4>
+                  <div className="space-y-2">
+                    {batchDates.map((b, i) => (
+                      <div key={i} className="p-3 bg-slate-950/80 rounded-xl text-xs flex items-center gap-3">
+                        <span className="font-bold text-white min-w-24">{b.month}:</span>
+                        <div className="flex flex-wrap gap-2">
+                          {b.ranges.map((r, rIdx) => (
+                            <span key={rIdx} className="px-2.5 py-1 bg-orange-500/10 text-orange-300 border border-orange-500/20 rounded-md font-semibold">
+                              {r}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
 
             {/* Modal Footer */}
             <div className="px-6 py-4 bg-slate-950 border-t border-slate-800 flex items-center justify-between shrink-0">
               <span className="text-xs text-slate-400">
-                URL Preview: <span className="text-orange-400 font-mono">https://wanderphilia.com/trips/{slug || '...'}</span>
+                Target URL: <span className="text-orange-400 font-mono">https://wanderphilia.com/trips/{slug || '...'}</span>
               </span>
               <div className="flex items-center gap-2">
                 <Button
@@ -2081,7 +3329,7 @@ export default function WebsiteItineraryPage() {
                   variant="outline"
                   size="sm"
                   onClick={() => setPreviewModalOpen(false)}
-                  className="border-slate-800 text-xs"
+                  className="border-slate-800 text-xs cursor-pointer"
                 >
                   Back to Editing
                 </Button>
@@ -2093,7 +3341,7 @@ export default function WebsiteItineraryPage() {
                     await handleSaveToMongoDB();
                     setPreviewModalOpen(false);
                   }}
-                  className="bg-[#ff5d09] hover:bg-orange-600 text-white text-xs px-4"
+                  className="bg-[#ff5d09] hover:bg-orange-600 text-white text-xs px-4 cursor-pointer"
                 >
                   {saving ? 'Publishing...' : 'Publish to Website Now'}
                 </Button>
@@ -2106,3 +3354,18 @@ export default function WebsiteItineraryPage() {
   );
 }
 
+
+export default function WebsiteItineraryPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center text-white gap-3">
+          <div className="w-10 h-10 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
+          <p className="text-xs text-slate-400">Loading Itinerary Studio...</p>
+        </div>
+      }
+    >
+      <WebsiteItineraryInner />
+    </Suspense>
+  );
+}

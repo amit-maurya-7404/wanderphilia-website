@@ -865,7 +865,7 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
   const total = selections.reduce((sum, item) => sum + item.price, 0)
   const staticTrip = useMemo(() => slug ? trips.find(t => t.slug === slug || t.id === slug) : undefined, [slug])
   const [dynamicTrip, setDynamicTrip] = useState<Trip | null>(null)
-  const [loadingDynamic, setLoadingDynamic] = useState(false)
+  const [loadingDynamic, setLoadingDynamic] = useState(!staticTrip && !!slug)
 
   useEffect(() => {
     if (!staticTrip && slug) {
@@ -873,12 +873,14 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
       fetch(`/api/trips?slug=${encodeURIComponent(slug)}`)
         .then(res => (res.ok ? res.json() : null))
         .then(data => {
-          if (data && !data.error) {
+          if (data && !data.error && data.slug) {
             setDynamicTrip(data as Trip)
           }
         })
         .catch(() => {})
         .finally(() => setLoadingDynamic(false))
+    } else {
+      setLoadingDynamic(false)
     }
   }, [staticTrip, slug])
 
