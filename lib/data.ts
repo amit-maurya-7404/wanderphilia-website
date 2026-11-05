@@ -17594,6 +17594,65 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
         { city: 'JOWAI', hotel: 'Loomkyntoor Resort or similar' },
         { city: 'CHERRAPUNJI', hotel: 'Ri Sohra Resort or similar' },
         { city: 'KAZIRANGA', hotel: 'Foxtail Orchid Resort or similar' }
+      ],
+      transfers: [
+        'Guwahati Airport / Railway Station pick-up and scenic transfer to Shillong (100 KM / 3-4 Hrs)',
+        'Shillong to Jowai scenic transfer via Lalong Park, Thadlaskein Lake & Krang Suri Waterfalls',
+        'Jowai to Cherrapunji transfer via Dawki Umngot River & Mawlynnong Cleanest Village (190 KM)',
+        'Cherrapunji local transfers to Tyrna village for Double Decker Living Root Bridge trek',
+        'Cherrapunji canyon & waterfalls exploration and scenic return transfer to Shillong (60 KM)',
+        'Shillong to Kaziranga National Park scenic highway transfer via Assam tea gardens (280 KM)',
+        'Kaziranga National Park safari transfers across Central Kohora and Western Bagori ranges',
+        'Kaziranga National Park to Guwahati Airport departure drop-off (200 KM / 5 Hrs)'
+      ],
+      activities: [
+        {
+          city: 'SHILLONG',
+          items: [
+            'Umiam Lake (Barapani) panoramic viewpoint & photography',
+            'Evening walk through vibrant Police Bazaar & local street food tasting',
+            'Elephant Falls & Sacred Mawkdok Dympep Valley Viewpoint'
+          ]
+        },
+        {
+          city: 'JOWAI',
+          items: [
+            'Swimming in the turquoise blue waters of Krang Suri Waterfalls',
+            'Exploring scenic Lalong Park & Thadlaskein Lake',
+            'Tyrshi Waterfalls exploration'
+          ]
+        },
+        {
+          city: 'DAWKI & MAWLYNNONG',
+          items: [
+            'Boating on the crystal-clear glass waters of Umngot River in Dawki',
+            'Visit India - Bangladesh International Border at Tamabil',
+            'Guided village walk in Mawlynnong (Asia\'s Cleanest Village)',
+            'Balancing Rock & Riwai Single Living Root Bridge'
+          ]
+        },
+        {
+          city: 'CHERRAPUNJI (SOHRA)',
+          items: [
+            'Challenging 3,500 steps Nongriat trek to 200-year-old Double Decker Living Root Bridge',
+            'Natural freshwater spring pools with natural fish pedicure',
+            'Viewing Nohkalikai Falls (tallest plunge waterfall in India)',
+            'Seven Sisters Falls, Eco Park, and Mawsmai / Arwah Limestone Caves'
+          ]
+        },
+        {
+          city: 'KAZIRANGA NATIONAL PARK',
+          items: [
+            'Early morning Elephant Safari at Bagori Range for close rhino sightings',
+            '02 Thrilling Open Jeep Safaris in Central Kohora & Western Bagori Ranges',
+            'Spotting One-Horned Rhinoceros, Wild Water Buffaloes, and Elephants',
+            'Kaziranga National Orchid and Biodiversity Park & Assam Tea Garden walk'
+          ]
+        }
+      ],
+      meals: [
+        '07 Daily complimentary buffet breakfasts at all hotels and resorts',
+        'Local Khasi and Assamese culinary recommendations'
       ]
     },
     highlights: [

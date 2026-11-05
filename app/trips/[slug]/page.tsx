@@ -407,12 +407,17 @@ function parseDayItinerarySummary(day: { day: number; title: string; description
 }
 
 function getTripSummaryDetails(trip: typeof trips[0]) {
-  if (trip.summaryDetails && trip.summaryDetails.accommodation && trip.summaryDetails.accommodation.length > 0) {
+  const customAccom = trip.summaryDetails?.accommodation || []
+  const customMeals = trip.summaryDetails?.meals || []
+  const customTransfers = trip.summaryDetails?.transfers || []
+  const customActivities = trip.summaryDetails?.activities || []
+
+  if (customAccom.length > 0 && customMeals.length > 0 && customTransfers.length > 0 && customActivities.length > 0) {
     return {
-      accommodation: trip.summaryDetails.accommodation || [],
-      meals: trip.summaryDetails.meals || [],
-      transfers: trip.summaryDetails.transfers || [],
-      activities: trip.summaryDetails.activities || [],
+      accommodation: customAccom,
+      meals: customMeals,
+      transfers: customTransfers,
+      activities: customActivities,
     }
   }
 
@@ -479,23 +484,34 @@ function getTripSummaryDetails(trip: typeof trips[0]) {
   }
 
   const accommodation =
-    accommodationList.length > 0
-      ? accommodationList
-      : hotelsList.length > 0
-        ? hotelsList
-        : [`${Math.max(1, trip.duration - 1)} Nights Hotel Accommodation / Similar`]
+    customAccom.length > 0
+      ? customAccom
+      : accommodationList.length > 0
+        ? accommodationList
+        : hotelsList.length > 0
+          ? hotelsList
+          : [`${Math.max(1, trip.duration - 1)} Nights Hotel Accommodation / Similar`]
 
-  const meals = mealsList.length > 0
-    ? mealsList
-    : [`${Math.max(1, trip.duration - 1)} Breakfasts included as per plan`]
+  const meals =
+    customMeals.length > 0
+      ? customMeals
+      : mealsList.length > 0
+        ? mealsList
+        : [`${Math.max(1, trip.duration - 1)} Breakfasts included as per plan`]
 
-  const transfers = transfersList.length > 0
-    ? transfersList
-    : ['Airport pick-up, drop-off and all sightseeing transfers in private vehicle']
+  const transfers =
+    customTransfers.length > 0
+      ? customTransfers
+      : transfersList.length > 0
+        ? transfersList
+        : ['Airport pick-up, drop-off and all sightseeing transfers in private vehicle']
 
-  const activities = trip.highlights && trip.highlights.length > 0
-    ? trip.highlights
-    : activitiesList
+  const activities =
+    customActivities.length > 0
+      ? customActivities
+      : trip.highlights && trip.highlights.length > 0
+        ? trip.highlights
+        : activitiesList
 
   return { accommodation, meals, transfers, activities }
 }
