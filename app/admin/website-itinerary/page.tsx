@@ -196,12 +196,7 @@ function WebsiteItineraryInner() {
   const [description, setDescription] = useState('');
   const [route, setRoute] = useState('');
   const [staySummary, setStaySummary] = useState('');
-  const [highlights, setHighlights] = useState<string[]>([
-    'Scenic High-Altitude Mountain Passes & Breathtaking Panoramas',
-    'Handpicked Premium Stays with Delicious Local & Buffet Meals',
-    'Experienced Local Trip Captain & 24/7 Dedicated On-Ground Support',
-    'Seamless All-Permits, Entry Passes & Sightseeing Transfers Included'
-  ]);
+  const [highlights, setHighlights] = useState<string[]>([]);
 
   // Pricing Options Matrix
   const [pricingOptions, setPricingOptions] = useState(DEFAULT_PRICING_OPTIONS);
@@ -381,7 +376,12 @@ function WebsiteItineraryInner() {
             setGalleryImages(tripData.images);
           }
 
-          if (Array.isArray(tripData.highlights)) setHighlights(tripData.highlights);
+          const isGenericHighlights = Array.isArray(tripData.highlights) &&
+            tripData.highlights.some((h: string) => h.includes('Mountain Passes') || h.includes('Handpicked Premium Stays'));
+
+          if (Array.isArray(tripData.highlights) && tripData.highlights.length > 0 && !isGenericHighlights) {
+            setHighlights(tripData.highlights);
+          }
           if (Array.isArray(tripData.included) || Array.isArray(tripData.inclusions)) {
             setInclusions(tripData.included || tripData.inclusions);
           }
@@ -428,6 +428,14 @@ function WebsiteItineraryInner() {
               };
             });
             setDayPlans(mappedDays);
+
+            // If highlights are missing or generic, auto-populate from day plan experiences
+            if (!tripData.highlights || tripData.highlights.length === 0 || isGenericHighlights) {
+              const autoExps = extractExperienceTitlesFromDayPlans(mappedDays);
+              if (autoExps.length > 0) {
+                setHighlights(autoExps);
+              }
+            }
             if (Array.isArray(tripData.accommodations) && tripData.accommodations.length > 1) {
               setHotelStays(tripData.accommodations.map((a: any) => ({
                 city: a.city,
@@ -884,6 +892,64 @@ function WebsiteItineraryInner() {
     });
   };
 
+  // Helper to extract clean experience/activity titles from Day Plans
+  const extractExperienceTitlesFromDayPlans = (plans: DayPlanItem[]): string[] => {
+    const results: string[] = [];
+    plans.forEach((dp) => {
+      dp.timeline.forEach((point) => {
+        const trimmed = point.trim();
+        if (!trimmed) return;
+
+        // Skip arrival, transit, breakfast, checkin, departure logistics
+        const isLogistics = /^(arrival|arrive|check-?in|check in|smooth check|freshen up|departure|return flight|drop-?off|drop off|overnight stay|enjoy morning breakfast|complete check-?out|transfer to.*airport|scenic highway drive)/i.test(trimmed);
+        if (isLogistics) return;
+
+        let title = trimmed;
+        // If "Title: Description" format, extract title
+        const colonIdx = trimmed.indexOf(':');
+        if (colonIdx > 0 && colonIdx < 80) {
+          title = trimmed.slice(0, colonIdx).trim();
+        } else if (title.length > 75) {
+          // If long line without colon, cut at word boundary
+          title = title.slice(0, 70).replace(/\s+[^\s]*$/, '...');
+        }
+
+        // Clean common leading action verbs
+        title = title.replace(/^(visit|explore|enjoy|experience)\s+/i, '');
+        title = title.charAt(0).toUpperCase() + title.slice(1);
+
+        if (title && title.length > 3 && !results.some(r => r.toLowerCase() === title.toLowerCase())) {
+          results.push(title);
+        }
+      });
+    });
+    return results;
+  };
+
+  // Helper to extract experiences from Zoho row experiences
+  const extractExperiencesFromZohoRows = (rows: any[]): string[] => {
+    const results: string[] = [];
+    rows.forEach((r: any) => {
+      if (Array.isArray(r.experiences)) {
+        r.experiences.forEach((exp: string) => {
+          if (!exp || !exp.trim()) return;
+          let clean = exp.trim()
+            .replace(/^(visit|explore|enjoy|experience|drive to|proceed to|transfer to)\s+/i, '')
+            .replace(/:\s*.*$/, '')
+            .trim();
+          const isLogistics = /^(arrival|arrive|check-?in|hotel check|smooth check|freshen up|departure|return flight|drop-?off|drop off|overnight stay|breakfast at)/i.test(clean);
+          if (clean && !isLogistics) {
+            clean = clean.charAt(0).toUpperCase() + clean.slice(1);
+            if (!results.some(item => item.toLowerCase() === clean.toLowerCase())) {
+              results.push(clean);
+            }
+          }
+        });
+      }
+    });
+    return results;
+  };
+
   // Import Zoho CRM Fixed Itinerary
   const handleImportZohoProduct = async (zohoId: string) => {
     if (!zohoId) return;
@@ -980,6 +1046,17 @@ function WebsiteItineraryInner() {
         );
         if (routeCities.length > 0) {
           setRoute(routeCities.join(' → '));
+        }
+
+        // Auto-extract and populate experience titles into Key Highlights
+        const zohoExps = extractExperiencesFromZohoRows(itin.dayRows);
+        if (zohoExps.length > 0) {
+          setHighlights(zohoExps);
+        } else {
+          const planExps = extractExperienceTitlesFromDayPlans(enrichedDays);
+          if (planExps.length > 0) {
+            setHighlights(planExps);
+          }
         }
       }
 
@@ -1886,19 +1963,49 @@ function WebsiteItineraryInner() {
             />
           </div>
 
-          {/* Key Highlights with Add Button */}
+          {/* Key Highlights (Experience Titles) with Auto-Fill & Add Button */}
           <div>
-            <div className="flex items-center justify-between mb-2">
-              <label className="block text-xs font-medium text-slate-300">Key Highlights</label>
-              <Button
-                type="button"
-                size="sm"
-                variant="outline"
-                onClick={() => setHighlights([...highlights, ''])}
-                className="text-xs text-orange-400 hover:text-orange-300 border-slate-800 h-7 px-2.5 cursor-pointer"
-              >
-                <Plus className="w-3 h-3 mr-1" /> Add Highlight
-              </Button>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+              <div>
+                <label className="block text-xs font-bold text-white flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-orange-400" />
+                  Key Highlights / Experience Titles ({highlights.length})
+                </label>
+                <p className="text-[11px] text-slate-400">
+                  Individual titles of the curated activities & experiences featured in this tour.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    const exps = extractExperienceTitlesFromDayPlans(dayPlans);
+                    if (exps.length > 0) {
+                      setHighlights(exps);
+                      setSaveSuccessMsg(`Populated ${exps.length} experience titles into Highlights!`);
+                      setTimeout(() => setSaveSuccessMsg(null), 3000);
+                    } else {
+                      alert('No experience titles found in Day Plans. Add activities to Day Plans first.');
+                    }
+                  }}
+                  className="text-xs text-orange-400 hover:text-orange-300 border-orange-500/30 bg-orange-500/10 hover:bg-orange-500/20 h-7 px-2.5 cursor-pointer shadow-xs"
+                >
+                  <Sparkles className="w-3 h-3 mr-1" /> Auto-Fill from Day Experiences
+                </Button>
+
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setHighlights([...highlights, ''])}
+                  className="text-xs text-slate-300 hover:text-white border-slate-800 h-7 px-2.5 cursor-pointer"
+                >
+                  <Plus className="w-3 h-3 mr-1" /> Add Highlight
+                </Button>
+              </div>
             </div>
             <div className="space-y-2">
               {highlights.map((h, idx) => (
@@ -1910,7 +2017,7 @@ function WebsiteItineraryInner() {
                       copy[idx] = e.target.value;
                       setHighlights(copy);
                     }}
-                    placeholder={`Highlight #${idx + 1}`}
+                    placeholder={`Experience Title #${idx + 1} (e.g. Jawai Leopard Safari in 4x4 Jeep)`}
                     className="bg-slate-950 border-slate-800 text-white text-xs py-1.5"
                   />
                   <button
