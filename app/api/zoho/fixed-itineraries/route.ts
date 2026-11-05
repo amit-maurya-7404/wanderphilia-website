@@ -5,6 +5,87 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 export const fetchCache = 'force-no-store';
 
+const MONTH_NAMES = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December'
+];
+
+const MONTH_SHORT = [
+  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+];
+
+function parseDateInput(raw: any, fallbackYear = 2026): { day: number; monthIndex: number; year: number } | null {
+  if (!raw) return null;
+  const str = String(raw).trim();
+  if (!str) return null;
+
+  // 1. ISO YYYY-MM-DD
+  const isoMatch = str.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})/);
+  if (isoMatch) {
+    const y = parseInt(isoMatch[1], 10);
+    const m = parseInt(isoMatch[2], 10) - 1;
+    const d = parseInt(isoMatch[3], 10);
+    return { day: d, monthIndex: m, year: y };
+  }
+
+  // 2. DD/MM/YYYY or DD-MM-YYYY
+  const dmyMatch = str.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{4})/);
+  if (dmyMatch) {
+    const d = parseInt(dmyMatch[1], 10);
+    const m = parseInt(dmyMatch[2], 10) - 1;
+    const y = parseInt(dmyMatch[3], 10);
+    return { day: d, monthIndex: m, year: y };
+  }
+
+  // 3. DD Month YYYY or DD Month (e.g. "10 May 2026", "10th May", "05 Jun")
+  const textMatch = str.match(/(\d{1,2})(?:st|nd|rd|th)?\s+([A-Za-z]+)(?:\s+(\d{4}))?/i);
+  if (textMatch) {
+    const d = parseInt(textMatch[1], 10);
+    const mName = textMatch[2].toLowerCase();
+    const y = textMatch[3] ? parseInt(textMatch[3], 10) : fallbackYear;
+    const m = MONTH_NAMES.findIndex(mn => mn.toLowerCase().startsWith(mName.slice(0, 3)));
+    if (m !== -1) {
+      return { day: d, monthIndex: m, year: y };
+    }
+  }
+
+  // 4. Month DD, YYYY or Month DD (e.g. "May 10", "May 10, 2026")
+  const mFirstMatch = str.match(/([A-Za-z]+)\s+(\d{1,2})(?:st|nd|rd|th)?(?:\s*,?\s*(\d{4}))?/i);
+  if (mFirstMatch) {
+    const mName = mFirstMatch[1].toLowerCase();
+    const d = parseInt(mFirstMatch[2], 10);
+    const y = mFirstMatch[3] ? parseInt(mFirstMatch[3], 10) : fallbackYear;
+    const m = MONTH_NAMES.findIndex(mn => mn.toLowerCase().startsWith(mName.slice(0, 3)));
+    if (m !== -1) {
+      return { day: d, monthIndex: m, year: y };
+    }
+  }
+
+  return null;
+}
+
+function formatRange(start: any, end: any, durationDays = 6): { monthKey: string; rangeStr: string } | null {
+  const s = parseDateInput(start);
+  if (!s) return null;
+
+  let e = parseDateInput(end, s.year);
+  if (!e) {
+    const d = new Date(s.year, s.monthIndex, s.day + Math.max(1, durationDays - 1));
+    e = { day: d.getDate(), monthIndex: d.getMonth(), year: d.getFullYear() };
+  }
+
+  const sPad = String(s.day).padStart(2, '0');
+  const ePad = String(e.day).padStart(2, '0');
+  const sMonth = MONTH_SHORT[s.monthIndex];
+  const eMonth = MONTH_SHORT[e.monthIndex];
+
+  const rangeStr = `${sPad} ${sMonth} - ${ePad} ${eMonth}`;
+  const monthKey = `${MONTH_NAMES[s.monthIndex]} ${s.year}`;
+
+  return { monthKey, rangeStr };
+}
+
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
@@ -114,6 +195,64 @@ export async function GET(req: NextRequest) {
       const destination = p.Event_Category || p.Destinations || p.Destination_State || p.Product_Category || '';
       const destinationType = p.Destination_Type || 'India';
 
+      // Extract Group Departure Dates subform (e.g. "Group_Departure_Dates")
+      const rawGroupSubform: any[] =
+        p.Group_Departure_Dates ||
+        p.Group_Departures ||
+        p.Group_Dates ||
+        p.Group_Details ||
+        p.Batch_Dates ||
+        (Object.entries(p).find(([k, v]) =>
+          Array.isArray(v) &&
+          k !== 'Day_wise_detailed_itinerary' &&
+          k !== 'Activities_and_Experiences_1' &&
+          k !== 'Tax' &&
+          k !== 'Tag' &&
+          (/group.*depart/i.test(k) || /group.*date/i.test(k) || /departure.*date/i.test(k) || /batch/i.test(k))
+        )?.[1] as any[]) || [];
+
+      const batchMap: Record<string, string[]> = {};
+      let extractedGroupSize = Number(p.Group_Size) || Number(p.Max_Group_Size) || 0;
+
+      if (Array.isArray(rawGroupSubform) && rawGroupSubform.length > 0) {
+        rawGroupSubform.forEach((r: any) => {
+          // Extract Group Size if present on row
+          const rowSize = Number(r.Group_Size || r.Group_size || r['Group Size'] || r.Size);
+          if (rowSize > 0 && extractedGroupSize === 0) {
+            extractedGroupSize = rowSize;
+          }
+
+          // Extract Start Date
+          const rawStart = r.Start_Date_Month || r.Start_Date || r.Start_Date_month || r.Start_date_month || r['Start Date-Month'] || r['Start Date - Month'] || r.Start || '';
+          // Extract End Date
+          const rawEnd = r.End_Date_month || r.End_Date_Month || r.End_Date || r.End_date_month || r['End Date-month'] || r['End Date - Month'] || r.End || '';
+
+          if (typeof rawStart === 'string' && rawStart.includes('-') && !rawStart.match(/^\d{4}-\d{2}-\d{2}$/)) {
+            const splitRange = rawStart.split('-').map(s => s.trim());
+            const parsed = formatRange(splitRange[0], splitRange[1] || rawEnd, calculatedDays);
+            if (parsed) {
+              if (!batchMap[parsed.monthKey]) batchMap[parsed.monthKey] = [];
+              if (!batchMap[parsed.monthKey].includes(parsed.rangeStr)) {
+                batchMap[parsed.monthKey].push(parsed.rangeStr);
+              }
+            }
+          } else if (rawStart) {
+            const parsed = formatRange(rawStart, rawEnd, calculatedDays);
+            if (parsed) {
+              if (!batchMap[parsed.monthKey]) batchMap[parsed.monthKey] = [];
+              if (!batchMap[parsed.monthKey].includes(parsed.rangeStr)) {
+                batchMap[parsed.monthKey].push(parsed.rangeStr);
+              }
+            }
+          }
+        });
+      }
+
+      const batchDates = Object.entries(batchMap).map(([month, ranges]) => ({
+        month,
+        ranges
+      }));
+
       return NextResponse.json({
         success: true,
         itinerary: {
@@ -124,6 +263,9 @@ export async function GET(req: NextRequest) {
           category: p.Itinerary_Category || p.Product_Category || '',
           noOfDays: calculatedDays,
           noOfNights: calculatedNights,
+          groupSize: extractedGroupSize > 0 ? extractedGroupSize : undefined,
+          batchDates: batchDates.length > 0 ? batchDates : undefined,
+          tourType: batchDates.length > 0 ? 'Group' : undefined,
           dayRows
         }
       });

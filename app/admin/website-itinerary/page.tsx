@@ -262,10 +262,7 @@ function WebsiteItineraryInner() {
   // Interactive Visual Batch Calendar State
   const [currentCalendarDate, setCurrentCalendarDate] = useState(new Date(2026, 4, 1)); // Default May 2026
   const [hoveredDayNum, setHoveredDayNum] = useState<number | null>(null);
-  const [batchDates, setBatchDates] = useState<BatchDateItem[]>([
-    { month: 'May 2026', ranges: ['10 May - 15 May', '20 May - 25 May'] },
-    { month: 'June 2026', ranges: ['05 Jun - 10 Jun', '18 Jun - 23 Jun'] }
-  ]);
+  const [batchDates, setBatchDates] = useState<BatchDateItem[]>([]);
 
   // Page Placements Matrix
   const [placements, setPlacements] = useState<Placements>({
@@ -1095,6 +1092,18 @@ function WebsiteItineraryInner() {
             setHighlights(planExps);
           }
         }
+      }
+
+      // Auto-populate Group Departures Batch Dates & Group Size if present from Zoho CRM
+      if (Array.isArray(itin.batchDates) && itin.batchDates.length > 0) {
+        setBatchDates(itin.batchDates);
+        setTourType('Group');
+      } else {
+        setBatchDates([]);
+      }
+
+      if (itin.groupSize && Number(itin.groupSize) > 0) {
+        setGroupSize(Number(itin.groupSize));
       }
 
       setSaveSuccessMsg(`Successfully imported "${itin.name}" with full logistics!`);
