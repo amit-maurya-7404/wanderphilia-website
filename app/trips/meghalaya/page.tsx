@@ -40,6 +40,8 @@ export default function MeghalayaPage() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [carouselIndex1, setCarouselIndex1] = useState(0)
   const [carouselIndex2, setCarouselIndex2] = useState(0)
+    const [groupCarouselIndex, setGroupCarouselIndex] = useState(0)
+  const [honeymoonCarouselIndex, setHoneymoonCarouselIndex] = useState(0)
   const [familyCarouselIndex, setFamilyCarouselIndex] = useState(0)
   const [customizedCarouselIndex, setCustomizedCarouselIndex] = useState(0)
   const [isMobile, setIsMobile] = useState(false)
@@ -127,7 +129,9 @@ export default function MeghalayaPage() {
   useEffect(() => {
     setCarouselIndex1(0)
     setCarouselIndex2(0)
+    setGroupCarouselIndex(0)
     setFamilyCarouselIndex(0)
+    setHoneymoonCarouselIndex(0)
     setCustomizedCarouselIndex(0)
   }, [cardsPerView])
 
@@ -169,6 +173,14 @@ export default function MeghalayaPage() {
     fetchGallery()
   }, [categoryId])
 
+    const groupPackages = useMemo(() => {
+    return getTripsBySection('group')
+  }, [getTripsBySection, dynamicTrips])
+
+  const honeymoonPackages = useMemo(() => {
+    return getTripsBySection('honeymoon')
+  }, [getTripsBySection, dynamicTrips])
+
   // Family Packages Data
   const familyPackages = useMemo(() => {
     return getTripsBySection('family')
@@ -182,7 +194,7 @@ export default function MeghalayaPage() {
   const [selectedDuration, setSelectedDuration] = useState<number | null>(null)
 
   const allCategoryTrips = useMemo(() => {
-    const combined = [...categoryTrips, ...familyPackages, ...customizedPackages]
+    const combined = [...categoryTrips, ...(typeof groupPackages !== 'undefined' ? groupPackages : []), ...familyPackages, ...(typeof honeymoonPackages !== 'undefined' ? honeymoonPackages : []), ...customizedPackages]
     const seen = new Set<string>()
     return combined.filter(trip => {
       const id = trip.id || trip.slug
@@ -199,6 +211,22 @@ export default function MeghalayaPage() {
       return tripNights === selectedDuration
     })
   }, [categoryTrips, selectedDuration])
+
+    const filteredGroupPackages = useMemo(() => {
+    if (!selectedDuration) return groupPackages
+    return groupPackages.filter(t => {
+      const tripNights = t.nights !== undefined ? t.nights : (t.duration ? t.duration - 1 : 0)
+      return tripNights === selectedDuration
+    })
+  }, [groupPackages, selectedDuration])
+
+  const filteredHoneymoonPackages = useMemo(() => {
+    if (!selectedDuration) return honeymoonPackages
+    return honeymoonPackages.filter(t => {
+      const tripNights = t.nights !== undefined ? t.nights : (t.duration ? t.duration - 1 : 0)
+      return tripNights === selectedDuration
+    })
+  }, [honeymoonPackages, selectedDuration])
 
   const filteredFamilyPackages = useMemo(() => {
     if (!selectedDuration) return familyPackages

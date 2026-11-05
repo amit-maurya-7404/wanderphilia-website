@@ -525,9 +525,22 @@ export function getTripInclusionDetails(trip: Partial<Trip>): {
     }
   } else if (trip.mealsCount !== undefined) {
     mealsStr = typeof trip.mealsCount === 'number' ? `${trip.mealsCount} Meals` : String(trip.mealsCount)
+  } else if (trip.summaryDetails?.meals && trip.summaryDetails.meals.length > 0) {
+    const allNumbers = trip.summaryDetails.meals[0].match(/\b\d+\b/g);
+    if (allNumbers && allNumbers.length > 0) {
+      const sum = allNumbers.reduce((acc, n) => acc + parseInt(n, 10), 0);
+      mealsStr = `${sum} Meals`;
+    } else {
+      mealsStr = `${trip.summaryDetails.meals.length} Meals`;
+    }
   } else {
-    const mealCount = trip.nights ? trip.nights : Math.max(1, duration - 1)
-    mealsStr = `${mealCount} Meals`
+    const inclStr = (trip.included || []).join(' ').toLowerCase();
+    const hasB = inclStr.includes('breakfast');
+    const hasD = inclStr.includes('dinner');
+    const hasL = inclStr.includes('lunch');
+    const perDay = (hasB ? 1 : 0) + (hasD ? 1 : 0) + (hasL ? 1 : 0);
+    const mealCount = perDay > 0 ? (trip.nights || Math.max(1, duration - 1)) * perDay : (trip.nights ? trip.nights : Math.max(1, duration - 1));
+    mealsStr = `${mealCount} Meals`;
   }
 
   // 5. VISA
@@ -17794,169 +17807,311 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
       'Boating charges at Dawki Umngot river',
       'Entry tickets, camera fees, and personal meals'
     ]
-  },
+  }
+,
   {
-    id: 'WNDPI-SRI-001',
-    title: '6 Nights / 7 Days Tropical Wonders of Sri Lanka Group Expedition',
-    slug: '6-nights-7-days-tropical-wonders-of-sri-lanka',
+    id: 'sri-lanka-7n-8d',
+    title: '8 Days Tropical Wonders of Sri Lanka — Sigiriya, Nuwara Eliya, Yala & Bentota',
+    slug: '8-days-best-of-sri-lanka-tropical-wonders',
     image: '/images/srilanka/hero.jpg',
     destination: 'Sri Lanka',
     region: 'South Asia',
     category: 'sri-lanka',
     tripType: 'International',
-    tourType: 'Group',
-    description: 'Immerse yourself in the jewel of the Indian Ocean! From the ancient UNESCO Sigiriya Rock Fortress and mist-covered tea gardens of Nuwara Eliya to the legendary Nine Arches Bridge in Ella, wildlife safaris in Yala, and sun-kissed beaches of Mirissa & Bentota, experience the ultimate curated Sri Lanka getaway with Wanderphilia.',
-    duration: 7,
-    nights: 6,
-    route: 'Colombo → Sigiriya → Kandy → Nuwara Eliya → Ella → Mirissa → Bentota → Colombo',
-    staySummary: '1N Sigiriya | 1N Kandy | 1N Nuwara Eliya | 1N Ella | 2N Bentota/Mirissa',
-    price: 34999,
+    tourType: 'Customized',
+    description: 'Immerse yourself in the jewel of the Indian Ocean! From the ancient UNESCO Sigiriya Rock Fortress and mist-covered tea gardens of Nuwara Eliya to the legendary Nine Arches Bridge in Ella, thrilling wildlife safari in Yala National Park, and sun-kissed beaches of Mirissa & Bentota, experience the ultimate curated Sri Lanka getaway with Wanderphilia.',
+    duration: 8,
+    nights: 7,
+    route: 'Colombo → Sigiriya (Ravana’s Lanka) → Nuwara Eliya → Ella → Yala National Park → Mirissa → Bentota → Colombo',
+    staySummary: '1N Sigiriya | 2N Nuwara Eliya | 1N Yala | 2N Bentota | 1N Colombo',
+    price: 39095,
     rating: 4.9,
     difficulty: 'Easy to Moderate',
-    groupSize: 16,
+    groupSize: 12,
     dates: [
-      { startDate: '2026-05-10', endDate: '2026-05-16', spots: 16 },
-      { startDate: '2026-05-24', endDate: '2026-05-30', spots: 16 },
-      { startDate: '2026-06-07', endDate: '2026-06-13', spots: 16 }
-    ],
-    heroMedia: [
-      { type: 'image' as const, src: '/images/srilanka/hero.jpg', alt: 'Sri Lanka Landscape' },
-      { type: 'image' as const, src: '/images/srilanka/sigiriya-rock.jpg', alt: 'Sigiriya Rock Fortress' },
-      { type: 'image' as const, src: '/images/srilanka/nine-arches-bridge.jpg', alt: 'Nine Arches Bridge Ella' },
-      { type: 'image' as const, src: '/images/srilanka/mirissa-beach.jpg', alt: 'Mirissa Beach Sri Lanka' }
-    ],
-    overviewPoints: [
-      'Route: Colombo → Sigiriya → Kandy → Nuwara Eliya → Ella → Mirissa → Bentota → Colombo.',
-      'Duration: 6 Nights / 7 Days.',
-      'Trip Start: Bandaranaike International Airport (Colombo).',
-      'Trip End: Bandaranaike International Airport (Colombo).',
-      'Highlights: UNESCO Sigiriya Rock, Dambulla Cave Temple, Sacred Tooth Relic Temple, Scenic Train to Ella, Nine Arches Bridge, Yala Wildlife Safari, Mirissa Whale Coast & Bentota Water Sports.'
-    ],
-    highlights: [
-      'Sigiriya Lion Rock Fortress Exploration',
-      'Dambulla Golden Cave Temple Tour',
-      'Kandy Cultural Dance & Sacred Tooth Relic Temple',
-      'Nuwara Eliya High-Altitude Tea Estates & Gregory Lake',
-      'Iconic Ella Nine Arches Bridge Train Journey',
-      'Yala National Park Wild Leopard & Elephant Safari',
-      'Relaxation & Water Sports along Bentota and Mirissa Golden Beaches'
-    ],
-    costingDetails: [
-      { label: 'Double Sharing Basis', value: '₹37,999' },
-      { label: 'Triple Sharing Basis', value: '₹34,999' }
+      { startDate: '2026-05-10', endDate: '2026-05-17', spots: 16 },
+      { startDate: '2026-05-24', endDate: '2026-05-31', spots: 16 },
+      { startDate: '2026-06-07', endDate: '2026-06-14', spots: 16 },
+      { startDate: '2026-06-21', endDate: '2026-06-28', spots: 16 },
+      { startDate: '2026-07-05', endDate: '2026-07-12', spots: 16 },
+      { startDate: '2026-07-19', endDate: '2026-07-26', spots: 16 }
     ],
     batchDates: [
       {
         month: 'May 2026',
-        ranges: ['10 May - 16 May', '24 May - 30 May']
+        ranges: ['10 May - 17 May', '24 May - 31 May']
       },
       {
         month: 'June 2026',
-        ranges: ['07 Jun - 13 Jun', '21 Jun - 27 Jun']
+        ranges: ['07 Jun - 14 Jun', '21 Jun - 28 Jun']
+      },
+      {
+        month: 'July 2026',
+        ranges: ['05 Jul - 12 Jul', '19 Jul - 26 Jul']
       }
     ],
+    heroMedia: [
+      { type: 'image' as const, src: '/images/srilanka/hero.jpg', alt: 'Sri Lanka Tropical Landscape' },
+      { type: 'image' as const, src: '/images/srilanka/sigiriya-rock.jpg', alt: 'Sigiriya Rock Fortress' },
+      { type: 'image' as const, src: '/images/srilanka/nine-arches-bridge.jpg', alt: 'Nine Arches Bridge Ella' },
+      { type: 'image' as const, src: '/images/srilanka/nuwara-eliya.jpg', alt: 'Nuwara Eliya Tea Gardens' },
+      { type: 'image' as const, src: '/images/srilanka/yala.jpg', alt: 'Yala National Park Safari' },
+      { type: 'image' as const, src: '/images/srilanka/mirissa-beach.jpg', alt: 'Mirissa Coastal Beach' }
+    ],
+    overviewPoints: [
+      'Route: Colombo → Sigiriya → Nuwara Eliya → Ella → Yala → Mirissa → Bentota → Colombo.',
+      'Duration: 7 Nights / 8 Days.',
+      'Trip Start: Bandaranaike International Airport, Colombo.',
+      'Trip End: Bandaranaike International Airport, Colombo.',
+      'Highlights: UNESCO Sigiriya Rock, Kandy Temple of Tooth Relic, Ashok Vatika, Ella Nine Arches Bridge, Yala Wildlife Safari & Madu River Mangrove Cruise.'
+    ],
+    highlights: [
+      'Sigiriya Sunrise Rock Fortress climb (1,200 ancient steps with panoramic vistas)',
+      'Sacred Temple of the Sacred Tooth Relic (Sri Dalada Maligawa) in Kandy',
+      'Ashok Vatika (Hakgala Botanical Gardens & Seetha Amman Temple) & Gregory Lake',
+      'Iconic Nine Arches Bridge & scenic mountain train journey in Ella',
+      'Thrilling 4x4 open jeep safari in Yala National Park spotting leopards & wild elephants',
+      'Madu Ganga mangrove river boat safari & water sports on Bentota coast',
+      'Pinnawala Elephant Orphanage encounter & Colombo historic city tour'
+    ],
+    accommodations: [
+      { city: 'Sigiriya', hotel: 'Sigiriya Kingdom Resort / Similar', nights: '1 Night' },
+      { city: 'Nuwara Eliya', hotel: 'Oak Ray Summer Breeze / Similar', nights: '2 Nights' },
+      { city: 'Yala National Park', hotel: 'Yala Rain Tree / Similar', nights: '1 Night' },
+      { city: 'Bentota', hotel: 'Club Bentota / Similar', nights: '2 Nights' },
+      { city: 'Colombo', hotel: 'Mandarina Colombo / Similar', nights: '1 Night' }
+    ],
+    costingDetails: [
+      { label: 'Triple Sharing Basis', value: '₹39,095' },
+      { label: 'Double Sharing Basis', value: '₹44,300' }
+    ],
+    inclusionsSummary: {
+      cities: 5,
+      hotels: 5,
+      transfers: 9,
+      experiences: 16,
+      meals: 7,
+      visa: 'Visa Support',
+      tripGuide: 'Chauffeur Guide'
+    },
+    summaryDetails: {
+      accommodation: [
+        { city: 'Sigiriya (1 Night)', hotel: 'Sigiriya Kingdom Resort / Similar' },
+        { city: 'Nuwara Eliya (2 Nights)', hotel: 'Oak Ray Summer Breeze / Similar' },
+        { city: 'Yala National Park (1 Night)', hotel: 'Yala Rain Tree / Similar' },
+        { city: 'Bentota (2 Nights)', hotel: 'Club Bentota / Similar' },
+        { city: 'Colombo (1 Night)', hotel: 'Mandarina Colombo / Similar' }
+      ],
+      meals: [
+        '7 Daily Breakfasts included at all hotels & resorts',
+        'Daily breakfast buffet included across all 5 destinations (Sigiriya, Nuwara Eliya, Yala, Bentota, Colombo)'
+      ],
+      transfers: [
+        'Meet & Greet at Bandaranaike International Airport (CMB) & private AC vehicle transfer to Sigiriya',
+        'En-route transfer & visit to Pinnawala Elephant Orphanage',
+        'Scenic hill country drive from Sigiriya to Nuwara Eliya via Kandy Temple of the Tooth Relic',
+        'Scenic Ceylon Blue Train journey from Nanu Oya to Ella through emerald tea plantations',
+        'Highland descent transfer from Ella to Yala National Park via Ravana Falls',
+        'Exclusive 4x4 open safari jeep transit in Yala National Park',
+        'Southern coastline expressway drive from Yala to Bentota via Mirissa & Weligama beaches',
+        'Madu Ganga scenic river boat cruise transfer through mangrove tunnels',
+        'Southern Expressway transfer from Bentota to Colombo commercial capital',
+        'Private departure airport transfer to Bandaranaike International Airport (CMB)'
+      ],
+      activities: [
+        {
+          city: 'Sigiriya & Pinnawala',
+          title: 'Elephant Sanctuary & Ancient Fortress',
+          items: [
+            'Pinnawala Elephant Orphanage visit & river bathing observation',
+            'Sigiriya Lion Rock Fortress sunrise trek (1,200 ancient steps with 360° jungle panorama)',
+            'Sigiriya ancient water gardens, mirror wall & royal frescoes'
+          ]
+        },
+        {
+          city: 'Kandy & Nuwara Eliya',
+          title: 'Sacred Temples & Emerald Tea Country',
+          items: [
+            'Temple of the Sacred Tooth Relic (Sri Dalada Maligawa) in UNESCO Kandy',
+            'Ashok Vatika (Hakgala Botanical Gardens & Seetha Amman Temple from Ramayana)',
+            'Gregory Lake scenic promenade walk & lakeside recreation',
+            'Cascading highland waterfalls visit (Ramboda Falls & Lovers Leap)',
+            'Guided Ceylon Tea Factory tour & fresh orthodox tea-tasting experience'
+          ]
+        },
+        {
+          city: 'Ella & Yala National Park',
+          title: 'Highland Bridges, Gorges & Wildlife Safari',
+          items: [
+            'Iconic Demodara Nine Arches Bridge viaduct walk & photography',
+            'Roaring Ravana Falls & historic Ravana Cave exploration',
+            'Optional Ella Swing / Flying Ravana mountain gorge zipline adventure',
+            'Thrilling 4x4 open Jeep Safari in Yala National Park spotting leopards & wild elephants'
+          ]
+        },
+        {
+          city: 'Mirissa, Bentota & Colombo',
+          title: 'Beaches, Mangroves & Capital Heritage',
+          items: [
+            'Mirissa Beach Club relaxation & Weligama stilt fishermen coast',
+            'Madu River (Madu Ganga) mangrove boat safari & cinnamon island visit',
+            'Bentota golden sands relaxation & optional water sports (jet ski, banana boat)',
+            'Colombo city tour: Independence Square, Galle Face Green & Gangaramaya Temple',
+            'Premier shopping at Dutch Hospital Precinct & Colombo City Centre'
+          ]
+        }
+      ]
+    },
     itinerary: [
       {
         day: 1,
-        title: 'Arrival in Colombo | Scenic Drive to Sigiriya via Pinnawala',
+        title: 'Arrival in Colombo → Scenic Drive to Sigiriya (Ravana’s Lanka)',
+        image: '/images/srilanka/pinnawala.jpg',
         description: [
-          'Arrival at Bandaranaike International Airport (Colombo), meet our Wanderphilia tour captain/driver, and transfer in a comfortable AC coach.',
-          'En-route visit the renowned Pinnawala Elephant Orphanage to witness elephants bathing in the river.',
-          'Proceed across the tropical countryside towards the Cultural Triangle town of Sigiriya.',
-          'Check-in to your resort in Sigiriya, unwind, and enjoy a delicious Sri Lankan welcome dinner.',
-          'Overnight stay in Sigiriya.',
-          'Meals: Dinner.'
+          'Arrival at Bandaranaike International Airport (CMB) in Colombo, warmly received by your dedicated English-speaking chauffeur guide.',
+          'Board your spacious private AC vehicle with complimentary local SIM card for seamless connectivity.',
+          'En-route scenic drive across lush tropical countryside towards Sigiriya.',
+          'Visit Pinnawala Elephant Orphanage — observe the world’s largest herd of captive elephants bathing and feeding in the river.',
+          'Arrive in Sigiriya, check in at your resort, and unwind in the tranquil tropical surroundings.',
+          'Overnight stay in Sigiriya.'
         ]
       },
       {
         day: 2,
-        title: 'Ascend Sigiriya Lion Rock Fortress | Dambulla Caves to Kandy',
+        title: 'Sunrise Trek to Ravana’s Palace → Nuwara Eliya ("Little England")',
+        image: '/images/srilanka/sigiriya-rock.jpg',
         description: [
-          'Early morning climb to the summit of the iconic UNESCO World Heritage Sigiriya Lion Rock Fortress for panoramic 360-degree jungle views.',
-          'Admire the ancient water gardens, mirror wall, and 5th-century frescoes.',
-          'Visit the revered Dambulla Cave Temples with ancient golden Buddha statues and vibrant mural ceiling paintings.',
-          'Proceed on a scenic drive to the royal hill capital of Kandy.',
-          'Witness an evening traditional Kandyan cultural dance performance and visit the sacred Temple of the Tooth Relic.',
-          'Overnight stay in Kandy.',
-          'Meals: Breakfast & Dinner.'
+          'Early morning sunrise trek to Sigiriya Rock Fortress / Pidurangala (1,200 ancient steps with breathtaking 360° panoramic sunrise views over the jungle canopy).',
+          'Return to resort for a hearty breakfast and complete check-out formalities.',
+          'Drive towards Kandy, Sri Lanka’s UNESCO-listed cultural capital.',
+          'Visit the sacred Temple of the Sacred Tooth Relic (Sri Dalada Maligawa) — one of the most revered Buddhist shrines in the world.',
+          'Ascend through picturesque rolling hills and cascading waterfalls into Nuwara Eliya ("Little England").',
+          'Check in at your resort in Nuwara Eliya and enjoy the crisp mountain air and colonial architecture.',
+          'Overnight stay in Nuwara Eliya.'
         ]
       },
       {
         day: 3,
-        title: 'Kandy to Nuwara Eliya - Little England & Misty Tea Gardens',
+        title: 'Nuwara Eliya Exploration — Ashok Vatika, Gregory Lake & Ceylon Tea',
+        image: '/images/srilanka/nuwara-eliya.jpg',
         description: [
-          'Enjoy morning breakfast and stroll around the scenic Kandy Lake.',
-          'Ascend into the misty hill country, passing cascading Ramboda Waterfalls.',
-          'Visit an authentic Ceylon Tea Factory and lush green plantation to learn the art of tea making with fresh tastings.',
-          'Explore Nuwara Eliya town, colonial post office, and take a tranquil boat ride on Lake Gregory.',
-          'Overnight stay in Nuwara Eliya.',
-          'Meals: Breakfast & Dinner.'
+          'Wholesome highland breakfast at your resort.',
+          'Visit the sacred Ashok Vatika (Hakgala Botanical Gardens & Seetha Amman Temple) — the mythical site where Mata Sita was held captive by Ravana.',
+          'Visit Gregory Lake in the heart of Nuwara Eliya — enjoy a refreshing boat ride and lakeside walk.',
+          'Explore nearby cascading highland waterfalls (Ramboda / Lovers Leap).',
+          'Guided tour of a working Ceylon Tea Factory & Estate — learn the art of orthodox tea making with a fresh tea-tasting experience.',
+          'Evening at leisure to explore the English-style post office, Victoria Park, and quaint local markets.',
+          'Overnight stay in Nuwara Eliya.'
         ]
       },
       {
         day: 4,
-        title: 'Scenic Hill Train to Ella | Walk Across Nine Arches Bridge',
+        title: 'Nuwara Eliya → Scenic Train Ride via Ella → Yala National Park',
+        image: '/images/srilanka/nine-arches-bridge.jpg',
         description: [
-          'Board the world-famous scenic blue train from Nuwara Eliya (Nanu Oya) to Ella, curving through emerald tea plantations and mountain bridges.',
-          'Arrive in the bohemian hill town of Ella and hike to the breathtaking Nine Arches Bridge.',
-          'Capture iconic photos as trains chug across the architectural colonial viaduct.',
-          'Evening leisure time at Ella cafes and local markets.',
-          'Overnight stay in Ella.',
-          'Meals: Breakfast & Dinner.'
+          'Breakfast at hotel before heading towards Ella.',
+          'Optional: Board the iconic Blue Train Ride from Nanu Oya to Ella through emerald tea estates, mist-kissed bridges, and tunnel passages.',
+          'Visit the iconic Nine Arches Bridge (Demodara) — an architectural masterpiece nestled amidst dense jungle.',
+          'Visit the roaring Ravana Falls and the historic Ravana Cave.',
+          'Experience the famous Ella Swing / Flying Ravana overlooking dramatic mountain gorges.',
+          'Scenic drive descending to Yala National Park, check in at your wilderness resort, and relax.',
+          'Overnight stay in Yala.'
         ]
       },
       {
         day: 5,
-        title: 'Ravana Waterfalls | Yala Safari Drive to Southern Golden Coast',
+        title: 'Yala Wildlife Jeep Safari → Mirissa Beach Club → Bentota',
+        image: '/images/srilanka/yala.jpg',
         description: [
-          'Breakfast at hotel followed by a photo stop at the roaring Ravana Falls.',
-          'Descend from the highlands towards the southern coast.',
-          'Optional thrilling 4x4 Jeep Safari in Yala National Park, home to the world’s highest density of wild leopards, elephants, and sloth bears.',
-          'Continue towards the picturesque coastal town of Mirissa / Bentota.',
-          'Check-in to your beachfront resort, walk on the golden sand, and catch a stunning Indian Ocean sunset.',
-          'Overnight stay in Bentota / Mirissa.',
-          'Meals: Breakfast & Dinner.'
+          'Early morning 4x4 Jeep Safari in Yala National Park — home to the highest leopard density in the world, wild elephants, sloth bears, spotted deer, and crocodiles.',
+          'Return to the resort for breakfast, freshen up, and check out.',
+          'Drive along the turquoise southern coast towards Mirissa.',
+          'Relax and unwind at the beach club in Mirissa with panoramic ocean views.',
+          'En-route visit Weligama Beach — famous surfer paradise and traditional stilt fishermen.',
+          'Opportunity for optional surfing, kayaking, or scuba diving experiences.',
+          'Drive to the coastal haven of Bentota and check in at your beachfront resort.',
+          'Overnight stay in Bentota.'
         ]
       },
       {
         day: 6,
-        title: 'Galle Dutch Fort Heritage Tour | Madu River Mangrove Cruise',
+        title: 'Bentota Beach & River Safari — Madu Ganga Boat Ride & Water Sports',
+        image: '/images/srilanka/mirissa-beach.jpg',
         description: [
-          'After breakfast, explore the 17th-century UNESCO World Heritage Galle Dutch Fort with its cobblestone streets, lighthouse, and boutique cafes.',
-          'Experience a scenic motorboat safari along the tranquil Madu River mangroves with cinnamon island visits.',
-          'Optional water sports adventures including jet skiing and banana boat rides at Bentota.',
-          'Celebratory farewell dinner with delicious coastal cuisine by the sea.',
-          'Overnight stay in Bentota / Mirissa.',
-          'Meals: Breakfast & Dinner.'
+          'Relaxed tropical breakfast overlooking the gardens or ocean.',
+          'Scenic boat safari on the Madu River (Madu Ganga) — glide through mangrove tunnels, visit cinnamon peelers island, and enjoy natural fish therapy.',
+          'Water sports thrills on the river/beach: jet ski, banana boat ride, tube ride, or parasailing (optional).',
+          'Unwind along the palm-fringed golden sands of Bentota Beach.',
+          'Spend a relaxing evening at a beachfront cafe savoring fresh sea breeze and sunset views.',
+          'Overnight stay in Bentota.'
         ]
       },
       {
         day: 7,
-        title: 'Colombo City Tour & Souvenir Shopping | Departure Transfer',
+        title: 'Bentota Coastal Morning → Colombo City Tour & Evening Shopping',
+        image: '/images/srilanka/colombo.jpg',
         description: [
-          'Enjoy a leisurely breakfast by the beach and complete hotel check-out formalities.',
-          'Scenic highway drive along the southern expressway towards the vibrant capital city of Colombo.',
-          'Brief panoramic city tour covering Independence Square, Colombo Lotus Tower, and Pettah Floating Market.',
-          'Transfer to Bandaranaike International Airport (Colombo) for your flight back home with unforgettable memories of Sri Lanka.',
-          'Meals: Breakfast.'
+          'Leisurely morning at Bentota beach followed by a delicious breakfast.',
+          'Check out and take the smooth Southern Expressway to Colombo (approx. 1.5 hrs).',
+          'Guided Colombo city exploration: Independence Memorial Hall, Galle Face Green promenade, Gangaramaya Buddhist Temple, BMICH, and historic Colombo Fort.',
+          'Evening at leisure for premier shopping at Dutch Hospital Shopping Precinct, Odel, House of Fashion, or Colombo City Centre mall.',
+          'Check in at your hotel in Colombo.',
+          'Overnight stay in Colombo.'
+        ]
+      },
+      {
+        day: 8,
+        title: 'Colombo Hotel → Departure Transfer to Airport',
+        image: '/images/srilanka/coconut-tree-hill.jpg',
+        description: [
+          'Enjoy your final breakfast at the hotel in Colombo.',
+          'Hotel check-out and meet your private chauffeur guide.',
+          'Private transfer to Bandaranaike International Airport (CMB) in time for your departure flight.',
+          'Bid farewell to the paradise island of Sri Lanka with unforgettable memories.'
         ]
       }
     ],
     included: [
-      'Accommodation for 6 Nights in verified luxury 3-star & 4-star hotels / resorts',
-      'Daily delicious breakfast and curated dinners as per itinerary',
-      'All internal transfers and sightseeing in private AC tourist coach/vehicle',
-      'Scenic Ceylon Blue Train tickets from Nanu Oya to Ella',
-      'Madu River Mangrove Boat Safari experience',
-      'Experienced English & Hindi speaking tour captain / driver guide',
-      'All toll taxes, parking fees, highway permits, and fuel charges',
-      '24x7 Dedicated Wanderphilia On-ground Support'
+      'Accommodation for 7 Nights in verified 3★ / 4★ properties (1N Sigiriya, 2N Nuwara Eliya, 1N Yala, 2N Bentota, 1N Colombo)',
+      'Daily complimentary breakfast at all hotels (Total 7 Breakfasts)',
+      'Exclusive private AC vehicle with professional English/Hindi-speaking Chauffeur Guide throughout the tour',
+      'All Highway Tolls, Parking Fees, Fuel Charges & Driver Allowances included',
+      'Complimentary Local SIM Card on arrival for seamless connectivity',
+      'Pinnawala Elephant Orphanage visit enroute to Sigiriya',
+      'Sigiriya sunrise fortress experience & transfer to cultural heartland',
+      'Temple of the Sacred Tooth Relic visit in Kandy',
+      'Ashok Vatika (Seetha Amman Temple & Hakgala Gardens) & Gregory Lake exploration in Nuwara Eliya',
+      'Iconic Nine Arches Bridge, Ravana Falls & Ravana Cave sightseeing in Ella',
+      'Exclusive Private 4x4 Jeep Safari in Yala National Park',
+      'Mirissa Beach & Weligama Surfers Beach visits',
+      'Bentota coastal day & Madu Ganga scenic mangrove river boat excursion',
+      'Colombo city tour & evening shopping experience at premier hubs',
+      '5% GST (Goods and Services Tax) Included',
+      '2% TCS (Tax Collected at Source - fully claimable in ITR) Included',
+      '24x7 Wanderphilia On-ground Tour Support'
     ],
     notIncluded: [
-      'International airfare to / from Colombo',
-      'Sri Lanka tourist visa / ETA fee',
-      'Monument entry tickets & optional Yala Jeep Safari',
-      'Personal expenses, tips, laundry, and extra meals not mentioned'
+      'International Airfare to / from Colombo',
+      'Sri Lanka Electronic Travel Authorization (ETA / Tourist Visa)',
+      'Monument & attraction entry tickets (Sigiriya Rock, Kandy Temple, Pinnawala, etc. to be paid on spot)',
+      'Yala National Park entrance ticket fees (Safari Jeep is Included in Package)',
+      'Scenic Ella Train tickets (subject to availability at the time of booking)',
+      'Water sports activities (Jet Ski, Parasailing, Banana Boat, Surfing, Scuba Diving)',
+      'Lunches, Dinners & beverages not specified in the inclusions',
+      'Personal expenses: laundry, telephone calls, minibar, and tips/gratuities for chauffeur & guides',
+      'Comprehensive Travel and Medical Insurance'
+    ],
+    thingsToCarry: [
+      'Valid Passport with at least 6 months validity from date of travel',
+      'Printed copy of Sri Lanka ETA Tourist Visa approval & return flight tickets',
+      'Universal travel power adapter (Sri Lanka uses Type D / G sockets)',
+      'Comfortable trekking shoes / sneakers for Sigiriya fortress climb (1,200 steps)',
+      'Modest attire covering shoulders and knees for Buddhist temples & sacred shrines',
+      'Light warm jacket / cardigan for cooler highland evenings in Nuwara Eliya',
+      'Beachwear, sunglasses, hats & reef-safe sunscreen for Bentota & Mirissa',
+      'Neutral / khaki clothing and binoculars for Yala Wildlife Safari',
+      'Mosquito repellent & personal prescribed medications',
+      'Credit cards / Forex card & some local Sri Lankan Rupees (LKR) for incidental expenses'
     ]
   }
 ];

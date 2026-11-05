@@ -4025,17 +4025,17 @@ export const srilankaShravyaManualItinerary: ManualItinerary = {
   id: 'srilanka-shravya',
   slug: 'srilanka-shravya',
   title: 'Best of Sri Lanka — Cultural Wonders, Wildlife Safari & Exotic Beach Escape',
-  subtitle: '7 Nights / 8 Days Private Family Tour for Ms. Shravya & Family',
-  duration: '7 Nights / 8 Days | 30th Nov',
+  subtitle: '7 Nights / 8 Days Private Tour across Ancient Fortresses, Tea Highlands & Golden Beaches',
+  duration: '7 Nights / 8 Days',
   numNights: 7,
   numDays: 8,
-  dates: '30 November – 07 December',
+  dates: 'Year-Round / Best Season',
   route: 'Colombo → Sigiriya (Ravana’s Lanka) → Nuwara Eliya → Ella → Yala National Park → Mirissa → Bentota → Colombo',
   routeSummary: '1N Sigiriya | 2N Nuwara Eliya | 1N Yala | 2N Bentota | 1N Colombo',
   destination: 'Sri Lanka',
   travelStyle: 'Customised Private Family Tour (Cultural Sightseeing, Wildlife Safari & Beach Escape)',
   tripType: 'Private Family Tour (4 Adults + 1 Kid with Extra Bed)',
-  leadName: 'Ms Shravya',
+  leadName: '',
   adults: 4,
   kids: 1,
   kidsDetails: '3 Kids: 16 Yrs & 12 Yrs (charged at Adult Rate) + 11 Yrs (with Dedicated Extra Bed)',
@@ -4293,7 +4293,7 @@ export const srilankaShravyaManualItinerary: ManualItinerary = {
       stayLocation: 'Departure',
       image: '/images/srilanka/coconut-tree-hill.jpg',
       meals: 'Breakfast',
-      signOff: 'Wishing Ms. Shravya & Family a wondrous and magical journey with Wanderphilia! 🇱🇰✨'
+      signOff: 'Wishing you a wondrous and magical journey with Wanderphilia! 🇱🇰✨'
     }
   ],
   inclusions: [
@@ -5003,6 +5003,8 @@ export const manualItinerariesRegistry: Record<string, ManualItinerary> = {
   'vietnam-shravya-7d': vietnamShravyaManualItinerary,
 
   'srilanka-shravya': srilankaShravyaManualItinerary,
+  'best-of-sri-lanka': srilankaShravyaManualItinerary,
+  'sri-lanka-7n8d': srilankaShravyaManualItinerary,
   'srilanka-shravya-30nov': srilankaShravyaManualItinerary,
   'shravya-srilanka': srilankaShravyaManualItinerary,
   'shravya': srilankaShravyaManualItinerary,

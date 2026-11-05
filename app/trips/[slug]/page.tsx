@@ -2068,24 +2068,37 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
                   if (trip.inclusionsSummary?.experiences && typeof trip.inclusionsSummary.experiences === 'number') {
                     return trip.inclusionsSummary.experiences;
                   }
+                  if (trip.experiencesCount && typeof trip.experiencesCount === 'number') {
+                    return trip.experiencesCount;
+                  }
                   if (summaryOverview.activities && summaryOverview.activities.length > 0) {
                     if (typeof summaryOverview.activities[0] === 'object' && 'items' in (summaryOverview.activities[0] as any)) {
                       return (summaryOverview.activities as any[]).reduce((sum, g) => sum + (g.items?.length || 0), 0);
                     }
                     return summaryOverview.activities.length;
                   }
-                  return trip.highlights?.length || 0;
+                  if (trip.itinerary && Array.isArray(trip.itinerary)) {
+                    const dayExp = trip.itinerary.reduce((sum, day) => sum + parseDayItinerarySummary(day).experiences.length, 0);
+                    if (dayExp > 0) return dayExp;
+                  }
+                  return trip.highlights?.length || Math.max(5, trip.duration || 1);
                 })();
 
                 const transfersCount = (() => {
                   if (trip.inclusionsSummary?.transfers && typeof trip.inclusionsSummary.transfers === 'number') {
                     return trip.inclusionsSummary.transfers;
                   }
+                  if (trip.transfersCount && typeof trip.transfersCount === 'number') {
+                    return trip.transfersCount;
+                  }
+                  if (summaryOverview.transfers && summaryOverview.transfers.length > 0) {
+                    return summaryOverview.transfers.length;
+                  }
                   if (trip.itinerary && Array.isArray(trip.itinerary)) {
                     const dayTransfers = trip.itinerary.reduce((sum, day) => sum + parseDayItinerarySummary(day).transfers.length, 0);
                     if (dayTransfers > 0) return dayTransfers;
                   }
-                  return summaryOverview.transfers.length || 0;
+                  return Math.max(2, Math.round((trip.duration || 1) * 1.2));
                 })();
 
                 const hotelsCount = (() => {
@@ -2099,12 +2112,35 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
                   if (trip.inclusionsSummary?.meals && typeof trip.inclusionsSummary.meals === 'number') {
                     return trip.inclusionsSummary.meals;
                   }
-                  if (summaryOverview.meals && summaryOverview.meals.length > 0) {
-                    const mealNum = summaryOverview.meals[0].match(/\d+/);
-                    if (mealNum) return parseInt(mealNum[0], 10);
-                    return summaryOverview.meals.length;
+                  if (trip.mealsCount && typeof trip.mealsCount === 'number') {
+                    return trip.mealsCount;
                   }
-                  return Math.max(1, trip.duration - 1);
+                  if (summaryOverview.meals && summaryOverview.meals.length > 0) {
+                    const allNumbers = summaryOverview.meals[0].match(/\b\d+\b/g);
+                    if (allNumbers && allNumbers.length > 0) {
+                      const sum = allNumbers.reduce((acc, n) => acc + parseInt(n, 10), 0);
+                      if (sum > 0) return sum;
+                    }
+                  }
+                  if (trip.itinerary && Array.isArray(trip.itinerary)) {
+                    let itCount = 0;
+                    trip.itinerary.forEach(day => {
+                      const lines = Array.isArray(day.description) ? day.description : [day.description || ''];
+                      const text = (day.title + ' ' + lines.join(' ')).toLowerCase();
+                      if (text.includes('breakfast')) itCount++;
+                      if (text.includes('lunch') && !text.includes('packed lunch at own') && !text.includes('lunch (own')) itCount++;
+                      if (text.includes('dinner') && !text.includes('dinner (own')) itCount++;
+                    });
+                    if (itCount > 0) return itCount;
+                  }
+                  const inclStr = (trip.included || []).join(' ').toLowerCase();
+                  const hasB = inclStr.includes('breakfast');
+                  const hasD = inclStr.includes('dinner');
+                  const hasL = inclStr.includes('lunch');
+                  const perDay = (hasB ? 1 : 0) + (hasD ? 1 : 0) + (hasL ? 1 : 0);
+                  const nights = trip.nights || Math.max(1, (trip.duration || 1) - 1);
+                  if (perDay > 0) return nights * perDay;
+                  return nights;
                 })();
 
                 return (

@@ -1666,12 +1666,35 @@ export default function ChristmasNewYearTripDetailPage({ params }: PageProps = {
                     ) {
                       return trip.inclusionsSummary.meals
                     }
-                    if (summaryOverview.meals && summaryOverview.meals.length > 0) {
-                      const mealNum = summaryOverview.meals[0].match(/\d+/)
-                      if (mealNum) return parseInt(mealNum[0], 10)
-                      return summaryOverview.meals.length
+                    if (trip.mealsCount && typeof trip.mealsCount === 'number') {
+                      return trip.mealsCount;
                     }
-                    return Math.max(1, trip.duration - 1)
+                    if (summaryOverview.meals && summaryOverview.meals.length > 0) {
+                      const allNumbers = summaryOverview.meals[0].match(/\b\d+\b/g);
+                      if (allNumbers && allNumbers.length > 0) {
+                        const sum = allNumbers.reduce((acc, n) => acc + parseInt(n, 10), 0);
+                        if (sum > 0) return sum;
+                      }
+                    }
+                    if (trip.itinerary && Array.isArray(trip.itinerary)) {
+                      let itCount = 0;
+                      trip.itinerary.forEach(day => {
+                        const lines = Array.isArray(day.description) ? day.description : [day.description || ''];
+                        const text = (day.title + ' ' + lines.join(' ')).toLowerCase();
+                        if (text.includes('breakfast')) itCount++;
+                        if (text.includes('lunch') && !text.includes('packed lunch at own') && !text.includes('lunch (own')) itCount++;
+                        if (text.includes('dinner') && !text.includes('dinner (own')) itCount++;
+                      });
+                      if (itCount > 0) return itCount;
+                    }
+                    const inclStr = (trip.included || []).join(' ').toLowerCase();
+                    const hasB = inclStr.includes('breakfast');
+                    const hasD = inclStr.includes('dinner');
+                    const hasL = inclStr.includes('lunch');
+                    const perDay = (hasB ? 1 : 0) + (hasD ? 1 : 0) + (hasL ? 1 : 0);
+                    const nights = trip.nights || Math.max(1, (trip.duration || 1) - 1);
+                    if (perDay > 0) return nights * perDay;
+                    return nights;
                   })()
 
                   return (

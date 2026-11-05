@@ -33,6 +33,9 @@ export function useDestinationTrips(categoryId: string) {
 
       if (isDestinationMatch) {
         if (p?.sections && p.sections[section]) return true;
+        // Smart auto-detection for group and honeymoon trips
+        if (section === 'group' && (t.tourType === 'Group' || p?.upcomingTours || p?.sections?.group)) return true;
+        if (section === 'honeymoon' && (p?.honeymoon || p?.sections?.honeymoon || t.category === 'honeymoon')) return true;
         // Default to 'available' if no specific section is checked or if available is not explicitly false
         if (section === 'available') {
           return !p?.sections || p.sections.available !== false;

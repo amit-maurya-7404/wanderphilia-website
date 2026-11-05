@@ -1,6 +1,8 @@
 export interface DestinationSectionConfig {
   available: boolean;
+  group?: boolean;
   family: boolean;
+  honeymoon?: boolean;
   custom: boolean;
   related: boolean;
   durationFilter: boolean;
@@ -12,8 +14,12 @@ export interface DestinationSectionConfig {
 export interface DestinationSectionTitles {
   availableTitle?: string;
   availableSubtitle?: string;
+  groupTitle?: string;
+  groupSubtitle?: string;
   familyTitle?: string;
   familySubtitle?: string;
+  honeymoonTitle?: string;
+  honeymoonSubtitle?: string;
   customTitle?: string;
   customSubtitle?: string;
   relatedTitle?: string;
@@ -44,7 +50,9 @@ export interface DestinationPageItem {
   sectionTitles?: DestinationSectionTitles;
   customPackageIds?: {
     available?: string[];
+    group?: string[];
     family?: string[];
+    honeymoon?: string[];
     custom?: string[];
     related?: string[];
   };
@@ -58,7 +66,9 @@ export interface DestinationPageItem {
 
 export const DEFAULT_DESTINATION_SECTIONS: DestinationSectionConfig = {
   available: true,
+  group: true,
   family: true,
+  honeymoon: true,
   custom: true,
   related: true,
   durationFilter: true,
@@ -70,8 +80,12 @@ export const DEFAULT_DESTINATION_SECTIONS: DestinationSectionConfig = {
 export const DEFAULT_SECTION_TITLES: DestinationSectionTitles = {
   availableTitle: 'Available Tour Packages',
   availableSubtitle: 'Curated Experiences',
+  groupTitle: 'Group Tour Packages',
+  groupSubtitle: 'Explore Together',
   familyTitle: 'Family Special Packages',
   familySubtitle: 'Memorable Journeys',
+  honeymoonTitle: 'Romantic & Honeymoon Specials',
+  honeymoonSubtitle: 'Dreamy Escapes',
   customTitle: 'Customized Tour Packages',
   customSubtitle: 'Tailored For You',
   relatedTitle: 'Trending India Tour Packages',

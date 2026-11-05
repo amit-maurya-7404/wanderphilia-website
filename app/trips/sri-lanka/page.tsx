@@ -40,6 +40,8 @@ export default function SriLankaPage() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [carouselIndex1, setCarouselIndex1] = useState(0)
   const [carouselIndex2, setCarouselIndex2] = useState(0)
+    const [groupCarouselIndex, setGroupCarouselIndex] = useState(0)
+  const [honeymoonCarouselIndex, setHoneymoonCarouselIndex] = useState(0)
   const [familyCarouselIndex, setFamilyCarouselIndex] = useState(0)
   const [customizedCarouselIndex, setCustomizedCarouselIndex] = useState(0)
   const [isMobile, setIsMobile] = useState(false)
@@ -111,7 +113,9 @@ export default function SriLankaPage() {
   useEffect(() => {
     setCarouselIndex1(0)
     setCarouselIndex2(0)
+    setGroupCarouselIndex(0)
     setFamilyCarouselIndex(0)
+    setHoneymoonCarouselIndex(0)
     setCustomizedCarouselIndex(0)
   }, [cardsPerView])
 
@@ -171,6 +175,14 @@ export default function SriLankaPage() {
     fetchGallery()
   }, [categoryId])
 
+    const groupPackages = useMemo(() => {
+    return getTripsBySection('group')
+  }, [getTripsBySection, dynamicTrips])
+
+  const honeymoonPackages = useMemo(() => {
+    return getTripsBySection('honeymoon')
+  }, [getTripsBySection, dynamicTrips])
+
   // Family Packages Data
   const familyPackages = useMemo(() => {
     return getTripsBySection('family')
@@ -184,7 +196,7 @@ export default function SriLankaPage() {
   const [selectedDuration, setSelectedDuration] = useState<number | null>(null)
 
   const allCategoryTrips = useMemo(() => {
-    const combined = [...categoryTrips, ...familyPackages, ...customizedPackages]
+    const combined = [...categoryTrips, ...(typeof groupPackages !== 'undefined' ? groupPackages : []), ...familyPackages, ...(typeof honeymoonPackages !== 'undefined' ? honeymoonPackages : []), ...customizedPackages]
     const seen = new Set<string>()
     return combined.filter(trip => {
       if (seen.has(trip.id)) return false
@@ -200,6 +212,22 @@ export default function SriLankaPage() {
       return tripNights === selectedDuration
     })
   }, [categoryTrips, selectedDuration])
+
+    const filteredGroupPackages = useMemo(() => {
+    if (!selectedDuration) return groupPackages
+    return groupPackages.filter(t => {
+      const tripNights = t.nights !== undefined ? t.nights : (t.duration ? t.duration - 1 : 0)
+      return tripNights === selectedDuration
+    })
+  }, [groupPackages, selectedDuration])
+
+  const filteredHoneymoonPackages = useMemo(() => {
+    if (!selectedDuration) return honeymoonPackages
+    return honeymoonPackages.filter(t => {
+      const tripNights = t.nights !== undefined ? t.nights : (t.duration ? t.duration - 1 : 0)
+      return tripNights === selectedDuration
+    })
+  }, [honeymoonPackages, selectedDuration])
 
   const filteredFamilyPackages = useMemo(() => {
     if (!selectedDuration) return familyPackages
@@ -264,7 +292,7 @@ export default function SriLankaPage() {
           <div className="absolute inset-x-0 bottom-0 flex items-end">
             <div className="w-full max-w-6xl mx-auto px-4 sm:px-5 md:px-6 pb-6 sm:pb-8 lg:pb-10">
               <div className="text-white">
-                <div className="max-w-2xl">
+                <div className="max-w-3xl">
                   <div className="mb-4 inline-flex items-center rounded-full bg-amber-400/15 px-3 py-1 text-sm font-semibold text-amber-200 ring-1 ring-amber-300/20">
                     Starting Price
                     <span className="ml-2 text-white">₹{(lowestPrice || 34999).toLocaleString('en-IN')} / person</span>
@@ -387,6 +415,62 @@ export default function SriLankaPage() {
           )}
         </section>
 
+        {/* Group Trips Section */}
+        {filteredGroupPackages.length > 0 && (
+          <section className="py-16 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto border-t border-slate-100">
+            <div className="mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+                Sri Lanka Group Tour Packages
+              </h2>
+              <div className="w-20 h-1 bg-primary rounded-full" />
+            </div>
+
+            <div className="flex md:hidden gap-4 overflow-x-auto pb-4 scrollbar-hide">
+              {filteredGroupPackages.map((trip) => (
+                <div key={trip.id} className="w-[90%] flex-shrink-0">
+                  <TripCard {...trip} />
+                </div>
+              ))}
+            </div>
+
+            <div className="hidden md:block relative">
+              <button
+                onClick={() => setGroupCarouselIndex((prev) => Math.max(prev - 1, 0))}
+                disabled={groupCarouselIndex === 0}
+                className="absolute -left-5 top-1/2 -translate-y-1/2 z-10 bg-white/90 backdrop-blur-md w-11 h-11 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition disabled:opacity-30 cursor-pointer"
+              >
+                <ChevronLeft size={22} className="text-slate-800" />
+              </button>
+
+              <button
+                onClick={() => {
+                  const maxIndex = Math.max(0, filteredGroupPackages.length - cardsPerView)
+                  setGroupCarouselIndex((prev) => Math.min(prev + 1, maxIndex))
+                }}
+                disabled={groupCarouselIndex === Math.max(0, filteredGroupPackages.length - cardsPerView)}
+                className="absolute -right-5 top-1/2 -translate-y-1/2 z-10 bg-white/90 backdrop-blur-md w-11 h-11 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition disabled:opacity-30 cursor-pointer"
+              >
+                <ChevronRight size={22} className="text-slate-800" />
+              </button>
+
+              <div className="overflow-hidden">
+                <div
+                  className="flex transition-transform duration-500 ease-in-out"
+                  style={{
+                    transform: `translateX(-${groupCarouselIndex * (100 / cardsPerView)}%)`,
+                  }}
+                >
+                  {filteredGroupPackages.map((trip) => (
+                    <div key={trip.id} className="flex-shrink-0 basis-1/3 p-2">
+                      <TripCard {...trip} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* Family Packages Section */}
         {filteredFamilyPackages.length > 0 && (
           <section className="py-16 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto border-t border-slate-100">
@@ -433,6 +517,62 @@ export default function SriLankaPage() {
                   }}
                 >
                   {filteredFamilyPackages.map((trip) => (
+                    <div key={trip.id} className="flex-shrink-0 basis-1/3 p-2">
+                      <TripCard {...trip} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Romantic & Honeymoon Specials Section */}
+        {filteredHoneymoonPackages.length > 0 && (
+          <section className="py-16 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto border-t border-slate-100">
+            <div className="mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+                Sri Lanka Romantic & Honeymoon Specials
+              </h2>
+              <div className="w-20 h-1 bg-primary rounded-full" />
+            </div>
+
+            <div className="flex md:hidden gap-4 overflow-x-auto pb-4 scrollbar-hide">
+              {filteredHoneymoonPackages.map((trip) => (
+                <div key={trip.id} className="w-[90%] flex-shrink-0">
+                  <TripCard {...trip} />
+                </div>
+              ))}
+            </div>
+
+            <div className="hidden md:block relative">
+              <button
+                onClick={() => setHoneymoonCarouselIndex((prev) => Math.max(prev - 1, 0))}
+                disabled={honeymoonCarouselIndex === 0}
+                className="absolute -left-5 top-1/2 -translate-y-1/2 z-10 bg-white/90 backdrop-blur-md w-11 h-11 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition disabled:opacity-30 cursor-pointer"
+              >
+                <ChevronLeft size={22} className="text-slate-800" />
+              </button>
+
+              <button
+                onClick={() => {
+                  const maxIndex = Math.max(0, filteredHoneymoonPackages.length - cardsPerView)
+                  setHoneymoonCarouselIndex((prev) => Math.min(prev + 1, maxIndex))
+                }}
+                disabled={honeymoonCarouselIndex === Math.max(0, filteredHoneymoonPackages.length - cardsPerView)}
+                className="absolute -right-5 top-1/2 -translate-y-1/2 z-10 bg-white/90 backdrop-blur-md w-11 h-11 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition disabled:opacity-30 cursor-pointer"
+              >
+                <ChevronRight size={22} className="text-slate-800" />
+              </button>
+
+              <div className="overflow-hidden">
+                <div
+                  className="flex transition-transform duration-500 ease-in-out"
+                  style={{
+                    transform: `translateX(-${honeymoonCarouselIndex * (100 / cardsPerView)}%)`,
+                  }}
+                >
+                  {filteredHoneymoonPackages.map((trip) => (
                     <div key={trip.id} className="flex-shrink-0 basis-1/3 p-2">
                       <TripCard {...trip} />
                     </div>
@@ -695,3 +835,4 @@ export default function SriLankaPage() {
     </div>
   )
 }
+

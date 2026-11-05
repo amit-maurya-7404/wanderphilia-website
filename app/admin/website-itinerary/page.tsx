@@ -139,7 +139,9 @@ interface Placements {
   destinationCategory: string;
   sections: {
     available: boolean;
+    group: boolean;
     family: boolean;
+    honeymoon: boolean;
     custom: boolean;
     related: boolean;
   };
@@ -276,7 +278,9 @@ function WebsiteItineraryInner() {
     destinationCategory: '',
     sections: {
       available: true,
+      group: false,
       family: true,
+      honeymoon: false,
       custom: false,
       related: false
     }
@@ -1098,6 +1102,26 @@ function WebsiteItineraryInner() {
       if (Array.isArray(itin.batchDates) && itin.batchDates.length > 0) {
         setBatchDates(itin.batchDates);
         setTourType('Group');
+        setPlacements(prev => ({
+          ...prev,
+          upcomingTours: true,
+          sections: {
+            ...prev.sections,
+            available: true,
+            group: true
+          }
+        }));
+
+        // Jump calendar view directly to the month of the first batch!
+        const firstBatchMonth = itin.batchDates[0].month; // e.g. "November 2026"
+        const parts = firstBatchMonth.split(' ');
+        if (parts.length >= 2) {
+          const mIdx = monthNames.findIndex(mn => mn.toLowerCase() === parts[0].toLowerCase());
+          const yNum = parseInt(parts[1], 10);
+          if (mIdx !== -1 && !isNaN(yNum)) {
+            setCurrentCalendarDate(new Date(yNum, mIdx, 1));
+          }
+        }
       } else {
         setBatchDates([]);
       }
@@ -1339,17 +1363,68 @@ function WebsiteItineraryInner() {
         nights: `${s.nights}N`,
         roomCategory: s.roomCategory
       })),
+      inclusionsSummary: {
+        cities: hotelStays.length > 0 ? new Set(hotelStays.map(s => s.city.toLowerCase())).size : 1,
+        hotels: hotelStays.length > 0 ? hotelStays.length : 1,
+        transfers: Math.max(3, dayPlans.reduce((acc: number, d: DayPlanItem) => acc + d.timeline.filter((p: string) => /transfer|airport|drive|pickup|drop|train|ferry/i.test(p)).length, 0) || 4),
+        experiences: dayPlans.reduce((acc: number, d: DayPlanItem) => acc + d.timeline.filter((p: string) => !/check[- ]in|check[- ]out|freshen|overnight|meals|stay|hotel/i.test(p)).length, 0) || highlights.length || 7,
+        meals: (dayPlans.filter((d: DayPlanItem) => d.meals.breakfast).length + dayPlans.filter((d: DayPlanItem) => d.meals.lunch).length + dayPlans.filter((d: DayPlanItem) => d.meals.dinner).length) || durationNights,
+        visa: tripType === 'International' ? 'Visa' : null,
+        tripGuide: 'Trip Guide'
+      },
       summaryDetails: {
         accommodation: hotelStays.map(s => ({
           city: s.city,
           hotel: formatHotelWithSimilar(s.hotelName)
         })),
-        meals: [`Daily Breakfast & Dinner as per plan (${durationNights} Nights)`],
-        transfers: [
-          `Arrival & Departure Airport / Railway Station Transfers`,
-          `All intercity and local sightseeing transfers in comfortable vehicle`
-        ],
-        activities: highlights.filter(h => h.trim().length > 0)
+        meals: (() => {
+          const bCount = dayPlans.filter((d: DayPlanItem) => d.meals.breakfast).length;
+          const lCount = dayPlans.filter((d: DayPlanItem) => d.meals.lunch).length;
+          const dCount = dayPlans.filter((d: DayPlanItem) => d.meals.dinner).length;
+          if (bCount > 0 && dCount > 0) return [`${bCount} Breakfasts & ${dCount} Dinners included as per itinerary`];
+          if (bCount > 0) return [`${bCount} Daily Breakfasts included at all stays & resorts`];
+          const totalM = bCount + lCount + dCount;
+          return totalM > 0 ? [`${totalM} Meals included as per itinerary`] : [`${durationNights} Breakfasts included as per plan`];
+        })(),
+        transfers: (() => {
+          const list: string[] = [];
+          dayPlans.forEach((d: DayPlanItem) => {
+            d.timeline.forEach((pt: string) => {
+              if (/transfer|airport|drive|pickup|drop|train|ferry|safari/i.test(pt)) {
+                const clean = pt.replace(/^transfers?\s*:\s*/i, '').trim();
+                if (clean && !list.includes(clean)) list.push(clean);
+              }
+            });
+          });
+          if (list.length < 2) {
+            list.unshift('Arrival Airport / Railway Station pickup and transfer to hotel');
+            list.push('All intercity, local sightseeing and excursion transfers in private vehicle');
+            list.push('Departure Airport / Railway Station drop-off transfer');
+          }
+          return list;
+        })(),
+        activities: (() => {
+          const groups: Array<{ city: string; title: string; items: string[] }> = [];
+          dayPlans.forEach((d: DayPlanItem) => {
+            const city = d.city || destination || `Day ${d.day}`;
+            const acts: string[] = [];
+            d.timeline.forEach((pt: string) => {
+              if (!/check[- ]in|check[- ]out|freshen|overnight|meals|stay|hotel|airport transfer|drop off at airport/i.test(pt)) {
+                const clean = pt.replace(/^(sightseeing(?:\s*&\s*experiences)?|activities|experiences)\s*:\s*/i, '').trim();
+                if (clean && !acts.includes(clean)) acts.push(clean);
+              }
+            });
+            if (acts.length > 0) {
+              const existing = groups.find(g => g.city.toLowerCase() === city.toLowerCase());
+              if (existing) {
+                acts.forEach(a => { if (!existing.items.includes(a)) existing.items.push(a); });
+              } else {
+                groups.push({ city, title: `${city} Sightseeing & Experiences`, items: acts });
+              }
+            }
+          });
+          return groups.length > 0 ? groups : highlights.filter(h => h.trim().length > 0);
+        })()
       },
       batchDates: tourType === 'Group' ? batchDates : [],
       placements
@@ -1763,7 +1838,7 @@ function WebsiteItineraryInner() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
               <label className="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
                 <input
                   type="checkbox"
@@ -1780,6 +1855,19 @@ function WebsiteItineraryInner() {
               <label className="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
                 <input
                   type="checkbox"
+                  checked={placements.sections.group}
+                  onChange={(e) => setPlacements({
+                    ...placements,
+                    sections: { ...placements.sections, group: e.target.checked }
+                  })}
+                  className="rounded accent-[#ff5d09]"
+                />
+                <span>Group Packages</span>
+              </label>
+
+              <label className="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
+                <input
+                  type="checkbox"
                   checked={placements.sections.family}
                   onChange={(e) => setPlacements({
                     ...placements,
@@ -1788,6 +1876,19 @@ function WebsiteItineraryInner() {
                   className="rounded accent-[#ff5d09]"
                 />
                 <span>Family Packages</span>
+              </label>
+
+              <label className="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={placements.sections.honeymoon}
+                  onChange={(e) => setPlacements({
+                    ...placements,
+                    sections: { ...placements.sections, honeymoon: e.target.checked }
+                  })}
+                  className="rounded accent-[#ff5d09]"
+                />
+                <span>Honeymoon Packages</span>
               </label>
 
               <label className="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
@@ -2890,7 +2991,7 @@ function WebsiteItineraryInner() {
                     const bYear = yMatch ? parseInt(yMatch[1], 10) : calendarYear;
 
                     b.ranges.forEach(r => {
-                      const parts = r.split('-').map(s => s.trim());
+                      const parts = r.split(/\s*[-–—]\s*/);
                       if (parts.length === 2) {
                         const sParts = parts[0].split(/\s+/);
                         const eParts = parts[1].split(/\s+/);

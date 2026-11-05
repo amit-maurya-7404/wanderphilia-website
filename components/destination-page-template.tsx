@@ -34,7 +34,9 @@ export function DestinationPageTemplate({ destination }: DestinationPageTemplate
 
   const [carouselIndex1, setCarouselIndex1] = useState(0)
   const [carouselIndex2, setCarouselIndex2] = useState(0)
+  const [groupCarouselIndex, setGroupCarouselIndex] = useState(0)
   const [familyCarouselIndex, setFamilyCarouselIndex] = useState(0)
+  const [honeymoonCarouselIndex, setHoneymoonCarouselIndex] = useState(0)
   const [customizedCarouselIndex, setCustomizedCarouselIndex] = useState(0)
   const [cardsPerView, setCardsPerView] = useState(3)
   const [callbackOpen, setCallbackOpen] = useState(false)
@@ -53,8 +55,16 @@ export function DestinationPageTemplate({ destination }: DestinationPageTemplate
     return getTripsBySection('available')
   }, [getTripsBySection, dynamicTrips])
 
+  const groupPackages = useMemo(() => {
+    return getTripsBySection('group')
+  }, [getTripsBySection, dynamicTrips])
+
   const familyPackages = useMemo(() => {
     return getTripsBySection('family')
+  }, [getTripsBySection, dynamicTrips])
+
+  const honeymoonPackages = useMemo(() => {
+    return getTripsBySection('honeymoon')
   }, [getTripsBySection, dynamicTrips])
 
   const customizedPackages = useMemo(() => {
@@ -99,7 +109,9 @@ export function DestinationPageTemplate({ destination }: DestinationPageTemplate
   useEffect(() => {
     setCarouselIndex1(0)
     setCarouselIndex2(0)
+    setGroupCarouselIndex(0)
     setFamilyCarouselIndex(0)
+    setHoneymoonCarouselIndex(0)
     setCustomizedCarouselIndex(0)
   }, [cardsPerView])
 
@@ -124,7 +136,7 @@ export function DestinationPageTemplate({ destination }: DestinationPageTemplate
   const [selectedDuration, setSelectedDuration] = useState<number | null>(null)
 
   const allCategoryTrips = useMemo(() => {
-    const combined = [...categoryTrips, ...familyPackages, ...customizedPackages]
+    const combined = [...categoryTrips, ...groupPackages, ...familyPackages, ...honeymoonPackages, ...customizedPackages]
     const seen = new Set<string>()
     return combined.filter(trip => {
       const id = trip.id || trip.slug
@@ -142,6 +154,14 @@ export function DestinationPageTemplate({ destination }: DestinationPageTemplate
     })
   }, [categoryTrips, selectedDuration])
 
+  const filteredGroupPackages = useMemo(() => {
+    if (!selectedDuration) return groupPackages
+    return groupPackages.filter(t => {
+      const tripNights = t.nights !== undefined ? t.nights : (t.duration ? t.duration - 1 : 0)
+      return tripNights === selectedDuration
+    })
+  }, [groupPackages, selectedDuration])
+
   const filteredFamilyPackages = useMemo(() => {
     if (!selectedDuration) return familyPackages
     return familyPackages.filter(t => {
@@ -149,6 +169,14 @@ export function DestinationPageTemplate({ destination }: DestinationPageTemplate
       return tripNights === selectedDuration
     })
   }, [familyPackages, selectedDuration])
+
+  const filteredHoneymoonPackages = useMemo(() => {
+    if (!selectedDuration) return honeymoonPackages
+    return honeymoonPackages.filter(t => {
+      const tripNights = t.nights !== undefined ? t.nights : (t.duration ? t.duration - 1 : 0)
+      return tripNights === selectedDuration
+    })
+  }, [honeymoonPackages, selectedDuration])
 
   const filteredCustomizedPackages = useMemo(() => {
     if (!selectedDuration) return customizedPackages
@@ -388,6 +416,79 @@ export function DestinationPageTemplate({ destination }: DestinationPageTemplate
           </section>
         )}
 
+        {/* SECTION: GROUP TOUR PACKAGES */}
+        {(sec.group ?? true) && filteredGroupPackages.length > 0 && (
+          <section className="py-8 bg-white border-t border-slate-100">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex flex-col md:flex-row md:items-end justify-between mb-8">
+                <div>
+                  <span className="text-primary font-semibold text-sm uppercase tracking-wider">
+                    {titles.groupSubtitle || 'Explore Together'}
+                  </span>
+                  <h2 className="text-xl md:text-3xl font-bold text-gray-900 mt-1">
+                    {titles.groupTitle || `${destination.name || destination.destination} Group Tour Packages`}
+                  </h2>
+                </div>
+                <p className="text-gray-500 text-sm mt-2 md:mt-0">
+                  Showing {filteredGroupPackages.length} Handcrafted Group Tours
+                </p>
+              </div>
+
+              {/* Mobile View */}
+              <div className="flex md:hidden overflow-x-auto gap-4 pb-4 -mx-4 px-4 scrollbar-none snap-x snap-mandatory">
+                {filteredGroupPackages.map((trip) => (
+                  <div key={trip.id} className="w-[90%] shrink-0">
+                    <TripCard {...trip} />
+                  </div>
+                ))}
+              </div>
+
+              {/* Desktop View */}
+              <div className="hidden md:block relative">
+                <div className="overflow-hidden">
+                  <div
+                    className="flex transition-transform duration-500 ease-out"
+                    style={{
+                      transform: `translateX(-${groupCarouselIndex * (100 / cardsPerView)}%)`,
+                    }}
+                  >
+                    {filteredGroupPackages.map((trip) => (
+                      <div key={trip.id} className="shrink-0 basis-1/3 p-2">
+                        <TripCard {...trip} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {filteredGroupPackages.length > cardsPerView && (
+                  <>
+                    <button
+                      onClick={() => setGroupCarouselIndex((prev) => Math.max(0, prev - 1))}
+                      disabled={groupCarouselIndex === 0}
+                      aria-label="Previous trip"
+                      className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow-lg transition-all disabled:opacity-0 disabled:pointer-events-none cursor-pointer"
+                    >
+                      <ChevronLeft size={24} />
+                    </button>
+                    <button
+                      onClick={() =>
+                        setGroupCarouselIndex((prev) =>
+                          Math.min(filteredGroupPackages.length - cardsPerView, prev + 1)
+                        )
+                      }
+                      disabled={groupCarouselIndex >= filteredGroupPackages.length - cardsPerView}
+                      aria-label="Next trip"
+                      className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow-lg transition-all disabled:opacity-0 disabled:pointer-events-none cursor-pointer"
+                    >
+                      <ChevronRight size={24} />
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* SECTION 2: FAMILY SPECIAL PACKAGES */}
         {sec.family && filteredFamilyPackages.length > 0 && (
           <section className="py-2 bg-white">
@@ -451,6 +552,80 @@ export function DestinationPageTemplate({ destination }: DestinationPageTemplate
                       disabled={familyCarouselIndex >= filteredFamilyPackages.length - cardsPerView}
                       aria-label="Next trip"
                       className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow-lg transition-all disabled:opacity-0 disabled:pointer-events-none"
+                    >
+                      <ChevronRight size={24} />
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+          </section>
+        )}
+
+
+        {/* SECTION: ROMANTIC & HONEYMOON SPECIALS */}
+        {(sec.honeymoon ?? true) && filteredHoneymoonPackages.length > 0 && (
+          <section className="py-8 bg-white border-t border-slate-100">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex flex-col md:flex-row md:items-end justify-between mb-8">
+                <div>
+                  <span className="text-primary font-semibold text-sm uppercase tracking-wider">
+                    {titles.honeymoonSubtitle || 'Dreamy Escapes'}
+                  </span>
+                  <h2 className="text-xl md:text-3xl font-bold text-gray-900 mt-1">
+                    {titles.honeymoonTitle || `${destination.name || destination.destination} Honeymoon Specials`}
+                  </h2>
+                </div>
+                <p className="text-gray-500 text-sm mt-2 md:mt-0">
+                  Showing {filteredHoneymoonPackages.length} Romantic Getaways
+                </p>
+              </div>
+
+              {/* Mobile View */}
+              <div className="flex md:hidden overflow-x-auto gap-4 pb-4 -mx-4 px-4 scrollbar-none snap-x snap-mandatory">
+                {filteredHoneymoonPackages.map((trip) => (
+                  <div key={trip.id} className="w-[90%] shrink-0">
+                    <TripCard {...trip} />
+                  </div>
+                ))}
+              </div>
+
+              {/* Desktop View */}
+              <div className="hidden md:block relative">
+                <div className="overflow-hidden">
+                  <div
+                    className="flex transition-transform duration-500 ease-out"
+                    style={{
+                      transform: `translateX(-${honeymoonCarouselIndex * (100 / cardsPerView)}%)`,
+                    }}
+                  >
+                    {filteredHoneymoonPackages.map((trip) => (
+                      <div key={trip.id} className="shrink-0 basis-1/3 p-2">
+                        <TripCard {...trip} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {filteredHoneymoonPackages.length > cardsPerView && (
+                  <>
+                    <button
+                      onClick={() => setHoneymoonCarouselIndex((prev) => Math.max(0, prev - 1))}
+                      disabled={honeymoonCarouselIndex === 0}
+                      aria-label="Previous trip"
+                      className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow-lg transition-all disabled:opacity-0 disabled:pointer-events-none cursor-pointer"
+                    >
+                      <ChevronLeft size={24} />
+                    </button>
+                    <button
+                      onClick={() =>
+                        setHoneymoonCarouselIndex((prev) =>
+                          Math.min(filteredHoneymoonPackages.length - cardsPerView, prev + 1)
+                        )
+                      }
+                      disabled={honeymoonCarouselIndex >= filteredHoneymoonPackages.length - cardsPerView}
+                      aria-label="Next trip"
+                      className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow-lg transition-all disabled:opacity-0 disabled:pointer-events-none cursor-pointer"
                     >
                       <ChevronRight size={24} />
                     </button>

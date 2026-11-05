@@ -15,13 +15,24 @@ const MONTH_SHORT = [
   'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
 ];
 
-function parseDateInput(raw: any, fallbackYear = 2026): { day: number; monthIndex: number; year: number } | null {
+function parseDateInput(raw: any, explicitYear?: number): { day: number; monthIndex: number; year: number } | null {
   if (!raw) return null;
   const str = String(raw).trim();
   if (!str) return null;
 
+  const now = new Date();
+  const curY = now.getFullYear();
+  const curM = now.getMonth();
+
+  const getYearForMonth = (mIdx: number): number => {
+    if (explicitYear) return explicitYear;
+    // If month is before current month minus 1 (e.g. Jan when we are in Nov), it belongs to next year
+    if (mIdx < curM - 1) return curY + 1;
+    return curY;
+  };
+
   // 1. ISO YYYY-MM-DD
-  const isoMatch = str.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})/);
+  const isoMatch = str.match(/^(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})/);
   if (isoMatch) {
     const y = parseInt(isoMatch[1], 10);
     const m = parseInt(isoMatch[2], 10) - 1;
@@ -29,8 +40,8 @@ function parseDateInput(raw: any, fallbackYear = 2026): { day: number; monthInde
     return { day: d, monthIndex: m, year: y };
   }
 
-  // 2. DD/MM/YYYY or DD-MM-YYYY
-  const dmyMatch = str.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{4})/);
+  // 2. DD/MM/YYYY or DD-MM-YYYY (with full 4-digit year)
+  const dmyMatch = str.match(/^(\d{1,2})[-/.](\d{1,2})[-/.](\d{4})/);
   if (dmyMatch) {
     const d = parseInt(dmyMatch[1], 10);
     const m = parseInt(dmyMatch[2], 10) - 1;
@@ -38,27 +49,38 @@ function parseDateInput(raw: any, fallbackYear = 2026): { day: number; monthInde
     return { day: d, monthIndex: m, year: y };
   }
 
-  // 3. DD Month YYYY or DD Month (e.g. "10 May 2026", "10th May", "05 Jun")
-  const textMatch = str.match(/(\d{1,2})(?:st|nd|rd|th)?\s+([A-Za-z]+)(?:\s+(\d{4}))?/i);
-  if (textMatch) {
-    const d = parseInt(textMatch[1], 10);
-    const mName = textMatch[2].toLowerCase();
-    const y = textMatch[3] ? parseInt(textMatch[3], 10) : fallbackYear;
+  // 3. DD-Month or DD Month or DD-Month-YYYY or DD Month YYYY (e.g. "15-Nov", "15 Nov", "15-November", "15th Nov", "15-Nov-2026")
+  // Separator can be hyphen (-), dash (–, —), space, slash (/), dot (.)
+  const dMonthMatch = str.match(/^(\d{1,2})(?:st|nd|rd|th)?[-/\s.–—]+([A-Za-z]+)(?:[-/\s.–—]+(\d{4}))?/i);
+  if (dMonthMatch) {
+    const d = parseInt(dMonthMatch[1], 10);
+    const mName = dMonthMatch[2].toLowerCase();
     const m = MONTH_NAMES.findIndex(mn => mn.toLowerCase().startsWith(mName.slice(0, 3)));
     if (m !== -1) {
+      const y = dMonthMatch[3] ? parseInt(dMonthMatch[3], 10) : getYearForMonth(m);
       return { day: d, monthIndex: m, year: y };
     }
   }
 
-  // 4. Month DD, YYYY or Month DD (e.g. "May 10", "May 10, 2026")
-  const mFirstMatch = str.match(/([A-Za-z]+)\s+(\d{1,2})(?:st|nd|rd|th)?(?:\s*,?\s*(\d{4}))?/i);
+  // 4. Month-DD or Month DD or Month-DD-YYYY or Month DD, YYYY (e.g. "Nov-15", "Nov 15", "November 15 2026")
+  const mFirstMatch = str.match(/^([A-Za-z]+)[-/\s.–—]+(\d{1,2})(?:st|nd|rd|th)?(?:[-/,\s.–—]+(\d{4}))?/i);
   if (mFirstMatch) {
     const mName = mFirstMatch[1].toLowerCase();
     const d = parseInt(mFirstMatch[2], 10);
-    const y = mFirstMatch[3] ? parseInt(mFirstMatch[3], 10) : fallbackYear;
     const m = MONTH_NAMES.findIndex(mn => mn.toLowerCase().startsWith(mName.slice(0, 3)));
     if (m !== -1) {
+      const y = mFirstMatch[3] ? parseInt(mFirstMatch[3], 10) : getYearForMonth(m);
       return { day: d, monthIndex: m, year: y };
+    }
+  }
+
+  // 5. Numeric DD-MM or DD/MM (e.g. "15-11" or "15/11")
+  const numDmMatch = str.match(/^(\d{1,2})[-/.](\d{1,2})$/);
+  if (numDmMatch) {
+    const d = parseInt(numDmMatch[1], 10);
+    const m = parseInt(numDmMatch[2], 10) - 1;
+    if (m >= 0 && m < 12 && d >= 1 && d <= 31) {
+      return { day: d, monthIndex: m, year: getYearForMonth(m) };
     }
   }
 
@@ -71,16 +93,19 @@ function formatRange(start: any, end: any, durationDays = 6): { monthKey: string
 
   let e = parseDateInput(end, s.year);
   if (!e) {
+    // If end date is missing or invalid, auto-calculate from start + durationDays - 1
     const d = new Date(s.year, s.monthIndex, s.day + Math.max(1, durationDays - 1));
     e = { day: d.getDate(), monthIndex: d.getMonth(), year: d.getFullYear() };
+  } else if (e.monthIndex < s.monthIndex) {
+    // e.g. Start 28 Dec, End 04 Jan -> end is in next year
+    e.year = s.year + 1;
   }
 
-  const sPad = String(s.day).padStart(2, '0');
-  const ePad = String(e.day).padStart(2, '0');
   const sMonth = MONTH_SHORT[s.monthIndex];
   const eMonth = MONTH_SHORT[e.monthIndex];
 
-  const rangeStr = `${sPad} ${sMonth} - ${ePad} ${eMonth}`;
+  // Standard website range format: "15 Nov - 22 Nov"
+  const rangeStr = `${s.day} ${sMonth} - ${e.day} ${eMonth}`;
   const monthKey = `${MONTH_NAMES[s.monthIndex]} ${s.year}`;
 
   return { monthKey, rangeStr };
@@ -217,26 +242,75 @@ export async function GET(req: NextRequest) {
       if (Array.isArray(rawGroupSubform) && rawGroupSubform.length > 0) {
         rawGroupSubform.forEach((r: any) => {
           // Extract Group Size if present on row
-          const rowSize = Number(r.Group_Size || r.Group_size || r['Group Size'] || r.Size);
+          const rowSize = Number(
+            r.Group_Size ||
+            r.Group_size ||
+            r['Group Size'] ||
+            r.Size ||
+            r.Max_Group_Size ||
+            r.Batch_Size ||
+            Object.entries(r).find(([k]) => /group.*size/i.test(k) || /batch.*size/i.test(k))?.[1]
+          );
           if (rowSize > 0 && extractedGroupSize === 0) {
             extractedGroupSize = rowSize;
           }
 
           // Extract Start Date
-          const rawStart = r.Start_Date_Month || r.Start_Date || r.Start_Date_month || r.Start_date_month || r['Start Date-Month'] || r['Start Date - Month'] || r.Start || '';
-          // Extract End Date
-          const rawEnd = r.End_Date_month || r.End_Date_Month || r.End_Date || r.End_date_month || r['End Date-month'] || r['End Date - Month'] || r.End || '';
+          let rawStart = String(
+            r.Start_Date_Month ||
+            r.Start_Date_month ||
+            r.Start_date_month ||
+            r['Start Date-Month'] ||
+            r['Start Date-month'] ||
+            r['Start Date - Month'] ||
+            r['Start Date - month'] ||
+            r.Start_Date ||
+            r.Start_date ||
+            r.Start ||
+            r.Date ||
+            r.Departure_Date ||
+            Object.entries(r).find(([k]) => /start.*date/i.test(k) || /start.*month/i.test(k))?.[1] ||
+            ''
+          ).trim();
 
-          if (typeof rawStart === 'string' && rawStart.includes('-') && !rawStart.match(/^\d{4}-\d{2}-\d{2}$/)) {
-            const splitRange = rawStart.split('-').map(s => s.trim());
-            const parsed = formatRange(splitRange[0], splitRange[1] || rawEnd, calculatedDays);
-            if (parsed) {
-              if (!batchMap[parsed.monthKey]) batchMap[parsed.monthKey] = [];
-              if (!batchMap[parsed.monthKey].includes(parsed.rangeStr)) {
-                batchMap[parsed.monthKey].push(parsed.rangeStr);
+          // Extract End Date
+          let rawEnd = String(
+            r.End_Date_month ||
+            r.End_Date_Month ||
+            r.End_date_month ||
+            r['End Date-month'] ||
+            r['End Date-Month'] ||
+            r['End Date - month'] ||
+            r['End Date - Month'] ||
+            r.End_Date ||
+            r.End_date ||
+            r.End ||
+            r.Return_Date ||
+            Object.entries(r).find(([k]) => /end.*date/i.test(k) || /end.*month/i.test(k) || /return.*date/i.test(k))?.[1] ||
+            ''
+          ).trim();
+
+          // If rawStart contains a combined range (e.g. "15-Nov to 22-Nov" or "15 - 22 Nov") and rawEnd is empty:
+          if (!rawEnd) {
+            if (rawStart.includes(' to ') || rawStart.includes(' TO ')) {
+              const parts = rawStart.split(/\s+to\s+/i);
+              rawStart = parts[0].trim();
+              rawEnd = parts[1].trim();
+            } else if (/\s+[-–—]\s+/.test(rawStart)) {
+              const parts = rawStart.split(/\s+[-–—]\s+/);
+              rawStart = parts[0].trim();
+              rawEnd = parts[1].trim();
+            } else if (/^\d{1,2}\s*[-–—]\s*\d{1,2}[-/\s.]+[A-Za-z]+/i.test(rawStart)) {
+              // e.g. "15-22 Nov" or "15 - 22 Nov"
+              const m = rawStart.match(/^(\d{1,2})\s*[-–—]\s*(\d{1,2})[-/\s.]+([A-Za-z]+)/i);
+              if (m) {
+                rawStart = `${m[1]}-${m[3]}`;
+                rawEnd = `${m[2]}-${m[3]}`;
               }
             }
-          } else if (rawStart) {
+          }
+
+          if (rawStart) {
             const parsed = formatRange(rawStart, rawEnd, calculatedDays);
             if (parsed) {
               if (!batchMap[parsed.monthKey]) batchMap[parsed.monthKey] = [];
