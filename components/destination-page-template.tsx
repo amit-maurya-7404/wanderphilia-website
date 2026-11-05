@@ -771,3 +771,4 @@ export function DestinationPageTemplate({ destination }: DestinationPageTemplate
     </div>
   )
 }
+

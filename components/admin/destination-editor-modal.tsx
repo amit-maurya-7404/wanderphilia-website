@@ -220,13 +220,13 @@ export function DestinationEditorModal({
             </div>
             <div>
               <h2 className="text-base font-bold text-white flex items-center gap-2">
-                {isEditing ? `Edit ${destination?.destination || 'Destination'} Page` : 'Create New Destination Page'}
+                Edit {destination?.destination || 'Destination'} Sections & Content
                 <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-orange-500/10 text-orange-400 border border-orange-500/20">
-                  {isEditing ? 'Live Editor' : 'New Page'}
+                  Fixed Catalog
                 </span>
               </h2>
               <p className="text-xs text-slate-400 mt-0.5">
-                Configure URL slug, hero banners, and toggle page sections without writing code
+                Toggle page sections, update banners, starting prices, and destination FAQs
               </p>
             </div>
           </div>
@@ -298,20 +298,19 @@ export function DestinationEditorModal({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-semibold text-slate-300 mb-1">
-                    Destination Name *
+                    Destination Name
                   </label>
                   <Input
                     value={destName}
-                    onChange={(e) => handleDestNameChange(e.target.value)}
-                    placeholder="e.g. Kerala, Andaman, Dubai"
-                    className="bg-slate-950 border-slate-800 text-white text-xs h-10"
+                    disabled
+                    className="bg-slate-950/70 border-slate-800 text-slate-300 text-xs h-10 cursor-not-allowed opacity-80"
                   />
-                  <p className="text-[11px] text-slate-500 mt-1">Short location name</p>
+                  <p className="text-[11px] text-slate-500 mt-1">Fixed catalog location</p>
                 </div>
 
                 <div>
                   <label className="block text-xs font-semibold text-slate-300 mb-1">
-                    URL Slug *
+                    URL Slug
                   </label>
                   <div className="flex items-center">
                     <span className="bg-slate-800/80 px-2.5 h-10 flex items-center text-slate-400 text-xs rounded-l-md border border-r-0 border-slate-800">
@@ -319,13 +318,12 @@ export function DestinationEditorModal({
                     </span>
                     <Input
                       value={slug}
-                      onChange={(e) => setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
-                      placeholder="kerala"
-                      className="bg-slate-950 border-slate-800 text-orange-400 font-mono text-xs h-10 rounded-l-none"
+                      disabled
+                      className="bg-slate-950/70 border-slate-800 text-orange-400 font-mono text-xs h-10 rounded-l-none cursor-not-allowed opacity-80"
                     />
                   </div>
                   <p className="text-[11px] text-slate-500 mt-1">
-                    Live link: <code className="text-orange-400">wanderphilia.com/trips/{slug || 'destination'}</code>
+                    Live link: <code className="text-orange-400">wanderphilia.com/trips/{slug}</code> (Locked for SEO)
                   </p>
                 </div>
               </div>
@@ -814,3 +812,4 @@ export function DestinationEditorModal({
     </div>
   );
 }
+

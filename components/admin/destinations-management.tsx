@@ -144,13 +144,13 @@ export function DestinationsManagement() {
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
             <span className="text-[11px] font-bold uppercase tracking-wider text-orange-400">
-              Page Builder & Dynamic Routing
+              Section & Content Controller
             </span>
             <h1 className="text-xl sm:text-2xl font-black text-white mt-1">
               Destination Pages & Section Management
             </h1>
             <p className="text-xs text-slate-400 mt-1 max-w-2xl leading-relaxed">
-              Create and launch new destination pages live at <code className="text-orange-400">wanderphilia.com/trips/[destination]</code> without writing code. Choose banners, starting prices, and toggle page sections on or off.
+              Manage banners, starting prices, FAQs, and toggle page sections (Available, Family, Customized, Reviews, Gallery) on or off for each of the 18 official destinations.
             </p>
           </div>
 
@@ -164,13 +164,6 @@ export function DestinationsManagement() {
             >
               <RefreshCw className={`w-3.5 h-3.5 mr-1.5 text-orange-400 ${loading ? 'animate-spin' : ''}`} />
               Refresh Pages
-            </Button>
-            <Button
-              size="sm"
-              onClick={handleCreateNew}
-              className="bg-gradient-to-r from-[#ff5d09] to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold text-xs h-9 shadow-md shadow-orange-500/20 cursor-pointer"
-            >
-              <Plus className="w-4 h-4 mr-1.5" /> + Create Destination Page
             </Button>
           </div>
         </div>
@@ -300,14 +293,14 @@ export function DestinationsManagement() {
             <Globe className="w-10 h-10 text-slate-600 mx-auto" />
             <p className="text-sm font-semibold text-slate-300">No destination pages found</p>
             <p className="text-xs text-slate-500 max-w-md mx-auto">
-              {searchQuery ? 'Try adjusting your search query or filters.' : 'Get started by creating your first destination page.'}
+              {searchQuery ? 'Try adjusting your search query or filters.' : 'No destinations match current criteria.'}
             </p>
             <Button
               size="sm"
-              onClick={handleCreateNew}
+              onClick={loadDestinations}
               className="bg-[#ff5d09] hover:bg-orange-600 text-white text-xs cursor-pointer"
             >
-              <Plus className="w-4 h-4 mr-1" /> Create Destination Page
+              <RefreshCw className="w-4 h-4 mr-1" /> Refresh Destinations
             </Button>
           </div>
         ) : (
@@ -522,3 +515,4 @@ export function DestinationsManagement() {
     </div>
   );
 }
+
