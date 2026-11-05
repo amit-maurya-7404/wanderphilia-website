@@ -78,8 +78,9 @@ export const DEFAULT_SECTION_TITLES: DestinationSectionTitles = {
   relatedSubtitle: 'Explore More',
 };
 
-// Built-in starter templates for destinations
+// All built-in destinations across the website
 export const BUILTIN_DESTINATIONS: DestinationPageItem[] = [
+  // 1. MEGHALAYA
   {
     slug: 'meghalaya',
     name: 'Meghalaya Tour Packages 2026',
@@ -118,6 +119,62 @@ export const BUILTIN_DESTINATIONS: DestinationPageItem[] = [
     isActive: true,
     isCustom: false,
   },
+
+  // 2. LEH LADAKH
+  {
+    slug: 'leh-ladakh',
+    name: 'Leh Ladakh Tour Packages 2026',
+    destination: 'Ladakh',
+    region: 'Domestic',
+    tagline: 'Roof of the World - Pangong Tso, Nubra Valley & Khardung La',
+    description: 'Embark on an epic Himalayan road adventure across high mountain passes, ancient monasteries, double-humped camel rides in Hunder, and camp under millions of stars at Pangong Lake.',
+    startingPrice: 27999,
+    heroImages: [
+      '/images/leh-ladakh.jpg',
+      'https://images.unsplash.com/photo-1581793745862-99fde7fa73d2?auto=format&fit=crop&w=1200&q=80'
+    ],
+    sections: {
+      available: true,
+      family: true,
+      custom: true,
+      related: true,
+      durationFilter: true,
+      reviews: true,
+      gallery: true,
+      faqs: true,
+    },
+    isActive: true,
+    isCustom: false,
+  },
+
+  // 3. SPITI VALLEY
+  {
+    slug: 'spiti',
+    name: 'Spiti Valley Tour Packages 2026',
+    destination: 'Spiti',
+    region: 'Domestic',
+    tagline: 'Middle Land - Key Monastery, Chandratal Lake & High Altitude Passes',
+    description: 'Explore the rugged, untamed beauty of Spiti Valley. Experience ancient gompas, highest post office in Hikkim, fossil village Langza, and the mystical turquoise waters of Chandratal.',
+    startingPrice: 18999,
+    heroImages: [
+      '/images/spiti-valley.jpg',
+      'https://images.unsplash.com/photo-1589182373726-e4f658ab50f0?auto=format&fit=crop&w=1200&q=80'
+    ],
+    sections: {
+      available: true,
+      family: true,
+      custom: true,
+      related: true,
+      durationFilter: true,
+      reviews: true,
+      gallery: true,
+      faqs: true,
+    },
+    isActive: true,
+    isCustom: false,
+  },
+
+  // 4. RAJASTHAN
   {
     slug: 'rajasthan',
     name: 'Rajasthan Tour Packages 2026',
@@ -144,6 +201,8 @@ export const BUILTIN_DESTINATIONS: DestinationPageItem[] = [
     isActive: true,
     isCustom: false,
   },
+
+  // 5. KASHMIR
   {
     slug: 'kashmir',
     name: 'Kashmir Tour Packages 2026',
@@ -169,17 +228,19 @@ export const BUILTIN_DESTINATIONS: DestinationPageItem[] = [
     isActive: true,
     isCustom: false,
   },
+
+  // 6. HIMACHAL
   {
-    slug: 'leh-ladakh',
-    name: 'Leh Ladakh Tour Packages 2026',
-    destination: 'Ladakh',
+    slug: 'himachal',
+    name: 'Himachal Tour Packages 2026',
+    destination: 'Himachal',
     region: 'Domestic',
-    tagline: 'Roof of the World - Pangong Tso, Nubra Valley & Khardung La',
-    description: 'Embark on an epic Himalayan road adventure across high mountain passes, ancient monasteries, double-humped camel rides in Hunder, and camp under millions of stars at Pangong Lake.',
-    startingPrice: 27999,
+    tagline: 'Himalayan Escapes - Manali Snow Peaks, Kasol Cafe Trails & Jibhi Waterfalls',
+    description: 'Experience magical Himachal Pradesh across Shimla, Manali, Solang Valley, Kasol, Tosh, and pristine Tirthan Valley with riverside stays and cafe hopping.',
+    startingPrice: 11999,
     heroImages: [
-      '/images/leh-ladakh.jpg',
-      'https://images.unsplash.com/photo-1581793745862-99fde7fa73d2?auto=format&fit=crop&w=1200&q=80'
+      '/images/himachal.jpg',
+      'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=1200&q=80'
     ],
     sections: {
       available: true,
@@ -194,6 +255,35 @@ export const BUILTIN_DESTINATIONS: DestinationPageItem[] = [
     isActive: true,
     isCustom: false,
   },
+
+  // 7. SIKKIM
+  {
+    slug: 'sikkim',
+    name: 'Sikkim & Darjeeling Tour Packages 2026',
+    destination: 'Sikkim',
+    region: 'Domestic',
+    tagline: 'Mystical Eastern Himalayas - Gangtok, Tsomgo Lake, Lachen & Gurudongmar',
+    description: 'Discover the mystical beauty of Sikkim with scenic drives to Tsomgo Lake, Nathula Pass, Yumthang Valley of Flowers, and sacred Gurudongmar Lake.',
+    startingPrice: 21999,
+    heroImages: [
+      '/images/sikkim.png',
+      'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80'
+    ],
+    sections: {
+      available: true,
+      family: true,
+      custom: true,
+      related: true,
+      durationFilter: true,
+      reviews: true,
+      gallery: true,
+      faqs: true,
+    },
+    isActive: true,
+    isCustom: false,
+  },
+
+  // 8. BALI
   {
     slug: 'bali',
     name: 'Bali Tour Packages 2026',
@@ -205,6 +295,276 @@ export const BUILTIN_DESTINATIONS: DestinationPageItem[] = [
     heroImages: [
       '/images/bali.jpg',
       'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1200&q=80'
+    ],
+    sections: {
+      available: true,
+      family: true,
+      custom: true,
+      related: true,
+      durationFilter: true,
+      reviews: true,
+      gallery: true,
+      faqs: true,
+    },
+    isActive: true,
+    isCustom: false,
+  },
+
+  // 9. VIETNAM
+  {
+    slug: 'vietnam',
+    name: 'Vietnam Tour Packages 2026',
+    destination: 'Vietnam',
+    region: 'International',
+    tagline: 'Timeless Charm - Ha Long Bay Cruise, Da Nang Golden Bridge & Hanoi Old Quarter',
+    description: 'Discover vibrant Vietnam from the limestone karsts of Ha Long Bay to lantern-lit Hoi An ancient town and modern skyline of Ho Chi Minh City.',
+    startingPrice: 32999,
+    heroImages: [
+      '/images/vietnam.png',
+      'https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80'
+    ],
+    sections: {
+      available: true,
+      family: true,
+      custom: true,
+      related: true,
+      durationFilter: true,
+      reviews: true,
+      gallery: true,
+      faqs: true,
+    },
+    isActive: true,
+    isCustom: false,
+  },
+
+  // 10. THAILAND
+  {
+    slug: 'thailand',
+    name: 'Thailand Tour Packages 2026',
+    destination: 'Thailand',
+    region: 'International',
+    tagline: 'Land of Smiles - Phuket Island Hopping, Krabi Beaches & Bangkok Temples',
+    description: 'Experience Thailand with world-class beach resorts, Phi Phi islands speedboats, Bangkok shopping street markets, and famous nightlife.',
+    startingPrice: 26999,
+    heroImages: [
+      '/images/thailand.jpg',
+      'https://images.unsplash.com/photo-1506665531195-3566af2b4dfa?auto=format&fit=crop&w=1200&q=80'
+    ],
+    sections: {
+      available: true,
+      family: true,
+      custom: true,
+      related: true,
+      durationFilter: true,
+      reviews: true,
+      gallery: true,
+      faqs: true,
+    },
+    isActive: true,
+    isCustom: false,
+  },
+
+  // 11. BHUTAN
+  {
+    slug: 'bhutan',
+    name: 'Bhutan Tour Packages 2026',
+    destination: 'Bhutan',
+    region: 'International',
+    tagline: 'Land of the Thunder Dragon - Tiger\'s Nest, Thimphu & Punakha Dzong',
+    description: 'Travel to the happiest kingdom in the world. Hike to Taktsang (Tiger\'s Nest Monastery), admire Himalayan fortress dzongs, and witness vibrant Buddhist culture.',
+    startingPrice: 29999,
+    heroImages: [
+      '/images/Bhutan_cat.jpg',
+      'https://images.unsplash.com/photo-1578637387939-43c525550085?auto=format&fit=crop&w=1200&q=80'
+    ],
+    sections: {
+      available: true,
+      family: true,
+      custom: true,
+      related: true,
+      durationFilter: true,
+      reviews: true,
+      gallery: true,
+      faqs: true,
+    },
+    isActive: true,
+    isCustom: false,
+  },
+
+  // 12. SINGAPORE
+  {
+    slug: 'singapore',
+    name: 'Singapore Tour Packages 2026',
+    destination: 'Singapore',
+    region: 'International',
+    tagline: 'Lion City - Marina Bay Sands, Universal Studios & Gardens by the Bay',
+    description: 'Experience the futuristic city of Singapore with Sentosa Island adventures, Cloud Forest domes, night safaris, and luxury shopping on Orchard Road.',
+    startingPrice: 38999,
+    heroImages: [
+      '/images/singapore.png',
+      'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&w=1200&q=80'
+    ],
+    sections: {
+      available: true,
+      family: true,
+      custom: true,
+      related: true,
+      durationFilter: true,
+      reviews: true,
+      gallery: true,
+      faqs: true,
+    },
+    isActive: true,
+    isCustom: false,
+  },
+
+  // 13. SWITZERLAND
+  {
+    slug: 'switzerland',
+    name: 'Switzerland Tour Packages 2026',
+    destination: 'Switzerland',
+    region: 'International',
+    tagline: 'Alpine Wonder - Jungfraujoch, Interlaken Lakes & Zermatt Matterhorn',
+    description: 'Explore scenic Switzerland with panoramic cogwheel train rides, snow-capped Swiss Alps, pristine lakes of Lucerne and Interlaken, and Swiss chocolate tastings.',
+    startingPrice: 89999,
+    heroImages: [
+      '/images/switzerland-dest.jpg',
+      'https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?auto=format&fit=crop&w=1200&q=80'
+    ],
+    sections: {
+      available: true,
+      family: true,
+      custom: true,
+      related: true,
+      durationFilter: true,
+      reviews: true,
+      gallery: true,
+      faqs: true,
+    },
+    isActive: true,
+    isCustom: false,
+  },
+
+  // 14. NEPAL
+  {
+    slug: 'nepal',
+    name: 'Nepal Tour Packages 2026',
+    destination: 'Nepal',
+    region: 'International',
+    tagline: 'Himalayan Gateway - Kathmandu Durbar, Pokhara Phewa Lake & Annapurna Peaks',
+    description: 'Discover Nepal\'s heritage temples, sacred stupas, serene boat rides on Phewa Lake in Pokhara, and sunrise views over the Annapurna mountain range.',
+    startingPrice: 18999,
+    heroImages: [
+      '/images/nepal-dest.jpg',
+      'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80'
+    ],
+    sections: {
+      available: true,
+      family: true,
+      custom: true,
+      related: true,
+      durationFilter: true,
+      reviews: true,
+      gallery: true,
+      faqs: true,
+    },
+    isActive: true,
+    isCustom: false,
+  },
+
+  // 15. INDONESIA
+  {
+    slug: 'indonesia',
+    name: 'Indonesia Tour Packages 2026',
+    destination: 'Indonesia',
+    region: 'International',
+    tagline: 'Emerald Archipelago - Komodo Dragons, Mount Bromo & Gili Islands',
+    description: 'Embark on island hopping across Indonesia from the volcanic sunrises of Mount Bromo to pristine beaches of Gili and ancient temples of Yogyakarta.',
+    startingPrice: 36999,
+    heroImages: [
+      '/images/indonesia-dest.jpg',
+      'https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?auto=format&fit=crop&w=1200&q=80'
+    ],
+    sections: {
+      available: true,
+      family: true,
+      custom: true,
+      related: true,
+      durationFilter: true,
+      reviews: true,
+      gallery: true,
+      faqs: true,
+    },
+    isActive: true,
+    isCustom: false,
+  },
+
+  // 16. JAPAN
+  {
+    slug: 'japan',
+    name: 'Japan Tour Packages 2026',
+    destination: 'Japan',
+    region: 'International',
+    tagline: 'Land of the Rising Sun - Tokyo Shinjuku, Mount Fuji & Kyoto Bamboo Groves',
+    description: 'Experience futuristic Tokyo, sacred shrines of Kyoto, majestic Mount Fuji viewpoints, and bullet train rides across historic and modern Japan.',
+    startingPrice: 94999,
+    heroImages: [
+      '/images/japan.jpg',
+      'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1200&q=80'
+    ],
+    sections: {
+      available: true,
+      family: true,
+      custom: true,
+      related: true,
+      durationFilter: true,
+      reviews: true,
+      gallery: true,
+      faqs: true,
+    },
+    isActive: true,
+    isCustom: false,
+  },
+
+  // 17. ICELAND
+  {
+    slug: 'iceland',
+    name: 'Iceland Tour Packages 2026',
+    destination: 'Iceland',
+    region: 'International',
+    tagline: 'Land of Fire and Ice - Northern Lights, Blue Lagoon & Black Sand Beaches',
+    description: 'Witness the dancing Aurora Borealis (Northern Lights), steaming geothermal lagoons, thunderous Skogafoss waterfall, and volcanic Reynisfjara black sand beaches.',
+    startingPrice: 119999,
+    heroImages: [
+      '/images/iceland.jpg',
+      'https://images.unsplash.com/photo-1504893524553-b855bce32c67?auto=format&fit=crop&w=1200&q=80'
+    ],
+    sections: {
+      available: true,
+      family: true,
+      custom: true,
+      related: true,
+      durationFilter: true,
+      reviews: true,
+      gallery: true,
+      faqs: true,
+    },
+    isActive: true,
+    isCustom: false,
+  },
+
+  // 18. PERU
+  {
+    slug: 'peru',
+    name: 'Peru Tour Packages 2026',
+    destination: 'Peru',
+    region: 'International',
+    tagline: 'Inca Wonders - Machu Picchu Citadel, Cusco Sacred Valley & Rainbow Mountain',
+    description: 'Journey to the lost citadel of the Incas at Machu Picchu, explore colonial Cusco, and hike to the surreal vibrant ridges of Vinicunca Rainbow Mountain.',
+    startingPrice: 124999,
+    heroImages: [
+      '/images/peru-dest.jpg',
+      'https://images.unsplash.com/photo-1526392060635-9d6019884377?auto=format&fit=crop&w=1200&q=80'
     ],
     sections: {
       available: true,

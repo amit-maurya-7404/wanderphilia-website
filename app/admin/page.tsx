@@ -34,6 +34,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { trips as staticTrips, Trip } from '@/lib/data';
 import { DestinationsManagement } from '@/components/admin/destinations-management';
+import { BUILTIN_DESTINATIONS } from '@/lib/destinations';
 
 interface TripItem extends Trip {
   _id?: string;
@@ -70,6 +71,16 @@ export default function AdminDashboardPage() {
 
   // Active Main View Tab
   const [activeMainTab, setActiveMainTab] = useState<'itineraries' | 'destinations'>('itineraries');
+  const [destCount, setDestCount] = useState<number>(BUILTIN_DESTINATIONS.length);
+
+  useEffect(() => {
+    fetch('/api/destinations')
+      .then(r => (r.ok ? r.json() : []))
+      .then(d => {
+        if (Array.isArray(d)) setDestCount(d.length);
+      })
+      .catch(() => {});
+  }, []);
 
   // Authentication & Logout
   const [loggingOut, setLoggingOut] = useState(false);
@@ -287,7 +298,7 @@ export default function AdminDashboardPage() {
                   : 'text-slate-400 hover:text-white'
               }`}
             >
-              <Globe className="w-3.5 h-3.5" /> Destination Pages
+              <Globe className="w-3.5 h-3.5" /> Destination Pages ({destCount})
             </button>
           </div>
 
@@ -333,7 +344,7 @@ export default function AdminDashboardPage() {
               : 'bg-slate-900 border-slate-800 text-slate-400'
           }`}
         >
-          Destination Pages
+          Destination Pages ({destCount})
         </button>
       </div>
 
