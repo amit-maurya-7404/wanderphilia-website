@@ -33,6 +33,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { trips as staticTrips, Trip } from '@/lib/data';
+import { DestinationsManagement } from '@/components/admin/destinations-management';
 
 interface TripItem extends Trip {
   _id?: string;
@@ -66,6 +67,9 @@ interface TripItem extends Trip {
 
 export default function AdminDashboardPage() {
   const router = useRouter();
+
+  // Active Main View Tab
+  const [activeMainTab, setActiveMainTab] = useState<'itineraries' | 'destinations'>('itineraries');
 
   // Authentication & Logout
   const [loggingOut, setLoggingOut] = useState(false);
@@ -263,6 +267,30 @@ export default function AdminDashboardPage() {
         </div>
 
         <div className="flex items-center gap-2.5">
+          {/* Main Module Tabs */}
+          <div className="hidden sm:flex items-center gap-1 bg-slate-900 p-1 rounded-xl border border-slate-800 mr-2">
+            <button
+              onClick={() => setActiveMainTab('itineraries')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
+                activeMainTab === 'itineraries'
+                  ? 'bg-gradient-to-r from-[#ff5d09] to-orange-600 text-white shadow-md'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <Layers className="w-3.5 h-3.5" /> Itineraries ({allTrips.length})
+            </button>
+            <button
+              onClick={() => setActiveMainTab('destinations')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
+                activeMainTab === 'destinations'
+                  ? 'bg-gradient-to-r from-[#ff5d09] to-orange-600 text-white shadow-md'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <Globe className="w-3.5 h-3.5" /> Destination Pages
+            </button>
+          </div>
+
           <Link href="/admin/website-itinerary">
             <Button
               size="sm"
@@ -285,8 +313,36 @@ export default function AdminDashboardPage() {
         </div>
       </header>
 
+      {/* MOBILE TAB SWITCHER */}
+      <div className="sm:hidden px-4 pt-3 bg-slate-950 flex items-center gap-2">
+        <button
+          onClick={() => setActiveMainTab('itineraries')}
+          className={`flex-1 py-2 text-xs font-semibold rounded-xl text-center border transition-all ${
+            activeMainTab === 'itineraries'
+              ? 'bg-orange-500/20 border-orange-500/30 text-orange-400'
+              : 'bg-slate-900 border-slate-800 text-slate-400'
+          }`}
+        >
+          Tour Itineraries ({allTrips.length})
+        </button>
+        <button
+          onClick={() => setActiveMainTab('destinations')}
+          className={`flex-1 py-2 text-xs font-semibold rounded-xl text-center border transition-all ${
+            activeMainTab === 'destinations'
+              ? 'bg-orange-500/20 border-orange-500/30 text-orange-400'
+              : 'bg-slate-900 border-slate-800 text-slate-400'
+          }`}
+        >
+          Destination Pages
+        </button>
+      </div>
+
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 pb-24">
-        {/* WELCOME BANNER & STATS */}
+        {activeMainTab === 'destinations' ? (
+          <DestinationsManagement />
+        ) : (
+          <>
+            {/* WELCOME BANNER & STATS */}
         <section className="bg-gradient-to-br from-slate-900 via-slate-900/90 to-slate-950 border border-slate-800/80 rounded-3xl p-6 shadow-2xl relative overflow-hidden">
           <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-orange-500/10 rounded-full blur-3xl pointer-events-none" />
 
@@ -681,7 +737,9 @@ export default function AdminDashboardPage() {
             </div>
           )}
         </section>
-      </main>
+      </>
+    )}
+  </main>
 
       {/* AUDIT HISTORY MODAL */}
       {historyTrip && (

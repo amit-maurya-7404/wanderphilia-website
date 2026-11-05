@@ -24,6 +24,8 @@ import { TripGallerySection } from '@/components/trip-gallery-section'
 import { CountryCodeSelect } from '@/components/ui/country-code-select'
 import { DEFAULT_COUNTRY_CODE } from '@/lib/country-codes'
 import Image from 'next/image'
+import { DestinationPageTemplate } from '@/components/destination-page-template'
+import { DestinationPageItem } from '@/lib/destinations'
 
 
 function cleanLocation(loc: string): string {
@@ -912,11 +914,16 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
   const total = selections.reduce((sum, item) => sum + item.price, 0)
   const staticTrip = useMemo(() => slug ? trips.find(t => t.slug === slug || t.id === slug) : undefined, [slug])
   const [dynamicTrip, setDynamicTrip] = useState<Trip | null>(null)
+  const [destination, setDestination] = useState<DestinationPageItem | null>(null)
   const [loadingDynamic, setLoadingDynamic] = useState(!staticTrip && !!slug)
+  const [loadingDestination, setLoadingDestination] = useState(!staticTrip && !!slug)
 
   useEffect(() => {
     if (!staticTrip && slug) {
       setLoadingDynamic(true)
+      setLoadingDestination(true)
+
+      // 1. Fetch dynamic trip
       fetch(`/api/trips?slug=${encodeURIComponent(slug)}`)
         .then(res => (res.ok ? res.json() : null))
         .then(data => {
@@ -926,8 +933,20 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
         })
         .catch(() => { })
         .finally(() => setLoadingDynamic(false))
+
+      // 2. Fetch destination page (if slug is a destination)
+      fetch(`/api/destinations?slug=${encodeURIComponent(slug)}`)
+        .then(res => (res.ok ? res.json() : null))
+        .then(data => {
+          if (data && !data.error && data.slug) {
+            setDestination(data as DestinationPageItem)
+          }
+        })
+        .catch(() => { })
+        .finally(() => setLoadingDestination(false))
     } else {
       setLoadingDynamic(false)
+      setLoadingDestination(false)
     }
   }, [staticTrip, slug])
 
@@ -1252,16 +1271,22 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
   }, [activeTab, trip?.itinerary])
 
   if (!slug) return null
-  if (loadingDynamic && !trip) {
+  if ((loadingDynamic || loadingDestination) && !trip && !destination) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="flex flex-col items-center gap-3">
           <div className="w-10 h-10 border-4 border-[#ff5d09] border-t-transparent rounded-full animate-spin" />
-          <p className="text-sm font-medium text-slate-600">Loading tour package...</p>
+          <p className="text-sm font-medium text-slate-600">Loading page...</p>
         </div>
       </div>
     )
   }
+
+  // If this slug is a dynamic Destination Page (created in Admin or builtin)
+  if (!trip && destination) {
+    return <DestinationPageTemplate destination={destination} />
+  }
+
   if (!trip) return notFound()
 
   const staySummary =
