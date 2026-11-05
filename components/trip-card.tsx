@@ -33,6 +33,10 @@ function getStaySummary(itinerary: Trip['itinerary']): string {
 
   const stays: string[] = [];
   itinerary.forEach((day, index) => {
+    // Departure day (last day) has no night stay
+    if (index === itinerary.length - 1 && itinerary.length > 1) {
+      return;
+    }
     let descLines: string[] = [];
     if (typeof day.description === 'string') {
       descLines = [day.description];
@@ -101,7 +105,11 @@ function getStaySummary(itinerary: Trip['itinerary']): string {
 
 function formatStaySummary(stayStr: string, maxItems: number = 5): string {
   if (!stayStr) return '';
-  const parts = stayStr.split(/\s*[-•]\s*/);
+  const parts = stayStr
+    .split(/\s*[|•–—-→/,+]\s*/)
+    .map(s => s.trim())
+    .filter(Boolean);
+
   if (parts.length <= maxItems) {
     return parts.join(' • ');
   }
@@ -194,7 +202,20 @@ export function TripCard(props: TripCardProps) {
   }
 
   const displayPrice = getLowestPriceForTrip(props)
-  const staySummary = props.route || props.staySummary || props.customRoute || getStaySummary(itinerary)
+  // Prioritize route or staySummary that has explicit night counts (e.g. "1N Udaipur | 1N Jawai...")
+  const staySummary =
+    (props.staySummary && /\d+N/i.test(props.staySummary) ? props.staySummary : null) ||
+    (props.route && /\d+N/i.test(props.route) ? props.route : null) ||
+    (props.customRoute && /\d+N/i.test(props.customRoute) ? props.customRoute : null) ||
+    (props.accommodations && props.accommodations.length > 0
+      ? props.accommodations
+          .map((a: any) => `${a.nights ? a.nights.replace(/\s*nights?/i, 'N').trim() : '1N'} ${a.city}`)
+          .join(' • ')
+      : null) ||
+    props.staySummary ||
+    props.route ||
+    props.customRoute ||
+    getStaySummary(itinerary)
 
   // Construct images array
   const images = [image]
@@ -223,7 +244,10 @@ export function TripCard(props: TripCardProps) {
   const badgeIcon = isMostBooked ? <ThumbsUp size={11} className="fill-white" /> : <Tag size={11} className="fill-white" />
 
   // Inclusions sequence: Cities, Transfers, Experiences, Meals, Visa, Trip Guide
-  const isGroup = title.toLowerCase().includes('group')
+  const isGroup =
+    props.tourType?.toLowerCase() === 'group' ||
+    (props as any).tripType?.toLowerCase() === 'group' ||
+    title.toLowerCase().includes('group')
   const inclusionDetails = getTripInclusionDetails(props)
 
   const inclusions: { id: string; label: string; icon: React.ReactNode; color: string }[] = [

@@ -428,7 +428,20 @@ function WebsiteItineraryInner() {
               };
             });
             setDayPlans(mappedDays);
-            computeHotelStaysFromDayPlans(mappedDays);
+            if (Array.isArray(tripData.accommodations) && tripData.accommodations.length > 1) {
+              setHotelStays(tripData.accommodations.map((a: any) => ({
+                city: a.city,
+                nights: parseInt(a.nights) || 1,
+                category: a.category || globalHotelCategory,
+                hotelId: a.hotelId || '',
+                hotelName: formatHotelWithSimilar(a.hotel || `Hotel in ${a.city}`),
+                roomCategory: a.roomCategory || 'Deluxe Room',
+                basePrice: a.basePrice || 0,
+                mealPlan: a.mealPlan || globalMealPlan
+              })));
+            } else {
+              computeHotelStaysFromDayPlans(mappedDays, tripData.staySummary);
+            }
           }
 
           setSaveSuccessMsg(`Loaded "${tripData.title}" in Edit Mode.`);
@@ -652,20 +665,36 @@ function WebsiteItineraryInner() {
     return matched;
   };
 
-  // Auto-Group Hotel Stays from Day Plans
-  const computeHotelStaysFromDayPlans = (plans: DayPlanItem[]) => {
+  // Auto-Group Hotel Stays from Day Plans or Stay Summary
+  const computeHotelStaysFromDayPlans = (plans: DayPlanItem[], overrideStaySummary?: string) => {
     const stays: { city: string; nights: number }[] = [];
-    plans.forEach((dp, idx) => {
-      if (idx === plans.length - 1 && plans.length > 1 && !dp.stayHotel) {
-        return;
-      }
-      const c = (dp.city || dp.stayHotel?.split('in ')?.[1]?.replace(/\/ similar/i, '').trim() || destination || 'Main City').trim();
-      if (stays.length > 0 && stays[stays.length - 1].city.toLowerCase() === c.toLowerCase()) {
-        stays[stays.length - 1].nights += 1;
-      } else {
-        stays.push({ city: c, nights: 1 });
-      }
-    });
+    const sumStr = overrideStaySummary || staySummary;
+    if (sumStr && /\d+N/i.test(sumStr)) {
+      const parts = sumStr.split(/\s*[|•–—-→]\s*/).map(s => s.trim()).filter(Boolean);
+      parts.forEach(part => {
+        const match = part.match(/^(\d+)\s*N(?:ights?)?\s+(.*)$/i);
+        if (match) {
+          stays.push({ city: match[2].trim(), nights: parseInt(match[1], 10) || 1 });
+        } else {
+          const c = part.replace(/^\d+N\s*/i, '').trim();
+          if (c) stays.push({ city: c, nights: 1 });
+        }
+      });
+    }
+
+    if (stays.length === 0) {
+      plans.forEach((dp, idx) => {
+        if (idx === plans.length - 1 && plans.length > 1 && !dp.stayHotel) {
+          return;
+        }
+        const c = (dp.city || dp.stayHotel?.split('in ')?.[1]?.replace(/\/ similar/i, '').trim() || destination || 'Main City').trim();
+        if (stays.length > 0 && stays[stays.length - 1].city.toLowerCase() === c.toLowerCase()) {
+          stays[stays.length - 1].nights += 1;
+        } else {
+          stays.push({ city: c, nights: 1 });
+        }
+      });
+    }
 
     const newRows: HotelStayRow[] = stays.map(s => {
       const availableHotels = getHotelsForCity(s.city);
@@ -914,17 +943,18 @@ function WebsiteItineraryInner() {
 
           const city = row.city || row.city2 || destination;
 
+          const isLastDay = idx === itin.dayRows.length - 1 && itin.dayRows.length > 1;
           return {
             day: row.dayNumber || idx + 1,
-            title: row.city ? `Day ${idx + 1}: ${row.city} Sightseeing` : `Day ${idx + 1}`,
+            title: isLastDay ? `Day ${idx + 1}: Departure from ${city}` : (row.city ? `Day ${idx + 1}: ${row.city} Sightseeing` : `Day ${idx + 1}`),
             city,
-            stayHotel: formatHotelWithSimilar(`Hotel in ${city}`),
+            stayHotel: isLastDay ? '' : formatHotelWithSimilar(`Hotel in ${city}`),
             meals: {
               breakfast: idx > 0,
               lunch: false,
-              dinner: idx < itin.dayRows.length - 1
+              dinner: !isLastDay
             },
-            timeline: experiences.length > 0 ? experiences : ['Explore local attractions', 'Overnight stay'],
+            timeline: experiences.length > 0 ? experiences : (isLastDay ? ['Enjoy morning breakfast at hotel and complete check-out formalities.', `Transfer to ${city} Airport / Railway Station for onward journey with fond memories.`] : ['Explore local attractions', 'Overnight stay']),
             image: heroImage || '/images/LL2.jpg'
           };
         });
@@ -933,8 +963,10 @@ function WebsiteItineraryInner() {
         setDayPlans(enrichedDays);
         computeHotelStaysFromDayPlans(enrichedDays);
 
+        // Only count night stays for Days 1 to N-1 (last day is departure day with no night stay)
         const cityStays: Record<string, number> = {};
-        itin.dayRows.forEach((r: any) => {
+        const stayRows = itin.dayRows.length > 1 ? itin.dayRows.slice(0, -1) : itin.dayRows;
+        stayRows.forEach((r: any) => {
           const c = r.city || r.city2 || destination;
           if (c) cityStays[c] = (cityStays[c] || 0) + 1;
         });
@@ -1184,6 +1216,18 @@ function WebsiteItineraryInner() {
         nights: `${s.nights}N`,
         roomCategory: s.roomCategory
       })),
+      summaryDetails: {
+        accommodation: hotelStays.map(s => ({
+          city: s.city,
+          hotel: formatHotelWithSimilar(s.hotelName)
+        })),
+        meals: [`Daily Breakfast & Dinner as per plan (${durationNights} Nights)`],
+        transfers: [
+          `Arrival & Departure Airport / Railway Station Transfers`,
+          `All intercity and local sightseeing transfers in comfortable vehicle`
+        ],
+        activities: highlights.filter(h => h.trim().length > 0)
+      },
       batchDates: tourType === 'Group' ? batchDates : [],
       placements
     };

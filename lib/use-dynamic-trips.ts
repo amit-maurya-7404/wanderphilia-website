@@ -26,11 +26,16 @@ export function useDestinationTrips(categoryId: string) {
 
     const dynamicList = dynamicTrips.filter(t => {
       const p = (t as any).placements;
-      if (p && p.destinationPage && p.destinationCategory?.toLowerCase() === categoryId.toLowerCase()) {
-        if (p.sections && p.sections[section]) return true;
-        // Default to 'available' if no specific section is checked
-        if (section === 'available' && (!p.sections || Object.values(p.sections).every(v => !v))) {
-          return true;
+      const isDestinationMatch =
+        (p && p.destinationPage && p.destinationCategory?.toLowerCase() === categoryId.toLowerCase()) ||
+        (t.category && t.category.toLowerCase() === categoryId.toLowerCase()) ||
+        (t.destination && t.destination.toLowerCase() === categoryId.toLowerCase());
+
+      if (isDestinationMatch) {
+        if (p?.sections && p.sections[section]) return true;
+        // Default to 'available' if no specific section is checked or if available is not explicitly false
+        if (section === 'available') {
+          return !p?.sections || p.sections.available !== false;
         }
       }
       return false;

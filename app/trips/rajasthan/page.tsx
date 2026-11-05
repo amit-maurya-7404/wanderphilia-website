@@ -59,19 +59,12 @@ export default function RajasthanPage() {
   const [galleryError, setGalleryError] = useState<string | null>(null)
 
   // Central mapping system for trip sections
-  const sectionMap = getSectionMapping(categoryId)
-
-  // Helper function to get trips by section
-  const getTripsBySection = (section: keyof typeof sectionMap) => {
-    const tripIds = sectionMap[section] || []
-    return trips.filter(trip => tripIds.includes(trip.id) || (trip.category === 'rajasthan' && section === 'available'))
-  }
+  const { getTripsBySection, sectionMap, dynamicTrips } = useDestinationTrips(categoryId)
 
   // Get all trips for this category (available packages)
   const categoryTrips = useMemo(() => {
-    const list = getTripsBySection('available')
-    return list.length > 0 ? list : trips.filter(t => t.category === 'rajasthan' || t.destination.toLowerCase().includes('rajasthan'))
-  }, [])
+    return getTripsBySection('available')
+  }, [getTripsBySection, dynamicTrips])
 
   // Get first trip for category description/type
   const firstTrip = categoryTrips[0]
@@ -83,21 +76,18 @@ export default function RajasthanPage() {
 
   // Get related packages (other India destinations)
   const relatedPackages = useMemo(() => {
-    const list = getTripsBySection('related')
-    return list.length > 0 ? list : trips.filter(t => ['22', '19', '1', '10'].includes(t.id))
-  }, [])
+    return getTripsBySection('related')
+  }, [getTripsBySection, dynamicTrips])
 
   // Family Packages Data
   const familyPackages = useMemo(() => {
-    const list = getTripsBySection('family')
-    return list.length > 0 ? list : categoryTrips
-  }, [categoryTrips])
+    return getTripsBySection('family')
+  }, [getTripsBySection, dynamicTrips])
 
   // Customized Packages Data
   const customizedPackages = useMemo(() => {
-    const list = getTripsBySection('custom')
-    return list.length > 0 ? list : categoryTrips
-  }, [categoryTrips])
+    return getTripsBySection('custom')
+  }, [getTripsBySection, dynamicTrips])
 
   const fallbackRajasthanImages = [
     '/images/Rajasthan/rajasthan1.jpeg',

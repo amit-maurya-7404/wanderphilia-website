@@ -287,19 +287,13 @@ function parseDayForSummary(description: string | string[]) {
       }
     } else if (
       lower.startsWith('accommodation:') || lower.startsWith('accommodation :') || lower.startsWith('hotel:') || lower.startsWith('hotels:') ||
-      lower.includes('overnight stay') || lower.includes('stay in') || lower.includes('hotel') ||
-      lower.includes('resort') || lower.includes('check-in') || lower.includes('check in') ||
-      lower.includes('check out') || lower.includes('check-out') || lower.includes('camp')
+      lower.startsWith('stay:') || lower.startsWith('stay at:') || lower.startsWith('stay in:') ||
+      lower.startsWith('overnight stay:') || lower.startsWith('overnight:')
     ) {
       const rawName = trimmed
         .replace(/^accommodation\s*:\s*/i, '')
         .replace(/^hotels?\s*:\s*/i, '')
-        .replace(/overnight stay near/i, '')
-        .replace(/overnight stay in/i, '')
-        .replace(/overnight stay at/i, '')
-        .replace(/overnight stay/i, '')
-        .replace(/stay in/i, '')
-        .replace(/check.in at/i, '')
+        .replace(/^(?:overnight\s*)?stays?\s*(?:in|at)?\s*:\s*/i, '')
         .replace(/^[:\s\-\.\,]+/, '')
         .replace(/[.\s]+$/, '')
         .trim();
@@ -413,13 +407,51 @@ function parseDayItinerarySummary(day: { day: number; title: string; description
 }
 
 function getTripSummaryDetails(trip: typeof trips[0]) {
-  if (trip.summaryDetails) {
+  if (trip.summaryDetails && trip.summaryDetails.accommodation && trip.summaryDetails.accommodation.length > 0) {
     return {
       accommodation: trip.summaryDetails.accommodation || [],
       meals: trip.summaryDetails.meals || [],
       transfers: trip.summaryDetails.transfers || [],
       activities: trip.summaryDetails.activities || [],
     }
+  }
+
+  // 1. Structured accommodations from accommodations array or staySummary
+  let accommodationList: Array<{ city: string; hotel: string; nights?: string }> = []
+
+  const isDummyAccom =
+    trip.accommodations &&
+    Array.isArray(trip.accommodations) &&
+    trip.accommodations.length === 1 &&
+    (trip.accommodations[0] as any)?.city === 'Leh Ladakh' &&
+    trip.destination !== 'Leh Ladakh';
+
+  if (trip.accommodations && Array.isArray(trip.accommodations) && trip.accommodations.length > 0 && !isDummyAccom) {
+    accommodationList = trip.accommodations.map((a: any) => ({
+      city: (typeof a === 'object' && a?.city ? a.city : '').toUpperCase(),
+      hotel: typeof a === 'object' ? (a?.hotel || a?.hotelName || `Hotel in ${a.city} / Similar`) : String(a),
+      nights: typeof a === 'object' ? a?.nights : undefined
+    }))
+  } else if (trip.stays && trip.stays.length > 0) {
+    accommodationList = trip.stays.map((s: string) => {
+      const parts = s.split(':')
+      return {
+        city: parts[0]?.trim().toUpperCase() || '',
+        hotel: parts[1]?.trim() || s
+      }
+    })
+  } else if (trip.staySummary) {
+    const parts = trip.staySummary.split(/\s*[|•–—-→]\s*/).map((s: string) => s.trim()).filter(Boolean)
+    accommodationList = parts.map((part: string) => {
+      const match = part.match(/^(\d+\s*N(?:ights?)?)?\s*(.*)$/i)
+      const nights = match && match[1] ? match[1].trim() : undefined
+      const city = match && match[2] ? match[2].trim() : part.replace(/^\d+N\s*/i, '').trim()
+      return {
+        city: city.toUpperCase(),
+        hotel: `Hotel in ${city} / Similar`,
+        nights
+      }
+    })
   }
 
   // Fallback: extract unique hotels, meals, transfers, activities from itinerary
@@ -446,13 +478,12 @@ function getTripSummaryDetails(trip: typeof trips[0]) {
     })
   }
 
-  const accommodation = trip.stays && trip.stays.length > 0
-    ? trip.stays
-    : hotelsList.length > 0
-      ? hotelsList
-      : trip.staySummary
-        ? [trip.staySummary]
-        : [`${Math.max(1, trip.duration - 1)} Nights Hotel Accommodation`]
+  const accommodation =
+    accommodationList.length > 0
+      ? accommodationList
+      : hotelsList.length > 0
+        ? hotelsList
+        : [`${Math.max(1, trip.duration - 1)} Nights Hotel Accommodation / Similar`]
 
   const meals = mealsList.length > 0
     ? mealsList
@@ -877,7 +908,7 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
             setDynamicTrip(data as Trip)
           }
         })
-        .catch(() => {})
+        .catch(() => { })
         .finally(() => setLoadingDynamic(false))
     } else {
       setLoadingDynamic(false)
@@ -1169,6 +1200,41 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
     activeTabRef.current = activeTab
   }, [activeTab])
 
+  useEffect(() => {
+    setIsClient(true)
+    if (activeTab !== 'itinerary') return
+    if (typeof window === 'undefined') return
+    if (!trip?.itinerary) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && entry.intersectionRatio > 0.4) {
+            const dayNum = parseInt(entry.target.id.replace('itinerary-day-', ''), 10)
+            if (!isNaN(dayNum)) {
+              setActiveDay(dayNum)
+            }
+          }
+        })
+      },
+      {
+        rootMargin: '-10% 0px -60% 0px',
+        threshold: [0.1, 0.5, 0.9]
+      }
+    )
+
+    trip.itinerary.forEach((day) => {
+      const el = document.getElementById(`itinerary-day-${day.day}`)
+      if (el) {
+        observer.observe(el)
+      }
+    })
+
+    return () => {
+      observer.disconnect()
+    }
+  }, [activeTab, trip?.itinerary])
+
   if (!slug) return null
   if (loadingDynamic && !trip) {
     return (
@@ -1182,9 +1248,24 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
   }
   if (!trip) return notFound()
 
-  const staySummary = trip.route || trip.staySummary || trip.customRoute || getStaySummary(trip.itinerary)
+  const staySummary =
+    (trip.staySummary && /\d+N/i.test(trip.staySummary) ? trip.staySummary : null) ||
+    (trip.route && /\d+N/i.test(trip.route) ? trip.route : null) ||
+    (trip.customRoute && /\d+N/i.test(trip.customRoute) ? trip.customRoute : null) ||
+    (trip.accommodations && trip.accommodations.length > 0
+      ? trip.accommodations
+          .map((a: any) => `${a.nights ? a.nights.replace(/\s*nights?/i, 'N').trim() : '1N'} ${a.city}`)
+          .join(' • ')
+      : null) ||
+    trip.staySummary ||
+    trip.route ||
+    trip.customRoute ||
+    getStaySummary(trip.itinerary)
 
-  const isGroup = trip.title.toLowerCase().includes('group')
+  const isGroup =
+    trip.tourType?.toLowerCase() === 'group' ||
+    (trip as any).tripType?.toLowerCase() === 'group' ||
+    trip.title.toLowerCase().includes('group')
   const isInte = trip.tripType === 'International'
 
   // const inclusionsList = [
@@ -1287,40 +1368,6 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
       })
     }
   }
-
-  useEffect(() => {
-    setIsClient(true)
-    if (activeTab !== 'itinerary') return
-    if (typeof window === 'undefined') return
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && entry.intersectionRatio > 0.4) {
-            const dayNum = parseInt(entry.target.id.replace('itinerary-day-', ''), 10)
-            if (!isNaN(dayNum)) {
-              setActiveDay(dayNum)
-            }
-          }
-        })
-      },
-      {
-        rootMargin: '-10% 0px -60% 0px',
-        threshold: [0.1, 0.5, 0.9]
-      }
-    )
-
-    trip.itinerary.forEach((day) => {
-      const el = document.getElementById(`itinerary-day-${day.day}`)
-      if (el) {
-        observer.observe(el)
-      }
-    })
-
-    return () => {
-      observer.disconnect()
-    }
-  }, [activeTab, trip.itinerary])
 
   return (
     <div className="min-h-screen flex flex-col bg-white">

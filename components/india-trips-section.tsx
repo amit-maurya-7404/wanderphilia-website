@@ -105,6 +105,7 @@ export function IndiaTripsSection() {
     { title: 'Rajasthan', region: 'Rajasthan', image: '/images/Rajasthan/rajasthan1.jpeg', price: getCheapestPriceForCategory('rajasthan', 19000) },
     { title: 'Himachal', region: 'Himachal', image: '/images/himachal.jpg', price: getCheapestPriceForCategory('himachal', 6999) },
     { title: 'Kashmir', region: 'Kashmir', image: '/images/kashmir.jpg', price: getCheapestPriceForCategory('kashmir', 24499) },
+    { title: 'Meghalaya', region: 'Meghalaya', image: '/images/meghalaya.jpg', price: getCheapestPriceForCategory('meghalaya', 18999) },
     { title: 'Sikkim', region: 'Sikkim', image: '/images/sikkim.png', price: getCheapestPriceForCategory('sikkim', 21999) },
   ]
 

@@ -63,6 +63,7 @@ export interface Trip {
   region?: string
   category: string
   tripType: 'India' | 'International'
+  tourType?: 'Group' | 'Customized' | string
   highlights: string[]
   gallery?: string[]
   accommodations?: Array<{ city: string; hotel: string; nights?: string }> | string[]
@@ -267,11 +268,12 @@ export function extractTripCityCount(trip: Partial<Trip>): number {
   const stopWords = new Set(['the', 'your', 'hotel', 'camp', 'camps', 'resort', 'homestay', 'similar', 'airport', 'overnight', 'transit', 'journey', 'arrival', 'departure'])
   const uniqueCities = new Set<string>()
 
-  const routeStr = trip.route || trip.staySummary || trip.customRoute
+  // 1. Primary source: parse staySummary and route (supports pipes, bullets, hyphens, en-dash, em-dash, arrows, commas)
+  const routeStr = trip.staySummary || trip.route || trip.customRoute
   if (routeStr) {
-    const parts = routeStr.split(/[-•|,+]/)
+    const parts = routeStr.split(/\s*[|•–—-→/,+]\s*/).map(p => p.trim()).filter(Boolean)
     for (const part of parts) {
-      const cleaned = part.replace(/^\s*\d+\s*N(?:ights?)?\s*/i, '').trim()
+      const cleaned = part.replace(/^\s*\d+\s*N(?:ights?)?\s*/i, '').replace(/\s*\d+\s*D(?:ays?)?\s*$/i, '').trim()
       if (cleaned) {
         const loc = cleanLocation(cleaned)
         if (loc && !stopWords.has(loc.toLowerCase()) && loc.length > 1) {
@@ -279,6 +281,27 @@ export function extractTripCityCount(trip: Partial<Trip>): number {
         }
       }
     }
+  }
+
+  // 2. Secondary source: accommodations array
+  if (uniqueCities.size <= 1 && trip.accommodations && Array.isArray(trip.accommodations) && trip.accommodations.length > 0) {
+    const accomCities = new Set<string>()
+    trip.accommodations.forEach((acc: any) => {
+      const cityName = typeof acc === 'string' ? acc : acc?.city
+      if (cityName) {
+        const loc = cleanLocation(cityName)
+        if (loc && !stopWords.has(loc.toLowerCase()) && loc.length > 1) {
+          accomCities.add(loc)
+        }
+      }
+    })
+    if (accomCities.size > uniqueCities.size) {
+      return accomCities.size
+    }
+  }
+
+  if (uniqueCities.size > 0) {
+    return uniqueCities.size
   }
 
   if (uniqueCities.size === 0 && trip.stays && trip.stays.length > 0) {
@@ -446,14 +469,47 @@ export function getTripInclusionDetails(trip: Partial<Trip>): {
     experiencesStr = typeof trip.experiencesCount === 'number' ? `${trip.experiencesCount} Experiences` : String(trip.experiencesCount)
   } else {
     let expCount = 0
-    if (trip.highlights && trip.highlights.length > 0) {
+    if (trip.summaryDetails && trip.summaryDetails.activities && trip.summaryDetails.activities.length > 0) {
+      expCount = trip.summaryDetails.activities.length
+    } else if (itinerary.length > 0) {
+      let activityPoints = 0
+      itinerary.forEach((day) => {
+        const lines = Array.isArray(day.description) ? day.description : [day.description || '']
+        lines.forEach((l) => {
+          const lower = l.toLowerCase().trim()
+          if (!lower) return
+          if (lower.startsWith('accommodation:') || lower.startsWith('meals:') || lower.startsWith('stay:') || lower.startsWith('hotel:')) return
+          if (lower.includes('check-in') || lower.includes('check in') || lower.includes('check-out') || lower.includes('check out') || lower.includes('freshen up')) return
+          if (
+            l.includes(':') ||
+            lower.includes('explore') ||
+            lower.includes('visit') ||
+            lower.includes('safari') ||
+            lower.includes('tour') ||
+            lower.includes('experience') ||
+            lower.includes('view') ||
+            lower.includes('sunset') ||
+            lower.includes('sunrise') ||
+            lower.includes('fort') ||
+            lower.includes('palace') ||
+            lower.includes('temple') ||
+            lower.includes('lake') ||
+            lower.includes('sightseeing')
+          ) {
+            activityPoints++
+          }
+        })
+      })
+      if (activityPoints >= 4) {
+        expCount = Math.min(activityPoints, Math.max(duration + 1, 7))
+      }
+    }
+
+    if (expCount <= 0 && trip.highlights && trip.highlights.length > 0) {
       expCount = trip.highlights.length
     }
-    if (expCount < 3 && itinerary.length > 0) {
-      expCount = Math.max(4, Math.round(duration * 1.1))
-    }
     if (expCount <= 0) {
-      expCount = Math.max(4, duration)
+      expCount = Math.max(5, duration)
     }
     experiencesStr = `${expCount} Experiences`
   }
@@ -470,7 +526,7 @@ export function getTripInclusionDetails(trip: Partial<Trip>): {
   } else if (trip.mealsCount !== undefined) {
     mealsStr = typeof trip.mealsCount === 'number' ? `${trip.mealsCount} Meals` : String(trip.mealsCount)
   } else {
-    const mealCount = Math.max(1, duration - 1)
+    const mealCount = trip.nights ? trip.nights : Math.max(1, duration - 1)
     mealsStr = `${mealCount} Meals`
   }
 
@@ -17505,6 +17561,156 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
       { startDate: '2026-12-05', endDate: '2026-12-10', spots: 12 },
       { startDate: '2026-12-26', endDate: '2026-12-31', spots: 6 }
     ]
+  },
+  {
+    id: 'meghalaya-6d-signature',
+    title: '6 Days Enchanting Meghalaya Road Trip with Dawki & Living Root Bridges',
+    slug: 'meghalaya-backpacking-road-trip',
+    image: '/images/meghalaya.jpg',
+    destination: 'Meghalaya',
+    category: 'Meghalaya',
+    tripType: 'India',
+    region: 'North East India',
+    duration: 6,
+    nights: 5,
+    price: 18999,
+    difficulty: 'Moderate',
+    groupSize: 16,
+    rating: 4.9,
+    description: 'Explore the Abode of Clouds on a scenic 6-day Meghalaya journey covering Shillong, Cherrapunji, Dawki crystal clear river, Double Decker Living Root Bridge, and Krang Shuri Blue Lagoon.',
+    route: 'Guwahati → Shillong (2N) → Cherrapunji (2N) → Shnongpdeng / Dawki (1N) → Guwahati',
+    staySummary: '2N Shillong, 2N Cherrapunji, 1N Shnongpdeng Dawki Camps',
+    highlights: [
+      'Double Decker Living Root Bridge trek in Nongriat',
+      'Boating on crystal-clear Umngot River in Dawki',
+      'Riverside camping & bonfire in Shnongpdeng',
+      'Mawlynnong - Asia\'s Cleanest Village',
+      'Nohkalikai Falls & Seven Sisters Waterfalls in Cherrapunji',
+      'Panoramic Laitlum Grand Canyons',
+      'Magical Krang Shuri Blue Lagoon Waterfall'
+    ],
+    gallery: [
+      '/images/meghalaya.jpg',
+      '/images/dummy1.jpg',
+      '/images/dummy2.jpg',
+      '/images/dummy3.jpg'
+    ],
+    images: [
+      '/images/meghalaya.jpg',
+      '/images/dummy1.jpg',
+      '/images/dummy2.jpg'
+    ],
+    heroMedia: [
+      { type: 'image', src: '/images/meghalaya.jpg', alt: 'Meghalaya Living Root Bridge' }
+    ],
+    costingDetails: [
+      { label: 'Double Sharing Rate', value: '₹21,999/- per person' },
+      { label: 'Triple Sharing Rate', value: '₹18,999/- per person' },
+      { label: 'Quad Sharing Rate', value: '₹17,499/- per person' }
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Arrival in Guwahati & Scenic Drive to Shillong (Scotland of the East)',
+        image: '/images/meghalaya.jpg',
+        description: [
+          'Arrival at Guwahati Airport / Railway Station, meet our tour representative and proceed towards Shillong.',
+          'Stop at the breathtaking Umiam Lake (Barapani) for panoramic views and photo sessions.',
+          'Arrive in Shillong, complete smooth hotel check-in formalities and freshen up.',
+          'Evening at leisure to explore Police Bazaar, local cafes, and savor Khasi delicacies.',
+          'Overnight stay at Hotel in Shillong / Similar.'
+        ]
+      },
+      {
+        day: 2,
+        title: 'Shillong to Cherrapunji via Laitlum Canyons & Elephant Falls',
+        image: '/images/dummy1.jpg',
+        description: [
+          'Enjoy morning breakfast, check out from hotel, and head towards the mesmerizing Laitlum Grand Canyons.',
+          'Witness the deep gorges and mist-clad valleys that make Meghalaya famous worldwide.',
+          'Visit the iconic multi-tiered Elephant Falls and Sacred Mawkdok Dympep Valley Viewpoint.',
+          'Drive through scenic clouds to Cherrapunji (Sohra), visit Arwah Cave and Garden of Caves.',
+          'Check in at hotel in Cherrapunji. Overnight stay at Hotel in Cherrapunji / Similar.'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Trek to Double Decker Living Root Bridge & Rainbow Falls',
+        image: '/images/meghalaya.jpg',
+        description: [
+          'Early morning breakfast and head to Tyrna village, the starting point of the legendary root bridge trek.',
+          'Descend through lush subtropical forests crossing suspension bridges to reach the centuries-old Double Decker Living Root Bridge in Nongriat.',
+          'Spend time dipping your feet in natural spring pools with natural fish pedicure.',
+          'Trek further to Rainbow Falls (optional) and return to Tyrna by evening.',
+          'Overnight stay at Hotel in Cherrapunji / Similar.'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Cherrapunji Sightseeing to Mawlynnong & Dawki (Shnongpdeng)',
+        image: '/images/dummy2.jpg',
+        description: [
+          'Morning breakfast and visit the majestic Nohkalikai Falls (India\'s tallest plunge waterfall) and Seven Sisters Falls.',
+          'Proceed to Mawlynnong Village, acclaimed as Asia\'s Cleanest Village. Walk on the Single Living Root Bridge at Riwai.',
+          'Drive to Shnongpdeng on the banks of the transparent Umngot River.',
+          'Check in at riverside luxury camps with bonfire and stargazing under pristine skies.',
+          'Overnight stay at Riverside Camp in Shnongpdeng Dawki / Similar.'
+        ]
+      },
+      {
+        day: 5,
+        title: 'Crystal Boating in Dawki, Krang Shuri Waterfalls & Return to Shillong',
+        image: '/images/dummy3.jpg',
+        description: [
+          'Early morning experience the world-famous boat ride where boats appear to float on glass water.',
+          'Enjoy cliff jumping, kayaking, and zip-lining over the emerald Umngot river.',
+          'Drive to the turquoise blue waters of Krang Shuri Waterfalls in Jaintia Hills.',
+          'Swim in the natural pool behind the waterfall curtain.',
+          'Return to Shillong by evening for souvenir shopping. Overnight stay at Hotel in Shillong / Similar.'
+        ]
+      },
+      {
+        day: 6,
+        title: 'Kamakhya Temple Visit & Departure from Guwahati Airport',
+        image: '/images/meghalaya.jpg',
+        description: [
+          'Enjoy final morning breakfast at hotel and complete check-out formalities.',
+          'Drive down to Guwahati and seek blessings at the sacred Maa Kamakhya Temple atop Nilachal Hill.',
+          'Transfer to Guwahati International Airport / Railway Station for your onward journey with unforgettable Meghalaya memories.',
+          'Tour concludes with beautiful memories.'
+        ]
+      }
+    ],
+    included: [
+      'Accommodation for 5 Nights (2N Shillong, 2N Cherrapunji, 1N Dawki Camps)',
+      'Daily breakfast at all hotels and camps',
+      'All airport pick-up, drop-off and sightseeing in private vehicle',
+      'Driver allowances, toll taxes, parking fees, and fuel charges',
+      'Guided trek to Double Decker Living Root Bridge',
+      'Boating experience on Umngot River in Dawki',
+      '24x7 Wanderphilia Tour Captain / On-ground support'
+    ],
+    notIncluded: [
+      'Airfare or train tickets to Guwahati',
+      'Lunch and personal expenses',
+      'Adventure activity charges (zip-line, scuba, cliff jump)',
+      'Entry fees at monuments and camera fees'
+    ],
+    batchDates: [
+      {
+        month: 'May 2026',
+        ranges: ['10 May - 15 May', '24 May - 29 May']
+      },
+      {
+        month: 'June 2026',
+        ranges: ['07 Jun - 12 Jun', '21 Jun - 26 Jun']
+      },
+      {
+        month: 'July 2026',
+        ranges: ['05 Jul - 10 Jul', '19 Jul - 24 Jul']
+      }
+    ],
+    dates: []
   }
 ];
 
