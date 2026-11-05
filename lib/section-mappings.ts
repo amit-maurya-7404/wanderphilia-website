@@ -110,6 +110,13 @@ export const sectionMappings: Record<string, Record<string, string[]>> = {
     custom: ['47', '48', '49', '50', '51', '52'],
     related: ['39', '1']
   },
+  'sri-lanka': {
+    available: ['WNDPI-SRI-001'],
+    group: ['WNDPI-SRI-001'],
+    family: ['WNDPI-SRI-001'],
+    custom: ['WNDPI-SRI-001'],
+    related: ['40', '61', '31']
+  },
   // Default fallback
   default: {
     available: ['1'],
@@ -214,6 +221,12 @@ export const destinationItineraryImages: Record<string, string[]> = {
     'https://images.unsplash.com/photo-1521437620269-f477f5437820?auto=format&fit=crop&w=1200&q=80',
     'https://images.unsplash.com/photo-1698429358246-807d8972da9a?auto=format&fit=crop&w=1200&q=80',
     'https://images.unsplash.com/photo-1613644383947-26a22b8c04f2?auto=format&fit=crop&w=1200&q=80'
+  ],
+  'sri-lanka': [
+    '/images/srilanka/sigiriya-rock.jpg',
+    '/images/srilanka/nine-arches-bridge.jpg',
+    '/images/srilanka/nuwara-eliya.jpg',
+    '/images/srilanka/mirissa-beach.jpg'
   ],
   'nepal': [
     '/images/nepal-dest.jpg',

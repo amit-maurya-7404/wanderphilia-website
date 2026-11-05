@@ -25,6 +25,7 @@ const categoryImageMap: Record<string, string> = {
   Singapore: '/images/singapore.png',
   Sikkim: '/images/sikkim.png',
   Vietnam: '/images/vietnam.png',
+  'Sri Lanka': '/images/srilanka/hero.jpg',
 }
 
 const categoryOrder: string[] = [
@@ -36,6 +37,7 @@ const categoryOrder: string[] = [
   'Singapore',
   'Thailand',
   'Bali',
+  'Sri Lanka',
   'Switzerland',
   'Peru',
   'Iceland',

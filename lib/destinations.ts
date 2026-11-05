@@ -578,5 +578,54 @@ export const BUILTIN_DESTINATIONS: DestinationPageItem[] = [
     },
     isActive: true,
     isCustom: false,
+  },
+
+  // 19. SRI LANKA
+  {
+    slug: 'sri-lanka',
+    name: 'Sri Lanka Tour Packages 2026',
+    destination: 'Sri Lanka',
+    region: 'International',
+    tagline: 'Pearl of the Indian Ocean - Sigiriya Fortress, Ella Tea Hills, Mirissa & Bentota Beaches',
+    description: 'Explore the tropical paradise of Sri Lanka with ancient UNESCO Sigiriya Lion Rock, scenic Ella train journeys through misty tea plantations, wildlife safaris in Yala National Park, cultural Kandy Temple of the Sacred Tooth Relic, and golden sandy beaches of Bentota and Mirissa.',
+    startingPrice: 34999,
+    heroImages: [
+      '/images/srilanka/hero.jpg',
+      '/images/srilanka/sigiriya-rock.jpg',
+      '/images/srilanka/nine-arches-bridge.jpg',
+      '/images/srilanka/mirissa-beach.jpg',
+      '/images/srilanka/nuwara-eliya.jpg',
+      '/images/srilanka/bentota-beach.jpg'
+    ],
+    sections: {
+      available: true,
+      family: true,
+      custom: true,
+      related: true,
+      durationFilter: true,
+      reviews: true,
+      gallery: true,
+      faqs: true,
+    },
+    faqs: [
+      {
+        question: 'What is the best time to visit Sri Lanka?',
+        answer: 'Sri Lanka is a year-round travel destination. The west and south coasts (Bentota, Galle, Mirissa) and central highlands (Nuwara Eliya, Ella) are ideal from November to April, while the eastern coast is great from May to September.'
+      },
+      {
+        question: 'Do Indian passport holders need a visa for Sri Lanka?',
+        answer: 'Yes, Indian tourists can easily apply for an Electronic Travel Authorization (ETA) online before arrival or receive visa on arrival at Bandaranaike International Airport in Colombo.'
+      },
+      {
+        question: 'What are the top highlights included in Sri Lanka tours?',
+        answer: 'Must-visit highlights include the ancient Sigiriya Lion Rock Fortress, Kandy Tooth Relic Temple, scenic Ella Nine Arches Bridge train journey, Nuwara Eliya tea estates, Yala National Park wildlife safaris, and coastal water activities in Bentota and Mirissa.'
+      },
+      {
+        question: 'Is Sri Lanka suitable for family vacations and couple getaways?',
+        answer: 'Absolutely! Sri Lanka is known for its warm hospitality, pristine beaches, luxury beachside resorts, scenic hill stations, and rich cultural heritage, making it perfect for both families and couples.'
+      }
+    ],
+    isActive: true,
+    isCustom: false,
   }
 ];
