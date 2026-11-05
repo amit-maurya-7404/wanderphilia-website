@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:ital,wght@0,400..800;1,400..800&display=swap');
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
@@ -240,4 +241,16 @@ body.lightbox-open {
       rgba(255, 255, 255, 0) 100%);
   transform: translateX(-150%) skewX(-25deg);
   animation: shimmer-sweep 2.5s infinite ease-in-out;
+}
+
+.font-serif-playfair {
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+.font-sans-jakarta {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+}
+
+.font-cursive-dancing {
+  font-family: 'Dancing Script', cursive;
 }
