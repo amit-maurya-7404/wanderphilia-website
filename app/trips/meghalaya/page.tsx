@@ -235,10 +235,12 @@ export default function MeghalayaPage() {
             <div className="w-full max-w-6xl mx-auto px-4 sm:px-5 md:px-6 pb-6 sm:pb-8 lg:pb-10">
               <div className="text-white">
                 <div className="max-w-5xl">
-                  <div className="mb-4 inline-flex items-center rounded-full bg-amber-400/15 px-3 py-1 text-sm font-semibold text-amber-200 ring-1 ring-amber-300/20">
-                    Starting Price
-                    <span className="ml-2 text-white">₹{(lowestPrice || 18999).toLocaleString('en-IN')} / person</span>
-                  </div>
+                  {firstTrip ? (
+                    <div className="mb-4 inline-flex items-center rounded-full bg-amber-400/15 px-3 py-1 text-sm font-semibold text-amber-200 ring-1 ring-amber-300/20">
+                      Starting Price
+                      <span className="ml-2 text-white">₹{(lowestPrice || 18999).toLocaleString('en-IN')} / person</span>
+                    </div>
+                  ) : null}
 
                   <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold tracking-tight leading-tight">
                     {categoryName}

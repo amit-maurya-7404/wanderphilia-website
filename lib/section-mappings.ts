@@ -61,10 +61,10 @@ export const sectionMappings: Record<string, Record<string, string[]>> = {
     related: ['54', '55']
   },
   'meghalaya': {
-    available: ['meghalaya-6d-signature', '1'],
-    family: ['meghalaya-6d-signature'],
-    custom: ['meghalaya-6d-signature'],
-    related: ['1', '10', '15']
+    available: [],
+    family: [],
+    custom: [],
+    related: []
   },
   'nepal': {
     available: ['1', '77'],
