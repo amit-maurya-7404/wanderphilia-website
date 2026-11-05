@@ -184,9 +184,9 @@ function WebsiteItineraryInner() {
   const [title, setTitle] = useState('');
   const [slug, setSlug] = useState('');
   const [tripType, setTripType] = useState<'India' | 'International'>('India');
-  const [destination, setDestination] = useState('Leh Ladakh');
-  const [region, setRegion] = useState('North India');
-  const [category, setCategory] = useState('Leh Ladakh');
+  const [destination, setDestination] = useState('');
+  const [region, setRegion] = useState('');
+  const [category, setCategory] = useState('');
   const [durationDays, setDurationDays] = useState<number>(6);
   const [durationNights, setDurationNights] = useState<number>(5);
   const [price, setPrice] = useState<number>(24999);
@@ -205,18 +205,14 @@ function WebsiteItineraryInner() {
   const [showAddCustomPrice, setShowAddCustomPrice] = useState(false);
 
   // Media
-  const [heroImage, setHeroImage] = useState('/images/LL2.jpg');
-  const [galleryImages, setGalleryImages] = useState<string[]>([
-    '/images/LL2.jpg',
-    '/images/dummy1.jpg',
-    '/images/dummy2.jpg'
-  ]);
+  const [heroImage, setHeroImage] = useState('');
+  const [galleryImages, setGalleryImages] = useState<string[]>([]);
   const [uploadingImage, setUploadingImage] = useState(false);
 
   // Destination Image Visual Picker State
   const [imagePickerOpen, setImagePickerOpen] = useState(false);
   const [imagePickerTarget, setImagePickerTarget] = useState<'hero' | 'gallery' | number | null>(null);
-  const [imagePickerDest, setImagePickerDest] = useState<string>('Rajasthan');
+  const [imagePickerDest, setImagePickerDest] = useState<string>('');
   const [availableDestinations, setAvailableDestinations] = useState<string[]>([]);
   const [destImages, setDestImages] = useState<string[]>([]);
   const [loadingDestImages, setLoadingDestImages] = useState(false);
@@ -226,33 +222,22 @@ function WebsiteItineraryInner() {
   const [dayPlans, setDayPlans] = useState<DayPlanItem[]>([
     {
       day: 1,
-      title: 'Arrival & Acclimatization in Leh',
-      city: 'Leh',
-      stayHotel: 'Deluxe Hotel in Leh / Similar',
+      title: 'Day 1: Arrival & Welcome',
+      city: '',
+      stayHotel: '',
       meals: { breakfast: false, lunch: false, dinner: true },
       timeline: [
-        'Arrival at airport, meet our tour representative, and transfer to hotel.',
-        'Complete smooth hotel check-in formalities and rest for high-altitude acclimatization.',
-        'Evening leisure walk through the vibrant Leh local market.',
+        'Arrival at airport / railway station, meet our tour captain/driver, and transfer to hotel.',
+        'Complete smooth hotel check-in formalities and freshen up.',
+        'Evening at leisure to explore nearby local attractions.',
         'Trip briefing followed by a delicious welcome dinner.'
       ],
-      image: '/images/LL2.jpg'
+      image: ''
     }
   ]);
 
   // Hotel Stays (Calculated from Day Plans & Zoho CRM Hotels)
-  const [hotelStays, setHotelStays] = useState<HotelStayRow[]>([
-    {
-      city: 'Leh',
-      nights: 2,
-      category: 'Deluxe',
-      hotelId: '',
-      hotelName: 'Deluxe Hotel in Leh / Similar',
-      roomCategory: 'Deluxe Room',
-      basePrice: 0,
-      mealPlan: 'MAPAI'
-    }
-  ]);
+  const [hotelStays, setHotelStays] = useState<HotelStayRow[]>([]);
   const [globalHotelCategory, setGlobalHotelCategory] = useState<string>('Deluxe');
   const [globalMealPlan, setGlobalMealPlan] = useState<string>('MAPAI');
 
@@ -291,7 +276,7 @@ function WebsiteItineraryInner() {
     honeymoon: false,
     christmasNewYear: false,
     destinationPage: true,
-    destinationCategory: 'leh-ladakh',
+    destinationCategory: '',
     sections: {
       available: true,
       family: true,
@@ -354,9 +339,9 @@ function WebsiteItineraryInner() {
         if (tripData) {
           setTitle(tripData.title || '');
           setSlug(tripData.slug || editSlug);
-          setDestination(tripData.destination || 'Leh Ladakh');
-          setCategory(tripData.category || tripData.destination || 'Leh Ladakh');
-          setRegion(tripData.region || 'North India');
+          setDestination(tripData.destination || '');
+          setCategory(tripData.category || tripData.destination || '');
+          setRegion(tripData.region || '');
           setTripType(tripData.tripType === 'International' ? 'International' : 'India');
           setTourType(tripData.tourType || (tripData.title?.toLowerCase().includes('group') ? 'Group' : 'Customized'));
 
@@ -556,15 +541,21 @@ function WebsiteItineraryInner() {
   };
 
   // 3. Fetch Destination Images for Visual Picker
-  const fetchDestinationImages = async (destName: string) => {
+  const fetchDestinationImages = async (destName: string, autoSetMedia = false) => {
+    if (!destName) return;
     setLoadingDestImages(true);
     try {
       const res = await fetch(`/api/destination-images?destination=${encodeURIComponent(destName)}`);
       const data = await res.json();
       if (data.success) {
-        setDestImages(data.images || []);
+        const imgs = data.images || [];
+        setDestImages(imgs);
         if (data.destinations?.length) {
           setAvailableDestinations(data.destinations);
+        }
+        if (autoSetMedia && imgs.length > 0) {
+          setHeroImage(prev => (!prev || prev.includes('LL2') || prev.includes('dummy') ? imgs[0] : prev));
+          setGalleryImages(prev => (prev.length === 0 || prev.some(g => g.includes('LL2') || g.includes('dummy')) ? imgs.slice(0, 4) : prev));
         }
       }
     } catch (err) {
@@ -577,14 +568,17 @@ function WebsiteItineraryInner() {
   useEffect(() => {
     fetchZohoFixedItineraries();
     fetchZohoMasterData();
-    fetchDestinationImages(destination || 'Rajasthan');
+    if (destination) {
+      fetchDestinationImages(destination);
+    }
   }, []);
 
   // Open Image Picker
   const handleOpenImagePicker = (target: 'hero' | 'gallery' | number) => {
     setImagePickerTarget(target);
-    setImagePickerDest(destination || 'Rajasthan');
-    fetchDestinationImages(destination || 'Rajasthan');
+    const destToQuery = destination || 'Rajasthan';
+    setImagePickerDest(destToQuery);
+    fetchDestinationImages(destToQuery);
     setSelectedGalleryPicks([]);
     setImagePickerOpen(true);
   };
@@ -836,26 +830,47 @@ function WebsiteItineraryInner() {
   };
 
   // Auto-Logistics Statements Engine
-  const injectAutoLogisticsStatements = (rawDays: DayPlanItem[]) => {
+  const injectAutoLogisticsStatements = (
+    rawDays: DayPlanItem[],
+    destinationOverride?: string,
+    tripTypeOverride?: 'India' | 'International'
+  ) => {
     const total = rawDays.length;
+    const currentDest = destinationOverride ?? destination ?? '';
+    const currentTripType = tripTypeOverride ?? tripType;
+
     return rawDays.map((dp, idx) => {
       const isFirst = idx === 0;
       const isLast = idx === total - 1;
-      const currentCity = dp.city || destination;
-      const prevCity = idx > 0 ? (rawDays[idx - 1].city || destination) : '';
+      const currentCity = dp.city || currentDest || '';
+      const prevCity = idx > 0 ? (rawDays[idx - 1].city || currentDest || '') : '';
 
-      const isIntercity = idx > 0 && currentCity.toLowerCase() !== prevCity.toLowerCase();
+      const isIntercity = idx > 0 && currentCity && prevCity && currentCity.toLowerCase() !== prevCity.toLowerCase();
       const timelinePoints = [...dp.timeline];
 
       if (isFirst) {
-        const hasArrival = timelinePoints.some(p => /arrival|arrive|pickup/i.test(p));
-        if (!hasArrival) {
-          timelinePoints.unshift(
-            tripType === 'International'
-              ? `Arrival at ${destination} International Airport, meet our representative, and transfer to your hotel.`
-              : `Arrival at ${destination} Airport / Railway Station, meet our tour captain/driver, and transfer to hotel.`
-          );
+        const arrivalCityOrDest = dp.city || currentDest || '';
+        const properArrivalText = arrivalCityOrDest
+          ? (currentTripType === 'International'
+              ? `Arrival at ${arrivalCityOrDest} International Airport, meet our representative, and transfer to your hotel.`
+              : `Arrival at ${arrivalCityOrDest} Airport / Railway Station, meet our tour captain/driver, and transfer to hotel.`)
+          : (currentTripType === 'International'
+              ? `Arrival at International Airport, meet our representative, and transfer to your hotel.`
+              : `Arrival at Airport / Railway Station, meet our tour captain/driver, and transfer to hotel.`);
+
+        const arrivalIdx = timelinePoints.findIndex(p =>
+          /arrival at .* airport/i.test(p) ||
+          /arrival at .* railway/i.test(p) ||
+          /^arrival at airport/i.test(p) ||
+          /^arrival/i.test(p)
+        );
+
+        if (arrivalIdx >= 0) {
+          timelinePoints[arrivalIdx] = properArrivalText;
+        } else {
+          timelinePoints.unshift(properArrivalText);
         }
+
         const hasCheckin = timelinePoints.some(p => /check-in|check in/i.test(p));
         if (!hasCheckin) {
           timelinePoints.splice(1, 0, `Complete smooth hotel check-in formalities and freshen up.`);
@@ -873,14 +888,33 @@ function WebsiteItineraryInner() {
       }
 
       if (isLast && total > 1) {
-        const hasDepart = timelinePoints.some(p => /departure|return flight|drop-off/i.test(p));
-        if (!hasDepart) {
+        const departureCityOrDest = dp.city || currentDest || '';
+        const properDepartText = departureCityOrDest
+          ? (currentTripType === 'International'
+              ? `Transfer to ${departureCityOrDest} International Airport for your flight back home with wonderful memories.`
+              : `Transfer to ${departureCityOrDest} Airport / Railway Station for your onward journey with unforgettable memories.`)
+          : (currentTripType === 'International'
+              ? `Transfer to International Airport for your flight back home with wonderful memories.`
+              : `Transfer to Airport / Railway Station for your onward journey with unforgettable memories.`);
+
+        const departIdx = timelinePoints.findIndex(p =>
+          /transfer to .* airport/i.test(p) ||
+          /transfer to .* railway/i.test(p) ||
+          /^transfer to airport/i.test(p)
+        );
+
+        if (departIdx >= 0) {
+          timelinePoints[departIdx] = properDepartText;
+        } else {
+          const hasDepart = timelinePoints.some(p => /departure|return flight|drop-off/i.test(p));
+          if (!hasDepart) {
+            timelinePoints.push(properDepartText);
+          }
+        }
+
+        const hasBreakfast = timelinePoints.some(p => /breakfast.*check-?out|check-?out.*breakfast/i.test(p));
+        if (!hasBreakfast) {
           timelinePoints.unshift(`Enjoy morning breakfast at the hotel and complete check-out formalities.`);
-          timelinePoints.push(
-            tripType === 'International'
-              ? `Transfer to ${destination} International Airport for your flight back home with wonderful memories.`
-              : `Transfer to ${destination} Airport / Railway Station for your onward journey with unforgettable memories.`
-          );
         }
       }
 
@@ -968,25 +1002,28 @@ function WebsiteItineraryInner() {
       setTitle(itin.name || 'Curated Tour Package');
       setSlug(cleanSlug(itin.name || 'curated-tour-package'));
 
-      if (itin.destination) {
-        setDestination(itin.destination);
-        setCategory(itin.destination);
-        const lowerDest = itin.destination.toLowerCase().replace(/\s+/g, '-');
-        setPlacements(prev => ({
-          ...prev,
-          destinationCategory: lowerDest
-        }));
-        setImagePickerDest(itin.destination);
-        fetchDestinationImages(itin.destination);
-      }
-
+      const importedDest = itin.destination || '';
       const isInt = itin.destinationType?.toLowerCase() === 'international';
-      setTripType(isInt ? 'International' : 'India');
+      const itinTripType: 'India' | 'International' = isInt ? 'International' : 'India';
+
+      setTripType(itinTripType);
       setPlacements(prev => ({
         ...prev,
         indiaTrips: !isInt,
         internationalTrips: isInt
       }));
+
+      if (importedDest) {
+        setDestination(importedDest);
+        setCategory(importedDest);
+        const lowerDest = importedDest.toLowerCase().replace(/\s+/g, '-');
+        setPlacements(prev => ({
+          ...prev,
+          destinationCategory: lowerDest
+        }));
+        setImagePickerDest(importedDest);
+        fetchDestinationImages(importedDest, true);
+      }
 
       const numDays = itin.noOfDays || 1;
       const numNights = itin.noOfNights || Math.max(1, numDays - 1);
@@ -1007,25 +1044,25 @@ function WebsiteItineraryInner() {
             });
           }
 
-          const city = row.city || row.city2 || destination;
+          const city = row.city || row.city2 || importedDest || '';
 
           const isLastDay = idx === itin.dayRows.length - 1 && itin.dayRows.length > 1;
           return {
             day: row.dayNumber || idx + 1,
-            title: isLastDay ? `Day ${idx + 1}: Departure from ${city}` : (row.city ? `Day ${idx + 1}: ${row.city} Sightseeing` : `Day ${idx + 1}`),
+            title: isLastDay ? `Day ${idx + 1}: Departure from ${city || 'Destination'}` : (city ? `Day ${idx + 1}: ${city} Sightseeing` : `Day ${idx + 1}`),
             city,
-            stayHotel: isLastDay ? '' : formatHotelWithSimilar(`Hotel in ${city}`),
+            stayHotel: isLastDay ? '' : formatHotelWithSimilar(city ? `Hotel in ${city}` : 'Hotel / Similar'),
             meals: {
               breakfast: idx > 0,
               lunch: false,
               dinner: !isLastDay
             },
-            timeline: experiences.length > 0 ? experiences : (isLastDay ? ['Enjoy morning breakfast at hotel and complete check-out formalities.', `Transfer to ${city} Airport / Railway Station for onward journey with fond memories.`] : ['Explore local attractions', 'Overnight stay']),
-            image: heroImage || '/images/LL2.jpg'
+            timeline: experiences.length > 0 ? experiences : (isLastDay ? ['Enjoy morning breakfast at hotel and complete check-out formalities.', `Transfer to ${city || 'Airport'} / Railway Station for onward journey with fond memories.`] : ['Explore local attractions', 'Overnight stay']),
+            image: heroImage || ''
           };
         });
 
-        const enrichedDays = injectAutoLogisticsStatements(rawDays);
+        const enrichedDays = injectAutoLogisticsStatements(rawDays, importedDest, itinTripType);
         setDayPlans(enrichedDays);
         computeHotelStaysFromDayPlans(enrichedDays);
 
@@ -1033,7 +1070,7 @@ function WebsiteItineraryInner() {
         const cityStays: Record<string, number> = {};
         const stayRows = itin.dayRows.length > 1 ? itin.dayRows.slice(0, -1) : itin.dayRows;
         stayRows.forEach((r: any) => {
-          const c = r.city || r.city2 || destination;
+          const c = r.city || r.city2 || importedDest || '';
           if (c) cityStays[c] = (cityStays[c] || 0) + 1;
         });
         const summaryStr = Object.entries(cityStays)
@@ -1516,11 +1553,10 @@ function WebsiteItineraryInner() {
                 setTourType('Group');
                 setPlacements(prev => ({ ...prev, upcomingTours: true }));
               }}
-              className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-                tourType === 'Group'
+              className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${tourType === 'Group'
                   ? 'bg-[#ff5d09] text-white shadow-md'
                   : 'text-slate-400 hover:text-white'
-              }`}
+                }`}
             >
               <Users className="w-3.5 h-3.5" /> Group Tour Package
             </button>
@@ -1530,11 +1566,10 @@ function WebsiteItineraryInner() {
                 setTourType('Customized');
                 setPlacements(prev => ({ ...prev, upcomingTours: false }));
               }}
-              className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-                tourType === 'Customized'
+              className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${tourType === 'Customized'
                   ? 'bg-[#ff5d09] text-white shadow-md'
                   : 'text-slate-400 hover:text-white'
-              }`}
+                }`}
             >
               <Compass className="w-3.5 h-3.5" /> Customized Private Tour
             </button>
@@ -1790,7 +1825,7 @@ function WebsiteItineraryInner() {
               <Input
                 value={title}
                 onChange={(e) => handleTitleChange(e.target.value)}
-                placeholder="e.g. 6 Days Leh Ladakh Bike Group Expedition"
+                placeholder="e.g. 7 Days Rangilo Rajasthan Group Tour"
                 className="bg-slate-950 border-slate-800 text-white text-xs py-2"
               />
             </div>
@@ -1803,7 +1838,7 @@ function WebsiteItineraryInner() {
                 <Input
                   value={slug}
                   onChange={(e) => setSlug(cleanSlug(e.target.value))}
-                  placeholder="e.g. leh-ladakh-bike-expedition"
+                  placeholder="e.g. rangilo-rajasthan-group-tour"
                   className="bg-slate-950 border-slate-800 text-orange-400 font-mono text-xs py-2"
                 />
                 <Button
@@ -1849,7 +1884,7 @@ function WebsiteItineraryInner() {
                   setCategory(e.target.value);
                   setImagePickerDest(e.target.value);
                 }}
-                placeholder="e.g. Leh Ladakh"
+                placeholder="e.g. Rajasthan, Meghalaya, Bali, Kashmir"
                 className="bg-slate-950 border-slate-800 text-white text-xs py-2"
               />
             </div>
@@ -1887,11 +1922,10 @@ function WebsiteItineraryInner() {
                     key={diff}
                     type="button"
                     onClick={() => setDifficulty(diff)}
-                    className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
-                      difficulty === diff
+                    className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${difficulty === diff
                         ? 'bg-orange-500/20 text-orange-400 border-orange-500/50'
                         : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-white'
-                    }`}
+                      }`}
                   >
                     {diff}
                   </button>
@@ -1936,7 +1970,7 @@ function WebsiteItineraryInner() {
               <Input
                 value={route}
                 onChange={(e) => setRoute(e.target.value)}
-                placeholder="e.g. Leh → Nubra Valley → Pangong Lake → Leh"
+                placeholder="e.g. Jaipur → Jodhpur → Jaisalmer"
                 className="bg-slate-950 border-slate-800 text-white text-xs py-2"
               />
             </div>
@@ -1946,7 +1980,7 @@ function WebsiteItineraryInner() {
               <Input
                 value={staySummary}
                 onChange={(e) => setStaySummary(e.target.value)}
-                placeholder="e.g. 3N Leh | 1N Nubra | 1N Pangong"
+                placeholder="e.g. 2N Jaipur | 2N Jodhpur | 2N Jaisalmer"
                 className="bg-slate-950 border-slate-800 text-white text-xs py-2"
               />
             </div>
@@ -2058,11 +2092,10 @@ function WebsiteItineraryInner() {
             {pricingOptions.map((opt, idx) => (
               <div
                 key={opt.id}
-                className={`p-3.5 rounded-xl border transition-all ${
-                  opt.checked
+                className={`p-3.5 rounded-xl border transition-all ${opt.checked
                     ? 'bg-slate-950 border-emerald-500/40'
                     : 'bg-slate-950/40 border-slate-800/80 opacity-70'
-                }`}
+                  }`}
               >
                 <div className="flex items-center justify-between gap-2">
                   <label className="flex items-center gap-2 text-xs font-semibold text-slate-200 cursor-pointer grow">
@@ -2364,11 +2397,10 @@ function WebsiteItineraryInner() {
                     key={cat}
                     type="button"
                     onClick={() => handleApplyGlobalHotelCategory(cat)}
-                    className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                      globalHotelCategory === cat
+                    className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${globalHotelCategory === cat
                         ? 'bg-amber-400 text-slate-950'
                         : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-white'
-                    }`}
+                      }`}
                   >
                     {cat}
                   </button>
@@ -2510,7 +2542,7 @@ function WebsiteItineraryInner() {
                 size="sm"
                 variant="outline"
                 onClick={() => {
-                  setDayPlans(injectAutoLogisticsStatements(dayPlans));
+                  setDayPlans(injectAutoLogisticsStatements(dayPlans, destination, tripType));
                   setSaveSuccessMsg('Auto-logistics statements injected into days!');
                   setTimeout(() => setSaveSuccessMsg(null), 3000);
                 }}
@@ -2572,7 +2604,7 @@ function WebsiteItineraryInner() {
                         copy[dayIdx].stayHotel = formatHotelWithSimilar(e.target.value);
                         setDayPlans(copy);
                       }}
-                      placeholder="e.g. Deluxe Hotel in Leh / Similar"
+                      placeholder="e.g. Deluxe Hotel / Similar"
                       className="bg-slate-900 border-slate-800 text-white text-xs py-1.5"
                     />
                   </div>
@@ -2878,13 +2910,12 @@ function WebsiteItineraryInner() {
                       type="button"
                       onMouseEnter={() => setHoveredDayNum(dayNum)}
                       onClick={() => handleCalendarDayClick(dayNum)}
-                      className={`h-8 rounded-lg text-xs font-semibold flex items-center justify-center transition-all cursor-pointer ${
-                        isInRange
+                      className={`h-8 rounded-lg text-xs font-semibold flex items-center justify-center transition-all cursor-pointer ${isInRange
                           ? 'bg-[#ff5d09] text-white shadow-md font-bold'
                           : isHoveredInRange
                             ? 'bg-orange-500/35 text-orange-200 border border-orange-500/50 shadow-inner'
                             : 'bg-slate-900/60 text-slate-300 hover:bg-slate-800 hover:text-white'
-                      }`}
+                        }`}
                     >
                       {dayNum}
                     </button>
@@ -3084,11 +3115,10 @@ function WebsiteItineraryInner() {
                       <div
                         key={i}
                         onClick={() => handleSelectImageFromLibrary(img)}
-                        className={`relative rounded-xl overflow-hidden border-2 bg-slate-900 h-32 cursor-pointer group transition-all ${
-                          isSelected
+                        className={`relative rounded-xl overflow-hidden border-2 bg-slate-900 h-32 cursor-pointer group transition-all ${isSelected
                             ? 'border-orange-500 ring-2 ring-orange-500/50'
                             : 'border-slate-800 hover:border-slate-600'
-                        }`}
+                          }`}
                       >
                         <Image
                           src={img}
