@@ -87,14 +87,20 @@ export default function MeghalayaPage() {
 
   // Create carousel images - use trip images from category or fallback to destination hero images
   const carouselImages = useMemo(() => {
-    const categoryImages = categoryTrips.map(trip => trip.image)
     const defaultImages = [
       '/images/meghalaya.jpg',
-      '/images/dummy1.jpg',
-      '/images/dummy2.jpg',
-      '/images/dummy3.jpg'
+      'https://images.unsplash.com/photo-1565716665452-2a4e3445b378?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1654788111018-9096236d54ac?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1521437620269-f477f5437820?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1698429358246-807d8972da9a?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1613644383947-26a22b8c04f2?auto=format&fit=crop&w=1200&q=80'
     ]
-    return categoryImages.length > 0 ? categoryImages : defaultImages
+    const categoryImages = categoryTrips.flatMap(trip => [
+      trip.image,
+      ...(trip.gallery || []),
+      ...(trip.images || [])
+    ]).filter(Boolean)
+    return categoryImages.length > 0 ? Array.from(new Set(categoryImages)) : defaultImages
   }, [categoryTrips])
 
   // Auto-advance carousel
@@ -725,7 +731,14 @@ export default function MeghalayaPage() {
                 images={
                   galleryImages.length > 0
                     ? galleryImages
-                    : [{ _id: '1', image: '/images/meghalaya.jpg', category: 'meghalaya', createdAt: '' }]
+                    : [
+                        { _id: 'meg-1', image: '/images/meghalaya.jpg', category: 'meghalaya', alt: 'Living Root Bridge Meghalaya', createdAt: '' },
+                        { _id: 'meg-2', image: 'https://images.unsplash.com/photo-1565716665452-2a4e3445b378?auto=format&fit=crop&w=1200&q=80', category: 'meghalaya', alt: 'Cherrapunji Valleys & Waterfalls', createdAt: '' },
+                        { _id: 'meg-3', image: 'https://images.unsplash.com/photo-1654788111018-9096236d54ac?auto=format&fit=crop&w=1200&q=80', category: 'meghalaya', alt: 'Krang Suri Blue Lagoon Jowai', createdAt: '' },
+                        { _id: 'meg-4', image: 'https://images.unsplash.com/photo-1521437620269-f477f5437820?auto=format&fit=crop&w=1200&q=80', category: 'meghalaya', alt: 'Dawki Umngot River Boating', createdAt: '' },
+                        { _id: 'meg-5', image: 'https://images.unsplash.com/photo-1698429358246-807d8972da9a?auto=format&fit=crop&w=1200&q=80', category: 'meghalaya', alt: 'Double Decker Living Root Bridge Nongriat', createdAt: '' },
+                        { _id: 'meg-6', image: 'https://images.unsplash.com/photo-1613644383947-26a22b8c04f2?auto=format&fit=crop&w=1200&q=80', category: 'meghalaya', alt: 'Nohkalikai Falls Cherrapunji', createdAt: '' }
+                      ]
                 }
               />
             )}
