@@ -17619,8 +17619,13 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
       'https://images.unsplash.com/photo-1521437620269-f477f5437820?auto=format&fit=crop&w=1200&q=80',
       'https://images.unsplash.com/photo-1698429358246-807d8972da9a?auto=format&fit=crop&w=1200&q=80'
     ],
+    image: '/images/meghalaya.jpg',
     heroMedia: [
-      { type: 'image', src: 'https://images.unsplash.com/photo-1565716665452-2a4e3445b378?auto=format&fit=crop&w=1200&q=80', alt: 'Meghalaya & Kaziranga' }
+      { type: 'image', src: '/images/meghalaya.jpg', alt: 'Living Root Bridge Meghalaya' },
+      { type: 'image', src: 'https://images.unsplash.com/photo-1565716665452-2a4e3445b378?auto=format&fit=crop&w=1200&q=80', alt: 'Cherrapunji Valleys' },
+      { type: 'image', src: 'https://images.unsplash.com/photo-1654788111018-9096236d54ac?auto=format&fit=crop&w=1200&q=80', alt: 'Krang Suri Waterfalls' },
+      { type: 'image', src: 'https://images.unsplash.com/photo-1521437620269-f477f5437820?auto=format&fit=crop&w=1200&q=80', alt: 'Dawki Umngot River' },
+      { type: 'image', src: 'https://images.unsplash.com/photo-1698429358246-807d8972da9a?auto=format&fit=crop&w=1200&q=80', alt: 'Double Decker Root Bridge' }
     ],
     itinerary: [
       {
