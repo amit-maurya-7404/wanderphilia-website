@@ -17560,8 +17560,179 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
       { startDate: '2026-11-14', endDate: '2026-11-19', spots: 12 },
       { startDate: '2026-12-05', endDate: '2026-12-10', spots: 12 },
       { startDate: '2026-12-26', endDate: '2026-12-31', spots: 6 }
+    ]  },
+  {
+    id: 'meghalaya-kaziranga-7n-8d',
+    title: '7 Nights / 8 Days Meghalaya with Kaziranga Escape',
+    slug: '7-nights-8-days-meghalaya-with-kaziranga-escape',
+    image: 'https://images.unsplash.com/photo-1565716665452-2a4e3445b378?auto=format&fit=crop&w=1200&q=80',
+    destination: 'Meghalaya',
+    category: 'meghalaya',
+    tourType: 'Customized',
+    tripType: 'India',
+    region: 'North East India',
+    duration: 8,
+    nights: 7,
+    price: 24999,
+    showGetQuoteOnly: true,
+    rating: 4.9,
+    difficulty: 'Moderate',
+    groupSize: 12,
+    dates: [],
+    description: 'Experience the mystical beauty of Meghalaya and the untamed wilderness of Kaziranga on a curated 7 Nights / 8 Days road trip. Explore Shillong, swim in turquoise waters of Krang Suri Waterfalls in Jowai, boat on crystal-clear Umngot River in Dawki, visit Asia\'s Cleanest Village Mawlynnong, trek down to the 200-year-old Double Decker Living Root Bridge in Nongriat, witness roaring Cherrapunji waterfalls and deep canyons, and embark on thrilling wildlife safaris in Kaziranga National Park for One-Horned Rhinoceros sightings.',
+    route: '2N Shillong • 1N Jowai • 2N Cherrapunji • 2N Kaziranga',
+    staySummary: '2N Shillong | 1N Jowai | 2N Cherrapunji | 2N Kaziranga',
+    accommodations: [
+      { city: 'SHILLONG', hotel: 'Hotel Woodbine or similar', nights: '2 Nights' },
+      { city: 'JOWAI', hotel: 'Loomkyntoor Resort or similar', nights: '1 Night' },
+      { city: 'CHERRAPUNJI', hotel: 'Ri Sohra Resort or similar', nights: '2 Nights' },
+      { city: 'KAZIRANGA', hotel: 'Foxtail Orchid Resort or similar', nights: '2 Nights' }
+    ],
+    summaryDetails: {
+      accommodation: [
+        { city: 'SHILLONG', hotel: 'Hotel Woodbine or similar' },
+        { city: 'JOWAI', hotel: 'Loomkyntoor Resort or similar' },
+        { city: 'CHERRAPUNJI', hotel: 'Ri Sohra Resort or similar' },
+        { city: 'KAZIRANGA', hotel: 'Foxtail Orchid Resort or similar' }
+      ]
+    },
+    highlights: [
+      'Scenic drive from Guwahati, Umiam Lake viewpoint & evening stroll at Police Bazaar',
+      'Swimming in the turquoise waters of Krang Suri Waterfalls & Lalong Park in Jowai',
+      'Crystal-clear waters of Dawki Umngot River & Asia\'s Cleanest Village Mawlynnong',
+      'Trekking 3,500 steps down to the 200-year-old Double Decker Living Root Bridge at Nongriat',
+      'Nohkalikai Falls, Seven Sisters Falls, Mawsmai Cave & dramatic Cherrapunji canyons',
+      'Scenic journey across lush Assam tea plantations into Kaziranga National Park',
+      'Elephant safari & 02 Jeep safaris across Kohora & Bagori ranges for One-Horned Rhino sightings'
+    ],
+    gallery: [
+      'https://images.unsplash.com/photo-1565716665452-2a4e3445b378?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1654788111018-9096236d54ac?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1521437620269-f477f5437820?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1698429358246-807d8972da9a?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1613644383947-26a22b8c04f2?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1675296098616-53e3d4a1dd57?auto=format&fit=crop&w=1200&q=80'
+    ],
+    images: [
+      'https://images.unsplash.com/photo-1565716665452-2a4e3445b378?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1654788111018-9096236d54ac?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1521437620269-f477f5437820?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1698429358246-807d8972da9a?auto=format&fit=crop&w=1200&q=80'
+    ],
+    heroMedia: [
+      { type: 'image', src: 'https://images.unsplash.com/photo-1565716665452-2a4e3445b378?auto=format&fit=crop&w=1200&q=80', alt: 'Meghalaya & Kaziranga' }
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: 'Arrival in Guwahati, Scenic Drive to Shillong via Umiam Lake & Police Bazaar',
+        image: 'https://images.unsplash.com/photo-1565716665452-2a4e3445b378?auto=format&fit=crop&w=1200&q=80',
+        description: [
+          'Arrival at Guwahati Airport / Rly Station, meet tour driver and proceed towards Shillong (100 KM / 3-4 Hrs).',
+          'En-route visit Umiam Lake (Barapani) for panoramic lake views.',
+          'Arrive in Shillong, complete smooth check-in at Hotel Woodbine or similar.',
+          'Evening free to explore Police Bazaar local street food, cafes, and shopping.',
+          'Overnight stay at Hotel Woodbine or similar in Shillong.'
+        ]
+      },
+      {
+        day: 2,
+        title: 'Shillong to Jowai — Lalong Park, Thadlaskein Lake & Krang Suri Waterfalls',
+        image: 'https://images.unsplash.com/photo-1654788111018-9096236d54ac?auto=format&fit=crop&w=1200&q=80',
+        description: [
+          'After breakfast, check out and drive to Jowai in Jaintia Hills.',
+          'Explore Lalong Park viewpoint and serene Thadlaskein Lake.',
+          'Visit breathtaking Krang Suri Waterfalls - world-famous turquoise blue waters with swimming.',
+          'Visit Tyrshi Falls before heading to the resort.',
+          'Overnight stay at Loomkyntoor Resort or similar in Jowai.'
+        ]
+      },
+      {
+        day: 3,
+        title: 'Jowai to Cherrapunji via Crystal-Clear Dawki Umngot River & Mawlynnong',
+        image: 'https://images.unsplash.com/photo-1521437620269-f477f5437820?auto=format&fit=crop&w=1200&q=80',
+        description: [
+          'After early breakfast, drive to Dawki on the India-Bangladesh border at Tamabil.',
+          'Experience boating on the crystal-clear Umngot River where boats appear to float on transparent glass.',
+          'Drive to Mawlynnong, acclaimed as Asia\'s Cleanest Village, and witness the Balancing Rock and Riwai Single Living Root Bridge.',
+          'Scenic evening drive into Cherrapunji (Sohra).',
+          'Overnight stay at Ri Sohra Resort or similar in Cherrapunji.'
+        ]
+      },
+      {
+        day: 4,
+        title: 'Nongriat Trek — 200-Year-Old Double Decker Living Root Bridge',
+        image: 'https://images.unsplash.com/photo-1698429358246-807d8972da9a?auto=format&fit=crop&w=1200&q=80',
+        description: [
+          'Full-day trek to Nongriat descending 3,500 stone steps through lush subtropical rainforests.',
+          'Cross suspension bridges to reach the legendary Double Decker Living Root Bridge.',
+          'Relax at natural freshwater spring pools with natural fish pedicure.',
+          'Ascend back by late afternoon to freshen up.',
+          'Overnight stay at Ri Sohra Resort or similar in Cherrapunji.'
+        ]
+      },
+      {
+        day: 5,
+        title: 'Cherrapunji Canyons & Waterfalls — Return to Shillong',
+        image: 'https://images.unsplash.com/photo-1613644383947-26a22b8c04f2?auto=format&fit=crop&w=1200&q=80',
+        description: [
+          'Visit Nohkalikai Falls (India\'s highest plunge waterfall) and Seven Sisters Falls.',
+          'Explore limestone formations inside Mawsmai Cave or Arwah Cave.',
+          'Stop at dramatic Mawkdok Dympep Valley View Point and Elephant Falls.',
+          'Drive back to Shillong for hotel check-in.',
+          'Overnight stay at Hotel Woodbine or similar in Shillong.'
+        ]
+      },
+      {
+        day: 6,
+        title: 'Shillong to Kaziranga National Park via Assam Tea Gardens',
+        image: 'https://images.unsplash.com/photo-1758390285043-43c547cce665?auto=format&fit=crop&w=1200&q=80',
+        description: [
+          'Early breakfast and checkout for the scenic highway journey from Meghalaya hills down into the plains of Assam (280 KM / 7-8 Hrs).',
+          'Drive through Nongpoh, Nagaon, and sprawling emerald tea gardens.',
+          'Arrive at Kaziranga National Park by evening and check in.',
+          'Overnight stay at Foxtail Orchid Resort or similar in Kaziranga.'
+        ]
+      },
+      {
+        day: 7,
+        title: 'Kaziranga Wildlife Safaris — Elephant Safari & Jeep Safaris',
+        image: 'https://images.unsplash.com/photo-1675296098616-53e3d4a1dd57?auto=format&fit=crop&w=1200&q=80',
+        description: [
+          'Early morning Elephant Safari at Bagori Range for close-up sightings of the Great Indian One-Horned Rhinoceros.',
+          'Return to resort for breakfast, followed by Jeep Safari in the Central Range (Kohora) spotting rhinos, wild water buffaloes, and elephants.',
+          'Afternoon visit to Kaziranga Orchid and Biodiversity Park.',
+          'Overnight stay at Foxtail Orchid Resort or similar in Kaziranga.'
+        ]
+      },
+      {
+        day: 8,
+        title: 'Morning Bagori Safari & Departure to Guwahati Airport',
+        image: 'https://images.unsplash.com/photo-1776601797873-396d38b7a1a9?auto=format&fit=crop&w=1200&q=80',
+        description: [
+          'Enjoy morning breakfast and a thrilling final Jeep Safari ride at Bagori Range.',
+          'Check out from resort and begin drive to Guwahati Airport (200 KM / 5 Hrs).',
+          'Drop-off at Guwahati Airport for your onward journey with unforgettable memories of Meghalaya and Kaziranga.'
+        ]
+      }
+    ],
+    included: [
+      'Accommodation for 7 Nights (2N Shillong, 1N Jowai, 2N Cherrapunji, 2N Kaziranga)',
+      'Daily complimentary breakfast at all hotels and resorts',
+      'Exclusive private vehicle for all transfers and sightseeing',
+      'All driver allowances, toll charges, fuel, and parking fees',
+      'Kaziranga Jeep Safaris as per itinerary',
+      'Trek assistance to Double Decker Living Root Bridge',
+      '24x7 Wanderphilia On-ground Tour Support'
+    ],
+    notIncluded: [
+      'Airfare or train tickets to / from Guwahati',
+      'Elephant safari charges (payable directly on spot)',
+      'Boating charges at Dawki Umngot river',
+      'Entry tickets, camera fees, and personal meals'
     ]
-  }];
+  }
+];
 
 export const destinations: Destination[] = [
   {
