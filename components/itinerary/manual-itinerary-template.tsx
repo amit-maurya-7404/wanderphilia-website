@@ -36,25 +36,7 @@ import { Parachute } from '@/components/parachute-icon';
 import { RiWhatsappLine } from 'react-icons/ri';
 import { contactPhoneDisplay, contactEmail } from '@/lib/contact';
 import { isInternationalTrip } from '@/lib/ai-itinerary';
-import { Playfair_Display, Plus_Jakarta_Sans, Dancing_Script } from 'next/font/google';
-
-const playfair = Playfair_Display({
-  subsets: ['latin'],
-  weight: ['600', '700', '800', '900'],
-  display: 'swap',
-});
-
-const sansBody = Plus_Jakarta_Sans({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700', '800'],
-  display: 'swap',
-});
-
-const cursiveFont = Dancing_Script({
-  subsets: ['latin'],
-  weight: ['700'],
-  display: 'swap',
-});
+import { playfair, sansBody, cursiveFont } from '@/lib/fonts';
 
 function SafeImage({
   src,

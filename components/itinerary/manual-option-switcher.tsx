@@ -3,12 +3,7 @@
 import React, { useState } from 'react';
 import { ManualItineraryOption } from '@/types/manual-itinerary';
 import { Sparkles, CheckCircle, Copy, Check, Share2, ArrowRight } from 'lucide-react';
-import { Playfair_Display } from 'next/font/google';
-
-const playfair = Playfair_Display({
-  subsets: ['latin'],
-  weight: ['600', '700', '800', '900']
-});
+import { playfair } from '@/lib/fonts';
 
 interface ManualOptionSwitcherProps {
   options: ManualItineraryOption[];

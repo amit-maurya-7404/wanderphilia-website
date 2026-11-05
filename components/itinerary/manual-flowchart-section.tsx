@@ -11,13 +11,7 @@ import {
   Clock,
   Hotel as HotelIcon
 } from 'lucide-react';
-import { Playfair_Display } from 'next/font/google';
-
-const playfair = Playfair_Display({
-  subsets: ['latin'],
-  weight: ['600', '700', '800'],
-  display: 'swap',
-});
+import { playfair } from '@/lib/fonts';
 
 function SafeImage({
   src,

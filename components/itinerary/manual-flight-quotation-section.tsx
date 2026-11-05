@@ -1,14 +1,9 @@
 'use client';
 
 import React from 'react';
-import { Playfair_Display } from 'next/font/google';
 import { Plane, Luggage, ShieldCheck, AlertCircle, Clock, Info } from 'lucide-react';
 import { FlightQuotationOption } from '@/types/manual-itinerary';
-
-const playfair = Playfair_Display({
-  subsets: ['latin'],
-  weight: ['400', '600', '700', '900']
-});
+import { playfair } from '@/lib/fonts';
 
 interface ManualFlightQuotationSectionProps {
   flightQuotations: FlightQuotationOption[];
