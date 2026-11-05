@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getDb } from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
+import { generateItinerarySeo } from '@/lib/seo-generator';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -90,6 +91,18 @@ export async function POST(request: NextRequest) {
 
     // Remove MongoDB _id from payload if present to avoid immutable field error during upsert
     delete (tripData as any)._id;
+
+    // Automatically generate AI SEO metadata if not provided
+    if (!(tripData as any).seo?.title) {
+      try {
+        const seoMeta = await generateItinerarySeo(tripData as any);
+        (tripData as any).seo = seoMeta;
+        (tripData as any).metaTitle = seoMeta.title;
+        (tripData as any).metaDescription = seoMeta.description;
+      } catch (e) {
+        console.error('Failed to generate SEO metadata:', e);
+      }
+    }
 
     // Check if trip already exists by slug or id
     const existing = await collection.findOne({

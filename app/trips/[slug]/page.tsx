@@ -952,6 +952,17 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
 
   const trip: Trip | undefined = staticTrip || (dynamicTrip as Trip) || undefined
 
+  // Update browser tab title dynamically when trip or destination loads
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    if (trip?.title) {
+      const seoTitle = (trip as any).seo?.title || (trip as any).metaTitle || `${trip.title} | Wanderphilia`;
+      document.title = seoTitle;
+    } else if (destination?.name) {
+      document.title = `${destination.name} | Wanderphilia`;
+    }
+  }, [trip, destination]);
+
   // Calculate lowest price from costing table
   const lowestPrice = useMemo(() => {
     if (!trip?.costingDetails || trip.costingDetails.length === 0) {

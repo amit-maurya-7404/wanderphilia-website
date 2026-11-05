@@ -53,9 +53,26 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const itinerary = await getItinerary(id);
 
   if (!itinerary) {
+    try {
+      const { getDb } = await import('@/lib/mongodb');
+      const db = await getDb();
+      const mongoTrip = await db.collection('trips').findOne({
+        $or: [{ id }, { slug: id }]
+      });
+      if (mongoTrip) {
+        const title = mongoTrip.seo?.title || `${mongoTrip.title} | Wanderphilia`;
+        const description = mongoTrip.seo?.description || mongoTrip.description?.slice(0, 160) || '';
+        return {
+          title,
+          description,
+        };
+      }
+    } catch {}
+
+    const cleanTitle = id.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
     return {
-      title: 'Itinerary Not Found | Wanderphilia',
-      description: 'The requested travel itinerary could not be found.',
+      title: `${cleanTitle} | Wanderphilia Luxury Itinerary`,
+      description: `Luxury travel itinerary by Wanderphilia.`,
     };
   }
 
