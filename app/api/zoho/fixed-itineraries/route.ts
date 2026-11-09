@@ -166,6 +166,15 @@ export async function GET(req: NextRequest) {
 
         const guidedTour = row.Guided_Tour === true || String(row.Guided_Tour).toLowerCase() === 'true';
 
+        const overnightJourney =
+          row.Overnight_Journey_EOD === true ||
+          String(row.Overnight_Journey_EOD).toLowerCase() === 'true' ||
+          row.Overnight_Journey === true ||
+          String(row.Overnight_Journey).toLowerCase() === 'true' ||
+          row['Overnight Journey EOD'] === true ||
+          String(row['Overnight Journey EOD']).toLowerCase() === 'true' ||
+          Boolean(Object.entries(row).find(([k, v]) => /overnight.*journey/i.test(k) && (v === true || String(v).toLowerCase() === 'true')));
+
         // Experiences 1 to 4
         const exp1Obj = row.Experience_1 || row.Experiences_1 || row.Experiences_and_activities;
         const exp1 = typeof exp1Obj === 'object' && exp1Obj !== null ? exp1Obj.name : String(exp1Obj || '').trim();
@@ -199,6 +208,7 @@ export async function GET(req: NextRequest) {
           dayNumber,
           dayText,
           guidedTour,
+          overnightJourney: Boolean(overnightJourney),
           city,
           city2,
           enRouteExperiences: enRouteSpots.length > 0 ? enRouteSpots : [''],
@@ -327,6 +337,12 @@ export async function GET(req: NextRequest) {
         ranges
       }));
 
+      // Extract pricing info
+      const doubleSharingPrice = Number(p.Double_Sharing_Price || p.Double_Sharing || p.Unit_Price || p.Price || 0) || undefined;
+      const tripleSharingPrice = Number(p.Triple_Sharing_Price || p.Triple_Sharing || 0) || undefined;
+      const quadSharingPrice = Number(p.Quad_Sharing_Price || p.Quad_Sharing || 0) || undefined;
+      const soloRiderPrice = Number(p.Solo_Rider_Price || p.Single_Room_Price || p.Solo_Price || 0) || undefined;
+
       return NextResponse.json({
         success: true,
         itinerary: {
@@ -340,6 +356,11 @@ export async function GET(req: NextRequest) {
           groupSize: extractedGroupSize > 0 ? extractedGroupSize : undefined,
           batchDates: batchDates.length > 0 ? batchDates : undefined,
           tourType: batchDates.length > 0 ? 'Group' : undefined,
+          doubleSharingPrice,
+          tripleSharingPrice,
+          quadSharingPrice,
+          soloRiderPrice,
+          price: tripleSharingPrice || doubleSharingPrice,
           dayRows
         }
       });

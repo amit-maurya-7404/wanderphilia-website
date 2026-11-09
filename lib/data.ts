@@ -17573,7 +17573,8 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
       { startDate: '2026-11-14', endDate: '2026-11-19', spots: 12 },
       { startDate: '2026-12-05', endDate: '2026-12-10', spots: 12 },
       { startDate: '2026-12-26', endDate: '2026-12-31', spots: 6 }
-    ]  },
+    ]
+  },
   {
     id: 'meghalaya-kaziranga-7n-8d',
     title: '7 Nights / 8 Days Meghalaya with Kaziranga Escape',
@@ -17808,7 +17809,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
       'Entry tickets, camera fees, and personal meals'
     ]
   }
-,
+  ,
   {
     id: 'sri-lanka-7n-8d',
     title: '8 Days Tropical Wonders of Sri Lanka — Sigiriya, Nuwara Eliya, Yala & Bentota',

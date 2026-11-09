@@ -151,6 +151,7 @@ interface Placements {
 export function formatHotelWithSimilar(name: string): string {
   if (!name || !name.trim()) return '';
   const trimmed = name.trim();
+  if (/overnight/i.test(trimmed)) return trimmed;
   if (/\/ similar/i.test(trimmed)) return trimmed;
   return `${trimmed} / Similar`;
 }
@@ -677,10 +678,13 @@ function WebsiteItineraryInner() {
       parts.forEach(part => {
         const match = part.match(/^(\d+)\s*N(?:ights?)?\s+(.*)$/i);
         if (match) {
-          stays.push({ city: match[2].trim(), nights: parseInt(match[1], 10) || 1 });
+          const cName = match[2].trim();
+          if (!/overnight/i.test(cName)) {
+            stays.push({ city: cName, nights: parseInt(match[1], 10) || 1 });
+          }
         } else {
           const c = part.replace(/^\d+N\s*/i, '').trim();
-          if (c) stays.push({ city: c, nights: 1 });
+          if (c && !/overnight/i.test(c)) stays.push({ city: c, nights: 1 });
         }
       });
     }
@@ -690,7 +694,13 @@ function WebsiteItineraryInner() {
         if (idx === plans.length - 1 && plans.length > 1 && !dp.stayHotel) {
           return;
         }
-        const c = (dp.city || dp.stayHotel?.split('in ')?.[1]?.replace(/\/ similar/i, '').trim() || destination || 'Main City').trim();
+        if (dp.stayHotel && /overnight/i.test(dp.stayHotel)) {
+          return;
+        }
+        const rawC = (dp.city?.includes('→') ? dp.city.split('→')[1]?.trim() : dp.city) || dp.stayHotel?.split('in ')?.[1]?.replace(/\/ similar/i, '').trim() || destination || 'Main City';
+        const c = rawC.trim();
+        if (/overnight/i.test(c)) return;
+
         if (stays.length > 0 && stays[stays.length - 1].city.toLowerCase() === c.toLowerCase()) {
           stays[stays.length - 1].nights += 1;
         } else {
@@ -853,11 +863,11 @@ function WebsiteItineraryInner() {
         const arrivalCityOrDest = dp.city || currentDest || '';
         const properArrivalText = arrivalCityOrDest
           ? (currentTripType === 'International'
-              ? `Arrival at ${arrivalCityOrDest} International Airport, meet our representative, and transfer to your hotel.`
-              : `Arrival at ${arrivalCityOrDest} Airport / Railway Station, meet our tour captain/driver, and transfer to hotel.`)
+            ? `Arrival at ${arrivalCityOrDest} International Airport, meet our representative, and transfer to your hotel.`
+            : `Arrival at ${arrivalCityOrDest} Airport / Railway Station, meet our tour captain/driver, and transfer to hotel.`)
           : (currentTripType === 'International'
-              ? `Arrival at International Airport, meet our representative, and transfer to your hotel.`
-              : `Arrival at Airport / Railway Station, meet our tour captain/driver, and transfer to hotel.`);
+            ? `Arrival at International Airport, meet our representative, and transfer to your hotel.`
+            : `Arrival at Airport / Railway Station, meet our tour captain/driver, and transfer to hotel.`);
 
         const arrivalIdx = timelinePoints.findIndex(p =>
           /arrival at .* airport/i.test(p) ||
@@ -892,11 +902,11 @@ function WebsiteItineraryInner() {
         const departureCityOrDest = dp.city || currentDest || '';
         const properDepartText = departureCityOrDest
           ? (currentTripType === 'International'
-              ? `Transfer to ${departureCityOrDest} International Airport for your flight back home with wonderful memories.`
-              : `Transfer to ${departureCityOrDest} Airport / Railway Station for your onward journey with unforgettable memories.`)
+            ? `Transfer to ${departureCityOrDest} International Airport for your flight back home with wonderful memories.`
+            : `Transfer to ${departureCityOrDest} Airport / Railway Station for your onward journey with unforgettable memories.`)
           : (currentTripType === 'International'
-              ? `Transfer to International Airport for your flight back home with wonderful memories.`
-              : `Transfer to Airport / Railway Station for your onward journey with unforgettable memories.`);
+            ? `Transfer to International Airport for your flight back home with wonderful memories.`
+            : `Transfer to Airport / Railway Station for your onward journey with unforgettable memories.`);
 
         const departIdx = timelinePoints.findIndex(p =>
           /transfer to .* airport/i.test(p) ||
@@ -1031,59 +1041,253 @@ function WebsiteItineraryInner() {
       setDurationDays(numDays);
       setDurationNights(numNights);
 
+      // Auto-populate Pricing from Zoho CRM
+      const finalPrice = itin.price || itin.doubleSharingPrice || itin.tripleSharingPrice;
+      const hasDouble = Boolean(itin.doubleSharingPrice && Number(itin.doubleSharingPrice) > 0);
+      const hasTriple = Boolean(itin.tripleSharingPrice && Number(itin.tripleSharingPrice) > 0);
+      const hasQuad = Boolean(itin.quadSharingPrice && Number(itin.quadSharingPrice) > 0);
+      const hasSolo = Boolean(itin.soloRiderPrice && Number(itin.soloRiderPrice) > 0);
+
+      if (hasDouble || hasTriple || finalPrice) {
+        if (finalPrice && Number(finalPrice) > 0) {
+          setPrice(Number(finalPrice));
+        }
+        setPricingOptions(prev => prev.map(opt => {
+          if (opt.id === 'doubleSharing') {
+            const pVal = itin.doubleSharingPrice || finalPrice;
+            return {
+              ...opt,
+              defaultPrice: pVal ? String(pVal) : opt.defaultPrice,
+              checked: Boolean(hasDouble || (!hasTriple && finalPrice))
+            };
+          }
+          if (opt.id === 'tripleSharing') {
+            return {
+              ...opt,
+              defaultPrice: itin.tripleSharingPrice ? String(itin.tripleSharingPrice) : opt.defaultPrice,
+              checked: hasTriple
+            };
+          }
+          if (opt.id === 'quadSharing') {
+            return {
+              ...opt,
+              defaultPrice: itin.quadSharingPrice ? String(itin.quadSharingPrice) : opt.defaultPrice,
+              checked: hasQuad
+            };
+          }
+          if (opt.id === 'soloRider') {
+            return {
+              ...opt,
+              defaultPrice: itin.soloRiderPrice ? String(itin.soloRiderPrice) : opt.defaultPrice,
+              checked: hasSolo
+            };
+          }
+          return { ...opt, checked: false };
+        }));
+      }
+
       if (Array.isArray(itin.dayRows) && itin.dayRows.length > 0) {
         const rawDays: DayPlanItem[] = itin.dayRows.map((row: any, idx: number) => {
-          const experiences: string[] = [];
+          const isFirstDay = idx === 0;
+          const isLastDay = idx === itin.dayRows.length - 1 && itin.dayRows.length > 1;
 
+          const city1 = String(row.city || importedDest || '').trim();
+          const city2 = String(row.city2 || '').trim();
+          const enRoute = String(row.enRouteExperiences?.[0] || row.enRouteSpots?.[0] || '').trim();
+          const isOvernight = Boolean(row.overnightJourney);
+
+          // Check if intercity transit is explicit via city2 OR implicit via city change from previous day
+          let isIntercity = false;
+          let fromCity = city1;
+          let toCity = city2;
+
+          if (city2 && city2.toLowerCase() !== city1.toLowerCase()) {
+            isIntercity = true;
+            fromCity = city1;
+            toCity = city2;
+          } else if (idx > 0) {
+            const prevRow = itin.dayRows[idx - 1];
+            const prevCity = String(prevRow.city2 || prevRow.city || '').trim();
+            if (prevCity && city1 && prevCity.toLowerCase() !== city1.toLowerCase()) {
+              isIntercity = true;
+              fromCity = prevCity;
+              toCity = city1;
+            }
+          }
+
+          const targetStayCity = isIntercity ? toCity : city1;
+
+          // Day City Tag (badge shown in top-right of Day card)
+          const dayCityTag = isIntercity ? `${fromCity} → ${toCity}` : city1;
+
+          // Stay / Hotel
+          let stayHotel = '';
+          if (isLastDay) {
+            stayHotel = '';
+          } else if (isOvernight) {
+            stayHotel = `Overnight Journey${toCity ? ` to ${toCity}` : ''} (Volvo / Sleeper / Vehicle)`;
+          } else {
+            stayHotel = formatHotelWithSimilar(targetStayCity ? `Hotel in ${targetStayCity}` : 'Hotel / Similar');
+          }
+
+          // Clean experience titles for headline
+          const expTitles: string[] = [];
+          if (Array.isArray(row.experiences)) {
+            row.experiences.forEach((exp: string) => {
+              if (exp && exp.trim()) expTitles.push(exp.trim());
+            });
+          }
+
+          const joinWithAmp = (items: string[]) => {
+            if (items.length <= 1) return items[0] || '';
+            if (items.length === 2) return `${items[0]} & ${items[1]}`;
+            return `${items.slice(0, -1).join(', ')} & ${items[items.length - 1]}`;
+          };
+
+          // Generate Descriptive Day Title (similar to /sheet-itinerary AI template logic)
+          let title = '';
+          if (isOvernight) {
+            if (expTitles.length > 0) {
+              title = `Day ${idx + 1}: ${fromCity} Sightseeing with ${joinWithAmp(expTitles)} & Overnight Journey to ${toCity || fromCity}`;
+            } else {
+              title = `Day ${idx + 1}: Sightseeing in ${fromCity} & Overnight Journey to ${toCity || fromCity}`;
+            }
+          } else if (isIntercity) {
+            if (enRoute && expTitles.length > 0) {
+              title = `Day ${idx + 1}: Journey from ${fromCity} to ${toCity} via ${enRoute} & ${joinWithAmp(expTitles)}`;
+            } else if (enRoute) {
+              title = `Day ${idx + 1}: Journey from ${fromCity} to ${toCity} via ${enRoute}`;
+            } else if (expTitles.length > 0) {
+              title = `Day ${idx + 1}: Journey from ${fromCity} to ${toCity} with ${joinWithAmp(expTitles)}`;
+            } else {
+              title = `Day ${idx + 1}: Scenic Drive from ${fromCity} to ${toCity} & Hotel Check-in`;
+            }
+          } else if (expTitles.length > 0) {
+            if (isFirstDay) {
+              title = `Day ${idx + 1}: Arrival in ${city1} & Exploring ${joinWithAmp(expTitles)}`;
+            } else if (isLastDay) {
+              title = `Day ${idx + 1}: Exploring ${joinWithAmp(expTitles)} & Departure Transfer`;
+            } else {
+              title = `Day ${idx + 1}: Exploring ${city1} — ${joinWithAmp(expTitles)}`;
+            }
+          } else {
+            if (isFirstDay) {
+              title = `Day ${idx + 1}: Arrival in ${city1} & Hotel Check-in`;
+            } else if (isLastDay) {
+              title = `Day ${idx + 1}: Morning Leisure in ${city1} & Departure from ${city1}`;
+            } else {
+              title = `Day ${idx + 1}: Leisure & Exploration in ${city1}`;
+            }
+          }
+
+          // Build Detailed Timeline / Flow Points
+          const timeline: string[] = [];
+
+          if (isFirstDay) {
+            const properArrivalText = itinTripType === 'International'
+              ? `Arrival at ${city1} International Airport, meet our representative, and transfer to hotel.`
+              : `Arrival at ${city1} Airport / Railway Station, meet our tour captain/driver, and transfer to hotel.`;
+            timeline.push(properArrivalText);
+            timeline.push(`Complete smooth hotel check-in formalities and freshen up.`);
+          } else if (idx > 0 && Boolean(itin.dayRows[idx - 1]?.overnightJourney)) {
+            const prevFrom = itin.dayRows[idx - 1]?.city || '';
+            timeline.push(`Arrive in ${city1} in the morning after the overnight journey${prevFrom ? ` from ${prevFrom}` : ''} and freshen up.`);
+          } else if (isIntercity) {
+            timeline.push(`Enjoy morning breakfast at your hotel in ${fromCity} and complete check-out formalities.`);
+            timeline.push(`Board your private vehicle and embark on a scenic drive from ${fromCity} to ${toCity}.`);
+            if (enRoute) {
+              timeline.push(`En-route Visit: ${enRoute} - Explore the scenic attractions and heritage sights along the way.`);
+            }
+            if (!isOvernight) {
+              timeline.push(`Upon arrival in ${toCity}, complete smooth hotel check-in formalities and relax.`);
+            }
+          } else if (!isLastDay) {
+            timeline.push(`Wake up to a delicious breakfast at your hotel in ${city1}.`);
+          } else {
+            timeline.push(`Enjoy morning breakfast at the hotel and complete check-out formalities.`);
+          }
+
+          // Sightseeing Experiences
           if (Array.isArray(row.experiences)) {
             row.experiences.forEach((exp: string, expIdx: number) => {
               if (exp && exp.trim()) {
                 const desc = row.descriptions?.[expIdx];
                 const text = desc ? `${exp.trim()}: ${desc.trim()}` : exp.trim();
-                experiences.push(text);
+                timeline.push(text);
               }
             });
           }
 
-          const city = row.city || row.city2 || importedDest || '';
+          // Evening / End of Day
+          if (isLastDay) {
+            const properDepartText = itinTripType === 'International'
+              ? `Transfer to ${city1 || 'Airport'} International Airport for your flight back home with wonderful memories.`
+              : `Transfer to ${city1 || 'Airport'} Airport / Railway Station for your onward journey with unforgettable memories.`;
+            timeline.push(properDepartText);
+          } else if (isOvernight) {
+            timeline.push(`In the evening, board your vehicle for an overnight journey to ${toCity || fromCity}.`);
+            timeline.push(`Overnight journey in transit.`);
+          } else {
+            timeline.push(`Overnight stay at your hotel in ${targetStayCity}.`);
+          }
 
-          const isLastDay = idx === itin.dayRows.length - 1 && itin.dayRows.length > 1;
           return {
             day: row.dayNumber || idx + 1,
-            title: isLastDay ? `Day ${idx + 1}: Departure from ${city || 'Destination'}` : (city ? `Day ${idx + 1}: ${city} Sightseeing` : `Day ${idx + 1}`),
-            city,
-            stayHotel: isLastDay ? '' : formatHotelWithSimilar(city ? `Hotel in ${city}` : 'Hotel / Similar'),
+            title,
+            city: dayCityTag,
+            stayHotel,
             meals: {
               breakfast: idx > 0,
               lunch: false,
               dinner: !isLastDay
             },
-            timeline: experiences.length > 0 ? experiences : (isLastDay ? ['Enjoy morning breakfast at hotel and complete check-out formalities.', `Transfer to ${city || 'Airport'} / Railway Station for onward journey with fond memories.`] : ['Explore local attractions', 'Overnight stay']),
+            timeline: timeline.length > 0 ? timeline : ['Explore local attractions', 'Overnight stay'],
             image: heroImage || ''
           };
         });
 
-        const enrichedDays = injectAutoLogisticsStatements(rawDays, importedDest, itinTripType);
-        setDayPlans(enrichedDays);
-        computeHotelStaysFromDayPlans(enrichedDays);
+        setDayPlans(rawDays);
 
-        // Only count night stays for Days 1 to N-1 (last day is departure day with no night stay)
-        const cityStays: Record<string, number> = {};
-        const stayRows = itin.dayRows.length > 1 ? itin.dayRows.slice(0, -1) : itin.dayRows;
-        stayRows.forEach((r: any) => {
-          const c = r.city || r.city2 || importedDest || '';
-          if (c) cityStays[c] = (cityStays[c] || 0) + 1;
+        // Calculate Stay Summary (grouping consecutive nights & marking Overnight Journey)
+        const staySegments: { name: string; nights: number }[] = [];
+        const nightRows = itin.dayRows.length > 1 ? itin.dayRows.slice(0, -1) : itin.dayRows;
+        nightRows.forEach((r: any) => {
+          let segmentName = '';
+          if (r.overnightJourney) {
+            segmentName = 'Overnight Journey';
+          } else {
+            const c1 = String(r.city || importedDest || '').trim();
+            const c2 = String(r.city2 || '').trim();
+            segmentName = (c2 && c2.toLowerCase() !== c1.toLowerCase()) ? c2 : c1;
+          }
+          if (staySegments.length > 0 && staySegments[staySegments.length - 1].name.toLowerCase() === segmentName.toLowerCase()) {
+            staySegments[staySegments.length - 1].nights += 1;
+          } else {
+            staySegments.push({ name: segmentName, nights: 1 });
+          }
         });
-        const summaryStr = Object.entries(cityStays)
-          .map(([city, nights]) => `${nights}N ${city}`)
+
+        const summaryStr = staySegments
+          .map(s => `${s.nights}N ${s.name}`)
           .join(' | ');
         setStaySummary(summaryStr);
 
-        const routeCities = Array.from(
-          new Set(itin.dayRows.map((r: any) => r.city || r.city2).filter(Boolean))
-        );
-        if (routeCities.length > 0) {
-          setRoute(routeCities.join(' → '));
+        computeHotelStaysFromDayPlans(rawDays, summaryStr);
+
+        // Build Route in true chronological order
+        const routeSequence: string[] = [];
+        itin.dayRows.forEach((r: any) => {
+          const c1 = String(r.city || '').trim();
+          const c2 = String(r.city2 || '').trim();
+          if (c1 && (routeSequence.length === 0 || routeSequence[routeSequence.length - 1].toLowerCase() !== c1.toLowerCase())) {
+            routeSequence.push(c1);
+          }
+          if (c2 && (routeSequence.length === 0 || routeSequence[routeSequence.length - 1].toLowerCase() !== c2.toLowerCase())) {
+            routeSequence.push(c2);
+          }
+        });
+        if (routeSequence.length > 0) {
+          setRoute(routeSequence.join(' → '));
         }
 
         // Auto-extract and populate experience titles into Key Highlights
@@ -1091,7 +1295,7 @@ function WebsiteItineraryInner() {
         if (zohoExps.length > 0) {
           setHighlights(zohoExps);
         } else {
-          const planExps = extractExperienceTitlesFromDayPlans(enrichedDays);
+          const planExps = extractExperienceTitlesFromDayPlans(rawDays);
           if (planExps.length > 0) {
             setHighlights(planExps);
           }
@@ -1638,8 +1842,8 @@ function WebsiteItineraryInner() {
                 setPlacements(prev => ({ ...prev, upcomingTours: true }));
               }}
               className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${tourType === 'Group'
-                  ? 'bg-[#ff5d09] text-white shadow-md'
-                  : 'text-slate-400 hover:text-white'
+                ? 'bg-[#ff5d09] text-white shadow-md'
+                : 'text-slate-400 hover:text-white'
                 }`}
             >
               <Users className="w-3.5 h-3.5" /> Group Tour Package
@@ -1651,8 +1855,8 @@ function WebsiteItineraryInner() {
                 setPlacements(prev => ({ ...prev, upcomingTours: false }));
               }}
               className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${tourType === 'Customized'
-                  ? 'bg-[#ff5d09] text-white shadow-md'
-                  : 'text-slate-400 hover:text-white'
+                ? 'bg-[#ff5d09] text-white shadow-md'
+                : 'text-slate-400 hover:text-white'
                 }`}
             >
               <Compass className="w-3.5 h-3.5" /> Customized Private Tour
@@ -2033,8 +2237,8 @@ function WebsiteItineraryInner() {
                     type="button"
                     onClick={() => setDifficulty(diff)}
                     className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${difficulty === diff
-                        ? 'bg-orange-500/20 text-orange-400 border-orange-500/50'
-                        : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-white'
+                      ? 'bg-orange-500/20 text-orange-400 border-orange-500/50'
+                      : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-white'
                       }`}
                   >
                     {diff}
@@ -2203,8 +2407,8 @@ function WebsiteItineraryInner() {
               <div
                 key={opt.id}
                 className={`p-3.5 rounded-xl border transition-all ${opt.checked
-                    ? 'bg-slate-950 border-emerald-500/40'
-                    : 'bg-slate-950/40 border-slate-800/80 opacity-70'
+                  ? 'bg-slate-950 border-emerald-500/40'
+                  : 'bg-slate-950/40 border-slate-800/80 opacity-70'
                   }`}
               >
                 <div className="flex items-center justify-between gap-2">
@@ -2508,8 +2712,8 @@ function WebsiteItineraryInner() {
                     type="button"
                     onClick={() => handleApplyGlobalHotelCategory(cat)}
                     className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${globalHotelCategory === cat
-                        ? 'bg-amber-400 text-slate-950'
-                        : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-white'
+                      ? 'bg-amber-400 text-slate-950'
+                      : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-white'
                       }`}
                   >
                     {cat}
@@ -3021,10 +3225,10 @@ function WebsiteItineraryInner() {
                       onMouseEnter={() => setHoveredDayNum(dayNum)}
                       onClick={() => handleCalendarDayClick(dayNum)}
                       className={`h-8 rounded-lg text-xs font-semibold flex items-center justify-center transition-all cursor-pointer ${isInRange
-                          ? 'bg-[#ff5d09] text-white shadow-md font-bold'
-                          : isHoveredInRange
-                            ? 'bg-orange-500/35 text-orange-200 border border-orange-500/50 shadow-inner'
-                            : 'bg-slate-900/60 text-slate-300 hover:bg-slate-800 hover:text-white'
+                        ? 'bg-[#ff5d09] text-white shadow-md font-bold'
+                        : isHoveredInRange
+                          ? 'bg-orange-500/35 text-orange-200 border border-orange-500/50 shadow-inner'
+                          : 'bg-slate-900/60 text-slate-300 hover:bg-slate-800 hover:text-white'
                         }`}
                     >
                       {dayNum}
@@ -3226,8 +3430,8 @@ function WebsiteItineraryInner() {
                         key={i}
                         onClick={() => handleSelectImageFromLibrary(img)}
                         className={`relative rounded-xl overflow-hidden border-2 bg-slate-900 h-32 cursor-pointer group transition-all ${isSelected
-                            ? 'border-orange-500 ring-2 ring-orange-500/50'
-                            : 'border-slate-800 hover:border-slate-600'
+                          ? 'border-orange-500 ring-2 ring-orange-500/50'
+                          : 'border-slate-800 hover:border-slate-600'
                           }`}
                       >
                         <Image
