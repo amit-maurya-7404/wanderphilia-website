@@ -75,7 +75,15 @@ const POPULAR_DESTINATIONS = [
 ];
 
 // Hotel Categories matching Zoho CRM
-const HOTEL_CATEGORIES = ['Standard', 'Deluxe', 'Super Deluxe', 'Premium', 'Luxury'];
+const HOTEL_CATEGORIES = [
+  'Standard',
+  'Deluxe',
+  'Super Deluxe',
+  'Premium',
+  'Super Premium',
+  'Luxury',
+  'Super Luxury'
+];
 
 // Meal Plan Options
 const MEAL_PLANS = [
@@ -575,6 +583,37 @@ function WebsiteItineraryInner() {
     }
   }, []);
 
+  // When Zoho Master Data is loaded or refreshed, auto-link hotel stays if needed
+  useEffect(() => {
+    if (!zohoMaster.hotelsByCity || Object.keys(zohoMaster.hotelsByCity).length === 0) return;
+    if (hotelStays.length === 0) return;
+
+    setHotelStays(prev =>
+      prev.map(stay => {
+        const cat = stay.category || globalHotelCategory || 'Deluxe';
+        const filtered = getHotelsForCity(stay.city, cat);
+        const allCityHotels = getHotelsForCity(stay.city);
+        const targetHotel = filtered.find(h => String(h.id) === String(stay.hotelId)) || filtered[0] || allCityHotels.find(h => String(h.id) === String(stay.hotelId)) || allCityHotels[0];
+
+        if (!targetHotel) return stay;
+
+        const currentRoomValid = targetHotel.rooms?.some((r: any) => r.roomCategory === stay.roomCategory);
+        const lowestRoom = currentRoomValid ? stay.roomCategory : (targetHotel.rooms?.[0]?.roomCategory || '');
+        const matchedRoom = targetHotel.rooms?.find((r: any) => r.roomCategory === lowestRoom);
+        const basePrice = matchedRoom?.basePrice || targetHotel.rooms?.[0]?.basePrice || stay.basePrice || 0;
+
+        return {
+          ...stay,
+          category: targetHotel.category || cat,
+          hotelId: targetHotel.id,
+          hotelName: formatHotelWithSimilar(targetHotel.hotelName),
+          roomCategory: lowestRoom,
+          basePrice
+        };
+      })
+    );
+  }, [zohoMaster]);
+
   // Open Image Picker
   const handleOpenImagePicker = (target: 'hero' | 'gallery' | number) => {
     setImagePickerTarget(target);
@@ -642,31 +681,39 @@ function WebsiteItineraryInner() {
     });
   };
 
-  // Robust Hotel Lookup with intelligent city name matching and fallbacks
-  const getHotelsForCity = (cityName: string): any[] => {
+  // Robust Hotel Lookup with intelligent city name matching and category filtering
+  const getHotelsForCity = (cityName: string, categoryFilter?: string): any[] => {
     if (!cityName || !zohoMaster.hotelsByCity) return [];
     const cleanKey = cityName.toLowerCase().replace(/[^a-z0-9]/g, '');
+    let hotels: any[] = [];
     if (zohoMaster.hotelsByCity[cleanKey]?.length) {
-      return zohoMaster.hotelsByCity[cleanKey];
+      hotels = zohoMaster.hotelsByCity[cleanKey];
+    } else {
+      // Substring match on keys (e.g. "jaisalmer" matches "jaisalmerdessert" or "jaisalmerhotel", or "nubra" matches "nubravalley")
+      const allKeys = Object.keys(zohoMaster.hotelsByCity);
+      const matchedKey = allKeys.find(k => k.includes(cleanKey) || cleanKey.includes(k));
+      if (matchedKey && zohoMaster.hotelsByCity[matchedKey]?.length) {
+        hotels = zohoMaster.hotelsByCity[matchedKey];
+      } else {
+        // Deep match across hotel records
+        const allHotels = Object.values(zohoMaster.hotelsByCity).flat();
+        const cleanLower = cityName.toLowerCase().trim();
+        hotels = allHotels.filter((h: any) => {
+          const hCity = (h.city || '').toLowerCase().trim();
+          const hDest = (h.destination || '').toLowerCase().trim();
+          return (
+            (hCity && (hCity.includes(cleanLower) || cleanLower.includes(hCity))) ||
+            (hDest && (hDest.includes(cleanLower) || cleanLower.includes(hDest)))
+          );
+        });
+      }
     }
-    // Substring match on keys (e.g. "nubra" matches "nubravalley")
-    const allKeys = Object.keys(zohoMaster.hotelsByCity);
-    const matchedKey = allKeys.find(k => k.includes(cleanKey) || cleanKey.includes(k));
-    if (matchedKey && zohoMaster.hotelsByCity[matchedKey]?.length) {
-      return zohoMaster.hotelsByCity[matchedKey];
+
+    if (categoryFilter && categoryFilter.trim()) {
+      const cleanCat = categoryFilter.toLowerCase().replace(/[^a-z0-9]/g, '');
+      return hotels.filter((h: any) => (h.category || '').toLowerCase().replace(/[^a-z0-9]/g, '') === cleanCat);
     }
-    // Deep match across hotel records
-    const allHotels = Object.values(zohoMaster.hotelsByCity).flat();
-    const cleanLower = cityName.toLowerCase().trim();
-    const matched = allHotels.filter(h => {
-      const hCity = (h.city || '').toLowerCase().trim();
-      const hDest = (h.destination || '').toLowerCase().trim();
-      return (
-        (hCity && (hCity.includes(cleanLower) || cleanLower.includes(hCity))) ||
-        (hDest && (hDest.includes(cleanLower) || cleanLower.includes(hDest)))
-      );
-    });
-    return matched;
+    return hotels;
   };
 
   // Auto-Group Hotel Stays from Day Plans or Stay Summary
@@ -710,19 +757,18 @@ function WebsiteItineraryInner() {
     }
 
     const newRows: HotelStayRow[] = stays.map(s => {
-      const availableHotels = getHotelsForCity(s.city);
-      const matched = availableHotels.find(h =>
-        h.category?.toLowerCase() === globalHotelCategory.toLowerCase()
-      ) || availableHotels[0];
+      const availableHotels = getHotelsForCity(s.city, globalHotelCategory);
+      const allCityHotels = getHotelsForCity(s.city);
+      const matched = availableHotels[0] || allCityHotels[0];
 
-      const room = matched?.rooms?.[0]?.roomCategory || 'Deluxe Room';
+      const room = matched?.rooms?.[0]?.roomCategory || '';
       const basePrice = matched?.rooms?.[0]?.basePrice || 0;
       const hotelRawName = matched?.hotelName || `Hotel in ${s.city}`;
 
       return {
         city: s.city,
         nights: s.nights,
-        category: globalHotelCategory,
+        category: matched?.category || globalHotelCategory,
         hotelId: matched?.id || '',
         hotelName: formatHotelWithSimilar(hotelRawName),
         roomCategory: room,
@@ -758,36 +804,95 @@ function WebsiteItineraryInner() {
   // Apply Global Hotel Category
   const handleApplyGlobalHotelCategory = (cat: string) => {
     setGlobalHotelCategory(cat);
-    setHotelStays(prev =>
-      prev.map(s => {
-        const availableHotels = getHotelsForCity(s.city);
-        const matched = availableHotels.find(h => h.category?.toLowerCase() === cat.toLowerCase()) || availableHotels[0];
-        const room = matched?.rooms?.[0]?.roomCategory || 'Deluxe Room';
-        const basePrice = matched?.rooms?.[0]?.basePrice || 0;
-        const rawName = matched?.hotelName || s.hotelName;
+    const updatedStays = hotelStays.map(s => {
+      const filtered = getHotelsForCity(s.city, cat);
+      const allCityHotels = getHotelsForCity(s.city);
+      const matched = filtered[0] || allCityHotels[0];
+      const room = matched?.rooms?.[0]?.roomCategory || '';
+      const basePrice = matched?.rooms?.[0]?.basePrice || 0;
+      const rawName = matched?.hotelName || s.hotelName;
+      const formattedHotel = formatHotelWithSimilar(rawName);
 
-        return {
-          ...s,
-          category: cat,
-          hotelId: matched?.id || '',
-          hotelName: formatHotelWithSimilar(rawName),
-          roomCategory: room,
-          basePrice
-        };
+      return {
+        ...s,
+        category: cat,
+        hotelId: matched?.id || '',
+        hotelName: formattedHotel,
+        roomCategory: room,
+        basePrice
+      };
+    });
+    setHotelStays(updatedStays);
+
+    // Sync stay hotel names to day plans for matching cities
+    setDayPlans(prev =>
+      prev.map(d => {
+        if (/overnight/i.test(d.stayHotel)) return d;
+        const dNorm = (d.city || '').toLowerCase().trim();
+        const matchingStay = updatedStays.find(s => {
+          const sNorm = s.city.toLowerCase().trim();
+          return dNorm === sNorm || dNorm.endsWith(`→ ${sNorm}`);
+        });
+        if (matchingStay && matchingStay.hotelId) {
+          return {
+            ...d,
+            stayHotel: `${matchingStay.hotelName} (${matchingStay.roomCategory})`
+          };
+        }
+        return d;
       })
     );
+  };
+
+  // Update Individual Stay Category
+  const handleStayCategoryChange = (stayIdx: number, newCat: string) => {
+    const stay = hotelStays[stayIdx];
+    const filtered = getHotelsForCity(stay.city, newCat);
+    const allCityHotels = getHotelsForCity(stay.city);
+    const matched = filtered[0] || allCityHotels[0];
+    const lowestRoom = matched?.rooms?.[0]?.roomCategory || '';
+    const lowestPrice = matched?.rooms?.[0]?.basePrice || 0;
+    const formattedHotel = matched ? formatHotelWithSimilar(matched.hotelName) : '';
+
+    setHotelStays(prev => {
+      const copy = [...prev];
+      copy[stayIdx] = {
+        ...copy[stayIdx],
+        category: newCat,
+        hotelId: matched?.id || '',
+        hotelName: formattedHotel || copy[stayIdx].hotelName,
+        roomCategory: lowestRoom,
+        basePrice: lowestPrice
+      };
+      return copy;
+    });
+
+    if (matched) {
+      setDayPlans(prev =>
+        prev.map(d => {
+          if (/overnight/i.test(d.stayHotel)) return d;
+          const dNorm = (d.city || '').toLowerCase().trim();
+          const sNorm = stay.city.toLowerCase().trim();
+          if (dNorm === sNorm || dNorm.endsWith(`→ ${sNorm}`)) {
+            return { ...d, stayHotel: `${formattedHotel} (${lowestRoom})` };
+          }
+          return d;
+        })
+      );
+    }
   };
 
   // Update Individual Hotel Row
   const handleHotelSelect = (stayIdx: number, hotelId: string) => {
     const stay = hotelStays[stayIdx];
-    const hotels = getHotelsForCity(stay.city);
-    const found = hotels.find(h => h.id === hotelId);
+    const hotels = getHotelsForCity(stay.city, stay.category);
+    const allHotels = hotels.length > 0 ? hotels : getHotelsForCity(stay.city);
+    const found = allHotels.find(h => String(h.id) === String(hotelId));
 
     if (!found) return;
 
     // Pick lowest base price room category automatically!
-    const lowestRoom = found.rooms?.[0]?.roomCategory || 'Deluxe Room';
+    const lowestRoom = found.rooms?.[0]?.roomCategory || '';
     const lowestPrice = found.rooms?.[0]?.basePrice || 0;
     const formattedHotel = formatHotelWithSimilar(found.hotelName);
 
@@ -797,6 +902,7 @@ function WebsiteItineraryInner() {
         ...copy[stayIdx],
         hotelId: found.id,
         hotelName: formattedHotel,
+        category: found.category || copy[stayIdx].category,
         roomCategory: lowestRoom,
         basePrice: lowestPrice
       };
@@ -806,7 +912,10 @@ function WebsiteItineraryInner() {
     // Sync stay hotel name to day plans for this city
     setDayPlans(prev =>
       prev.map(d => {
-        if (d.city?.toLowerCase() === stay.city.toLowerCase()) {
+        if (/overnight/i.test(d.stayHotel)) return d;
+        const dNorm = (d.city || '').toLowerCase().trim();
+        const sNorm = stay.city.toLowerCase().trim();
+        if (dNorm === sNorm || dNorm.endsWith(`→ ${sNorm}`)) {
           return { ...d, stayHotel: `${formattedHotel} (${lowestRoom})` };
         }
         return d;
@@ -816,8 +925,9 @@ function WebsiteItineraryInner() {
 
   const handleRoomSelect = (stayIdx: number, roomCat: string) => {
     const stay = hotelStays[stayIdx];
-    const hotels = getHotelsForCity(stay.city);
-    const found = hotels.find(h => h.id === stay.hotelId);
+    const hotels = getHotelsForCity(stay.city, stay.category);
+    const allHotels = hotels.length > 0 ? hotels : getHotelsForCity(stay.city);
+    const found = allHotels.find(h => String(h.id) === String(stay.hotelId)) || allHotels[0];
     const room = found?.rooms?.find((r: any) => r.roomCategory === roomCat);
 
     setHotelStays(prev => {
@@ -832,7 +942,10 @@ function WebsiteItineraryInner() {
 
     setDayPlans(prev =>
       prev.map(d => {
-        if (d.city?.toLowerCase() === stay.city.toLowerCase()) {
+        if (/overnight/i.test(d.stayHotel)) return d;
+        const dNorm = (d.city || '').toLowerCase().trim();
+        const sNorm = stay.city.toLowerCase().trim();
+        if (dNorm === sNorm || dNorm.endsWith(`→ ${sNorm}`)) {
           return { ...d, stayHotel: `${stay.hotelName} (${roomCat})` };
         }
         return d;
@@ -1127,7 +1240,14 @@ function WebsiteItineraryInner() {
           } else if (isOvernight) {
             stayHotel = `Overnight Journey${toCity ? ` to ${toCity}` : ''} (Volvo / Sleeper / Vehicle)`;
           } else {
-            stayHotel = formatHotelWithSimilar(targetStayCity ? `Hotel in ${targetStayCity}` : 'Hotel / Similar');
+            const hotels = getHotelsForCity(targetStayCity, globalHotelCategory);
+            const matchedHotel = hotels[0] || getHotelsForCity(targetStayCity)[0];
+            if (matchedHotel) {
+              const rCat = matchedHotel.rooms?.[0]?.roomCategory || '';
+              stayHotel = `${formatHotelWithSimilar(matchedHotel.hotelName)}${rCat ? ` (${rCat})` : ''}`;
+            } else {
+              stayHotel = formatHotelWithSimilar(targetStayCity ? `Hotel in ${targetStayCity}` : 'Hotel / Similar');
+            }
           }
 
           // Clean experience titles for headline
@@ -1565,7 +1685,8 @@ function WebsiteItineraryInner() {
         city: s.city,
         hotel: formatHotelWithSimilar(s.hotelName),
         nights: `${s.nights}N`,
-        roomCategory: s.roomCategory
+        roomCategory: s.roomCategory,
+        category: s.category
       })),
       inclusionsSummary: {
         cities: hotelStays.length > 0 ? new Set(hotelStays.map(s => s.city.toLowerCase())).size : 1,
@@ -2741,8 +2862,8 @@ function WebsiteItineraryInner() {
           {/* Hotel Stays Rows */}
           <div className="space-y-3">
             {hotelStays.map((stay, idx) => {
-              const availableHotels = getHotelsForCity(stay.city);
-              const selectedHotelObj = availableHotels.find(h => h.id === stay.hotelId || formatHotelWithSimilar(h.hotelName) === stay.hotelName);
+              const availableHotels = getHotelsForCity(stay.city, stay.category);
+              const selectedHotelObj = availableHotels.find(h => String(h.id) === String(stay.hotelId)) || availableHotels[0];
 
               return (
                 <div
@@ -2763,12 +2884,8 @@ function WebsiteItineraryInner() {
                       <span className="text-[11px] text-slate-400">Category:</span>
                       <select
                         value={stay.category}
-                        onChange={(e) => {
-                          const copy = [...hotelStays];
-                          copy[idx].category = e.target.value;
-                          setHotelStays(copy);
-                        }}
-                        className="px-2 py-1 bg-slate-900 border border-slate-800 rounded text-xs text-amber-400"
+                        onChange={(e) => handleStayCategoryChange(idx, e.target.value)}
+                        className="px-2 py-1 bg-slate-900 border border-slate-800 rounded text-xs text-amber-400 font-bold cursor-pointer"
                       >
                         {HOTEL_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
                       </select>
@@ -2776,44 +2893,47 @@ function WebsiteItineraryInner() {
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {/* Hotel Dropdown (From Zoho CRM) */}
+                    {/* Hotel Dropdown (From Zoho CRM - Strictly Filtered by Category) */}
                     <div>
                       <label className="block text-[11px] font-medium text-slate-400 mb-1">
-                        Select Hotel in {stay.city} ({availableHotels.length} options in Zoho)
+                        Select Hotel in {stay.city} ({availableHotels.length} {stay.category} option{availableHotels.length === 1 ? '' : 's'} in Zoho)
                       </label>
                       <select
-                        value={stay.hotelId || ''}
+                        value={stay.hotelId || selectedHotelObj?.id || ''}
                         onChange={(e) => handleHotelSelect(idx, e.target.value)}
                         className="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-orange-500 cursor-pointer"
                       >
-                        <option value="">-- Choose Hotel from Zoho CRM --</option>
-                        {availableHotels.map(h => (
-                          <option key={h.id} value={h.id}>
-                            {h.hotelName} / Similar ({h.category || 'Deluxe'}) {h.starRating ? `[${h.starRating}★]` : ''}
-                          </option>
-                        ))}
+                        {availableHotels.length === 0 ? (
+                          <option value="">-- No {stay.category} hotels in Zoho for {stay.city} --</option>
+                        ) : (
+                          availableHotels.map(h => (
+                            <option key={h.id} value={h.id}>
+                              {formatHotelWithSimilar(h.hotelName)} ({h.category || stay.category}) {h.starRating ? `[${h.starRating}★]` : ''}
+                            </option>
+                          ))
+                        )}
                       </select>
                     </div>
 
-                    {/* Room Category (With lowest base price auto-selected) */}
+                    {/* Room Category (Belonging to Selected Hotel in Zoho CRM) */}
                     <div>
                       <label className="block text-[11px] font-medium text-slate-400 mb-1">
-                        Room Category (Lowest Base Price Auto-Selected)
+                        Room Category (Exact from Zoho CRM)
                       </label>
                       <select
-                        value={stay.roomCategory}
+                        value={stay.roomCategory || selectedHotelObj?.rooms?.[0]?.roomCategory || ''}
                         onChange={(e) => handleRoomSelect(idx, e.target.value)}
                         disabled={!selectedHotelObj?.rooms?.length}
-                        className="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-emerald-400 font-semibold focus:outline-none focus:border-orange-500 cursor-pointer"
+                        className="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-emerald-400 font-semibold focus:outline-none focus:border-orange-500 cursor-pointer disabled:opacity-50"
                       >
                         {selectedHotelObj?.rooms && selectedHotelObj.rooms.length > 0 ? (
                           selectedHotelObj.rooms.map((r: any, rIdx: number) => (
                             <option key={rIdx} value={r.roomCategory}>
-                              {r.roomCategory} {r.basePrice > 0 ? `(₹${r.basePrice}/night)` : ''}
+                              {r.roomCategory} {r.basePrice > 0 ? `(₹${r.basePrice.toLocaleString('en-IN')}/night)` : ''}
                             </option>
                           ))
                         ) : (
-                          <option value="Deluxe Room">Standard / Deluxe Room</option>
+                          <option value="">No rooms configured in Zoho</option>
                         )}
                       </select>
                     </div>
@@ -3404,9 +3524,14 @@ function WebsiteItineraryInner() {
                 </select>
               </div>
 
-              <span className="text-xs text-slate-400">
-                {destImages.length} images available
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-slate-400">
+                  {destImages.length} images available
+                </span>
+                <span className="px-2 py-0.5 rounded-full bg-amber-400/10 text-amber-400 border border-amber-400/20 text-[10px] font-bold">
+                  {destImages.filter(i => i.includes('unsplash.com')).length} Unsplash HD
+                </span>
+              </div>
             </div>
 
             {/* Visual Thumbnail Grid */}
@@ -3424,6 +3549,7 @@ function WebsiteItineraryInner() {
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3.5">
                   {destImages.map((img, i) => {
                     const isSelected = selectedGalleryPicks.includes(img) || heroImage === img;
+                    const isUnsplash = img.includes('images.unsplash.com');
 
                     return (
                       <div
@@ -3438,10 +3564,24 @@ function WebsiteItineraryInner() {
                           src={img}
                           alt={`Library ${i + 1}`}
                           fill
+                          unoptimized={isUnsplash}
                           className="object-cover group-hover:scale-105 transition-transform"
                         />
                         <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-xs font-bold text-white">
                           Click to Select
+                        </div>
+
+                        {/* Source Tag Badge */}
+                        <div className="absolute bottom-1.5 left-1.5 pointer-events-none">
+                          {isUnsplash ? (
+                            <span className="px-1.5 py-0.5 rounded bg-slate-950/80 backdrop-blur-xs text-[9px] font-semibold text-amber-300 border border-amber-500/20 shadow">
+                              Unsplash HD
+                            </span>
+                          ) : (
+                            <span className="px-1.5 py-0.5 rounded bg-slate-950/80 backdrop-blur-xs text-[9px] font-semibold text-emerald-300 border border-emerald-500/20 shadow">
+                              Local Photo
+                            </span>
+                          )}
                         </div>
 
                         {isSelected && (

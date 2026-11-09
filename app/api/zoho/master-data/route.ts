@@ -304,13 +304,18 @@ export async function GET(req: NextRequest) {
       const rooms: any[] = [];
       const subform = Array.isArray(fullRecord.Room_Rates_Pricing) ? fullRecord.Room_Rates_Pricing : [];
       subform.forEach((r: any) => {
-        // STRICT: Base Price comes ONLY from Base_Price or Base_Price_INR column
-        const basePrice = Number(r.Base_Price) || Number(r.Base_Price_INR) || 0;
+        // Base Price from Base_Price, Base_Price_INR, or Price_Per_Night
+        const basePrice = Number(r.Base_Price) || Number(r.Base_Price_INR) || Number(r.Price_Per_Night) || 0;
         const extraBed = Number(r.Extra_Bed) || Number(r.Extra_Bed_INR) || Number(r.Extra_Bed_Price) || 0;
         const childWithoutBed = Number(r.Child_without_bed) || 0;
-        const pricePerNight = Number(r.Price_Per_Night) || 0;
+        const pricePerNight = Number(r.Price_Per_Night) || basePrice;
+
+        // Exact room category name from Zoho CRM subform
+        const rawRoomCat = r.Hotel_Room_Category || r.Room_Category || r.Room_Type || r.Name || '';
+        const roomCategory = String(rawRoomCat || 'Standard Room').trim();
+
         rooms.push({
-          roomCategory: String(r.Room_Category || 'Deluxe Room').trim(),
+          roomCategory,
           basePrice,
           pricePerNight,
           extraBedPrice: extraBed,
