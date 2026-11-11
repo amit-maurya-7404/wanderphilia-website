@@ -30,8 +30,8 @@ Object.entries(destinationItineraryImages).forEach(([k, list]) => {
   });
 });
 
-// Common fallbacks
-DESTINATION_IMAGE_MAP['general'] = availableDummyImages;
+// Common fallbacks removed - authentic destination photos only
+// DESTINATION_IMAGE_MAP['general'] = availableDummyImages;
 
 export async function GET(req: NextRequest) {
   try {
@@ -56,6 +56,7 @@ export async function GET(req: NextRequest) {
       'Udaipur',
       'Jodhpur',
       'Jaisalmer',
+      'Jawai',
       'Leh Ladakh',
       'Spiti Valley',
       'Kashmir',
@@ -104,43 +105,24 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    // 2. Curated 25-30 Unsplash HD images for this destination
-    const targetQuery = destinationQuery || 'rajasthan';
-    const unsplashImages = getCuratedUnsplashImages(targetQuery);
-
-    // 3. Dynamic Unsplash API search if user has configured UNSPLASH_ACCESS_KEY
-    let dynamicUnsplash: string[] = [];
-    const unsplashKey = process.env.UNSPLASH_ACCESS_KEY;
-    if (unsplashKey && destinationQuery && destinationQuery !== 'general / all') {
-      try {
-        const uRes = await fetch(
-          `https://api.unsplash.com/search/photos?query=${encodeURIComponent(destinationQuery)}&per_page=30`,
-          {
-            headers: { Authorization: `Client-ID ${unsplashKey}` }
-          }
-        );
-        if (uRes.ok) {
-          const uData = await uRes.json();
-          if (Array.isArray(uData.results)) {
-            dynamicUnsplash = uData.results
-              .map((r: any) => r.urls?.regular || r.urls?.full)
-              .filter(Boolean);
-          }
+    let finalImages: string[] = [];
+    if (localMatchedImages.length > 0) {
+      // Return ONLY real, authentic images for this destination - ZERO random images
+      finalImages = localMatchedImages;
+    } else if (destinationQuery === 'general / all' || !destinationQuery) {
+      // Return authentic local images across all destinations
+      const allLocal = new Set<string>();
+      Object.entries(DESTINATION_IMAGE_MAP).forEach(([key, imgs]) => {
+        if (key !== 'general') {
+          imgs.forEach(i => allLocal.add(i));
         }
-      } catch (err) {
-        console.warn('[Unsplash Dynamic Search Warning]:', err);
-      }
-    }
-
-    // Combine local images first, then dynamic & curated Unsplash images
-    const combinedSet = new Set<string>();
-    localMatchedImages.forEach(img => combinedSet.add(img));
-    dynamicUnsplash.forEach(img => combinedSet.add(img));
-    unsplashImages.forEach(img => combinedSet.add(img));
-
-    let finalImages = Array.from(combinedSet);
-    if (finalImages.length === 0) {
-      finalImages = availableDummyImages;
+      });
+      finalImages = Array.from(allLocal);
+    } else {
+      // For destinations without local images yet, check if destination-specific unsplash collection exists
+      const targetQuery = destinationQuery || '';
+      const unsplashImages = getCuratedUnsplashImages(targetQuery);
+      finalImages = unsplashImages;
     }
 
     return NextResponse.json({
@@ -148,7 +130,7 @@ export async function GET(req: NextRequest) {
       destinations: allDestinations,
       images: finalImages,
       localCount: localMatchedImages.length,
-      unsplashCount: unsplashImages.length + dynamicUnsplash.length,
+      unsplashCount: 0,
       totalCount: finalImages.length
     });
   } catch (error: any) {

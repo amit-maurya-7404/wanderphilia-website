@@ -1,60 +1,344 @@
 {
   "gallery": [
     {
-      "_id": "gallery-raj-1",
-      "image": "/images/Rajasthan/rajasthan1.jpeg",
+      "_id": "gallery-raj-jpr-1",
+      "image": "/images/Rajasthan/jaipur/hawa-mahal-jaipur.webp",
       "category": "rajasthan",
-      "title": "Amber Fort Jaipur",
-      "alt": "Amber Fort Jaipur",
-      "createdAt": "2026-01-01T10:00:00Z"
+      "title": "Hawa Mahal, Jaipur",
+      "alt": "Hawa Mahal Pink City Highlights Jaipur",
+      "city": "Jaipur",
+      "theme": "City Highlights",
+      "createdAt": "2026-02-01T10:00:00Z"
     },
     {
-      "_id": "gallery-raj-2",
-      "image": "/images/Rajasthan/rajasthan2.jpeg",
+      "_id": "gallery-raj-jpr-2",
+      "image": "/images/Rajasthan/jaipur/amer-fort-jaipur.webp",
       "category": "rajasthan",
-      "title": "Jaipur Fort View",
-      "alt": "Jaipur Fort View",
-      "createdAt": "2026-01-01T10:01:00Z"
+      "title": "Amer Fort Grand Heritage",
+      "alt": "Amer Fort Royal Heritage Palace Jaipur",
+      "city": "Jaipur",
+      "theme": "Forts",
+      "createdAt": "2026-02-01T10:01:00Z"
     },
     {
-      "_id": "gallery-raj-3",
-      "image": "/images/Rajasthan/rajasthan3.jpeg",
+      "_id": "gallery-raj-jpr-3",
+      "image": "/images/Rajasthan/jaipur/nahargarh-fort-sunset.webp",
       "category": "rajasthan",
-      "title": "Rajasthan Heritage",
-      "alt": "Rajasthan Heritage",
-      "createdAt": "2026-01-01T10:02:00Z"
+      "title": "Nahargarh Fort Golden Sunset",
+      "alt": "Nahargarh Fort Sunset View of Jaipur Skyline",
+      "city": "Jaipur",
+      "theme": "Sunset Photos",
+      "createdAt": "2026-02-01T10:02:00Z"
     },
     {
-      "_id": "gallery-raj-4",
-      "image": "/images/Rajasthan/rajasthan4.jpeg",
+      "_id": "gallery-raj-jpr-4",
+      "image": "/images/Rajasthan/jaipur/city-palace-jaipur.webp",
       "category": "rajasthan",
-      "title": "Amber Palace",
-      "alt": "Amber Palace",
-      "createdAt": "2026-01-01T10:03:00Z"
+      "title": "City Palace Courtyards",
+      "alt": "Jaipur City Palace Royal Architecture",
+      "city": "Jaipur",
+      "theme": "Art & Culture",
+      "createdAt": "2026-02-01T10:03:00Z"
     },
     {
-      "_id": "gallery-raj-5",
-      "image": "/images/Rajasthan/rajasthan5.jpg",
+      "_id": "gallery-raj-jpr-5",
+      "image": "/images/Rajasthan/jaipur/jal-mahal-sunset.webp",
       "category": "rajasthan",
-      "title": "Rajasthan Sunset",
-      "alt": "Rajasthan Sunset",
-      "createdAt": "2026-01-01T10:04:00Z"
+      "title": "Jal Mahal Romantic Lake Sunset",
+      "alt": "Jal Mahal Floating Palace Sunset View",
+      "city": "Jaipur",
+      "theme": "Honeymoon Experience",
+      "createdAt": "2026-02-01T10:04:00Z"
     },
     {
-      "_id": "gallery-raj-6",
-      "image": "/images/Rajasthan/rajasthan6.jpg",
+      "_id": "gallery-raj-jpr-6",
+      "image": "/images/Rajasthan/jaipur/albert-hall-museum.webp",
       "category": "rajasthan",
-      "title": "Taj Mahal & Agra",
-      "alt": "Taj Mahal & Agra",
-      "createdAt": "2026-01-01T10:05:00Z"
+      "title": "Albert Hall Museum Illuminated",
+      "alt": "Albert Hall Museum Heritage Night View",
+      "city": "Jaipur",
+      "theme": "City Highlights",
+      "createdAt": "2026-02-01T10:05:00Z"
     },
     {
-      "_id": "gallery-raj-7",
-      "image": "/images/Rajasthan/rajasthan7.jpg",
+      "_id": "gallery-raj-jpr-7",
+      "image": "/images/Rajasthan/jaipur/blue-pottery-jaipur.jpg",
       "category": "rajasthan",
-      "title": "Rajasthan Palaces",
-      "alt": "Rajasthan Palaces",
-      "createdAt": "2026-01-01T10:06:00Z"
+      "title": "Traditional Blue Pottery Art",
+      "alt": "Jaipur Famous Blue Pottery Craft",
+      "city": "Jaipur",
+      "theme": "Art & Culture",
+      "createdAt": "2026-02-01T10:06:00Z"
+    },
+    {
+      "_id": "gallery-raj-jpr-8",
+      "image": "/images/Rajasthan/jaipur/elephant-village-experience.jpg",
+      "category": "rajasthan",
+      "title": "Elephant Safari & Village Experience",
+      "alt": "Jaipur Hathi Gaon Elephant Village Family Experience",
+      "city": "Jaipur",
+      "theme": "Family Experience",
+      "createdAt": "2026-02-01T10:07:00Z"
+    },
+    {
+      "_id": "gallery-raj-udr-1",
+      "image": "/images/Rajasthan/udaipur/udaipur-city-palace-aerial.jpg",
+      "category": "rajasthan",
+      "title": "City Palace Aerial Grandeur, Udaipur",
+      "alt": "Udaipur City Palace overlooking Lake Pichola",
+      "city": "Udaipur",
+      "theme": "City Highlights",
+      "createdAt": "2026-02-01T10:10:00Z"
+    },
+    {
+      "_id": "gallery-raj-udr-2",
+      "image": "/images/Rajasthan/udaipur/lake-pichola-view.jpg",
+      "category": "rajasthan",
+      "title": "Lake Pichola Panoramic Waters",
+      "alt": "Lake Pichola Serene View Udaipur",
+      "city": "Udaipur",
+      "theme": "City Highlights",
+      "createdAt": "2026-02-01T10:11:00Z"
+    },
+    {
+      "_id": "gallery-raj-udr-3",
+      "image": "/images/Rajasthan/udaipur/lake-pichola-boat-ride.jpg",
+      "category": "rajasthan",
+      "title": "Lake Pichola Sunset Boat Cruise",
+      "alt": "Group Sunset Boat Cruise Lake Pichola",
+      "city": "Udaipur",
+      "theme": "Sunset Photos",
+      "createdAt": "2026-02-01T10:12:00Z"
+    },
+    {
+      "_id": "gallery-raj-udr-4",
+      "image": "/images/Rajasthan/udaipur/jag-mandir-palace.jpg",
+      "category": "rajasthan",
+      "title": "Jagmandir Island Palace Sunset",
+      "alt": "Jag Mandir Island Palace Sunset Pichola",
+      "city": "Udaipur",
+      "theme": "Forts",
+      "createdAt": "2026-02-01T10:13:00Z"
+    },
+    {
+      "_id": "gallery-raj-udr-5",
+      "image": "/images/Rajasthan/udaipur/udaipur-honeymoon-escape.jpg",
+      "category": "rajasthan",
+      "title": "Romantic Lakeside Couple Escape",
+      "alt": "Romantic Honeymoon in Venice of the East Udaipur",
+      "city": "Udaipur",
+      "theme": "Honeymoon Experience",
+      "createdAt": "2026-02-01T10:14:00Z"
+    },
+    {
+      "_id": "gallery-raj-udr-6",
+      "image": "/images/Rajasthan/udaipur/udaipur-heritage-palace.jpg",
+      "category": "rajasthan",
+      "title": "Royal Mewar Heritage & Courtyards",
+      "alt": "Mewar Royal Architecture Udaipur",
+      "city": "Udaipur",
+      "theme": "Art & Culture",
+      "createdAt": "2026-02-01T10:15:00Z"
+    },
+    {
+      "_id": "gallery-raj-jdh-1",
+      "image": "/images/Rajasthan/jodhpur/jodhpur-overview-sunset.jpg",
+      "category": "rajasthan",
+      "title": "Golden Sunset over the Blue City",
+      "alt": "Jodhpur Sunset View of Blue City and Fort",
+      "city": "Jodhpur",
+      "theme": "Sunset Photos",
+      "createdAt": "2026-02-01T10:20:00Z"
+    },
+    {
+      "_id": "gallery-raj-jdh-2",
+      "image": "/images/Rajasthan/jodhpur/mehrangarh-fort-jodhpur.jpg",
+      "category": "rajasthan",
+      "title": "Towering Mehrangarh Fort",
+      "alt": "Mehrangarh Fort High Cliff Jodhpur",
+      "city": "Jodhpur",
+      "theme": "Forts",
+      "createdAt": "2026-02-01T10:21:00Z"
+    },
+    {
+      "_id": "gallery-raj-jdh-3",
+      "image": "/images/Rajasthan/jodhpur/jodhpur-blue-city-alleys.jpg",
+      "category": "rajasthan",
+      "title": "Iconic Indigo Blue Alleys",
+      "alt": "Brahmapuri Blue Houses Jodhpur Alleys",
+      "city": "Jodhpur",
+      "theme": "Art & Culture",
+      "createdAt": "2026-02-01T10:22:00Z"
+    },
+    {
+      "_id": "gallery-raj-jdh-4",
+      "image": "/images/Rajasthan/jodhpur/jodhpur-ghanta-ghar.webp",
+      "category": "rajasthan",
+      "title": "Ghanta Ghar (Clock Tower) Bazaar",
+      "alt": "Sardar Market Clock Tower Jodhpur",
+      "city": "Jodhpur",
+      "theme": "City Highlights",
+      "createdAt": "2026-02-01T10:23:00Z"
+    },
+    {
+      "_id": "gallery-raj-jdh-5",
+      "image": "/images/Rajasthan/jodhpur/jaswant-thada-marble-cenotaph.jpg",
+      "category": "rajasthan",
+      "title": "Jaswant Thada Marble Cenotaph",
+      "alt": "Taj Mahal of Marwar Jaswant Thada Jodhpur",
+      "city": "Jodhpur",
+      "theme": "Art & Culture",
+      "createdAt": "2026-02-01T10:24:00Z"
+    },
+    {
+      "_id": "gallery-raj-jsm-city-1",
+      "image": "/images/Rajasthan/jaisalmer-city/jaisalmer-golden-fort.jpg",
+      "category": "rajasthan",
+      "title": "Golden Fort (Sonar Qila)",
+      "alt": "Living Sandstone Fort Jaisalmer",
+      "city": "Jaisalmer City",
+      "theme": "Forts",
+      "createdAt": "2026-02-01T10:30:00Z"
+    },
+    {
+      "_id": "gallery-raj-jsm-city-2",
+      "image": "/images/Rajasthan/jaisalmer-city/patwon-ki-haveli.webp",
+      "category": "rajasthan",
+      "title": "Patwon Ki Haveli Carvings",
+      "alt": "Intricate Jharokhas Patwon Ki Haveli Jaisalmer",
+      "city": "Jaisalmer City",
+      "theme": "Art & Culture",
+      "createdAt": "2026-02-01T10:31:00Z"
+    },
+    {
+      "_id": "gallery-raj-jsm-city-3",
+      "image": "/images/Rajasthan/jaisalmer-city/gadisar-lake-sunset.webp",
+      "category": "rajasthan",
+      "title": "Gadisar Lake Historic Sunset",
+      "alt": "Gadisar Lake Golden Hour Chattris Jaisalmer",
+      "city": "Jaisalmer City",
+      "theme": "Sunset Photos",
+      "createdAt": "2026-02-01T10:32:00Z"
+    },
+    {
+      "_id": "gallery-raj-jsm-city-4",
+      "image": "/images/Rajasthan/jaisalmer-city/bada-bagh-jaisalmer.webp",
+      "category": "rajasthan",
+      "title": "Bada Bagh Royal Cenotaphs",
+      "alt": "Bada Bagh Chattris at Golden Hour Jaisalmer",
+      "city": "Jaisalmer City",
+      "theme": "City Highlights",
+      "createdAt": "2026-02-01T10:33:00Z"
+    },
+    {
+      "_id": "gallery-raj-jsm-city-5",
+      "image": "/images/Rajasthan/jaisalmer-city/jaisalmer-city-view.jpg",
+      "category": "rajasthan",
+      "title": "Golden Sandstone Streets",
+      "alt": "Historic Streets of Golden City Jaisalmer",
+      "city": "Jaisalmer City",
+      "theme": "City Highlights",
+      "createdAt": "2026-02-01T10:34:00Z"
+    },
+    {
+      "_id": "gallery-raj-jsm-des-1",
+      "image": "/images/Rajasthan/jaisalmer-desert/sam-sand-dunes-sunset.jpg",
+      "category": "rajasthan",
+      "title": "Sam Sand Dunes Golden Sunset",
+      "alt": "Thar Desert Ripple Dunes Sunset Jaisalmer",
+      "city": "Jaisalmer Desert",
+      "theme": "Sunset Photos",
+      "createdAt": "2026-02-01T10:40:00Z"
+    },
+    {
+      "_id": "gallery-raj-jsm-des-2",
+      "image": "/images/Rajasthan/jaisalmer-desert/camel-safari-desert.webp",
+      "category": "rajasthan",
+      "title": "Thar Desert Camel Safari",
+      "alt": "Camel Caravan on Desert Dunes Jaisalmer",
+      "city": "Jaisalmer Desert",
+      "theme": "Groups & Family",
+      "createdAt": "2026-02-01T10:41:00Z"
+    },
+    {
+      "_id": "gallery-raj-jsm-des-3",
+      "image": "/images/Rajasthan/jaisalmer-desert/desert-folk-dance-bonfire.jpg",
+      "category": "rajasthan",
+      "title": "Kalbelia Dance & Camp Bonfire",
+      "alt": "Traditional Rajasthani Folk Performance in Desert Camp",
+      "city": "Jaisalmer Desert",
+      "theme": "Art & Culture",
+      "createdAt": "2026-02-01T10:42:00Z"
+    },
+    {
+      "_id": "gallery-raj-jsm-des-4",
+      "image": "/images/Rajasthan/jaisalmer-desert/luxury-desert-camp.jpg",
+      "category": "rajasthan",
+      "title": "Swiss Tent Desert Camping",
+      "alt": "Luxury Glamping Tents in Sam Desert Jaisalmer",
+      "city": "Jaisalmer Desert",
+      "theme": "Honeymoon & Family",
+      "createdAt": "2026-02-01T10:43:00Z"
+    },
+    {
+      "_id": "gallery-raj-jsm-des-5",
+      "image": "/images/Rajasthan/jaisalmer-desert/dune-bashing-safari.jpg",
+      "category": "rajasthan",
+      "title": "4x4 Thrill Dune Bashing",
+      "alt": "Off-road 4x4 Thar Dune Bashing Adventure",
+      "city": "Jaisalmer Desert",
+      "theme": "Groups",
+      "createdAt": "2026-02-01T10:44:00Z"
+    },
+    {
+      "_id": "gallery-raj-jsm-des-6",
+      "image": "/images/Rajasthan/jaisalmer-desert/woman-in-desert-sunset.jpg",
+      "category": "rajasthan",
+      "title": "Magical Desert Silhouette at Dusk",
+      "alt": "Desert Sunset Horizon Silhouette Sam Dunes",
+      "city": "Jaisalmer Desert",
+      "theme": "Sunset Photos",
+      "createdAt": "2026-02-01T10:45:00Z"
+    },
+    {
+      "_id": "gallery-raj-jwi-1",
+      "image": "/images/Rajasthan/jawai/jawai-leopard-jeep-safari.jpg",
+      "category": "rajasthan",
+      "title": "4x4 Open Gypsy Leopard Safari",
+      "alt": "Wild Leopard Tracking in Open 4x4 Gypsy Jawai",
+      "city": "Jawai",
+      "theme": "Adventure & Safari",
+      "createdAt": "2026-02-01T10:50:00Z"
+    },
+    {
+      "_id": "gallery-raj-jwi-2",
+      "image": "/images/Rajasthan/jawai/jawai-granite-hills-landscape.jpg",
+      "category": "rajasthan",
+      "title": "Prehistoric Granite Hills Terrain",
+      "alt": "Jawai Bera Granite Rocks and Leopard Habitat",
+      "city": "Jawai",
+      "theme": "Nature & Landscape",
+      "createdAt": "2026-02-01T10:51:00Z"
+    },
+    {
+      "_id": "gallery-raj-jwi-3",
+      "image": "/images/Rajasthan/jawai/jawai-safari-camp.jpg",
+      "category": "rajasthan",
+      "title": "Jawai Luxury Wilderness Camp",
+      "alt": "Serene Wildlife Glamping Camp Jawai",
+      "city": "Jawai",
+      "theme": "Honeymoon Experience",
+      "createdAt": "2026-02-01T10:52:00Z"
+    },
+    {
+      "_id": "gallery-raj-jwi-4",
+      "image": "/images/Rajasthan/jawai/jawai-bera-crocodile.jpg",
+      "category": "rajasthan",
+      "title": "Crocodile & Migratory Birds at Dam",
+      "alt": "Jawai Bandh Wildlife and Sunset Waters",
+      "city": "Jawai",
+      "theme": "Wildlife & Sunset",
+      "createdAt": "2026-02-01T10:53:00Z"
     },
     {
       "_id": "gallery-1",

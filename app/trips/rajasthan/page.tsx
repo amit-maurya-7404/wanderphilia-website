@@ -31,6 +31,9 @@ interface GalleryImage {
   image: string
   category: string
   alt?: string
+  title?: string
+  city?: string
+  theme?: string
   createdAt: string
 }
 
@@ -59,6 +62,18 @@ export default function RajasthanPage() {
   const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([])
   const [galleryLoading, setGalleryLoading] = useState(true)
   const [galleryError, setGalleryError] = useState<string | null>(null)
+  const [galleryCityFilter, setGalleryCityFilter] = useState<string>('All')
+
+  const displayedGalleryImages = useMemo(() => {
+    if (galleryCityFilter === 'All') return galleryImages
+    const filterKey = galleryCityFilter.toLowerCase().replace(/[^a-z0-9]/g, '')
+    return galleryImages.filter(img => {
+      const c = (img.city || '').toLowerCase().replace(/[^a-z0-9]/g, '')
+      const path = (img.image || '').toLowerCase().replace(/[^a-z0-9]/g, '')
+      const title = (img.title || '').toLowerCase().replace(/[^a-z0-9]/g, '')
+      return c.includes(filterKey) || path.includes(filterKey) || title.includes(filterKey)
+    })
+  }, [galleryImages, galleryCityFilter])
 
   // Central mapping system for trip sections
   const { getTripsBySection, sectionMap, dynamicTrips } = useDestinationTrips(categoryId)
@@ -100,13 +115,15 @@ export default function RajasthanPage() {
   }, [getTripsBySection, dynamicTrips])
 
   const fallbackRajasthanImages = [
-    '/images/Rajasthan/rajasthan1.jpeg',
-    '/images/Rajasthan/rajasthan2.jpeg',
-    '/images/Rajasthan/rajasthan3.jpeg',
-    '/images/Rajasthan/rajasthan4.jpeg',
-    '/images/Rajasthan/rajasthan5.jpg',
-    '/images/Rajasthan/rajasthan6.jpg',
-    '/images/Rajasthan/rajasthan7.jpg',
+    '/images/Rajasthan/jaipur/amer-fort-jaipur.webp',
+    '/images/Rajasthan/jaipur/hawa-mahal-jaipur.webp',
+    '/images/Rajasthan/udaipur/lake-pichola-view.jpg',
+    '/images/Rajasthan/jodhpur/mehrangarh-fort-jodhpur.jpg',
+    '/images/Rajasthan/jaisalmer-desert/sam-sand-dunes-sunset.jpg',
+    '/images/Rajasthan/jaisalmer-city/gadisar-lake-sunset.webp',
+    '/images/Rajasthan/jaipur/nahargarh-fort-sunset.webp',
+    '/images/Rajasthan/udaipur/udaipur-city-palace-aerial.jpg',
+    '/images/Rajasthan/jawai/jawai-leopard-jeep-safari.jpg',
   ]
 
   // Create carousel images - use trip images from category or fallback
@@ -180,13 +197,18 @@ export default function RajasthanPage() {
         } else {
           // Fallback gallery items
           setGalleryImages([
-            { _id: '1', image: '/images/Rajasthan/rajasthan1.jpeg', category: 'rajasthan', alt: 'Amber Fort Jaipur', createdAt: '2026-01-01' },
-            { _id: '2', image: '/images/Rajasthan/rajasthan2.jpeg', category: 'rajasthan', alt: 'Jaipur Fort View', createdAt: '2026-01-01' },
-            { _id: '3', image: '/images/Rajasthan/rajasthan3.jpeg', category: 'rajasthan', alt: 'Rajasthan Culture', createdAt: '2026-01-01' },
-            { _id: '4', image: '/images/Rajasthan/rajasthan4.jpeg', category: 'rajasthan', alt: 'Amber Palace', createdAt: '2026-01-01' },
-            { _id: '5', image: '/images/Rajasthan/rajasthan5.jpg', category: 'rajasthan', alt: 'Rajasthan Sunset', createdAt: '2026-01-01' },
-            { _id: '6', image: '/images/Rajasthan/rajasthan6.jpg', category: 'rajasthan', alt: 'Taj Mahal & Agra', createdAt: '2026-01-01' },
-            { _id: '7', image: '/images/Rajasthan/rajasthan7.jpg', category: 'rajasthan', alt: 'Rajasthan Palaces', createdAt: '2026-01-01' }
+            { _id: '1', image: '/images/Rajasthan/jaipur/hawa-mahal-jaipur.webp', category: 'rajasthan', alt: 'Hawa Mahal Jaipur', title: 'Hawa Mahal', createdAt: '2026-01-01' },
+            { _id: '2', image: '/images/Rajasthan/jaipur/amer-fort-jaipur.webp', category: 'rajasthan', alt: 'Amer Fort Jaipur', title: 'Amer Fort', createdAt: '2026-01-01' },
+            { _id: '3', image: '/images/Rajasthan/jaipur/nahargarh-fort-sunset.webp', category: 'rajasthan', alt: 'Nahargarh Fort Sunset', title: 'Nahargarh Sunset', createdAt: '2026-01-01' },
+            { _id: '4', image: '/images/Rajasthan/udaipur/udaipur-city-palace-aerial.jpg', category: 'rajasthan', alt: 'City Palace Udaipur', title: 'City Palace', createdAt: '2026-01-01' },
+            { _id: '5', image: '/images/Rajasthan/udaipur/lake-pichola-view.jpg', category: 'rajasthan', alt: 'Lake Pichola Udaipur', title: 'Lake Pichola', createdAt: '2026-01-01' },
+            { _id: '6', image: '/images/Rajasthan/jodhpur/mehrangarh-fort-jodhpur.jpg', category: 'rajasthan', alt: 'Mehrangarh Fort Jodhpur', title: 'Mehrangarh Fort', createdAt: '2026-01-01' },
+            { _id: '7', image: '/images/Rajasthan/jodhpur/jodhpur-overview-sunset.jpg', category: 'rajasthan', alt: 'Jodhpur Blue City Sunset', title: 'Blue City Sunset', createdAt: '2026-01-01' },
+            { _id: '8', image: '/images/Rajasthan/jaisalmer-city/jaisalmer-golden-fort.jpg', category: 'rajasthan', alt: 'Golden Fort Jaisalmer', title: 'Sonar Qila', createdAt: '2026-01-01' },
+            { _id: '9', image: '/images/Rajasthan/jaisalmer-desert/sam-sand-dunes-sunset.jpg', category: 'rajasthan', alt: 'Sam Sand Dunes Sunset', title: 'Sam Dunes Sunset', createdAt: '2026-01-01' },
+            { _id: '10', image: '/images/Rajasthan/jaisalmer-desert/camel-safari-desert.webp', category: 'rajasthan', alt: 'Thar Camel Safari', title: 'Camel Safari', createdAt: '2026-01-01' },
+            { _id: '11', image: '/images/Rajasthan/jawai/jawai-leopard-jeep-safari.jpg', category: 'rajasthan', alt: 'Jawai Leopard Safari', title: 'Jawai Leopard Safari', createdAt: '2026-01-01' },
+            { _id: '12', image: '/images/Rajasthan/jawai/jawai-granite-hills-landscape.jpg', category: 'rajasthan', alt: 'Jawai Granite Hills', title: 'Jawai Hills Landscape', createdAt: '2026-01-01' },
           ])
         }
       } catch (error) {
@@ -837,6 +859,24 @@ export default function RajasthanPage() {
               </p>
             </div>
 
+            {/* City Filter Pills */}
+            <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
+              {['All', 'Jaipur', 'Udaipur', 'Jodhpur', 'Jaisalmer', 'Jawai'].map((city) => (
+                <button
+                  key={city}
+                  type="button"
+                  onClick={() => setGalleryCityFilter(city)}
+                  className={`px-4 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer ${
+                    galleryCityFilter === city
+                      ? 'bg-primary text-white shadow-md shadow-primary/25 scale-105'
+                      : 'bg-white text-gray-700 hover:bg-gray-100 hover:text-primary border border-gray-200 shadow-xs'
+                  }`}
+                >
+                  {city}
+                </button>
+              ))}
+            </div>
+
             {galleryLoading ? (
               <div className="text-center py-12">
                 <p className="text-gray-500">Loading gallery images...</p>
@@ -845,12 +885,12 @@ export default function RajasthanPage() {
               <div className="text-center py-12">
                 <p className="text-red-600">{galleryError}</p>
               </div>
-            ) : galleryImages.length === 0 ? (
+            ) : displayedGalleryImages.length === 0 ? (
               <div className="text-center py-12">
-                <p className="text-gray-500">No gallery images available yet. Check back soon!</p>
+                <p className="text-gray-500">No gallery images available for this selection.</p>
               </div>
             ) : (
-              <GalleryCarousel images={galleryImages} />
+              <GalleryCarousel key={galleryCityFilter} images={displayedGalleryImages} />
             )}
           </div>
         </section>

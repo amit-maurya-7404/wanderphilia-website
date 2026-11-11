@@ -206,13 +206,22 @@ export const destinationItineraryImages: Record<string, string[]> = {
     '/images/bhutan-cover3.PNG'
   ],
   'rajasthan': [
-    '/images/Rajasthan/rajasthan1.jpeg',
-    '/images/Rajasthan/rajasthan2.jpeg',
-    '/images/Rajasthan/rajasthan3.jpeg',
-    '/images/Rajasthan/rajasthan4.jpeg',
-    '/images/Rajasthan/rajasthan5.jpg',
-    '/images/Rajasthan/rajasthan6.jpg',
-    '/images/Rajasthan/rajasthan7.jpg'
+    '/images/Rajasthan/jaipur/amer-fort-jaipur.webp',
+    '/images/Rajasthan/jaipur/hawa-mahal-jaipur.webp',
+    '/images/Rajasthan/jaipur/nahargarh-fort-sunset.webp',
+    '/images/Rajasthan/jaipur/city-palace-jaipur.webp',
+    '/images/Rajasthan/jaipur/jal-mahal-sunset.webp',
+    '/images/Rajasthan/udaipur/udaipur-city-palace-aerial.jpg',
+    '/images/Rajasthan/udaipur/lake-pichola-view.jpg',
+    '/images/Rajasthan/udaipur/lake-pichola-boat-ride.jpg',
+    '/images/Rajasthan/jodhpur/jodhpur-overview-sunset.jpg',
+    '/images/Rajasthan/jodhpur/mehrangarh-fort-jodhpur.jpg',
+    '/images/Rajasthan/jaisalmer-city/jaisalmer-golden-fort.jpg',
+    '/images/Rajasthan/jaisalmer-city/gadisar-lake-sunset.webp',
+    '/images/Rajasthan/jaisalmer-desert/sam-sand-dunes-sunset.jpg',
+    '/images/Rajasthan/jaisalmer-desert/camel-safari-desert.webp',
+    '/images/Rajasthan/jawai/jawai-leopard-jeep-safari.jpg',
+    '/images/Rajasthan/jawai/jawai-granite-hills-landscape.jpg'
   ],
   'singapore': [
     '/images/singapore1.jpg',
