@@ -182,6 +182,11 @@ function WebsiteItineraryInner() {
   // Creation Workflow Mode: 'zoho' (Import from Zoho CRM) vs 'manual' (Type everything manually from scratch)
   const [creationMode, setCreationMode] = useState<'zoho' | 'manual'>('zoho');
 
+  // AI Raw Write-up Auto-Fill State (Groq AI)
+  const [pastedWriteup, setPastedWriteup] = useState('');
+  const [parsingWriteup, setParsingWriteup] = useState(false);
+  const [showPasteParser, setShowPasteParser] = useState(false);
+
   // Zoho Itineraries (Products) State
   const [zohoItineraries, setZohoItineraries] = useState<any[]>([]);
   const [loadingZohoItineraries, setLoadingZohoItineraries] = useState(false);
@@ -1004,6 +1009,92 @@ function WebsiteItineraryInner() {
     ]);
     setSaveSuccessMsg('✏️ Manual Mode Active: Fill in your custom itinerary details below.');
     setTimeout(() => setSaveSuccessMsg(null), 3500);
+  };
+
+  // AI Raw Itinerary Write-up Parser Handler (Groq AI)
+  const handleParseWriteupWithAI = async () => {
+    if (!pastedWriteup.trim() || pastedWriteup.trim().length < 15) {
+      alert('Please paste an itinerary write-up first (minimum 15 characters).');
+      return;
+    }
+
+    setParsingWriteup(true);
+    setSaveError(null);
+
+    try {
+      const res = await fetch('/api/ai/parse-itinerary', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: pastedWriteup })
+      });
+
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        throw new Error(json.error || 'Failed to parse itinerary write-up with AI.');
+      }
+
+      const data = json.data;
+
+      // Auto-fill all states
+      if (data.title) {
+        setTitle(data.title);
+        setSlug(cleanSlug(data.title));
+      }
+      if (data.destination) setDestination(data.destination);
+      if (data.tripType) setTripType(data.tripType);
+      if (data.tourType) setTourType(data.tourType);
+      if (data.durationDays) setDurationDays(data.durationDays);
+      if (data.durationNights) setDurationNights(data.durationNights);
+      if (data.price) setPrice(data.price);
+      if (Array.isArray(data.pricingOptions) && data.pricingOptions.length > 0) {
+        setPricingOptions(data.pricingOptions.map((po: any) => ({
+          label: po.label,
+          defaultPrice: po.defaultPrice,
+          checked: po.checked !== false
+        })));
+      }
+      if (data.difficulty) setDifficulty(data.difficulty);
+      if (data.groupSize) setGroupSize(data.groupSize);
+      if (data.description) setDescription(data.description);
+      if (data.route) setRoute(data.route);
+      if (data.staySummary) setStaySummary(data.staySummary);
+      if (Array.isArray(data.highlights) && data.highlights.length > 0) {
+        setHighlights(data.highlights);
+      }
+      if (Array.isArray(data.dayPlans) && data.dayPlans.length > 0) {
+        setDayPlans(data.dayPlans);
+      }
+      if (Array.isArray(data.hotelStays) && data.hotelStays.length > 0) {
+        setHotelStays(data.hotelStays.map((hs: any) => ({
+          city: hs.city,
+          nights: hs.nights || 1,
+          category: hs.category || 'Deluxe',
+          hotelId: '',
+          hotelName: hs.hotelName || `Hotel in ${hs.city}`,
+          roomCategory: hs.roomCategory || 'Deluxe Room',
+          basePrice: 0,
+          mealPlan: globalMealPlan || 'MAPAI'
+        })));
+      }
+      if (Array.isArray(data.inclusions) && data.inclusions.length > 0) {
+        setInclusions(data.inclusions);
+      }
+      if (Array.isArray(data.exclusions) && data.exclusions.length > 0) {
+        setExclusions(data.exclusions);
+      }
+      if (Array.isArray(data.batchDates) && data.batchDates.length > 0) {
+        setBatchDates(data.batchDates);
+      }
+
+      setCreationMode('manual');
+      setSaveSuccessMsg(`✨ Groq AI extracted & filled: "${data.title || 'Itinerary'}" (${data.durationDays}D/${data.durationNights}N) with ${data.dayPlans?.length || 0} days & ${data.hotelStays?.length || 0} stays!`);
+      setTimeout(() => setSaveSuccessMsg(null), 5000);
+      setShowPasteParser(false);
+    } catch (err: any) {
+      setSaveError('AI Parsing Error: ' + err.message);
+    } finally {
+      setParsingWriteup(false);
+    }
   };
 
   // Add next day in dayPlans
@@ -2169,6 +2260,90 @@ function WebsiteItineraryInner() {
                 <Pencil className="w-3.5 h-3.5" /> ✏️ Create Manually (From Scratch)
               </button>
             </div>
+          </div>
+
+          {/* AI Write-up Parser (Paste text & Auto-fill with Groq AI) */}
+          <div className="p-4 sm:p-5 bg-gradient-to-br from-purple-950/40 via-slate-950 to-slate-900 border border-purple-500/30 rounded-xl space-y-3 shadow-lg">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-purple-600/30 border border-purple-500/50 flex items-center justify-center text-purple-300 shrink-0">
+                  <Sparkles className="w-5 h-5 text-purple-400 animate-pulse" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                    Paste Raw Itinerary Write-up &amp; Auto-Fill All Fields
+                    <span className="text-[10px] font-bold bg-purple-500/20 text-purple-300 border border-purple-500/40 px-2 py-0.5 rounded-full">
+                      ⚡ Powered by Groq AI
+                    </span>
+                  </h3>
+                  <p className="text-xs text-slate-400">
+                    Agar aapke paas WhatsApp, Word doc ya text me pura write-up ready hai, toh yahan paste karein. Groq AI Title, Days, Hotels, Inclusions &amp; Pricing sab auto-fill kar dega.
+                  </p>
+                </div>
+              </div>
+
+              <Button
+                type="button"
+                size="sm"
+                onClick={() => setShowPasteParser(!showPasteParser)}
+                className="bg-purple-600 hover:bg-purple-700 text-white text-xs h-8 px-3.5 cursor-pointer shrink-0 shadow-md font-bold"
+              >
+                <Sparkles className="w-3.5 h-3.5 mr-1.5" />
+                {showPasteParser ? 'Hide Write-up Box' : '✨ Paste Itinerary Write-up'}
+              </Button>
+            </div>
+
+            {showPasteParser && (
+              <div className="space-y-3 pt-2 animate-in fade-in duration-200">
+                <Textarea
+                  value={pastedWriteup}
+                  onChange={(e) => setPastedWriteup(e.target.value)}
+                  placeholder="Paste your complete itinerary write-up here...&#10;&#10;Example:&#10;7 Days Majestic Rajasthan Group Tour&#10;Route: Jaipur - Jodhpur - Udaipur&#10;Cost: ₹24,999 per person double sharing&#10;Day 1: Arrive Jaipur, transfer to hotel, visit Albert Hall...&#10;Day 2: Jaipur sightseeing (Amer Fort, Hawa Mahal)...&#10;Hotels: Jaipur 2N (Heritage Haveli), Jodhpur 2N...&#10;Inclusions: Breakfast, Dinner, AC vehicle, driver allowances...&#10;Batches: 15 Nov - 21 Nov 2026..."
+                  rows={8}
+                  className="w-full bg-slate-950 border-slate-800 text-slate-100 text-xs rounded-xl focus:border-purple-500 font-mono leading-relaxed"
+                />
+
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <span className="text-[11px] text-slate-400">
+                    {pastedWriteup.length > 0 ? `${pastedWriteup.length} characters pasted` : 'Ready to paste text'}
+                  </span>
+
+                  <div className="flex items-center gap-2">
+                    {pastedWriteup && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setPastedWriteup('')}
+                        className="text-slate-400 hover:text-white text-xs h-8 cursor-pointer"
+                      >
+                        Clear
+                      </Button>
+                    )}
+
+                    <Button
+                      type="button"
+                      size="sm"
+                      disabled={parsingWriteup || !pastedWriteup.trim()}
+                      onClick={handleParseWriteupWithAI}
+                      className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold text-xs h-8 px-4 cursor-pointer shadow-md shadow-purple-900/30"
+                    >
+                      {parsingWriteup ? (
+                        <>
+                          <RefreshCw className="w-3.5 h-3.5 mr-1.5 animate-spin" />
+                          Groq AI Parsing &amp; Auto-filling...
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="w-3.5 h-3.5 mr-1.5 text-amber-300" />
+                          ✨ Auto-Fill All Form Fields
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {creationMode === 'manual' ? (

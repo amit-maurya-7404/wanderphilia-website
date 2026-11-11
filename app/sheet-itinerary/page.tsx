@@ -1755,6 +1755,13 @@ export default function SheetItineraryPage() {
   const [hasSavedDraft, setHasSavedDraft] = useState(false);
   const [isDraftRestored, setIsDraftRestored] = useState(false);
 
+  // Groq AI Raw Write-up Auto-Fill State
+  const [pastedWriteup, setPastedWriteup] = useState('');
+  const [parsingWriteup, setParsingWriteup] = useState(false);
+  const [showPasteParser, setShowPasteParser] = useState(false);
+  const [aiParseSuccessMsg, setAiParseSuccessMsg] = useState<string | null>(null);
+  const [aiParseError, setAiParseError] = useState<string | null>(null);
+
   // Google Sheet Connection State (Fallback option)
   const [sheetUrl, setSheetUrl] = useState('https://docs.google.com/spreadsheets/d/1e5wSIGjKwpyujB12YjoFlu3SXc6XLnI7tOLj5zD97XY/edit?usp=sharing');
   const [connectingSheet, setConnectingSheet] = useState(false);
@@ -4586,6 +4593,122 @@ export default function SheetItineraryPage() {
       setHasSavedDraft(false);
     }
   };
+
+  // AI Raw Itinerary Write-up Parser Handler for Sheet Itinerary (Groq AI)
+  const handleParseWriteupWithAI = async () => {
+    if (!pastedWriteup.trim() || pastedWriteup.trim().length < 15) {
+      alert('Please paste an itinerary write-up first (minimum 15 characters).');
+      return;
+    }
+
+    setParsingWriteup(true);
+    setAiParseError(null);
+    setAiParseSuccessMsg(null);
+
+    try {
+      const res = await fetch('/api/ai/parse-itinerary', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: pastedWriteup, target: 'sheet' })
+      });
+
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        throw new Error(json.error || 'Failed to parse itinerary write-up.');
+      }
+
+      const data = json.data;
+
+      // 1. Destination & Types
+      if (data.destination) {
+        setDestination(data.destination);
+      }
+      if (data.tripType) {
+        setDestinationType(data.tripType);
+      }
+
+      // 2. Duration
+      if (data.durationDays) {
+        setNoOfDays(data.durationDays);
+      }
+      if (data.durationNights) {
+        setNoOfNights(data.durationNights);
+      }
+
+      // 3. Vehicle & Meal Plan
+      if (data.vehicleType) {
+        setVehicleType(data.vehicleType);
+      }
+      if (data.mealPlan) {
+        setMealPlan(data.mealPlan);
+      }
+
+      // 4. Hotels
+      if (Array.isArray(data.hotelStays) && data.hotelStays.length > 0) {
+        const mappedHotels: HotelItem[] = data.hotelStays.map((hs: any, idx: number) => ({
+          index: idx + 1,
+          hotelName: hs.hotelName || `Hotel in ${hs.city}`,
+          city: hs.city || data.destination || destination || 'City',
+          nights: hs.nights || 1,
+          roomCategory: hs.roomCategory || 'Deluxe Room',
+          category: hs.category || masterHotelCategory || 'Deluxe',
+          stayDates: '',
+          basePrice: 0,
+          extraBedPrice: 0,
+          childWithoutBedPrice: 0
+        }));
+        setHotels(mappedHotels);
+        setIsHotelsManuallyCustomized(true);
+      }
+
+      // 5. Day Rows (Spreadsheet Grid)
+      if (Array.isArray(data.dayPlans) && data.dayPlans.length > 0) {
+        const mappedRows: TableDayRow[] = data.dayPlans.map((dp: any, idx: number) => {
+          const timelineList = Array.isArray(dp.timeline) && dp.timeline.length > 0
+            ? dp.timeline
+            : [dp.title || `Day ${idx + 1} Sightseeing`];
+
+          return {
+            dayNumber: dp.day || idx + 1,
+            dayText: `Day ${dp.day || idx + 1}`,
+            guidedTour: false,
+            city: dp.city || data.destination || destination || 'City',
+            enRouteExperiences: [],
+            city2: '',
+            experiences: timelineList,
+            descriptions: timelineList.map(() => ''),
+            experienceCosts: timelineList.map(() => 0),
+            experiencePrivateCosts: timelineList.map(() => 0),
+            optionalExperiences: [],
+            optionalDescriptions: [],
+            optionalExperienceCosts: [],
+            optionalExperiencePrivateCosts: [],
+            breakfast: Boolean(dp.meals?.breakfast),
+            lunch: Boolean(dp.meals?.lunch),
+            dinner: Boolean(dp.meals?.dinner)
+          };
+        });
+        setDayRows(mappedRows);
+      }
+
+      // 6. Inclusions & Exclusions
+      if (Array.isArray(data.inclusions) && data.inclusions.length > 0) {
+        setInclusions(data.inclusions);
+        setIsCustomInclusionsEdited(true);
+      }
+      if (Array.isArray(data.exclusions) && data.exclusions.length > 0) {
+        setExclusions(data.exclusions);
+      }
+
+      setAiParseSuccessMsg(`✓ Groq AI parsed successfully: Extracted ${data.dayPlans?.length || 0} days, ${data.hotelStays?.length || 0} hotel stays, destination (${data.destination || 'Custom'}) & inclusions!`);
+      setTimeout(() => setAiParseSuccessMsg(null), 6000);
+      setShowPasteParser(false);
+    } catch (err: any) {
+      setAiParseError('AI Extraction Error: ' + err.message);
+    } finally {
+      setParsingWriteup(false);
+    }
+  };
   const handleMarginChange = (val: string) => {
     setMarginPercent(val);
     const base = Number(baseQuotation) || 0;
@@ -4775,6 +4898,102 @@ export default function SheetItineraryPage() {
               Reset / Fresh Form
             </Button>
           </div>
+        </div>
+
+        {/* GROQ AI RAW WRITE-UP AUTO-FILL PANEL */}
+        <div className="bg-gradient-to-r from-purple-900/10 via-indigo-900/10 to-slate-50 border border-purple-200 rounded-2xl p-5 mb-8 shadow-sm space-y-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-purple-600/10 border border-purple-300 flex items-center justify-center text-purple-700 shrink-0">
+                <Sparkles className="w-5 h-5 text-purple-600 animate-pulse" />
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                  Paste Itinerary Write-up &amp; Auto-Fill Form
+                  <span className="text-[10px] font-bold bg-purple-100 text-purple-800 border border-purple-300 px-2 py-0.5 rounded-full">
+                    ⚡ Groq AI
+                  </span>
+                </h3>
+                <p className="text-xs text-slate-600">
+                  Agar aapke paas write-up ready hai, toh yahan paste karein. Groq AI Destination, Days, Hotels, Sightseeing Rows aur Inclusions auto-fill kar dega.
+                </p>
+              </div>
+            </div>
+
+            <Button
+              type="button"
+              size="sm"
+              onClick={() => setShowPasteParser(!showPasteParser)}
+              className="bg-purple-600 hover:bg-purple-700 text-white text-xs h-9 px-4 rounded-xl cursor-pointer font-bold shrink-0 shadow-xs"
+            >
+              <Sparkles className="w-3.5 h-3.5 mr-1.5 text-amber-300" />
+              {showPasteParser ? 'Hide Paste Box' : '✨ Paste Itinerary Write-up'}
+            </Button>
+          </div>
+
+          {showPasteParser && (
+            <div className="space-y-3 pt-2">
+              <textarea
+                value={pastedWriteup}
+                onChange={(e) => setPastedWriteup(e.target.value)}
+                placeholder="Paste your itinerary write-up here...&#10;&#10;Example:&#10;5 Days / 4 Nights Royal Rajasthan Tour&#10;Day 1: Arrival in Jaipur, transfer to hotel, visit Albert Hall...&#10;Day 2: Amer Fort, Hawa Mahal, City Palace...&#10;Day 3: Jaipur to Jodhpur, visit Mehrangarh Fort...&#10;Hotels: Jaipur 2N (Deluxe Hotel), Jodhpur 2N (Heritage Resort)...&#10;Inclusions: Breakfast &amp; Dinner, AC Innova vehicle, permits...&#10;Exclusions: Flight, personal expenses..."
+                rows={7}
+                className="w-full bg-white border border-slate-300 text-slate-900 text-xs rounded-xl p-3 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 font-mono leading-relaxed"
+              />
+
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <span className="text-[11px] text-slate-500 font-medium">
+                  {pastedWriteup.length > 0 ? `${pastedWriteup.length} characters pasted` : 'Ready to paste text'}
+                </span>
+
+                <div className="flex items-center gap-2">
+                  {pastedWriteup && (
+                    <button
+                      type="button"
+                      onClick={() => setPastedWriteup('')}
+                      className="text-xs text-slate-500 hover:text-slate-800 font-medium px-2 py-1 cursor-pointer"
+                    >
+                      Clear
+                    </button>
+                  )}
+
+                  <Button
+                    type="button"
+                    size="sm"
+                    disabled={parsingWriteup || !pastedWriteup.trim()}
+                    onClick={handleParseWriteupWithAI}
+                    className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold text-xs h-9 px-4 rounded-xl cursor-pointer shadow-sm"
+                  >
+                    {parsingWriteup ? (
+                      <>
+                        <RefreshCw className="w-3.5 h-3.5 mr-1.5 animate-spin" />
+                        Groq AI Parsing &amp; Auto-filling...
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="w-3.5 h-3.5 mr-1.5 text-amber-300" />
+                        ✨ Auto-Fill All Form Fields
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {aiParseSuccessMsg && (
+            <div className="p-3 bg-emerald-50 border border-emerald-300 text-emerald-800 text-xs font-semibold rounded-xl flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span>{aiParseSuccessMsg}</span>
+            </div>
+          )}
+
+          {aiParseError && (
+            <div className="p-3 bg-red-50 border border-red-300 text-red-800 text-xs font-semibold rounded-xl flex items-center gap-2">
+              <XCircle className="w-4 h-4 text-red-600 shrink-0" />
+              <span>{aiParseError}</span>
+            </div>
+          )}
         </div>
 
         {/* SECTION 1: TRAVELER & CLIENT DETAILS */}
