@@ -18128,13 +18128,7 @@ Throughout these 7 days, you will travel on thrilling roads, stay in simple and 
 ];
 
 export const destinations: Destination[] = [
-  {
-    title: 'Sri Lanka',
-    slug: 'sri-lanka',
-    image: '/images/srilanka/hero.jpg',
-    description: 'Emerald tea plantations, historic UNESCO rock fortresses, and golden tropical beaches.',
-    tripCount: 1,
-  },
+  // India Priority: Rajasthan, Spiti, Meghalaya ahead, Ladakh behind
   {
     title: 'Rajasthan',
     slug: 'rajasthan',
@@ -18143,17 +18137,17 @@ export const destinations: Destination[] = [
     tripCount: 1,
   },
   {
-    title: 'Leh Ladakh',
-    slug: 'leh-ladakh',
-    image: '/images/leh-ladakh.jpg',
-    description: 'Land of high-altitude passes, blue lakes, and ancient monasteries.',
-    tripCount: 6,
-  },
-  {
     title: 'Spiti Valley',
     slug: 'spiti',
     image: '/images/spiti-valley.jpg',
     description: 'Explore the cold desert, snow-capped peaks, and ancient Tibetan monasteries.',
+    tripCount: 4,
+  },
+  {
+    title: 'Meghalaya',
+    slug: 'meghalaya',
+    image: '/images/meghalaya.jpg',
+    description: 'Abode of clouds, living root bridges, crystal clear rivers, and roaring waterfalls.',
     tripCount: 4,
   },
   {
@@ -18171,12 +18165,21 @@ export const destinations: Destination[] = [
     tripCount: 6,
   },
   {
-    title: 'Bali',
-    slug: 'bali',
-    image: '/images/bali.jpg',
-    description: 'Tropical beaches, pristine temples, and vibrant cultural vibes.',
-    tripCount: 4,
+    title: 'Sikkim',
+    slug: 'sikkim',
+    image: '/images/sikkim.png',
+    description: 'Explore the land of mystic valleys, pristine lakes, and majestic peaks.',
+    tripCount: 1,
   },
+  {
+    title: 'Leh Ladakh',
+    slug: 'leh-ladakh',
+    image: '/images/leh-ladakh.jpg',
+    description: 'Land of high-altitude passes, blue lakes, and ancient monasteries.',
+    tripCount: 6,
+  },
+
+  // International Priority: Bhutan, Vietnam, Thailand, Singapore, Bali ahead
   {
     title: 'Bhutan',
     slug: 'bhutan',
@@ -18185,18 +18188,11 @@ export const destinations: Destination[] = [
     tripCount: 3,
   },
   {
-    title: 'Singapore',
-    slug: 'singapore',
-    image: '/images/singapore.png',
-    description: 'A futuristic city-state combining lush gardens, thrilling attractions, and diverse culture.',
-    tripCount: 1,
-  },
-  {
-    title: 'Sikkim',
-    slug: 'sikkim',
-    image: '/images/sikkim.png',
-    description: 'Explore the land of mystic valleys, pristine lakes, and majestic peaks.',
-    tripCount: 1,
+    title: 'Vietnam',
+    slug: 'vietnam',
+    image: '/images/vietnam.png',
+    description: 'Discover pristine beaches, ancient cities, dynamic cultures, and breathtaking natural wonders of Vietnam.',
+    tripCount: 17,
   },
   {
     title: 'Thailand',
@@ -18206,11 +18202,25 @@ export const destinations: Destination[] = [
     tripCount: 1,
   },
   {
-    title: 'Vietnam',
-    slug: 'vietnam',
-    image: '/images/vietnam.png',
-    description: 'Discover pristine beaches, ancient cities, dynamic cultures, and breathtaking natural wonders of Vietnam.',
-    tripCount: 17,
+    title: 'Singapore',
+    slug: 'singapore',
+    image: '/images/singapore.png',
+    description: 'A futuristic city-state combining lush gardens, thrilling attractions, and diverse culture.',
+    tripCount: 1,
+  },
+  {
+    title: 'Bali',
+    slug: 'bali',
+    image: '/images/bali.jpg',
+    description: 'Tropical beaches, pristine temples, and vibrant cultural vibes.',
+    tripCount: 4,
+  },
+  {
+    title: 'Sri Lanka',
+    slug: 'sri-lanka',
+    image: '/images/srilanka/hero.jpg',
+    description: 'Emerald tea plantations, historic UNESCO rock fortresses, and golden tropical beaches.',
+    tripCount: 1,
   }
 ];
 

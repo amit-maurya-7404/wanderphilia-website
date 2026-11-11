@@ -61,12 +61,24 @@ export function HeroSearchDialog({ isOpen, onClose, initialQuery = '' }: HeroSea
   const matchingTrips = useMemo(() => {
     const q = query.toLowerCase().trim()
     if (!q) {
-      // Diverse popular itineraries when search is empty
-      const diverseCategories = ['vietnam', 'spiti', 'leh-ladakh', 'bali', 'rajasthan', 'meghalaya', 'kashmir', 'kerala']
+      // Diverse popular itineraries when search is empty (Priority order)
+      const diverseCategories = [
+        'rajasthan',
+        'spiti',
+        'meghalaya',
+        'bhutan',
+        'vietnam',
+        'thailand',
+        'singapore',
+        'bali',
+        'kashmir',
+        'himachal',
+        'leh-ladakh'
+      ]
       const popular = diverseCategories
         .map(cat => trips.find(t => t.category === cat))
         .filter((t): t is Trip => Boolean(t))
-      return popular.length > 0 ? popular.slice(0, 6) : trips.slice(0, 6)
+      return popular.length > 0 ? popular.slice(0, 8) : trips.slice(0, 8)
     }
 
     const words = q.split(/\s+/).filter(Boolean)
@@ -378,7 +390,7 @@ export function HeroSearchDialog({ isOpen, onClose, initialQuery = '' }: HeroSea
               <MapPin size={24} className="mx-auto text-gray-400 mb-2" />
               <p className="text-xs sm:text-sm font-bold text-gray-800">No itineraries found for &ldquo;{query}&rdquo;</p>
               <p className="text-[11px] sm:text-xs text-gray-500 mt-1 max-w-sm mx-auto px-4">
-                Try searching by trip title keywords like Vietnam, Spiti, Ladakh, Bike, Bali, or Rajasthan.
+                Try searching by trip title keywords like Rajasthan, Spiti, Meghalaya, Bhutan, Vietnam, Thailand, Singapore, Bali, or Ladakh.
               </p>
             </div>
           )}

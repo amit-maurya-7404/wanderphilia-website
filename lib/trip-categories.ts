@@ -29,13 +29,17 @@ const categoryImageMap: Record<string, string> = {
 }
 
 const categoryOrder: string[] = [
-  'Ladakh',
-  'Spiti',
   'Rajasthan',
-  'Vietnam',
+  'Spiti',
+  'Meghalaya',
+  'Kashmir',
+  'Himachal',
+  'Sikkim',
+  'Ladakh',
   'Bhutan',
-  'Singapore',
+  'Vietnam',
   'Thailand',
+  'Singapore',
   'Bali',
   'Sri Lanka',
   'Switzerland',
@@ -44,10 +48,6 @@ const categoryOrder: string[] = [
   'Japan',
   'Nepal',
   'Indonesia',
-  'Kashmir',
-  'Himachal',
-  'Sikkim',
-  'Meghalaya',
 ]
 
 const normalizeCategoryId = (category: string) =>

@@ -104,19 +104,20 @@ export function TripTypesSection() {
   }, [cardsPerView])
 
   const indiaRegions = [
-    { title: 'Leh Ladakh', region: 'Leh Ladakh', image: '/images/leh-ladakh.jpg', price: getCheapestPriceForCategory('leh-ladakh', 15800) },
-    { title: 'Spiti', region: 'Spiti', image: '/images/spiti-valley.jpg', price: getCheapestPriceForCategory('spiti', 24499) },
     { title: 'Rajasthan', region: 'Rajasthan', image: '/images/Rajasthan/rajasthan1.jpeg', price: getCheapestPriceForCategory('rajasthan', 19000) },
-    { title: 'Himachal', region: 'Himachal', image: '/images/himachal.jpg', price: getCheapestPriceForCategory('himachal', 6999) },
+    { title: 'Spiti', region: 'Spiti', image: '/images/spiti-valley.jpg', price: getCheapestPriceForCategory('spiti', 24499) },
+    { title: 'Meghalaya', region: 'Meghalaya', image: '/images/meghalaya.jpg', price: getCheapestPriceForCategory('meghalaya', 18999) },
     { title: 'Kashmir', region: 'Kashmir', image: '/images/kashmir.jpg', price: getCheapestPriceForCategory('kashmir', 24499) },
+    { title: 'Himachal', region: 'Himachal', image: '/images/himachal.jpg', price: getCheapestPriceForCategory('himachal', 6999) },
     { title: 'Sikkim', region: 'Sikkim', image: '/images/sikkim.png', price: getCheapestPriceForCategory('sikkim', 21999) },
+    { title: 'Leh Ladakh', region: 'Leh Ladakh', image: '/images/leh-ladakh.jpg', price: getCheapestPriceForCategory('leh-ladakh', 15800) },
   ]
 
   const internationalRegions = [
-    { title: 'Vietnam', region: 'Vietnam', image: '/images/vietnam.png', price: getCheapestPriceForCategory('vietnam', 32999) },
     { title: 'Bhutan', region: 'Bhutan', image: '/images/Bhutan_cat.jpg', price: getCheapestPriceForCategory('bhutan', 109900) },
-    { title: 'Singapore', region: 'Singapore', image: '/images/singapore.png', price: getCheapestPriceForCategory('singapore', 49900) },
+    { title: 'Vietnam', region: 'Vietnam', image: '/images/vietnam.png', price: getCheapestPriceForCategory('vietnam', 32999) },
     { title: 'Thailand', region: 'Thailand', image: '/images/thailand.jpg', price: getCheapestPriceForCategory('thailand', 99900) },
+    { title: 'Singapore', region: 'Singapore', image: '/images/singapore.png', price: getCheapestPriceForCategory('singapore', 49900) },
     { title: 'Bali', region: 'Bali', image: '/images/bali.jpg', price: getCheapestPriceForCategory('bali', 23999) },
   ]
 

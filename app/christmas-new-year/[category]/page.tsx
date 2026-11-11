@@ -209,7 +209,7 @@ export default function ChristmasNewYearCategoryPage() {
 
   // Other holiday destinations to explore
   const otherHolidayCategories = useMemo(() => {
-    const allowed = ['kashmir', 'spiti', 'himachal', 'vietnam', 'bali', 'bhutan', 'leh-ladakh', 'thailand']
+    const allowed = ['rajasthan', 'spiti', 'meghalaya', 'bhutan', 'vietnam', 'thailand', 'singapore', 'bali', 'kashmir', 'himachal', 'leh-ladakh']
     return allowed
       .filter((id) => id !== currentCategory.id)
       .slice(0, 4)

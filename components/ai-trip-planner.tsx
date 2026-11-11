@@ -304,7 +304,7 @@ export function AITripPlanner() {
               sender: 'ai',
               text: "Awesome! Let's customize your perfect getaway. ✈️ What destination do you have in mind?",
               type: 'options',
-              options: ['Leh Ladakh 🏔️', 'Spiti Valley ❄️', 'Kashmir 🌸', 'Bali 🌴', 'Thailand 🏖️', 'Other Location ✏️']
+              options: ['Rajasthan 🏰', 'Spiti Valley ❄️', 'Meghalaya 🌿', 'Bhutan 🏔️', 'Vietnam 🏮', 'Thailand 🏖️', 'Bali 🌴', 'Leh Ladakh 🏔️', 'Other Location ✏️']
             }
           ])
         } else {
@@ -396,8 +396,8 @@ export function AITripPlanner() {
     const isIntl = zone.includes('International')
     
     // Categorize destinations based on zones
-    const indiaCategories = ['leh-ladakh', 'spiti', 'kashmir', 'himachal', 'sikkim']
-    const intlCategories = ['singapore', 'thailand', 'bhutan', 'vietnam', 'bali']
+    const indiaCategories = ['rajasthan', 'spiti', 'meghalaya', 'kashmir', 'himachal', 'sikkim', 'leh-ladakh']
+    const intlCategories = ['bhutan', 'vietnam', 'thailand', 'singapore', 'bali']
     
     let candidates = trips.filter(trip => {
       const cat = trip.category?.toLowerCase() || ''

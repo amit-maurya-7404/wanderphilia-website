@@ -253,13 +253,13 @@ export default function ChristmasNewYearPage() {
 
   // 1. New Year in India destinations
   const indiaDestinations: CategorySliderCardProps[] = useMemo(() => {
-    const allowed = ['kashmir', 'spiti', 'himachal', 'leh-ladakh', 'meghalaya', 'sikkim']
+    const allowed = ['rajasthan', 'spiti', 'meghalaya', 'kashmir', 'himachal', 'sikkim', 'leh-ladakh']
     return allowed.map((id) => resolveCategory(id, 15000))
   }, [allCategories])
 
   // 2. International New Year Trips destinations
   const internationalDestinations: CategorySliderCardProps[] = useMemo(() => {
-    const allowed = ['vietnam', 'bali', 'bhutan', 'thailand', 'singapore', 'nepal', 'indonesia', 'japan']
+    const allowed = ['bhutan', 'vietnam', 'thailand', 'singapore', 'bali', 'nepal', 'indonesia', 'japan']
     return allowed.map((id) => resolveCategory(id, 25000))
   }, [allCategories])
 

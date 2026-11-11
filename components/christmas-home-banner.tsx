@@ -141,7 +141,15 @@ export function ChristmasHomeBanner() {
         }
       })
       .filter((d) => d.tripCount > 0)
-      .sort((a, b) => b.tripCount - a.tripCount)
+      .sort((a, b) => {
+        const priorityOrder = ['rajasthan', 'spiti', 'meghalaya', 'bhutan', 'vietnam', 'thailand', 'singapore', 'bali', 'kashmir', 'himachal', 'sikkim', 'leh-ladakh']
+        const aIdx = priorityOrder.indexOf(a.id)
+        const bIdx = priorityOrder.indexOf(b.id)
+        if (aIdx !== -1 || bIdx !== -1) {
+          return (aIdx === -1 ? 999 : aIdx) - (bIdx === -1 ? 999 : bIdx)
+        }
+        return b.tripCount - a.tripCount
+      })
   }, [allCategories, holidayTrips])
 
   // Filter based on active tab

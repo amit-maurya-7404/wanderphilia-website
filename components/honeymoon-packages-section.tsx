@@ -92,9 +92,9 @@ export function HoneymoonPackagesSection() {
 
   const allCategories = getAllCategories()
 
-  const indiaAllowed = ['sikkim', 'kashmir', 'himachal']
-  const intlAllowed = ['vietnam', 'singapore', 'thailand', 'bhutan', 'bali']
-  const combinedAllowed = ['vietnam', 'singapore', 'sikkim', 'thailand', 'kashmir', 'himachal', 'bhutan', 'bali']
+  const indiaAllowed = ['rajasthan', 'meghalaya', 'kashmir', 'himachal', 'sikkim']
+  const intlAllowed = ['bhutan', 'vietnam', 'thailand', 'singapore', 'bali']
+  const combinedAllowed = ['rajasthan', 'bhutan', 'vietnam', 'thailand', 'singapore', 'bali', 'meghalaya', 'kashmir', 'himachal', 'sikkim']
 
   const getCategoryDetails = (allowedIds: string[]) => {
     return allowedIds
