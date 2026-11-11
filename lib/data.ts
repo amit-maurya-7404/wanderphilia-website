@@ -660,11 +660,19 @@ export function parseBatchDateRange(
   const startPart = parts[0];
   const endPart = parts.length > 1 ? parts[1] : parts[0];
 
-  // Extract explicit 4-digit year if present in range string
-  const yearMatch = cleanStr.match(/\b(20\d{2})\b/);
-  const baseYear = yearMatch ? parseInt(yearMatch[1], 10) : fallbackYear;
-
+  // Extract explicit 4-digit year if present in range string OR defaultMonth (e.g. "January 2027")
+  const yearMatch = cleanStr.match(/\b(20\d{2})\b/) || (defaultMonth ? defaultMonth.match(/\b(20\d{2})\b/) : null);
   const defaultMonthIdx = defaultMonth ? parseMonthText(defaultMonth) : null;
+  let baseYear = yearMatch ? parseInt(yearMatch[1], 10) : fallbackYear;
+
+  // If no explicit year is found, but batch month is earlier in the calendar than current month,
+  // it refers to the upcoming year (e.g. in Nov/Dec, a "Jan" or "Feb" batch is next year)
+  if (!yearMatch && defaultMonthIdx !== null) {
+    const currentMonth = new Date().getMonth();
+    if (defaultMonthIdx < currentMonth) {
+      baseYear = fallbackYear + 1;
+    }
+  }
 
   const extractDayAndMonth = (part: string, fallbackMonthIndex: number | null) => {
     const noOrdinals = part.replace(/(\d+)(st|nd|rd|th)\b/gi, '$1');

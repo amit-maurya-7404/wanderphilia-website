@@ -41,3 +41,4 @@ export async function getTripBySlug(slug: string): Promise<Trip | null> {
 
   return null
 }
+
