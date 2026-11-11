@@ -45,7 +45,8 @@ import {
   FileText,
   X,
   ImageIcon,
-  FolderOpen
+  FolderOpen,
+  Pencil
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -177,6 +178,9 @@ function WebsiteItineraryInner() {
 
   // Top-Level Mode: Customized Tour vs Group Tour
   const [tourType, setTourType] = useState<'Group' | 'Customized'>('Group');
+
+  // Creation Workflow Mode: 'zoho' (Import from Zoho CRM) vs 'manual' (Type everything manually from scratch)
+  const [creationMode, setCreationMode] = useState<'zoho' | 'manual'>('zoho');
 
   // Zoho Itineraries (Products) State
   const [zohoItineraries, setZohoItineraries] = useState<any[]>([]);
@@ -951,6 +955,154 @@ function WebsiteItineraryInner() {
         return d;
       })
     );
+  };
+
+  // Manual Itinerary Creation: Reset to a clean blank slate
+  const handleStartFreshManual = () => {
+    setCreationMode('manual');
+    setSelectedZohoId('');
+    setTitle('');
+    setSlug('');
+    setDestination('');
+    setCategory('');
+    setRegion('');
+    setHeroImage('');
+    setGalleryImages([]);
+    setDescription('');
+    setRoute('');
+    setStaySummary('');
+    setHighlights([]);
+    setBatchDates([]);
+    setDurationDays(5);
+    setDurationNights(4);
+    setHotelStays([
+      {
+        city: '',
+        nights: 4,
+        category: 'Deluxe',
+        hotelId: '',
+        hotelName: '',
+        roomCategory: 'Deluxe Room',
+        basePrice: 0,
+        mealPlan: 'MAPAI'
+      }
+    ]);
+    setDayPlans([
+      {
+        day: 1,
+        title: 'Day 1: Arrival & Welcome',
+        city: '',
+        stayHotel: '',
+        meals: { breakfast: false, lunch: false, dinner: true },
+        timeline: [
+          'Arrival at airport / railway station, meet our tour captain/driver, and transfer to hotel.',
+          'Complete smooth hotel check-in formalities and freshen up.',
+          'Evening at leisure to explore nearby local attractions.'
+        ],
+        image: ''
+      }
+    ]);
+    setSaveSuccessMsg('✏️ Manual Mode Active: Fill in your custom itinerary details below.');
+    setTimeout(() => setSaveSuccessMsg(null), 3500);
+  };
+
+  // Add next day in dayPlans
+  const handleAddDay = () => {
+    const nextDayNum = dayPlans.length + 1;
+    const prevDay = dayPlans[dayPlans.length - 1];
+    const newDay: DayPlanItem = {
+      day: nextDayNum,
+      title: `Day ${nextDayNum}: Sightseeing & Exploration`,
+      city: prevDay?.city || '',
+      stayHotel: prevDay?.stayHotel || '',
+      meals: { breakfast: true, lunch: false, dinner: true },
+      timeline: [
+        'Morning breakfast at hotel.',
+        'Proceed for full day sightseeing tour and local experiences.'
+      ],
+      image: ''
+    };
+    const updated = [...dayPlans, newDay];
+    setDayPlans(updated);
+    setDurationDays(updated.length);
+    setDurationNights(Math.max(1, updated.length - 1));
+  };
+
+  // Remove a day from dayPlans
+  const handleRemoveDay = (dayIdx: number) => {
+    if (dayPlans.length <= 1) {
+      alert('Itinerary must have at least 1 day.');
+      return;
+    }
+    const filtered = dayPlans.filter((_, i) => i !== dayIdx).map((d, i) => ({ ...d, day: i + 1 }));
+    setDayPlans(filtered);
+    setDurationDays(filtered.length);
+    setDurationNights(Math.max(1, filtered.length - 1));
+  };
+
+  // Hotel Stay Row handlers for manual editing
+  const handleAddHotelStay = () => {
+    setHotelStays(prev => [
+      ...prev,
+      {
+        city: destination || 'City',
+        nights: 1,
+        category: globalHotelCategory || 'Deluxe',
+        hotelId: '',
+        hotelName: '',
+        roomCategory: 'Deluxe Room',
+        basePrice: 0,
+        mealPlan: globalMealPlan || 'MAPAI'
+      }
+    ]);
+  };
+
+  const handleRemoveHotelStay = (idx: number) => {
+    setHotelStays(prev => prev.filter((_, i) => i !== idx));
+  };
+
+  const handleStayHotelNameChange = (stayIdx: number, val: string) => {
+    setHotelStays(prev => {
+      const copy = [...prev];
+      copy[stayIdx] = {
+        ...copy[stayIdx],
+        hotelName: val
+      };
+      return copy;
+    });
+  };
+
+  const handleStayRoomCategoryChange = (stayIdx: number, val: string) => {
+    setHotelStays(prev => {
+      const copy = [...prev];
+      copy[stayIdx] = {
+        ...copy[stayIdx],
+        roomCategory: val
+      };
+      return copy;
+    });
+  };
+
+  const handleStayCityChange = (stayIdx: number, val: string) => {
+    setHotelStays(prev => {
+      const copy = [...prev];
+      copy[stayIdx] = {
+        ...copy[stayIdx],
+        city: val
+      };
+      return copy;
+    });
+  };
+
+  const handleStayNightsChange = (stayIdx: number, val: number) => {
+    setHotelStays(prev => {
+      const copy = [...prev];
+      copy[stayIdx] = {
+        ...copy[stayIdx],
+        nights: Math.max(1, val)
+      };
+      return copy;
+    });
   };
 
   // Auto-Logistics Statements Engine
@@ -1985,63 +2137,142 @@ function WebsiteItineraryInner() {
           </div>
         </section>
 
-        {/* 1. Zoho CRM Quick Import (Fixed Itineraries) */}
-        <section className="bg-slate-900/90 border border-slate-800/80 rounded-2xl p-5 shadow-xl">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        {/* 1. Itinerary Creation Workflow: Zoho CRM Import vs Manual Creation */}
+        <section className="bg-slate-900/90 border border-slate-800/80 rounded-2xl p-5 shadow-xl space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800/80 pb-4">
             <div>
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-                <h2 className="text-sm font-bold text-white tracking-tight">
-                  Zoho CRM Quick Import (Fixed Itineraries)
-                </h2>
-              </div>
-              <p className="text-xs text-slate-400 mt-1">
-                Select any itinerary from Zoho Products to auto-fill days, cities, activities & auto-logistics.
+              <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">Itinerary Creation Mode</span>
+              <p className="text-[11px] text-slate-400 mt-0.5">
+                Choose whether to auto-fill details from Zoho CRM or create & publish a 100% custom itinerary manually from scratch.
               </p>
             </div>
 
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={fetchZohoFixedItineraries}
-              disabled={loadingZohoItineraries}
-              className="border-slate-800 bg-slate-950 hover:bg-slate-800 text-slate-300 text-xs h-8 cursor-pointer"
-            >
-              <RefreshCw className={`w-3 h-3 mr-1.5 ${loadingZohoItineraries ? 'animate-spin text-orange-400' : ''}`} />
-              Refresh Zoho List
-            </Button>
+            <div className="flex items-center gap-2 bg-slate-950 p-1 rounded-xl border border-slate-800">
+              <button
+                type="button"
+                onClick={() => setCreationMode('zoho')}
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${creationMode === 'zoho'
+                  ? 'bg-emerald-600 text-white shadow-md'
+                  : 'text-slate-400 hover:text-white'
+                  }`}
+              >
+                <RefreshCw className="w-3.5 h-3.5" /> ⚡ Quick Import from Zoho
+              </button>
+              <button
+                type="button"
+                onClick={handleStartFreshManual}
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${creationMode === 'manual'
+                  ? 'bg-[#ff5d09] text-white shadow-md'
+                  : 'text-slate-400 hover:text-white'
+                  }`}
+              >
+                <Pencil className="w-3.5 h-3.5" /> ✏️ Create Manually (From Scratch)
+              </button>
+            </div>
           </div>
 
-          <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3">
-            <div>
-              <div className="relative">
-                <Search className="w-3.5 h-3.5 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
-                <input
-                  type="text"
-                  placeholder="Filter by name/destination..."
-                  value={zohoFilterSearch}
-                  onChange={(e) => setZohoFilterSearch(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-orange-500"
-                />
+          {creationMode === 'manual' ? (
+            <div className="p-4 bg-orange-950/25 border border-orange-500/30 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-orange-400 animate-pulse" />
+                  <h3 className="text-sm font-bold text-white">Manual Creation Mode Active</h3>
+                </div>
+                <p className="text-xs text-slate-300">
+                  Zoho CRM itinerary select karne ki koi zarurat nahi hai. Aap title, destination, days, hotels aur pricing manually type karke direct website par publish kar sakte hain.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2 shrink-0">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={handleStartFreshManual}
+                  className="border-slate-800 bg-slate-950 hover:bg-slate-800 text-slate-300 text-xs h-8 cursor-pointer"
+                >
+                  <RefreshCw className="w-3 h-3 mr-1 text-orange-400" /> Start Blank Form
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  onClick={() => setCreationMode('zoho')}
+                  className="bg-slate-800 hover:bg-slate-700 text-white text-xs h-8 cursor-pointer"
+                >
+                  Switch to Zoho Import
+                </Button>
               </div>
             </div>
+          ) : (
+            <div>
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+                    <h2 className="text-sm font-bold text-white tracking-tight">
+                      Zoho CRM Quick Import (Fixed Itineraries)
+                    </h2>
+                  </div>
+                  <p className="text-xs text-slate-400 mt-1">
+                    Select any itinerary from Zoho Products to auto-fill days, cities, activities & auto-logistics.
+                  </p>
+                </div>
 
-            <div className="md:col-span-2">
-              <select
-                value={selectedZohoId}
-                onChange={(e) => handleImportZohoProduct(e.target.value)}
-                disabled={loadingZohoItineraries}
-                className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-orange-500 truncate cursor-pointer"
-              >
-                <option value="">-- Choose Zoho CRM Itinerary to auto-fill --</option>
-                {filteredZohoItins.map((itin) => (
-                  <option key={itin.id} value={itin.id}>
-                    {itin.name} {itin.destination ? `(${itin.destination})` : ''} {itin.noOfDays ? `[${itin.noOfDays}D/${itin.noOfNights || itin.noOfDays - 1}N]` : ''}
-                  </option>
-                ))}
-              </select>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={fetchZohoFixedItineraries}
+                    disabled={loadingZohoItineraries}
+                    className="border-slate-800 bg-slate-950 hover:bg-slate-800 text-slate-300 text-xs h-8 cursor-pointer"
+                  >
+                    <RefreshCw className={`w-3 h-3 mr-1.5 ${loadingZohoItineraries ? 'animate-spin text-orange-400' : ''}`} />
+                    Refresh Zoho List
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleStartFreshManual}
+                    className="text-orange-400 hover:text-orange-300 text-xs h-8 cursor-pointer hover:bg-orange-950/20"
+                  >
+                    <Pencil className="w-3 h-3 mr-1" /> Or Create Manually
+                  </Button>
+                </div>
+              </div>
+
+              <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div>
+                  <div className="relative">
+                    <Search className="w-3.5 h-3.5 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="text"
+                      placeholder="Filter by name/destination..."
+                      value={zohoFilterSearch}
+                      onChange={(e) => setZohoFilterSearch(e.target.value)}
+                      className="w-full pl-9 pr-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-orange-500"
+                    />
+                  </div>
+                </div>
+
+                <div className="md:col-span-2">
+                  <select
+                    value={selectedZohoId}
+                    onChange={(e) => handleImportZohoProduct(e.target.value)}
+                    disabled={loadingZohoItineraries}
+                    className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-orange-500 truncate cursor-pointer"
+                  >
+                    <option value="">-- Choose Zoho CRM Itinerary to auto-fill --</option>
+                    {filteredZohoItins.map((itin) => (
+                      <option key={itin.id} value={itin.id}>
+                        {itin.name} {itin.destination ? `(${itin.destination})` : ''} {itin.noOfDays ? `[${itin.noOfDays}D/${itin.noOfNights || itin.noOfDays - 1}N]` : ''}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
             </div>
-          </div>
+          )}
         </section>
 
         {/* 2. Page & Placement Selection Matrix */}
@@ -2801,23 +3032,34 @@ function WebsiteItineraryInner() {
               <Hotel className="w-4 h-4 text-amber-400" />
               <div>
                 <h2 className="text-base font-bold text-white tracking-tight">
-                  Hotels & Accommodations (Zoho CRM Module Synced)
+                  Hotels & Accommodations
                 </h2>
                 <p className="text-xs text-slate-400">
-                  Hotel names automatically carry <span className="text-amber-400 font-mono">/ Similar</span> on the website.
+                  Select Zoho CRM hotels or type custom hotels manually. Hotel names carry <span className="text-amber-400 font-mono">/ Similar</span> on the website.
                 </p>
               </div>
             </div>
 
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => computeHotelStaysFromDayPlans(dayPlans)}
-              className="border-slate-800 text-xs h-8 cursor-pointer"
-            >
-              <RefreshCw className="w-3 h-3 mr-1 text-orange-400" /> Re-sync Stays from Days
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={handleAddHotelStay}
+                className="border-slate-800 bg-slate-950 hover:bg-slate-800 text-amber-300 text-xs h-8 cursor-pointer"
+              >
+                <Plus className="w-3.5 h-3.5 mr-1 text-amber-400" /> Add Stay Row
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => computeHotelStaysFromDayPlans(dayPlans)}
+                className="border-slate-800 text-xs h-8 cursor-pointer"
+              >
+                <RefreshCw className="w-3 h-3 mr-1 text-orange-400" /> Re-sync Stays from Days
+              </Button>
+            </div>
           </div>
 
           {/* Global Category & Meal Plan Selectors */}
@@ -2861,86 +3103,143 @@ function WebsiteItineraryInner() {
 
           {/* Hotel Stays Rows */}
           <div className="space-y-3">
-            {hotelStays.map((stay, idx) => {
-              const availableHotels = getHotelsForCity(stay.city, stay.category);
-              const selectedHotelObj = availableHotels.find(h => String(h.id) === String(stay.hotelId)) || availableHotels[0];
-
-              return (
-                <div
-                  key={idx}
-                  className="p-4 bg-slate-950/80 border border-slate-800 rounded-xl space-y-3"
+            {hotelStays.length === 0 ? (
+              <div className="p-4 bg-slate-950/60 border border-dashed border-slate-800 rounded-xl text-center space-y-2">
+                <p className="text-xs text-slate-400">No hotel stays added yet.</p>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={handleAddHotelStay}
+                  className="border-slate-800 text-xs h-7 text-amber-300 cursor-pointer"
                 >
-                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-2.5">
-                    <div className="flex items-center gap-2">
-                      <span className="w-5 h-5 rounded-full bg-amber-400/20 text-amber-400 font-bold text-xs flex items-center justify-center">
-                        {idx + 1}
-                      </span>
-                      <span className="text-xs font-bold text-white">
-                        {stay.city} ({stay.nights} Nights)
-                      </span>
+                  <Plus className="w-3 h-3 mr-1" /> Add First Stay Row
+                </Button>
+              </div>
+            ) : (
+              hotelStays.map((stay, idx) => {
+                const availableHotels = getHotelsForCity(stay.city, stay.category);
+                const selectedHotelObj = availableHotels.find(h => String(h.id) === String(stay.hotelId)) || availableHotels[0];
+
+                return (
+                  <div
+                    key={idx}
+                    className="p-4 bg-slate-950/80 border border-slate-800 rounded-xl space-y-3"
+                  >
+                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-2.5">
+                      <div className="flex items-center gap-2">
+                        <span className="w-5 h-5 rounded-full bg-amber-400/20 text-amber-400 font-bold text-xs flex items-center justify-center shrink-0">
+                          {idx + 1}
+                        </span>
+                        <Input
+                          value={stay.city}
+                          onChange={(e) => handleStayCityChange(idx, e.target.value)}
+                          placeholder="City (e.g. Jaipur)"
+                          className="bg-slate-900 border-slate-800 text-white font-bold text-xs h-7 w-28 sm:w-36"
+                        />
+                        <div className="flex items-center gap-1 text-xs text-slate-400">
+                          <Input
+                            type="number"
+                            min={1}
+                            max={30}
+                            value={stay.nights}
+                            onChange={(e) => handleStayNightsChange(idx, parseInt(e.target.value, 10) || 1)}
+                            className="bg-slate-900 border-slate-800 text-amber-400 font-bold text-xs h-7 w-14 text-center"
+                          />
+                          <span>N</span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <span className="text-[11px] text-slate-400">Category:</span>
+                        <select
+                          value={stay.category}
+                          onChange={(e) => handleStayCategoryChange(idx, e.target.value)}
+                          className="px-2 py-1 bg-slate-900 border border-slate-800 rounded text-xs text-amber-400 font-bold cursor-pointer"
+                        >
+                          {HOTEL_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                        </select>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveHotelStay(idx)}
+                          title="Remove Stay Row"
+                          className="text-slate-500 hover:text-red-400 p-1 cursor-pointer transition-colors"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
                     </div>
 
-                    <div className="flex items-center gap-2">
-                      <span className="text-[11px] text-slate-400">Category:</span>
-                      <select
-                        value={stay.category}
-                        onChange={(e) => handleStayCategoryChange(idx, e.target.value)}
-                        className="px-2 py-1 bg-slate-900 border border-slate-800 rounded text-xs text-amber-400 font-bold cursor-pointer"
-                      >
-                        {HOTEL_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
-                      </select>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {/* Hotel Name Input & Zoho Selector */}
+                      <div>
+                        <div className="flex items-center justify-between mb-1">
+                          <label className="text-[11px] font-medium text-slate-400">
+                            Hotel Name (Type or choose from Zoho)
+                          </label>
+                          {availableHotels.length > 0 && (
+                            <span className="text-[10px] text-amber-400">
+                              {availableHotels.length} option{availableHotels.length === 1 ? '' : 's'} in Zoho
+                            </span>
+                          )}
+                        </div>
+                        <div className="space-y-1.5">
+                          {availableHotels.length > 0 && (
+                            <select
+                              value={stay.hotelId || ''}
+                              onChange={(e) => handleHotelSelect(idx, e.target.value)}
+                              className="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-800 rounded-lg text-xs text-white focus:outline-none focus:border-orange-500 cursor-pointer"
+                            >
+                              <option value="">-- Choose from Zoho CRM hotels --</option>
+                              {availableHotels.map(h => (
+                                <option key={h.id} value={h.id}>
+                                  {formatHotelWithSimilar(h.hotelName)} ({h.category || stay.category}) {h.starRating ? `[${h.starRating}★]` : ''}
+                                </option>
+                              ))}
+                            </select>
+                          )}
+                          <Input
+                            value={stay.hotelName}
+                            onChange={(e) => handleStayHotelNameChange(idx, e.target.value)}
+                            placeholder="Type hotel name (e.g. Deluxe Heritage Haveli / Similar)"
+                            className="bg-slate-900 border-slate-800 text-white text-xs h-8"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Room Category Input & Zoho Selector */}
+                      <div>
+                        <label className="block text-[11px] font-medium text-slate-400 mb-1">
+                          Room Category (Type or choose from Zoho)
+                        </label>
+                        <div className="space-y-1.5">
+                          {selectedHotelObj?.rooms && selectedHotelObj.rooms.length > 0 && (
+                            <select
+                              value={stay.roomCategory || ''}
+                              onChange={(e) => handleRoomSelect(idx, e.target.value)}
+                              className="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-800 rounded-lg text-xs text-emerald-400 font-semibold focus:outline-none focus:border-orange-500 cursor-pointer"
+                            >
+                              <option value="">-- Choose Zoho room category --</option>
+                              {selectedHotelObj.rooms.map((r: any, rIdx: number) => (
+                                <option key={rIdx} value={r.roomCategory}>
+                                  {r.roomCategory} {r.basePrice > 0 ? `(₹${r.basePrice.toLocaleString('en-IN')}/night)` : ''}
+                                </option>
+                              ))}
+                            </select>
+                          )}
+                          <Input
+                            value={stay.roomCategory}
+                            onChange={(e) => handleStayRoomCategoryChange(idx, e.target.value)}
+                            placeholder="Room Category (e.g. Deluxe Room / Luxury Swiss Tent)"
+                            className="bg-slate-900 border-slate-800 text-emerald-400 text-xs h-8"
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {/* Hotel Dropdown (From Zoho CRM - Strictly Filtered by Category) */}
-                    <div>
-                      <label className="block text-[11px] font-medium text-slate-400 mb-1">
-                        Select Hotel in {stay.city} ({availableHotels.length} {stay.category} option{availableHotels.length === 1 ? '' : 's'} in Zoho)
-                      </label>
-                      <select
-                        value={stay.hotelId || selectedHotelObj?.id || ''}
-                        onChange={(e) => handleHotelSelect(idx, e.target.value)}
-                        className="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-orange-500 cursor-pointer"
-                      >
-                        {availableHotels.length === 0 ? (
-                          <option value="">-- No {stay.category} hotels in Zoho for {stay.city} --</option>
-                        ) : (
-                          availableHotels.map(h => (
-                            <option key={h.id} value={h.id}>
-                              {formatHotelWithSimilar(h.hotelName)} ({h.category || stay.category}) {h.starRating ? `[${h.starRating}★]` : ''}
-                            </option>
-                          ))
-                        )}
-                      </select>
-                    </div>
-
-                    {/* Room Category (Belonging to Selected Hotel in Zoho CRM) */}
-                    <div>
-                      <label className="block text-[11px] font-medium text-slate-400 mb-1">
-                        Room Category (Exact from Zoho CRM)
-                      </label>
-                      <select
-                        value={stay.roomCategory || selectedHotelObj?.rooms?.[0]?.roomCategory || ''}
-                        onChange={(e) => handleRoomSelect(idx, e.target.value)}
-                        disabled={!selectedHotelObj?.rooms?.length}
-                        className="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-emerald-400 font-semibold focus:outline-none focus:border-orange-500 cursor-pointer disabled:opacity-50"
-                      >
-                        {selectedHotelObj?.rooms && selectedHotelObj.rooms.length > 0 ? (
-                          selectedHotelObj.rooms.map((r: any, rIdx: number) => (
-                            <option key={rIdx} value={r.roomCategory}>
-                              {r.roomCategory} {r.basePrice > 0 ? `(₹${r.basePrice.toLocaleString('en-IN')}/night)` : ''}
-                            </option>
-                          ))
-                        ) : (
-                          <option value="">No rooms configured in Zoho</option>
-                        )}
-                      </select>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+                );
+              })
+            )}
           </div>
         </section>
 
@@ -2960,6 +3259,15 @@ function WebsiteItineraryInner() {
             </div>
 
             <div className="flex items-center gap-2">
+              <Button
+                type="button"
+                size="sm"
+                onClick={handleAddDay}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs h-8 px-3 cursor-pointer shadow-md flex items-center gap-1.5"
+              >
+                <Plus className="w-3.5 h-3.5" /> + Add Next Day
+              </Button>
+
               <Button
                 type="button"
                 size="sm"
@@ -3022,6 +3330,14 @@ function WebsiteItineraryInner() {
                       placeholder="City/Stop"
                       className="bg-slate-900 border-slate-800 text-xs h-7 w-28 text-orange-400 font-semibold"
                     />
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveDay(dayIdx)}
+                      title="Delete this Day"
+                      className="text-slate-500 hover:text-red-400 p-1 cursor-pointer transition-colors"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
                   </div>
                 </div>
 
@@ -3141,6 +3457,16 @@ function WebsiteItineraryInner() {
                 </div>
               </div>
             ))}
+
+            {/* Add Next Day Bottom Button */}
+            <button
+              type="button"
+              onClick={handleAddDay}
+              className="w-full py-3.5 border-2 border-dashed border-slate-800 hover:border-emerald-500/50 bg-slate-950/40 hover:bg-emerald-950/20 text-slate-400 hover:text-emerald-300 rounded-2xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-inner"
+            >
+              <Plus className="w-4 h-4 text-emerald-400" />
+              Add Day {dayPlans.length + 1} to Itinerary
+            </button>
           </div>
         </section>
 
