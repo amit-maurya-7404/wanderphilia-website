@@ -13,19 +13,19 @@ export const rajasthanGuideBlog: Blog = {
   readTime: 12,
   content: "In 1699, a queen in Bundi decided that even fetching water deserved a grand entrance. So she built a staircase—a carved, arched, impossibly dramatic staircase, with the stonework to match...",
   contentHtml: `
-<div class="space-y-6 text-slate-800 leading-relaxed text-lg">
-  <figure class="my-8">
+<div class="space-y-5 text-slate-700 leading-relaxed text-base">
+  <figure class="my-6">
     <img 
       src="/images/blogs/rajasthan/image1.jpeg" 
       alt="Amer Fort, Amer" 
       class="rounded-2xl w-full object-cover shadow-lg max-h-[520px]"
     />
-    <figcaption class="text-sm text-slate-500 mt-2.5 text-center italic">
+    <figcaption class="text-xs sm:text-sm text-slate-500 mt-2 text-center italic">
       Photo by Mayur Sable on Unsplash &ndash; Amer Fort, Amer.
     </figcaption>
   </figure>
 
-  <p class="text-xl text-slate-700 leading-relaxed">
+  <p class="text-base text-slate-700 leading-relaxed">
     In 1699, a queen in Bundi decided that even fetching water deserved a grand entrance. So she built a staircase&mdash;a carved, arched, impossibly dramatic staircase, with the stonework to match.
   </p>
 
@@ -43,7 +43,7 @@ export const rajasthanGuideBlog: Blog = {
 
   <hr class="my-10 border-slate-200" />
 
-  <h2 class="text-3xl font-extrabold text-slate-900 mt-10 mb-4 tracking-tight">Rajasthan at a glance</h2>
+  <h2 class="text-xl font-bold text-slate-900 mt-6 mb-2 tracking-tight">Rajasthan at a glance</h2>
 
   <p>
     Rajasthan means &ldquo;land of kings&rdquo;. Note the plural. Several rival courts ruled here for centuries, and each one built bigger and better to prove a point.
@@ -77,7 +77,7 @@ export const rajasthanGuideBlog: Blog = {
     This geography decides your trip. Dunes near Jaisalmer, forested hills at Mount Abu and wetlands at Bharatpur all sit in one state. They make for three completely different mornings.
   </p>
 
-  <h3 class="text-2xl font-bold text-slate-900 mt-8 mb-3">The one thing to know about the history</h3>
+  <h3 class="text-xl font-bold text-slate-900 mt-6 mb-2">The one thing to know about the history</h3>
 
   <p>
     For centuries, different Rajput dynasties ruled kingdoms across this region. Their courts both resisted and allied with the Mughals, and many later signed treaties with the East India Company. Each court kept its own identity. That's why a few hours' drive can feel like entering a different country.
@@ -89,9 +89,9 @@ export const rajasthanGuideBlog: Blog = {
 
   <hr class="my-10 border-slate-200" />
 
-  <h2 class="text-3xl font-extrabold text-slate-900 mt-10 mb-4 tracking-tight">What makes Rajasthan special?</h2>
+  <h2 class="text-xl font-bold text-slate-900 mt-6 mb-2 tracking-tight">What makes Rajasthan special?</h2>
 
-  <h3 class="text-2xl font-bold text-slate-900 mt-6 mb-3">The forts tell you where you are</h3>
+  <h3 class="text-xl font-bold text-slate-900 mt-5 mb-2">The forts tell you where you are</h3>
 
   <p>Every fort here was built to suit its surroundings:</p>
   <ul class="list-disc list-inside space-y-2 text-slate-700 ml-2">
@@ -104,7 +104,7 @@ export const rajasthanGuideBlog: Blog = {
     Six of them (Amer, Chittorgarh, Kumbhalgarh, Ranthambore, Gagron and Jaisalmer) are UNESCO World Heritage hill forts. Jaipur's historic city and the Jantar Mantar observatory are listed separately.
   </p>
 
-  <h3 class="text-2xl font-bold text-slate-900 mt-8 mb-3">The merchants showed off too</h3>
+  <h3 class="text-xl font-bold text-slate-900 mt-6 mb-2">The merchants showed off too</h3>
 
   <p>The kings get the credit, but traders spent big as well.</p>
   <ul class="list-disc list-inside space-y-2 text-slate-700 ml-2">
@@ -116,7 +116,7 @@ export const rajasthanGuideBlog: Blog = {
     Basically, it's the 19th-century version of posting your holiday photos.
   </p>
 
-  <h3 class="text-2xl font-bold text-slate-900 mt-8 mb-3">The craft is in the details</h3>
+  <h3 class="text-xl font-bold text-slate-900 mt-6 mb-2">The craft is in the details</h3>
 
   <ul class="list-disc list-inside space-y-2 text-slate-700 ml-2">
     <li><strong>Bandhani:</strong> tie-dye, where thousands of tiny knots create the dotted patterns</li>
@@ -132,7 +132,7 @@ export const rajasthanGuideBlog: Blog = {
 
   <hr class="my-10 border-slate-200" />
 
-  <h2 class="text-3xl font-extrabold text-slate-900 mt-10 mb-4 tracking-tight">Rajasthan's regions explained</h2>
+  <h2 class="text-xl font-bold text-slate-900 mt-6 mb-2 tracking-tight">Rajasthan's regions explained</h2>
 
   <p>The old regional names tell you what drew people to a place. Boundaries are loose, and a good route crosses several.</p>
 
@@ -162,11 +162,11 @@ export const rajasthanGuideBlog: Blog = {
 
   <hr class="my-10 border-slate-200" />
 
-  <h2 class="text-3xl font-extrabold text-slate-900 mt-10 mb-6 tracking-tight">The best places to visit in Rajasthan</h2>
+  <h2 class="text-xl font-bold text-slate-900 mt-6 mb-2.5 tracking-tight">The best places to visit in Rajasthan</h2>
 
   <!-- Jaipur -->
   <div class="space-y-4 my-8">
-    <h3 class="text-2xl font-bold text-slate-900">Jaipur: the capital with the pink makeover</h3>
+    <h3 class="text-xl font-bold text-slate-900">Jaipur: the capital with the pink makeover</h3>
     <p>
       Jaipur was founded in 1727 by Sawai Jai Singh II, and Rajasthan Tourism cites a growing population and a water shortage at Amer among the reasons for the move (that theme again). It's a distinctive example of an eighteenth-century planned Indian city, with a grid of broad streets and bazaars.
     </p>
@@ -194,7 +194,7 @@ export const rajasthanGuideBlog: Blog = {
 
   <!-- Jodhpur -->
   <div class="space-y-4 my-8">
-    <h3 class="text-2xl font-bold text-slate-900">Jodhpur: the fort you keep looking back at</h3>
+    <h3 class="text-xl font-bold text-slate-900">Jodhpur: the fort you keep looking back at</h3>
     <p>
       Rao Jodha founded Jodhpur in 1459, and Mehrangarh still looms over the old city like it's checking your homework.
     </p>
@@ -219,7 +219,7 @@ export const rajasthanGuideBlog: Blog = {
 
   <!-- Udaipur -->
   <div class="space-y-4 my-8">
-    <h3 class="text-2xl font-bold text-slate-900">Udaipur: the court that was built beside a lake</h3>
+    <h3 class="text-xl font-bold text-slate-900">Udaipur: the court that was built beside a lake</h3>
     <p>
       Maharana Udai Singh II founded Udaipur in 1553 (the most commonly cited date), and the City Palace rises right above Lake Pichola. The Lake Palace sits on an island in the middle, so yes, it looks exactly as dreamy as the photos suggest.
     </p>
@@ -244,7 +244,7 @@ export const rajasthanGuideBlog: Blog = {
 
   <!-- Jaisalmer -->
   <div class="space-y-4 my-8">
-    <h3 class="text-2xl font-bold text-slate-900">Jaisalmer: the city inside a fort</h3>
+    <h3 class="text-xl font-bold text-slate-900">Jaisalmer: the city inside a fort</h3>
     <p>
       Rawal Jaisal founded the city in 1156, and the Sonar Qila (Golden Fort) is still inhabited. Residents, shopkeepers, and worshippers share the lanes with visitors.
     </p>
@@ -269,7 +269,7 @@ export const rajasthanGuideBlog: Blog = {
 
   <!-- Pushkar and Ajmer -->
   <div class="space-y-4 my-8">
-    <h3 class="text-2xl font-bold text-slate-900">Pushkar and Ajmer: two towns, two kinds of faith</h3>
+    <h3 class="text-xl font-bold text-slate-900">Pushkar and Ajmer: two towns, two kinds of faith</h3>
     <p>
       Legend says Brahma dropped a lotus and a lake appeared. Pushkar is built around it, and its Brahma Temple is one of the very few in the world dedicated to him. Next door, Ajmer centres on the dargah of Sufi saint Khwaja Moinuddin Chishti.
     </p>
@@ -282,7 +282,7 @@ export const rajasthanGuideBlog: Blog = {
 
   <!-- Bikaner -->
   <div class="space-y-4 my-8">
-    <h3 class="text-2xl font-bold text-slate-900">Bikaner: the desert city built on trade</h3>
+    <h3 class="text-xl font-bold text-slate-900">Bikaner: the desert city built on trade</h3>
     <p>
       A Rathore prince, Rao Bika, founded Bikaner in 1488. It grew rich on caravan trade, and the red sandstone havelis show it.
     </p>
@@ -295,7 +295,7 @@ export const rajasthanGuideBlog: Blog = {
 
   <!-- Mount Abu -->
   <div class="space-y-4 my-8">
-    <h3 class="text-2xl font-bold text-slate-900">Mount Abu: Rajasthan's only hill station</h3>
+    <h3 class="text-xl font-bold text-slate-900">Mount Abu: Rajasthan's only hill station</h3>
     <p>
       Mount Abu sits at about 1,220 metres, with nearby Guru Shikhar (1,722 m) as the highest peak in the Aravallis. It's where the maharajas escaped the heat, and it still works.
     </p>
@@ -308,7 +308,7 @@ export const rajasthanGuideBlog: Blog = {
 
   <!-- Ranthambore -->
   <div class="space-y-4 my-8">
-    <h3 class="text-2xl font-bold text-slate-900">Ranthambore: a fort above a tiger forest</h3>
+    <h3 class="text-xl font-bold text-slate-900">Ranthambore: a fort above a tiger forest</h3>
     <p>
       Once a hunting reserve for Jaipur's rulers, it's now one of India's best-known tiger reserves. A medieval hill fort, traditionally dated to the 10th century, still watches over it.
     </p>
@@ -333,7 +333,7 @@ export const rajasthanGuideBlog: Blog = {
 
   <!-- Bundi and Bharatpur -->
   <div class="space-y-4 my-8">
-    <h3 class="text-2xl font-bold text-slate-900">Bundi and Bharatpur: for a different kind of day</h3>
+    <h3 class="text-xl font-bold text-slate-900">Bundi and Bharatpur: for a different kind of day</h3>
 
     <figure class="my-6">
       <img 
@@ -354,7 +354,7 @@ export const rajasthanGuideBlog: Blog = {
 
   <hr class="my-10 border-slate-200" />
 
-  <h2 class="text-3xl font-extrabold text-slate-900 mt-10 mb-4 tracking-tight">Best time to visit Rajasthan</h2>
+  <h2 class="text-xl font-bold text-slate-900 mt-6 mb-2 tracking-tight">Best time to visit Rajasthan</h2>
 
   <p>Pick your season around the day you want to have.</p>
 
@@ -372,7 +372,7 @@ export const rajasthanGuideBlog: Blog = {
 
   <hr class="my-10 border-slate-200" />
 
-  <h2 class="text-3xl font-extrabold text-slate-900 mt-10 mb-4 tracking-tight">What kind of traveller will love Rajasthan?</h2>
+  <h2 class="text-xl font-bold text-slate-900 mt-6 mb-2 tracking-tight">What kind of traveller will love Rajasthan?</h2>
 
   <ul class="space-y-2.5 text-slate-700 my-4 list-disc list-inside ml-2">
     <li><strong>Families and multigenerational groups:</strong> Build each day around one big sight, then a puppet show, a meal or lake time. Check how many stairs a fort or stepwell involves. Two places that look equally close on a map can ask very different things of your knees</li>
@@ -384,18 +384,18 @@ export const rajasthanGuideBlog: Blog = {
 
   <hr class="my-10 border-slate-200" />
 
-  <h2 class="text-3xl font-extrabold text-slate-900 mt-10 mb-4 tracking-tight">Getting to and around Rajasthan</h2>
+  <h2 class="text-xl font-bold text-slate-900 mt-6 mb-2 tracking-tight">Getting to and around Rajasthan</h2>
 
   <p>Rajasthan is big, and distances catch first-timers out. Here's the short version.</p>
 
-  <h3 class="text-2xl font-bold text-slate-900 mt-6 mb-3">Getting there</h3>
+  <h3 class="text-xl font-bold text-slate-900 mt-5 mb-2">Getting there</h3>
   <ul class="list-disc list-inside space-y-1.5 text-slate-700 ml-2">
     <li><strong>By air:</strong> Jaipur has Rajasthan's only international airport. Udaipur, Jodhpur and Jaisalmer have domestic airports. Check airlines for current routes from your city</li>
     <li><strong>By train:</strong> Jaipur, Ajmer, Jodhpur and Udaipur are major railway stations. Book popular routes early</li>
     <li><strong>By road from Delhi:</strong> Jaipur is roughly 270 to 310 km away, so allow 4 to 6 hours depending on traffic</li>
   </ul>
 
-  <h3 class="text-2xl font-bold text-slate-900 mt-6 mb-3">Getting around (rough road distances)</h3>
+  <h3 class="text-xl font-bold text-slate-900 mt-5 mb-2">Getting around (rough road distances)</h3>
   <ul class="list-disc list-inside space-y-1.5 text-slate-700 ml-2">
     <li><strong>Jaipur to Jodhpur:</strong> about 330 to 340 km, around 6 hours</li>
     <li><strong>Jodhpur to Jaisalmer:</strong> about 280 to 300 km, around 5 hours</li>
@@ -408,7 +408,7 @@ export const rajasthanGuideBlog: Blog = {
 
   <hr class="my-10 border-slate-200" />
 
-  <h2 class="text-3xl font-extrabold text-slate-900 mt-10 mb-4 tracking-tight">Rajasthan travel tips for first-timers</h2>
+  <h2 class="text-xl font-bold text-slate-900 mt-6 mb-2 tracking-tight">Rajasthan travel tips for first-timers</h2>
 
   <ul class="space-y-2.5 text-slate-700 my-4 list-disc list-inside ml-2">
     <li>Count usable mornings, not just nights. A long transfer day may only leave room for a walk and dinner. Trains work well between big cities, and a car is better when the journey includes stops</li>
@@ -423,7 +423,7 @@ export const rajasthanGuideBlog: Blog = {
 
   <hr class="my-10 border-slate-200" />
 
-  <h2 class="text-3xl font-extrabold text-slate-900 mt-10 mb-6 tracking-tight">Rajasthan travel FAQs</h2>
+  <h2 class="text-xl font-bold text-slate-900 mt-6 mb-2.5 tracking-tight">Rajasthan travel FAQs</h2>
 
   <div class="space-y-5 my-6">
     <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs">
@@ -458,7 +458,7 @@ export const rajasthanGuideBlog: Blog = {
 
   <hr class="my-10 border-slate-200" />
 
-  <h2 class="text-3xl font-extrabold text-slate-900 mt-10 mb-4 tracking-tight">Your next move</h2>
+  <h2 class="text-xl font-bold text-slate-900 mt-6 mb-2 tracking-tight">Your next move</h2>
 
   <p>
     Start with the one place you'd be most upset to miss, and build the route around it. Then leave one afternoon completely unplanned.
@@ -470,20 +470,20 @@ export const rajasthanGuideBlog: Blog = {
 
   <hr class="my-10 border-slate-200" />
 
-  <div class="rounded-3xl bg-gradient-to-br from-amber-500/10 via-orange-500/10 to-amber-500/5 border-2 border-orange-500/30 p-8 my-10 shadow-sm">
-    <h2 class="text-3xl font-black text-slate-950 mb-3 tracking-tight">Plan your Rajasthan trip with us</h2>
-    <p class="text-lg text-slate-700 mb-6">
+  <div class="rounded-2xl bg-gradient-to-br from-amber-500/10 via-orange-500/10 to-amber-500/5 border border-orange-500/30 p-6 sm:p-7 my-8 shadow-sm">
+    <h2 class="text-xl sm:text-2xl font-bold text-slate-950 mb-2 tracking-tight">Plan your Rajasthan trip with us</h2>
+    <p class="text-sm sm:text-base text-slate-700 mb-4">
       If this guide has you daydreaming, we'd love to help turn it into an actual itinerary. We plan Rajasthan trips around your pace, season, and interests, so you see the highlights without forts blurring into one.
     </p>
 
-    <div class="space-y-3 pt-2">
-      <div class="flex flex-wrap items-center gap-2 text-base sm:text-lg">
+    <div class="space-y-2.5 pt-1">
+      <div class="flex flex-wrap items-center gap-2 text-sm sm:text-base">
         <span class="font-bold text-slate-900">Talk to a Rajasthan trip planner:</span>
         <a href="tel:+919217664099" class="font-bold text-orange-600 hover:text-orange-700 underline font-mono">
           +91 9217664099
         </a>
       </div>
-      <div class="flex flex-wrap items-center gap-2 text-base sm:text-lg">
+      <div class="flex flex-wrap items-center gap-2 text-sm sm:text-base">
         <span class="font-bold text-slate-900">View Related Packages:</span>
         <a href="https://wanderphilia.com/trips/rajasthan" class="font-bold text-orange-600 hover:text-orange-700 underline break-all">
           https://wanderphilia.com/trips/rajasthan

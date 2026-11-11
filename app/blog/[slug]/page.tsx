@@ -73,41 +73,60 @@ export default async function BlogPostPage({ params }: BlogPageProps) {
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
-        <Navbar />
-        <header className="relative min-h-144 overflow-hidden bg-slate-950 text-white pt-20">
-          <div className="absolute inset-0 opacity-70 bg-black" />
-          <Image
-            src={blog.image}
-            alt={blog.title}
-            fill
-            className="object-cover object-center"
-            priority
-          />
-          <div className="relative z-10 max-w-6xl mx-auto px-6 py-10 lg:px-10 lg:py-16">
-            <div className="max-w-3xl">
-              <Link
-                href="/blog"
-                className="inline-flex items-center gap-2 text-sm text-white/80 hover:text-white mb-6"
-              >
-                <ArrowLeft size={16} /> Back to Blog
-              </Link>
-              <span className="inline-flex items-center gap-2 rounded-full bg-primary/20 px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-primary mb-4">
-                <Tag size={14} /> {blog.category}
-              </span>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">{blog.title}</h1>
-              <p className="text-lg text-white/90 mb-8">{blog.excerpt}</p>
-              <div className="flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between text-sm text-white/70">
-                <p>By {blog.author}</p>
-                <p>{blog.lastUpdated ? `Updated ${blog.lastUpdated}` : formattedDate} • {blog.readTime} min read</p>
+      <Navbar />
+
+      {/* Hero Section styled like Destination Page */}
+      <header className="relative h-[50vh] sm:h-[55vh] md:h-[65vh] min-h-[460px] pt-20 overflow-hidden bg-slate-950">
+        <Image
+          src={blog.image}
+          alt={blog.title}
+          fill
+          className="object-cover object-center"
+          priority
+        />
+        {/* Destination-style dark gradient overlays for maximum contrast and readability */}
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-slate-950/20" />
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-950/95 via-slate-950/50 to-transparent" />
+
+        <div className="absolute inset-x-0 bottom-0 flex items-end">
+          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6 sm:pb-8 lg:pb-10">
+            <div className="text-white max-w-3xl">
+              <div className="mb-3.5 flex flex-wrap items-center gap-2.5">
+                <Link
+                  href="/blog"
+                  className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium text-white/80 hover:text-white transition bg-white/10 hover:bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full ring-1 ring-white/15"
+                >
+                  <ArrowLeft size={14} /> Back to Blog
+                </Link>
+                <div className="inline-flex items-center gap-1.5 rounded-full bg-amber-400/15 px-3 py-1 text-xs sm:text-sm font-semibold text-amber-200 ring-1 ring-amber-300/20">
+                  <Tag size={13} /> {blog.category}
+                </div>
+              </div>
+
+              <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold tracking-tight leading-tight text-white mb-3">
+                {blog.title}
+              </h1>
+
+              <p className="text-sm sm:text-base md:text-lg max-w-2xl text-white/90 leading-relaxed mb-4">
+                {blog.excerpt}
+              </p>
+
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs sm:text-sm text-slate-300">
+                <span>By {blog.author}</span>
+                <span>•</span>
+                <span>{blog.lastUpdated ? `Updated ${blog.lastUpdated}` : formattedDate}</span>
+                <span>•</span>
+                <span className="inline-flex items-center gap-1"><Clock size={13} /> {blog.readTime} min read</span>
               </div>
             </div>
           </div>
-        </header>
+        </div>
+      </header>
 
-        <main className="grow">
-          <section className="max-w-7xl mx-auto px-6 py-16 lg:px-10">
-            <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] xl:grid-cols-[1fr_320px] gap-8 lg:gap-12 items-start">
-              <article className="prose prose-slate prose-xl max-w-none">
+      <main className="grow">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] xl:grid-cols-[1fr_320px] gap-8 lg:gap-12 items-start">
+            <article className="prose prose-slate max-w-none prose-p:text-slate-700 prose-p:text-[15px] sm:prose-p:text-base prose-p:leading-relaxed prose-li:text-slate-700 prose-li:text-[15px] sm:prose-li:text-base prose-headings:text-slate-900 prose-h2:text-2xl sm:prose-h2:text-[26px] prose-h2:font-bold prose-h3:text-lg sm:prose-h3:text-xl prose-h3:font-semibold">
                       {blog.contentHtml ? (
                         <div dangerouslySetInnerHTML={{ __html: blog.contentHtml }} />
                       ) : (
