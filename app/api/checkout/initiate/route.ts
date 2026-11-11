@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { submitToZohoCRM, getDestinationFromTrip } from '@/lib/zoho';
 import { sendEmail, ADMIN_NOTIFICATION_EMAIL } from '@/lib/email';
 import { trips } from '@/lib/data';
+import { getTripBySlug } from '@/lib/trips-service';
 
 export const dynamic = 'force-dynamic';
 
@@ -79,7 +80,7 @@ export async function POST(req: Request) {
     }
 
     // Resolve trip details from trips data if not provided
-    const trip = trips.find(t => t.slug === tripSlug.trim() || t.id === tripSlug.trim());
+    const trip = (await getTripBySlug(tripSlug)) || trips.find(t => t.slug === tripSlug.trim() || t.id === tripSlug.trim());
     const displayTripTitle = tripTitle || (trip ? trip.title : tripSlug);
     const destination = passedDestination || (trip ? trip.destination : getDestinationFromTrip(tripSlug));
     const exactId = trip ? trip.id : tripSlug.trim();

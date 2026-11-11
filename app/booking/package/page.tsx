@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { trips } from '@/lib/data'
+import { getTripBySlug } from '@/lib/trips-service'
 import BookingPackageClient from '@/components/booking-package-client'
 
 type BookingPackagePageProps = {
@@ -15,7 +15,7 @@ export default async function BookingPackagePage({ searchParams }: BookingPackag
     notFound()
   }
 
-  const trip = trips.find((item) => item.slug === slug)
+  const trip = await getTripBySlug(slug)
 
   if (!trip || trip.showGetQuoteOnly) {
     notFound()

@@ -1,6 +1,6 @@
 import Razorpay from 'razorpay'
 import { NextResponse } from 'next/server'
-import { trips } from '@/lib/data'
+import { getTripBySlug } from '@/lib/trips-service'
 
 function parsePriceValue(value: string) {
   return Number(value.replace(/[^0-9]/g, '')) || 0
@@ -14,7 +14,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Trip slug is required.' }, { status: 400 })
     }
 
-    const trip = trips.find((trip) => trip.slug === slug)
+    const trip = await getTripBySlug(slug)
     if (!trip) {
       return NextResponse.json({ error: 'Trip not found.' }, { status: 404 })
     }

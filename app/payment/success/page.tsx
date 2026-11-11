@@ -48,6 +48,15 @@ export default function PaymentSuccessPage() {
         const foundTrip = trips.find((t) => t.slug === slug)
         if (foundTrip) {
           setTrip(foundTrip)
+        } else {
+          fetch(`/api/trips?slug=${encodeURIComponent(slug)}`)
+            .then(res => res.ok ? res.json() : null)
+            .then(data => {
+              if (data && !data.error && data.slug) {
+                setTrip(data)
+              }
+            })
+            .catch(() => {})
         }
       }
     }
