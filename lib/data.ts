@@ -805,8 +805,10 @@ export interface Blog {
   excerpt: string
   author: string
   date: string
+  lastUpdated?: string
   category: string
   content: string
+  contentHtml?: string
   readTime: number
 }
 
@@ -18239,7 +18241,10 @@ export const testimonials: Testimonial[] = [
   },
 ];
 
+import { rajasthanGuideBlog } from './rajasthan-guide-blog'
+
 export const blogs: Blog[] = [
+  rajasthanGuideBlog,
   {
     id: '1',
     title: 'Top 10 Hidden Gems in Ladakh You Must Visit',
