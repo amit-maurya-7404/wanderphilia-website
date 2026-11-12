@@ -552,6 +552,9 @@ export async function fetchZohoLeadById(leadIdOrQuery: string): Promise<Normaliz
       cleanHName = '';
     }
 
+    const specificRoomCat = toSafeString(rawLead[`Hotel_${i}_Room_Category`] || rawLead[`${i}th_Hotel_Room_Category`] || '');
+    const finalRoomCat = (specificRoomCat && specificRoomCat !== '-None-') ? specificRoomCat : '';
+
     if (cleanHName || city || nights > 0) {
       hotels.push({
         index: i,
@@ -560,7 +563,7 @@ export async function fetchZohoLeadById(leadIdOrQuery: string): Promise<Normaliz
         nights: nights,
         stayDates: stayDates,
         category: hotelCategory,
-        roomCategory: cleanHName ? toSafeString(rawLead.Preferred_Room_Category, '') : ''
+        roomCategory: finalRoomCat
       });
     }
   }
@@ -594,7 +597,7 @@ export async function fetchZohoLeadById(leadIdOrQuery: string): Promise<Normaliz
         nights: Number(rawNights) || 0,
         stayDates: rawStayDates,
         category: (rawCat && rawCat !== '-None-') ? rawCat : globalTargetCat,
-        roomCategory: cleanHName ? toSafeString(rawLead.Preferred_Room_Category, '') : ''
+        roomCategory: (toSafeString(rawLead[`Hotel_${i}_Room_Category`] || rawLead[`${i}th_Hotel_Room_Category`] || '')) || ''
       });
     }
   }

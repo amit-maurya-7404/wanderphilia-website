@@ -2670,10 +2670,15 @@ export default function SheetItineraryPage() {
       const hotelCat = existing?.category || cat;
       let hotelName = existing?.hotelName || '';
       let rates = { baseRate: 0, extraBedRate: 0, childWithoutBedRate: 0, roomCategory: '' };
+      let actualRoomCategory = '';
       if (hotelName) {
-        const matchingHotel = cityHotels.find((sh: any) => (sh.hotelName || '').toLowerCase().trim() === hotelName.toLowerCase().trim());
+        const matchingHotel = findSheetHotel(hotelName, stay.city);
         if (matchingHotel && matchesHotelCategory(matchingHotel.category, hotelCat)) {
-          rates = getHotelRates(matchingHotel, hotelCat, existing?.roomCategory);
+          const exactRoomExists = Array.isArray(matchingHotel.rooms) && matchingHotel.rooms.some(
+            (r: any) => String(r.roomCategory || '').toLowerCase().trim() === String(existing?.roomCategory || '').toLowerCase().trim()
+          );
+          rates = getHotelRates(matchingHotel, hotelCat, exactRoomExists ? existing?.roomCategory : undefined);
+          actualRoomCategory = exactRoomExists ? (existing?.roomCategory || '') : (rates.roomCategory || matchingHotel.rooms?.[0]?.roomCategory || '');
         } else {
           hotelName = '';
         }
@@ -2684,12 +2689,12 @@ export default function SheetItineraryPage() {
         hotelName,
         city: stay.city,
         nights: stay.nights,
-        roomCategory: hotelName ? (existing?.roomCategory || rates.roomCategory || '') : '',
+        roomCategory: actualRoomCategory,
         category: hotelCat,
         stayDates: existing?.stayDates || '',
-        basePrice: hotelName ? (existing?.basePrice || rates.baseRate) : 0,
-        extraBedPrice: hotelName ? (existing?.extraBedPrice || rates.extraBedRate) : 0,
-        childWithoutBedPrice: hotelName ? (existing?.childWithoutBedPrice || rates.childWithoutBedRate) : 0
+        basePrice: rates.baseRate,
+        extraBedPrice: rates.extraBedRate,
+        childWithoutBedPrice: rates.childWithoutBedRate
       };
     });
 
@@ -2726,19 +2731,25 @@ export default function SheetItineraryPage() {
           if (!foundHotel) return h;
 
           const effectiveCat = h.category || masterHotelCategory || 'Deluxe';
-          const rates = getHotelRates(foundHotel, effectiveCat, h.roomCategory);
+
+          // Strictly verify if h.roomCategory is an actual room belonging to this hotel
+          const exactRoomExists = Array.isArray(foundHotel.rooms) && foundHotel.rooms.some(
+            (r: any) => String(r.roomCategory || '').toLowerCase().trim() === String(h.roomCategory || '').toLowerCase().trim()
+          );
+
+          const rates = getHotelRates(foundHotel, effectiveCat, exactRoomExists ? h.roomCategory : undefined);
+          const actualRoom = exactRoomExists ? h.roomCategory : (rates.roomCategory || foundHotel.rooms?.[0]?.roomCategory || '');
 
           const needsUpdate =
-            (h.basePrice === 0 && rates.baseRate > 0) ||
-            h.basePrice !== rates.baseRate ||
-            h.extraBedPrice !== rates.extraBedRate ||
-            (foundHotel.rooms?.length > 0 && !h.roomCategory);
+            h.roomCategory !== actualRoom ||
+            (rates.baseRate > 0 && h.basePrice !== rates.baseRate) ||
+            h.extraBedPrice !== rates.extraBedRate;
 
           if (needsUpdate) {
             changed = true;
             return {
               ...h,
-              roomCategory: h.roomCategory || rates.roomCategory,
+              roomCategory: actualRoom,
               basePrice: rates.baseRate,
               extraBedPrice: rates.extraBedRate,
               childWithoutBedPrice: rates.childWithoutBedRate
@@ -3342,14 +3353,21 @@ const handleFetchFromZoho = async () => {
 
         // Immediately look up hotel and rates from Zoho Master data
         const foundHotel = finalName ? findSheetHotel(finalName, h.city) : null;
-        const rates = foundHotel ? getHotelRates(foundHotel, effCat, h.roomCategory) : { baseRate: 0, extraBedRate: 0, childWithoutBedRate: 0, roomCategory: '' };
+
+        // Check if h.roomCategory actually exists in this hotel's rooms
+        const exactRoomExists = Boolean(foundHotel && Array.isArray(foundHotel.rooms) && foundHotel.rooms.some(
+          (r: any) => String(r.roomCategory || '').toLowerCase().trim() === String(h.roomCategory || '').toLowerCase().trim()
+        ));
+
+        const rates = foundHotel ? getHotelRates(foundHotel, effCat, exactRoomExists ? h.roomCategory : undefined) : { baseRate: 0, extraBedRate: 0, childWithoutBedRate: 0, roomCategory: '' };
+        const actualRoomCategory = exactRoomExists ? h.roomCategory : (rates.roomCategory || foundHotel?.rooms?.[0]?.roomCategory || foundHotel?.roomCategory || '');
 
         return {
           index: idx + 1,
           hotelName: finalName,
           city: h.city || (foundHotel?.city || ''),
           nights: Number(h.nights) || 1,
-          roomCategory: h.roomCategory || rates.roomCategory || '',
+          roomCategory: actualRoomCategory,
           category: effCat,
           stayDates: h.stayDates || '',
           basePrice: rates.baseRate,
@@ -4204,9 +4222,12 @@ const updateHotel = (index: number, field: keyof HotelItem, value: any, meta?: a
 
         if (foundHotel) {
           const effCat = h.category || masterHotelCategory || 'Deluxe';
-          const rates = getHotelRates(foundHotel, effCat, h.roomCategory);
+          const exactRoomExists = Boolean(foundHotel && Array.isArray(foundHotel.rooms) && foundHotel.rooms.some(
+            (r: any) => String(r.roomCategory || '').toLowerCase().trim() === String(h.roomCategory || '').toLowerCase().trim()
+          ));
+          const rates = getHotelRates(foundHotel, effCat, exactRoomExists ? h.roomCategory : undefined);
           h.hotelName = foundHotel.hotelName || String(value);
-          h.roomCategory = rates.roomCategory || h.roomCategory || '';
+          h.roomCategory = exactRoomExists ? h.roomCategory : (rates.roomCategory || foundHotel.rooms?.[0]?.roomCategory || '');
           h.basePrice = rates.baseRate;
           h.extraBedPrice = rates.extraBedRate;
           h.childWithoutBedPrice = rates.childWithoutBedRate;
@@ -4255,8 +4276,11 @@ const updateHotel = (index: number, field: keyof HotelItem, value: any, meta?: a
         h.extraBedPrice = 0;
         h.childWithoutBedPrice = 0;
       } else if (foundHotel) {
-        const rates = getHotelRates(foundHotel, value, h.roomCategory);
-        h.roomCategory = h.roomCategory || rates.roomCategory;
+        const exactRoomExists = Boolean(foundHotel && Array.isArray(foundHotel.rooms) && foundHotel.rooms.some(
+          (r: any) => String(r.roomCategory || '').toLowerCase().trim() === String(h.roomCategory || '').toLowerCase().trim()
+        ));
+        const rates = getHotelRates(foundHotel, value, exactRoomExists ? h.roomCategory : undefined);
+        h.roomCategory = exactRoomExists ? h.roomCategory : (rates.roomCategory || foundHotel.rooms?.[0]?.roomCategory || '');
         h.basePrice = rates.baseRate;
         h.extraBedPrice = rates.extraBedRate;
         h.childWithoutBedPrice = rates.childWithoutBedRate;
