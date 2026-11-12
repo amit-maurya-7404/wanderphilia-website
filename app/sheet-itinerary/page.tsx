@@ -44,7 +44,8 @@ import {
   ArrowDown,
   Camera,
   UploadCloud,
-  Image as ImageIcon
+  Image as ImageIcon,
+  PenTool
 } from 'lucide-react';
 import { getLuxuryImagesForDestination } from '@/lib/itinerary-images';
 import { ItineraryHistorySection } from '@/components/itinerary/itinerary-history-section';
@@ -1763,6 +1764,193 @@ export default function SheetItineraryPage() {
     createInitialDayRow(4, 'Jaisalmer', 5, 'Breakfast & Dinner'),
     createInitialDayRow(5, 'Udaipur', 5, 'Breakfast & Dinner')
   ]);
+
+  // Mode Switch State: 'sheet' (Spreadsheet Subform Mode) vs 'manual' (Manual Itinerary Creation Mode)
+  const [creationMode, setCreationMode] = useState<'sheet' | 'manual'>('sheet');
+
+  // Manual Itinerary Day-wise State (Point-by-point Highlights Mode)
+  const [manualDays, setManualDays] = useState<Array<{
+    dayNumber: number;
+    title: string;
+    fromCity: string;
+    enRouteStops: string[];
+    toCity: string;
+    breakfast: boolean;
+    lunch: boolean;
+    dinner: boolean;
+    guidedTour: boolean;
+    sightseeingPoints: string[];
+  }>>([
+    {
+      dayNumber: 1,
+      title: 'Arrival in Sri Lanka → Negombo',
+      fromCity: 'Colombo',
+      enRouteStops: [],
+      toCity: 'Negombo',
+      breakfast: false,
+      lunch: false,
+      dinner: true,
+      guidedTour: true,
+      sightseeingPoints: [
+        'Arrive at Bandaranaike International Airport, where our representative meets and welcomes you.',
+        'Transfer to Negombo, located approximately 20 mins drive from the airport.',
+        'Check in to your hotel, freshen up and relax after your journey.',
+        'Spend the rest of the day at leisure and enjoy your evening along the beach.',
+        'Overnight stay: Negombo / Colombo.'
+      ]
+    },
+    {
+      dayNumber: 2,
+      title: 'Negombo → Kandy | Elephants & Scenic Drive',
+      fromCity: 'Negombo',
+      enRouteStops: [],
+      toCity: 'Kandy',
+      breakfast: true,
+      lunch: false,
+      dinner: true,
+      guidedTour: true,
+      sightseeingPoints: [
+        'Enjoy breakfast and check out from the hotel before commencing your journey towards Kandy.',
+        'En route, visit the Pinnawala Elephant Orphanage and witness the feeding of orphaned elephants.',
+        'Continue towards Kandy and visit the Gem Museum and Royal Botanical Gardens at Peradeniya.',
+        'Explore the Temple of the Sacred Tooth Relic, one of Buddhism’s most sacred places of worship.',
+        'In the evening, experience the vibrant Kandy Cultural Dance show.',
+        'Check in to the hotel, enjoy dinner and relax for the evening in Kandy.'
+      ]
+    }
+  ]);
+
+  // Manual Mode Actions & Handlers
+  const addManualDay = () => {
+    setManualDays(prev => {
+      const nextNum = prev.length + 1;
+      const last = prev[prev.length - 1];
+      const newDay = {
+        dayNumber: nextNum,
+        title: `Day ${nextNum}: Exploration & Sightseeing`,
+        fromCity: last?.toCity || '',
+        enRouteStops: [],
+        toCity: last?.toCity || '',
+        breakfast: true,
+        lunch: false,
+        dinner: true,
+        guidedTour: false,
+        sightseeingPoints: [
+          'Enjoy breakfast at hotel before proceeding for local sightseeing.',
+          'Explore prime attractions, cultural highlights and picturesque spots.',
+          'Return to the hotel for leisure and overnight stay.'
+        ]
+      };
+      const updated = [...prev, newDay];
+      setNoOfDays(updated.length);
+      setNoOfNights(Math.max(1, updated.length - 1));
+      return updated;
+    });
+  };
+
+  const deleteManualDay = (index: number) => {
+    setManualDays(prev => {
+      if (prev.length <= 1) return prev;
+      const filtered = prev.filter((_, i) => i !== index);
+      const renumbered = filtered.map((d, i) => ({ ...d, dayNumber: i + 1 }));
+      setNoOfDays(renumbered.length);
+      setNoOfNights(Math.max(1, renumbered.length - 1));
+      return renumbered;
+    });
+  };
+
+  const moveManualDay = (index: number, direction: -1 | 1) => {
+    setManualDays(prev => {
+      const targetIdx = index + direction;
+      if (targetIdx < 0 || targetIdx >= prev.length) return prev;
+      const updated = [...prev];
+      const temp = updated[index];
+      updated[index] = updated[targetIdx];
+      updated[targetIdx] = temp;
+      return updated.map((d, i) => ({ ...d, dayNumber: i + 1 }));
+    });
+  };
+
+  const updateManualDay = (index: number, field: string, value: any) => {
+    setManualDays(prev => {
+      const updated = [...prev];
+      updated[index] = { ...updated[index], [field]: value };
+      return updated;
+    });
+  };
+
+  const toggleManualMeal = (dayIdx: number, mealType: 'breakfast' | 'lunch' | 'dinner') => {
+    setManualDays(prev => {
+      const updated = [...prev];
+      const day = { ...updated[dayIdx] };
+      day[mealType] = !day[mealType];
+      updated[dayIdx] = day;
+      return updated;
+    });
+  };
+
+  const toggleManualGuide = (dayIdx: number) => {
+    setManualDays(prev => {
+      const updated = [...prev];
+      const day = { ...updated[dayIdx] };
+      day.guidedTour = !day.guidedTour;
+      updated[dayIdx] = day;
+      return updated;
+    });
+  };
+
+  const addManualSightseeingPoint = (dayIdx: number) => {
+    setManualDays(prev => {
+      const updated = [...prev];
+      const day = { ...updated[dayIdx] };
+      day.sightseeingPoints = [...day.sightseeingPoints, ''];
+      updated[dayIdx] = day;
+      return updated;
+    });
+  };
+
+  const updateManualSightseeingPoint = (dayIdx: number, pointIdx: number, val: string) => {
+    setManualDays(prev => {
+      const updated = [...prev];
+      const day = { ...updated[dayIdx] };
+      const points = [...day.sightseeingPoints];
+      points[pointIdx] = val;
+      day.sightseeingPoints = points;
+      updated[dayIdx] = day;
+      return updated;
+    });
+  };
+
+  const deleteManualSightseeingPoint = (dayIdx: number, pointIdx: number) => {
+    setManualDays(prev => {
+      const updated = [...prev];
+      const day = { ...updated[dayIdx] };
+      day.sightseeingPoints = day.sightseeingPoints.filter((_, i) => i !== pointIdx);
+      updated[dayIdx] = day;
+      return updated;
+    });
+  };
+
+  const addManualEnRouteStop = (dayIdx: number, stopVal: string) => {
+    if (!stopVal.trim()) return;
+    setManualDays(prev => {
+      const updated = [...prev];
+      const day = { ...updated[dayIdx] };
+      day.enRouteStops = [...day.enRouteStops, stopVal.trim()];
+      updated[dayIdx] = day;
+      return updated;
+    });
+  };
+
+  const removeManualEnRouteStop = (dayIdx: number, stopIdx: number) => {
+    setManualDays(prev => {
+      const updated = [...prev];
+      const day = { ...updated[dayIdx] };
+      day.enRouteStops = day.enRouteStops.filter((_, i) => i !== stopIdx);
+      updated[dayIdx] = day;
+      return updated;
+    });
+  };
 
   // Pricing & Margins
   const [baseQuotation, setBaseQuotation] = useState<string>('');
@@ -4671,6 +4859,28 @@ const handleParseWriteupWithAI = async () => {
         };
       });
       setDayRows(mappedRows);
+
+      // 5.b Manual Days (for Manual Itinerary Creation mode)
+      const mappedManual = data.dayPlans.map((dp: any, idx: number) => {
+        const rawPoints = Array.isArray(dp.timeline) && dp.timeline.length > 0
+          ? dp.timeline
+          : (typeof dp.description === 'string' && dp.description.trim() ? dp.description.split(/\n|\.\s+/).filter(Boolean) : []);
+        const cleanPoints = rawPoints.map((p: any) => String(p).trim()).filter(Boolean);
+
+        return {
+          dayNumber: dp.day || idx + 1,
+          title: dp.title || `Day ${idx + 1}: Sightseeing`,
+          fromCity: dp.fromCity || (idx === 0 ? (departureCity || dp.city || '') : (data.dayPlans[idx - 1]?.city || dp.city || '')),
+          enRouteStops: Array.isArray(dp.enRouteStops) ? dp.enRouteStops : [],
+          toCity: dp.city || dp.stayHotel || destination || 'City',
+          breakfast: Boolean(dp.meals?.breakfast),
+          lunch: Boolean(dp.meals?.lunch),
+          dinner: Boolean(dp.meals?.dinner),
+          guidedTour: Boolean(dp.guidedTour),
+          sightseeingPoints: cleanPoints.length > 0 ? cleanPoints : [`Sightseeing and exploration.`]
+        };
+      });
+      setManualDays(mappedManual);
     }
 
     // 6. Inclusions & Exclusions
@@ -4713,47 +4923,73 @@ const handleGenerateItinerary = async () => {
   setGenSuccess(null);
 
   // Prepare day activities with rich descriptions and cost details
-  const preparedDayActivities = dayRows.map(d => {
-    const allExperiences: any[] = [];
-    (d.experiences || []).forEach((expName, idx) => {
-      if (expName && expName.trim()) {
-        allExperiences.push({
-          name: expName.trim(),
-          description: (d.descriptions[idx] || '').trim(),
-          ppCost: d.experienceCosts[idx] || 0,
+  const preparedDayActivities = creationMode === 'manual'
+    ? manualDays.map(d => {
+        const points = (d.sightseeingPoints || []).filter(p => p && p.trim());
+        const allExperiences = points.map(pt => ({
+          name: pt,
+          description: pt,
+          ppCost: 0,
           guidedTour: d.guidedTour
+        }));
+        const dayMealsStr = formatDayMeals(d.breakfast, d.lunch, d.dinner);
+        return {
+          dayNumber: d.dayNumber,
+          dayText: d.title || `Day ${d.dayNumber}: ${d.fromCity && d.toCity ? (d.fromCity === d.toCity ? d.toCity : `${d.fromCity} to ${d.toCity}`) : (d.toCity || d.fromCity || destination)}`,
+          city: d.fromCity || d.toCity || destination,
+          city2: d.toCity || undefined,
+          guidedTour: d.guidedTour,
+          enRouteExperiences: (d.enRouteStops || []).filter(Boolean).join(', ') || undefined,
+          experiences: allExperiences,
+          optionalExperiences: [],
+          meals: dayMealsStr,
+          breakfast: d.breakfast,
+          lunch: d.lunch,
+          dinner: d.dinner,
+          dayNarrativeTitle: d.title
+        };
+      })
+    : dayRows.map(d => {
+        const allExperiences: any[] = [];
+        (d.experiences || []).forEach((expName, idx) => {
+          if (expName && expName.trim()) {
+            allExperiences.push({
+              name: expName.trim(),
+              description: (d.descriptions[idx] || '').trim(),
+              ppCost: d.experienceCosts[idx] || 0,
+              guidedTour: d.guidedTour
+            });
+          }
         });
-      }
-    });
 
-    const allOptional: any[] = [];
-    (d.optionalExperiences || []).forEach((optName, idx) => {
-      if (optName && optName.trim()) {
-        allOptional.push({
-          name: optName.trim(),
-          description: (d.optionalDescriptions[idx] || '').trim(),
-          ppCost: d.optionalExperienceCosts[idx] || 0
+        const allOptional: any[] = [];
+        (d.optionalExperiences || []).forEach((optName, idx) => {
+          if (optName && optName.trim()) {
+            allOptional.push({
+              name: optName.trim(),
+              description: (d.optionalDescriptions[idx] || '').trim(),
+              ppCost: d.optionalExperienceCosts[idx] || 0
+            });
+          }
         });
-      }
-    });
 
-    const dayMealsStr = formatDayMeals(d.breakfast, d.lunch, d.dinner);
+        const dayMealsStr = formatDayMeals(d.breakfast, d.lunch, d.dinner);
 
-    return {
-      dayNumber: d.dayNumber,
-      dayText: d.dayText,
-      city: d.city,
-      city2: d.city2 || undefined,
-      guidedTour: d.guidedTour,
-      enRouteExperiences: d.enRouteExperiences.filter(Boolean).join(', ') || undefined,
-      experiences: allExperiences,
-      optionalExperiences: allOptional,
-      meals: dayMealsStr,
-      breakfast: d.breakfast,
-      lunch: d.lunch,
-      dinner: d.dinner
-    };
-  });
+        return {
+          dayNumber: d.dayNumber,
+          dayText: d.dayText,
+          city: d.city,
+          city2: d.city2 || undefined,
+          guidedTour: d.guidedTour,
+          enRouteExperiences: d.enRouteExperiences.filter(Boolean).join(', ') || undefined,
+          experiences: allExperiences,
+          optionalExperiences: allOptional,
+          meals: dayMealsStr,
+          breakfast: d.breakfast,
+          lunch: d.lunch,
+          dinner: d.dinner
+        };
+      });
 
   const payload = {
     inquiryId: inquiryId || `GS-${Date.now().toString().slice(-6)}`,
@@ -4768,8 +5004,8 @@ const handleGenerateItinerary = async () => {
     destinationType,
     startDate,
     endDate,
-    noOfDays: Number(noOfDays) || dayRows.length,
-    noOfNights: Number(noOfNights) || (dayRows.length > 1 ? dayRows.length - 1 : 1),
+    noOfDays: Number(noOfDays) || (creationMode === 'manual' ? manualDays.length : dayRows.length),
+    noOfNights: Number(noOfNights) || (creationMode === 'manual' ? Math.max(1, manualDays.length - 1) : (dayRows.length > 1 ? dayRows.length - 1 : 1)),
     adults: Number(adults) || 2,
     kids: Number(kids) || 0,
     kidsDetails: kidsDetails.slice(0, Number(kids) || 0),
@@ -4782,6 +5018,23 @@ const handleGenerateItinerary = async () => {
     mealPlan,
     hotels: hotels.filter(h => h.hotelName.trim().length > 0),
     dayActivities: preparedDayActivities,
+    // MANUAL ITINERARY CREATION FIELDS
+    isManualItinerary: creationMode === 'manual',
+    creationMode,
+    manualDayPlans: creationMode === 'manual' ? manualDays.map(md => ({
+      dayNumber: md.dayNumber,
+      title: md.title,
+      fromCity: md.fromCity,
+      enRouteStops: md.enRouteStops,
+      toCity: md.toCity,
+      stayCity: md.toCity,
+      city: md.toCity,
+      breakfast: md.breakfast,
+      lunch: md.lunch,
+      dinner: md.dinner,
+      guidedTour: md.guidedTour,
+      points: md.sightseeingPoints.filter(p => p && p.trim())
+    })) : undefined,
     optionNumber: selectedOption,
     baseQuotationAmount: baseQuotation ? Number(baseQuotation) : undefined,
     marginPercentage: marginPercent ? Number(marginPercent) : undefined,
@@ -4879,6 +5132,56 @@ return (
             <RotateCcw className="w-4 h-4 text-red-600" />
             Reset / Fresh Form
           </Button>
+        </div>
+      </div>
+
+      {/* BUILDER CREATION MODE SWITCH: Sheet Subform vs Manually Itinerary Creation */}
+      <div className="flex flex-wrap items-center justify-between gap-4 p-3 bg-white border-2 border-slate-300 rounded-2xl shadow-sm mb-6">
+        <div className="flex flex-wrap items-center gap-2.5">
+          <span className="text-xs font-black text-slate-600 uppercase tracking-wider mr-1 flex items-center gap-1.5">
+            <Compass className="w-3.5 h-3.5 text-orange-600" />
+            Itinerary Creation Mode:
+          </span>
+          <div className="inline-flex p-1 bg-slate-100 rounded-xl border border-slate-300">
+            <button
+              type="button"
+              onClick={() => setCreationMode('sheet')}
+              className={`px-4 py-2 rounded-lg text-xs font-extrabold transition-all flex items-center gap-2 cursor-pointer ${
+                creationMode === 'sheet'
+                  ? 'bg-white text-orange-700 shadow-sm border border-orange-200'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <Layers className="w-3.5 h-3.5 text-orange-600" />
+              <span>⚡ Sheet Subform Mode</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setCreationMode('manual')}
+              className={`px-4 py-2 rounded-lg text-xs font-extrabold transition-all flex items-center gap-2 cursor-pointer ${
+                creationMode === 'manual'
+                  ? 'bg-gradient-to-r from-sky-600 to-blue-600 text-white shadow-md'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <PenTool className="w-3.5 h-3.5" />
+              <span>✍️ Manually Itinerary creation</span>
+            </button>
+          </div>
+        </div>
+
+        <div className="text-xs font-semibold text-slate-600 flex items-center gap-2">
+          {creationMode === 'manual' ? (
+            <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-sky-50 text-sky-800 border border-sky-300 font-bold shadow-2xs">
+              <span className="w-2 h-2 rounded-full bg-sky-500 animate-pulse" />
+              Manual Itinerary Mode: Custom narrative titles, typeable cities &amp; exact highlight points as-is
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-orange-50 text-orange-800 border border-orange-300 font-bold shadow-2xs">
+              <span className="w-2 h-2 rounded-full bg-orange-500" />
+              Sheet Subform Mode: Live spreadsheet data-grid &amp; auto catalog pricing
+            </span>
+          )}
         </div>
       </div>
 
@@ -5564,19 +5867,31 @@ return (
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-800 mb-1">Meal Plan</label>
-              <select
-                value={mealPlan}
-                onChange={e => handleMealPlanChange(e.target.value)}
-                className="w-full bg-white border border-slate-400 text-slate-900 font-medium text-xs h-9 rounded-md px-3 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
-              >
-                <option value="Breakfast & Dinner">Breakfast &amp; Dinner (MAPAI)</option>
-                <option value="Breakfast, Lunch & Dinner">Breakfast, Lunch &amp; Dinner (All Meals / APAI)</option>
-                <option value="All Meals">All Meals (Breakfast, Lunch &amp; Dinner)</option>
-                <option value="Breakfast Only">Breakfast Only (CP)</option>
-                <option value="Breakfast & Lunch">Breakfast &amp; Lunch</option>
-                <option value="Room Only">Room Only (EP)</option>
-              </select>
+              <label className="block text-xs font-bold text-slate-800 mb-1">
+                Meal Plan {creationMode === 'manual' && <span className="text-sky-600 font-semibold">(Typeable / Custom)</span>}
+              </label>
+              {creationMode === 'manual' ? (
+                <Input
+                  type="text"
+                  value={mealPlan}
+                  onChange={e => handleMealPlanChange(e.target.value)}
+                  placeholder="e.g. Breakfast & Dinner (MAPAI) or All Meals"
+                  className="w-full bg-white border border-slate-400 text-slate-900 font-medium text-xs h-9 rounded-md px-3 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
+                />
+              ) : (
+                <select
+                  value={mealPlan}
+                  onChange={e => handleMealPlanChange(e.target.value)}
+                  className="w-full bg-white border border-slate-400 text-slate-900 font-medium text-xs h-9 rounded-md px-3 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
+                >
+                  <option value="Breakfast & Dinner">Breakfast &amp; Dinner (MAPAI)</option>
+                  <option value="Breakfast, Lunch & Dinner">Breakfast, Lunch &amp; Dinner (All Meals / APAI)</option>
+                  <option value="All Meals">All Meals (Breakfast, Lunch &amp; Dinner)</option>
+                  <option value="Breakfast Only">Breakfast Only (CP)</option>
+                  <option value="Breakfast & Lunch">Breakfast &amp; Lunch</option>
+                  <option value="Room Only">Room Only (EP)</option>
+                </select>
+              )}
             </div>
 
             <div>
@@ -5901,7 +6216,300 @@ return (
           )}
         </div>
 
-        {/* SECTION 5: DAY-WISE ITINERARY GRID SUBFORM (COMPACT SPREADSHEET VIEW) */}
+        {/* SECTION 5: DAY-WISE ITINERARY (SWITCHABLE: MANUAL POINTS MODE vs SHEET SUBFORM VIEW) */}
+        {creationMode === 'manual' ? (
+          <div className="bg-white border-2 border-sky-300 rounded-2xl p-6 shadow-sm">
+            {/* Header matching user reference screenshot */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 border-b border-slate-200 pb-4">
+              <div>
+                <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
+                  <PenTool className="w-4 h-4 text-sky-600" />
+                  5. Day-by-Day Itinerary (Manual Points Mode)
+                  <span className="text-[10px] font-extrabold bg-sky-100 text-sky-800 border border-sky-300 px-2 py-0.5 rounded-full uppercase">
+                    Custom Highlights
+                  </span>
+                </h3>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Each day includes custom heading, meals, route points, and highlights. All sightseeing points will appear exactly as written.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2.5">
+                <span className="text-xs font-bold text-slate-600 bg-slate-100 border border-slate-300 px-3 py-1.5 rounded-xl">
+                  {manualDays.length} Days Planned
+                </span>
+                <Button
+                  type="button"
+                  onClick={addManualDay}
+                  variant="outline"
+                  size="sm"
+                  className="h-9 text-xs border border-sky-500 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl flex items-center gap-1.5 shadow-2xs cursor-pointer"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  Add Day
+                </Button>
+              </div>
+            </div>
+
+            {/* Table layout matching screenshot */}
+            <div className="overflow-x-auto rounded-xl border border-slate-300 bg-white shadow-2xs">
+              <table className="w-full border-collapse text-left text-xs min-w-[1250px]">
+                <thead>
+                  <tr className="bg-slate-50 text-slate-600 border-b border-slate-300 text-[11px] font-black uppercase tracking-wider">
+                    <th className="px-3 py-3 w-14 text-center">DAY</th>
+                    <th className="px-3 py-3 w-64">DAY NARRATIVE TITLE / HEADING</th>
+                    <th className="px-3 py-3 w-28 text-center">MEALS</th>
+                    <th className="px-3 py-3 w-20 text-center">GUIDE</th>
+                    <th className="px-3 py-3 w-36">FROM CITY</th>
+                    <th className="px-3 py-3 w-48">EN-ROUTE STOPS</th>
+                    <th className="px-3 py-3 w-36">TO / STAY CITY</th>
+                    <th className="px-3 py-3 min-w-[380px]">SIGHTSEEING &amp; ACTIVITIES (ALL HIGHLIGHTS)</th>
+                    <th className="px-2 py-3 w-24 text-center">ACTIONS</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-200">
+                  {manualDays.map((day, dIdx) => (
+                    <tr key={dIdx} className="hover:bg-slate-50/50 transition-colors align-top">
+                      {/* DAY */}
+                      <td className="px-3 py-4 text-center">
+                        <div className="w-7 h-7 rounded-full bg-sky-600 text-white font-black flex items-center justify-center text-xs mx-auto shadow-xs">
+                          {day.dayNumber}
+                        </div>
+                      </td>
+
+                      {/* DAY NARRATIVE TITLE / HEADING */}
+                      <td className="px-3 py-4">
+                        <Input
+                          type="text"
+                          value={day.title}
+                          onChange={e => updateManualDay(dIdx, 'title', e.target.value)}
+                          placeholder="e.g. Arrival in Sri Lanka → Negombo"
+                          className="text-xs h-9 bg-white border border-slate-300 text-slate-900 font-semibold focus-visible:ring-sky-500 rounded-lg shadow-none"
+                        />
+                      </td>
+
+                      {/* MEALS: B, L, D */}
+                      <td className="px-3 py-4 text-center">
+                        <div className="inline-flex items-center gap-1 bg-slate-100 p-1 rounded-lg border border-slate-200">
+                          <button
+                            type="button"
+                            onClick={() => toggleManualMeal(dIdx, 'breakfast')}
+                            className={`w-6 h-6 rounded text-[11px] font-black transition-colors cursor-pointer ${
+                              day.breakfast ? 'bg-sky-600 text-white shadow-2xs' : 'text-slate-400 hover:text-slate-700'
+                            }`}
+                            title={day.breakfast ? 'Breakfast Included' : 'No Breakfast'}
+                          >
+                            B
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => toggleManualMeal(dIdx, 'lunch')}
+                            className={`w-6 h-6 rounded text-[11px] font-black transition-colors cursor-pointer ${
+                              day.lunch ? 'bg-sky-600 text-white shadow-2xs' : 'text-slate-400 hover:text-slate-700'
+                            }`}
+                            title={day.lunch ? 'Lunch Included' : 'No Lunch'}
+                          >
+                            L
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => toggleManualMeal(dIdx, 'dinner')}
+                            className={`w-6 h-6 rounded text-[11px] font-black transition-colors cursor-pointer ${
+                              day.dinner ? 'bg-sky-600 text-white shadow-2xs' : 'text-slate-400 hover:text-slate-700'
+                            }`}
+                            title={day.dinner ? 'Dinner Included' : 'No Dinner'}
+                          >
+                            D
+                          </button>
+                        </div>
+                      </td>
+
+                      {/* GUIDE */}
+                      <td className="px-3 py-4 text-center">
+                        <button
+                          type="button"
+                          onClick={() => toggleManualGuide(dIdx)}
+                          className={`px-2.5 py-1 rounded-md text-xs font-bold border transition-colors cursor-pointer ${
+                            day.guidedTour
+                              ? 'bg-amber-100 text-amber-800 border-amber-300 shadow-2xs'
+                              : 'bg-slate-100 text-slate-500 border-slate-200'
+                          }`}
+                        >
+                          {day.guidedTour ? 'Yes' : 'No'}
+                        </button>
+                      </td>
+
+                      {/* FROM CITY */}
+                      <td className="px-3 py-4">
+                        <Input
+                          type="text"
+                          value={day.fromCity}
+                          onChange={e => updateManualDay(dIdx, 'fromCity', e.target.value)}
+                          placeholder="e.g. Colombo"
+                          className="text-xs h-9 bg-white border border-slate-300 text-slate-900 rounded-lg shadow-none"
+                        />
+                      </td>
+
+                      {/* EN-ROUTE STOPS */}
+                      <td className="px-3 py-4">
+                        <div className="space-y-1.5">
+                          {day.enRouteStops.length > 0 && (
+                            <div className="flex flex-wrap gap-1 mb-1">
+                              {day.enRouteStops.map((stop, sIdx) => (
+                                <span
+                                  key={sIdx}
+                                  className="inline-flex items-center gap-1 text-[11px] bg-slate-100 text-slate-800 px-2 py-0.5 rounded border border-slate-300 font-medium"
+                                >
+                                  {stop}
+                                  <button
+                                    type="button"
+                                    onClick={() => removeManualEnRouteStop(dIdx, sIdx)}
+                                    className="text-slate-400 hover:text-red-600 text-xs font-bold ml-0.5"
+                                  >
+                                    ×
+                                  </button>
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                          <div className="flex items-center gap-1">
+                            <input
+                              type="text"
+                              placeholder="e.g. Umiam Lake"
+                              id={`manual-enroute-${dIdx}`}
+                              onKeyDown={e => {
+                                if (e.key === 'Enter') {
+                                  e.preventDefault();
+                                  const target = e.currentTarget;
+                                  if (target.value.trim()) {
+                                    addManualEnRouteStop(dIdx, target.value.trim());
+                                    target.value = '';
+                                  }
+                                }
+                              }}
+                              className="text-xs h-8 px-2 bg-white border border-slate-300 text-slate-900 rounded-md flex-1 min-w-0"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const el = document.getElementById(`manual-enroute-${dIdx}`) as HTMLInputElement;
+                                if (el && el.value.trim()) {
+                                  addManualEnRouteStop(dIdx, el.value.trim());
+                                  el.value = '';
+                                }
+                              }}
+                              className="text-[11px] font-bold text-sky-600 hover:text-sky-800 shrink-0 px-1 py-1"
+                            >
+                              + Add stop
+                            </button>
+                          </div>
+                        </div>
+                      </td>
+
+                      {/* TO / STAY CITY */}
+                      <td className="px-3 py-4">
+                        <Input
+                          type="text"
+                          value={day.toCity}
+                          onChange={e => updateManualDay(dIdx, 'toCity', e.target.value)}
+                          placeholder="e.g. Negombo"
+                          className="text-xs h-9 bg-white border border-slate-300 text-slate-900 rounded-lg shadow-none"
+                        />
+                      </td>
+
+                      {/* SIGHTSEEING & ACTIVITIES (ALL HIGHLIGHTS) */}
+                      <td className="px-3 py-4">
+                        <div className="space-y-1.5 w-full">
+                          {day.sightseeingPoints.map((point, pIdx) => (
+                            <div key={pIdx} className="flex items-center gap-2 w-full">
+                              <span className="w-5 h-5 rounded-full bg-sky-100 text-sky-800 text-[11px] font-bold flex items-center justify-center shrink-0">
+                                {pIdx + 1}
+                              </span>
+                              <Input
+                                type="text"
+                                value={point}
+                                onChange={e => updateManualSightseeingPoint(dIdx, pIdx, e.target.value)}
+                                placeholder={`Milestone / activity point ${pIdx + 1}...`}
+                                className="h-8 text-xs bg-white border border-slate-300 text-slate-900 rounded-md flex-1 shadow-none focus-visible:ring-sky-500"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => deleteManualSightseeingPoint(dIdx, pIdx)}
+                                className="text-slate-400 hover:text-red-600 p-1 transition-colors shrink-0"
+                                title="Delete point"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          ))}
+                          <div className="flex items-center justify-between pt-1">
+                            <button
+                              type="button"
+                              onClick={() => addManualSightseeingPoint(dIdx)}
+                              className="text-xs font-bold text-sky-600 hover:text-sky-800 flex items-center gap-1 cursor-pointer py-1"
+                            >
+                              <Plus className="w-3.5 h-3.5" />
+                              + Add Sightseeing
+                            </button>
+                            <span className="text-[10px] text-slate-400 font-medium">
+                              {day.sightseeingPoints.length} points
+                            </span>
+                          </div>
+                        </div>
+                      </td>
+
+                      {/* ACTIONS */}
+                      <td className="px-2 py-4 text-center">
+                        <div className="flex items-center justify-center gap-1">
+                          <button
+                            type="button"
+                            disabled={dIdx === 0}
+                            onClick={() => moveManualDay(dIdx, -1)}
+                            className="text-slate-400 hover:text-slate-700 disabled:opacity-30 disabled:cursor-not-allowed p-1"
+                            title="Move Up"
+                          >
+                            <ArrowUp className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            disabled={dIdx === manualDays.length - 1}
+                            onClick={() => moveManualDay(dIdx, 1)}
+                            className="text-slate-400 hover:text-slate-700 disabled:opacity-30 disabled:cursor-not-allowed p-1"
+                            title="Move Down"
+                          >
+                            <ArrowDown className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            disabled={manualDays.length <= 1}
+                            onClick={() => deleteManualDay(dIdx)}
+                            className="text-slate-400 hover:text-red-600 disabled:opacity-30 disabled:cursor-not-allowed p-1"
+                            title="Delete Day"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="mt-4 flex justify-end">
+              <Button
+                type="button"
+                onClick={addManualDay}
+                variant="outline"
+                size="sm"
+                className="h-9 text-xs border border-sky-400 text-sky-700 hover:bg-sky-50 bg-white font-bold rounded-xl flex items-center gap-1.5 shadow-2xs cursor-pointer"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                Add Another Day
+              </Button>
+            </div>
+          </div>
+        ) : (
         <div className="bg-white border border-slate-300 rounded-2xl p-6 shadow-sm">
           {/* Top Bar with Live Per-Person Cost & Controls */}
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-4 border-b border-slate-300 pb-4">
@@ -6473,6 +7081,7 @@ return (
             </table>
           </div>
         </div>
+      )}
 
         {/* SECTION 6: COSTING, MARGINS & 5% GST */}
         <div className="bg-white border border-slate-300 rounded-2xl p-6 shadow-sm">

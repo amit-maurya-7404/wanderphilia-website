@@ -113,15 +113,19 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
     : null;
 
   const leadName = itinerary.leadName || 'Valued Traveler';
+  const honorificMatch = leadName.match(/^(Mr\.|Mr|Mrs\.|Mrs|Ms\.|Ms|Dr\.|Dr|Shri)\s+/i);
+  const honorific = honorificMatch ? honorificMatch[0] : '';
   const cleanedName = leadName.replace(/^(Mr\.|Mr|Mrs\.|Mrs|Ms\.|Ms|Dr\.|Dr|Shri)\s+/i, '').trim();
-  const isFamilyOrGroup = /(&\s*Family|and\s*Family|\bFamily\b|\bTeam\b|\bGroup\b)/i.test(cleanedName);
+  const isFamilyOrGroup = /(&\s*Family|and\s*Family|\bFamily\b|\bTeam\b|\bGroup\b|\bGirls\b|\bTrip\b)/i.test(cleanedName);
   const displayName = cleanedName && cleanedName !== 'Valued Traveler'
-    ? (isFamilyOrGroup ? cleanedName : cleanedName.split(' ')[0])
+    ? (isFamilyOrGroup ? (honorific ? `${honorific}${cleanedName}` : cleanedName) : cleanedName.split(' ')[0])
     : 'Your';
   const firstName = displayName;
   const possessiveName = displayName.toLowerCase() === 'your'
     ? 'Your'
-    : (displayName.endsWith('s') || displayName.endsWith('S') ? `${displayName}'` : `${displayName}'s`);
+    : (displayName.toLowerCase().includes('trip') || displayName.endsWith("'s") || displayName.endsWith("’s") || displayName.endsWith("s'") || displayName.endsWith("’")
+        ? displayName
+        : (displayName.endsWith('s') || displayName.endsWith('S') ? `${displayName}'` : `${displayName}'s`));
   const destination = itinerary.destination || 'Selected Destination';
   const numDays = activeOption?.numDays || itinerary.numDays || 5;
   const numNights = activeOption?.numNights || itinerary.numNights || 4;

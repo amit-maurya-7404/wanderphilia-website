@@ -202,6 +202,153 @@ export async function POST(req: NextRequest) {
       ? customGalleryImages.slice(0, 6)
       : (customGalleryImages && customGalleryImages.length > 0 ? [...customGalleryImages, ...images.gallery].slice(0, 6) : images.gallery);
 
+    // Resolve Manual Day Plans if generated from Manual Itinerary Creation Mode
+    const isManual = Boolean(rawBody.isManualItinerary || rawBody.creationMode === 'manual');
+    let resolvedDayPlans = aiContent.dayPlans;
+    let resolvedHighlights = aiContent.highlights;
+
+    if (isManual && Array.isArray(rawBody.manualDayPlans) && rawBody.manualDayPlans.length > 0) {
+      const totalDays = rawBody.manualDayPlans.length;
+
+      resolvedDayPlans = rawBody.manualDayPlans.map((mdp: any, idx: number) => {
+        const isFirstDay = idx === 0;
+        const isLastDay = idx === totalDays - 1;
+        const fromCity = String(mdp.fromCity || '').trim();
+        const toCity = String(mdp.toCity || mdp.stayCity || mdp.city || '').trim();
+        const isCityTransfer = fromCity && toCity && fromCity.toLowerCase() !== toCity.toLowerCase();
+        const rawStops = Array.isArray(mdp.enRouteStops) ? mdp.enRouteStops : [];
+        const enRouteStops = rawStops.map((s: any) => String(s).trim()).filter(Boolean);
+
+        const rawPoints = Array.isArray(mdp.points) ? mdp.points : [];
+        const cleanPoints = rawPoints.map((p: any) => String(p).trim()).filter(Boolean);
+
+        // Meals String
+        const mealsArr: string[] = [];
+        if (mdp.breakfast) mealsArr.push('Breakfast');
+        if (mdp.lunch) mealsArr.push('Lunch');
+        if (mdp.dinner) mealsArr.push('Dinner');
+        const mealsStr = mealsArr.join(', ') || 'No Meals Included';
+
+        // Check for existing mentions to avoid redundant duplication
+        const containsTerm = (terms: string[]) =>
+          cleanPoints.some((p: string) => terms.some(t => p.toLowerCase().includes(t.toLowerCase())));
+
+        const hasArrival = containsTerm(['arrive', 'arrival', 'airport', 'railway', 'station', 'welcome', 'meet and greet', 'landing']);
+        const hasTransfer = containsTerm(['transfer to', 'drive to', 'proceed to', 'journey to', 'head towards', 'scenic drive', 'depart for', 'en route to']);
+        const hasCheckIn = containsTerm(['check in', 'check-in', 'freshen up', 'settle into', 'settle in to']);
+        const hasCheckOut = containsTerm(['check out', 'check-out', 'checkout']);
+        const hasBreakfast = containsTerm(['breakfast', 'morning meal', 'relish breakfast', 'hearty breakfast']);
+        const hasLunch = containsTerm(['lunch', 'afternoon meal', 'midday meal']);
+        const hasDinner = containsTerm(['dinner', 'evening meal', 'lavish dinner', 'gourmet dinner', 'delicious dinner']);
+        const hasDeparture = containsTerm(['departure', 'drop at airport', 'drop to airport', 'onward flight', 'onward journey', 'fly back', 'farewell']);
+        const hasOvernight = containsTerm(['overnight stay', 'night stay', 'rest for the night', 'overnight in']);
+
+        // Build dynamic synthesized timeline based on manual details
+        const timeline: string[] = [];
+
+        // 1. Morning, Arrival & Transfers
+        if (isFirstDay) {
+          if (!hasArrival) {
+            timeline.push(`Arrive at the airport / railway station, meet and greet by our representative.`);
+          }
+          if (isCityTransfer && !hasTransfer) {
+            const enRouteNote = enRouteStops.length > 0 ? ` with en-route stop at ${enRouteStops.join(', ')}` : '';
+            timeline.push(`Comfortable transfer from ${fromCity} to ${toCity}${enRouteNote}.`);
+          } else if (!isCityTransfer && toCity && !hasTransfer && !hasArrival) {
+            timeline.push(`Smooth transfer to your hotel in ${toCity}.`);
+          }
+          if (!hasCheckIn && toCity) {
+            timeline.push(`Check in to your hotel in ${toCity}, freshen up and relax after your journey.`);
+          }
+        } else {
+          // Day 2..N Morning
+          if (mdp.breakfast && !hasBreakfast) {
+            if (isCityTransfer) {
+              timeline.push(`Enjoy a delicious breakfast and complete hotel check-out formalities before departure.`);
+            } else {
+              timeline.push(`Relish a hearty breakfast at the hotel to energize for the day's experiences.`);
+            }
+          } else if (isCityTransfer && !hasCheckOut) {
+            timeline.push(`Complete hotel check-out formalities in ${fromCity} and prepare for the onward journey.`);
+          }
+
+          if (isCityTransfer && !hasTransfer) {
+            const enRouteNote = enRouteStops.length > 0 ? ` with en-route visits to ${enRouteStops.join(', ')}` : '';
+            timeline.push(`Embark on a scenic drive from ${fromCity} towards ${toCity}${enRouteNote}.`);
+          }
+        }
+
+        // 2. En-Route Stops (if not yet in timeline or cleanPoints)
+        if (enRouteStops.length > 0) {
+          enRouteStops.forEach((stop: string) => {
+            if (!containsTerm([stop]) && !timeline.some(t => t.toLowerCase().includes(stop.toLowerCase()))) {
+              timeline.push(`En route, visit and explore ${stop}.`);
+            }
+          });
+        }
+
+        // 3. Hotel Check-In for Transit Days
+        if (!isFirstDay && isCityTransfer && !hasCheckIn && toCity) {
+          timeline.push(`Arrive in ${toCity}, check in to your hotel, freshen up and unwind.`);
+        }
+
+        // 4. Sightseeing Points provided by user / AI
+        cleanPoints.forEach((point: string) => {
+          const cleaned = point.replace(/^\d+[\.\)]\s*/, '').replace(/^[-*•]\s*/, '').trim();
+          if (cleaned) {
+            timeline.push(cleaned);
+          }
+        });
+
+        // 5. Lunch (if enabled and not mentioned)
+        if (mdp.lunch && !hasLunch) {
+          timeline.push(`Enjoy a leisurely lunch at a local restaurant.`);
+        }
+
+        // 6. Dinner (if enabled and not mentioned)
+        if (mdp.dinner && !hasDinner) {
+          timeline.push(`In the evening, relish a delightful dinner at the hotel / local venue.`);
+        }
+
+        // 7. Evening / Stay / Departure
+        if (isLastDay) {
+          if (!hasDeparture) {
+            timeline.push(`Check out from the hotel and enjoy a comfortable transfer to the airport / railway station for your onward journey.`);
+          }
+        } else {
+          if (!hasOvernight && toCity) {
+            timeline.push(`Overnight stay at the hotel in ${toCity}.`);
+          }
+        }
+
+        // Title and narrative formatting
+        const defaultTitle = isCityTransfer
+          ? `${fromCity} → ${toCity}`
+          : (toCity ? `${toCity} Sightseeing & Exploration` : `Day ${idx + 1}`);
+        const dayTitle = mdp.title || defaultTitle;
+        const dayDesc = cleanPoints.length > 0
+          ? cleanPoints[0]
+          : (isCityTransfer ? `Transfer from ${fromCity} to ${toCity}` : `Explore the highlights of ${toCity || destination}`);
+
+        return {
+          day: mdp.dayNumber || idx + 1,
+          title: dayTitle,
+          description: dayDesc,
+          stayLocation: toCity || fromCity || '',
+          meals: mealsStr,
+          activities: cleanPoints.length > 0 ? cleanPoints.slice(0, 4) : [dayTitle],
+          timeline: timeline.length > 0 ? timeline : [dayTitle]
+        };
+      });
+
+      const customHighlights = rawBody.manualDayPlans
+        .map((mdp: any) => mdp.title ? String(mdp.title).replace(/^Day\s*\d+\s*[|:–-]\s*/i, '').trim() : '')
+        .filter(Boolean);
+      if (customHighlights.length > 0) {
+        resolvedHighlights = customHighlights.slice(0, 8);
+      }
+    }
+
     // 4. Assemble Itinerary Document
     const itineraryDoc: ItineraryDocument = {
       id: uniqueId,
@@ -282,8 +429,8 @@ export async function POST(req: NextRequest) {
         checkIn: '2:00 PM',
         checkOut: '11:00 AM'
       },
-      highlights: aiContent.highlights,
-      dayPlans: aiContent.dayPlans,
+      highlights: resolvedHighlights,
+      dayPlans: resolvedDayPlans,
       inclusions: customInclusions || aiContent.inclusions,
       exclusions: customExclusions || aiContent.exclusions,
       amenities: aiContent.amenities,
@@ -329,6 +476,10 @@ export async function POST(req: NextRequest) {
         Per_Kid_Price: aiContent.perKidPrice || perKidPrice,
         hotels,
         dayActivities,
+        isManualItinerary: isManual,
+        creationMode: isManual ? 'manual' : 'sheet',
+        dayPlans: resolvedDayPlans,
+        manualDayPlans: rawBody.manualDayPlans || undefined,
         inclusions: customInclusions || aiContent.inclusions,
         exclusions: customExclusions || aiContent.exclusions
       },
