@@ -451,7 +451,9 @@ export function ItineraryBookModal({
               <span>•</span>
               <span>Rate: <strong className="text-white font-bold">₹{perAdultPrice.toLocaleString('en-IN')}/adult</strong> ({adults} Adults)</span>
               <span>•</span>
-              <span className="text-amber-300 font-bold">5% GST & 2% TCS Included</span>
+              <span className="text-amber-300 font-bold">
+                {gstPercentage}% GST{tcsPercentage && tcsPercentage > 0 ? ` & ${tcsPercentage}% TCS` : ''} Included
+              </span>
             </DialogDescription>
           </div>
         </div>
