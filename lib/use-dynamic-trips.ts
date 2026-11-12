@@ -20,8 +20,9 @@ export function useDestinationTrips(categoryId: string) {
       .catch(() => {});
   }, [categoryId]);
 
-  const getTripsBySection = (section: keyof typeof sectionMap) => {
-    const tripIds = sectionMap[section] || [];
+  const getTripsBySection = (section: keyof typeof sectionMap | 'couple') => {
+    const lookupKey = section === 'couple' ? 'honeymoon' : section;
+    const tripIds = (sectionMap as any)[lookupKey] || (sectionMap as any)[section] || [];
     const staticList = trips.filter(trip => tripIds.includes(trip.id));
 
     const dynamicList = dynamicTrips.filter(t => {
@@ -32,10 +33,11 @@ export function useDestinationTrips(categoryId: string) {
         (t.destination && t.destination.toLowerCase() === categoryId.toLowerCase());
 
       if (isDestinationMatch) {
-        if (p?.sections && p.sections[section]) return true;
-        // Smart auto-detection for group and honeymoon trips
+        if (p?.sections && (p.sections[section] || p.sections[lookupKey])) return true;
+        // Smart auto-detection for group, family and couple/honeymoon trips
         if (section === 'group' && (t.tourType === 'Group' || p?.upcomingTours || p?.sections?.group)) return true;
-        if (section === 'honeymoon' && (p?.honeymoon || p?.sections?.honeymoon || t.category === 'honeymoon')) return true;
+        if ((section === 'honeymoon' || section === 'couple') && (p?.honeymoon || p?.sections?.honeymoon || p?.sections?.couple || t.category === 'honeymoon')) return true;
+        if (section === 'family' && p?.sections?.family) return true;
         // Default to 'available' if no specific section is checked or if available is not explicitly false
         if (section === 'available') {
           return !p?.sections || p.sections.available !== false;

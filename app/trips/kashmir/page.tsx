@@ -324,10 +324,197 @@ export default function KashmirPage() {
           onChange={setSelectedDuration}
         />
 
-        <section className="py-16 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
+        {/* 1. Group Trip Section */}
+        {filteredGroupPackages.length > 0 && (
+          <section className="py-10 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
+            <div className="mb-12">
+              <h2 className="text-2xl md:text-4xl font-bold text-slate-900 mb-4">
+                {categoryName} Group Trips
+              </h2>
+              <div className="w-20 h-1 bg-primary rounded-full" />
+            </div>
+
+            <div>
+              {/* ✅ MOBILE SCROLLER */}
+              <div className="flex md:hidden gap-4 overflow-x-auto pb-4 scrollbar-hide">
+                {filteredGroupPackages.map((trip) => (
+                  <div key={`grp-${trip.id}`} className="w-[90%] shrink-0">
+                    <TripCard {...trip} />
+                  </div>
+                ))}
+              </div>
+
+              <div className="hidden md:block relative">
+                {/* DESKTOP CAROUSEL */}
+                <div className="relative">
+                  <button
+                    onClick={() => setGroupCarouselIndex((prev) => Math.max(prev - 1, 0))}
+                    disabled={groupCarouselIndex === 0}
+                    className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40 cursor-pointer"
+                  >
+                    <ChevronLeft size={20} />
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      const maxIndex = Math.max(0, filteredGroupPackages.length - cardsPerView)
+                      setGroupCarouselIndex((prev) => Math.min(prev + 1, maxIndex))
+                    }}
+                    disabled={groupCarouselIndex === Math.max(0, filteredGroupPackages.length - cardsPerView)}
+                    className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40 cursor-pointer"
+                  >
+                    <ChevronRight size={20} />
+                  </button>
+
+                  <div className="overflow-hidden">
+                    <div
+                      className="flex transition-transform duration-500 ease-in-out"
+                      style={{
+                        transform: `translateX(-${groupCarouselIndex * (100 / cardsPerView)}%)`,
+                      }}
+                    >
+                      {filteredGroupPackages.map((trip) => (
+                        <div key={`grp-card-${trip.id}`} className="shrink-0 basis-1/3 p-2">
+                          <TripCard {...trip} />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* 2. Family Trip Section */}
+        {filteredFamilyPackages.length > 0 && (
+          <section className="py-10 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
+            <div className="mb-12">
+              <h2 className="text-2xl md:text-4xl font-bold text-slate-900 mb-4">
+                {categoryName} Family Trips
+              </h2>
+              <div className="w-20 h-1 bg-primary rounded-full" />
+            </div>
+
+            <div>
+              {/* ✅ MOBILE SCROLLER */}
+              <div className="flex md:hidden gap-4 overflow-x-auto pb-4 scrollbar-hide">
+                {filteredFamilyPackages.map((trip) => (
+                  <div key={`fam-${trip.id}`} className="w-[90%] shrink-0">
+                    <TripCard {...trip} />
+                  </div>
+                ))}
+              </div>
+
+              <div className="hidden md:block relative">
+                {/* DESKTOP CAROUSEL */}
+                <div className="relative">
+                  <button
+                    onClick={() => setFamilyCarouselIndex((prev) => Math.max(prev - 1, 0))}
+                    disabled={familyCarouselIndex === 0}
+                    className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40 cursor-pointer"
+                  >
+                    <ChevronLeft size={20} />
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      const maxIndex = Math.max(0, filteredFamilyPackages.length - cardsPerView)
+                      setFamilyCarouselIndex((prev) => Math.min(prev + 1, maxIndex))
+                    }}
+                    disabled={familyCarouselIndex === Math.max(0, filteredFamilyPackages.length - cardsPerView)}
+                    className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40 cursor-pointer"
+                  >
+                    <ChevronRight size={20} />
+                  </button>
+
+                  <div className="overflow-hidden">
+                    <div
+                      className="flex transition-transform duration-500 ease-in-out"
+                      style={{
+                        transform: `translateX(-${familyCarouselIndex * (100 / cardsPerView)}%)`,
+                      }}
+                    >
+                      {filteredFamilyPackages.map((trip) => (
+                        <div key={`fam-card-${trip.id}`} className="shrink-0 basis-1/3 p-2">
+                          <TripCard {...trip} />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* 3. Couple Trip Section */}
+        {filteredHoneymoonPackages.length > 0 && (
+          <section className="py-10 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
+            <div className="mb-12">
+              <h2 className="text-2xl md:text-4xl font-bold text-slate-900 mb-4">
+                {categoryName} Couple Trips
+              </h2>
+              <div className="w-20 h-1 bg-primary rounded-full" />
+            </div>
+
+            <div>
+              {/* ✅ MOBILE SCROLLER */}
+              <div className="flex md:hidden gap-4 overflow-x-auto pb-4 scrollbar-hide">
+                {filteredHoneymoonPackages.map((trip) => (
+                  <div key={`couple-${trip.id}`} className="w-[90%] shrink-0">
+                    <TripCard {...trip} />
+                  </div>
+                ))}
+              </div>
+
+              <div className="hidden md:block relative">
+                {/* DESKTOP CAROUSEL */}
+                <div className="relative">
+                  <button
+                    onClick={() => setHoneymoonCarouselIndex((prev) => Math.max(prev - 1, 0))}
+                    disabled={honeymoonCarouselIndex === 0}
+                    className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40 cursor-pointer"
+                  >
+                    <ChevronLeft size={20} />
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      const maxIndex = Math.max(0, filteredHoneymoonPackages.length - cardsPerView)
+                      setHoneymoonCarouselIndex((prev) => Math.min(prev + 1, maxIndex))
+                    }}
+                    disabled={honeymoonCarouselIndex === Math.max(0, filteredHoneymoonPackages.length - cardsPerView)}
+                    className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40 cursor-pointer"
+                  >
+                    <ChevronRight size={20} />
+                  </button>
+
+                  <div className="overflow-hidden">
+                    <div
+                      className="flex transition-transform duration-500 ease-in-out"
+                      style={{
+                        transform: `translateX(-${honeymoonCarouselIndex * (100 / cardsPerView)}%)`,
+                      }}
+                    >
+                      {filteredHoneymoonPackages.map((trip) => (
+                        <div key={`couple-card-${trip.id}`} className="shrink-0 basis-1/3 p-2">
+                          <TripCard {...trip} />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* 4. Available Trips Section */}
+        <section className="py-10 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
           <div className="mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
-              Available Packages
+            <h2 className="text-2xl md:text-4xl font-bold text-slate-900 mb-4">
+              Available {categoryName} Trips
             </h2>
             <div className="w-20 h-1 bg-primary rounded-full" />
           </div>
@@ -337,42 +524,34 @@ export default function KashmirPage() {
               {/* ✅ MOBILE SCROLLER */}
               <div className="flex md:hidden gap-4 overflow-x-auto pb-4 scrollbar-hide">
                 {filteredCategoryTrips.map((trip) => (
-                  <div
-                    key={trip.id}
-                    className="w-[90%] flex-shrink-0"
-                  >
+                  <div key={`avail-${trip.id}`} className="w-[90%] shrink-0">
                     <TripCard {...trip} />
                   </div>
                 ))}
               </div>
 
-              <div className="hidden md:block relative">{/* DESKTOP CAROUSEL */}
+              <div className="hidden md:block relative">
+                {/* DESKTOP CAROUSEL */}
                 <div className="relative">
-
-                  {/* LEFT */}
                   <button
-                    onClick={() => {
-                      setCarouselIndex1((prev) => Math.max(prev - 1, 0))
-                    }}
+                    onClick={() => setCarouselIndex1((prev) => Math.max(prev - 1, 0))}
                     disabled={carouselIndex1 === 0}
-                    className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
+                    className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40 cursor-pointer"
                   >
                     <ChevronLeft size={20} />
                   </button>
 
-                  {/* RIGHT */}
                   <button
                     onClick={() => {
                       const maxIndex = Math.max(0, filteredCategoryTrips.length - cardsPerView)
                       setCarouselIndex1((prev) => Math.min(prev + 1, maxIndex))
                     }}
                     disabled={carouselIndex1 === Math.max(0, filteredCategoryTrips.length - cardsPerView)}
-                    className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
+                    className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40 cursor-pointer"
                   >
                     <ChevronRight size={20} />
                   </button>
 
-                  {/* TRACK */}
                   <div className="overflow-hidden">
                     <div
                       className="flex transition-transform duration-500 ease-in-out"
@@ -381,17 +560,14 @@ export default function KashmirPage() {
                       }}
                     >
                       {filteredCategoryTrips.map((trip) => (
-                        <div
-                          key={trip.id}
-                          className="flex-shrink-0 basis-1/3 p-2"
-                        >
+                        <div key={`avail-card-${trip.id}`} className="shrink-0 basis-1/3 p-2">
                           <TripCard {...trip} />
                         </div>
                       ))}
                     </div>
                   </div>
-
-                </div></div>
+                </div>
+              </div>
             </div>
           ) : (
             <div className="py-12">
@@ -403,217 +579,13 @@ export default function KashmirPage() {
           )}
         </section>
 
-
-
-        {/* Family Packages Section */}
-        <section className="py-16 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
-          <div className="mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
-              Family Packages
-            </h2>
-            <div className="w-20 h-1 bg-primary rounded-full" />
-          </div>
-
-          {filteredFamilyPackages.length > 0 ? (
-            <div>
-              {/* ✅ MOBILE SCROLLER */}
-              <div className="flex md:hidden gap-4 overflow-x-auto pb-4 scrollbar-hide">
-                {filteredFamilyPackages.map((trip) => (
-                  <div
-                    key={trip.id}
-                    className="w-[90%] flex-shrink-0"
-                  >
-                    <TripCard {...trip} />
-                  </div>
-                ))}
-              </div>
-
-              <div className="hidden md:block relative">{/* DESKTOP CAROUSEL */}
-                <div className="relative">
-
-                  {/* LEFT */}
-                  <button
-                    onClick={() => {
-                      setFamilyCarouselIndex((prev) => Math.max(prev - 1, 0))
-                    }}
-                    disabled={familyCarouselIndex === 0}
-                    className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
-                  >
-                    <ChevronLeft size={20} />
-                  </button>
-
-                  {/* RIGHT */}
-                  <button
-                    onClick={() => {
-                      const maxIndex = Math.max(0, filteredFamilyPackages.length - cardsPerView)
-                      setFamilyCarouselIndex((prev) => Math.min(prev + 1, maxIndex))
-                    }}
-                    disabled={familyCarouselIndex === Math.max(0, filteredFamilyPackages.length - cardsPerView)}
-                    className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
-                  >
-                    <ChevronRight size={20} />
-                  </button>
-
-                  {/* TRACK */}
-                  <div className="overflow-hidden">
-                    <div
-                      className="flex transition-transform duration-500 ease-in-out"
-                      style={{
-                        transform: `translateX(-${familyCarouselIndex * (100 / cardsPerView)}%)`,
-                      }}
-                    >
-                      {filteredFamilyPackages.map((trip) => (
-                        <div
-                          key={trip.id}
-                          className="flex-shrink-0 basis-1/3 p-2"
-                        >
-                          <TripCard {...trip} />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                </div></div>
-            </div>
-          ) : null}
-        </section>
-
-        {/* Romantic & Honeymoon Specials Section */}
-        {filteredHoneymoonPackages.length > 0 && (
-          <section className="py-16 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto border-t border-slate-100">
-            <div className="mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
-                Kashmir Romantic & Honeymoon Specials
-              </h2>
-              <div className="w-20 h-1 bg-primary rounded-full" />
-            </div>
-
-            <div className="flex md:hidden gap-4 overflow-x-auto pb-4 scrollbar-hide">
-              {filteredHoneymoonPackages.map((trip) => (
-                <div key={trip.id} className="w-[90%] flex-shrink-0">
-                  <TripCard {...trip} />
-                </div>
-              ))}
-            </div>
-
-            <div className="hidden md:block relative">
-              <button
-                onClick={() => setHoneymoonCarouselIndex((prev) => Math.max(prev - 1, 0))}
-                disabled={honeymoonCarouselIndex === 0}
-                className="absolute -left-5 top-1/2 -translate-y-1/2 z-10 bg-white/90 backdrop-blur-md w-11 h-11 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition disabled:opacity-30 cursor-pointer"
-              >
-                <ChevronLeft size={22} className="text-slate-800" />
-              </button>
-
-              <button
-                onClick={() => {
-                  const maxIndex = Math.max(0, filteredHoneymoonPackages.length - cardsPerView)
-                  setHoneymoonCarouselIndex((prev) => Math.min(prev + 1, maxIndex))
-                }}
-                disabled={honeymoonCarouselIndex === Math.max(0, filteredHoneymoonPackages.length - cardsPerView)}
-                className="absolute -right-5 top-1/2 -translate-y-1/2 z-10 bg-white/90 backdrop-blur-md w-11 h-11 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition disabled:opacity-30 cursor-pointer"
-              >
-                <ChevronRight size={22} className="text-slate-800" />
-              </button>
-
-              <div className="overflow-hidden">
-                <div
-                  className="flex transition-transform duration-500 ease-in-out"
-                  style={{
-                    transform: `translateX(-${honeymoonCarouselIndex * (100 / cardsPerView)}%)`,
-                  }}
-                >
-                  {filteredHoneymoonPackages.map((trip) => (
-                    <div key={trip.id} className="flex-shrink-0 basis-1/3 p-2">
-                      <TripCard {...trip} />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* Customized Packages Section */}
-        <section className="py-16 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
-          <div className="mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
-              Customized Packages
-            </h2>
-            <div className="w-20 h-1 bg-primary rounded-full" />
-          </div>
-
-          {filteredCustomizedPackages.length > 0 ? (
-            <div>
-              {/* ✅ MOBILE SCROLLER */}
-              <div className="flex md:hidden gap-4 overflow-x-auto pb-4 scrollbar-hide">
-                {filteredCustomizedPackages.map((trip) => (
-                  <div
-                    key={trip.id}
-                    className="w-[90%] flex-shrink-0"
-                  >
-                    <TripCard {...trip} />
-                  </div>
-                ))}
-              </div>
-
-              <div className="hidden md:block relative">{/* DESKTOP CAROUSEL */}
-                <div className="relative">
-
-                  {/* LEFT */}
-                  <button
-                    onClick={() => {
-                      setCustomizedCarouselIndex((prev) => Math.max(prev - 1, 0))
-                    }}
-                    disabled={customizedCarouselIndex === 0}
-                    className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
-                  >
-                    <ChevronLeft size={20} />
-                  </button>
-
-                  {/* RIGHT */}
-                  <button
-                    onClick={() => {
-                      const maxIndex = Math.max(0, filteredCustomizedPackages.length - cardsPerView)
-                      setCustomizedCarouselIndex((prev) => Math.min(prev + 1, maxIndex))
-                    }}
-                    disabled={customizedCarouselIndex === Math.max(0, filteredCustomizedPackages.length - cardsPerView)}
-                    className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
-                  >
-                    <ChevronRight size={20} />
-                  </button>
-
-                  {/* TRACK */}
-                  <div className="overflow-hidden">
-                    <div
-                      className="flex transition-transform duration-500 ease-in-out"
-                      style={{
-                        transform: `translateX(-${customizedCarouselIndex * (100 / cardsPerView)}%)`,
-                      }}
-                    >
-                      {filteredCustomizedPackages.map((trip) => (
-                        <div
-                          key={trip.id}
-                          className="flex-shrink-0 basis-1/3 p-2"
-                        >
-                          <TripCard {...trip} />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                </div></div>
-            </div>
-          ) : null}
-        </section>
-
-        {/* Related Packages Section */}
+        {/* 5. Related Trips Section */}
         {relatedPackages.length > 0 && (
-          <section className="py-16 px-4 md:px-8 lg:px-16 bg-slate-50">
-            <div className="max-w-7xl mx-auto">
+          <section className="py-10 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
+            <div>
               <div className="mb-12">
-                <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
-                  Other {isCategoryInternational ? 'International' : 'India'} Destinations
+                <h2 className="text-2xl md:text-4xl font-bold text-slate-900 mb-4">
+                  Related Trips - Other {isCategoryInternational ? 'International' : 'India'} Destinations
                 </h2>
                 <div className="w-20 h-1 bg-primary rounded-full" />
               </div>
@@ -621,42 +593,34 @@ export default function KashmirPage() {
               {/* ✅ MOBILE SCROLLER */}
               <div className="flex md:hidden gap-4 overflow-x-auto pb-4 scrollbar-hide">
                 {relatedPackages.map((trip) => (
-                  <div
-                    key={trip.id}
-                    className="w-[90%] flex-shrink-0"
-                  >
+                  <div key={`rel-${trip.id}`} className="w-[90%] shrink-0">
                     <TripCard {...trip} />
                   </div>
                 ))}
               </div>
 
-              <div className="hidden md:block relative">{/* DESKTOP CAROUSEL */}
+              <div className="hidden md:block relative">
+                {/* DESKTOP CAROUSEL */}
                 <div className="relative">
-
-                  {/* LEFT */}
                   <button
-                    onClick={() => {
-                      setCarouselIndex2((prev) => Math.max(prev - 1, 0))
-                    }}
+                    onClick={() => setCarouselIndex2((prev) => Math.max(prev - 1, 0))}
                     disabled={carouselIndex2 === 0}
-                    className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
+                    className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40 cursor-pointer"
                   >
                     <ChevronLeft size={20} />
                   </button>
 
-                  {/* RIGHT */}
                   <button
                     onClick={() => {
                       const maxIndex = Math.max(0, relatedPackages.length - cardsPerView)
                       setCarouselIndex2((prev) => Math.min(prev + 1, maxIndex))
                     }}
                     disabled={carouselIndex2 === Math.max(0, relatedPackages.length - cardsPerView)}
-                    className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40"
+                    className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40 cursor-pointer"
                   >
                     <ChevronRight size={20} />
                   </button>
 
-                  {/* TRACK */}
                   <div className="overflow-hidden">
                     <div
                       className="flex transition-transform duration-500 ease-in-out"
@@ -665,17 +629,14 @@ export default function KashmirPage() {
                       }}
                     >
                       {relatedPackages.map((trip) => (
-                        <div
-                          key={trip.id}
-                          className="flex-shrink-0 basis-1/3 p-2"
-                        >
+                        <div key={`rel-card-${trip.id}`} className="shrink-0 basis-1/3 p-2">
                           <TripCard {...trip} />
                         </div>
                       ))}
                     </div>
                   </div>
-
-                </div></div>
+                </div>
+              </div>
             </div>
           </section>
         )}

@@ -325,340 +325,318 @@ export default function MeghalayaPage() {
           onChange={setSelectedDuration}
         />
 
-        {/* Section 1: Available Packages */}
-        <section className="py-2 bg-white">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-col md:flex-row md:items-end justify-between mb-8">
-              <div>
-                <span className="text-primary font-semibold text-sm uppercase tracking-wider">
-                  Curated Experiences
-                </span>
-                <h2 className="text-xl md:text-3xl font-bold text-gray-900 mt-1">
-                  Available Tour Packages
-                </h2>
-              </div>
-              <p className="text-gray-500 text-sm mt-2 md:mt-0">
-                Showing {filteredCategoryTrips.length} Handcrafted Packages
-              </p>
+        {/* 1. Group Trip Section */}
+        {filteredGroupPackages.length > 0 && (
+          <section className="py-10 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
+            <div className="mb-12">
+              <h2 className="text-2xl md:text-4xl font-bold text-slate-900 mb-4">
+                {categoryName} Group Trips
+              </h2>
+              <div className="w-20 h-1 bg-primary rounded-full" />
             </div>
 
-            {filteredCategoryTrips.length === 0 ? (
-              <NoPackagesCallbackForm
-                nights={selectedDuration}
-                destinationName={categoryName}
-              />
-            ) : (
-              <>
-                {/* Mobile View: Horizontal Snap Scroll Carousel */}
-                <div className="flex md:hidden overflow-x-auto gap-4 pb-4 -mx-4 px-4 scrollbar-none snap-x snap-mandatory">
-                  {filteredCategoryTrips.map((trip) => (
-                    <div
-                      key={trip.id}
-                      className="w-[90%] shrink-0"
-                    >
-                      <TripCard {...trip} />
-                    </div>
-                  ))}
-                </div>
+            <div>
+              {/* ✅ MOBILE SCROLLER */}
+              <div className="flex md:hidden gap-4 overflow-x-auto pb-4 scrollbar-hide">
+                {filteredGroupPackages.map((trip) => (
+                  <div key={`grp-${trip.id}`} className="w-[90%] shrink-0">
+                    <TripCard {...trip} />
+                  </div>
+                ))}
+              </div>
 
-                {/* Desktop View: 3-Column Sliding Carousel */}
-                <div className="hidden md:block relative">
+              <div className="hidden md:block relative">
+                {/* DESKTOP CAROUSEL */}
+                <div className="relative">
+                  <button
+                    onClick={() => setGroupCarouselIndex((prev) => Math.max(prev - 1, 0))}
+                    disabled={groupCarouselIndex === 0}
+                    className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40 cursor-pointer"
+                  >
+                    <ChevronLeft size={20} />
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      const maxIndex = Math.max(0, filteredGroupPackages.length - cardsPerView)
+                      setGroupCarouselIndex((prev) => Math.min(prev + 1, maxIndex))
+                    }}
+                    disabled={groupCarouselIndex === Math.max(0, filteredGroupPackages.length - cardsPerView)}
+                    className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40 cursor-pointer"
+                  >
+                    <ChevronRight size={20} />
+                  </button>
+
                   <div className="overflow-hidden">
                     <div
-                      className="flex transition-transform duration-500 ease-out"
+                      className="flex transition-transform duration-500 ease-in-out"
                       style={{
-                        transform: `translateX(-${carouselIndex1 * (100 / cardsPerView)}%)`,
+                        transform: `translateX(-${groupCarouselIndex * (100 / cardsPerView)}%)`,
                       }}
                     >
-                      {filteredCategoryTrips.map((trip) => (
-                        <div
-                          key={trip.id}
-                          className="shrink-0 basis-1/3 p-2"
-                        >
+                      {filteredGroupPackages.map((trip) => (
+                        <div key={`grp-card-${trip.id}`} className="shrink-0 basis-1/3 p-2">
                           <TripCard {...trip} />
                         </div>
                       ))}
                     </div>
                   </div>
-
-                  {filteredCategoryTrips.length > cardsPerView && (
-                    <>
-                      <button
-                        onClick={() =>
-                          setCarouselIndex1((prev) => Math.max(0, prev - 1))
-                        }
-                        disabled={carouselIndex1 === 0}
-                        aria-label="Previous trip"
-                        className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow-lg transition-all disabled:opacity-0 disabled:pointer-events-none"
-                      >
-                        <ChevronLeft size={24} />
-                      </button>
-                      <button
-                        onClick={() =>
-                          setCarouselIndex1((prev) =>
-                            Math.min(filteredCategoryTrips.length - cardsPerView, prev + 1)
-                          )
-                        }
-                        disabled={
-                          carouselIndex1 >= filteredCategoryTrips.length - cardsPerView
-                        }
-                        aria-label="Next trip"
-                        className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow-lg transition-all disabled:opacity-0 disabled:pointer-events-none"
-                      >
-                        <ChevronRight size={24} />
-                      </button>
-                    </>
-                  )}
                 </div>
-              </>
-            )}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* 2. Family Trip Section */}
+        {filteredFamilyPackages.length > 0 && (
+          <section className="py-10 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
+            <div className="mb-12">
+              <h2 className="text-2xl md:text-4xl font-bold text-slate-900 mb-4">
+                {categoryName} Family Trips
+              </h2>
+              <div className="w-20 h-1 bg-primary rounded-full" />
+            </div>
+
+            <div>
+              {/* ✅ MOBILE SCROLLER */}
+              <div className="flex md:hidden gap-4 overflow-x-auto pb-4 scrollbar-hide">
+                {filteredFamilyPackages.map((trip) => (
+                  <div key={`fam-${trip.id}`} className="w-[90%] shrink-0">
+                    <TripCard {...trip} />
+                  </div>
+                ))}
+              </div>
+
+              <div className="hidden md:block relative">
+                {/* DESKTOP CAROUSEL */}
+                <div className="relative">
+                  <button
+                    onClick={() => setFamilyCarouselIndex((prev) => Math.max(prev - 1, 0))}
+                    disabled={familyCarouselIndex === 0}
+                    className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40 cursor-pointer"
+                  >
+                    <ChevronLeft size={20} />
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      const maxIndex = Math.max(0, filteredFamilyPackages.length - cardsPerView)
+                      setFamilyCarouselIndex((prev) => Math.min(prev + 1, maxIndex))
+                    }}
+                    disabled={familyCarouselIndex === Math.max(0, filteredFamilyPackages.length - cardsPerView)}
+                    className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40 cursor-pointer"
+                  >
+                    <ChevronRight size={20} />
+                  </button>
+
+                  <div className="overflow-hidden">
+                    <div
+                      className="flex transition-transform duration-500 ease-in-out"
+                      style={{
+                        transform: `translateX(-${familyCarouselIndex * (100 / cardsPerView)}%)`,
+                      }}
+                    >
+                      {filteredFamilyPackages.map((trip) => (
+                        <div key={`fam-card-${trip.id}`} className="shrink-0 basis-1/3 p-2">
+                          <TripCard {...trip} />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* 3. Couple Trip Section */}
+        {filteredHoneymoonPackages.length > 0 && (
+          <section className="py-10 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
+            <div className="mb-12">
+              <h2 className="text-2xl md:text-4xl font-bold text-slate-900 mb-4">
+                {categoryName} Couple Trips
+              </h2>
+              <div className="w-20 h-1 bg-primary rounded-full" />
+            </div>
+
+            <div>
+              {/* ✅ MOBILE SCROLLER */}
+              <div className="flex md:hidden gap-4 overflow-x-auto pb-4 scrollbar-hide">
+                {filteredHoneymoonPackages.map((trip) => (
+                  <div key={`couple-${trip.id}`} className="w-[90%] shrink-0">
+                    <TripCard {...trip} />
+                  </div>
+                ))}
+              </div>
+
+              <div className="hidden md:block relative">
+                {/* DESKTOP CAROUSEL */}
+                <div className="relative">
+                  <button
+                    onClick={() => setHoneymoonCarouselIndex((prev) => Math.max(prev - 1, 0))}
+                    disabled={honeymoonCarouselIndex === 0}
+                    className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40 cursor-pointer"
+                  >
+                    <ChevronLeft size={20} />
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      const maxIndex = Math.max(0, filteredHoneymoonPackages.length - cardsPerView)
+                      setHoneymoonCarouselIndex((prev) => Math.min(prev + 1, maxIndex))
+                    }}
+                    disabled={honeymoonCarouselIndex === Math.max(0, filteredHoneymoonPackages.length - cardsPerView)}
+                    className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40 cursor-pointer"
+                  >
+                    <ChevronRight size={20} />
+                  </button>
+
+                  <div className="overflow-hidden">
+                    <div
+                      className="flex transition-transform duration-500 ease-in-out"
+                      style={{
+                        transform: `translateX(-${honeymoonCarouselIndex * (100 / cardsPerView)}%)`,
+                      }}
+                    >
+                      {filteredHoneymoonPackages.map((trip) => (
+                        <div key={`couple-card-${trip.id}`} className="shrink-0 basis-1/3 p-2">
+                          <TripCard {...trip} />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* 4. Available Trips Section */}
+        <section className="py-10 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
+          <div className="mb-12">
+            <h2 className="text-2xl md:text-4xl font-bold text-slate-900 mb-4">
+              Available {categoryName} Trips
+            </h2>
+            <div className="w-20 h-1 bg-primary rounded-full" />
           </div>
+
+          {filteredCategoryTrips.length > 0 ? (
+            <div>
+              {/* ✅ MOBILE SCROLLER */}
+              <div className="flex md:hidden gap-4 overflow-x-auto pb-4 scrollbar-hide">
+                {filteredCategoryTrips.map((trip) => (
+                  <div key={`avail-${trip.id}`} className="w-[90%] shrink-0">
+                    <TripCard {...trip} />
+                  </div>
+                ))}
+              </div>
+
+              <div className="hidden md:block relative">
+                {/* DESKTOP CAROUSEL */}
+                <div className="relative">
+                  <button
+                    onClick={() => setCarouselIndex1((prev) => Math.max(prev - 1, 0))}
+                    disabled={carouselIndex1 === 0}
+                    className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40 cursor-pointer"
+                  >
+                    <ChevronLeft size={20} />
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      const maxIndex = Math.max(0, filteredCategoryTrips.length - cardsPerView)
+                      setCarouselIndex1((prev) => Math.min(prev + 1, maxIndex))
+                    }}
+                    disabled={carouselIndex1 === Math.max(0, filteredCategoryTrips.length - cardsPerView)}
+                    className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40 cursor-pointer"
+                  >
+                    <ChevronRight size={20} />
+                  </button>
+
+                  <div className="overflow-hidden">
+                    <div
+                      className="flex transition-transform duration-500 ease-in-out"
+                      style={{
+                        transform: `translateX(-${carouselIndex1 * (100 / cardsPerView)}%)`,
+                      }}
+                    >
+                      {filteredCategoryTrips.map((trip) => (
+                        <div key={`avail-card-${trip.id}`} className="shrink-0 basis-1/3 p-2">
+                          <TripCard {...trip} />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="py-12">
+              <NoPackagesCallbackForm
+                nights={selectedDuration}
+                destinationName={categoryName}
+              />
+            </div>
+          )}
         </section>
 
-        {/* Section 2: Family Packages */}
-        {filteredFamilyPackages.length > 0 && (
-          <section className="py-2 bg-white">
-            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="flex flex-col md:flex-row md:items-end justify-between mb-8">
-                <div>
-                  <span className="text-primary font-semibold text-sm uppercase tracking-wider">
-                    Memorable Journeys
-                  </span>
-                  <h2 className="text-xl md:text-3xl font-bold text-gray-900 mt-1">
-                    Family Special Packages
-                  </h2>
-                </div>
-                <p className="text-gray-500 text-sm mt-2 md:mt-0">
-                  Showing {filteredFamilyPackages.length} Handcrafted Packages
-                </p>
-              </div>
-
-              {/* Mobile View: Horizontal Snap Scroll Carousel */}
-              <div className="flex md:hidden overflow-x-auto gap-4 pb-4 -mx-4 px-4 scrollbar-none snap-x snap-mandatory">
-                {filteredFamilyPackages.map((trip) => (
-                  <div
-                    key={trip.id}
-                    className="w-[90%] shrink-0"
-                  >
-                    <TripCard {...trip} />
-                  </div>
-                ))}
-              </div>
-
-              {/* Desktop View: 3-Column Sliding Carousel */}
-              <div className="hidden md:block relative">
-                <div className="overflow-hidden">
-                  <div
-                    className="flex transition-transform duration-500 ease-out"
-                    style={{
-                      transform: `translateX(-${familyCarouselIndex * (100 / cardsPerView)}%)`,
-                    }}
-                  >
-                    {filteredFamilyPackages.map((trip) => (
-                      <div
-                        key={trip.id}
-                        className="shrink-0 basis-1/3 p-2"
-                      >
-                        <TripCard {...trip} />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {filteredFamilyPackages.length > cardsPerView && (
-                  <>
-                    <button
-                      onClick={() =>
-                        setFamilyCarouselIndex((prev) => Math.max(0, prev - 1))
-                      }
-                      disabled={familyCarouselIndex === 0}
-                      aria-label="Previous trip"
-                      className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow-lg transition-all disabled:opacity-0 disabled:pointer-events-none"
-                    >
-                      <ChevronLeft size={24} />
-                    </button>
-                    <button
-                      onClick={() =>
-                        setFamilyCarouselIndex((prev) =>
-                          Math.min(filteredFamilyPackages.length - cardsPerView, prev + 1)
-                        )
-                      }
-                      disabled={
-                        familyCarouselIndex >= filteredFamilyPackages.length - cardsPerView
-                      }
-                      aria-label="Next trip"
-                      className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow-lg transition-all disabled:opacity-0 disabled:pointer-events-none"
-                    >
-                      <ChevronRight size={24} />
-                    </button>
-                  </>
-                )}
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* Section 3: Customized Packages */}
-        {filteredCustomizedPackages.length > 0 && (
-          <section className="py-2 bg-white">
-            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="flex flex-col md:flex-row md:items-end justify-between mb-8">
-                <div>
-                  <span className="text-primary font-semibold text-sm uppercase tracking-wider">
-                    Tailored For You
-                  </span>
-                  <h2 className="text-xl md:text-3xl font-bold text-gray-900 mt-1">
-                    Customized Tour Packages
-                  </h2>
-                </div>
-                <p className="text-gray-500 text-sm mt-2 md:mt-0">
-                  Showing {filteredCustomizedPackages.length} Handcrafted Packages
-                </p>
-              </div>
-
-              {/* Mobile View: Horizontal Snap Scroll Carousel */}
-              <div className="flex md:hidden overflow-x-auto gap-4 pb-4 -mx-4 px-4 scrollbar-none snap-x snap-mandatory">
-                {filteredCustomizedPackages.map((trip) => (
-                  <div
-                    key={trip.id}
-                    className="w-[90%] shrink-0"
-                  >
-                    <TripCard {...trip} />
-                  </div>
-                ))}
-              </div>
-
-              {/* Desktop View: 3-Column Sliding Carousel */}
-              <div className="hidden md:block relative">
-                <div className="overflow-hidden">
-                  <div
-                    className="flex transition-transform duration-500 ease-out"
-                    style={{
-                      transform: `translateX(-${customizedCarouselIndex * (100 / cardsPerView)}%)`,
-                    }}
-                  >
-                    {filteredCustomizedPackages.map((trip) => (
-                      <div
-                        key={trip.id}
-                        className="shrink-0 basis-1/3 p-2"
-                      >
-                        <TripCard {...trip} />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {filteredCustomizedPackages.length > cardsPerView && (
-                  <>
-                    <button
-                      onClick={() =>
-                        setCustomizedCarouselIndex((prev) => Math.max(0, prev - 1))
-                      }
-                      disabled={customizedCarouselIndex === 0}
-                      aria-label="Previous trip"
-                      className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow-lg transition-all disabled:opacity-0 disabled:pointer-events-none"
-                    >
-                      <ChevronLeft size={24} />
-                    </button>
-                    <button
-                      onClick={() =>
-                        setCustomizedCarouselIndex((prev) =>
-                          Math.min(filteredCustomizedPackages.length - cardsPerView, prev + 1)
-                        )
-                      }
-                      disabled={
-                        customizedCarouselIndex >= filteredCustomizedPackages.length - cardsPerView
-                      }
-                      aria-label="Next trip"
-                      className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow-lg transition-all disabled:opacity-0 disabled:pointer-events-none"
-                    >
-                      <ChevronRight size={24} />
-                    </button>
-                  </>
-                )}
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* Section 4: Related Destination Packages */}
+        {/* 5. Related Trips Section */}
         {relatedPackages.length > 0 && (
-          <section className="py-2 bg-white">
-            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="flex flex-col md:flex-row md:items-end justify-between mb-8">
-                <div>
-                  <span className="text-primary font-semibold text-sm uppercase tracking-wider">
-                    Explore More
-                  </span>
-                  <h2 className="text-xl md:text-3xl font-bold text-gray-900 mt-1">
-                    Trending India Tour Packages
-                  </h2>
-                </div>
-                <p className="text-gray-500 text-sm mt-2 md:mt-0">
-                  Showing {relatedPackages.length} Handcrafted Packages
-                </p>
+          <section className="py-10 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
+            <div>
+              <div className="mb-12">
+                <h2 className="text-2xl md:text-4xl font-bold text-slate-900 mb-4">
+                  Related Trips - Other {isCategoryInternational ? 'International' : 'India'} Destinations
+                </h2>
+                <div className="w-20 h-1 bg-primary rounded-full" />
               </div>
 
-              {/* Mobile View: Horizontal Snap Scroll Carousel */}
-              <div className="flex md:hidden overflow-x-auto gap-4 pb-4 -mx-4 px-4 scrollbar-none snap-x snap-mandatory">
+              {/* ✅ MOBILE SCROLLER */}
+              <div className="flex md:hidden gap-4 overflow-x-auto pb-4 scrollbar-hide">
                 {relatedPackages.map((trip) => (
-                  <div
-                    key={trip.id}
-                    className="w-[90%] shrink-0"
-                  >
+                  <div key={`rel-${trip.id}`} className="w-[90%] shrink-0">
                     <TripCard {...trip} />
                   </div>
                 ))}
               </div>
 
-              {/* Desktop View: 3-Column Sliding Carousel */}
               <div className="hidden md:block relative">
-                <div className="overflow-hidden">
-                  <div
-                    className="flex transition-transform duration-500 ease-out"
-                    style={{
-                      transform: `translateX(-${carouselIndex2 * (100 / cardsPerView)}%)`,
-                    }}
+                {/* DESKTOP CAROUSEL */}
+                <div className="relative">
+                  <button
+                    onClick={() => setCarouselIndex2((prev) => Math.max(prev - 1, 0))}
+                    disabled={carouselIndex2 === 0}
+                    className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40 cursor-pointer"
                   >
-                    {relatedPackages.map((trip) => (
-                      <div
-                        key={trip.id}
-                        className="shrink-0 basis-1/3 p-2"
-                      >
-                        <TripCard {...trip} />
-                      </div>
-                    ))}
+                    <ChevronLeft size={20} />
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      const maxIndex = Math.max(0, relatedPackages.length - cardsPerView)
+                      setCarouselIndex2((prev) => Math.min(prev + 1, maxIndex))
+                    }}
+                    disabled={carouselIndex2 === Math.max(0, relatedPackages.length - cardsPerView)}
+                    className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 backdrop-blur-md w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition disabled:opacity-40 cursor-pointer"
+                  >
+                    <ChevronRight size={20} />
+                  </button>
+
+                  <div className="overflow-hidden">
+                    <div
+                      className="flex transition-transform duration-500 ease-in-out"
+                      style={{
+                        transform: `translateX(-${carouselIndex2 * (100 / cardsPerView)}%)`,
+                      }}
+                    >
+                      {relatedPackages.map((trip) => (
+                        <div key={`rel-card-${trip.id}`} className="shrink-0 basis-1/3 p-2">
+                          <TripCard {...trip} />
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
-
-                {relatedPackages.length > cardsPerView && (
-                  <>
-                    <button
-                      onClick={() =>
-                        setCarouselIndex2((prev) => Math.max(0, prev - 1))
-                      }
-                      disabled={carouselIndex2 === 0}
-                      aria-label="Previous trip"
-                      className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow-lg transition-all disabled:opacity-0 disabled:pointer-events-none"
-                    >
-                      <ChevronLeft size={24} />
-                    </button>
-                    <button
-                      onClick={() =>
-                        setCarouselIndex2((prev) =>
-                          Math.min(relatedPackages.length - cardsPerView, prev + 1)
-                        )
-                      }
-                      disabled={
-                        carouselIndex2 >= relatedPackages.length - cardsPerView
-                      }
-                      aria-label="Next trip"
-                      className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow-lg transition-all disabled:opacity-0 disabled:pointer-events-none"
-                    >
-                      <ChevronRight size={24} />
-                    </button>
-                  </>
-                )}
               </div>
             </div>
           </section>

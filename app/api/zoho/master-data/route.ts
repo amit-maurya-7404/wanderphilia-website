@@ -304,10 +304,10 @@ export async function GET(req: NextRequest) {
       const rooms: any[] = [];
       const subform = Array.isArray(fullRecord.Room_Rates_Pricing) ? fullRecord.Room_Rates_Pricing : [];
       subform.forEach((r: any) => {
-        // Base Price from Base_Price, Base_Price_INR, or Price_Per_Night
-        const basePrice = Number(r.Base_Price) || Number(r.Base_Price_INR) || Number(r.Price_Per_Night) || 0;
-        const extraBed = Number(r.Extra_Bed) || Number(r.Extra_Bed_INR) || Number(r.Extra_Bed_Price) || 0;
-        const childWithoutBed = Number(r.Child_without_bed) || 0;
+        // Base Price from Base_Price, Base_Price_INR, Price_Per_Night, Double_Occupancy, etc.
+        const basePrice = Number(r.Base_Price) || Number(r.Base_Price_INR) || Number(r.Price_Per_Night) || Number(r.Base_price) || Number(r.Price) || Number(r.Rate) || Number(r.Double_Occupancy) || Number(r.Double_Occupancy_Cost) || Number(r.CP_Plan) || Number(r.MAP_Plan) || Number(r.Cost) || 0;
+        const extraBed = Number(r.Extra_Bed) || Number(r.Extra_Bed_INR) || Number(r.Extra_Bed_Price) || Number(r.Extra_Bed_Cost) || Number(r.Extra_bed) || 0;
+        const childWithoutBed = Number(r.Child_without_bed) || Number(r.Child_Without_Bed) || Number(r.Child_Without_Bed_Cost) || Number(r.Child_without_Bed) || 0;
         const pricePerNight = Number(r.Price_Per_Night) || basePrice;
 
         // Exact room category name from Zoho CRM subform
@@ -324,8 +324,25 @@ export async function GET(req: NextRequest) {
         });
       });
 
+      // Fallback if hotel has no subform rows but has root pricing
+      if (rooms.length === 0) {
+        const rootBase = Number(fullRecord.Base_Price) || Number(fullRecord.Price_Per_Night) || Number(fullRecord.Starting_Price) || Number(fullRecord.Price) || Number(fullRecord.Rate) || Number(item.Base_Price) || Number(item.Price_Per_Night) || 0;
+        if (rootBase > 0) {
+          rooms.push({
+            roomCategory: 'Standard Room',
+            basePrice: rootBase,
+            pricePerNight: rootBase,
+            extraBedPrice: Number(fullRecord.Extra_Bed) || Number(item.Extra_Bed) || 0,
+            childWithoutBed: Number(fullRecord.Child_without_bed) || Number(item.Child_without_bed) || 0,
+            description: ''
+          });
+        }
+      }
+
       // Sort rooms ascending by basePrice so lowest price room category is automatically first!
       rooms.sort((a, b) => (a.basePrice || 0) - (b.basePrice || 0));
+
+      const lowestRoom = rooms[0];
 
       hotelsByCity[cityKey].push({
         id: item.id,
@@ -335,6 +352,10 @@ export async function GET(req: NextRequest) {
         category,
         starRating: String(fullRecord.Hotel_Star_Rating || item.Hotel_Star_Rating || '').trim(),
         description: String(fullRecord.Description || item.Description || '').trim(),
+        basePrice: lowestRoom?.basePrice || 0,
+        extraBedPrice: lowestRoom?.extraBedPrice || 0,
+        childWithoutBedPrice: lowestRoom?.childWithoutBed || 0,
+        roomCategory: lowestRoom?.roomCategory || '',
         rooms
       });
     });

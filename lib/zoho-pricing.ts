@@ -381,7 +381,7 @@ export async function calculateLeadPricingAndItinerary1(
                   if (rowChildBed > 0.0) {
                     childNoBedRate = rowChildBed;
                   }
-                  if (targetCat !== '' && rowCat.toLowerCase() === targetCat.toLowerCase() && rowPrice > 0.0) {
+                  if (targetCat !== '' && (rowCat.toLowerCase() === targetCat.toLowerCase() || rowCat.toLowerCase().includes(targetCat.toLowerCase()) || targetCat.toLowerCase().includes(rowCat.toLowerCase())) && rowPrice > 0.0) {
                     matchedRate = rowPrice;
                     break;
                   }

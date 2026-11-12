@@ -1,9 +1,9 @@
 export const sectionMappings: Record<string, Record<string, string[]>> = {
   'rajasthan': {
     available: ['WNDPI-RAJ-001'],
-    group: [],
+    group: ['WNDPI-RAJ-001'],
     family: ['WNDPI-RAJ-001'],
-    honeymoon: [],
+    honeymoon: ['WNDPI-RAJ-001'],
     custom: ['WNDPI-RAJ-001'],
     related: ['22', '19', '1']
   },
@@ -17,7 +17,7 @@ export const sectionMappings: Record<string, Record<string, string[]>> = {
   },
   'kashmir': {
     available: ['22'],
-    group: [],
+    group: ['22'],
     family: ['22'],
     honeymoon: ['22'],
     custom: ['22'],
@@ -25,24 +25,24 @@ export const sectionMappings: Record<string, Record<string, string[]>> = {
   },
   'switzerland': {
     available: ['1', '9'],
-    group: [],
+    group: ['1'],
     family: ['10', '11'],
-    honeymoon: [],
+    honeymoon: ['9'],
     custom: ['12', '13'],
     related: ['14', '15']
   },
   'indonesia': {
     available: ['1', '17'],
-    group: [],
+    group: ['1'],
     family: ['18', '19'],
-    honeymoon: [],
+    honeymoon: ['17'],
     custom: ['20', '21'],
     related: ['22', '23']
   },
   'bali': {
     available: ['57', '58', '59', '60'],
     group: ['57'],
-    family: ['57'],
+    family: ['57', '60'],
     honeymoon: ['58', '59'],
     custom: ['58', '59', '60'],
     related: ['23', '40', '31']
@@ -51,79 +51,79 @@ export const sectionMappings: Record<string, Record<string, string[]>> = {
     available: ['15', '16', '17', '18'],
     group: ['15', '16'],
     family: ['15', '17'],
-    honeymoon: [],
+    honeymoon: ['16', '18'],
     custom: ['16', '18'],
     related: ['59', '23']
   },
   'himachal': {
     available: ['19', '20', '21'],
     group: ['19', '20'],
-    family: ['19', '20'],
+    family: ['19', '20', '21'],
     honeymoon: ['21'],
     custom: ['21'],
     related: ['38', '39']
   },
   'iceland': {
     available: ['1', '41'],
-    group: [],
+    group: ['1'],
     family: ['42', '43'],
-    honeymoon: [],
+    honeymoon: ['41'],
     custom: ['44', '45'],
     related: ['46', '47']
   },
   'japan': {
     available: ['1', '49'],
-    group: [],
+    group: ['1'],
     family: ['50', '51'],
-    honeymoon: [],
+    honeymoon: ['49'],
     custom: ['52', '53'],
     related: ['54', '55']
   },
   'meghalaya': {
     available: ['meghalaya-kaziranga-7n-8d'],
-    group: [],
+    group: ['meghalaya-kaziranga-7n-8d'],
     family: ['meghalaya-kaziranga-7n-8d'],
-    honeymoon: [],
+    honeymoon: ['meghalaya-kaziranga-7n-8d'],
     custom: ['meghalaya-kaziranga-7n-8d'],
     related: ['WNDPI-RAJ-001', '1']
   },
   'nepal': {
     available: ['1', '77'],
-    group: [],
+    group: ['1'],
     family: ['78', '79'],
-    honeymoon: [],
+    honeymoon: ['77'],
     custom: ['80', '81'],
     related: ['82', '83']
   },
   'singapore': {
     available: ['23'],
-    group: [],
+    group: ['23'],
     family: ['23'],
-    honeymoon: [],
+    honeymoon: ['23'],
     custom: ['23'],
     related: ['1', '15']
   },
   'peru': {
     available: ['1', '85'],
-    group: [],
+    group: ['1'],
     family: ['86', '87'],
-    honeymoon: [],
+    honeymoon: ['85'],
     custom: ['88', '89'],
     related: ['90', '91']
   },
   'spiti': {
     available: ['WNDPI-WSP-001', 'WNDPI-SSP-001', 'WNDPI-SSP-002', 'WNDPI-SSP-003', 'WNDPI-SSP-004'],
     group: ['WNDPI-WSP-001', 'WNDPI-SSP-001'],
-    family: ['WNDPI-WSP-001', 'WNDPI-SSP-001', 'WNDPI-SSP-002', 'WNDPI-SSP-003', 'WNDPI-SSP-004'],
-    honeymoon: [],
-    custom: [],
+    family: ['WNDPI-SSP-001', 'WNDPI-SSP-002', 'WNDPI-SSP-003'],
+    honeymoon: ['WNDPI-SSP-002', 'WNDPI-SSP-004'],
+    custom: ['WNDPI-SSP-003', 'WNDPI-SSP-004'],
     related: ['19', '20', '1']
   },
   'sikkim': {
     available: ['24', '25', '26', '27', '28'],
     group: ['24', '26'],
-    family: ['24', '26'],
-    honeymoon: ['25'],
+    family: ['24', '26', '27'],
+    honeymoon: ['25', '28'],
     custom: ['25', '27', '28'],
     related: ['1', '10', '22']
   },
@@ -139,25 +139,25 @@ export const sectionMappings: Record<string, Record<string, string[]>> = {
     available: ['61', '62', '63', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56'],
     group: ['61', '62', '63', '40', '41', '42', '43', '44', '45', '46'],
     family: ['53', '54', '55', '56'],
-    honeymoon: ['41', '42', '43', '44'],
+    honeymoon: ['41', '42', '43', '44', '47', '48'],
     custom: ['47', '48', '49', '50', '51', '52'],
     related: ['39', '1']
   },
   'sri-lanka': {
     available: ['sri-lanka-7n-8d'],
-    group: [],
+    group: ['sri-lanka-7n-8d'],
     family: ['sri-lanka-7n-8d'],
-    honeymoon: [],
+    honeymoon: ['sri-lanka-7n-8d'],
     custom: ['sri-lanka-7n-8d'],
     related: ['40', '61', '31']
   },
   // Default fallback
   default: {
     available: ['1'],
-    group: [],
-    family: [],
-    honeymoon: [],
-    custom: [],
+    group: ['1'],
+    family: ['1'],
+    honeymoon: ['1'],
+    custom: ['1'],
     related: []
   }
 };

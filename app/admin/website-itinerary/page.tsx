@@ -7,6 +7,14 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 import { trips as staticTrips } from '@/lib/data';
 import {
+  POPULAR_INCLUSIONS_PRESETS,
+  POPULAR_EXCLUSIONS_PRESETS,
+  buildDynamicDefaultInclusions,
+  buildDynamicDefaultExclusions,
+  cleanInclusionItem,
+  extractCleanExperienceTitle
+} from '@/lib/itinerary-inclusions';
+import {
   Sparkles,
   ArrowLeft,
   RefreshCw,
@@ -46,7 +54,12 @@ import {
   X,
   ImageIcon,
   FolderOpen,
-  Pencil
+  Pencil,
+  RotateCcw,
+  ArrowUp,
+  ArrowDown,
+  XCircle,
+  ListChecks
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -260,24 +273,29 @@ function WebsiteItineraryInner() {
   const [hotelStays, setHotelStays] = useState<HotelStayRow[]>([]);
   const [globalHotelCategory, setGlobalHotelCategory] = useState<string>('Deluxe');
   const [globalMealPlan, setGlobalMealPlan] = useState<string>('MAPAI');
+  const [vehicleType, setVehicleType] = useState<string>('Private AC Vehicle');
 
-  // Inclusions & Exclusions
-  const [inclusions, setInclusions] = useState<string[]>([
-    'Accommodation on sharing basis as per selected package & hotel category',
-    'Buffet Breakfast & Dinner as mentioned in the day-by-day plan',
-    'All inner line permits, environmental fees, wildlife charges & border entry passes',
-    'Dedicated Tempo Traveller / SUV vehicle for entire trip with fuel, toll & parking',
-    'Professional Trip Captain / Tour Guide & 24/7 on-ground assistance',
-    'First-aid medical kit and emergency oxygen cylinder on board'
-  ]);
+  // Inclusions & Exclusions State (Matching Sheet-Itinerary Standard)
+  const [inclusions, setInclusions] = useState<string[]>(() =>
+    buildDynamicDefaultInclusions({
+      destination: 'Rajasthan',
+      tripType: 'India',
+      tourType: 'Customized',
+      vehicleType: 'Private AC Vehicle',
+      mealPlan: 'MAPAI',
+      noOfNights: 5
+    })
+  );
 
-  const [exclusions, setExclusions] = useState<string[]>([
-    'Airfare / Train tickets to and from the starting hub',
-    '5% GST / TCS as applicable',
-    'Lunches, snacks and extra personal beverages',
-    'Adventure activities (ATV Ride, River Rafting, Camel Safari, Paragliding, etc.)',
-    'Personal expenses, room heater charges, tips or personal travel insurance'
-  ]);
+  const [exclusions, setExclusions] = useState<string[]>(() =>
+    buildDynamicDefaultExclusions({
+      mealPlan: 'MAPAI',
+      tripType: 'India'
+    })
+  );
+  const [isCustomInclusionsEdited, setIsCustomInclusionsEdited] = useState(false);
+  const [newInclusionText, setNewInclusionText] = useState('');
+  const [newExclusionText, setNewExclusionText] = useState('');
 
   // Interactive Visual Batch Calendar State
   const [currentCalendarDate, setCurrentCalendarDate] = useState(new Date(2026, 4, 1)); // Default May 2026
@@ -387,10 +405,13 @@ function WebsiteItineraryInner() {
             setHighlights(tripData.highlights);
           }
           if (Array.isArray(tripData.included) || Array.isArray(tripData.inclusions)) {
-            setInclusions(tripData.included || tripData.inclusions);
+            const rawIncs = (tripData.included || tripData.inclusions) as string[];
+            setInclusions(rawIncs.map(cleanInclusionItem));
+            setIsCustomInclusionsEdited(true);
           }
           if (Array.isArray(tripData.notIncluded) || Array.isArray(tripData.exclusions)) {
             setExclusions(tripData.notIncluded || tripData.exclusions);
+            setIsCustomInclusionsEdited(true);
           }
           if (Array.isArray(tripData.batchDates)) setBatchDates(tripData.batchDates);
           if (tripData.placements) setPlacements(tripData.placements);
@@ -808,6 +829,32 @@ function WebsiteItineraryInner() {
         }
       }))
     );
+
+    const hasLunchPlan = /lunch|all\s*meals|apai/i.test(planCode);
+    const newMealLine = hasLunchPlan
+      ? `Meals ${planCode} (Breakfast, Lunch & Dinner as per itinerary schedule).`
+      : (planCode === 'EPAI' ? 'Meals not included (Room Only EP Plan).' : `Meals ${planCode} (Breakfast except 1st Day, Dinner on last day).`);
+
+    setInclusions(prev => {
+      const idx = prev.findIndex(item => /^meals\b/i.test(item.trim()) || /breakfast/i.test(item));
+      if (idx !== -1) {
+        const copy = [...prev];
+        copy[idx] = newMealLine;
+        return copy;
+      }
+      return [...prev, newMealLine];
+    });
+
+    setExclusions(prev => {
+      return prev.map(exc => {
+        if (/lunch/i.test(exc)) {
+          return hasLunchPlan
+            ? `Any additional meals, snacks, or alcoholic drinks not mentioned in the Package Inclusions.`
+            : `Any lunch or additional meals not mentioned in the Package Inclusions.`;
+        }
+        return exc;
+      });
+    });
   };
 
   // Apply Global Hotel Category
@@ -1008,6 +1055,7 @@ function WebsiteItineraryInner() {
       }
     ]);
     setSaveSuccessMsg('✏️ Manual Mode Active: Fill in your custom itinerary details below.');
+    setIsCustomInclusionsEdited(false);
     setTimeout(() => setSaveSuccessMsg(null), 3500);
   };
 
@@ -1077,10 +1125,14 @@ function WebsiteItineraryInner() {
         })));
       }
       if (Array.isArray(data.inclusions) && data.inclusions.length > 0) {
-        setInclusions(data.inclusions);
+        setInclusions(data.inclusions.map(cleanInclusionItem));
+        setIsCustomInclusionsEdited(true);
+      } else {
+        setIsCustomInclusionsEdited(false);
       }
       if (Array.isArray(data.exclusions) && data.exclusions.length > 0) {
         setExclusions(data.exclusions);
+        setIsCustomInclusionsEdited(true);
       }
       if (Array.isArray(data.batchDates) && data.batchDates.length > 0) {
         setBatchDates(data.batchDates);
@@ -1697,6 +1749,7 @@ function WebsiteItineraryInner() {
         setGroupSize(Number(itin.groupSize));
       }
 
+      setIsCustomInclusionsEdited(false);
       setSaveSuccessMsg(`Successfully imported "${itin.name}" with full logistics!`);
       setTimeout(() => setSaveSuccessMsg(null), 4000);
     } catch (err: any) {
@@ -1861,6 +1914,159 @@ function WebsiteItineraryInner() {
     });
   };
 
+  // Auto-sync Inclusions & Exclusions when itinerary parameters change (unless manually customized)
+  useEffect(() => {
+    if (isCustomInclusionsEdited || loadingEditTrip) return;
+
+    const primaryRoom = hotelStays[0]?.roomCategory || globalHotelCategory || 'Deluxe Room';
+    const dynInc = buildDynamicDefaultInclusions({
+      destination,
+      tripType,
+      tourType,
+      vehicleType,
+      mealPlan: globalMealPlan,
+      noOfNights: durationNights,
+      roomCategory: primaryRoom,
+      masterHotelCategory: globalHotelCategory,
+      dayPlans
+    });
+    const dynExc = buildDynamicDefaultExclusions({
+      mealPlan: globalMealPlan,
+      tripType
+    });
+    setInclusions(dynInc);
+    setExclusions(dynExc);
+  }, [
+    destination,
+    tripType,
+    tourType,
+    vehicleType,
+    globalMealPlan,
+    durationNights,
+    hotelStays,
+    globalHotelCategory,
+    dayPlans,
+    isCustomInclusionsEdited,
+    loadingEditTrip
+  ]);
+
+  // Inclusions Action Handlers
+  const handleAddInclusion = (textToAdd?: string) => {
+    const text = (textToAdd !== undefined ? textToAdd : newInclusionText).trim();
+    if (!text) return;
+    setInclusions(prev => (prev.includes(text) ? prev : [...prev, text]));
+    if (textToAdd === undefined) setNewInclusionText('');
+    setIsCustomInclusionsEdited(true);
+  };
+
+  const handleUpdateInclusion = (index: number, newText: string) => {
+    setInclusions(prev => {
+      const copy = [...prev];
+      copy[index] = newText;
+      return copy;
+    });
+    setIsCustomInclusionsEdited(true);
+  };
+
+  const handleRemoveInclusion = (index: number) => {
+    setInclusions(prev => prev.filter((_, i) => i !== index));
+    setIsCustomInclusionsEdited(true);
+  };
+
+  const handleMoveInclusion = (index: number, direction: 'up' | 'down') => {
+    setInclusions(prev => {
+      if ((direction === 'up' && index === 0) || (direction === 'down' && index === prev.length - 1)) {
+        return prev;
+      }
+      const targetIndex = direction === 'up' ? index - 1 : index + 1;
+      const copy = [...prev];
+      const temp = copy[index];
+      copy[index] = copy[targetIndex];
+      copy[targetIndex] = temp;
+      return copy;
+    });
+    setIsCustomInclusionsEdited(true);
+  };
+
+  const handleClearAllInclusions = () => {
+    setInclusions([]);
+    setIsCustomInclusionsEdited(true);
+  };
+
+  // Exclusions Action Handlers
+  const handleAddExclusion = (textToAdd?: string) => {
+    const text = (textToAdd !== undefined ? textToAdd : newExclusionText).trim();
+    if (!text) return;
+    setExclusions(prev => (prev.includes(text) ? prev : [...prev, text]));
+    if (textToAdd === undefined) setNewExclusionText('');
+    setIsCustomInclusionsEdited(true);
+  };
+
+  const handleUpdateExclusion = (index: number, newText: string) => {
+    setExclusions(prev => {
+      const copy = [...prev];
+      copy[index] = newText;
+      return copy;
+    });
+    setIsCustomInclusionsEdited(true);
+  };
+
+  const handleRemoveExclusion = (index: number) => {
+    setExclusions(prev => prev.filter((_, i) => i !== index));
+    setIsCustomInclusionsEdited(true);
+  };
+
+  const handleMoveExclusion = (index: number, direction: 'up' | 'down') => {
+    setExclusions(prev => {
+      if ((direction === 'up' && index === 0) || (direction === 'down' && index === prev.length - 1)) {
+        return prev;
+      }
+      const targetIndex = direction === 'up' ? index - 1 : index + 1;
+      const copy = [...prev];
+      const temp = copy[index];
+      copy[index] = copy[targetIndex];
+      copy[targetIndex] = temp;
+      return copy;
+    });
+    setIsCustomInclusionsEdited(true);
+  };
+
+  const handleClearAllExclusions = () => {
+    setExclusions([]);
+    setIsCustomInclusionsEdited(true);
+  };
+
+  // Reset to Dynamic Smart Defaults
+  const handleRegenerateDefaults = () => {
+    const primaryRoom = hotelStays[0]?.roomCategory || globalHotelCategory || 'Deluxe Room';
+    const dynInc = buildDynamicDefaultInclusions({
+      destination,
+      tripType,
+      tourType,
+      vehicleType,
+      mealPlan: globalMealPlan,
+      noOfNights: durationNights,
+      roomCategory: primaryRoom,
+      masterHotelCategory: globalHotelCategory,
+      dayPlans
+    });
+    const dynExc = buildDynamicDefaultExclusions({
+      mealPlan: globalMealPlan,
+      tripType
+    });
+    setInclusions(dynInc);
+    setExclusions(dynExc);
+    setIsCustomInclusionsEdited(false);
+  };
+
+  // Clean all inclusions to experience titles only (strips descriptions)
+  const handleCleanAllInclusionsToTitles = () => {
+    setInclusions(prev => prev.map(cleanInclusionItem));
+    setIsCustomInclusionsEdited(true);
+    setSaveSuccessMsg('✨ Trimmed all experiences to Titles Only!');
+    setTimeout(() => setSaveSuccessMsg(null), 3000);
+  };
+
   // Build Final Trip Payload
   const buildTripPayload = () => {
     const cleanId = slug.toUpperCase().replace(/[^A-Z0-9]/g, '-');
@@ -1920,8 +2126,8 @@ function WebsiteItineraryInner() {
       })),
       itinerary,
       costingDetails: activeCostingDetails,
-      included: inclusions.filter(i => i.trim().length > 0),
-      inclusions: inclusions.filter(i => i.trim().length > 0),
+      included: inclusions.filter(i => i.trim().length > 0).map(cleanInclusionItem),
+      inclusions: inclusions.filter(i => i.trim().length > 0).map(cleanInclusionItem),
       notIncluded: exclusions.filter(e => e.trim().length > 0),
       exclusions: exclusions.filter(e => e.trim().length > 0),
       accommodations: hotelStays.map(s => ({
@@ -2001,6 +2207,9 @@ function WebsiteItineraryInner() {
 
   // Submit / Save to MongoDB with Strict Compulsory Fields Validation
   const handleSaveToMongoDB = async () => {
+    // Ensure all inclusions only have clean titles before validation & save
+    setInclusions(prev => prev.map(cleanInclusionItem));
+
     const errors = getValidationErrors();
     if (errors.length > 0) {
       setValidationErrors(errors);
@@ -3646,84 +3855,371 @@ function WebsiteItineraryInner() {
         </section>
 
         {/* 8. Inclusions & Exclusions */}
-        <section className="bg-slate-900/90 border border-slate-800/80 rounded-2xl p-6 shadow-xl space-y-4">
-          <div className="flex items-center gap-2">
-            <ShieldCheck className="w-4 h-4 text-emerald-400" />
-            <h2 className="text-base font-bold text-white tracking-tight">Inclusions & Exclusions</h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <label className="text-xs font-bold text-emerald-400 uppercase tracking-wider">
-                  What's Included
-                </label>
-                <button
-                  type="button"
-                  onClick={() => setInclusions([...inclusions, ''])}
-                  className="text-xs text-orange-400 hover:text-orange-300 flex items-center gap-1 cursor-pointer"
-                >
-                  <Plus className="w-3 h-3" /> Add Inclusion
-                </button>
+        <section className="bg-slate-900/90 border border-slate-800/80 rounded-2xl p-6 shadow-xl space-y-5">
+          {/* Section Header */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-800">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                <ShieldCheck className="w-5 h-5" />
               </div>
-              <div className="space-y-2">
-                {inclusions.map((inc, idx) => (
-                  <div key={idx} className="flex items-center gap-2">
-                    <Input
-                      value={inc}
-                      onChange={(e) => {
-                        const copy = [...inclusions];
-                        copy[idx] = e.target.value;
-                        setInclusions(copy);
-                      }}
-                      className="bg-slate-950 border-slate-800 text-white text-xs py-1.5"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setInclusions(inclusions.filter((_, i) => i !== idx))}
-                      className="text-slate-500 hover:text-red-400 p-1 cursor-pointer"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                ))}
+              <div>
+                <h2 className="text-base font-bold text-white tracking-tight flex items-center gap-2">
+                  8. Inclusions & Exclusions
+                </h2>
+                <p className="text-xs text-slate-400">
+                  Comprehensive package inclusions and transparent exclusions displayed on the trip page.
+                </p>
               </div>
             </div>
 
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <label className="text-xs font-bold text-red-400 uppercase tracking-wider">
-                  What's Excluded
-                </label>
-                <button
-                  type="button"
-                  onClick={() => setExclusions([...exclusions, ''])}
-                  className="text-xs text-orange-400 hover:text-orange-300 flex items-center gap-1 cursor-pointer"
-                >
-                  <Plus className="w-3 h-3" /> Add Exclusion
-                </button>
-              </div>
-              <div className="space-y-2">
-                {exclusions.map((exc, idx) => (
-                  <div key={idx} className="flex items-center gap-2">
-                    <Input
-                      value={exc}
-                      onChange={(e) => {
-                        const copy = [...exclusions];
-                        copy[idx] = e.target.value;
-                        setExclusions(copy);
-                      }}
-                      className="bg-slate-950 border-slate-800 text-white text-xs py-1.5"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setExclusions(exclusions.filter((_, i) => i !== idx))}
-                      className="text-slate-500 hover:text-red-400 p-1 cursor-pointer"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
+            {/* Status & Smart Reset */}
+            <div className="flex flex-wrap items-center gap-2">
+              {isCustomInclusionsEdited ? (
+                <span className="text-[11px] font-bold text-amber-300 bg-amber-500/10 border border-amber-500/30 px-3 py-1.5 rounded-xl flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+                  Custom Edited ({inclusions.length} Inc • {exclusions.length} Exc)
+                </span>
+              ) : (
+                <span className="text-[11px] font-bold text-emerald-300 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1.5 rounded-xl flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+                  Auto-Synced with Itinerary ({inclusions.length} Inc • {exclusions.length} Exc)
+                </span>
+              )}
+
+              <button
+                type="button"
+                onClick={handleCleanAllInclusionsToTitles}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-amber-300 hover:text-amber-200 text-xs font-bold rounded-xl border border-slate-700 transition-all hover:shadow-xs active:scale-95 cursor-pointer"
+                title="Trim experience descriptions from all inclusions and leave only clean titles"
+              >
+                <Wand2 className="w-3.5 h-3.5 text-amber-400" />
+                Titles Only
+              </button>
+
+              <button
+                type="button"
+                onClick={handleRegenerateDefaults}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl border border-slate-700 transition-all hover:shadow-xs active:scale-95 cursor-pointer"
+                title="Reset to dynamic smart defaults based on destination, vehicle, hotel category, meal plan & day plans"
+              >
+                <RotateCcw className="w-3.5 h-3.5 text-slate-400" />
+                Reset to Smart Defaults
+              </button>
+            </div>
+          </div>
+
+          {/* Quick Vehicle Framing Selector */}
+          <div className="bg-slate-950/70 border border-slate-800/80 rounded-xl p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <Car className="w-4 h-4 text-orange-400" />
+              <label className="text-xs font-semibold text-slate-300">
+                Vehicle Framing for Inclusions:
+              </label>
+            </div>
+            <div className="flex items-center gap-2">
+              <Input
+                type="text"
+                value={vehicleType}
+                onChange={e => {
+                  setVehicleType(e.target.value);
+                  setIsCustomInclusionsEdited(false);
+                }}
+                placeholder="e.g. Private AC Vehicle / Dedicated Tempo Traveller"
+                className="bg-slate-900 border-slate-700 text-white text-xs h-8 sm:w-80"
+              />
+              <span className="text-[11px] text-slate-500 shrink-0">
+                (updates transport inclusion)
+              </span>
+            </div>
+          </div>
+
+          {/* Inclusions & Exclusions 2-Column Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* --- INCLUSIONS COLUMN --- */}
+            <div className="bg-emerald-950/20 border border-emerald-900/50 rounded-2xl p-4 sm:p-5 flex flex-col gap-4">
+              {/* Column Header */}
+              <div className="flex items-center justify-between gap-2 pb-3 border-b border-emerald-900/60">
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-lg bg-emerald-600 text-white flex items-center justify-center shadow-xs">
+                    <CheckCircle2 className="w-4 h-4" />
                   </div>
-                ))}
+                  <span className="font-bold text-xs sm:text-sm text-emerald-300 uppercase tracking-wide">
+                    What's Included
+                  </span>
+                  <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-900/60 text-emerald-300 border border-emerald-700/60">
+                    {inclusions.length} Points
+                  </span>
+                </div>
+
+                {inclusions.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={handleClearAllInclusions}
+                    className="text-[11px] text-slate-400 hover:text-rose-400 font-semibold transition-colors cursor-pointer"
+                    title="Clear all inclusions"
+                  >
+                    Clear All
+                  </button>
+                )}
+              </div>
+
+              {/* Quick Add Presets */}
+              <div>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400/90 block mb-2">
+                  Quick Add Inclusions Presets:
+                </span>
+                <div className="flex flex-wrap gap-1.5">
+                  {POPULAR_INCLUSIONS_PRESETS.map((preset, pIdx) => {
+                    const isAdded = inclusions.some(item => item.toLowerCase() === preset.toLowerCase());
+                    return (
+                      <button
+                        key={pIdx}
+                        type="button"
+                        onClick={() => handleAddInclusion(preset)}
+                        disabled={isAdded}
+                        className={`text-[11px] px-2.5 py-1 rounded-lg font-semibold border transition-all flex items-center gap-1 ${
+                          isAdded
+                            ? 'bg-emerald-900/40 border-emerald-700/60 text-emerald-300 cursor-default opacity-75'
+                            : 'bg-slate-900/80 hover:bg-emerald-950/60 border-slate-800 hover:border-emerald-700/60 text-slate-300 hover:text-emerald-200 cursor-pointer shadow-xs active:scale-95'
+                        }`}
+                      >
+                        {isAdded ? <Check className="w-3 h-3 text-emerald-400 stroke-[3]" /> : <Plus className="w-3 h-3 text-emerald-500" />}
+                        {preset}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Inclusions List */}
+              <div className="space-y-2.5 flex-1">
+                {inclusions.length === 0 ? (
+                  <div className="text-center py-6 px-4 bg-slate-950/40 border border-dashed border-emerald-900/60 rounded-xl text-xs text-slate-400">
+                    No inclusions listed yet. Click presets above or enter custom points below.
+                  </div>
+                ) : (
+                  inclusions.map((item, idx) => (
+                    <div
+                      key={idx}
+                      className="bg-slate-950/90 border border-emerald-900/40 hover:border-emerald-700/70 rounded-xl p-2.5 flex items-start gap-2 shadow-xs transition-all group focus-within:ring-1 focus-within:ring-emerald-500/50 focus-within:border-emerald-500"
+                    >
+                      <span className="w-5 h-5 rounded-full bg-emerald-600 text-white font-bold text-[10px] flex items-center justify-center shrink-0 mt-1 shadow-xs">
+                        {idx + 1}
+                      </span>
+
+                      <textarea
+                        rows={Math.max(1, Math.min(3, Math.ceil((item.length || 1) / 50)))}
+                        value={item}
+                        onChange={e => handleUpdateInclusion(idx, e.target.value)}
+                        placeholder="Describe included item..."
+                        className="flex-1 text-xs text-slate-200 font-medium bg-transparent border-0 focus:outline-none p-1 resize-y leading-relaxed placeholder:text-slate-600"
+                      />
+
+                      {/* Order & Delete Buttons */}
+                      <div className="flex items-center gap-0.5 shrink-0 opacity-70 group-hover:opacity-100 transition-opacity">
+                        <button
+                          type="button"
+                          onClick={() => handleMoveInclusion(idx, 'up')}
+                          disabled={idx === 0}
+                          className={`p-1 rounded hover:bg-slate-800 text-slate-400 ${
+                            idx === 0 ? 'opacity-30 cursor-not-allowed' : 'hover:text-slate-200 cursor-pointer'
+                          }`}
+                          title="Move Up"
+                        >
+                          <ArrowUp className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleMoveInclusion(idx, 'down')}
+                          disabled={idx === inclusions.length - 1}
+                          className={`p-1 rounded hover:bg-slate-800 text-slate-400 ${
+                            idx === inclusions.length - 1 ? 'opacity-30 cursor-not-allowed' : 'hover:text-slate-200 cursor-pointer'
+                          }`}
+                          title="Move Down"
+                        >
+                          <ArrowDown className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveInclusion(idx)}
+                          className="p-1 rounded hover:bg-rose-950 text-slate-500 hover:text-rose-400 transition-colors cursor-pointer ml-0.5"
+                          title="Delete inclusion"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              {/* Add New Inclusion Input */}
+              <div className="pt-2 border-t border-emerald-900/60 flex items-center gap-2">
+                <Input
+                  type="text"
+                  value={newInclusionText}
+                  onChange={e => setNewInclusionText(e.target.value)}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      handleAddInclusion();
+                    }
+                  }}
+                  placeholder="Type new inclusion (press Enter to add)..."
+                  className="bg-slate-950 border-emerald-900/60 text-xs h-9 text-slate-200 placeholder:text-slate-500 font-medium focus-visible:ring-emerald-500"
+                />
+                <Button
+                  type="button"
+                  onClick={() => handleAddInclusion()}
+                  disabled={!newInclusionText.trim()}
+                  className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs h-9 px-3.5 rounded-xl shrink-0 flex items-center gap-1 shadow-xs cursor-pointer"
+                >
+                  <Plus className="w-4 h-4" /> Add
+                </Button>
+              </div>
+            </div>
+
+            {/* --- EXCLUSIONS COLUMN --- */}
+            <div className="bg-rose-950/20 border border-rose-900/50 rounded-2xl p-4 sm:p-5 flex flex-col gap-4">
+              {/* Column Header */}
+              <div className="flex items-center justify-between gap-2 pb-3 border-b border-rose-900/60">
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-lg bg-rose-600 text-white flex items-center justify-center shadow-xs">
+                    <XCircle className="w-4 h-4" />
+                  </div>
+                  <span className="font-bold text-xs sm:text-sm text-rose-300 uppercase tracking-wide">
+                    What's Excluded
+                  </span>
+                  <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-rose-900/60 text-rose-300 border border-rose-700/60">
+                    {exclusions.length} Points
+                  </span>
+                </div>
+
+                {exclusions.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={handleClearAllExclusions}
+                    className="text-[11px] text-slate-400 hover:text-rose-400 font-semibold transition-colors cursor-pointer"
+                    title="Clear all exclusions"
+                  >
+                    Clear All
+                  </button>
+                )}
+              </div>
+
+              {/* Quick Add Presets */}
+              <div>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-rose-400/90 block mb-2">
+                  Quick Add Exclusions Presets:
+                </span>
+                <div className="flex flex-wrap gap-1.5">
+                  {POPULAR_EXCLUSIONS_PRESETS.map((preset, pIdx) => {
+                    const isAdded = exclusions.some(item => item.toLowerCase() === preset.toLowerCase());
+                    return (
+                      <button
+                        key={pIdx}
+                        type="button"
+                        onClick={() => handleAddExclusion(preset)}
+                        disabled={isAdded}
+                        className={`text-[11px] px-2.5 py-1 rounded-lg font-semibold border transition-all flex items-center gap-1 ${
+                          isAdded
+                            ? 'bg-rose-900/40 border-rose-700/60 text-rose-300 cursor-default opacity-75'
+                            : 'bg-slate-900/80 hover:bg-rose-950/60 border-slate-800 hover:border-rose-700/60 text-slate-300 hover:text-rose-200 cursor-pointer shadow-xs active:scale-95'
+                        }`}
+                      >
+                        {isAdded ? <Check className="w-3 h-3 text-rose-400 stroke-[3]" /> : <Plus className="w-3 h-3 text-rose-500" />}
+                        {preset}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Exclusions List */}
+              <div className="space-y-2.5 flex-1">
+                {exclusions.length === 0 ? (
+                  <div className="text-center py-6 px-4 bg-slate-950/40 border border-dashed border-rose-900/60 rounded-xl text-xs text-slate-400">
+                    No exclusions listed yet. Click presets above or enter custom points below.
+                  </div>
+                ) : (
+                  exclusions.map((item, idx) => (
+                    <div
+                      key={idx}
+                      className="bg-slate-950/90 border border-rose-900/40 hover:border-rose-700/70 rounded-xl p-2.5 flex items-start gap-2 shadow-xs transition-all group focus-within:ring-1 focus-within:ring-rose-500/50 focus-within:border-rose-500"
+                    >
+                      <span className="w-5 h-5 rounded-full bg-rose-600 text-white font-bold text-[10px] flex items-center justify-center shrink-0 mt-1 shadow-xs">
+                        {idx + 1}
+                      </span>
+
+                      <textarea
+                        rows={Math.max(1, Math.min(3, Math.ceil((item.length || 1) / 50)))}
+                        value={item}
+                        onChange={e => handleUpdateExclusion(idx, e.target.value)}
+                        placeholder="Describe excluded item..."
+                        className="flex-1 text-xs text-slate-200 font-medium bg-transparent border-0 focus:outline-none p-1 resize-y leading-relaxed placeholder:text-slate-600"
+                      />
+
+                      {/* Order & Delete Buttons */}
+                      <div className="flex items-center gap-0.5 shrink-0 opacity-70 group-hover:opacity-100 transition-opacity">
+                        <button
+                          type="button"
+                          onClick={() => handleMoveExclusion(idx, 'up')}
+                          disabled={idx === 0}
+                          className={`p-1 rounded hover:bg-slate-800 text-slate-400 ${
+                            idx === 0 ? 'opacity-30 cursor-not-allowed' : 'hover:text-slate-200 cursor-pointer'
+                          }`}
+                          title="Move Up"
+                        >
+                          <ArrowUp className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleMoveExclusion(idx, 'down')}
+                          disabled={idx === exclusions.length - 1}
+                          className={`p-1 rounded hover:bg-slate-800 text-slate-400 ${
+                            idx === exclusions.length - 1 ? 'opacity-30 cursor-not-allowed' : 'hover:text-slate-200 cursor-pointer'
+                          }`}
+                          title="Move Down"
+                        >
+                          <ArrowDown className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveExclusion(idx)}
+                          className="p-1 rounded hover:bg-rose-950 text-slate-500 hover:text-rose-400 transition-colors cursor-pointer ml-0.5"
+                          title="Delete exclusion"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              {/* Add New Exclusion Input */}
+              <div className="pt-2 border-t border-rose-900/60 flex items-center gap-2">
+                <Input
+                  type="text"
+                  value={newExclusionText}
+                  onChange={e => setNewExclusionText(e.target.value)}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      handleAddExclusion();
+                    }
+                  }}
+                  placeholder="Type new exclusion (press Enter to add)..."
+                  className="bg-slate-950 border-rose-900/60 text-xs h-9 text-slate-200 placeholder:text-slate-500 font-medium focus-visible:ring-rose-500"
+                />
+                <Button
+                  type="button"
+                  onClick={() => handleAddExclusion()}
+                  disabled={!newExclusionText.trim()}
+                  className="bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs h-9 px-3.5 rounded-xl shrink-0 flex items-center gap-1 shadow-xs cursor-pointer"
+                >
+                  <Plus className="w-4 h-4" /> Add
+                </Button>
               </div>
             </div>
           </div>
