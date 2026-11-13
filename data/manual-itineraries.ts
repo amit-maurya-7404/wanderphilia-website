@@ -5141,7 +5141,7 @@ export const singaporeDeepakManualItinerary: ManualItinerary = {
     }
   ],
   inclusions: [
-    'Indigo Direct Flights – Stretch Plus Seats (Mumbai ↔ Singapore Round-Trip)',
+    'Indigo Direct Flights – Business Class Stretch Plus Seats (Mumbai ↔ Singapore Round-Trip)',
     'Private Airport & Sightseeing Transfers in Mercedes-Benz V Class with Chauffeur',
     'Handpicked Premium Luxury Hotels (Marina Bay Sands)',
     'Daily Breakfast',
