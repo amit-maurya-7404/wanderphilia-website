@@ -330,7 +330,7 @@ export default function MeghalayaPage() {
           <section className="py-10 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
             <div className="mb-12">
               <h2 className="text-2xl md:text-4xl font-bold text-slate-900 mb-4">
-                {categoryName} Group Trips
+                Upcoming Group Trips 2026
               </h2>
               <div className="w-20 h-1 bg-primary rounded-full" />
             </div>
@@ -392,7 +392,7 @@ export default function MeghalayaPage() {
           <section className="py-10 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
             <div className="mb-12">
               <h2 className="text-2xl md:text-4xl font-bold text-slate-900 mb-4">
-                {categoryName} Family Trips
+                Family Curated Experiences
               </h2>
               <div className="w-20 h-1 bg-primary rounded-full" />
             </div>
@@ -454,7 +454,7 @@ export default function MeghalayaPage() {
           <section className="py-10 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
             <div className="mb-12">
               <h2 className="text-2xl md:text-4xl font-bold text-slate-900 mb-4">
-                {categoryName} Couple Trips
+                Couples Romantic Experiences
               </h2>
               <div className="w-20 h-1 bg-primary rounded-full" />
             </div>

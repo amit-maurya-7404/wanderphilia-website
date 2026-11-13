@@ -53,6 +53,11 @@ export function useDestinationTrips(categoryId: string) {
       }
     });
 
+    // For destinations with custom route layouts like leh-ladakh, keep exact mapped packages untouched
+    if (categoryId === 'leh-ladakh') {
+      return combined;
+    }
+
     // Strict section classification to ensure zero cross-contamination:
     // 1. Group Trip section only has verified Group Trips
     // 2. Family Trip section only has verified Family Trips

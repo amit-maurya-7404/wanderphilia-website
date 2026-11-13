@@ -9,11 +9,12 @@ export const sectionMappings: Record<string, Record<string, string[]>> = {
   },
   'leh-ladakh': {
     available: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '29', '30'],
-    group: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '29', '30'],
-    family: [],
-    honeymoon: [],
+    group: ['1', '2', '3', '4', '5'],
+    family: ['1', '2', '3', '4', '5', '6', '29', '30'],
+    honeymoon: ['2', '6'],
     custom: ['7'],
-    related: ['8', '9']
+    related: ['8'],
+    related2: ['9']
   },
   'kashmir': {
     available: ['22'],

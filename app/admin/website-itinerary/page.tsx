@@ -2778,7 +2778,7 @@ function WebsiteItineraryInner() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               <label className="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
                 <input
                   type="checkbox"
@@ -2789,7 +2789,7 @@ function WebsiteItineraryInner() {
                   })}
                   className="rounded accent-[#ff5d09]"
                 />
-                <span>Group Trips</span>
+                <span>Upcoming Group Trips 2026</span>
               </label>
 
               <label className="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
@@ -2802,7 +2802,7 @@ function WebsiteItineraryInner() {
                   })}
                   className="rounded accent-[#ff5d09]"
                 />
-                <span>Family Trips</span>
+                <span>Family Curated Experiences</span>
               </label>
 
               <label className="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
@@ -2815,7 +2815,7 @@ function WebsiteItineraryInner() {
                   })}
                   className="rounded accent-[#ff5d09]"
                 />
-                <span>Couple Trips</span>
+                <span>Couples Romantic Experiences</span>
               </label>
 
               <label className="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
