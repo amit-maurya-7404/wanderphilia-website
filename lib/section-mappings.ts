@@ -1,172 +1,172 @@
 export const sectionMappings: Record<string, Record<string, string[]>> = {
   'rajasthan': {
     available: ['WNDPI-RAJ-001'],
-    group: ['WNDPI-RAJ-001'],
-    family: ['WNDPI-RAJ-001'],
-    honeymoon: ['WNDPI-RAJ-001'],
+    group: [], // Live group trip added dynamically from DB: RANGILO-RAJASTHAN-WANDERPHILIA-GROUP-TRIP-7-NIGHTS
+    family: ['WNDPI-RAJ-001'], // Also includes DB: ROYAL-EXCLUSIVE-RAJASTHAN-EXPERIENCE-JAIPUR-UDAIPUR
+    honeymoon: [],
     custom: ['WNDPI-RAJ-001'],
     related: ['22', '19', '1']
   },
   'leh-ladakh': {
     available: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '29', '30'],
-    group: ['1', '2', '3', '4', '5'],
-    family: ['1', '2', '3', '4', '5', '6', '29', '30'],
-    honeymoon: ['2', '6'],
+    group: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '29', '30'],
+    family: [],
+    honeymoon: [],
     custom: ['7'],
     related: ['8', '9']
   },
   'kashmir': {
     available: ['22'],
     group: ['22'],
-    family: ['22'],
-    honeymoon: ['22'],
-    custom: ['22'],
+    family: [],
+    honeymoon: [],
+    custom: [],
     related: ['19', '10', '1']
   },
   'switzerland': {
-    available: ['1', '9'],
-    group: ['1'],
-    family: ['10', '11'],
-    honeymoon: ['9'],
-    custom: ['12', '13'],
-    related: ['14', '15']
+    available: [],
+    group: [],
+    family: [],
+    honeymoon: [],
+    custom: [],
+    related: []
   },
   'indonesia': {
-    available: ['1', '17'],
-    group: ['1'],
-    family: ['18', '19'],
-    honeymoon: ['17'],
-    custom: ['20', '21'],
-    related: ['22', '23']
+    available: [],
+    group: [],
+    family: [],
+    honeymoon: [],
+    custom: [],
+    related: []
   },
   'bali': {
     available: ['57', '58', '59', '60'],
     group: ['57'],
-    family: ['57', '60'],
-    honeymoon: ['58', '59'],
+    family: [],
+    honeymoon: ['58', '59', '60'],
     custom: ['58', '59', '60'],
     related: ['23', '40', '31']
   },
   'bhutan': {
     available: ['15', '16', '17', '18'],
     group: ['15', '16'],
-    family: ['15', '17'],
-    honeymoon: ['16', '18'],
-    custom: ['16', '18'],
+    family: [],
+    honeymoon: [],
+    custom: ['17', '18'],
     related: ['59', '23']
   },
   'himachal': {
     available: ['19', '20', '21'],
     group: ['19', '20'],
-    family: ['19', '20', '21'],
-    honeymoon: ['21'],
+    family: ['21'],
+    honeymoon: [],
     custom: ['21'],
     related: ['38', '39']
   },
   'iceland': {
-    available: ['1', '41'],
-    group: ['1'],
-    family: ['42', '43'],
-    honeymoon: ['41'],
-    custom: ['44', '45'],
-    related: ['46', '47']
+    available: [],
+    group: [],
+    family: [],
+    honeymoon: [],
+    custom: [],
+    related: []
   },
   'japan': {
-    available: ['1', '49'],
-    group: ['1'],
-    family: ['50', '51'],
-    honeymoon: ['49'],
-    custom: ['52', '53'],
-    related: ['54', '55']
+    available: [],
+    group: [],
+    family: [],
+    honeymoon: [],
+    custom: [],
+    related: []
   },
   'meghalaya': {
     available: ['meghalaya-kaziranga-7n-8d'],
-    group: ['meghalaya-kaziranga-7n-8d'],
+    group: [],
     family: ['meghalaya-kaziranga-7n-8d'],
-    honeymoon: ['meghalaya-kaziranga-7n-8d'],
+    honeymoon: [],
     custom: ['meghalaya-kaziranga-7n-8d'],
     related: ['WNDPI-RAJ-001', '1']
   },
   'nepal': {
-    available: ['1', '77'],
-    group: ['1'],
-    family: ['78', '79'],
-    honeymoon: ['77'],
-    custom: ['80', '81'],
-    related: ['82', '83']
+    available: [],
+    group: [],
+    family: [],
+    honeymoon: [],
+    custom: [],
+    related: []
   },
   'singapore': {
     available: ['23'],
-    group: ['23'],
+    group: [],
     family: ['23'],
-    honeymoon: ['23'],
+    honeymoon: [],
     custom: ['23'],
     related: ['1', '15']
   },
   'peru': {
-    available: ['1', '85'],
-    group: ['1'],
-    family: ['86', '87'],
-    honeymoon: ['85'],
-    custom: ['88', '89'],
-    related: ['90', '91']
+    available: [],
+    group: [],
+    family: [],
+    honeymoon: [],
+    custom: [],
+    related: []
   },
   'spiti': {
     available: ['WNDPI-WSP-001', 'WNDPI-SSP-001', 'WNDPI-SSP-002', 'WNDPI-SSP-003', 'WNDPI-SSP-004'],
-    group: ['WNDPI-WSP-001', 'WNDPI-SSP-001'],
-    family: ['WNDPI-SSP-001', 'WNDPI-SSP-002', 'WNDPI-SSP-003'],
-    honeymoon: ['WNDPI-SSP-002', 'WNDPI-SSP-004'],
+    group: ['WNDPI-WSP-001', 'WNDPI-SSP-001', 'WNDPI-SSP-002', 'WNDPI-SSP-003', 'WNDPI-SSP-004'],
+    family: [],
+    honeymoon: [],
     custom: ['WNDPI-SSP-003', 'WNDPI-SSP-004'],
     related: ['19', '20', '1']
   },
   'sikkim': {
     available: ['24', '25', '26', '27', '28'],
-    group: ['24', '26'],
-    family: ['24', '26', '27'],
+    group: ['27'],
+    family: ['24', '26'],
     honeymoon: ['25', '28'],
-    custom: ['25', '27', '28'],
+    custom: ['24', '26', '28'],
     related: ['1', '10', '22']
   },
   'thailand': {
     available: ['31', '32', '33', '34', '35', '36', '37', '38', '39'],
     group: ['31'],
-    family: ['36', '37', '38', '39'],
-    honeymoon: ['32', '33', '34', '35'],
-    custom: ['32', '33', '34', '35'],
+    family: ['36', '37', '38'],
+    honeymoon: ['32', '33', '34', '35', '39'],
+    custom: ['32', '33', '34', '35', '36', '37', '38', '39'],
     related: ['17', '1']
   },
   'vietnam': {
     available: ['61', '62', '63', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56'],
     group: ['61', '62', '63', '40', '41', '42', '43', '44', '45', '46'],
     family: ['53', '54', '55', '56'],
-    honeymoon: ['41', '42', '43', '44', '47', '48'],
-    custom: ['47', '48', '49', '50', '51', '52'],
+    honeymoon: ['47', '48', '49', '50', '51', '52'],
+    custom: ['47', '48', '49', '50', '51', '52', '53', '54', '55', '56'],
     related: ['39', '1']
   },
   'sri-lanka': {
     available: ['sri-lanka-7n-8d'],
-    group: ['sri-lanka-7n-8d'],
+    group: [],
     family: ['sri-lanka-7n-8d'],
-    honeymoon: ['sri-lanka-7n-8d'],
+    honeymoon: [],
     custom: ['sri-lanka-7n-8d'],
     related: ['40', '61', '31']
   },
   // Default fallback
   default: {
-    available: ['1'],
-    group: ['1'],
-    family: ['1'],
-    honeymoon: ['1'],
-    custom: ['1'],
+    available: [],
+    group: [],
+    family: [],
+    honeymoon: [],
+    custom: [],
     related: []
   }
 };
 
 // Page-specific trip card mappings for standalone pages
 export const pageSectionMappings: Record<string, string[]> = {
-  upcomingTours: ['WNDPI-RAJ-001', '61', '62', '63', '1', '2', '3', '4', '5', '6', '7', '8', '9', '29', '30', '31', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56'],
-  honeymoonPackages: ['2', '6', '21', '22', '25', '32', '33', '34', '35', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56'],
-  featured: ['61', '62', '63', '1', '9', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56']
+  upcomingTours: ['RANGILO-RAJASTHAN-WANDERPHILIA-GROUP-TRIP-7-NIGHTS', '15', '16', '61', '62', '63', '1', '2', '3', '4', '5', '6', '7', '8', '9', '29', '30', '31', '40', '41', '42', '43', '44', '45', '46', '19', '20', '22', '57', 'WNDPI-WSP-001', 'WNDPI-SSP-001', 'WNDPI-SSP-002', 'WNDPI-SSP-003', 'WNDPI-SSP-004'],
+  honeymoonPackages: ['25', '28', '32', '33', '34', '35', '39', '47', '48', '49', '50', '51', '52', '58', '59', '60'],
+  featured: ['61', '62', '63', '1', '9', '40', '31', '57', '22', '19']
 }
 
 // Helper function to get section mapping for a category

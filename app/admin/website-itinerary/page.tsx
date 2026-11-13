@@ -2778,20 +2778,7 @@ function WebsiteItineraryInner() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-              <label className="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={placements.sections.available}
-                  onChange={(e) => setPlacements({
-                    ...placements,
-                    sections: { ...placements.sections, available: e.target.checked }
-                  })}
-                  className="rounded accent-[#ff5d09]"
-                />
-                <span>Available Packages</span>
-              </label>
-
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               <label className="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
                 <input
                   type="checkbox"
@@ -2802,7 +2789,7 @@ function WebsiteItineraryInner() {
                   })}
                   className="rounded accent-[#ff5d09]"
                 />
-                <span>Group Packages</span>
+                <span>Group Trips</span>
               </label>
 
               <label className="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
@@ -2815,7 +2802,7 @@ function WebsiteItineraryInner() {
                   })}
                   className="rounded accent-[#ff5d09]"
                 />
-                <span>Family Packages</span>
+                <span>Family Trips</span>
               </label>
 
               <label className="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
@@ -2828,33 +2815,20 @@ function WebsiteItineraryInner() {
                   })}
                   className="rounded accent-[#ff5d09]"
                 />
-                <span>Honeymoon Packages</span>
+                <span>Couple Trips</span>
               </label>
 
               <label className="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
                 <input
                   type="checkbox"
-                  checked={placements.sections.custom}
+                  checked={placements.sections.available}
                   onChange={(e) => setPlacements({
                     ...placements,
-                    sections: { ...placements.sections, custom: e.target.checked }
+                    sections: { ...placements.sections, available: e.target.checked }
                   })}
                   className="rounded accent-[#ff5d09]"
                 />
-                <span>Customized Packages</span>
-              </label>
-
-              <label className="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={placements.sections.related}
-                  onChange={(e) => setPlacements({
-                    ...placements,
-                    sections: { ...placements.sections, related: e.target.checked }
-                  })}
-                  className="rounded accent-[#ff5d09]"
-                />
-                <span>Related Trips</span>
+                <span>Available Trips (All)</span>
               </label>
             </div>
           </div>

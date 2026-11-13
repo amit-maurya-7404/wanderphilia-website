@@ -54,7 +54,7 @@ export function extractCleanExperienceTitle(raw: string): string {
   if (!text) return '';
 
   // Check if it is logistics or non-experience
-  const isLogistics = /^(arrival|arrive|meet our|complete smooth|hotel check|check-?in|check in|check-?out|complete check|freshen up|departure|return flight|drop-?off|drop off|overnight stay|overnight journey|wake up to|enjoy morning breakfast|board your|meals?|transit|scenic drive)/i.test(text);
+  const isLogistics = /^(upon arrival|arrival|arrive|meet our|complete smooth|hotel check|check-?in|check in|check-?out|complete check|freshen up|departure|return flight|drop-?off|drop off|overnight stay|overnight journey|wake up to|enjoy morning breakfast|board your|meals?|transit|scenic drive|accommodation:|transfer to|in the evening,?\s*board)/i.test(text);
   if (isLogistics) return '';
 
   // Check if en-route
@@ -73,6 +73,9 @@ export function extractCleanExperienceTitle(raw: string): string {
     if (parts[0].trim().length > 0 && parts[0].trim().length < 80) {
       text = parts[0].trim();
     }
+  } else {
+    // If no colon or dash, it is general logistics/narrative sentence, not a structured experience
+    return '';
   }
 
   // Remove any remaining description clause after a colon
@@ -181,21 +184,25 @@ export function buildDynamicDefaultInclusions(params: BuildInclusionsParams): st
   // 2. If dayPlans from website-itinerary
   if (Array.isArray(params.dayPlans)) {
     params.dayPlans.forEach(dp => {
-      if (Array.isArray(dp.timeline)) {
-        dp.timeline.forEach((pt: string) => {
-          const raw = (pt || '').trim();
-          if (raw) {
-            const title = extractCleanExperienceTitle(raw);
-            if (title) {
-              const lower = title.toLowerCase();
-              if (!seen.has(lower) && uniqueExperiences.length < 15) {
-                seen.add(lower);
-                uniqueExperiences.push(title);
-              }
+      const lines: string[] = Array.isArray(dp.description)
+        ? dp.description
+        : (Array.isArray(dp.timeline)
+            ? dp.timeline
+            : (typeof dp.description === 'string' ? dp.description.split('\n') : []));
+
+      lines.forEach((pt: string) => {
+        const raw = (pt || '').trim();
+        if (raw) {
+          const title = extractCleanExperienceTitle(raw);
+          if (title) {
+            const lower = title.toLowerCase();
+            if (!seen.has(lower) && uniqueExperiences.length < 35) {
+              seen.add(lower);
+              uniqueExperiences.push(title);
             }
           }
-        });
-      }
+        }
+      });
     });
   }
 
