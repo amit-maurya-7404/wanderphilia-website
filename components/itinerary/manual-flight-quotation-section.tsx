@@ -217,31 +217,33 @@ export function ManualFlightQuotationSection({ flightQuotations }: ManualFlightQ
                 </div>
 
                 {/* PRICING NUMBERS GRID */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                  {/* Per Person Price */}
-                  <div className="bg-white/10 backdrop-blur-md rounded-xl p-3.5 sm:p-4 border border-white/15 flex flex-col justify-between space-y-1.5">
-                    <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-amber-300">
-                      Estimated Cost Per Person
-                    </span>
-                    <div className="text-xl sm:text-2xl font-black text-white">
-                      {option.perPersonPrice ? `₹${option.perPersonPrice.toLocaleString('en-IN')}/-` : '₹30,000/-'}
-                      <span className="text-xs font-normal text-stone-300 ml-1">/ person</span>
+                <div className={`grid grid-cols-1 ${option.perPersonPrice ? 'sm:grid-cols-2' : ''} gap-3.5`}>
+                  {/* Per Person Price (Only if specified) */}
+                  {option.perPersonPrice ? (
+                    <div className="bg-white/10 backdrop-blur-md rounded-xl p-3.5 sm:p-4 border border-white/15 flex flex-col justify-between space-y-1.5">
+                      <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-amber-300">
+                        Estimated Cost Per Person
+                      </span>
+                      <div className="text-xl sm:text-2xl font-black text-white">
+                        ₹{option.perPersonPrice.toLocaleString('en-IN')}/-
+                        <span className="text-xs font-normal text-stone-300 ml-1">/ person</span>
+                      </div>
+                      <span className="text-[10px] text-stone-400 leading-tight">
+                        Round-trip Return Flights ({option.sectors?.[0]?.fromCity || 'Origin'} ↔ {option.sectors?.[0]?.toCity || 'Destination'})
+                      </span>
                     </div>
-                    <span className="text-[10px] text-stone-400 leading-tight">
-                      Round-trip Return Flights (Navi Mumbai ↔ Agatti, Lakshadweep)
-                    </span>
-                  </div>
+                  ) : null}
 
                   {/* Total Amount */}
                   <div className="bg-white/10 backdrop-blur-md rounded-xl p-3.5 sm:p-4 border border-white/15 flex flex-col justify-between space-y-1.5">
                     <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-amber-300">
-                      Total Flights Cost ({option.paxDetails || '14 Adults'})
+                      Total Flights Cost ({option.paxDetails || 'All Guests'})
                     </span>
                     <div className="text-xl sm:text-2xl font-black text-amber-300">
-                      {option.totalPrice > 0 ? `₹${option.totalPrice.toLocaleString('en-IN')}/-` : '₹4,20,000/-'}
+                      {option.totalPrice > 0 ? `₹${option.totalPrice.toLocaleString('en-IN')}/-` : 'Pricing on Request'}
                     </div>
                     <span className="text-[10px] text-stone-400 leading-tight">
-                      {option.paxDetails ? `${option.paxDetails}` : '14 Adults × ₹30,000 per person'}
+                      {option.paxDetails ? `${option.paxDetails}` : `Round-trip (${option.sectors?.[0]?.fromCity || ''} ↔ ${option.sectors?.[0]?.toCity || ''})`}
                     </span>
                   </div>
                 </div>

@@ -23,6 +23,20 @@ export interface ManualDayPlan {
   signOff?: string;
 }
 
+export interface HotelQuotationDetails {
+  hotelName: string;
+  rating?: string;
+  checkIn: string;
+  checkOut: string;
+  nights: number;
+  roomsCount?: number;
+  roomCategory: string;
+  paxDetails?: string;
+  totalCost: number;
+  note?: string;
+  inclusions?: string[];
+}
+
 export interface ManualAccommodation {
   city: string;
   nights: number;
@@ -93,6 +107,8 @@ export interface ManualItineraryOption {
 
   // Flight Quotations associated with this option
   flightQuotations?: FlightQuotationOption[];
+  hotelCostDetails?: HotelQuotationDetails;
+  hotelQuotations?: HotelQuotationDetails[];
 
   // Optional Overrides
   dayPlans?: ManualDayPlan[];
@@ -131,6 +147,8 @@ export interface ManualItinerary {
   dayPlans: ManualDayPlan[];
   accommodations?: ManualAccommodation[];
   flightQuotations?: FlightQuotationOption[];
+  hotelCostDetails?: HotelQuotationDetails;
+  hotelQuotations?: HotelQuotationDetails[];
   options?: ManualItineraryOption[]; // Multi-Option Interactive Support
   inclusions: string[];
   exclusions: string[];

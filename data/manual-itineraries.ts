@@ -4981,6 +4981,253 @@ export const meghalayaShravyaManualItinerary: ManualItinerary = {
   fullPaymentOnly: false
 };
 
+
+export const singaporeDeepakManualItinerary: ManualItinerary = {
+  id: 'singapore-deepak',
+  slug: 'singapore-deepak-family',
+  title: '6 Days Trip to Singapore Specially Curated for Mr. Deepak & Family',
+  subtitle: 'Singapore Luxury Family Experience',
+  duration: '5 Nights / 6 Days | 12 Dec – 17 Dec 2026',
+  numNights: 5,
+  numDays: 6,
+  dates: '12 Dec – 17 Dec 2026',
+  route: 'Mumbai → Singapore → Sentosa → Mandai → Singapore → Mumbai',
+  routeSummary: '5N Marina Bay Sands',
+  destination: 'Singapore',
+  travelStyle: 'Family Curated Experience',
+  tripType: 'Customised Luxury Tour',
+  leadName: 'Mr. Deepak & Family',
+  vehicleType: 'Private Mercedes-Benz V Class with Chauffeur',
+  mealPlan: 'Daily Breakfast & Curated Vegetarian Dining Recommendations',
+  heroImage: '/images/singapore.png',
+  galleryImages: [
+    '/images/singapore1.jpg',
+    '/images/singapore2.jpg',
+    '/images/singapore3.jpg',
+    '/images/singapore4.jpg',
+    '/images/singapore5.jpg',
+    '/images/singapore.png'
+  ],
+  accommodations: [
+    { city: 'Singapore', nights: 5, hotelName: 'Marina Bay Sands (5 Star)', roomCategory: '2 × Sands Premier King Rooms (3 Adults, 2 Children)' }
+  ],
+  hotelCostDetails: {
+    hotelName: 'Marina Bay Sands',
+    rating: '5 Star',
+    checkIn: 'Sat, 12 Dec 2026',
+    checkOut: 'Thu, 17 Dec 2026',
+    nights: 5,
+    roomsCount: 2,
+    roomCategory: 'Sands Premier King Room',
+    paxDetails: '3 Adults, 2 Children',
+    totalCost: 700278,
+    note: 'Total price is inclusive of all applicable luxury taxes & service charges.'
+  },
+  dayPlans: [
+    {
+      day: 1,
+      date: 'Sat, 12 Dec 2026',
+      title: 'Day 1 | Arrival in Singapore & Gardens by the Bay',
+      route: 'Mumbai → Singapore',
+      durationNote: '5h 40m Flight | Private Mercedes V-Class Transfer',
+      intro: 'Welcome to Singapore! Arrive at Changi Airport and transfer in comfort to your iconic hotel.',
+      timeline: [
+        'Arrival in Singapore (Changi Airport) at 10:15 AM',
+        'Warm meet & greet assistance at airport',
+        'Private Mercedes-Benz V Class transfer to hotel',
+        'Check-in at: Marina Bay Sands',
+        'Evening visit to Gardens by the Bay',
+        'Explore Cloud Forest & Flower Dome',
+        'Witness the magical Supertree Light Show (Garden Rhapsody)',
+        'Overnight in Singapore at Marina Bay Sands',
+        'Vegetarian Food Recommendations: Komala Vilas, Kailash Parbat'
+      ],
+      stayLocation: 'Marina Bay Sands, Singapore',
+      image: '/images/singapore1.jpg',
+      meals: 'Vegetarian Dining Recommendations'
+    },
+    {
+      day: 2,
+      date: 'Sun, 13 Dec 2026',
+      title: 'Day 2 | Universal Studios Full Day with Express Pass & Little India Shopping',
+      route: 'Marina Bay → Sentosa → Little India → Marina Bay',
+      intro: 'Universal Studios thrills with VIP Express Pass, followed by evening relaxing shopping at Little India.',
+      timeline: [
+        'Morning after relaxing breakfast transfer to Universal Studios in your premium Mercedes V Class',
+        'Universal Studios Singapore Full Day with VIP Express Pass (Skip the lines)',
+        'Experience Hollywood, Sci-Fi City, Ancient Egypt & Far Far Away',
+        'Evening relaxing shopping at Little India',
+        'Enjoy curated authentic Indian dining recommendations',
+        'Overnight in Marina Bay Sands Singapore'
+      ],
+      stayLocation: 'Marina Bay Sands, Singapore',
+      image: '/images/singapore2.jpg',
+      meals: 'Breakfast & Dinner Recommendations'
+    },
+    {
+      day: 3,
+      date: 'Mon, 14 Dec 2026',
+      title: 'Day 3 | Sentosa Leisure • S.E.A. Aquarium • Skyline Luge & Wings of Time',
+      route: 'Marina Bay ↔ Sentosa Island',
+      intro: 'Sentosa beach relaxation and world-class aquarium, followed by thrilling Skyline Luge and the spectacular Wings of Time Show.',
+      timeline: [
+        'Relaxed breakfast at Marina Bay Sands',
+        'Beach leisure time & resort relaxation at Sentosa',
+        'Visit world-class S.E.A. Aquarium (Home to 100,000+ marine animals)',
+        'Exciting Skyline Luge & Sky Ride experience',
+        'Witness the spectacular Wings of Time Light & Sound Show by the sea',
+        'Evening private Mercedes transfer back to Marina Bay',
+        'Overnight in Singapore Marina Bay Sands'
+      ],
+      stayLocation: 'Marina Bay Sands, Singapore',
+      image: '/images/singapore3.jpg',
+      meals: 'Breakfast'
+    },
+    {
+      day: 4,
+      date: 'Tue, 15 Dec 2026',
+      title: 'Day 4 | Singapore City Icons • Culture • Shopping & Singapore Flyer',
+      route: 'Singapore City Exploration',
+      intro: 'Discover the cultural depth and modern wonders of the Lion City in your private luxury chauffeur-driven Mercedes.',
+      timeline: [
+        'Morning after relaxing breakfast',
+        'Relaxed City Exploration fully private in your Mercedes V Class',
+        'Explore iconic Merlion Park, Civic District & Marina Bay',
+        'Evening experience breathtaking sunset from the iconic Singapore Flyer',
+        'Shopping & leisure at Orchard Road',
+        'Marina Bay luxury shopping at The Shoppes',
+        'Vegetarian Dinner Recommendations: Annalakshmi, MTR Singapore',
+        'Overnight in Singapore Marina Bay Sands'
+      ],
+      stayLocation: 'Marina Bay Sands, Singapore',
+      image: '/images/singapore4.jpg',
+      meals: 'Breakfast & Vegetarian Dining Options'
+    },
+    {
+      day: 5,
+      date: 'Wed, 16 Dec 2026',
+      title: 'Day 5 | Singapore Wildlife Luxury Experience (Zoo, River Wonders & Night Safari)',
+      route: 'Mandai Wildlife Reserve',
+      intro: 'An immersive wildlife journey through Singapore’s world-renowned open-concept zoo, river safari, and night safari.',
+      timeline: [
+        'Relaxed morning & enjoy hotel facilities & breakfast',
+        'Afternoon wildlife experience at Singapore Zoo',
+        'River Wonders exploration (Giant Panda Forest & Amazon Flooded Forest)',
+        'Evening Night Safari with reserved Animal Presentation & guided tram ride',
+        'Private Mercedes transfer back to hotel',
+        'Overnight in Singapore Marina Bay Sands'
+      ],
+      stayLocation: 'Marina Bay Sands, Singapore',
+      image: '/images/singapore5.jpg',
+      meals: 'Breakfast'
+    },
+    {
+      day: 6,
+      date: 'Thu, 17 Dec 2026',
+      title: 'Day 6 | Departure from Singapore',
+      route: 'Singapore → Mumbai',
+      durationNote: 'Private Mercedes V-Class Airport Transfer | 5h 40m Flight',
+      intro: 'Bid farewell to Singapore as you head to Changi Airport for your return Business Class flight.',
+      timeline: [
+        'Relaxed breakfast and morning leisure at Marina Bay Sands',
+        'Private Mercedes V Class transfer to Singapore Changi Airport (SIN)',
+        'Board IndiGo Flight 6E - 1164 departing at 19:40 to Mumbai',
+        'Arrive at Mumbai (BOM) at 22:50',
+        'Come back home with happy and cherished memories!'
+      ],
+      stayLocation: 'Mumbai',
+      image: '/images/singapore.png',
+      meals: 'Breakfast'
+    }
+  ],
+  inclusions: [
+    'Indigo Direct Flights – Stretch Plus Seats (Mumbai ↔ Singapore Round-Trip)',
+    'Private Airport & Sightseeing Transfers in Mercedes-Benz V Class with Chauffeur',
+    'Handpicked Premium Luxury Hotels (Marina Bay Sands)',
+    'Daily Breakfast',
+    'Gardens by the Bay – Flower Dome, Cloud Forest & Jurassic World Experience',
+    'Universal Studios Singapore with Express Pass',
+    'Wings of Time Show',
+    'Skyline Luge & Sky Ride Experience',
+    'Singapore Cable Car Experience',
+    'Fully Private Premium Singapore City Exploration',
+    'Sunset Singapore Flyer Experience',
+    'Singapore Zoo & River Wonders',
+    'Night Safari with Animal Presentation',
+    'Relaxed & Comfort-Focused Touring Throughout',
+    'Curated Vegetarian Dining Recommendations'
+  ],
+  exclusions: [
+    'GST (5%) is applicable extra.',
+    'Any kind of food or beverage that is not included in the package like alcoholic drinks, mineral water, meals/refreshments/lunches on the highway.',
+    'Any personal expenses like a tip to the drivers, entry to monuments/monasteries, camera/video camera charges etc.',
+    'Any cost arising due to natural calamities like landslides, roadblocks etc. (to be borne directly by the customer on the spot)',
+    'Anything not mentioned in the inclusions.'
+  ],
+  flightQuotations: [
+    {
+      optionId: 'indigo-business-stretch-plus',
+      optionTitle: 'Business Class Stretch Plus Flight',
+      totalPrice: 735294,
+      paxDetails: '3 Adults, 2 Children (Round-Trip Return Airfare)',
+      isExcludedFromPackage: false,
+      note: 'Stay costing is currently awaited from the hotel team due to a few special requirements and room preferences requested for the family. We shall share the final stay costing with you as soon as we receive the confirmation from the hotel for the same.',
+      sectors: [
+        {
+          fromCity: 'MUM (Mumbai)',
+          toCity: 'SIN (Singapore)',
+          fromAirport: 'Chhatrapati Shivaji Maharaj International Airport (BOM)',
+          toAirport: 'Singapore Changi Airport (SIN)',
+          fromCode: 'MUM',
+          toCode: 'SIN',
+          airline: 'IndiGo',
+          flightNumber: '6E - 1339',
+          journeyType: 'Onward Journey',
+          departureDate: 'Sat, 12 Dec 2026',
+          departureTime: '02:05',
+          arrivalDate: 'Sat, 12 Dec 2026',
+          arrivalTime: '10:15',
+          duration: '5h 40 m',
+          stops: 'Non Stop',
+          cabinClass: 'Business Class Stretch Plus',
+          baggage: 'Baggage 12KGS Cabin | 40KGS Check-in'
+        },
+        {
+          fromCity: 'SIN (Singapore)',
+          toCity: 'MUM (Mumbai)',
+          fromAirport: 'Singapore Changi Airport (SIN)',
+          toAirport: 'Chhatrapati Shivaji Maharaj International Airport (BOM)',
+          fromCode: 'SIN',
+          toCode: 'MUM',
+          airline: 'IndiGo',
+          flightNumber: '6E - 1164',
+          journeyType: 'Return Journey',
+          departureDate: 'Thu, 17 Dec 2026',
+          departureTime: '19:40',
+          arrivalDate: 'Thu, 17 Dec 2026',
+          arrivalTime: '22:50',
+          duration: '5 h 40 m',
+          stops: 'Non Stop',
+          cabinClass: 'Business Class Stretch Plus',
+          baggage: 'Baggage 12KGS Cabin | 40KGS Check-in'
+        }
+      ]
+    }
+  ],
+  baseAmount: 350500,
+  gstPercentage: 5,
+  gstAmount: 17525,
+  tcsPercentage: 2,
+  tcsAmount: 7010,
+  finalQuotationAmount: 375035,
+  perAdultPrice: 72500,
+  perKidPrice: 66500,
+  adults: 3,
+  kids: 2,
+  childPricingNote: 'Base: 3 Adults @ ₹72,500/- (₹2,17,500) + 2 Children @ ₹66,500/- (₹1,33,000) = ₹3,50,500/- Base + 5% GST (₹17,525) + 2% TCS (₹7,010) = Total ₹3,75,035/- (Stay Cost is not included in this package).',
+  enableOnlineBooking: true
+};
+
 export const manualItinerariesRegistry: Record<string, ManualItinerary> = {
   // Meghalaya with Kaziranga (Mrs. Shravya)
   'meghalaya-with-kaziranga-mrs-shravya': meghalayaShravyaManualItinerary,
@@ -5142,7 +5389,15 @@ export const manualItinerariesRegistry: Record<string, ManualItinerary> = {
   'alibaug': alibaugCorporateEscapeManualItinerary,
   'wp-alibaug': alibaugCorporateEscapeManualItinerary,
   'wp-alibaug-corporate': alibaugCorporateEscapeManualItinerary,
-  'alibaug-escape': alibaugCorporateEscapeManualItinerary
+  'alibaug-escape': alibaugCorporateEscapeManualItinerary,
+
+  'singapore-deepak': singaporeDeepakManualItinerary,
+  'singapore-deepak-family': singaporeDeepakManualItinerary,
+  'mr-deepak-singapore': singaporeDeepakManualItinerary,
+  'deepak-singapore': singaporeDeepakManualItinerary,
+  'deepak-family': singaporeDeepakManualItinerary,
+  'deepak': singaporeDeepakManualItinerary,
+  'wp-singapore-deepak': singaporeDeepakManualItinerary
 };
 
 export function getManualItinerary(idOrSlug: string): ManualItinerary | null {
@@ -5277,6 +5532,9 @@ export function manualItineraryToDocument(manual: ManualItinerary): ItineraryDoc
     gstAmount: manual.gstAmount,
     tcsPercentage: manual.tcsPercentage,
     tcsAmount: manual.tcsAmount,
+    hotelCostDetails: manual.hotelCostDetails,
+    hotelQuotations: manual.hotelQuotations,
+    flightQuotations: manual.flightQuotations,
     dayPlans: manual.dayPlans.map(dp => {
       // Flatten all bullet points for backward compatibility while preserving details
       const allBullets: string[] = [...(dp.timeline || [])];
@@ -6116,6 +6374,9 @@ export function itineraryDocumentToManualItinerary(itinerary: ItineraryDocument)
     highlights: itinerary.highlights || rawMoments,
     dayPlans: manualDayPlans,
     accommodations,
+    flightQuotations: itinerary.flightQuotations || (itinerary as any).rawZohoData?.flightQuotations,
+    hotelCostDetails: (itinerary as any).hotelCostDetails || (itinerary as any).rawZohoData?.hotelCostDetails,
+    hotelQuotations: (itinerary as any).hotelQuotations || (itinerary as any).rawZohoData?.hotelQuotations,
     inclusions: displayInclusions,
     exclusions: displayExclusions,
     thingsToCarry,

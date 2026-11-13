@@ -135,6 +135,9 @@ export interface ItineraryDocument {
   payments?: ItineraryPaymentRecord[];
   dayPlans?: ItineraryDayPlan[];
   highlights?: string[];
+  flightQuotations?: any[];
+  hotelCostDetails?: any;
+  hotelQuotations?: any[];
   inclusions?: string[];
   exclusions?: string[];
   amenities?: string[];

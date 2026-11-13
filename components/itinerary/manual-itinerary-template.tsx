@@ -151,6 +151,8 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
   const currentFinalQuotationAmount = activeOption?.finalQuotationAmount ?? itinerary.finalQuotationAmount ?? (currentBaseAmount ? currentBaseAmount + (currentGstAmount || 0) + (currentTcsAmount || 0) : undefined);
   const currentChildPricingNote = activeOption?.childPricingNote || itinerary.childPricingNote;
   const currentFlightQuotations = activeOption?.flightQuotations || itinerary.flightQuotations;
+  const currentHotelCostDetails = activeOption?.hotelCostDetails || itinerary.hotelCostDetails;
+  const currentHotelQuotations = activeOption?.hotelQuotations || itinerary.hotelQuotations;
   const currentDayPlans = activeOption?.dayPlans || itinerary.dayPlans;
   const currentInclusions = activeOption?.inclusions || itinerary.inclusions || [];
   const currentExclusions = activeOption?.exclusions || itinerary.exclusions || [];
@@ -674,6 +676,104 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                 </div>
               </div>
             )
+          )}
+
+          {/* 🏬 HOTEL COSTING & RESERVATION DETAILS (Directly below Accommodations) */}
+          {(currentHotelCostDetails || (currentHotelQuotations && currentHotelQuotations.length > 0)) && (
+            <div className="space-y-4 sm:space-y-5">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b-2 border-[#6E1E14]/15 pb-3">
+                <div>
+                  <div className="flex items-center gap-1.5 text-[10px] sm:text-xs font-black uppercase tracking-widest text-[#8B261D]">
+                    <Building2 className="w-3.5 h-3.5 text-[#8B261D]" />
+                    <span>Hotel Quotation & Stay Cost</span>
+                  </div>
+                  <h2 className={`${playfair.className} text-xl sm:text-2xl font-black text-stone-900 mt-0.5`}>
+                    Hotel Cost Details
+                  </h2>
+                </div>
+                <div className="bg-amber-100/90 border border-amber-300 text-amber-900 text-[10px] sm:text-[11px] font-bold px-3 py-1 rounded-full flex items-center gap-1.5 w-fit">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
+                  <span>Total Price Inclusive of All Taxes</span>
+                </div>
+              </div>
+
+              {(currentHotelQuotations && currentHotelQuotations.length > 0 ? currentHotelQuotations : (currentHotelCostDetails ? [currentHotelCostDetails] : [])).map((hotel, hIdx) => (
+                <div
+                  key={hIdx}
+                  className="rounded-2xl border-2 border-[#6E1E14]/20 shadow-md overflow-hidden bg-white hover:border-[#6E1E14]/40 hover:shadow-lg transition-all"
+                >
+                  <div className="bg-gradient-to-r from-[#2D121E] via-[#4A1525] to-[#2D121E] text-white p-4 sm:p-5 flex flex-wrap items-center justify-between gap-3">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] bg-amber-400 text-stone-950 px-2 py-0.5 rounded-full font-black uppercase tracking-wider">
+                          {hotel.rating || '5 Star Luxury'}
+                        </span>
+                        <span className="text-xs text-white/80 font-medium">
+                          {hotel.nights} Nights Stay
+                        </span>
+                      </div>
+                      <h3 className={`${playfair.className} text-lg sm:text-2xl font-black tracking-wide text-white`}>
+                        {hotel.hotelName}
+                      </h3>
+                    </div>
+
+                    <div className="bg-white/10 backdrop-blur-md rounded-xl px-4 py-2.5 border border-white/20 text-right">
+                      <div className="text-[10px] uppercase font-bold text-amber-300 tracking-wider">
+                        Total Stay Price (Inclusive of Taxes)
+                      </div>
+                      <div className="text-xl sm:text-2xl font-black text-amber-300">
+                        ₹{hotel.totalCost.toLocaleString('en-IN')}/-
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 sm:p-6 bg-[#FAF8F5] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 text-xs">
+                    <div className="bg-white p-3.5 rounded-xl border border-stone-200/80 shadow-2xs space-y-1">
+                      <div className="text-[10px] font-bold uppercase tracking-wider text-stone-500 flex items-center gap-1.5">
+                        <Calendar className="w-3.5 h-3.5 text-[#8B261D]" /> Check-In
+                      </div>
+                      <div className="font-extrabold text-stone-900 text-sm">
+                        {hotel.checkIn}
+                      </div>
+                    </div>
+
+                    <div className="bg-white p-3.5 rounded-xl border border-stone-200/80 shadow-2xs space-y-1">
+                      <div className="text-[10px] font-bold uppercase tracking-wider text-stone-500 flex items-center gap-1.5">
+                        <Calendar className="w-3.5 h-3.5 text-[#8B261D]" /> Check-Out
+                      </div>
+                      <div className="font-extrabold text-stone-900 text-sm">
+                        {hotel.checkOut}
+                      </div>
+                    </div>
+
+                    <div className="bg-white p-3.5 rounded-xl border border-stone-200/80 shadow-2xs space-y-1">
+                      <div className="text-[10px] font-bold uppercase tracking-wider text-stone-500 flex items-center gap-1.5">
+                        <Hotel className="w-3.5 h-3.5 text-[#8B261D]" /> Room Category
+                      </div>
+                      <div className="font-extrabold text-stone-900 text-sm">
+                        {hotel.roomsCount ? `${hotel.roomsCount} × ` : ''}{hotel.roomCategory}
+                      </div>
+                    </div>
+
+                    <div className="bg-white p-3.5 rounded-xl border border-stone-200/80 shadow-2xs space-y-1">
+                      <div className="text-[10px] font-bold uppercase tracking-wider text-stone-500 flex items-center gap-1.5">
+                        <Users className="w-3.5 h-3.5 text-[#8B261D]" /> Guests / Occupancy
+                      </div>
+                      <div className="font-extrabold text-stone-900 text-sm">
+                        {hotel.paxDetails || '3 Adults, 2 Children'}
+                      </div>
+                    </div>
+                  </div>
+
+                  {hotel.note && (
+                    <div className="px-4 sm:px-6 py-3 bg-amber-50/70 border-t border-amber-200/60 text-xs text-amber-900 flex items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0" />
+                      <span className="font-medium">{hotel.note}</span>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
           )}
 
           {/* ✈️ FLIGHT DETAILS & PRICING (Directly below Accommodations) */}
