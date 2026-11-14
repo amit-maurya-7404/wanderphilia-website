@@ -473,12 +473,6 @@ export function ItineraryBookModal({
               <span className="text-amber-300 font-bold">
                 {gstPercentage}% GST{tcsPercentage && tcsPercentage > 0 ? ` & ${tcsPercentage}% TCS` : ''} Included
               </span>
-              {childPricingNote && (
-                <>
-                  <span>•</span>
-                  <span className="text-amber-200 text-[11px] font-semibold">{childPricingNote}</span>
-                </>
-              )}
             </DialogDescription>
           </div>
         </div>
