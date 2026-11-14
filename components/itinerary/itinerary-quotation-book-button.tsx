@@ -10,6 +10,10 @@ interface ItineraryQuotationBookButtonProps {
   proposalTitle?: string;
   perAdultPrice?: number;
   adults?: number;
+  kids?: number;
+  perKidPrice?: number;
+  childPricingNote?: string;
+  paxSummary?: string;
   baseAmount?: number;
   gstPercentage?: number;
   tcsPercentage?: number;
@@ -34,6 +38,10 @@ export function ItineraryQuotationBookButton({
   proposalTitle,
   perAdultPrice,
   adults,
+  kids,
+  perKidPrice,
+  childPricingNote,
+  paxSummary,
   baseAmount,
   gstPercentage,
   tcsPercentage,
@@ -191,6 +199,10 @@ export function ItineraryQuotationBookButton({
         proposalTitle={proposalTitle}
         perAdultPrice={perAdultPrice}
         adults={adults}
+        kids={kids}
+        perKidPrice={perKidPrice}
+        childPricingNote={childPricingNote}
+        paxSummary={paxSummary}
         baseAmount={baseAmount}
         gstPercentage={gstPercentage}
         tcsPercentage={tcsPercentage}

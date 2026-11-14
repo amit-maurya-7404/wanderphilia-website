@@ -90,7 +90,7 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
       if (optParam && itinerary.options && itinerary.options.length > 0) {
         const found = itinerary.options.find(
           o => o.id.toLowerCase() === optParam.toLowerCase() ||
-               o.title.toLowerCase().includes(optParam.toLowerCase())
+            o.title.toLowerCase().includes(optParam.toLowerCase())
         );
         if (found) return found.id;
       }
@@ -124,8 +124,8 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
   const possessiveName = displayName.toLowerCase() === 'your'
     ? 'Your'
     : (displayName.toLowerCase().includes('trip') || displayName.endsWith("'s") || displayName.endsWith("’s") || displayName.endsWith("s'") || displayName.endsWith("’")
-        ? displayName
-        : (displayName.endsWith('s') || displayName.endsWith('S') ? `${displayName}'` : `${displayName}'s`));
+      ? displayName
+      : (displayName.endsWith('s') || displayName.endsWith('S') ? `${displayName}'` : `${displayName}'s`));
   const destination = itinerary.destination || 'Selected Destination';
   const numDays = activeOption?.numDays || itinerary.numDays || 5;
   const numNights = activeOption?.numNights || itinerary.numNights || 4;
@@ -1628,6 +1628,9 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
             proposalTitle={itinerary.title}
             perAdultPrice={currentPerAdultPrice || itinerary.perAdultPrice}
             adults={(activeOption?.adults ?? itinerary.adults) || 2}
+            kids={activeOption?.kids ?? itinerary.kids ?? 0}
+            perKidPrice={currentPerKidPrice}
+            childPricingNote={currentChildPricingNote}
             baseAmount={currentBaseAmount || itinerary.baseAmount}
             gstPercentage={currentGstPct || itinerary.gstPercentage || 5}
             tcsPercentage={currentTcsPct}

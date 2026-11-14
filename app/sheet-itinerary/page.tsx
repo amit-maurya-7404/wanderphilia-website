@@ -45,8 +45,15 @@ import {
   Camera,
   UploadCloud,
   Image as ImageIcon,
-  PenTool
+  PenTool,
+  Plane,
+  FileUp,
+  File,
+  Building2,
+  Percent,
+  Upload
 } from 'lucide-react';
+import { FlightQuotationOption, HotelQuotationDetails } from '@/types/manual-itinerary';
 import { getLuxuryImagesForDestination } from '@/lib/itinerary-images';
 import { ItineraryHistorySection } from '@/components/itinerary/itinerary-history-section';
 import {
@@ -1689,6 +1696,22 @@ export default function SheetItineraryPage() {
   // LocalStorage Draft Persistence State
   const [hasSavedDraft, setHasSavedDraft] = useState(false);
   const [isDraftRestored, setIsDraftRestored] = useState(false);
+
+  // Multimodal AI Itinerary Builder State (PDF + Screenshots + Prompt)
+  const [multimodalPrompt, setMultimodalPrompt] = useState('');
+  const [multimodalFiles, setMultimodalFiles] = useState<File[]>([]);
+  const [multimodalLoading, setMultimodalLoading] = useState(false);
+  const [multimodalProgress, setMultimodalProgress] = useState<string | null>(null);
+  const [multimodalSummary, setMultimodalSummary] = useState<string | null>(null);
+  const [multimodalErrors, setMultimodalErrors] = useState<string[]>([]);
+  const [showMultimodalBuilder, setShowMultimodalBuilder] = useState(true);
+
+  // Dedicated Flight Quotations & Separate Hotel Cost State
+  const [flightQuotations, setFlightQuotations] = useState<FlightQuotationOption[]>([]);
+  const [hotelCostDetails, setHotelCostDetails] = useState<HotelQuotationDetails | null>(null);
+  const [gstPercentage, setGstPercentage] = useState<number>(5);
+  const [tcsPercentage, setTcsPercentage] = useState<number>(0);
+  const [childPricingNote, setChildPricingNote] = useState<string>('');
 
   // Groq AI Raw Write-up Auto-Fill State
   const [pastedWriteup, setPastedWriteup] = useState('');
@@ -4901,6 +4924,179 @@ const handleParseWriteupWithAI = async () => {
     setParsingWriteup(false);
   }
 };
+
+// Multimodal AI Itinerary Builder Handler (PDFs + Screenshots + Instructions Prompt)
+const handleMultimodalAIGenerate = async () => {
+  if (!multimodalPrompt.trim() && multimodalFiles.length === 0) {
+    alert('Please enter instructions or attach at least one PDF/Image file.');
+    return;
+  }
+
+  setMultimodalLoading(true);
+  setMultimodalProgress('Extracting PDF text and reading images with OCR...');
+  setMultimodalSummary(null);
+  setMultimodalErrors([]);
+
+  try {
+    const formData = new FormData();
+    formData.append('prompt', multimodalPrompt);
+    multimodalFiles.forEach((f) => {
+      formData.append('files', f);
+    });
+
+    setMultimodalProgress('Groq AI analyzing flights, hotels, costing & daily plan...');
+
+    const res = await fetch('/api/ai/parse-multimodal-itinerary', {
+      method: 'POST',
+      body: formData
+    });
+
+    const json = await res.json();
+    if (!res.ok || !json.success) {
+      throw new Error(json.error || 'Failed to process files with AI.');
+    }
+
+    const data = json.data;
+
+    // 1. Destination & Types
+    if (data.destination) setDestination(data.destination);
+    if (data.destinationType) setDestinationType(data.destinationType);
+    if (data.travelStyle) setTravelStyle(data.travelStyle);
+
+    // 2. Duration & Dates
+    if (data.noOfDays) setNoOfDays(Number(data.noOfDays));
+    if (data.noOfNights) setNoOfNights(Number(data.noOfNights));
+    if (data.startDate) setStartDate(data.startDate);
+    if (data.endDate) setEndDate(data.endDate);
+
+    // 3. Lead Traveler
+    if (data.leadTraveler) {
+      if (data.leadTraveler.name) {
+        setFullName(data.leadTraveler.name);
+        const parts = String(data.leadTraveler.name).trim().split(' ');
+        setFirstName(parts[0] || '');
+        setLastName(parts.slice(1).join(' ') || '');
+      }
+      if (data.leadTraveler.phone) setMobile(data.leadTraveler.phone);
+      if (data.leadTraveler.email) setEmail(data.leadTraveler.email);
+      if (data.leadTraveler.departureCity) setDepartureCity(data.leadTraveler.departureCity);
+    }
+
+    // 4. Pax Breakdown & Kids Details
+    if (data.adults !== undefined) setAdults(Number(data.adults));
+    if (data.kids !== undefined) setKids(Number(data.kids));
+    if (Array.isArray(data.kidsDetails) && data.kidsDetails.length > 0) {
+      setKidsDetails(
+        data.kidsDetails.map((k: any, i: number) => ({
+          childIndex: i + 1,
+          age: Number(k.age) || 5,
+          bedType: k.isComplimentary ? 'without_bed' : (k.bedType || 'extra_bed'),
+          notes: k.notes || (k.isComplimentary ? 'Complimentary Free' : '')
+        }))
+      );
+    }
+
+    // 5. Vehicle & Meal Plan
+    if (data.vehicleType) setVehicleType(data.vehicleType);
+    if (data.mealPlan) setMealPlan(data.mealPlan);
+
+    // 6. Switch to Manual Itinerary Mode automatically
+    setCreationMode('manual');
+
+    // 7. Day-wise Itinerary (Manual Days Table)
+    if (Array.isArray(data.dayPlans) && data.dayPlans.length > 0) {
+      const mappedManual = data.dayPlans.map((dp: any, idx: number) => {
+        const rawPoints = Array.isArray(dp.sightseeingPoints) && dp.sightseeingPoints.length > 0
+          ? dp.sightseeingPoints
+          : (Array.isArray(dp.timeline) && dp.timeline.length > 0 ? dp.timeline : []);
+        const cleanPoints = rawPoints.map((p: any) => String(p).trim()).filter(Boolean);
+
+        return {
+          dayNumber: dp.day || idx + 1,
+          title: dp.title || `Day ${dp.day || idx + 1}: ${dp.toCity || destination || 'Exploration'}`,
+          fromCity: dp.fromCity || (idx === 0 ? (departureCity || dp.city || '') : (data.dayPlans[idx - 1]?.toCity || dp.city || '')),
+          enRouteStops: Array.isArray(dp.enRouteStops) ? dp.enRouteStops : [],
+          toCity: dp.toCity || dp.city || destination || 'City',
+          breakfast: Boolean(dp.meals?.breakfast),
+          lunch: Boolean(dp.meals?.lunch),
+          dinner: Boolean(dp.meals?.dinner),
+          guidedTour: Boolean(dp.guidedTour),
+          sightseeingPoints: cleanPoints.length > 0 ? cleanPoints : [`Sightseeing & luxury experiences in ${dp.toCity || destination}.`]
+        };
+      });
+      setManualDays(mappedManual);
+      setNoOfDays(mappedManual.length);
+      setNoOfNights(Math.max(1, mappedManual.length - 1));
+    }
+
+    // 8. Hotels
+    if (Array.isArray(data.hotelStays) && data.hotelStays.length > 0) {
+      const mappedHotels: HotelItem[] = data.hotelStays.map((hs: any, idx: number) => ({
+        index: idx + 1,
+        hotelName: hs.hotelName || `Hotel in ${hs.city}`,
+        city: hs.city || destination || 'City',
+        nights: hs.nights || 1,
+        roomCategory: hs.roomCategory || 'Deluxe Room',
+        category: hs.category || 'Deluxe',
+        stayDates: '',
+        basePrice: 0,
+        extraBedPrice: 0,
+        childWithoutBedPrice: 0
+      }));
+      setHotels(mappedHotels);
+      setIsHotelsManuallyCustomized(true);
+    }
+
+    // 9. Dedicated Flight Quotations (Airline, routes, cabin class, tickets)
+    if (Array.isArray(data.flightQuotations) && data.flightQuotations.length > 0) {
+      setFlightQuotations(data.flightQuotations);
+    }
+
+    // 10. Dedicated Hotel Cost Details
+    if (data.hotelCostDetails) {
+      setHotelCostDetails(data.hotelCostDetails);
+    }
+
+    // 11. Pricing Breakdown
+    if (data.pricing) {
+      if (data.pricing.baseAmount) setBaseQuotation(String(data.pricing.baseAmount));
+      if (data.pricing.finalQuotationAmount) setFinalQuotation(String(data.pricing.finalQuotationAmount));
+      if (data.pricing.perAdultPrice) setPerAdultPrice(String(data.pricing.perAdultPrice));
+      if (data.pricing.perKidPrice) setPerKidPrice(String(data.pricing.perKidPrice));
+      if (data.pricing.gstPercentage) setGstPercentage(Number(data.pricing.gstPercentage));
+      if (data.pricing.tcsPercentage) setTcsPercentage(Number(data.pricing.tcsPercentage));
+      if (data.pricing.childPricingNote) setChildPricingNote(data.pricing.childPricingNote);
+    }
+
+    // 12. Inclusions & Exclusions
+    if (Array.isArray(data.inclusions) && data.inclusions.length > 0) {
+      setInclusions(data.inclusions);
+      setIsCustomInclusionsEdited(true);
+    }
+    if (Array.isArray(data.exclusions) && data.exclusions.length > 0) {
+      setExclusions(data.exclusions);
+    }
+
+    // Build user-friendly summary of everything generated
+    const summaryParts: string[] = [];
+    if (data.destination) summaryParts.push(data.destination);
+    if (data.dayPlans?.length) summaryParts.push(`${data.dayPlans.length} Days`);
+    if (data.flightQuotations?.length) summaryParts.push(`Flights (${data.flightQuotations[0]?.optionTitle || 'Included'})`);
+    if (data.hotelCostDetails?.hotelName) summaryParts.push(`Hotel Cost: ${data.hotelCostDetails.hotelName}`);
+    if (data.pricing?.finalQuotationAmount) summaryParts.push(`Total: ₹${Number(data.pricing.finalQuotationAmount).toLocaleString('en-IN')}`);
+
+    setMultimodalSummary(`✓ Auto-Filled Successfully: ${summaryParts.join(' • ')}`);
+    if (Array.isArray(json.errors) && json.errors.length > 0) {
+      setMultimodalErrors(json.errors);
+    }
+  } catch (err: any) {
+    console.error('Multimodal parse error:', err);
+    alert('AI Error: ' + err.message);
+  } finally {
+    setMultimodalLoading(false);
+    setMultimodalProgress(null);
+  }
+};
 const handleMarginChange = (val: string) => {
   setMarginPercent(val);
   const base = Number(baseQuotation) || 0;
@@ -5047,7 +5243,9 @@ const handleGenerateItinerary = async () => {
     inclusions: inclusions.map(s => s.trim()).filter(Boolean),
     exclusions: exclusions.map(s => s.trim()).filter(Boolean),
     heroImage: heroImage ? heroImage.trim() : undefined,
-    galleryImages: galleryImages.filter(Boolean)
+    galleryImages: galleryImages.filter(Boolean),
+    flightQuotations: flightQuotations.length > 0 ? flightQuotations : undefined,
+    hotelCostDetails: hotelCostDetails || undefined
   };
 
   try {
@@ -5185,100 +5383,234 @@ return (
         </div>
       </div>
 
-      {/* GROQ AI RAW WRITE-UP AUTO-FILL PANEL */}
-      <div className="bg-gradient-to-r from-purple-900/10 via-indigo-900/10 to-slate-50 border border-purple-200 rounded-2xl p-5 mb-8 shadow-sm space-y-3">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-purple-600/10 border border-purple-300 flex items-center justify-center text-purple-700 shrink-0">
-              <Sparkles className="w-5 h-5 text-purple-600 animate-pulse" />
-            </div>
-            <div>
-              <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                Paste Itinerary Write-up &amp; Auto-Fill Form
-                <span className="text-[10px] font-bold bg-purple-100 text-purple-800 border border-purple-300 px-2 py-0.5 rounded-full">
-                  ⚡ Groq AI
-                </span>
-              </h3>
-              <p className="text-xs text-slate-600">
-                Agar aapke paas write-up ready hai, toh yahan paste karein. Groq AI Destination, Days, Hotels, Sightseeing Rows aur Inclusions auto-fill kar dega.
-              </p>
-            </div>
-          </div>
+      {/* SMART MULTIMODAL AI ITINERARY BUILDER (PDF + SCREENSHOTS + PROMPT) */}
+      <div className="bg-gradient-to-br from-indigo-950 via-slate-900 to-purple-950 border-2 border-indigo-400/40 rounded-3xl p-6 mb-8 shadow-xl text-white relative overflow-hidden">
+        {/* Decorative ambient glow */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
 
-          <Button
-            type="button"
-            size="sm"
-            onClick={() => setShowPasteParser(!showPasteParser)}
-            className="bg-purple-600 hover:bg-purple-700 text-white text-xs h-9 px-4 rounded-xl cursor-pointer font-bold shrink-0 shadow-xs"
-          >
-            <Sparkles className="w-3.5 h-3.5 mr-1.5 text-amber-300" />
-            {showPasteParser ? 'Hide Paste Box' : '✨ Paste Itinerary Write-up'}
-          </Button>
-        </div>
-
-        {showPasteParser && (
-          <div className="space-y-3 pt-2">
-            <textarea
-              value={pastedWriteup}
-              onChange={(e) => setPastedWriteup(e.target.value)}
-              placeholder="Paste your itinerary write-up here...&#10;&#10;Example:&#10;5 Days / 4 Nights Royal Rajasthan Tour&#10;Day 1: Arrival in Jaipur, transfer to hotel, visit Albert Hall...&#10;Day 2: Amer Fort, Hawa Mahal, City Palace...&#10;Day 3: Jaipur to Jodhpur, visit Mehrangarh Fort...&#10;Hotels: Jaipur 2N (Deluxe Hotel), Jodhpur 2N (Heritage Resort)...&#10;Inclusions: Breakfast &amp; Dinner, AC Innova vehicle, permits...&#10;Exclusions: Flight, personal expenses..."
-              rows={7}
-              className="w-full bg-white border border-slate-300 text-slate-900 text-xs rounded-xl p-3 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 font-mono leading-relaxed"
-            />
-
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <span className="text-[11px] text-slate-500 font-medium">
-                {pastedWriteup.length > 0 ? `${pastedWriteup.length} characters pasted` : 'Ready to paste text'}
-              </span>
-
-              <div className="flex items-center gap-2">
-                {pastedWriteup && (
-                  <button
-                    type="button"
-                    onClick={() => setPastedWriteup('')}
-                    className="text-xs text-slate-500 hover:text-slate-800 font-medium px-2 py-1 cursor-pointer"
-                  >
-                    Clear
-                  </button>
-                )}
-
-                <Button
-                  type="button"
-                  size="sm"
-                  disabled={parsingWriteup || !pastedWriteup.trim()}
-                  onClick={handleParseWriteupWithAI}
-                  className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold text-xs h-9 px-4 rounded-xl cursor-pointer shadow-sm"
-                >
-                  {parsingWriteup ? (
-                    <>
-                      <RefreshCw className="w-3.5 h-3.5 mr-1.5 animate-spin" />
-                      Groq AI Parsing &amp; Auto-filling...
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="w-3.5 h-3.5 mr-1.5 text-amber-300" />
-                      ✨ Auto-Fill All Form Fields
-                    </>
-                  )}
-                </Button>
+        <div className="relative z-10 space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-4">
+            <div className="flex items-center gap-3.5">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-500 border border-purple-300/40 flex items-center justify-center text-white shadow-lg shrink-0">
+                <Sparkles className="w-6 h-6 animate-pulse text-amber-300" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-base font-extrabold text-white">
+                    Smart AI Itinerary Builder
+                  </h3>
+                  <span className="text-[10px] font-bold bg-purple-500/30 text-purple-200 border border-purple-400/30 px-2.5 py-0.5 rounded-full">
+                    ⚡ Multimodal AI
+                  </span>
+                  <span className="hidden md:inline-flex text-[10px] font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 px-2 py-0.5 rounded-full">
+                    PDFs + Screenshots + Chat Prompt
+                  </span>
+                </div>
+                <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+                  Supplier ki PDF quote, flight ticket screenshot ya WhatsApp messages upload karein aur instructions likhein. AI pura form, flight details, hotel costs aur day-by-day table automatically bana dega!
+                </p>
               </div>
             </div>
-          </div>
-        )}
 
-        {aiParseSuccessMsg && (
-          <div className="p-3 bg-emerald-50 border border-emerald-300 text-emerald-800 text-xs font-semibold rounded-xl flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-            <span>{aiParseSuccessMsg}</span>
+            <Button
+              type="button"
+              size="sm"
+              onClick={() => setShowMultimodalBuilder(!showMultimodalBuilder)}
+              className="bg-white/10 hover:bg-white/20 text-white border border-white/20 text-xs h-9 px-4 rounded-xl cursor-pointer font-semibold shrink-0 transition"
+            >
+              {showMultimodalBuilder ? 'Collapse Builder' : '✨ Open AI Builder'}
+            </Button>
           </div>
-        )}
 
-        {aiParseError && (
-          <div className="p-3 bg-red-50 border border-red-300 text-red-800 text-xs font-semibold rounded-xl flex items-center gap-2">
-            <XCircle className="w-4 h-4 text-red-600 shrink-0" />
-            <span>{aiParseError}</span>
-          </div>
-        )}
+          {showMultimodalBuilder && (
+            <div className="space-y-4 pt-1">
+              {/* File Upload Dropzone */}
+              <div>
+                <label className="text-xs font-bold text-indigo-200 uppercase tracking-wider mb-2 flex items-center justify-between">
+                  <span className="flex items-center gap-1.5">
+                    <FileUp className="w-4 h-4 text-amber-400" />
+                    Attach Files (PDFs, Flight Tickets &amp; Rate Screenshots)
+                  </span>
+                  <span className="text-[11px] text-slate-400 font-normal">
+                    Supports multiple .pdf, .png, .jpg, .jpeg, .webp
+                  </span>
+                </label>
+
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                  <label className="cursor-pointer border-2 border-dashed border-indigo-400/40 hover:border-indigo-400/80 bg-white/5 hover:bg-white/10 rounded-2xl p-4 flex flex-col items-center justify-center text-center transition flex-1 group">
+                    <div className="w-10 h-10 rounded-xl bg-indigo-500/20 border border-indigo-400/30 flex items-center justify-center text-indigo-300 group-hover:scale-110 transition mb-2">
+                      <UploadCloud className="w-5 h-5 text-indigo-300" />
+                    </div>
+                    <span className="text-xs font-bold text-white">
+                      Click to Browse or Drag &amp; Drop Documents / Screenshots
+                    </span>
+                    <span className="text-[10px] text-slate-400 mt-0.5">
+                      Upload Supplier PDF, Flight Booking Image, WhatsApp Rates, Hotel Voucher
+                    </span>
+                    <input
+                      type="file"
+                      multiple
+                      accept=".pdf,image/png,image/jpeg,image/jpg,image/webp"
+                      onChange={(e) => {
+                        const files = Array.from(e.target.files || []);
+                        if (files.length > 0) {
+                          setMultimodalFiles((prev) => [...prev, ...files]);
+                        }
+                      }}
+                      className="hidden"
+                    />
+                  </label>
+                </div>
+
+                {/* Attached Files Chips */}
+                {multimodalFiles.length > 0 && (
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {multimodalFiles.map((file, idx) => {
+                      const isPdf = file.name.toLowerCase().endsWith('.pdf') || file.type.includes('pdf');
+                      return (
+                        <div
+                          key={idx}
+                          className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-800/80 border border-slate-700 text-xs text-white shadow-sm"
+                        >
+                          {isPdf ? (
+                            <File className="w-3.5 h-3.5 text-rose-400 shrink-0" />
+                          ) : (
+                            <Camera className="w-3.5 h-3.5 text-sky-400 shrink-0" />
+                          )}
+                          <span className="font-medium truncate max-w-[180px]">{file.name}</span>
+                          <span className="text-[10px] text-slate-400 shrink-0">
+                            ({Math.round(file.size / 1024)} KB)
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setMultimodalFiles((prev) => prev.filter((_, i) => i !== idx));
+                            }}
+                            className="text-slate-400 hover:text-rose-400 ml-1 p-0.5 cursor-pointer"
+                            title="Remove file"
+                          >
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+
+              {/* Natural Instructions Prompt */}
+              <div>
+                <label className="text-xs font-bold text-indigo-200 uppercase tracking-wider mb-1.5 flex items-center justify-between">
+                  <span>Instructions for AI (Write in English / Hindi / Hinglish):</span>
+                  <span className="text-[11px] text-slate-400 font-normal">
+                    Give special notes, flight preferences, pax pricing, or custom requests
+                  </span>
+                </label>
+
+                <textarea
+                  value={multimodalPrompt}
+                  onChange={(e) => setMultimodalPrompt(e.target.value)}
+                  placeholder="e.g. Flight screenshot attached hai. Hotel cost Marina Bay Sands alag se dikhana (5-Star Luxury Premier Room Harbour View @ ₹5,44,000). 1 kid 11 yr @ ₹66,500, 1 infant 2 yr complimentary free. 5% GST + 2% TCS add karna. Mercedes-Benz V Class car with chauffeur."
+                  rows={4}
+                  className="w-full bg-slate-950/80 border border-indigo-400/30 text-white placeholder-slate-500 text-xs rounded-xl p-3 focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400 font-sans leading-relaxed"
+                />
+
+                {/* Helpful Preset Instruction Badges */}
+                <div className="flex flex-wrap items-center gap-1.5 mt-2">
+                  <span className="text-[10px] text-slate-400 font-semibold mr-1">Quick Add:</span>
+                  {[
+                    '✈️ Flight Details Attached',
+                    '🏨 Separate Hotel Cost (Marina Bay Sands)',
+                    '👶 1 Kid + 1 Infant Free Complimentary',
+                    '🏷️ 5% GST + 2% TCS Applicable',
+                    '🚗 Mercedes-Benz V Class with Chauffeur'
+                  ].map((preset) => (
+                    <button
+                      key={preset}
+                      type="button"
+                      onClick={() => {
+                        setMultimodalPrompt((prev) => (prev ? `${prev} | ${preset}` : preset));
+                      }}
+                      className="text-[11px] bg-white/5 hover:bg-white/10 text-indigo-200 border border-indigo-400/20 px-2.5 py-1 rounded-lg cursor-pointer transition"
+                    >
+                      {preset}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Actions & Submit */}
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-white/10">
+                <div className="text-xs text-slate-300">
+                  {multimodalFiles.length > 0 ? (
+                    <span className="text-emerald-400 font-semibold">
+                      ✓ {multimodalFiles.length} file(s) attached and ready for AI analysis
+                    </span>
+                  ) : (
+                    <span>You can attach PDFs / images or just type your instructions.</span>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-2">
+                  {(multimodalPrompt || multimodalFiles.length > 0) && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setMultimodalPrompt('');
+                        setMultimodalFiles([]);
+                        setMultimodalSummary(null);
+                        setMultimodalErrors([]);
+                      }}
+                      className="text-xs text-slate-400 hover:text-white px-2 py-1 cursor-pointer font-medium"
+                    >
+                      Clear All
+                    </button>
+                  )}
+
+                  <Button
+                    type="button"
+                    disabled={multimodalLoading || (!multimodalPrompt.trim() && multimodalFiles.length === 0)}
+                    onClick={handleMultimodalAIGenerate}
+                    className="bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-extrabold text-xs h-10 px-5 rounded-xl cursor-pointer shadow-lg shadow-orange-500/20 flex items-center gap-2 transition"
+                  >
+                    {multimodalLoading ? (
+                      <>
+                        <RefreshCw className="w-4 h-4 animate-spin" />
+                        <span>{multimodalProgress || 'AI Processing Files...'}</span>
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="w-4 h-4 text-amber-200" />
+                        <span>✨ Auto-Generate Itinerary with AI</span>
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </div>
+
+              {/* Success Result Banner */}
+              {multimodalSummary && (
+                <div className="p-3.5 bg-emerald-500/20 border border-emerald-400/40 rounded-xl text-emerald-200 text-xs font-bold flex items-center gap-2.5 animate-in fade-in">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span>{multimodalSummary}</span>
+                </div>
+              )}
+
+              {/* Warning/Errors Banner */}
+              {multimodalErrors.length > 0 && (
+                <div className="p-3 bg-amber-500/20 border border-amber-400/40 rounded-xl text-amber-200 text-xs space-y-1">
+                  <div className="font-bold flex items-center gap-1.5">
+                    <Info className="w-3.5 h-3.5" /> File Notice:
+                  </div>
+                  {multimodalErrors.map((err, i) => (
+                    <p key={i} className="text-[11px] text-amber-300">• {err}</p>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* SECTION 1: TRAVELER & CLIENT DETAILS */}
@@ -6214,6 +6546,436 @@ return (
               {zohoFixedMsg.text}
             </div>
           )}
+        </div>
+
+        {/* SECTION 4.5: FLIGHT DETAILS & DEDICATED SEPARATE HOTEL COST */}
+        <div className="space-y-6">
+          {/* FLIGHT QUOTATIONS CARD */}
+          <div className="bg-white border border-slate-300 rounded-2xl p-6 shadow-sm">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 border-b border-slate-300 pb-3">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-sky-50 border border-sky-300 flex items-center justify-center text-sky-700">
+                  <Plane className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
+                    Flight Quotations &amp; Sector Details
+                    {flightQuotations.length > 0 && (
+                      <span className="text-xs bg-sky-100 text-sky-800 border border-sky-300 px-2 py-0.5 rounded-full font-bold">
+                        {flightQuotations.reduce((acc, fq) => acc + (fq.sectors?.length || 0), 0)} Sectors Included
+                      </span>
+                    )}
+                  </h3>
+                  <p className="text-xs text-slate-500">
+                    Airlines, flight numbers, timings, cabin class (e.g. Business Class Stretch Plus) &amp; airfare.
+                  </p>
+                </div>
+              </div>
+
+              {flightQuotations.length === 0 ? (
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    setFlightQuotations([
+                      {
+                        optionTitle: 'Round-Trip Flight Option',
+                        totalPrice: 0,
+                        paxDetails: `${adults} Adults${kids > 0 ? `, ${kids} Kids` : ''}`,
+                        sectors: [
+                          {
+                            fromCity: departureCity || 'Departure Airport',
+                            toCity: destination || 'Arrival Airport',
+                            airline: 'IndiGo',
+                            flightNumber: '',
+                            departureDate: startDate || '',
+                            departureTime: '',
+                            arrivalDate: startDate || '',
+                            arrivalTime: '',
+                            duration: '',
+                            stops: 'Direct / Non-stop',
+                            cabinClass: 'Economy Class',
+                            baggage: '15 Kg + 7 Kg Cabin',
+                            journeyType: 'Onward Journey'
+                          }
+                        ]
+                      }
+                    ]);
+                  }}
+                  className="border-sky-300 text-sky-700 hover:bg-sky-50 text-xs font-bold"
+                >
+                  <Plus className="w-3.5 h-3.5 mr-1" /> + Add Flight Details
+                </Button>
+              ) : (
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setFlightQuotations([])}
+                  className="border-red-200 text-red-600 hover:bg-red-50 text-xs font-bold"
+                >
+                  <Trash2 className="w-3.5 h-3.5 mr-1" /> Remove Flights Section
+                </Button>
+              )}
+            </div>
+
+            {flightQuotations.length === 0 ? (
+              <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl text-center text-xs text-slate-500">
+                No flights added. AI will automatically populate this section when flight ticket screenshots or details are uploaded above!
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {flightQuotations.map((fq, fqIdx) => (
+                  <div key={fqIdx} className="border border-sky-200 rounded-2xl p-4 bg-sky-50/30 space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 mb-1">Flight Option Title</label>
+                        <Input
+                          value={fq.optionTitle || ''}
+                          onChange={(e) => {
+                            const updated = [...flightQuotations];
+                            updated[fqIdx].optionTitle = e.target.value;
+                            setFlightQuotations(updated);
+                          }}
+                          placeholder="e.g. Business Class Stretch Plus Flight"
+                          className="bg-white border-slate-300 text-xs font-bold"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 mb-1">Total Airfare (₹)</label>
+                        <Input
+                          type="number"
+                          value={fq.totalPrice || ''}
+                          onChange={(e) => {
+                            const updated = [...flightQuotations];
+                            updated[fqIdx].totalPrice = Number(e.target.value) || 0;
+                            setFlightQuotations(updated);
+                          }}
+                          placeholder="e.g. 735294"
+                          className="bg-white border-slate-300 text-xs font-bold text-emerald-700"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 mb-1">Pax Coverage</label>
+                        <Input
+                          value={fq.paxDetails || ''}
+                          onChange={(e) => {
+                            const updated = [...flightQuotations];
+                            updated[fqIdx].paxDetails = e.target.value;
+                            setFlightQuotations(updated);
+                          }}
+                          placeholder="e.g. 3 Adults, 2 Children (Round-Trip)"
+                          className="bg-white border-slate-300 text-xs font-medium"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Sectors / Flight Legs */}
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between text-xs font-bold text-slate-800">
+                        <span>Flight Sectors / Legs:</span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = [...flightQuotations];
+                            updated[fqIdx].sectors = [
+                              ...(updated[fqIdx].sectors || []),
+                              {
+                                fromCity: destination || '',
+                                toCity: departureCity || '',
+                                airline: 'IndiGo',
+                                flightNumber: '',
+                                departureDate: endDate || '',
+                                departureTime: '',
+                                arrivalDate: endDate || '',
+                                arrivalTime: '',
+                                duration: '',
+                                stops: 'Direct / Non-stop',
+                                cabinClass: 'Economy Class',
+                                baggage: '15 Kg + 7 Kg Cabin',
+                                journeyType: 'Return Journey'
+                              }
+                            ];
+                            setFlightQuotations(updated);
+                          }}
+                          className="text-xs text-sky-700 hover:text-sky-900 font-bold flex items-center gap-1 cursor-pointer"
+                        >
+                          <Plus className="w-3.5 h-3.5" /> + Add Sector (Return / Connecting)
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {(fq.sectors || []).map((sec, secIdx) => (
+                          <div
+                            key={secIdx}
+                            className="bg-white border border-slate-200 rounded-xl p-3.5 shadow-2xs space-y-2 relative"
+                          >
+                            <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+                              <span className="text-[11px] font-extrabold uppercase tracking-wider text-sky-700">
+                                Sector #{secIdx + 1} • {sec.journeyType || 'Journey'}
+                              </span>
+                              {(fq.sectors || []).length > 1 && (
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const updated = [...flightQuotations];
+                                    updated[fqIdx].sectors = updated[fqIdx].sectors.filter((_, i) => i !== secIdx);
+                                    setFlightQuotations(updated);
+                                  }}
+                                  className="text-slate-400 hover:text-red-600 p-0.5 cursor-pointer"
+                                  title="Remove sector"
+                                >
+                                  <X className="w-3.5 h-3.5" />
+                                </button>
+                              )}
+                            </div>
+
+                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                              <div>
+                                <label className="text-[10px] text-slate-500 font-bold">Airline</label>
+                                <Input
+                                  value={sec.airline || ''}
+                                  onChange={(e) => {
+                                    const updated = [...flightQuotations];
+                                    updated[fqIdx].sectors[secIdx].airline = e.target.value;
+                                    setFlightQuotations(updated);
+                                  }}
+                                  className="h-7 text-xs bg-slate-50"
+                                />
+                              </div>
+                              <div>
+                                <label className="text-[10px] text-slate-500 font-bold">Flight No.</label>
+                                <Input
+                                  value={sec.flightNumber || ''}
+                                  onChange={(e) => {
+                                    const updated = [...flightQuotations];
+                                    updated[fqIdx].sectors[secIdx].flightNumber = e.target.value;
+                                    setFlightQuotations(updated);
+                                  }}
+                                  placeholder="6E-1339"
+                                  className="h-7 text-xs bg-slate-50 font-mono"
+                                />
+                              </div>
+                              <div>
+                                <label className="text-[10px] text-slate-500 font-bold">From (Code)</label>
+                                <Input
+                                  value={sec.fromCode || sec.fromCity || ''}
+                                  onChange={(e) => {
+                                    const updated = [...flightQuotations];
+                                    updated[fqIdx].sectors[secIdx].fromCode = e.target.value;
+                                    setFlightQuotations(updated);
+                                  }}
+                                  placeholder="BOM"
+                                  className="h-7 text-xs bg-slate-50 uppercase"
+                                />
+                              </div>
+                              <div>
+                                <label className="text-[10px] text-slate-500 font-bold">To (Code)</label>
+                                <Input
+                                  value={sec.toCode || sec.toCity || ''}
+                                  onChange={(e) => {
+                                    const updated = [...flightQuotations];
+                                    updated[fqIdx].sectors[secIdx].toCode = e.target.value;
+                                    setFlightQuotations(updated);
+                                  }}
+                                  placeholder="SIN"
+                                  className="h-7 text-xs bg-slate-50 uppercase"
+                                />
+                              </div>
+                            </div>
+
+                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                              <div>
+                                <label className="text-[10px] text-slate-500 font-bold">Dep Time</label>
+                                <Input
+                                  value={sec.departureTime || ''}
+                                  onChange={(e) => {
+                                    const updated = [...flightQuotations];
+                                    updated[fqIdx].sectors[secIdx].departureTime = e.target.value;
+                                    setFlightQuotations(updated);
+                                  }}
+                                  placeholder="10:15"
+                                  className="h-7 text-xs bg-slate-50 font-mono"
+                                />
+                              </div>
+                              <div>
+                                <label className="text-[10px] text-slate-500 font-bold">Arr Time</label>
+                                <Input
+                                  value={sec.arrivalTime || ''}
+                                  onChange={(e) => {
+                                    const updated = [...flightQuotations];
+                                    updated[fqIdx].sectors[secIdx].arrivalTime = e.target.value;
+                                    setFlightQuotations(updated);
+                                  }}
+                                  placeholder="18:35"
+                                  className="h-7 text-xs bg-slate-50 font-mono"
+                                />
+                              </div>
+                              <div className="sm:col-span-2">
+                                <label className="text-[10px] text-slate-500 font-bold">Cabin Class</label>
+                                <Input
+                                  value={sec.cabinClass || ''}
+                                  onChange={(e) => {
+                                    const updated = [...flightQuotations];
+                                    updated[fqIdx].sectors[secIdx].cabinClass = e.target.value;
+                                    setFlightQuotations(updated);
+                                  }}
+                                  placeholder="e.g. Business Class Stretch Plus"
+                                  className="h-7 text-xs bg-slate-50 font-semibold text-purple-700"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* DEDICATED SEPARATE HOTEL COST CARD */}
+          <div className="bg-white border border-slate-300 rounded-2xl p-6 shadow-sm">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 border-b border-slate-300 pb-3">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-amber-50 border border-amber-300 flex items-center justify-center text-amber-700">
+                  <Building2 className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
+                    Dedicated Hotel Quotation (Separate Costing)
+                    {hotelCostDetails && (
+                      <span className="text-xs bg-amber-100 text-amber-900 border border-amber-300 px-2 py-0.5 rounded-full font-bold">
+                        ₹{Number(hotelCostDetails.totalCost || 0).toLocaleString('en-IN')}
+                      </span>
+                    )}
+                  </h3>
+                  <p className="text-xs text-slate-500">
+                    Agar client ko land package se alag luxury hotel ka quotation dikhana hai (e.g. Marina Bay Sands).
+                  </p>
+                </div>
+              </div>
+
+              {!hotelCostDetails ? (
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    setHotelCostDetails({
+                      hotelName: destination === 'Singapore' ? 'Marina Bay Sands Singapore' : 'Luxury 5-Star Hotel',
+                      rating: '5-Star Luxury',
+                      checkIn: startDate || 'Check-in Date',
+                      checkOut: endDate || 'Check-out Date',
+                      nights: noOfNights || 4,
+                      roomsCount: 1,
+                      roomCategory: 'Sands Premier Room Harbour View',
+                      paxDetails: `${adults} Adults${kids > 0 ? `, ${kids} Kids` : ''}`,
+                      totalCost: 0,
+                      inclusions: ['Daily Breakfast at RISE Restaurant', 'Infinity Pool Access'],
+                      note: 'Booking subject to real-time hotel availability at time of confirmation.'
+                    });
+                  }}
+                  className="border-amber-300 text-amber-800 hover:bg-amber-50 text-xs font-bold"
+                >
+                  <Plus className="w-3.5 h-3.5 mr-1" /> + Add Separate Hotel Cost
+                </Button>
+              ) : (
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setHotelCostDetails(null)}
+                  className="border-red-200 text-red-600 hover:bg-red-50 text-xs font-bold"
+                >
+                  <Trash2 className="w-3.5 h-3.5 mr-1" /> Remove Separate Hotel Cost
+                </Button>
+              )}
+            </div>
+
+            {hotelCostDetails ? (
+              <div className="p-4 bg-amber-50/40 border border-amber-200 rounded-2xl space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1">Hotel Name</label>
+                    <Input
+                      value={hotelCostDetails.hotelName || ''}
+                      onChange={(e) => {
+                        setHotelCostDetails({ ...hotelCostDetails, hotelName: e.target.value });
+                      }}
+                      placeholder="e.g. Marina Bay Sands Singapore"
+                      className="bg-white border-slate-300 text-xs font-bold"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1">Room Category</label>
+                    <Input
+                      value={hotelCostDetails.roomCategory || ''}
+                      onChange={(e) => {
+                        setHotelCostDetails({ ...hotelCostDetails, roomCategory: e.target.value });
+                      }}
+                      placeholder="e.g. Sands Premier Room Harbour View"
+                      className="bg-white border-slate-300 text-xs font-medium"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1">Total Hotel Cost (₹)</label>
+                    <Input
+                      type="number"
+                      value={hotelCostDetails.totalCost || ''}
+                      onChange={(e) => {
+                        setHotelCostDetails({ ...hotelCostDetails, totalCost: Number(e.target.value) || 0 });
+                      }}
+                      placeholder="e.g. 544000"
+                      className="bg-white border-slate-300 text-xs font-extrabold text-amber-900"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1">Star Rating</label>
+                    <Input
+                      value={hotelCostDetails.rating || '5-Star Luxury'}
+                      onChange={(e) => {
+                        setHotelCostDetails({ ...hotelCostDetails, rating: e.target.value });
+                      }}
+                      placeholder="5-Star Luxury"
+                      className="bg-white border-slate-300 text-xs"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1">Nights</label>
+                    <Input
+                      type="number"
+                      value={hotelCostDetails.nights || 1}
+                      onChange={(e) => {
+                        setHotelCostDetails({ ...hotelCostDetails, nights: Number(e.target.value) || 1 });
+                      }}
+                      className="bg-white border-slate-300 text-xs"
+                    />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label className="block text-xs font-bold text-slate-700 mb-1">Special Hotel Note</label>
+                    <Input
+                      value={hotelCostDetails.note || ''}
+                      onChange={(e) => {
+                        setHotelCostDetails({ ...hotelCostDetails, note: e.target.value });
+                      }}
+                      placeholder="e.g. Rates subject to dynamic seasonal fluctuation"
+                      className="bg-white border-slate-300 text-xs"
+                    />
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl text-center text-xs text-slate-500">
+                Land package includes default hotel stays. If a separate hotel quotation is uploaded via AI, it will appear here.
+              </div>
+            )}
+          </div>
         </div>
 
         {/* SECTION 5: DAY-WISE ITINERARY (SWITCHABLE: MANUAL POINTS MODE vs SHEET SUBFORM VIEW) */}

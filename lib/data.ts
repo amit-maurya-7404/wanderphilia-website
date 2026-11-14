@@ -18264,8 +18264,10 @@ export const testimonials: Testimonial[] = [
 ];
 
 import { rajasthanGuideBlog } from './rajasthan-guide-blog'
+import { rajasthanBestTimeBlog } from './rajasthan-best-time-blog'
 
 export const blogs: Blog[] = [
+  rajasthanBestTimeBlog,
   rajasthanGuideBlog,
   {
     id: '1',

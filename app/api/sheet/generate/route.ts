@@ -436,6 +436,11 @@ export async function POST(req: NextRequest) {
       amenities: aiContent.amenities,
       packingTips: aiContent.packingTips,
       importantNotes: aiContent.importantNotes,
+      flightQuotations: Array.isArray(rawBody.flightQuotations) && rawBody.flightQuotations.length > 0
+        ? rawBody.flightQuotations
+        : (Array.isArray(rawBody.flights) && rawBody.flights.length > 0 ? rawBody.flights : undefined),
+      hotelCostDetails: rawBody.hotelCostDetails || undefined,
+      hotelQuotations: Array.isArray(rawBody.hotelQuotations) ? rawBody.hotelQuotations : undefined,
       heroImage: resolvedHeroImage,
       galleryImages: resolvedGalleryImages,
       status: 'active',
@@ -457,6 +462,11 @@ export async function POST(req: NextRequest) {
         Trip_Type: tripType,
         heroImage: resolvedHeroImage,
         galleryImages: resolvedGalleryImages,
+        flightQuotations: Array.isArray(rawBody.flightQuotations) && rawBody.flightQuotations.length > 0
+          ? rawBody.flightQuotations
+          : (Array.isArray(rawBody.flights) && rawBody.flights.length > 0 ? rawBody.flights : undefined),
+        hotelCostDetails: rawBody.hotelCostDetails || undefined,
+        hotelQuotations: Array.isArray(rawBody.hotelQuotations) ? rawBody.hotelQuotations : undefined,
         Hotel_Name: primaryHotel,
         Room_Category: primaryRoom,
         Meal_Plan: mealPlan,

@@ -414,7 +414,26 @@ function WebsiteItineraryInner() {
             setIsCustomInclusionsEdited(true);
           }
           if (Array.isArray(tripData.batchDates)) setBatchDates(tripData.batchDates);
-          if (tripData.placements) setPlacements(tripData.placements);
+          if (tripData.placements) {
+            setPlacements({
+              homepage: Boolean(tripData.placements.homepage),
+              indiaTrips: Boolean(tripData.placements.indiaTrips),
+              internationalTrips: Boolean(tripData.placements.internationalTrips),
+              upcomingTours: Boolean(tripData.placements.upcomingTours),
+              honeymoon: Boolean(tripData.placements.honeymoon),
+              christmasNewYear: Boolean(tripData.placements.christmasNewYear),
+              destinationPage: Boolean(tripData.placements.destinationPage),
+              destinationCategory: tripData.placements.destinationCategory || '',
+              sections: {
+                available: Boolean(tripData.placements.sections?.available ?? true),
+                group: Boolean(tripData.placements.sections?.group),
+                family: Boolean(tripData.placements.sections?.family),
+                honeymoon: Boolean(tripData.placements.sections?.honeymoon),
+                custom: Boolean(tripData.placements.sections?.custom),
+                related: Boolean(tripData.placements.sections?.related ?? true),
+              }
+            });
+          }
 
           // Pricing
           if (Array.isArray(tripData.costingDetails) && tripData.costingDetails.length > 0) {
@@ -463,11 +482,11 @@ function WebsiteItineraryInner() {
             }
             if (Array.isArray(tripData.accommodations) && tripData.accommodations.length > 1) {
               setHotelStays(tripData.accommodations.map((a: any) => ({
-                city: a.city,
+                city: a.city || '',
                 nights: parseInt(a.nights) || 1,
                 category: a.category || globalHotelCategory,
                 hotelId: a.hotelId || '',
-                hotelName: formatHotelWithSimilar(a.hotel || `Hotel in ${a.city}`),
+                hotelName: formatHotelWithSimilar(a.hotel || a.hotelName || `Hotel in ${a.city || ''}`),
                 roomCategory: a.roomCategory || 'Deluxe Room',
                 basePrice: a.basePrice || 0,
                 mealPlan: a.mealPlan || globalMealPlan
@@ -2767,7 +2786,7 @@ function WebsiteItineraryInner() {
                 <span className="text-xs text-slate-400 font-mono">/trips/</span>
                 <input
                   type="text"
-                  value={placements.destinationCategory}
+                  value={placements.destinationCategory || ''}
                   onChange={(e) => setPlacements({
                     ...placements,
                     destinationCategory: e.target.value.toLowerCase().trim().replace(/[^a-z0-9-]/g, '')
@@ -2847,7 +2866,7 @@ function WebsiteItineraryInner() {
                 Trip Title / Name <span className="text-red-400">*</span>
               </label>
               <Input
-                value={title}
+                value={title || ''}
                 onChange={(e) => handleTitleChange(e.target.value)}
                 placeholder="e.g. 7 Days Rangilo Rajasthan Group Tour"
                 className="bg-slate-950 border-slate-800 text-white text-xs py-2"
@@ -2860,7 +2879,7 @@ function WebsiteItineraryInner() {
               </label>
               <div className="flex items-center gap-2">
                 <Input
-                  value={slug}
+                  value={slug || ''}
                   onChange={(e) => setSlug(cleanSlug(e.target.value))}
                   placeholder="e.g. rangilo-rajasthan-group-tour"
                   className="bg-slate-950 border-slate-800 text-orange-400 font-mono text-xs py-2"
@@ -2902,7 +2921,7 @@ function WebsiteItineraryInner() {
             <div>
               <label className="block text-xs font-medium text-slate-300 mb-1.5">Destination</label>
               <Input
-                value={destination}
+                value={destination || ''}
                 onChange={(e) => {
                   setDestination(e.target.value);
                   setCategory(e.target.value);
@@ -2992,7 +3011,7 @@ function WebsiteItineraryInner() {
             <div>
               <label className="block text-xs font-medium text-slate-300 mb-1.5">Route Plan</label>
               <Input
-                value={route}
+                value={route || ''}
                 onChange={(e) => setRoute(e.target.value)}
                 placeholder="e.g. Jaipur → Jodhpur → Jaisalmer"
                 className="bg-slate-950 border-slate-800 text-white text-xs py-2"
@@ -3002,7 +3021,7 @@ function WebsiteItineraryInner() {
             <div>
               <label className="block text-xs font-medium text-slate-300 mb-1.5">Stay Summary</label>
               <Input
-                value={staySummary}
+                value={staySummary || ''}
                 onChange={(e) => setStaySummary(e.target.value)}
                 placeholder="e.g. 2N Jaipur | 2N Jodhpur | 2N Jaisalmer"
                 className="bg-slate-950 border-slate-800 text-white text-xs py-2"
@@ -3013,7 +3032,7 @@ function WebsiteItineraryInner() {
           <div>
             <label className="block text-xs font-medium text-slate-300 mb-1.5">Overview Paragraph</label>
             <Textarea
-              value={description}
+              value={description || ''}
               onChange={(e) => setDescription(e.target.value)}
               rows={3}
               placeholder="Are you ready for an unforgettable adventure in the breathtaking landscapes of..."
@@ -3069,7 +3088,7 @@ function WebsiteItineraryInner() {
               {highlights.map((h, idx) => (
                 <div key={idx} className="flex items-center gap-2">
                   <Input
-                    value={h}
+                    value={h || ''}
                     onChange={(e) => {
                       const copy = [...highlights];
                       copy[idx] = e.target.value;
@@ -3141,7 +3160,7 @@ function WebsiteItineraryInner() {
                   <div className="mt-2.5 flex items-center gap-2">
                     <span className="text-xs text-emerald-400 font-mono font-bold">₹</span>
                     <Input
-                      value={opt.defaultPrice}
+                      value={opt.defaultPrice || ''}
                       onChange={(e) => {
                         const copy = [...pricingOptions];
                         copy[idx].defaultPrice = e.target.value.replace(/\D+/g, '');
@@ -3169,13 +3188,13 @@ function WebsiteItineraryInner() {
             ) : (
               <div className="flex items-center gap-3 p-3 bg-slate-950 border border-slate-800 rounded-xl">
                 <Input
-                  value={customPricingLabel}
+                  value={customPricingLabel || ''}
                   onChange={(e) => setCustomPricingLabel(e.target.value)}
                   placeholder="Option Name (e.g. Luxury Glamping Tent)"
                   className="bg-slate-900 border-slate-800 text-white text-xs w-1/2"
                 />
                 <Input
-                  value={customPricingPrice}
+                  value={customPricingPrice || ''}
                   onChange={(e) => setCustomPricingPrice(e.target.value.replace(/\D+/g, ''))}
                   placeholder="Price in ₹"
                   className="bg-slate-900 border-slate-800 text-emerald-400 text-xs w-1/4"
@@ -3490,7 +3509,7 @@ function WebsiteItineraryInner() {
                           {idx + 1}
                         </span>
                         <Input
-                          value={stay.city}
+                          value={stay.city || ''}
                           onChange={(e) => handleStayCityChange(idx, e.target.value)}
                           placeholder="City (e.g. Jaipur)"
                           className="bg-slate-900 border-slate-800 text-white font-bold text-xs h-7 w-28 sm:w-36"
@@ -3557,7 +3576,7 @@ function WebsiteItineraryInner() {
                             </select>
                           )}
                           <Input
-                            value={stay.hotelName}
+                            value={stay.hotelName || ''}
                             onChange={(e) => handleStayHotelNameChange(idx, e.target.value)}
                             placeholder="Type hotel name (e.g. Deluxe Heritage Haveli / Similar)"
                             className="bg-slate-900 border-slate-800 text-white text-xs h-8"
@@ -3586,7 +3605,7 @@ function WebsiteItineraryInner() {
                             </select>
                           )}
                           <Input
-                            value={stay.roomCategory}
+                            value={stay.roomCategory || ''}
                             onChange={(e) => handleStayRoomCategoryChange(idx, e.target.value)}
                             placeholder="Room Category (e.g. Deluxe Room / Luxury Swiss Tent)"
                             className="bg-slate-900 border-slate-800 text-emerald-400 text-xs h-8"
@@ -3666,7 +3685,7 @@ function WebsiteItineraryInner() {
                       D{day.day}
                     </span>
                     <Input
-                      value={day.title}
+                      value={day.title || ''}
                       onChange={(e) => {
                         const copy = [...dayPlans];
                         copy[dayIdx].title = e.target.value;
@@ -3706,7 +3725,7 @@ function WebsiteItineraryInner() {
                       <Hotel className="w-3 h-3 text-amber-400" /> Stay / Hotel
                     </label>
                     <Input
-                      value={day.stayHotel}
+                      value={day.stayHotel || ''}
                       onChange={(e) => {
                         const copy = [...dayPlans];
                         copy[dayIdx].stayHotel = formatHotelWithSimilar(e.target.value);
@@ -3723,7 +3742,7 @@ function WebsiteItineraryInner() {
                       <label className="flex items-center gap-1.5 text-xs text-slate-300 cursor-pointer">
                         <input
                           type="checkbox"
-                          checked={day.meals.breakfast}
+                          checked={Boolean(day.meals?.breakfast)}
                           onChange={(e) => {
                             const copy = [...dayPlans];
                             copy[dayIdx].meals.breakfast = e.target.checked;
@@ -3737,7 +3756,7 @@ function WebsiteItineraryInner() {
                       <label className="flex items-center gap-1.5 text-xs text-slate-300 cursor-pointer">
                         <input
                           type="checkbox"
-                          checked={day.meals.lunch}
+                          checked={Boolean(day.meals?.lunch)}
                           onChange={(e) => {
                             const copy = [...dayPlans];
                             copy[dayIdx].meals.lunch = e.target.checked;
@@ -3751,7 +3770,7 @@ function WebsiteItineraryInner() {
                       <label className="flex items-center gap-1.5 text-xs text-slate-300 cursor-pointer">
                         <input
                           type="checkbox"
-                          checked={day.meals.dinner}
+                          checked={Boolean(day.meals?.dinner)}
                           onChange={(e) => {
                             const copy = [...dayPlans];
                             copy[dayIdx].meals.dinner = e.target.checked;
@@ -3789,7 +3808,7 @@ function WebsiteItineraryInner() {
                       <div key={pIdx} className="flex items-center gap-2">
                         <span className="w-1.5 h-1.5 rounded-full bg-orange-400 shrink-0" />
                         <Input
-                          value={point}
+                          value={point || ''}
                           onChange={(e) => {
                             const copy = [...dayPlans];
                             copy[dayIdx].timeline[pIdx] = e.target.value;
@@ -3893,7 +3912,7 @@ function WebsiteItineraryInner() {
             <div className="flex items-center gap-2">
               <Input
                 type="text"
-                value={vehicleType}
+                value={vehicleType || ''}
                 onChange={e => {
                   setVehicleType(e.target.value);
                   setIsCustomInclusionsEdited(false);
@@ -3982,8 +4001,8 @@ function WebsiteItineraryInner() {
                       </span>
 
                       <textarea
-                        rows={Math.max(1, Math.min(3, Math.ceil((item.length || 1) / 50)))}
-                        value={item}
+                        rows={Math.max(1, Math.min(3, Math.ceil(((item || '').length || 1) / 50)))}
+                        value={item || ''}
                         onChange={e => handleUpdateInclusion(idx, e.target.value)}
                         placeholder="Describe included item..."
                         className="flex-1 text-xs text-slate-200 font-medium bg-transparent border-0 focus:outline-none p-1 resize-y leading-relaxed placeholder:text-slate-600"
@@ -4126,8 +4145,8 @@ function WebsiteItineraryInner() {
                       </span>
 
                       <textarea
-                        rows={Math.max(1, Math.min(3, Math.ceil((item.length || 1) / 50)))}
-                        value={item}
+                        rows={Math.max(1, Math.min(3, Math.ceil(((item || '').length || 1) / 50)))}
+                        value={item || ''}
                         onChange={e => handleUpdateExclusion(idx, e.target.value)}
                         placeholder="Describe excluded item..."
                         className="flex-1 text-xs text-slate-200 font-medium bg-transparent border-0 focus:outline-none p-1 resize-y leading-relaxed placeholder:text-slate-600"

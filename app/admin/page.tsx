@@ -28,12 +28,15 @@ import {
   CheckCircle2,
   Layers,
   ChevronRight,
-  X
+  X,
+  FileText,
+  FileSpreadsheet
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { trips as staticTrips, Trip } from '@/lib/data';
 import { DestinationsManagement } from '@/components/admin/destinations-management';
+import { BlogsManagement } from '@/components/admin/blogs-management';
 import { BUILTIN_DESTINATIONS } from '@/lib/destinations';
 
 interface TripItem extends Trip {
@@ -70,14 +73,22 @@ export default function AdminDashboardPage() {
   const router = useRouter();
 
   // Active Main View Tab
-  const [activeMainTab, setActiveMainTab] = useState<'itineraries' | 'destinations'>('itineraries');
+  const [activeMainTab, setActiveMainTab] = useState<'itineraries' | 'destinations' | 'blogs'>('itineraries');
   const [destCount, setDestCount] = useState<number>(BUILTIN_DESTINATIONS.length);
+  const [blogCount, setBlogCount] = useState<number>(0);
 
   useEffect(() => {
     fetch('/api/destinations')
       .then(r => (r.ok ? r.json() : []))
       .then(d => {
         if (Array.isArray(d)) setDestCount(d.length);
+      })
+      .catch(() => {});
+
+    fetch('/api/blogs')
+      .then(r => (r.ok ? r.json() : { blogs: [] }))
+      .then((data: any) => {
+        if (data?.blogs && Array.isArray(data.blogs)) setBlogCount(data.blogs.length);
       })
       .catch(() => {});
   }, []);
@@ -300,7 +311,28 @@ export default function AdminDashboardPage() {
             >
               <Globe className="w-3.5 h-3.5" /> Destination Pages ({destCount})
             </button>
+            <button
+              onClick={() => setActiveMainTab('blogs')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
+                activeMainTab === 'blogs'
+                  ? 'bg-gradient-to-r from-[#ff5d09] to-orange-600 text-white shadow-md'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <FileText className="w-3.5 h-3.5" /> Blogs & Stories ({blogCount})
+            </button>
           </div>
+
+          <Link href="/sheet-itinerary" target="_blank">
+            <Button
+              size="sm"
+              variant="outline"
+              className="border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 hover:text-white font-medium text-xs h-9 cursor-pointer gap-1.5 transition"
+            >
+              <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-400" />
+              Sheet Itinerary
+            </Button>
+          </Link>
 
           <Link href="/admin/website-itinerary">
             <Button
@@ -334,7 +366,7 @@ export default function AdminDashboardPage() {
               : 'bg-slate-900 border-slate-800 text-slate-400'
           }`}
         >
-          Tour Itineraries ({allTrips.length})
+          Tours ({allTrips.length})
         </button>
         <button
           onClick={() => setActiveMainTab('destinations')}
@@ -344,13 +376,32 @@ export default function AdminDashboardPage() {
               : 'bg-slate-900 border-slate-800 text-slate-400'
           }`}
         >
-          Destination Pages ({destCount})
+          Destinations ({destCount})
         </button>
+        <button
+          onClick={() => setActiveMainTab('blogs')}
+          className={`flex-1 py-2 text-xs font-semibold rounded-xl text-center border transition-all ${
+            activeMainTab === 'blogs'
+              ? 'bg-orange-500/20 border-orange-500/30 text-orange-400'
+              : 'bg-slate-900 border-slate-800 text-slate-400'
+          }`}
+        >
+          Blogs ({blogCount})
+        </button>
+        <Link
+          href="/sheet-itinerary"
+          target="_blank"
+          className="py-2 px-2.5 text-xs font-semibold rounded-xl text-center border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 flex items-center justify-center gap-1"
+        >
+          <FileSpreadsheet className="w-3.5 h-3.5" /> Sheet
+        </Link>
       </div>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 pb-24">
         {activeMainTab === 'destinations' ? (
           <DestinationsManagement />
+        ) : activeMainTab === 'blogs' ? (
+          <BlogsManagement />
         ) : (
           <>
             {/* WELCOME BANNER & STATS */}

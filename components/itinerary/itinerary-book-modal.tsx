@@ -43,6 +43,10 @@ interface ItineraryBookModalProps {
   proposalTitle?: string;
   perAdultPrice?: number;
   adults?: number;
+  kids?: number;
+  perKidPrice?: number;
+  childPricingNote?: string;
+  paxSummary?: string;
   baseAmount?: number;
   gstPercentage?: number;
   tcsPercentage?: number;
@@ -70,6 +74,10 @@ export function ItineraryBookModal({
   proposalTitle,
   perAdultPrice = 170772,
   adults = 5,
+  kids = 0,
+  perKidPrice,
+  childPricingNote,
+  paxSummary,
   baseAmount,
   gstPercentage = 5,
   tcsPercentage,
@@ -92,6 +100,11 @@ export function ItineraryBookModal({
 
   // Indian trips have 0% TCS. International trips have GST + TCS.
   const isIntl = isInternationalTrip(destination, '');
+  const paxDisplayText = paxSummary || (
+    kids > 0
+      ? `${adults} Adults + ${kids} Kids`
+      : `${adults} Adults`
+  );
   const alreadyPaid = Number(advanceAmountPaid || 0);
   const tenPercentAmount = Math.round(totalQuotationAmount * 0.1);
   const fiftyPercentAmount = Math.round(totalQuotationAmount * 0.5);
@@ -410,7 +423,7 @@ export function ItineraryBookModal({
 
   return (
     <Dialog open={open && !isRazorpayOpen} onOpenChange={onOpenChange}>
-      <DialogContent 
+      <DialogContent
         showCloseButton={false}
         className="max-w-lg sm:max-w-xl p-0 overflow-hidden bg-[#FAF8F5] border border-stone-300 rounded-2xl sm:rounded-3xl shadow-2xl max-h-[92vh] sm:max-h-[88vh] flex flex-col w-[94vw] sm:w-full"
       >
@@ -449,11 +462,23 @@ export function ItineraryBookModal({
             <DialogDescription className="text-xs text-amber-100/90 flex flex-wrap items-center gap-x-2 gap-y-1 font-medium">
               <span>Guest: <strong className="text-white font-bold">{clientDisplayName}</strong></span>
               <span>•</span>
-              <span>Rate: <strong className="text-white font-bold">₹{perAdultPrice.toLocaleString('en-IN')}/adult</strong> ({adults} Adults)</span>
+              <span>
+                Rate: <strong className="text-white font-bold">₹{perAdultPrice.toLocaleString('en-IN')}/adult</strong>
+                {perKidPrice && perKidPrice > 0 ? (
+                  <span> + <strong className="text-white font-bold">₹{perKidPrice.toLocaleString('en-IN')}/kid</strong></span>
+                ) : null}
+                {' '}({paxDisplayText})
+              </span>
               <span>•</span>
               <span className="text-amber-300 font-bold">
                 {gstPercentage}% GST{tcsPercentage && tcsPercentage > 0 ? ` & ${tcsPercentage}% TCS` : ''} Included
               </span>
+              {childPricingNote && (
+                <>
+                  <span>•</span>
+                  <span className="text-amber-200 text-[11px] font-semibold">{childPricingNote}</span>
+                </>
+              )}
             </DialogDescription>
           </div>
         </div>
@@ -652,8 +677,8 @@ export function ItineraryBookModal({
                     <div
                       onClick={() => setPaymentType('token')}
                       className={`p-3 rounded-xl border-2 transition-all cursor-pointer relative flex flex-col justify-between ${paymentType === 'token'
-                          ? 'border-[#6E1E14] bg-white shadow-md ring-2 ring-[#6E1E14]/20'
-                          : 'border-stone-200 bg-white/70 hover:border-stone-300 hover:bg-white'
+                        ? 'border-[#6E1E14] bg-white shadow-md ring-2 ring-[#6E1E14]/20'
+                        : 'border-stone-200 bg-white/70 hover:border-stone-300 hover:bg-white'
                         }`}
                     >
                       <div className="flex items-start justify-between gap-1.5">
@@ -683,8 +708,8 @@ export function ItineraryBookModal({
                     <div
                       onClick={() => setPaymentType('advance')}
                       className={`p-3 rounded-xl border-2 transition-all cursor-pointer relative flex flex-col justify-between ${paymentType === 'advance'
-                          ? 'border-[#6E1E14] bg-white shadow-md ring-2 ring-[#6E1E14]/20'
-                          : 'border-stone-200 bg-white/70 hover:border-stone-300 hover:bg-white'
+                        ? 'border-[#6E1E14] bg-white shadow-md ring-2 ring-[#6E1E14]/20'
+                        : 'border-stone-200 bg-white/70 hover:border-stone-300 hover:bg-white'
                         }`}
                     >
                       <div className="flex items-start justify-between gap-1.5">
@@ -714,8 +739,8 @@ export function ItineraryBookModal({
                     <div
                       onClick={() => setPaymentType('full')}
                       className={`p-3 rounded-xl border-2 transition-all cursor-pointer relative flex flex-col justify-between ${paymentType === 'full'
-                          ? 'border-[#6E1E14] bg-white shadow-md ring-2 ring-[#6E1E14]/20'
-                          : 'border-stone-200 bg-white/70 hover:border-stone-300 hover:bg-white'
+                        ? 'border-[#6E1E14] bg-white shadow-md ring-2 ring-[#6E1E14]/20'
+                        : 'border-stone-200 bg-white/70 hover:border-stone-300 hover:bg-white'
                         }`}
                     >
                       <div className="flex items-start justify-between gap-1.5">
@@ -762,8 +787,8 @@ export function ItineraryBookModal({
                       <div
                         onClick={() => setPaymentType('remaining_advance')}
                         className={`p-3.5 rounded-xl border-2 transition-all cursor-pointer relative flex flex-col justify-between ${paymentType === 'remaining_advance'
-                            ? 'border-[#6E1E14] bg-white shadow-md ring-2 ring-[#6E1E14]/20'
-                            : 'border-stone-200 bg-white/70 hover:border-stone-300 hover:bg-white'
+                          ? 'border-[#6E1E14] bg-white shadow-md ring-2 ring-[#6E1E14]/20'
+                          : 'border-stone-200 bg-white/70 hover:border-stone-300 hover:bg-white'
                           }`}
                       >
                         <div className="flex items-start justify-between gap-1.5">
@@ -793,8 +818,8 @@ export function ItineraryBookModal({
                       <div
                         onClick={() => setPaymentType('remaining_balance')}
                         className={`p-3.5 rounded-xl border-2 transition-all cursor-pointer relative flex flex-col justify-between ${paymentType === 'remaining_balance'
-                            ? 'border-[#6E1E14] bg-white shadow-md ring-2 ring-[#6E1E14]/20'
-                            : 'border-stone-200 bg-white/70 hover:border-stone-300 hover:bg-white'
+                          ? 'border-[#6E1E14] bg-white shadow-md ring-2 ring-[#6E1E14]/20'
+                          : 'border-stone-200 bg-white/70 hover:border-stone-300 hover:bg-white'
                           }`}
                       >
                         <div className="flex items-start justify-between gap-1.5">
@@ -991,7 +1016,7 @@ export function ItineraryBookModal({
               {/* PAYMENT SUMMARY BREAKDOWN CARD */}
               <div className="bg-gradient-to-br from-stone-900 via-[#4A140D] to-[#300B07] text-white p-4 rounded-xl shadow-md space-y-2.5">
                 <div className="flex items-center justify-between text-xs border-b border-white/10 pb-2 text-stone-300">
-                  <span>Total Tour Package ({adults} Adults):</span>
+                  <span>Total Tour Package ({paxDisplayText}):</span>
                   <span className="font-bold text-white">₹{totalQuotationAmount.toLocaleString('en-IN')}</span>
                 </div>
 

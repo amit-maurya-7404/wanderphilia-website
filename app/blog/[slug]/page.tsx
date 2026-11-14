@@ -1,12 +1,16 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { blogs } from '@/lib/data'
+import { getBlogBySlug, getAllBlogs } from '@/lib/blogs-db'
+import { blogs as fallbackBlogs } from '@/lib/data'
 import { ArrowLeft, Clock, Tag } from 'lucide-react'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
 
 import { Metadata } from 'next'
+
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 interface BlogPageProps {
   params: Promise<{
@@ -16,7 +20,7 @@ interface BlogPageProps {
 
 export async function generateMetadata({ params }: BlogPageProps): Promise<Metadata> {
   const { slug } = await params
-  const blog = blogs.find((item) => item.slug === slug)
+  const blog = await getBlogBySlug(slug)
 
   if (!blog) {
     return {
@@ -51,17 +55,18 @@ export async function generateMetadata({ params }: BlogPageProps): Promise<Metad
 }
 
 export async function generateStaticParams() {
-  return blogs.map((blog) => ({ slug: blog.slug }))
+  return fallbackBlogs.map((blog) => ({ slug: blog.slug }))
 }
 
 export default async function BlogPostPage({ params }: BlogPageProps) {
   const { slug } = await params
-  const blog = blogs.find((item) => item.slug === slug)
-
+  const blog = await getBlogBySlug(slug)
 
   if (!blog) {
     notFound()
   }
+
+  const allBlogs = await getAllBlogs()
 
   const formattedDate = new Date(blog.date).toLocaleDateString('en-US', {
     year: 'numeric',
@@ -69,7 +74,7 @@ export default async function BlogPostPage({ params }: BlogPageProps) {
     day: 'numeric',
   })
 
-  const relatedPosts = blogs.filter((item) => item.slug !== blog.slug).slice(0, 2)
+  const relatedPosts = allBlogs.filter((item) => item.slug !== blog.slug).slice(0, 3)
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
@@ -127,14 +132,14 @@ export default async function BlogPostPage({ params }: BlogPageProps) {
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] xl:grid-cols-[1fr_320px] gap-8 lg:gap-12 items-start">
             <article className="prose prose-slate max-w-none prose-p:text-slate-700 prose-p:text-[15px] sm:prose-p:text-base prose-p:leading-relaxed prose-li:text-slate-700 prose-li:text-[15px] sm:prose-li:text-base prose-headings:text-slate-900 prose-h2:text-2xl sm:prose-h2:text-[26px] prose-h2:font-bold prose-h3:text-lg sm:prose-h3:text-xl prose-h3:font-semibold">
-                      {blog.contentHtml ? (
-                        <div dangerouslySetInnerHTML={{ __html: blog.contentHtml }} />
-                      ) : (
-                        <>
-                          <p>{blog.content}</p>
-                          <p>
-                            The journey with Wanderphilia blends premium comfort with thrilling adventure, giving you curated experiences that feel both luxe and authentic.
-                          </p>
+              {blog.contentHtml ? (
+                <div dangerouslySetInnerHTML={{ __html: blog.contentHtml }} />
+              ) : (
+                <>
+                  <p>{blog.content}</p>
+                  <p>
+                    The journey with Wanderphilia blends premium comfort with thrilling adventure, giving you curated experiences that feel both luxe and authentic.
+                  </p>
                   <h2>Why this destination is special</h2>
                   <p>
                     The right itinerary brings the destination alive. Each trip is crafted to balance immersive activities with restorative luxury, so you come home with a deeper story.
@@ -157,47 +162,47 @@ export default async function BlogPostPage({ params }: BlogPageProps) {
                   </div>
                 </>
               )}
-              </article>
+            </article>
 
-              <aside className="space-y-6 lg:sticky lg:top-28">
-                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5 shadow-sm">
-                  <h2 className="text-xl font-bold mb-3.5 text-slate-900">Quick Facts</h2>
-                  <div className="space-y-2.5 text-slate-700">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-slate-500">Category</span>
-                      <span className="font-medium text-slate-900">{blog.category}</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-slate-500">Author</span>
-                      <span className="font-medium text-slate-900">{blog.author}</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-slate-500">{blog.lastUpdated ? 'Last Updated' : 'Date'}</span>
-                      <span className="font-medium text-slate-900">{blog.lastUpdated || formattedDate}</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-slate-500">Read Time</span>
-                      <span className="font-medium text-slate-900">{blog.readTime} min</span>
-                    </div>
+            <aside className="space-y-6 lg:sticky lg:top-28">
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5 shadow-sm">
+                <h2 className="text-xl font-bold mb-3.5 text-slate-900">Quick Facts</h2>
+                <div className="space-y-2.5 text-slate-700">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-slate-500">Category</span>
+                    <span className="font-medium text-slate-900">{blog.category}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-slate-500">Author</span>
+                    <span className="font-medium text-slate-900">{blog.author}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-slate-500">{blog.lastUpdated ? 'Last Updated' : 'Date'}</span>
+                    <span className="font-medium text-slate-900">{blog.lastUpdated || formattedDate}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-slate-500">Read Time</span>
+                    <span className="font-medium text-slate-900">{blog.readTime} min</span>
                   </div>
                 </div>
+              </div>
 
-                <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                  <h2 className="text-xl font-bold mb-3.5 text-slate-900">Related Articles</h2>
-                  <div className="space-y-3">
-                    {relatedPosts.map((item) => (
-                      <Link key={item.id} href={`/blog/${item.slug}`} className="block rounded-xl border border-slate-200 p-3.5 transition hover:border-primary/40 hover:bg-primary/5">
-                        <p className="text-base font-semibold text-slate-900 leading-snug">{item.title}</p>
-                        <p className="text-xs text-slate-600 mt-1.5 line-clamp-2">{item.excerpt}</p>
-                      </Link>
-                    ))}
-                  </div>
+              <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                <h2 className="text-xl font-bold mb-3.5 text-slate-900">Related Articles</h2>
+                <div className="space-y-3">
+                  {relatedPosts.map((item) => (
+                    <Link key={item.id} href={`/blog/${item.slug}`} className="block rounded-xl border border-slate-200 p-3.5 transition hover:border-primary/40 hover:bg-primary/5">
+                      <p className="text-base font-semibold text-slate-900 leading-snug">{item.title}</p>
+                      <p className="text-xs text-slate-600 mt-1.5 line-clamp-2">{item.excerpt}</p>
+                    </Link>
+                  ))}
                 </div>
-              </aside>
-            </div>
-          </section>
-        </main>
-        <Footer />
+              </div>
+            </aside>
+          </div>
+        </section>
+      </main>
+      <Footer />
     </div>
   )
 }

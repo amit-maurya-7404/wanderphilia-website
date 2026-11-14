@@ -1,10 +1,15 @@
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
 import { BlogCard } from '@/components/blog-card'
-import { blogs } from '@/lib/data'
+import { getAllBlogs } from '@/lib/blogs-db'
 import { Input } from '@/components/ui/input'
 
-export default function BlogPage() {
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
+export default async function BlogPage() {
+  const blogs = await getAllBlogs()
+
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <Navbar />
