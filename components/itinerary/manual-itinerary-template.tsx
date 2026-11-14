@@ -146,8 +146,8 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
   const currentTcsPct = isIntl
     ? (activeOption?.tcsPercentage !== undefined ? activeOption.tcsPercentage : (itinerary.tcsPercentage !== undefined ? itinerary.tcsPercentage : 2))
     : 0;
-  const currentGstAmount = activeOption?.gstAmount ?? (currentBaseAmount ? Math.round(currentBaseAmount * (currentGstPct / 100)) : itinerary.gstAmount);
-  const currentTcsAmount = activeOption?.tcsAmount ?? (currentBaseAmount && currentTcsPct > 0 ? Math.round(currentBaseAmount * (currentTcsPct / 100)) : itinerary.tcsAmount);
+  const currentGstAmount = activeOption?.gstAmount ?? itinerary.gstAmount ?? (currentBaseAmount ? Math.round(currentBaseAmount * (currentGstPct / 100)) : undefined);
+  const currentTcsAmount = activeOption?.tcsAmount ?? itinerary.tcsAmount ?? (currentBaseAmount && currentTcsPct > 0 ? Math.round(currentBaseAmount * (currentTcsPct / 100)) : undefined);
   const currentFinalQuotationAmount = activeOption?.finalQuotationAmount ?? itinerary.finalQuotationAmount ?? (currentBaseAmount ? currentBaseAmount + (currentGstAmount || 0) + (currentTcsAmount || 0) : undefined);
   const currentChildPricingNote = activeOption?.childPricingNote || itinerary.childPricingNote;
   const currentFlightQuotations = activeOption?.flightQuotations || itinerary.flightQuotations;
@@ -865,10 +865,10 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
               const kidsCount = opt.kids ?? itinerary.kids;
               const gstPct = opt.gstPercentage !== undefined ? opt.gstPercentage : currentGstPct;
               const tcsPct = opt.tcsPercentage !== undefined ? opt.tcsPercentage : currentTcsPct;
-              const baseTotal = opt.baseAmount || (opt.finalQuotationAmount ? Math.round(opt.finalQuotationAmount / (tcsPct > 0 ? (1 + (gstPct + tcsPct) / 100) : (1 + gstPct / 100))) : 638400);
+              const baseTotal = opt.baseAmount !== undefined ? opt.baseAmount : (opt.finalQuotationAmount ? Math.round(opt.finalQuotationAmount / (tcsPct > 0 ? (1 + (gstPct + tcsPct) / 100) : (1 + gstPct / 100))) : 638400);
               const gstTotal = opt.gstAmount !== undefined ? opt.gstAmount : Math.round(baseTotal * (gstPct / 100));
               const tcsTotal = opt.tcsAmount !== undefined ? opt.tcsAmount : (tcsPct > 0 ? Math.round(baseTotal * (tcsPct / 100)) : 0);
-              const grandTotal = opt.finalQuotationAmount || (baseTotal + gstTotal + tcsTotal);
+              const grandTotal = opt.finalQuotationAmount !== undefined ? opt.finalQuotationAmount : (baseTotal + gstTotal + tcsTotal);
 
               const hasKidPrice = Boolean(opt.perKidPrice && opt.perKidPrice > 0);
               const adultBase = opt.perAdultPrice || Math.round(baseTotal / adultsCount);

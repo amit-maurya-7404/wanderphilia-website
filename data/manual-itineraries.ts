@@ -5214,17 +5214,18 @@ export const singaporeDeepakManualItinerary: ManualItinerary = {
       ]
     }
   ],
-  baseAmount: 350500,
+  baseAmount: 284000,
   gstPercentage: 5,
-  gstAmount: 17525,
+  gstAmount: 14200,
   tcsPercentage: 2,
-  tcsAmount: 7010,
-  finalQuotationAmount: 375035,
+  tcsAmount: 5964,
+  finalQuotationAmount: 304164,
   perAdultPrice: 72500,
   perKidPrice: 66500,
   adults: 3,
   kids: 2,
-  childPricingNote: 'Base: 3 Adults @ ₹72,500/- (₹2,17,500) + 2 Children @ ₹66,500/- (₹1,33,000) = ₹3,50,500/- Base + 5% GST (₹17,525) + 2% TCS (₹7,010) = Total ₹3,75,035/- (Stay Cost is not included in this package).',
+  kidsDetails: '11 Yrs (Extra Bed: ₹66,500) • 2 Yrs (Complimentary / Free)',
+  childPricingNote: 'Total Land Cost (Sightseeing Entry Tickets & Transfers): 3 Adults @ ₹72,500 = ₹2,17,500 + 1 Child (11 yrs) @ ₹66,500 = ₹66,500 (2 Yrs Child: Complimentary / Free of Cost). Base: ₹2,84,000 + 5% GST (₹14,200) + 2% TCS (₹5,964) = Grand Total ₹3,04,164/- (Stay Cost is not included in this package).',
   enableOnlineBooking: true
 };
 
