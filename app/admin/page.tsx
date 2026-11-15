@@ -244,6 +244,7 @@ export default function AdminDashboardPage() {
         if (placementFilter === 'upcomingTours' && !p.upcomingTours) return false;
         if (placementFilter === 'honeymoon' && !p.honeymoon) return false;
         if (placementFilter === 'christmasNewYear' && !p.christmasNewYear) return false;
+        if (placementFilter === 'destinationPage' && !p.destinationPage) return false;
       }
 
       return true;
@@ -544,7 +545,9 @@ export default function AdminDashboardPage() {
               { id: 'upcomingTours', label: 'Upcoming Tours (/upcoming-tours)' },
               { id: 'indiaTrips', label: 'India Trips (/india-trips)' },
               { id: 'internationalTrips', label: 'International Trips (/international-trips)' },
-              { id: 'honeymoon', label: 'Honeymoon' }
+              { id: 'honeymoon', label: 'Honeymoon' },
+              { id: 'christmasNewYear', label: '🎄 Christmas & New Year' },
+              { id: 'destinationPage', label: 'Destination Pages' }
             ].map(p => (
               <button
                 key={p.id}
@@ -698,6 +701,16 @@ export default function AdminDashboardPage() {
                           {trip.placements?.internationalTrips && (
                             <span className="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 text-[10px]">
                               International Trips
+                            </span>
+                          )}
+                          {trip.placements?.honeymoon && (
+                            <span className="px-2 py-0.5 rounded bg-rose-500/10 text-rose-300 border border-rose-500/20 text-[10px]">
+                              Honeymoon
+                            </span>
+                          )}
+                          {trip.placements?.christmasNewYear && (
+                            <span className="px-2 py-0.5 rounded bg-red-500/15 text-red-300 border border-red-500/30 text-[10px]">
+                              🎄 Christmas &amp; New Year
                             </span>
                           )}
                           {trip.placements?.destinationPage && (
