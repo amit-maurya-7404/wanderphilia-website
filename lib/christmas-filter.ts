@@ -133,6 +133,27 @@ export function getChristmasNewYearTrips(allTrips: Trip[]): Trip[] {
   if (!allTrips || !Array.isArray(allTrips)) return []
 
   return allTrips.filter((trip) => {
+    // Rajasthan rule: in Christmas & New Year, only include Group Trips for Rajasthan
+    const isRajasthan =
+      (trip.category || '').toLowerCase().includes('rajasthan') ||
+      (trip.destination || '').toLowerCase().includes('rajasthan') ||
+      (trip.slug || '').toLowerCase().includes('rajasthan')
+
+    if (isRajasthan) {
+      const title = (trip.title || '').toLowerCase()
+      const isGroup =
+        (trip as any).tourType === 'Group' ||
+        title.includes('group trip') ||
+        title.includes('group tour') ||
+        title.includes('group')
+      if (!isGroup) return false
+    }
+
+    // 0. Check explicit placement flag from database
+    if ((trip as any).placements?.christmasNewYear === true) {
+      return true
+    }
+
     // 1. Check batchDates
     if (trip.batchDates && Array.isArray(trip.batchDates)) {
       for (const batch of trip.batchDates) {
