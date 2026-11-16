@@ -237,7 +237,7 @@ const matchingHolidayTrips = useMemo(() => {
 
 // Other holiday destinations to explore
 const otherHolidayCategories = useMemo(() => {
-  const allowed = ['rajasthan', 'spiti', 'meghalaya', 'bhutan', 'vietnam', 'thailand', 'singapore', 'bali', 'kashmir', 'himachal', 'leh-ladakh']
+  const allowed = ['rajasthan', 'bhutan', 'thailand', 'sri-lanka', 'spiti', 'meghalaya', 'vietnam', 'singapore', 'bali', 'kashmir', 'himachal', 'leh-ladakh']
   return allowed
     .filter((id) => id !== currentCategory.id)
     .slice(0, 4)

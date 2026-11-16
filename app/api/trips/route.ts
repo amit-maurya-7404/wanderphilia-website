@@ -104,9 +104,21 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Check if trip already exists by slug or id
+    // Check if trip already exists by slug, id, originalSlug, or existingTripId
+    const lookupConditions: any[] = [{ slug: cleanSlug }, { id: tripId }];
+    if (body.originalSlug) {
+      lookupConditions.push({ slug: String(body.originalSlug).trim().toLowerCase() });
+      lookupConditions.push({ id: String(body.originalSlug).trim() });
+    }
+    if (body.existingTripId) {
+      lookupConditions.push({ id: body.existingTripId });
+      if (ObjectId.isValid(body.existingTripId)) {
+        lookupConditions.push({ _id: new ObjectId(body.existingTripId) });
+      }
+    }
+
     const existing = await collection.findOne({
-      $or: [{ slug: cleanSlug }, { id: tripId }]
+      $or: lookupConditions
     });
 
     if (existing) {

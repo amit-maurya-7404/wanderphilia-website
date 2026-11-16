@@ -37,10 +37,12 @@ export async function POST(
     }
 
     // Generate new day headings with Groq AI strictly based on day activities
-    const aiHeadings = await generateDayHeadingsWithGroq(
+    const aiResult = await generateDayHeadingsWithGroq(
       itinerary.destination || 'India',
       itinerary.dayPlans
     );
+    const aiHeadings = aiResult.headings || {};
+    const aiDistances = aiResult.distances || {};
 
     if (Object.keys(aiHeadings).length === 0) {
       return NextResponse.json({
@@ -49,16 +51,16 @@ export async function POST(
       }, { status: 500 });
     }
 
-    // Update ONLY the day titles
+    // Update day titles and distanceKm
     const updatedDayPlans = itinerary.dayPlans.map(dp => {
       const dayNum = dp.day;
-      if (aiHeadings[dayNum]) {
-        return {
-          ...dp,
-          title: aiHeadings[dayNum]
-        };
-      }
-      return dp;
+      const title = aiHeadings[dayNum] || dp.title;
+      const distanceKm = aiDistances[dayNum] || (dp as any).distanceKm || '';
+      return {
+        ...dp,
+        title,
+        ...(distanceKm ? { distanceKm } : {})
+      };
     });
 
     await collection.updateOne(

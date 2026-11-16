@@ -3,6 +3,7 @@ import { blogs as staticBlogs, Blog } from './data'
 
 export interface DbBlog extends Blog {
   _id?: string
+  destination?: string
   status?: 'published' | 'draft'
   createdAt?: string
   updatedAt?: string
@@ -28,6 +29,7 @@ export async function getAllBlogs(): Promise<DbBlog[]> {
         date: b.date,
         lastUpdated: b.lastUpdated,
         category: b.category,
+        destination: b.destination || '',
         content: b.content,
         contentHtml: b.contentHtml,
         readTime: b.readTime || 5,
@@ -59,6 +61,7 @@ export async function getBlogBySlug(slug: string): Promise<DbBlog | null> {
         date: b.date,
         lastUpdated: b.lastUpdated,
         category: b.category,
+        destination: b.destination || '',
         content: b.content,
         contentHtml: b.contentHtml,
         readTime: b.readTime || 5,
@@ -99,6 +102,7 @@ export async function getAllAdminBlogs(): Promise<DbBlog[]> {
         date: b.date,
         lastUpdated: b.lastUpdated,
         category: b.category,
+        destination: b.destination || '',
         content: b.content,
         contentHtml: b.contentHtml,
         readTime: b.readTime || 5,

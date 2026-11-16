@@ -11,6 +11,7 @@ import {
   User,
   Tag,
   Link as LinkIcon,
+  MapPin,
   AlertCircle
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -32,6 +33,7 @@ export function BlogEditorModal({ isOpen, onClose, onSaved, blog }: BlogEditorMo
   const [title, setTitle] = useState('');
   const [slug, setSlug] = useState('');
   const [category, setCategory] = useState('Rajasthan guide');
+  const [destination, setDestination] = useState('');
   const [author, setAuthor] = useState('Huzaifa AK at Wanderphilia');
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [lastUpdated, setLastUpdated] = useState('');
@@ -52,6 +54,7 @@ export function BlogEditorModal({ isOpen, onClose, onSaved, blog }: BlogEditorMo
       setTitle(blog.title || '');
       setSlug(blog.slug || '');
       setCategory(blog.category || 'General');
+      setDestination((blog as any).destination || '');
       setAuthor(blog.author || 'Huzaifa AK at Wanderphilia');
       setDate(blog.date || new Date().toISOString().split('T')[0]);
       setLastUpdated(blog.lastUpdated || '');
@@ -64,6 +67,7 @@ export function BlogEditorModal({ isOpen, onClose, onSaved, blog }: BlogEditorMo
       setTitle('');
       setSlug('');
       setCategory('Rajasthan guide');
+      setDestination('');
       setAuthor('Huzaifa AK at Wanderphilia');
       setDate(new Date().toISOString().split('T')[0]);
       setLastUpdated('November 2026');
@@ -146,6 +150,7 @@ export function BlogEditorModal({ isOpen, onClose, onSaved, blog }: BlogEditorMo
         slug: slug.trim(),
         newSlug: isEditing && blog?.slug !== slug.trim() ? slug.trim() : undefined,
         category: category.trim(),
+        destination: destination.trim(),
         author: author.trim(),
         date,
         lastUpdated: lastUpdated.trim(),
@@ -248,8 +253,20 @@ export function BlogEditorModal({ isOpen, onClose, onSaved, blog }: BlogEditorMo
               </div>
             </div>
 
-            {/* Row 2: Category, Author, Read Time, Status */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+            {/* Row 2: Destination, Category, Author, Read Time, Status */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+                  <MapPin className="w-3.5 h-3.5 text-orange-400" /> Destination
+                </label>
+                <Input
+                  value={destination}
+                  onChange={(e) => setDestination(e.target.value)}
+                  placeholder="e.g. Rajasthan, Ladakh"
+                  className="bg-slate-950 border-slate-800 text-white text-sm rounded-xl"
+                />
+              </div>
+
               <div className="space-y-1.5">
                 <label className="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
                   <Tag className="w-3.5 h-3.5 text-orange-400" /> Category

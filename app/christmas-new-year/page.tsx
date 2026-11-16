@@ -283,13 +283,13 @@ const resolveCategory = (id: string, defaultPrice: number = 15000): CategorySlid
 const indiaDestinations: CategorySliderCardProps[] = useMemo(() => {
   const allowed = ['rajasthan', 'spiti', 'meghalaya', 'kashmir', 'himachal', 'sikkim', 'leh-ladakh']
   return allowed.map((id) => resolveCategory(id, 15000))
-}, [allCategories])
+}, [allCategories, combinedTrips])
 
 // 2. International New Year Trips destinations
 const internationalDestinations: CategorySliderCardProps[] = useMemo(() => {
-  const allowed = ['bhutan', 'vietnam', 'thailand', 'singapore', 'bali', 'nepal', 'indonesia', 'japan']
+  const allowed = ['bhutan', 'thailand', 'sri-lanka', 'vietnam', 'singapore', 'bali', 'nepal', 'indonesia', 'japan']
   return allowed.map((id) => resolveCategory(id, 25000))
-}, [allCategories])
+}, [allCategories, combinedTrips])
 
 const handleWhatsAppChat = () => {
   gtag.outboundLink('https://wa.me/919217664099')

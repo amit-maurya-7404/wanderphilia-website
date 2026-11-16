@@ -1,11 +1,11 @@
 'use client'
 
-import { useState, useRef, useMemo } from 'react'
+import { useState, useRef, useMemo, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { ChevronLeft, ChevronRight, ArrowRight, MapPin, Compass, Globe, Gift } from 'lucide-react'
 import { Parachute } from '@/components/parachute-icon'
-import { trips, getLowestPriceForTrips } from '@/lib/data'
+import { trips, getLowestPriceForTrips, type Trip } from '@/lib/data'
 import { getAllCategories } from '@/lib/trip-categories'
 import { getChristmasNewYearTrips } from '@/lib/christmas-filter'
 
@@ -113,36 +113,106 @@ type TabType = 'all' | 'india' | 'international'
 export function ChristmasHomeBanner() {
   const [activeTab, setActiveTab] = useState<TabType>('all')
   const scrollContainerRef = useRef<HTMLDivElement>(null)
+  const [dynamicTrips, setDynamicTrips] = useState<Trip[]>([])
+
+  useEffect(() => {
+    fetch('/api/trips')
+      .then((res) => (res.ok ? res.json() : []))
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setDynamicTrips(data as Trip[])
+        }
+      })
+      .catch(() => {})
+  }, [])
+
+  // Combine static and dynamic trips
+  const combinedTrips = useMemo(() => {
+    const list = [...trips]
+    dynamicTrips.forEach((dt) => {
+      const idx = list.findIndex((t) => t.id === dt.id || t.slug === dt.slug)
+      if (idx >= 0) {
+        list[idx] = dt
+      } else {
+        list.push(dt)
+      }
+    })
+    return list
+  }, [dynamicTrips])
 
   // Get all holiday trips starting in December
-  const holidayTrips = useMemo(() => getChristmasNewYearTrips(trips), [])
+  const holidayTrips = useMemo(() => getChristmasNewYearTrips(combinedTrips), [combinedTrips])
   const allCategories = useMemo(() => getAllCategories(), [])
 
   // Filter and enrich destinations that have holiday trips
   const destinations = useMemo(() => {
+    const featuredHolidayDestIds = ['rajasthan', 'bhutan', 'thailand', 'sri-lanka']
+
     return allCategories
       .map((cat) => {
         const catTrips = holidayTrips.filter(
           (t) =>
-            t.category.trim().toLowerCase() === cat.name.toLowerCase() ||
-            t.category.trim().toLowerCase().replace(/\s+/g, '-') === cat.id
+            t.category?.trim().toLowerCase() === cat.name.toLowerCase() ||
+            t.category?.trim().toLowerCase().replace(/\s+/g, '-') === cat.id ||
+            t.destination?.trim().toLowerCase() === cat.name.toLowerCase() ||
+            t.destination?.trim().toLowerCase().replace(/\s+/g, '-') === cat.id
         )
 
-        const isInternational = catTrips.some((t) => t.tripType === 'International')
-        const price = catTrips.length > 0 ? getLowestPriceForTrips(catTrips) : 0
+        const allDestTrips = combinedTrips.filter(
+          (t) =>
+            t.category?.trim().toLowerCase() === cat.name.toLowerCase() ||
+            t.category?.trim().toLowerCase().replace(/\s+/g, '-') === cat.id ||
+            t.destination?.trim().toLowerCase() === cat.name.toLowerCase() ||
+            t.destination?.trim().toLowerCase().replace(/\s+/g, '-') === cat.id
+        )
+
+        const isInternational =
+          cat.id === 'bhutan' ||
+          cat.id === 'thailand' ||
+          cat.id === 'sri-lanka' ||
+          catTrips.some((t) => t.tripType === 'International') ||
+          allDestTrips.some((t) => t.tripType === 'International')
+
+        const price =
+          catTrips.length > 0
+            ? getLowestPriceForTrips(catTrips)
+            : allDestTrips.length > 0
+              ? getLowestPriceForTrips(allDestTrips)
+              : 0
+
+        const tripCount =
+          catTrips.length > 0
+            ? catTrips.length
+            : featuredHolidayDestIds.includes(cat.id)
+              ? allDestTrips.length || 1
+              : 0
 
         return {
           id: cat.id,
           name: cat.name,
           image: cat.image,
-          tripCount: catTrips.length,
-          price: price > 0 ? price : 15000,
+          tripCount,
+          price: price > 0 ? price : isInternational ? 24999 : 14999,
           type: isInternational ? 'International' : 'India',
         }
       })
-      .filter((d) => d.tripCount > 0)
+      .filter((d) => d.tripCount > 0 || featuredHolidayDestIds.includes(d.id))
       .sort((a, b) => {
-        const priorityOrder = ['rajasthan', 'spiti', 'meghalaya', 'bhutan', 'vietnam', 'thailand', 'singapore', 'bali', 'kashmir', 'himachal', 'sikkim', 'leh-ladakh']
+        const priorityOrder = [
+          'rajasthan',
+          'bhutan',
+          'thailand',
+          'sri-lanka',
+          'spiti',
+          'meghalaya',
+          'vietnam',
+          'singapore',
+          'bali',
+          'kashmir',
+          'himachal',
+          'sikkim',
+          'leh-ladakh',
+        ]
         const aIdx = priorityOrder.indexOf(a.id)
         const bIdx = priorityOrder.indexOf(b.id)
         if (aIdx !== -1 || bIdx !== -1) {
@@ -150,7 +220,7 @@ export function ChristmasHomeBanner() {
         }
         return b.tripCount - a.tripCount
       })
-  }, [allCategories, holidayTrips])
+  }, [allCategories, holidayTrips, combinedTrips])
 
   // Filter based on active tab
   const filteredDestinations = useMemo(() => {

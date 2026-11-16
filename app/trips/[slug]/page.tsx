@@ -17,7 +17,7 @@ import { DownloadTourPdfDialog } from '@/components/download-tour-pdf-dialog'
 import { RiWhatsappLine } from 'react-icons/ri'
 import { trips, Trip } from '@/lib/data'
 import { destinationItineraryImages } from '@/lib/section-mappings'
-import { MapPin, Calendar, Users, Star, Phone, MessageCircle, ChevronDown, Download, X, Check, ChevronLeft, ChevronRight, Car, Hotel, Camera, Utensils, Plane, Building2, FileText, User, Share2, Compass } from 'lucide-react'
+import { MapPin, Calendar, Users, Star, Phone, MessageCircle, ChevronDown, Download, X, Check, ChevronLeft, ChevronRight, Car, Hotel, Camera, Utensils, Plane, Building2, FileText, User, Share2, Compass, Navigation } from 'lucide-react'
 import { Parachute } from '@/components/parachute-icon'
 import { contactEmail, contactPhone, contactPhoneDisplay, instagramUrl } from '@/lib/contact'
 import { TripGallerySection } from '@/components/trip-gallery-section'
@@ -25,6 +25,7 @@ import { CountryCodeSelect } from '@/components/ui/country-code-select'
 import { DEFAULT_COUNTRY_CODE } from '@/lib/country-codes'
 import Image from 'next/image'
 import { DestinationPageTemplate } from '@/components/destination-page-template'
+import { DestinationBlogsSection } from '@/components/destination-blogs-section'
 import { DestinationPageItem } from '@/lib/destinations'
 
 
@@ -1720,10 +1721,16 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
                               className="w-full flex items-start justify-between p-3.5 sm:p-5 bg-white hover:bg-slate-50/50 transition-colors text-left"
                             >
                               <div className="flex items-start gap-2.5 sm:gap-3.5 grow min-w-0">
-                                <div className="shrink-0 mt-0.5">
+                                <div className="shrink-0 mt-0.5 flex flex-col items-start gap-1">
                                   <Badge className="bg-primary/10 text-primary hover:bg-primary/15 text-[10px] font-bold px-2 py-0.5">
                                     Day {day.day}
                                   </Badge>
+                                  {(day as any).distanceKm && (
+                                    <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-cyan-700 bg-cyan-50 border border-cyan-200/60 px-1.5 py-0.5 rounded-full shrink-0">
+                                      <Navigation className="w-2.5 h-2.5 text-cyan-600" />
+                                      {(day as any).distanceKm}
+                                    </span>
+                                  )}
                                 </div>
                                 <div className="min-w-0 flex-1">
                                   <h3 className="font-bold text-sm sm:text-base text-slate-900 break-words">
@@ -2368,6 +2375,12 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
                                   <span className="shrink-0 px-2 py-0.5 rounded bg-[#ff5d09] text-white font-extrabold text-[10px] sm:text-[11px] uppercase tracking-wider">
                                     Day {day.day}
                                   </span>
+                                  {(day as any).distanceKm && (
+                                    <span className="shrink-0 inline-flex items-center gap-1 px-2 py-0.5 rounded bg-cyan-50 text-cyan-700 border border-cyan-200 font-extrabold text-[10px] uppercase tracking-wider">
+                                      <Navigation className="w-2.5 h-2.5 text-cyan-600" />
+                                      {(day as any).distanceKm}
+                                    </span>
+                                  )}
                                   <span className="font-bold text-slate-800 text-xs sm:text-sm leading-snug truncate">
                                     {day.title}
                                   </span>
@@ -2854,6 +2867,12 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
           categoryName={trip.destination}
         />
       </div>
+
+      {/* DESTINATION TRAVEL BLOGS & STORIES */}
+      <DestinationBlogsSection
+        destinationName={trip.destination || trip.category}
+        destinationSlug={trip.category?.toLowerCase() || trip.destination?.toLowerCase()}
+      />
 
       <Footer />
 

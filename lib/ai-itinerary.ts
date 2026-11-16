@@ -1472,11 +1472,12 @@ export async function generateDayHeadingsAndExperiencesWithGroq(
   dayActivities: ZohoDayActivity[] = []
 ): Promise<{
   dayHeadings: Record<number, string>;
+  dayDistances: Record<number, string>;
   polishedExperiences: Record<string, string>;
 }> {
   const apiKey = process.env.GROQ_API_KEY || process.env.OPENAI_API_KEY;
   if (!apiKey || !dayPlans || dayPlans.length === 0) {
-    return { dayHeadings: {}, polishedExperiences: {} };
+    return { dayHeadings: {}, dayDistances: {}, polishedExperiences: {} };
   }
 
   const dayContext = dayPlans.map(d => {
@@ -1496,25 +1497,32 @@ export async function generateDayHeadingsAndExperiencesWithGroq(
   });
 
   const systemPrompt = `You are a Senior Luxury Travel Writer for Wanderphilia.
-Your task is twofold:
+Your task is threefold:
 1. Write a clear, descriptive, and engaging Day Heading sentence for each day of a ${destination} trip.
-2. For each experience/activity that has "rawNotes" (rough description or notes), polish and rewrite those raw notes into an elegant, fluid, and grammatically complete 1-2 sentence description.
+2. For each day, accurately estimate the realistic travel / driving distance in KILOMETERS (KM) for that day's travel, transit, and sightseeing based on real geography (e.g. intercity highway drives like Jaipur to Jodhpur = "330 km", Jodhpur to Jaisalmer = "285 km", local city sightseeing = "35 km" or "40 km", airport arrival/departure transfer = "25 km"). Return this under "dayDistances".
+3. For each experience/activity that has "rawNotes" (rough description or notes), polish and rewrite those raw notes into an elegant, fluid, and grammatically complete 1-2 sentence description.
 
 CRITICAL MANDATORY RULES:
 1. DAY HEADINGS:
    - Must be a complete descriptive title sentence (8 to 18 words) explaining the route and key activities.
    - Example: "Scenic Drive from Jodhpur to Jaisalmer followed by Sunset Camel Safari & Cultural Evening at Sam Dunes"
    - Do NOT prefix with "Day 1:", "Day 2 |" or include prices/dates.
-2. EXPERIENCE DESCRIPTIONS (STRICT ANTI-HALLUCINATION RULE):
+2. DAY DISTANCES (KILOMETERS):
+   - Provide a realistic estimated distance string (e.g. "330 km", "285 km", "40 km", "25 km") for every single day.
+3. EXPERIENCE DESCRIPTIONS (STRICT ANTI-HALLUCINATION RULE):
    - You MUST ONLY rewrite and polish the provided "rawNotes" into a grammatically sound, premium, clear sentence.
    - ABSOLUTE PROHIBITION: Do NOT invent or add any new monuments, attractions, timings, or prices that are not mentioned in the raw notes!
    - If rawNotes is empty or short, provide a clean, natural 1-sentence description focused strictly on that specific monument/activity name.
-3. OUTPUT FORMAT:
+4. OUTPUT FORMAT:
    Return strictly valid JSON with this exact schema:
    {
      "dayHeadings": {
        "1": "Descriptive Day 1 Heading Sentence",
        "2": "Descriptive Day 2 Heading Sentence"
+     },
+     "dayDistances": {
+       "1": "25 km",
+       "2": "330 km"
      },
      "polishedExperiences": {
        "1_Mehrangarh Fort": "Explore the majestic courtyards, royal museum collections, and Sheesh Mahal while enjoying sweeping panoramic views of the Blue City.",
@@ -1561,6 +1569,7 @@ Generate the JSON response with "dayHeadings" and "polishedExperiences" now.`;
         if (rawContent) {
           const parsed = JSON.parse(rawContent.trim());
           const cleanedHeadings: Record<number, string> = {};
+          const cleanedDistances: Record<number, string> = {};
           const cleanedExperiences: Record<string, string> = {};
 
           // 1. Process Headings
@@ -1579,7 +1588,24 @@ Generate the JSON response with "dayHeadings" and "polishedExperiences" now.`;
             });
           }
 
-          // 2. Process Experiences
+          // 2. Process Distances (Kilometers)
+          const rawDistances = parsed.dayDistances || parsed.distances || parsed.kilometers || parsed.km || {};
+          if (typeof rawDistances === 'object') {
+            Object.entries(rawDistances).forEach(([key, val]) => {
+              const dayNum = parseInt(key.replace(/\D/g, ''), 10);
+              if (dayNum) {
+                if (typeof val === 'string' && val.trim().length > 0) {
+                  let cleanDist = val.trim();
+                  if (!cleanDist.toLowerCase().includes('km')) cleanDist += ' km';
+                  cleanedDistances[dayNum] = cleanDist;
+                } else if (typeof val === 'number') {
+                  cleanedDistances[dayNum] = `${val} km`;
+                }
+              }
+            });
+          }
+
+          // 3. Process Experiences
           const rawExpMap = parsed.polishedExperiences || parsed.experiences || parsed.descriptions || {};
           if (typeof rawExpMap === 'object') {
             Object.entries(rawExpMap).forEach(([key, val]) => {
@@ -1594,6 +1620,7 @@ Generate the JSON response with "dayHeadings" and "polishedExperiences" now.`;
           if (Object.keys(cleanedHeadings).length > 0 || Object.keys(cleanedExperiences).length > 0) {
             return {
               dayHeadings: cleanedHeadings,
+              dayDistances: cleanedDistances,
               polishedExperiences: cleanedExperiences
             };
           }
@@ -1604,16 +1631,19 @@ Generate the JSON response with "dayHeadings" and "polishedExperiences" now.`;
     }
   }
 
-  return { dayHeadings: {}, polishedExperiences: {} };
+  return { dayHeadings: {}, dayDistances: {}, polishedExperiences: {} };
 }
 
 // Backward-compatible alias for generateDayHeadingsWithGroq
 export async function generateDayHeadingsWithGroq(
   destination: string,
   dayPlans: ItineraryDayPlan[]
-): Promise<Record<number, string>> {
+): Promise<{ headings: Record<number, string>; distances: Record<number, string> }> {
   const result = await generateDayHeadingsAndExperiencesWithGroq(destination, dayPlans);
-  return result.dayHeadings;
+  return {
+    headings: result.dayHeadings,
+    distances: (result as any).dayDistances || {}
+  };
 }
 
 /**

@@ -32,14 +32,15 @@ export async function POST(req: NextRequest) {
       timeline: Array.isArray(dp.timeline) ? dp.timeline : []
     }));
 
-    const headings = await generateDayHeadingsWithGroq(
+    const result = await generateDayHeadingsWithGroq(
       destination || 'India',
       adaptedPlans
     );
 
     return NextResponse.json({
       success: true,
-      headings: headings || {}
+      headings: result.headings || {},
+      distances: result.distances || {}
     });
   } catch (error: any) {
     console.error('[AI Day Headings Error]:', error);

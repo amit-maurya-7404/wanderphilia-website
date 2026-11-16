@@ -13,6 +13,7 @@ import { DurationFilter } from '@/components/duration-filter'
 import { NoPackagesCallbackForm } from '@/components/no-packages-callback-form'
 import { useDestinationTrips } from '@/lib/use-dynamic-trips'
 import { DestinationPageItem } from '@/lib/destinations'
+import { DestinationBlogsSection } from '@/components/destination-blogs-section'
 import { ChevronLeft, ChevronRight, Star, Phone, MessageCircle, ChevronDown } from 'lucide-react'
 
 interface ReviewItem {
@@ -933,6 +934,11 @@ export function DestinationPageTemplate({ destination }: DestinationPageTemplate
             </div>
           </section>
         )}
+        {/* SECTION 8: DESTINATION TRAVEL BLOGS & STORIES */}
+        <DestinationBlogsSection
+          destinationName={destination.destination || destination.name}
+          destinationSlug={destination.slug}
+        />
       </main>
 
       <Footer />

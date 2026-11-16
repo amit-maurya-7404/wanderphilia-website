@@ -37,6 +37,7 @@ import {
   Hotel,
   Car,
   Compass,
+  Navigation,
   Check,
   ExternalLink,
   Sliders,
@@ -124,6 +125,7 @@ interface DayPlanItem {
   day: number;
   title: string;
   city?: string;
+  distanceKm?: string;
   stayHotel: string;
   meals: {
     breakfast: boolean;
@@ -216,6 +218,8 @@ function WebsiteItineraryInner() {
   // Basic Info Form State
   const [title, setTitle] = useState('');
   const [slug, setSlug] = useState('');
+  const [originalSlug, setOriginalSlug] = useState<string | null>(null);
+  const [existingTripId, setExistingTripId] = useState<string | null>(null);
   const [tripType, setTripType] = useState<'India' | 'International'>('India');
   const [destination, setDestination] = useState('');
   const [region, setRegion] = useState('');
@@ -344,9 +348,8 @@ function WebsiteItineraryInner() {
 
   const handleTitleChange = (val: string) => {
     setTitle(val);
-    if (!slug || slug === cleanSlug(title)) {
-      setSlug(cleanSlug(val));
-    }
+    // User requirement: Title change must NEVER auto-change URL slug.
+    // Slug remains intact and is only generated/updated when the user explicitly clicks the "Regenerate" button next to URL slug.
   };
 
   // 0. Load Itinerary for Editing if edit query param is present
@@ -375,7 +378,10 @@ function WebsiteItineraryInner() {
 
         if (tripData) {
           setTitle(tripData.title || '');
-          setSlug(tripData.slug || editSlug);
+          const initialSlug = tripData.slug || editSlug;
+          setSlug(initialSlug);
+          setOriginalSlug(initialSlug);
+          setExistingTripId(tripData.id || (tripData._id ? String(tripData._id) : null));
           setDestination(tripData.destination || '');
           setCategory(tripData.category || tripData.destination || '');
           setRegion(tripData.region || '');
@@ -455,19 +461,47 @@ function WebsiteItineraryInner() {
 
           // Itinerary / Day plans
           if (Array.isArray(tripData.itinerary) && tripData.itinerary.length > 0) {
+            // Pre-calculate stay and city sequence from tripData.accommodations as fallback
+            const dayStayFromAccom: Record<number, { hotel: string; city: string }> = {};
+            if (Array.isArray(tripData.accommodations) && tripData.accommodations.length > 0) {
+              let curDay = 1;
+              tripData.accommodations.forEach((a: any) => {
+                const count = parseInt(String(a.nights || 1), 10) || 1;
+                const hName = a.hotel || a.hotelName || '';
+                const rCat = a.roomCategory ? ` (${a.roomCategory})` : '';
+                const fullHotel = hName ? `${formatHotelWithSimilar(hName)}${rCat}` : '';
+                for (let k = 0; k < count; k++) {
+                  dayStayFromAccom[curDay] = { hotel: fullHotel, city: a.city || '' };
+                  curDay++;
+                }
+              });
+            }
+
             const mappedDays: DayPlanItem[] = tripData.itinerary.map((d: any, idx: number) => {
               const rawDesc = Array.isArray(d.description) ? d.description : (typeof d.description === 'string' ? d.description.split('\n') : []);
+              
+              // 1. Extract accommodation line from description if present
+              const accomLine = rawDesc.find((l: string) => /^(accommodation|hotel|stay)\s*:/i.test(l.trim()));
+              const extractedHotel = accomLine ? formatHotelWithSimilar(accomLine.replace(/^(accommodation|hotel|stay)\s*:\s*/i, '').trim()) : '';
+
+              // 2. Resolve hotel and city
+              const dayNum = d.day || idx + 1;
+              const fallback = dayStayFromAccom[dayNum];
+              const resolvedHotel = formatHotelWithSimilar(d.stayHotel || extractedHotel || fallback?.hotel || '');
+              const resolvedCity = d.city || fallback?.city || '';
+
               return {
-                day: d.day || idx + 1,
-                title: d.title || `Day ${idx + 1}`,
-                city: d.city || '',
-                stayHotel: formatHotelWithSimilar(d.stayHotel || ''),
+                day: dayNum,
+                title: d.title || `Day ${dayNum}`,
+                city: resolvedCity,
+                stayHotel: resolvedHotel,
+                distanceKm: d.distanceKm || d.distance || '',
                 image: d.image || tripData.image || '',
                 timeline: rawDesc.filter((l: string) => !l.toLowerCase().startsWith('meals:') && !l.toLowerCase().startsWith('hotel:') && !l.toLowerCase().startsWith('accommodation:')),
                 meals: {
-                  breakfast: rawDesc.some((l: string) => l.toLowerCase().includes('breakfast')),
-                  lunch: rawDesc.some((l: string) => l.toLowerCase().includes('lunch')),
-                  dinner: rawDesc.some((l: string) => l.toLowerCase().includes('dinner'))
+                  breakfast: d.meals?.breakfast ?? rawDesc.some((l: string) => l.toLowerCase().includes('breakfast')),
+                  lunch: d.meals?.lunch ?? rawDesc.some((l: string) => l.toLowerCase().includes('lunch')),
+                  dinner: d.meals?.dinner ?? rawDesc.some((l: string) => l.toLowerCase().includes('dinner'))
                 }
               };
             });
@@ -1034,6 +1068,9 @@ function WebsiteItineraryInner() {
     setSelectedZohoId('');
     setTitle('');
     setSlug('');
+    setOriginalSlug(null);
+    setExistingTripId(null);
+    setIsEditMode(false);
     setDestination('');
     setCategory('');
     setRegion('');
@@ -1177,6 +1214,7 @@ function WebsiteItineraryInner() {
       title: `Day ${nextDayNum}: Sightseeing & Exploration`,
       city: prevDay?.city || '',
       stayHotel: prevDay?.stayHotel || '',
+      distanceKm: '',
       meals: { breakfast: true, lunch: false, dinner: true },
       timeline: [
         'Morning breakfast at hotel.',
@@ -1356,10 +1394,29 @@ function WebsiteItineraryInner() {
         }
       }
 
+      let fallbackHotel = '';
+      let fallbackCity = '';
+      if (!dp.stayHotel || !dp.city) {
+        let cur = 1;
+        for (const s of hotelStays) {
+          const n = s.nights || 1;
+          for (let k = 0; k < n; k++) {
+            if (cur === dp.day) {
+              fallbackHotel = s.hotelName ? `${formatHotelWithSimilar(s.hotelName)}${s.roomCategory ? ` (${s.roomCategory})` : ''}` : '';
+              fallbackCity = s.city || '';
+              break;
+            }
+            cur++;
+          }
+          if (fallbackHotel) break;
+        }
+      }
+
       return {
         ...dp,
+        city: dp.city || fallbackCity,
         timeline: timelinePoints,
-        stayHotel: formatHotelWithSimilar(dp.stayHotel)
+        stayHotel: formatHotelWithSimilar(dp.stayHotel || fallbackHotel)
       };
     });
   };
@@ -1797,14 +1854,45 @@ function WebsiteItineraryInner() {
         throw new Error(data.error || 'Failed to generate AI headings');
       }
 
-      setDayPlans(prev =>
-        prev.map(d => {
-          const aiTitle = data.headings[d.day];
-          return aiTitle ? { ...d, title: aiTitle } : d;
-        })
-      );
+      setDayPlans(prev => {
+        // Build day-to-hotel mapping from current hotelStays as a safety fallback
+        let currentDay = 1;
+        const dayHotelMap: Record<number, string> = {};
+        const dayCityMap: Record<number, string> = {};
+        hotelStays.forEach(stay => {
+          const count = stay.nights || 1;
+          for (let k = 0; k < count; k++) {
+            if (stay.hotelName) {
+              const rCat = stay.roomCategory ? ` (${stay.roomCategory})` : '';
+              dayHotelMap[currentDay] = `${formatHotelWithSimilar(stay.hotelName)}${rCat}`;
+            }
+            if (stay.city) {
+              dayCityMap[currentDay] = stay.city;
+            }
+            currentDay++;
+          }
+        });
 
-      setSaveSuccessMsg('✨ AI Catchy Day Titles generated and applied successfully!');
+        return prev.map(d => {
+          const aiTitle = data.headings?.[d.day] || data.headings?.[String(d.day)];
+          const aiDistance = data.distances?.[d.day] || data.distances?.[String(d.day)];
+          // STRICT RULE: Only update day title & distance. All hotels, meals and activities remain 100% intact!
+          const stayHotel = d.stayHotel || dayHotelMap[d.day] || '';
+          const city = d.city || dayCityMap[d.day] || '';
+          const resolvedDistance = aiDistance
+            ? (aiDistance.toLowerCase().includes('km') ? aiDistance : `${aiDistance} km`)
+            : (d.distanceKm || '');
+          return {
+            ...d,
+            title: aiTitle ? aiTitle.trim() : d.title,
+            distanceKm: resolvedDistance,
+            stayHotel,
+            city
+          };
+        });
+      });
+
+      setSaveSuccessMsg('✨ AI Catchy Day Titles & Distances (KM) generated and applied successfully!');
       setTimeout(() => setSaveSuccessMsg(null), 4000);
     } catch (err: any) {
       setSaveError(err.message || 'Error generating AI titles');
@@ -2088,7 +2176,7 @@ function WebsiteItineraryInner() {
 
   // Build Final Trip Payload
   const buildTripPayload = () => {
-    const cleanId = slug.toUpperCase().replace(/[^A-Z0-9]/g, '-');
+    const cleanId = existingTripId || slug.toUpperCase().replace(/[^A-Z0-9]/g, '-');
 
     const itinerary = dayPlans.map(d => {
       const descLines: string[] = [];
@@ -2111,6 +2199,9 @@ function WebsiteItineraryInner() {
       return {
         day: d.day,
         title: d.title,
+        city: d.city || '',
+        stayHotel: d.stayHotel || '',
+        distanceKm: d.distanceKm || '',
         description: descLines,
         image: d.image || heroImage
       };
@@ -2118,6 +2209,8 @@ function WebsiteItineraryInner() {
 
     return {
       id: cleanId,
+      existingTripId: existingTripId || undefined,
+      originalSlug: originalSlug || undefined,
       title: title.trim(),
       slug: slug.trim(),
       image: heroImage,
@@ -2255,6 +2348,15 @@ function WebsiteItineraryInner() {
       }
 
       setSaveSuccessMsg(`Trip "${title}" published live successfully!`);
+      if (data.trip?.id) {
+        setExistingTripId(data.trip.id);
+      }
+      if (payload.slug) {
+        setOriginalSlug(payload.slug);
+        if (typeof window !== 'undefined' && isEditMode) {
+          window.history.replaceState(null, '', `?edit=${encodeURIComponent(payload.slug)}`);
+        }
+      }
     } catch (err: any) {
       setSaveError(err.message || 'Error publishing trip');
     } finally {
@@ -3661,6 +3763,43 @@ function WebsiteItineraryInner() {
                 size="sm"
                 variant="outline"
                 onClick={() => {
+                  let curDay = 1;
+                  const dayHotelMap: Record<number, string> = {};
+                  const dayCityMap: Record<number, string> = {};
+                  hotelStays.forEach(stay => {
+                    const count = stay.nights || 1;
+                    for (let k = 0; k < count; k++) {
+                      if (stay.hotelName) {
+                        const rCat = stay.roomCategory ? ` (${stay.roomCategory})` : '';
+                        dayHotelMap[curDay] = `${formatHotelWithSimilar(stay.hotelName)}${rCat}`;
+                      }
+                      if (stay.city) {
+                        dayCityMap[curDay] = stay.city;
+                      }
+                      curDay++;
+                    }
+                  });
+
+                  setDayPlans(prev =>
+                    prev.map(d => ({
+                      ...d,
+                      city: d.city || dayCityMap[d.day] || '',
+                      stayHotel: dayHotelMap[d.day] || d.stayHotel || ''
+                    }))
+                  );
+                  setSaveSuccessMsg('✨ Successfully synced hotels from Accommodation Table to all Day Plans!');
+                  setTimeout(() => setSaveSuccessMsg(null), 3500);
+                }}
+                className="border-slate-800 text-xs h-8 cursor-pointer text-amber-300 hover:bg-slate-800"
+              >
+                <Hotel className="w-3.5 h-3.5 mr-1 text-amber-400" /> Sync Hotels to Days
+              </Button>
+
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                onClick={() => {
                   setDayPlans(injectAutoLogisticsStatements(dayPlans, destination, tripType));
                   setSaveSuccessMsg('Auto-logistics statements injected into days!');
                   setTimeout(() => setSaveSuccessMsg(null), 3000);
@@ -3707,6 +3846,19 @@ function WebsiteItineraryInner() {
                       placeholder="City/Stop"
                       className="bg-slate-900 border-slate-800 text-xs h-7 w-28 text-orange-400 font-semibold"
                     />
+                    <div className="flex items-center gap-1.5 bg-slate-900 border border-slate-800 rounded-md px-2 h-7" title="Estimated travel distance for this day (e.g. 280 km)">
+                      <Navigation className="w-3 h-3 text-cyan-400 shrink-0" />
+                      <Input
+                        value={day.distanceKm || ''}
+                        onChange={(e) => {
+                          const copy = [...dayPlans];
+                          copy[dayIdx].distanceKm = e.target.value;
+                          setDayPlans(copy);
+                        }}
+                        placeholder="e.g. 280 km"
+                        className="bg-transparent border-0 text-cyan-300 font-semibold text-xs p-0 h-6 w-20 focus-visible:ring-0 placeholder:text-slate-600"
+                      />
+                    </div>
                     <button
                       type="button"
                       onClick={() => handleRemoveDay(dayIdx)}

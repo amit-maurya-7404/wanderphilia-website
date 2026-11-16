@@ -20,6 +20,7 @@ import { MapPin, Calendar, Users, Star, Phone, MessageCircle, ChevronDown, Downl
 import { Parachute } from '@/components/parachute-icon'
 import { contactEmail, contactPhone, contactPhoneDisplay, instagramUrl } from '@/lib/contact'
 import { TripGallerySection } from '@/components/trip-gallery-section'
+import { DestinationBlogsSection } from '@/components/destination-blogs-section'
 
 type MediaItem = TripMediaItem
 
@@ -771,6 +772,12 @@ export default function PackageDetailPage() {
       <TripGallerySection 
         categoryId={trip.category?.toLowerCase() || 'rajasthan'} 
         categoryName={trip.destination || 'Rajasthan'} 
+      />
+
+      {/* DESTINATION TRAVEL BLOGS & STORIES */}
+      <DestinationBlogsSection
+        destinationName={trip.destination || trip.category || 'Rajasthan'}
+        destinationSlug={trip.category?.toLowerCase() || 'rajasthan'}
       />
 
       <Footer />
