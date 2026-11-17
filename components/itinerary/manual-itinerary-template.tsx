@@ -1683,6 +1683,8 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
             baseAmount={currentBaseAmount || itinerary.baseAmount}
             gstPercentage={currentGstPct || itinerary.gstPercentage || 5}
             tcsPercentage={currentTcsPct}
+            gstAmount={currentGstAmount || itinerary.gstAmount}
+            tcsAmount={currentTcsAmount || itinerary.tcsAmount}
             totalQuotationAmount={totalQuotationAmount}
             advanceAmountPaid={alreadyPaid}
             balancePendingAmount={remainingBalanceAmount}

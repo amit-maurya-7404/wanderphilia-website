@@ -50,6 +50,8 @@ interface ItineraryBookModalProps {
   baseAmount?: number;
   gstPercentage?: number;
   tcsPercentage?: number;
+  gstAmount?: number;
+  tcsAmount?: number;
   totalQuotationAmount: number;
   advanceAmountPaid?: number;
   balancePendingAmount?: number;
@@ -84,6 +86,8 @@ export function ItineraryBookModal({
   baseAmount,
   gstPercentage = 5,
   tcsPercentage,
+  gstAmount,
+  tcsAmount,
   totalQuotationAmount,
   advanceAmountPaid = 0,
   balancePendingAmount,
@@ -120,6 +124,25 @@ export function ItineraryBookModal({
   const fiftyPercentAmount = Math.round(totalQuotationAmount * 0.5);
   const remainingAdvanceAmount = Math.max(0, fiftyPercentAmount - alreadyPaid);
   const remainingBalanceAmount = Math.max(0, totalQuotationAmount - alreadyPaid);
+
+  // Complete Pricing Breakdown (Base, GST, TCS, Grand Total)
+  const effectiveGstPct = gstPercentage !== undefined ? gstPercentage : 5;
+  const effectiveTcsPct = tcsPercentage || 0;
+  const totalTaxPct = effectiveGstPct + effectiveTcsPct;
+
+  const resolvedBaseAmount = baseAmount && baseAmount > 0
+    ? baseAmount
+    : Math.round(totalQuotationAmount / (1 + totalTaxPct / 100));
+
+  const resolvedGstAmount = gstAmount !== undefined && gstAmount > 0
+    ? gstAmount
+    : Math.round(resolvedBaseAmount * (effectiveGstPct / 100));
+
+  const resolvedTcsAmount = tcsAmount !== undefined && tcsAmount > 0
+    ? tcsAmount
+    : (effectiveTcsPct > 0 ? Math.round(resolvedBaseAmount * (effectiveTcsPct / 100)) : 0);
+
+  const resolvedGrandTotal = totalQuotationAmount || (resolvedBaseAmount + resolvedGstAmount + resolvedTcsAmount);
 
   // Compute default payment type based on current paid stage
   const getDefaultPaymentType = (): ItineraryPaymentType => {
@@ -481,20 +504,44 @@ export function ItineraryBookModal({
               {itineraryDisplayName}
             </DialogTitle>
 
-            <DialogDescription className="text-xs text-amber-100/90 flex flex-wrap items-center gap-x-2 gap-y-1 font-medium">
-              <span>Guest: <strong className="text-white font-bold">{clientDisplayName}</strong></span>
-              <span>•</span>
-              <span>
-                Rate: <strong className="text-white font-bold">₹{perAdultPrice.toLocaleString('en-IN')}/adult</strong>
-                {perKidPrice && perKidPrice > 0 ? (
-                  <span> + <strong className="text-white font-bold">₹{perKidPrice.toLocaleString('en-IN')}/kid</strong></span>
-                ) : null}
-                {' '}({paxDisplayText})
-              </span>
-              <span>•</span>
-              <span className="text-amber-300 font-bold">
-                {gstPercentage}% GST{tcsPercentage && tcsPercentage > 0 ? ` & ${tcsPercentage}% TCS` : ''} Included
-              </span>
+            <DialogDescription asChild>
+              <div className="space-y-2 pt-0.5">
+                <div className="text-xs text-amber-100/90 flex flex-wrap items-center gap-x-2 gap-y-1 font-medium">
+                  <span>Guest: <strong className="text-white font-bold">{clientDisplayName}</strong></span>
+                  <span>•</span>
+                  <span>
+                    Rate: <strong className="text-white font-bold">₹{perAdultPrice.toLocaleString('en-IN')}/adult</strong>
+                    {perKidPrice && perKidPrice > 0 ? (
+                      <span> + <strong className="text-white font-bold">₹{perKidPrice.toLocaleString('en-IN')}/kid</strong></span>
+                    ) : null}
+                    {' '}({paxDisplayText})
+                  </span>
+                </div>
+
+                {/* Complete Pricing Breakdown Summary Strip */}
+                <div className="pt-2 border-t border-white/20 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs">
+                  <div className="text-amber-200/95 font-medium">
+                    Total (without GST): <strong className="text-white font-bold">₹{resolvedBaseAmount.toLocaleString('en-IN')}</strong>
+                  </div>
+                  <span className="text-white/40 hidden sm:inline">•</span>
+                  <div className="text-amber-200/95 font-medium">
+                    + {effectiveGstPct}% GST: <strong className="text-white font-bold">₹{resolvedGstAmount.toLocaleString('en-IN')}</strong>
+                  </div>
+                  {resolvedTcsAmount > 0 && (
+                    <>
+                      <span className="text-white/40 hidden sm:inline">•</span>
+                      <div className="text-amber-200/95 font-medium">
+                        + {effectiveTcsPct}% TCS: <strong className="text-white font-bold">₹{resolvedTcsAmount.toLocaleString('en-IN')}</strong>
+                      </div>
+                    </>
+                  )}
+                  <span className="text-white/40 hidden sm:inline">•</span>
+                  <div className="inline-flex items-center gap-1.5 bg-amber-400/20 text-amber-300 border border-amber-400/40 px-2.5 py-0.5 rounded-full font-bold shadow-2xs">
+                    <span>Grand Total:</span>
+                    <strong className="text-white font-black text-xs sm:text-sm">₹{resolvedGrandTotal.toLocaleString('en-IN')}/-</strong>
+                  </div>
+                </div>
+              </div>
             </DialogDescription>
           </div>
         </div>
