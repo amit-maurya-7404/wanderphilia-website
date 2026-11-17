@@ -1073,9 +1073,30 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
 
                   {/* Child Pricing & Sharing Note (if provided) */}
                   {opt.childPricingNote && (
-                    <div className="bg-white/10 backdrop-blur-md rounded-xl p-3.5 border border-amber-400/40 text-xs text-amber-200/95 font-medium flex items-start gap-2.5">
-                      <span className="text-amber-300 font-bold shrink-0">ℹ</span>
-                      <span>{opt.childPricingNote}</span>
+                    <div className="space-y-2.5">
+                      {opt.childPricingNote.split(/\n\n(?=Note\s*:)/i).map((sectionText, sIdx) => {
+                        const isNoteSection = /^Note\s*:/i.test(sectionText.trim());
+                        return isNoteSection ? (
+                          <div
+                            key={sIdx}
+                            className="bg-amber-400/15 backdrop-blur-md rounded-xl p-3.5 border border-amber-400/40 text-xs text-amber-100 font-medium flex items-start gap-2.5 shadow-xs"
+                          >
+                            <span className="text-amber-300 font-bold shrink-0 text-sm">📌</span>
+                            <div className="leading-relaxed flex-1">
+                              <span className="text-amber-300 font-black mr-1.5 uppercase tracking-wide text-[11px]">Note :</span>
+                              {sectionText.replace(/^Note\s*:\s*/i, '')}
+                            </div>
+                          </div>
+                        ) : (
+                          <div
+                            key={sIdx}
+                            className="bg-white/10 backdrop-blur-md rounded-xl p-3.5 border border-amber-400/40 text-xs text-amber-200/95 font-medium flex items-start gap-2.5"
+                          >
+                            <span className="text-amber-300 font-bold shrink-0 mt-0.5">ℹ</span>
+                            <div className="leading-relaxed flex-1 whitespace-pre-line">{sectionText}</div>
+                          </div>
+                        );
+                      })}
                     </div>
                   )}
                 </div>

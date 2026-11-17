@@ -5460,7 +5460,7 @@ export const singaporeDeepakRevisedManualItinerary: ManualItinerary = {
   adults: 3,
   kids: 2,
   kidsDetails: '11 Yrs (Extra Bed: ₹66,500) • 2 Yrs (Complimentary / Free)',
-  childPricingNote: 'Total Land Cost (Sightseeing Entry Tickets & Transfers): 3 Adults @ ₹72,500 = ₹2,17,500 + 1 Child (11 yrs) @ ₹66,500 = ₹66,500 (2 Yrs Child: Complimentary / Free of Cost). Base: ₹2,84,000 + 5% GST (₹14,200) + 2% TCS (₹5,964) = Grand Total ₹3,04,164/- (Stay & Flight costs are quoted separately as detailed above).',
+  childPricingNote: 'Total Land Cost (Sightseeing Entry Tickets & Transfers): 3 Adults @ ₹72,500 = ₹2,17,500 + 1 Child (11 yrs) @ ₹66,500 = ₹66,500 (2 Yrs Child: Complimentary / Free of Cost). Base: ₹2,84,000 + 5% GST (₹14,200) + 2% TCS (₹5,964) = Grand Total ₹3,04,164/- (Stay & Flight costs are quoted separately as detailed above).\n\nNote : The second child has been considered 2 years old, and accordingly, no additional cost has been included. If the child’s age is above 2 years, applicable additional charges will apply.',
   enableOnlineBooking: true
 };
 
