@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getDb } from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
 import { generateItinerarySeo } from '@/lib/seo-generator';
+import { sanitizeActivitiesList } from '@/lib/activities';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -91,6 +92,19 @@ export async function POST(request: NextRequest) {
 
     // Remove MongoDB _id from payload if present to avoid immutable field error during upsert
     delete (tripData as any)._id;
+
+    // Ensure activities always contain clean titles only and exclude transfers/drives
+    if (tripData.summaryDetails?.activities) {
+      tripData.summaryDetails.activities = sanitizeActivitiesList(tripData.summaryDetails.activities);
+      if (Array.isArray(tripData.summaryDetails.activities)) {
+        const cleanCount = tripData.summaryDetails.activities.reduce((acc: number, g: any) => {
+          return acc + (typeof g === 'object' && Array.isArray(g.items) ? g.items.length : 1);
+        }, 0);
+        if (cleanCount > 0 && tripData.inclusionsSummary) {
+          tripData.inclusionsSummary.experiences = cleanCount;
+        }
+      }
+    }
 
     // Automatically generate AI SEO metadata if not provided
     if (!(tripData as any).seo?.title) {

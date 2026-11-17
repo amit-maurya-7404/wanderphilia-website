@@ -27,6 +27,7 @@ import Image from 'next/image'
 import { DestinationPageTemplate } from '@/components/destination-page-template'
 import { DestinationBlogsSection } from '@/components/destination-blogs-section'
 import { DestinationPageItem } from '@/lib/destinations'
+import { cleanActivityTitle, sanitizeActivitiesList } from '@/lib/activities'
 
 
 function cleanLocation(loc: string): string {
@@ -420,7 +421,7 @@ function getTripSummaryDetails(trip: typeof trips[0]) {
       accommodation: customAccom,
       meals: customMeals,
       transfers: customTransfers,
-      activities: customActivities,
+      activities: sanitizeActivitiesList(customActivities),
     }
   }
 
@@ -509,12 +510,13 @@ function getTripSummaryDetails(trip: typeof trips[0]) {
         ? transfersList
         : ['Airport pick-up, drop-off and all sightseeing transfers in private vehicle']
 
-  const activities =
+  const activities = sanitizeActivitiesList(
     customActivities.length > 0
       ? customActivities
       : trip.highlights && trip.highlights.length > 0
         ? trip.highlights
         : activitiesList
+  )
 
   return { accommodation, meals, transfers, activities }
 }
@@ -2288,7 +2290,7 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
                                           {group.items.map((it: string, itIdx: number) => (
                                             <li key={itIdx} className="flex items-start gap-1.5 text-xs text-slate-700">
                                               <span className="w-1.5 h-1.5 rounded-full bg-[#ff5d09] mt-1.5 shrink-0" />
-                                              <span>{it}</span>
+                                              <span>{cleanActivityTitle(it) || it}</span>
                                             </li>
                                           ))}
                                         </ul>
@@ -2569,7 +2571,7 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
                                       className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-700 leading-relaxed"
                                     >
                                       <span className="w-1.5 h-1.5 rounded-full bg-orange-400 mt-2 shrink-0" />
-                                      <span className="font-medium text-slate-800">{it}</span>
+                                      <span className="font-medium text-slate-800">{cleanActivityTitle(it) || it}</span>
                                     </li>
                                   ))}
                                 </ul>
@@ -2641,52 +2643,30 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
                   </div>
 
                   <div className="grid gap-3">
-                    {trip.showGetQuoteOnly ? (
-                      <>
-                        <Button
-                          size="lg"
-                          className="w-full justify-center font-extrabold bg-gradient-to-r from-orange-600 via-[#ff5d09] to-orange-500 hover:from-orange-500 hover:to-orange-600 text-white shadow-lg shadow-orange-500/20 hover:shadow-orange-500/35 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
-                          onClick={() => setCallbackOpen(true)}
-                        >
-                          <Phone size={18} className="animate-pulse" /> Get a Quote
-                        </Button>
-                        <Button
-                          size="lg"
-                          variant="outline"
-                          className="w-full justify-center font-bold"
-                          onClick={() => setCallbackOpen(true)}
-                        >
-                          <MessageCircle size={18} /> Request Callback
-                        </Button>
-                      </>
-                    ) : (
-                      <>
-                        <Button
-                          size="lg"
-                          className="w-full justify-center font-extrabold bg-gradient-to-r from-orange-600 via-[#ff5d09] to-orange-500 hover:from-orange-500 hover:to-orange-600 text-white shadow-lg shadow-orange-500/20 hover:shadow-orange-500/35 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] animate-premium-pulse cursor-pointer relative overflow-hidden"
-                          onClick={handleBookNow}
-                        >
-                          <style>{`
-                            @keyframes heartbeat {
-                              0%, 100% { transform: scale(1); }
-                              50% { transform: scale(1.025); }
-                            }
-                            .animate-premium-pulse {
-                              animation: heartbeat 2.5s infinite ease-in-out;
-                            }
-                          `}</style>
-                          <Phone size={18} className="animate-pulse" /> Book Now
-                        </Button>
-                        <Button
-                          size="lg"
-                          variant="outline"
-                          className="w-full justify-center font-bold"
-                          onClick={() => setCallbackOpen(true)}
-                        >
-                          <MessageCircle size={18} /> Request Callback
-                        </Button>
-                      </>
-                    )}
+                    <Button
+                      size="lg"
+                      className="w-full justify-center font-extrabold bg-gradient-to-r from-orange-600 via-[#ff5d09] to-orange-500 hover:from-orange-500 hover:to-orange-600 text-white shadow-lg shadow-orange-500/20 hover:shadow-orange-500/35 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] animate-premium-pulse cursor-pointer relative overflow-hidden"
+                      onClick={handleBookNow}
+                    >
+                      <style>{`
+                        @keyframes heartbeat {
+                          0%, 100% { transform: scale(1); }
+                          50% { transform: scale(1.025); }
+                        }
+                        .animate-premium-pulse {
+                          animation: heartbeat 2.5s infinite ease-in-out;
+                        }
+                      `}</style>
+                      <Phone size={18} className="animate-pulse" /> Book Now
+                    </Button>
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="w-full justify-center font-bold"
+                      onClick={() => setCallbackOpen(true)}
+                    >
+                      <MessageCircle size={18} /> Request Callback
+                    </Button>
                   </div>
                 </Card>
 
@@ -2825,29 +2805,37 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
       </main>
 
       {/* MOBILE BOTTOM CTA */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white lg:hidden border-t shadow-2xl">
-        <div className="max-w-6xl mx-auto px-[4vw] py-[3vh] flex items-center justify-between gap-3">
-          <div>
+      <div className="fixed bottom-0 left-0 right-0 bg-white lg:hidden border-t shadow-2xl z-40">
+        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-2.5">
+          <div className="shrink-0">
             {lowestPrice > 0 ? (
               <>
-                <p className="text-xs text-slate-500">
-                  {selections.length > 0 ? 'Total selected' : 'Starting at'}
+                <p className="text-[10px] text-slate-500 font-medium">Starting at</p>
+                <p className="text-base font-extrabold text-[#ff5d09] leading-tight">
+                  ₹{(selections.length > 0 ? total : lowestPrice).toLocaleString('en-IN')}
                 </p>
-                <p className="text-lg font-bold">₹{(selections.length > 0 ? total : lowestPrice).toLocaleString('en-IN')}</p>
               </>
             ) : (
-              <p className="text-md font-bold text-slate-700">Price on Request</p>
+              <p className="text-sm font-bold text-slate-700 leading-tight">Price on Request</p>
             )}
           </div>
-          {trip.showGetQuoteOnly ? (
-            <Button onClick={() => setCallbackOpen(true)} className="shrink-0 bg-gradient-to-r from-orange-600 via-[#ff5d09] to-orange-500 hover:from-orange-500 hover:to-orange-600 text-white font-bold rounded-2xl h-12 shadow-md">
-              <Phone size={16} className="mr-1.5 animate-pulse" /> Get a Quote
+          <div className="flex items-center gap-2 grow justify-end">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setCallbackOpen(true)}
+              className="h-11 px-3.5 font-bold rounded-xl border-slate-300 text-slate-700 hover:bg-slate-100 flex items-center gap-1.5 text-xs shrink-0 cursor-pointer"
+            >
+              <MessageCircle size={15} className="text-orange-600" /> Enquire
             </Button>
-          ) : (
-            <div className="grow min-w-0">
-              <SwipeButton onSwipeComplete={handleBookNow} text="Slide to Book" />
-            </div>
-          )}
+            <Button
+              size="sm"
+              onClick={handleBookNow}
+              className="h-11 px-4 font-bold rounded-xl bg-gradient-to-r from-orange-600 via-[#ff5d09] to-orange-500 hover:from-orange-500 hover:to-orange-600 text-white shadow-md shadow-orange-500/20 flex items-center gap-1.5 text-xs grow sm:grow-0 justify-center cursor-pointer"
+            >
+              <Phone size={15} className="animate-pulse" /> Book Now
+            </Button>
+          </div>
         </div>
       </div>
 

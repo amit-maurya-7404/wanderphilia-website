@@ -665,11 +665,12 @@ export function parseBatchDateRange(
   const defaultMonthIdx = defaultMonth ? parseMonthText(defaultMonth) : null;
   let baseYear = yearMatch ? parseInt(yearMatch[1], 10) : fallbackYear;
 
-  // If no explicit year is found, but batch month is earlier in the calendar than current month,
-  // it refers to the upcoming year (e.g. in Nov/Dec, a "Jan" or "Feb" batch is next year)
-  if (!yearMatch && defaultMonthIdx !== null) {
+  // Only if no explicit year is found: if defaultMonth is in early year (Jan-Mar: 0,1,2) while current month is late year (Oct-Dec: >=9)
+  // and fallbackYear is the current calendar year, it refers to the upcoming winter/spring of next year.
+  // Note: Past months in the current year (e.g. October when we are in November) must NOT roll over to next year!
+  if (!yearMatch && defaultMonthIdx !== null && baseYear === fallbackYear) {
     const currentMonth = new Date().getMonth();
-    if (defaultMonthIdx < currentMonth) {
+    if (defaultMonthIdx < 3 && currentMonth >= 9 && fallbackYear === new Date().getFullYear()) {
       baseYear = fallbackYear + 1;
     }
   }
@@ -756,14 +757,69 @@ export function getUpcomingBatchDates(
 ): { month: string; ranges: string[] }[] {
   if (!batchDates || !Array.isArray(batchDates)) return [];
 
+  const today = new Date(
+    referenceDate.getFullYear(),
+    referenceDate.getMonth(),
+    referenceDate.getDate(),
+    0, 0, 0, 0
+  );
+
+  const currentYear = referenceDate.getFullYear();
+  const currentMonth = referenceDate.getMonth();
+
+  // 1. Detect if any batch in the entire sequence specifies an explicit 4-digit year
+  let explicitYear: number | null = null;
+  for (const batch of batchDates) {
+    const mMatch = batch.month?.match(/\b(20\d{2})\b/);
+    if (mMatch) {
+      explicitYear = parseInt(mMatch[1], 10);
+      break;
+    }
+    if (Array.isArray(batch.ranges)) {
+      for (const r of batch.ranges) {
+        const rMatch = r.match(/\b(20\d{2})\b/);
+        if (rMatch) {
+          explicitYear = parseInt(rMatch[1], 10);
+          break;
+        }
+      }
+    }
+    if (explicitYear) break;
+  }
+
+  // 2. Base year: If first month is early year (Jan-Mar) and we are currently in late year (Oct-Dec),
+  // and no explicit year is set, it starts next year. Otherwise it starts in currentYear.
+  const firstMonthIdx = parseMonthText(batchDates[0]?.month) ?? currentMonth;
+  let runningYear = explicitYear || currentYear;
+  if (!explicitYear && firstMonthIdx < 3 && currentMonth >= 9) {
+    runningYear = currentYear + 1;
+  }
+
+  let prevMonthIdx = firstMonthIdx;
   const result: { month: string; ranges: string[] }[] = [];
 
-  for (const batch of batchDates) {
+  for (let i = 0; i < batchDates.length; i++) {
+    const batch = batchDates[i];
     if (!batch || !Array.isArray(batch.ranges)) continue;
 
-    const upcomingRanges = batch.ranges.filter((range) =>
-      isBatchDateUpcoming(range, batch.month, referenceDate)
-    );
+    const rawMonth = batch.month || '';
+    const explicitBatchYear = rawMonth.match(/\b(20\d{2})\b/);
+    const mIdx = parseMonthText(rawMonth) ?? prevMonthIdx;
+
+    if (explicitBatchYear) {
+      runningYear = parseInt(explicitBatchYear[1], 10);
+    } else if (i > 0 && mIdx < prevMonthIdx) {
+      // Month wrapped around to next year (e.g. Dec -> Jan)
+      runningYear++;
+    }
+    prevMonthIdx = mIdx;
+
+    // Filter ranges for this batch using runningYear - only keep upcoming dates!
+    const upcomingRanges = batch.ranges.filter((range) => {
+      const parsed = parseBatchDateRange(range, batch.month, runningYear);
+      if (!parsed) return false;
+      return parsed.startDate.getTime() >= today.getTime();
+    });
 
     if (upcomingRanges.length > 0) {
       result.push({

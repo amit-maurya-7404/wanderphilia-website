@@ -15,7 +15,7 @@ import { DownloadTourPdfDialog } from '@/components/download-tour-pdf-dialog'
 import { TripReviewsSection } from '@/components/trip-reviews-section'
 import { TripGallerySection } from '@/components/trip-gallery-section'
 import { ChristmasSnowfall } from '@/components/christmas-snowfall'
-import { trips } from '@/lib/data'
+import { trips, type Trip } from '@/lib/data'
 import { destinationItineraryImages } from '@/lib/section-mappings'
 import { contactEmail, contactPhone, contactPhoneDisplay, instagramUrl } from '@/lib/contact'
 import { RiWhatsappLine } from 'react-icons/ri'
@@ -38,6 +38,7 @@ import {
   Gift,
 } from 'lucide-react'
 import { Parachute } from '@/components/parachute-icon'
+import { cleanActivityTitle, sanitizeActivitiesList } from '@/lib/activities'
 import { CountryCodeSelect } from '@/components/ui/country-code-select'
 import { DEFAULT_COUNTRY_CODE } from '@/lib/country-codes'
 
@@ -540,7 +541,7 @@ function getTripSummaryDetails(trip: typeof trips[0]) {
       accommodation: trip.summaryDetails.accommodation || [],
       meals: trip.summaryDetails.meals || [],
       transfers: trip.summaryDetails.transfers || [],
-      activities: trip.summaryDetails.activities || [],
+      activities: sanitizeActivitiesList(trip.summaryDetails.activities || []),
     }
   }
 
@@ -586,8 +587,9 @@ function getTripSummaryDetails(trip: typeof trips[0]) {
       ? transfersList
       : ['Airport pick-up, drop-off and all sightseeing transfers in private vehicle']
 
-  const activities =
+  const activities = sanitizeActivitiesList(
     trip.highlights && trip.highlights.length > 0 ? trip.highlights : activitiesList
+  )
 
   return { accommodation, meals, transfers, activities }
 }
@@ -1004,7 +1006,28 @@ export default function ChristmasNewYearTripDetailPage({ params }: PageProps = {
   }
 
   const slug = (resolvedParams?.slug || clientParams?.slug) as string | undefined
-  const trip = useMemo(() => (slug ? trips.find((t) => t.slug === slug) : undefined), [slug])
+  const staticTrip = useMemo(() => (slug ? trips.find((t) => t.slug === slug) : undefined), [slug])
+  const [dynamicTrip, setDynamicTrip] = useState<any>(null)
+  const [loadingDynamic, setLoadingDynamic] = useState(!staticTrip && !!slug)
+
+  useEffect(() => {
+    if (!staticTrip && slug) {
+      setLoadingDynamic(true)
+      fetch(`/api/trips?slug=${encodeURIComponent(slug)}`)
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (data && !data.error && data.slug) {
+            setDynamicTrip(data)
+          }
+        })
+        .catch(() => {})
+        .finally(() => setLoadingDynamic(false))
+    } else {
+      setLoadingDynamic(false)
+    }
+  }, [staticTrip, slug])
+
+  const trip: Trip | undefined = staticTrip || (dynamicTrip as Trip) || undefined
 
   const lowestPrice = useMemo(() => {
     if (!trip?.costingDetails || trip.costingDetails.length === 0) {
@@ -1309,6 +1332,13 @@ export default function ChristmasNewYearTripDetailPage({ params }: PageProps = {
   }, [activeTab, trip?.itinerary])
 
   if (!slug) return null
+  if (loadingDynamic) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-950 text-white">
+        <div className="animate-spin rounded-full h-10 w-10 border-2 border-primary border-t-transparent"></div>
+      </div>
+    )
+  }
   if (!trip) return notFound()
 
   const staySummary =
@@ -2752,42 +2782,30 @@ export default function ChristmasNewYearTripDetailPage({ params }: PageProps = {
                   </div>
 
                   <div className="grid gap-3">
-                    {trip.showGetQuoteOnly ? (
-                      <Button
-                        size="lg"
-                        className="w-full justify-center bg-primary hover:bg-primary/95 text-white font-bold"
-                        onClick={() => setCallbackOpen(true)}
-                      >
-                        <MessageCircle size={18} /> Get Quote
-                      </Button>
-                    ) : (
-                      <>
-                        <Button
-                          size="lg"
-                          className="w-full justify-center font-extrabold bg-gradient-to-r from-orange-600 via-[#ff5d09] to-orange-500 hover:from-orange-500 hover:to-orange-600 text-white shadow-lg shadow-orange-950/50 hover:shadow-orange-950/70 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] animate-festive-pulse cursor-pointer relative overflow-hidden"
-                          onClick={handleBookNow}
-                        >
-                          <style>{`
-                            @keyframes heartbeat-festive {
-                              0%, 100% { transform: scale(1); }
-                              50% { transform: scale(1.025); }
-                            }
-                            .animate-festive-pulse {
-                              animation: heartbeat-festive 2.5s infinite ease-in-out;
-                            }
-                          `}</style>
-                          <Phone size={18} className="animate-pulse mr-2" /> Book Now
-                        </Button>
-                        <Button
-                          size="lg"
-                          variant="outline"
-                          className="w-full justify-center font-bold border-slate-700 bg-slate-900 hover:bg-slate-800 text-white"
-                          onClick={() => setCallbackOpen(true)}
-                        >
-                          <MessageCircle size={18} className="mr-2" /> Request Callback
-                        </Button>
-                      </>
-                    )}
+                    <Button
+                      size="lg"
+                      className="w-full justify-center font-extrabold bg-gradient-to-r from-orange-600 via-[#ff5d09] to-orange-500 hover:from-orange-500 hover:to-orange-600 text-white shadow-lg shadow-orange-950/50 hover:shadow-orange-950/70 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] animate-festive-pulse cursor-pointer relative overflow-hidden"
+                      onClick={handleBookNow}
+                    >
+                      <style>{`
+                        @keyframes heartbeat-festive {
+                          0%, 100% { transform: scale(1); }
+                          50% { transform: scale(1.025); }
+                        }
+                        .animate-festive-pulse {
+                          animation: heartbeat-festive 2.5s infinite ease-in-out;
+                        }
+                      `}</style>
+                      <Phone size={18} className="animate-pulse mr-2" /> Book Now
+                    </Button>
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="w-full justify-center font-bold border-slate-700 bg-slate-900 hover:bg-slate-800 text-white"
+                      onClick={() => setCallbackOpen(true)}
+                    >
+                      <MessageCircle size={18} className="mr-2" /> Request Callback
+                    </Button>
                   </div>
                 </Card>
 
@@ -2958,18 +2976,23 @@ export default function ChristmasNewYearTripDetailPage({ params }: PageProps = {
               <p className="text-md font-bold text-slate-200">Price on Request</p>
             )}
           </div>
-          {trip.showGetQuoteOnly ? (
+          <div className="flex items-center gap-2 grow justify-end">
             <Button
+              variant="outline"
+              size="sm"
               onClick={() => setCallbackOpen(true)}
-              className="shrink-0 bg-primary hover:bg-primary/95 text-white font-bold rounded-2xl h-12"
+              className="h-11 px-3.5 font-bold rounded-xl border-slate-700 bg-slate-900 text-slate-200 hover:bg-slate-800 flex items-center gap-1.5 text-xs shrink-0 cursor-pointer"
             >
-              Get Quote
+              <MessageCircle size={15} className="text-orange-500" /> Enquire
             </Button>
-          ) : (
-            <div className="grow min-w-0">
-              <SwipeButton onSwipeComplete={handleBookNow} text="Slide to Book" />
-            </div>
-          )}
+            <Button
+              size="sm"
+              onClick={handleBookNow}
+              className="h-11 px-4 font-bold rounded-xl bg-gradient-to-r from-orange-600 via-[#ff5d09] to-orange-500 hover:from-orange-500 hover:to-orange-600 text-white shadow-md shadow-orange-950/40 flex items-center gap-1.5 text-xs grow sm:grow-0 justify-center cursor-pointer"
+            >
+              <Phone size={15} className="animate-pulse" /> Book Now
+            </Button>
+          </div>
         </div>
       </div>
 

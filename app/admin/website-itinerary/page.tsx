@@ -14,6 +14,7 @@ import {
   cleanInclusionItem,
   extractCleanExperienceTitle
 } from '@/lib/itinerary-inclusions';
+import { cleanActivityTitle } from '@/lib/activities';
 import {
   Sparkles,
   ArrowLeft,
@@ -2253,7 +2254,7 @@ function WebsiteItineraryInner() {
         cities: hotelStays.length > 0 ? new Set(hotelStays.map(s => s.city.toLowerCase())).size : 1,
         hotels: hotelStays.length > 0 ? hotelStays.length : 1,
         transfers: Math.max(3, dayPlans.reduce((acc: number, d: DayPlanItem) => acc + d.timeline.filter((p: string) => /transfer|airport|drive|pickup|drop|train|ferry/i.test(p)).length, 0) || 4),
-        experiences: dayPlans.reduce((acc: number, d: DayPlanItem) => acc + d.timeline.filter((p: string) => !/check[- ]in|check[- ]out|freshen|overnight|meals|stay|hotel/i.test(p)).length, 0) || highlights.length || 7,
+        experiences: dayPlans.reduce((acc: number, d: DayPlanItem) => acc + d.timeline.filter((p: string) => Boolean(cleanActivityTitle(p))).length, 0) || highlights.length || 7,
         meals: (dayPlans.filter((d: DayPlanItem) => d.meals.breakfast).length + dayPlans.filter((d: DayPlanItem) => d.meals.lunch).length + dayPlans.filter((d: DayPlanItem) => d.meals.dinner).length) || durationNights,
         visa: tripType === 'International' ? 'Visa' : null,
         tripGuide: 'Trip Guide'
@@ -2295,9 +2296,13 @@ function WebsiteItineraryInner() {
             const city = d.city || destination || `Day ${d.day}`;
             const acts: string[] = [];
             d.timeline.forEach((pt: string) => {
-              if (!/check[- ]in|check[- ]out|freshen|overnight|meals|stay|hotel|airport transfer|drop off at airport/i.test(pt)) {
-                const clean = pt.replace(/^(sightseeing(?:\s*&\s*experiences)?|activities|experiences)\s*:\s*/i, '').trim();
-                if (clean && !acts.includes(clean)) acts.push(clean);
+              if (
+                !/check[- ]in|check[- ]out|freshen|overnight|meals|stay|hotel|airport transfer|drop off at airport|board your private vehicle|embark on|scenic drive from|scenic drive to|transfer to .* airport|arrival at .* airport/i.test(
+                  pt
+                )
+              ) {
+                const titleOnly = cleanActivityTitle(pt);
+                if (titleOnly && !acts.includes(titleOnly)) acts.push(titleOnly);
               }
             });
             if (acts.length > 0) {

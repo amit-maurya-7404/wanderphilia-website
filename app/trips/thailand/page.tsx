@@ -1,5 +1,6 @@
 'use client'
 
+import { DestinationBlogsSection } from '@/components/destination-blogs-section'
 import { useState, useEffect, useMemo } from 'react'
 import Image from 'next/image'
 import { Navbar } from '@/components/navbar'
@@ -766,6 +767,11 @@ export default function ThailandPage() {
             )}
           </div>
         </section>
+        {/* DESTINATION TRAVEL BLOGS & STORIES */}
+        <DestinationBlogsSection
+          destinationName="Thailand"
+          destinationSlug="thailand"
+        />
       </main>
 
       <Footer />

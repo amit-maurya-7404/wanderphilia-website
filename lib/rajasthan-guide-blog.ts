@@ -423,42 +423,213 @@ export const rajasthanGuideBlog: Blog = {
 
   <hr class="my-10 border-slate-200" />
 
-  <h2 class="text-xl font-bold text-slate-900 mt-6 mb-2.5 tracking-tight">Rajasthan travel FAQs</h2>
+    <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 mt-8 mb-4 tracking-tight">Rajasthan travel FAQs</h2>
 
-  <div class="space-y-5 my-6">
-    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs">
-      <h3 class="text-lg font-bold text-slate-950 mb-2">How many days does a first trip need?</h3>
-      <ul class="list-disc list-inside space-y-1 text-slate-700 ml-1">
-        <li><strong>4 to 5 days:</strong> Stick to two bases, such as Jaipur and Pushkar (with Ajmer nearby)</li>
-        <li><strong>About a week:</strong> Jaipur, Jodhpur and Udaipur, with two longer travel days</li>
-        <li><strong>Desert-focused:</strong> Build the week around Jodhpur and Jaisalmer, with one night in the Thar</li>
-      </ul>
+<div class="space-y-3.5 my-8">
+<details class="group rounded-2xl border border-slate-200/90 bg-white p-4 sm:p-5 shadow-2xs transition-all duration-200 hover:border-orange-300 open:border-orange-400 open:bg-orange-50/20">
+    <summary class="flex items-center justify-between cursor-pointer font-bold text-slate-900 text-base sm:text-lg select-none list-none [&::-webkit-details-marker]:hidden">
+      <span class="pr-3 leading-snug">What’s a good Rajasthan route if I only have four or five days?</span>
+      <span class="shrink-0 p-1.5 rounded-full bg-slate-100 group-open:bg-orange-100 text-slate-600 group-open:text-[#ff5d09] transition-transform duration-200">
+        <svg class="w-4 h-4 transition-transform duration-200 group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+        </svg>
+      </span>
+    </summary>
+    <div class="pt-3.5 text-slate-700 text-sm sm:text-base leading-relaxed border-t border-slate-100 mt-3.5">
+      Pick two bases. Jaipur and Pushkar give you bazaars, Amer Fort and a quieter lakeside stop, with Ajmer close enough to visit along the way. If you’d rather spend your evenings by a lake and explore Mewar’s history, choose Udaipur as your main base and use one full day for Chittorgarh or Kumbhalgarh.
     </div>
+  </details>
 
-    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs">
-      <h3 class="text-lg font-bold text-slate-950 mb-2">Where should I go for lakes, hills or wildlife instead of dunes?</h3>
-      <p class="text-slate-700">Base yourself in Udaipur for lakes, hills and Mewar's forts. For wildlife, go east: Bharatpur for wetland mornings, Ranthambore for dry forest and tigers.</p>
+<details class="group rounded-2xl border border-slate-200/90 bg-white p-4 sm:p-5 shadow-2xs transition-all duration-200 hover:border-orange-300 open:border-orange-400 open:bg-orange-50/20">
+    <summary class="flex items-center justify-between cursor-pointer font-bold text-slate-900 text-base sm:text-lg select-none list-none [&::-webkit-details-marker]:hidden">
+      <span class="pr-3 leading-snug">Can I fit Jaipur, Jodhpur, Udaipur and Jaisalmer into a week?</span>
+      <span class="shrink-0 p-1.5 rounded-full bg-slate-100 group-open:bg-orange-100 text-slate-600 group-open:text-[#ff5d09] transition-transform duration-200">
+        <svg class="w-4 h-4 transition-transform duration-200 group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+        </svg>
+      </span>
+    </summary>
+    <div class="pt-3.5 text-slate-700 text-sm sm:text-base leading-relaxed border-t border-slate-100 mt-3.5">
+      For a first trip, choose Jaipur, Jodhpur and Udaipur and allow two transfer days. If seeing the Thar is the reason you’re coming, build the trip around Jodhpur and Jaisalmer instead. Give Jaisalmer a full morning for the fort and havelis, plus a separate afternoon for the dunes.
     </div>
+  </details>
 
-    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs">
-      <h3 class="text-lg font-bold text-slate-950 mb-2">Why is Jaipur called the Pink City?</h3>
-      <p class="text-slate-700">Because of that 1876 welcome for the Prince of Wales, when Maharaja Ram Singh had the buildings painted pink as a gesture of hospitality.</p>
+<details class="group rounded-2xl border border-slate-200/90 bg-white p-4 sm:p-5 shadow-2xs transition-all duration-200 hover:border-orange-300 open:border-orange-400 open:bg-orange-50/20">
+    <summary class="flex items-center justify-between cursor-pointer font-bold text-slate-900 text-base sm:text-lg select-none list-none [&::-webkit-details-marker]:hidden">
+      <span class="pr-3 leading-snug">Should I fly in and out of Jaipur?</span>
+      <span class="shrink-0 p-1.5 rounded-full bg-slate-100 group-open:bg-orange-100 text-slate-600 group-open:text-[#ff5d09] transition-transform duration-200">
+        <svg class="w-4 h-4 transition-transform duration-200 group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+        </svg>
+      </span>
+    </summary>
+    <div class="pt-3.5 text-slate-700 text-sm sm:text-base leading-relaxed border-t border-slate-100 mt-3.5">
+      Start and finish in Jaipur if the fares work and your route naturally loops back. If you’re ending several hours away, price a return from Udaipur or Jodhpur as well. Compare the total fare, transfers and the time you’d spend getting back to Jaipur. Check the actual flights for your dates before fixing the route.
     </div>
+  </details>
 
-    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs">
-      <h3 class="text-lg font-bold text-slate-950 mb-2">Can I visit Jaisalmer Fort if I'm staying elsewhere?</h3>
-      <p class="text-slate-700">Yes. Just remember people live there, so ask before taking close-up photos of residents.</p>
+<details class="group rounded-2xl border border-slate-200/90 bg-white p-4 sm:p-5 shadow-2xs transition-all duration-200 hover:border-orange-300 open:border-orange-400 open:bg-orange-50/20">
+    <summary class="flex items-center justify-between cursor-pointer font-bold text-slate-900 text-base sm:text-lg select-none list-none [&::-webkit-details-marker]:hidden">
+      <span class="pr-3 leading-snug">When should I take a train, and when is a driver worth it?</span>
+      <span class="shrink-0 p-1.5 rounded-full bg-slate-100 group-open:bg-orange-100 text-slate-600 group-open:text-[#ff5d09] transition-transform duration-200">
+        <svg class="w-4 h-4 transition-transform duration-200 group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+        </svg>
+      </span>
+    </summary>
+    <div class="pt-3.5 text-slate-700 text-sm sm:text-base leading-relaxed border-t border-slate-100 mt-3.5">
+      Take the train between cities when the timings give you a useful arrival and both stations are easy to reach. A driver earns their keep when the journey includes smaller stops, such as Kumbhalgarh and Ranakpur, or when a group has luggage and wants door-to-door travel. Compare the full cost, including station transfers, tolls and parking.
     </div>
+  </details>
 
-    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs">
-      <h3 class="text-lg font-bold text-slate-950 mb-2">Who built Bundi's Queen's Stepwell?</h3>
-      <p class="text-slate-700">Rani Nathavati, in 1699. Pause at the entrance arch before you head down. It's a very fancy doorway for a daily chore.</p>
+<details class="group rounded-2xl border border-slate-200/90 bg-white p-4 sm:p-5 shadow-2xs transition-all duration-200 hover:border-orange-300 open:border-orange-400 open:bg-orange-50/20">
+    <summary class="flex items-center justify-between cursor-pointer font-bold text-slate-900 text-base sm:text-lg select-none list-none [&::-webkit-details-marker]:hidden">
+      <span class="pr-3 leading-snug">Is it worth adding a sightseeing stop on a long drive?</span>
+      <span class="shrink-0 p-1.5 rounded-full bg-slate-100 group-open:bg-orange-100 text-slate-600 group-open:text-[#ff5d09] transition-transform duration-200">
+        <svg class="w-4 h-4 transition-transform duration-200 group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+        </svg>
+      </span>
+    </summary>
+    <div class="pt-3.5 text-slate-700 text-sm sm:text-base leading-relaxed border-t border-slate-100 mt-3.5">
+      Yes, if it’s close to your route and you’ll reach it with enough daylight. Pick one stop and give it time for the visit, lunch and a delayed departure. If a fort visit means a big detour and a rush to reach your next stay, give the fort its own morning.
     </div>
-  </div>
+  </details>
+
+<details class="group rounded-2xl border border-slate-200/90 bg-white p-4 sm:p-5 shadow-2xs transition-all duration-200 hover:border-orange-300 open:border-orange-400 open:bg-orange-50/20">
+    <summary class="flex items-center justify-between cursor-pointer font-bold text-slate-900 text-base sm:text-lg select-none list-none [&::-webkit-details-marker]:hidden">
+      <span class="pr-3 leading-snug">Can I see the dunes without sleeping in a desert camp?</span>
+      <span class="shrink-0 p-1.5 rounded-full bg-slate-100 group-open:bg-orange-100 text-slate-600 group-open:text-[#ff5d09] transition-transform duration-200">
+        <svg class="w-4 h-4 transition-transform duration-200 group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+        </svg>
+      </span>
+    </summary>
+    <div class="pt-3.5 text-slate-700 text-sm sm:text-base leading-relaxed border-t border-slate-100 mt-3.5">
+      Yes. Stay in Jaisalmer, book an afternoon outing to the dunes and arrange the ride back before you leave town. If you do want a camp night, ask where it is, what the price includes and whether there’s amplified music. A quiet evening and a dinner show suit very different trips.
+    </div>
+  </details>
+
+<details class="group rounded-2xl border border-slate-200/90 bg-white p-4 sm:p-5 shadow-2xs transition-all duration-200 hover:border-orange-300 open:border-orange-400 open:bg-orange-50/20">
+    <summary class="flex items-center justify-between cursor-pointer font-bold text-slate-900 text-base sm:text-lg select-none list-none [&::-webkit-details-marker]:hidden">
+      <span class="pr-3 leading-snug">What should I book first if Ranthambore is the main reason I’m coming?</span>
+      <span class="shrink-0 p-1.5 rounded-full bg-slate-100 group-open:bg-orange-100 text-slate-600 group-open:text-[#ff5d09] transition-transform duration-200">
+        <svg class="w-4 h-4 transition-transform duration-200 group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+        </svg>
+      </span>
+    </summary>
+    <div class="pt-3.5 text-slate-700 text-sm sm:text-base leading-relaxed border-t border-slate-100 mt-3.5">
+      Check safari availability through the <a href="https://fmdss.forest.rajasthan.gov.in/" target="_blank" rel="noopener noreferrer" class="text-orange-600 hover:text-orange-700 underline font-semibold">Rajasthan Forest Department</a> before locking in your stay or onward travel. Check the date, zone, shift and reporting point, then plan how you’ll get to the gate. Leave separate time for Ranthambore Fort. A safari booking gives you a drive in the forest, and the tiger decides the rest.
+    </div>
+  </details>
+
+<details class="group rounded-2xl border border-slate-200/90 bg-white p-4 sm:p-5 shadow-2xs transition-all duration-200 hover:border-orange-300 open:border-orange-400 open:bg-orange-50/20">
+    <summary class="flex items-center justify-between cursor-pointer font-bold text-slate-900 text-base sm:text-lg select-none list-none [&::-webkit-details-marker]:hidden">
+      <span class="pr-3 leading-snug">Should I choose Ranthambore or Bharatpur if I only have time for one wildlife stop?</span>
+      <span class="shrink-0 p-1.5 rounded-full bg-slate-100 group-open:bg-orange-100 text-slate-600 group-open:text-[#ff5d09] transition-transform duration-200">
+        <svg class="w-4 h-4 transition-transform duration-200 group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+        </svg>
+      </span>
+    </summary>
+    <div class="pt-3.5 text-slate-700 text-sm sm:text-base leading-relaxed border-t border-slate-100 mt-3.5">
+      Choose Ranthambore if you want a guided drive through dry forest and the chance of seeing a tiger. Choose Keoladeo in Bharatpur if you’d rather spend a slow morning looking for birds. In winter, give the wetland an early slot and consider a guide or cycle-rickshaw for a better look at what’s around you.
+    </div>
+  </details>
+
+<details class="group rounded-2xl border border-slate-200/90 bg-white p-4 sm:p-5 shadow-2xs transition-all duration-200 hover:border-orange-300 open:border-orange-400 open:bg-orange-50/20">
+    <summary class="flex items-center justify-between cursor-pointer font-bold text-slate-900 text-base sm:text-lg select-none list-none [&::-webkit-details-marker]:hidden">
+      <span class="pr-3 leading-snug">What route works if I’m visiting during the monsoon?</span>
+      <span class="shrink-0 p-1.5 rounded-full bg-slate-100 group-open:bg-orange-100 text-slate-600 group-open:text-[#ff5d09] transition-transform duration-200">
+        <svg class="w-4 h-4 transition-transform duration-200 group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+        </svg>
+      </span>
+    </summary>
+    <div class="pt-3.5 text-slate-700 text-sm sm:text-base leading-relaxed border-t border-slate-100 mt-3.5">
+      Build around Udaipur and, if you have another couple of days, Bundi. Keep a city or museum visit handy for heavy rain and make hill walks optional until you’ve checked conditions. If a safari is central to your trip, check the zones open for your exact dates before choosing the route.
+    </div>
+  </details>
+
+<details class="group rounded-2xl border border-slate-200/90 bg-white p-4 sm:p-5 shadow-2xs transition-all duration-200 hover:border-orange-300 open:border-orange-400 open:bg-orange-50/20">
+    <summary class="flex items-center justify-between cursor-pointer font-bold text-slate-900 text-base sm:text-lg select-none list-none [&::-webkit-details-marker]:hidden">
+      <span class="pr-3 leading-snug">How do I plan Rajasthan for young kids or parents who struggle with stairs?</span>
+      <span class="shrink-0 p-1.5 rounded-full bg-slate-100 group-open:bg-orange-100 text-slate-600 group-open:text-[#ff5d09] transition-transform duration-200">
+        <svg class="w-4 h-4 transition-transform duration-200 group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+        </svg>
+      </span>
+    </summary>
+    <div class="pt-3.5 text-slate-700 text-sm sm:text-base leading-relaxed border-t border-slate-100 mt-3.5">
+      Give the group one main stop each morning and keep the afternoon easy. Ask about the walk from the drop-off, the steepest stairs, shade and toilets before picking a fort. A stepwell can still be worth seeing from the top, and a lakeside stroll is an easy second stop when everyone’s had enough of stone steps.
+    </div>
+  </details>
+
+<details class="group rounded-2xl border border-slate-200/90 bg-white p-4 sm:p-5 shadow-2xs transition-all duration-200 hover:border-orange-300 open:border-orange-400 open:bg-orange-50/20">
+    <summary class="flex items-center justify-between cursor-pointer font-bold text-slate-900 text-base sm:text-lg select-none list-none [&::-webkit-details-marker]:hidden">
+      <span class="pr-3 leading-snug">What’s a good quieter stop after Jaipur or Udaipur?</span>
+      <span class="shrink-0 p-1.5 rounded-full bg-slate-100 group-open:bg-orange-100 text-slate-600 group-open:text-[#ff5d09] transition-transform duration-200">
+        <svg class="w-4 h-4 transition-transform duration-200 group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+        </svg>
+      </span>
+    </summary>
+    <div class="pt-3.5 text-slate-700 text-sm sm:text-base leading-relaxed border-t border-slate-100 mt-3.5">
+      Choose Shekhawati from Jaipur if you’d like to spend time with painted havelis. Pick one town, such as Nawalgarh, and check which houses welcome visitors. If you’re heading east from Udaipur, give Bundi an overnight for the palace paintings and stepwells. It’s much easier to enjoy them with a whole morning free.
+    </div>
+  </details>
+
+<details class="group rounded-2xl border border-slate-200/90 bg-white p-4 sm:p-5 shadow-2xs transition-all duration-200 hover:border-orange-300 open:border-orange-400 open:bg-orange-50/20">
+    <summary class="flex items-center justify-between cursor-pointer font-bold text-slate-900 text-base sm:text-lg select-none list-none [&::-webkit-details-marker]:hidden">
+      <span class="pr-3 leading-snug">What should I budget for beyond my room and transport?</span>
+      <span class="shrink-0 p-1.5 rounded-full bg-slate-100 group-open:bg-orange-100 text-slate-600 group-open:text-[#ff5d09] transition-transform duration-200">
+        <svg class="w-4 h-4 transition-transform duration-200 group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+        </svg>
+      </span>
+    </summary>
+    <div class="pt-3.5 text-slate-700 text-sm sm:text-base leading-relaxed border-t border-slate-100 mt-3.5">
+      Set aside money for monument tickets, guides, workshops, boat rides and any safari or desert outing. Compare packages line by line. A dune outing might quote for the ride, while dinner and the return transfer cost extra. If you’re sharing a car, check what’s included in the daily rate before dividing it among the group.
+    </div>
+  </details>
+
+<details class="group rounded-2xl border border-slate-200/90 bg-white p-4 sm:p-5 shadow-2xs transition-all duration-200 hover:border-orange-300 open:border-orange-400 open:bg-orange-50/20">
+    <summary class="flex items-center justify-between cursor-pointer font-bold text-slate-900 text-base sm:text-lg select-none list-none [&::-webkit-details-marker]:hidden">
+      <span class="pr-3 leading-snug">Is the Pushkar Fair worth planning the whole trip around?</span>
+      <span class="shrink-0 p-1.5 rounded-full bg-slate-100 group-open:bg-orange-100 text-slate-600 group-open:text-[#ff5d09] transition-transform duration-200">
+        <svg class="w-4 h-4 transition-transform duration-200 group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+        </svg>
+      </span>
+    </summary>
+    <div class="pt-3.5 text-slate-700 text-sm sm:text-base leading-relaxed border-t border-slate-100 mt-3.5">
+      Yes if you want the crowds, trade and festival atmosphere. Check the current programme and pick the days that match what you want to see. Then book the stay and check where your ride can drop you. If your idea of Pushkar is an unhurried morning by the ghats, choose dates outside the fair.
+    </div>
+  </details>
+
+<details class="group rounded-2xl border border-slate-200/90 bg-white p-4 sm:p-5 shadow-2xs transition-all duration-200 hover:border-orange-300 open:border-orange-400 open:bg-orange-50/20">
+    <summary class="flex items-center justify-between cursor-pointer font-bold text-slate-900 text-base sm:text-lg select-none list-none [&::-webkit-details-marker]:hidden">
+      <span class="pr-3 leading-snug">How do I keep the trip from becoming one fort after another?</span>
+      <span class="shrink-0 p-1.5 rounded-full bg-slate-100 group-open:bg-orange-100 text-slate-600 group-open:text-[#ff5d09] transition-transform duration-200">
+        <svg class="w-4 h-4 transition-transform duration-200 group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+        </svg>
+      </span>
+    </summary>
+    <div class="pt-3.5 text-slate-700 text-sm sm:text-base leading-relaxed border-t border-slate-100 mt-3.5">
+      Give each stop a different job. Do Amer for hill-fort architecture, try a block-printing workshop near Jaipur, walk the havelis in Jaisalmer and give Udaipur an evening by the lake. Once you know what you want out of each place, it’s easier to drop a sight that would repeat the day before.
+    </div>
+  </details>
+</div>
 
   <hr class="my-10 border-slate-200" />
 
   <h2 class="text-xl font-bold text-slate-900 mt-6 mb-2 tracking-tight">Your next move</h2>
+
+  <div class="rounded-2xl bg-amber-50/80 border border-amber-200/90 p-5 my-6 text-amber-950">
+    <p class="font-medium text-amber-900 leading-relaxed">Planning which season to visit? Check our companion guide: <a href="/blog/best-time-to-visit-rajasthan" class="font-bold underline text-[#ff5d09] hover:text-orange-700">Best Time to Visit Rajasthan: Weather, Crowds, and Festivals &rarr;</a></p>
+  </div>
 
   <p>
     Start with the one place you'd be most upset to miss, and build the route around it. Then leave one afternoon completely unplanned.

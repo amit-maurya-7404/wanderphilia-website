@@ -5229,6 +5229,241 @@ export const singaporeDeepakManualItinerary: ManualItinerary = {
   enableOnlineBooking: true
 };
 
+export const singaporeDeepakRevisedManualItinerary: ManualItinerary = {
+  id: 'singapore-deepak-revised',
+  slug: 'singapore-deepak-revised',
+  title: '5 Days Trip to Singapore Specially Curated for Mr. Deepak & Family (Revised)',
+  subtitle: 'Singapore Luxury Family Experience (Revised)',
+  duration: '4 Nights / 5 Days | 06 Dec – 10 Dec 2026',
+  numNights: 4,
+  numDays: 5,
+  dates: '06 Dec – 10 Dec 2026',
+  route: 'Mumbai → Singapore → Sentosa → Mandai → Singapore → Mumbai',
+  routeSummary: '4N Marina Bay Sands',
+  destination: 'Singapore',
+  travelStyle: 'Family Curated Experience',
+  tripType: 'Customised Luxury Tour',
+  leadName: 'Mr. Deepak & Family',
+  vehicleType: 'Private Mercedes-Benz V Class / Luxury SUV with Chauffeur',
+  mealPlan: 'Daily Breakfast & Curated Vegetarian Dining Recommendations',
+  heroImage: '/images/singapore.png',
+  galleryImages: [
+    '/images/singapore1.jpg',
+    '/images/singapore2.jpg',
+    '/images/singapore3.jpg',
+    '/images/singapore4.jpg',
+    '/images/singapore5.jpg',
+    '/images/singapore.png'
+  ],
+  accommodations: [
+    { city: 'Singapore', nights: 4, hotelName: 'Marina Bay Sands (5 Star)', roomCategory: '2 × Sands Premier King Rooms with Breakfast (3 Adults, 2 Children)' }
+  ],
+  hotelCostDetails: {
+    hotelName: 'Marina Bay Sands',
+    rating: '5 Star',
+    checkIn: 'Sun, 6 Dec 2026',
+    checkOut: 'Thu, 10 Dec 2026',
+    nights: 4,
+    roomsCount: 2,
+    roomCategory: 'Sands Premier King Room with Breakfast',
+    paxDetails: '3 Adults, 2 Children',
+    totalCost: 530955,
+    note: '2 Rooms, 4 nights. Total price is inclusive of all taxes. Contact: Bhavin Thakker (9987602328 | experiences@wanderphilia.com).'
+  },
+  dayPlans: [
+    {
+      day: 1,
+      date: 'Sun, 06 Dec 2026',
+      title: 'Day 1 | Arrival in Singapore, Gardens by the Bay & MBS SkyPark',
+      route: 'Singapore Changi Airport → Marina Bay Sands',
+      durationNote: '5h 50m Flight | Private Luxury SUV Airport Transfer',
+      intro: 'Welcome to Singapore! Arrive at Changi Airport, private transfer to Marina Bay Sands, check-in, explore the futuristic Gardens by the Bay (Flower Dome + Cloud Forest featuring Jurassic World Experience), and enjoy panoramic sunset views from Marina Bay Sands SkyPark Observation Deck.',
+      timeline: [
+        'Arrive at Singapore Changi Airport (SIN) via Air India Flight AI-2105 at 08:40 AM',
+        'Warm welcome and private SUV transfer to Marina Bay Sands',
+        'Check-in and refresh in your Sands Premier King Room',
+        'Afternoon exploration of Gardens by the Bay – Flower Dome & Cloud Forest featuring Jurassic World Experience',
+        'Evening visit to Marina Bay Sands SkyPark (Non-Prime Hours) for 360-degree panoramic skyline views',
+        'Dinner at curated Indian restaurant & leisure stroll along Marina Bay waterfront',
+        'Overnight stay at Marina Bay Sands, Singapore'
+      ],
+      stayLocation: 'Marina Bay Sands, Singapore',
+      image: '/images/singapore1.jpg',
+      meals: 'Dinner at Indian Restaurant'
+    },
+    {
+      day: 2,
+      date: 'Mon, 07 Dec 2026',
+      title: 'Day 2 | Universal Studios Singapore with Express Pass & S.E.A. Aquarium',
+      route: 'Marina Bay Sands → Resorts World Sentosa → Marina Bay Sands',
+      intro: 'An action-packed day of blockbuster entertainment at Universal Studios Singapore with VIP Express Pass access to bypass lines, followed by the awe-inspiring underwater world of Singapore Oceanarium (S.E.A. Aquarium).',
+      timeline: [
+        'Sumptuous buffet breakfast at Marina Bay Sands',
+        'Private SUV transfer to Resorts World Sentosa',
+        'Universal Studios Singapore with Express Pass for 3 Adults + 1 Child (Skip the regular queues on top rides)',
+        'Experience Transformers The Ride, Battlestar Galactica, Jurassic Park Rapids, and Sesame Street shows',
+        'Explore Singapore Oceanarium (S.E.A. Aquarium) with over 100,000 marine animals across 40+ habitats',
+        'Private SUV transfer back to Marina Bay Sands',
+        'Overnight stay at Marina Bay Sands, Singapore'
+      ],
+      stayLocation: 'Marina Bay Sands, Singapore',
+      image: '/images/singapore2.jpg',
+      meals: 'Breakfast'
+    },
+    {
+      day: 3,
+      date: 'Tue, 08 Dec 2026',
+      title: 'Day 3 | Private City Tour, Singapore Flyer & Sentosa Highlights',
+      route: 'Marina Bay Sands → City Tour → Sentosa Island → Marina Bay Sands',
+      intro: 'Discover Singapore’s premier heritage and modern marvels on a private city tour, take a scenic spin on the Singapore Flyer, and venture into Sentosa for Skyline Luge, Cable Car, and the spectacular Wings of Time show.',
+      timeline: [
+        'Buffet breakfast at Marina Bay Sands',
+        'Private SUV Singapore City Tour exploring Merlion Park, Civic District, and cultural precincts',
+        'Scenic ride on the Singapore Flyer for breathtaking 360-degree city views (Tickets for 3 Adults + 1 Child)',
+        'Transfer to Sentosa Island via Scenic Singapore Cable Car',
+        'Thrilling Skyline Luge & Skyride (3 rides per person)',
+        'Spectacular Wings of Time night light, laser, and water show at Siloso Beach',
+        'Private SUV transfer back to Marina Bay Sands',
+        'Overnight stay at Marina Bay Sands, Singapore'
+      ],
+      stayLocation: 'Marina Bay Sands, Singapore',
+      image: '/images/singapore3.jpg',
+      meals: 'Breakfast'
+    },
+    {
+      day: 4,
+      date: 'Wed, 09 Dec 2026',
+      title: 'Day 4 | Mandai Wildlife Reserve (Zoo, River Wonders & Night Safari)',
+      route: 'Marina Bay Sands → Mandai Wildlife Reserve → Marina Bay Sands',
+      intro: 'An immersive wildlife journey through Singapore’s world-renowned open-concept zoo, river safari with Giant Pandas, and the iconic nocturnal Night Safari with tram ride and animal presentation.',
+      timeline: [
+        'Relaxed morning enjoying Marina Bay Sands rooftop infinity pool and facilities',
+        'Buffet breakfast at Marina Bay Sands',
+        'Private SUV transfer to Mandai Wildlife Reserve with 5-in-1 Park Hopper Passes',
+        'Explore Singapore Zoo with open habitats and guided tram tour',
+        'River Wonders exploration (Giant Panda Forest & Amazon Flooded Forest)',
+        'Evening Night Safari adventure with reserved Animal Presentation & guided tram safari ride',
+        'Private SUV transfer back to hotel',
+        'Overnight stay at Marina Bay Sands, Singapore'
+      ],
+      stayLocation: 'Marina Bay Sands, Singapore',
+      image: '/images/singapore5.jpg',
+      meals: 'Breakfast'
+    },
+    {
+      day: 5,
+      date: 'Thu, 10 Dec 2026',
+      title: 'Day 5 | Marina Bay Leisure, Private Shopping Disposal & Departure',
+      route: 'Marina Bay Sands → Singapore Shopping & Exploration → Changi Airport → Mumbai',
+      durationNote: '3-Hour Private Disposal SUV | Private Airport Transfer | 6h 15m Flight',
+      intro: 'Savor your final morning at Marina Bay Sands, make use of a 3-hour private disposal SUV for shopping and sightseeing, and transfer comfortably to Changi Airport for your return Premium Economy flight to Mumbai.',
+      timeline: [
+        'Relaxed breakfast and morning leisure at Marina Bay Sands',
+        'Check-out from Marina Bay Sands',
+        '3-Hour Private Luxury SUV disposal for shopping, leisure, and exploring Jewel Changi Airport',
+        'Private SUV transfer to Singapore Changi Airport (SIN) Terminal',
+        'Board Air India Flight AI - 2108 (Premium Economy) departing at 19:40 to Mumbai',
+        'Arrive at Mumbai (BOM) at 23:25',
+        'Come back home with wonderful memories of Singapore!'
+      ],
+      stayLocation: 'Mumbai',
+      image: '/images/singapore.png',
+      meals: 'Breakfast'
+    }
+  ],
+  inclusions: [
+    'Air India Direct Flights – Premium Economy (Mumbai ↔ Singapore Round-Trip)',
+    'Private Airport & Sightseeing Transfers in Private Luxury SUV with Chauffeur',
+    'Handpicked Premium Luxury Hotel – Marina Bay Sands (2 × Sands Premier King Rooms)',
+    'Daily Breakfast at Marina Bay Sands',
+    'Gardens by the Bay – Flower Dome, Cloud Forest & Jurassic World Experience',
+    'Marina Bay Sands SkyPark Observation Deck (Non-Prime Hours)',
+    'Universal Studios Singapore with Express Pass (3 Adults + 1 Child)',
+    'Singapore Oceanarium (S.E.A. Aquarium)',
+    'Singapore Flyer Experience (3 Adults + 1 Child)',
+    'Singapore Cable Car Experience',
+    'Skyline Luge & Sky Ride Experience (3 Rides)',
+    'Wings of Time Night Show',
+    'Fully Private Premium Singapore City Tour',
+    'Mandai Wildlife Reserve – Park Hopper 5-in-1 (Singapore Zoo, River Wonders & Night Safari with Animal Presentation)',
+    '3-Hour Private SUV Disposal on Departure Day for Shopping / Leisure',
+    'Curated Indian Restaurant Dining Experience',
+    'Relaxed & Comfort-Focused Touring Throughout for Family',
+    'Curated Vegetarian Dining Recommendations'
+  ],
+  exclusions: [
+    'GST (5%) is applicable extra.',
+    'TCS (2%) is applicable extra (can be claimed back as tax credit).',
+    'Any kind of food or beverage that is not included in the package like alcoholic drinks, mineral water, meals/refreshments/lunches on the highway.',
+    'Any personal expenses like tips to drivers/guides, laundry, telephone calls, camera fees etc.',
+    'Any cost arising due to natural calamities, flight delays/cancellations, or unforeseen circumstances.',
+    'Anything not mentioned in the inclusions.'
+  ],
+  flightQuotations: [
+    {
+      optionId: 'air-india-premium-economy',
+      optionTitle: 'Air India Premium Economy Flight',
+      totalPrice: 355385,
+      paxDetails: '3 Adults, 2 Children (Round-Trip Return Airfare)',
+      isExcludedFromPackage: false,
+      note: 'Airline ticket pricing is dynamic. Fares are valid as of now and might change at the time of issuance. Contact: Bhavin Thakker (9987602328 | experiences@wanderphilia.com).',
+      sectors: [
+        {
+          fromCity: 'MUM (Mumbai)',
+          toCity: 'SIN (Singapore)',
+          fromAirport: 'Chhatrapati Shivaji Maharaj International Airport (BOM)',
+          toAirport: 'Singapore Changi Airport (SIN)',
+          fromCode: 'BOM',
+          toCode: 'SIN',
+          airline: 'Air India',
+          flightNumber: 'AI - 2105',
+          journeyType: 'Onward Journey',
+          departureDate: 'Sun, 06 Dec 2026',
+          departureTime: '00:20',
+          arrivalDate: 'Sun, 06 Dec 2026',
+          arrivalTime: '08:40',
+          duration: '5 h 50 m',
+          stops: 'Non Stop',
+          cabinClass: 'Premium Economy',
+          baggage: 'Baggage 7KGS Cabin | 25KGS Check-in'
+        },
+        {
+          fromCity: 'SIN (Singapore)',
+          toCity: 'MUM (Mumbai)',
+          fromAirport: 'Singapore Changi Airport (SIN)',
+          toAirport: 'Chhatrapati Shivaji Maharaj International Airport (BOM)',
+          fromCode: 'SIN',
+          toCode: 'BOM',
+          airline: 'Air India',
+          flightNumber: 'AI - 2108',
+          journeyType: 'Return Journey',
+          departureDate: 'Thu, 10 Dec 2026',
+          departureTime: '19:40',
+          arrivalDate: 'Thu, 10 Dec 2026',
+          arrivalTime: '23:25',
+          duration: '6 h 15 m',
+          stops: 'Non Stop',
+          cabinClass: 'Premium Economy',
+          baggage: 'Baggage 7KGS Cabin | 25KGS Check-in'
+        }
+      ]
+    }
+  ],
+  baseAmount: 284000,
+  gstPercentage: 5,
+  gstAmount: 14200,
+  tcsPercentage: 2,
+  tcsAmount: 5964,
+  finalQuotationAmount: 304164,
+  perAdultPrice: 72500,
+  perKidPrice: 66500,
+  adults: 3,
+  kids: 2,
+  kidsDetails: '11 Yrs (Extra Bed: ₹66,500) • 2 Yrs (Complimentary / Free)',
+  childPricingNote: 'Total Land Cost (Sightseeing Entry Tickets & Transfers): 3 Adults @ ₹72,500 = ₹2,17,500 + 1 Child (11 yrs) @ ₹66,500 = ₹66,500 (2 Yrs Child: Complimentary / Free of Cost). Base: ₹2,84,000 + 5% GST (₹14,200) + 2% TCS (₹5,964) = Grand Total ₹3,04,164/- (Stay & Flight costs are quoted separately as detailed above).',
+  enableOnlineBooking: true
+};
+
 export const manualItinerariesRegistry: Record<string, ManualItinerary> = {
   // Meghalaya with Kaziranga (Mrs. Shravya)
   'meghalaya-with-kaziranga-mrs-shravya': meghalayaShravyaManualItinerary,
@@ -5398,7 +5633,16 @@ export const manualItinerariesRegistry: Record<string, ManualItinerary> = {
   'deepak-singapore': singaporeDeepakManualItinerary,
   'deepak-family': singaporeDeepakManualItinerary,
   'deepak': singaporeDeepakManualItinerary,
-  'wp-singapore-deepak': singaporeDeepakManualItinerary
+  'wp-singapore-deepak': singaporeDeepakManualItinerary,
+
+  // Singapore Deepak Revised (4N / 5D, 06 Dec - 10 Dec 2026)
+  'singapore-deepak-revised': singaporeDeepakRevisedManualItinerary,
+  'singapore-deepak-revised-family': singaporeDeepakRevisedManualItinerary,
+  'singapore-deepak-revised-itinerary': singaporeDeepakRevisedManualItinerary,
+  'deepak-revised': singaporeDeepakRevisedManualItinerary,
+  'deepak-singapore-revised': singaporeDeepakRevisedManualItinerary,
+  'mr-deepak-singapore-revised': singaporeDeepakRevisedManualItinerary,
+  'wp-singapore-deepak-revised': singaporeDeepakRevisedManualItinerary
 };
 
 export function getManualItinerary(idOrSlug: string): ManualItinerary | null {

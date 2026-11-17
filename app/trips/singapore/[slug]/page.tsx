@@ -1,5 +1,6 @@
 'use client'
 
+import { DestinationBlogsSection } from '@/components/destination-blogs-section'
 import { TripReviewsSection } from '@/components/trip-reviews-section'
 import { useState, useMemo, useEffect, useRef } from 'react'
 import { useParams, useRouter } from 'next/navigation'
@@ -781,6 +782,11 @@ export default function PackageDetailPage() {
       <TripGallerySection 
         categoryId={trip.category.toLowerCase()} 
         categoryName={trip.destination} 
+      />
+      {/* DESTINATION BLOGS & STORIES */}
+      <DestinationBlogsSection
+        destinationName={trip?.destination || trip?.category || ''}
+        destinationSlug={trip?.category?.toLowerCase() || ''}
       />
 
       <Footer />

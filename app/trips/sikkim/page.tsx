@@ -1,5 +1,6 @@
 'use client'
 
+import { DestinationBlogsSection } from '@/components/destination-blogs-section'
 import { useState, useEffect, useMemo } from 'react'
 import Image from 'next/image'
 import { Navbar } from '@/components/navbar'
@@ -759,6 +760,11 @@ export default function SikkimPage() {
             )}
           </div>
         </section>
+        {/* DESTINATION TRAVEL BLOGS & STORIES */}
+        <DestinationBlogsSection
+          destinationName="Sikkim"
+          destinationSlug="sikkim"
+        />
       </main>
 
       <Footer />

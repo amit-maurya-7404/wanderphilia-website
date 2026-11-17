@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Calendar, Clock, ArrowRight, BookOpen, Sparkles, ChevronRight } from 'lucide-react'
 import type { DbBlog } from '@/lib/blogs-db'
+import { blogs as staticBlogs } from '@/lib/data'
 import { isBlogForDestination } from '@/lib/blog-destination'
 
 export { isBlogForDestination }
@@ -26,32 +27,38 @@ export function DestinationBlogsSection({
   className = '',
   maxBlogs = 6,
 }: DestinationBlogsSectionProps) {
-  const [blogs, setBlogs] = useState<DbBlog[]>([])
-  const [loading, setLoading] = useState(true)
+  // Initialize with static blogs so SSR and immediate render work with zero lag or empty flash
+  const [blogs, setBlogs] = useState<DbBlog[]>(() => {
+    return (staticBlogs as unknown as DbBlog[]) || []
+  })
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     let isMounted = true
-    setLoading(true)
 
+    // Fetch dynamic blogs from MongoDB to include any newly published blogs
     fetch('/api/blogs')
       .then((res) => (res.ok ? res.json() : { blogs: [] }))
       .then((data) => {
         if (!isMounted) return
-        if (Array.isArray(data.blogs)) {
-          setBlogs(data.blogs)
+        if (Array.isArray(data.blogs) && data.blogs.length > 0) {
+          // Merge dynamic blogs over static blogs by slug / id
+          setBlogs((prev) => {
+            const map = new Map<string, DbBlog>()
+            prev.forEach((b) => map.set(b.slug || b.id, b))
+            data.blogs.forEach((b: DbBlog) => map.set(b.slug || b.id, b))
+            return Array.from(map.values())
+          })
         }
       })
       .catch((err) => {
         console.warn('[DestinationBlogsSection] Failed to load blogs:', err)
       })
-      .finally(() => {
-        if (isMounted) setLoading(false)
-      })
 
     return () => {
       isMounted = false
     }
-  }, [])
+  }, [destinationName, destinationSlug])
 
   // Filter only blogs matching this specific destination
   const destinationBlogs = useMemo(() => {

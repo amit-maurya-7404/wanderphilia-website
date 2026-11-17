@@ -15,6 +15,7 @@ import { getSectionMapping } from '@/lib/section-mappings'
 import { useDestinationTrips } from '@/lib/use-dynamic-trips'
 import { DurationFilter } from '@/components/duration-filter'
 import { NoPackagesCallbackForm } from '@/components/no-packages-callback-form'
+import { DestinationBlogsSection } from '@/components/destination-blogs-section'
 import { ChevronLeft, ChevronRight, Star, Phone, MessageCircle } from 'lucide-react'
 
 interface ReviewItem {
@@ -760,6 +761,12 @@ export default function HimachalPage() {
             )}
           </div>
         </section>
+
+        {/* DESTINATION TRAVEL BLOGS & STORIES */}
+        <DestinationBlogsSection
+          destinationName={categoryName || 'Himachal'}
+          destinationSlug={categoryId || 'himachal'}
+        />
       </main>
 
       <Footer />

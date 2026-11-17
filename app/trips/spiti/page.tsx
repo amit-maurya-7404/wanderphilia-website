@@ -1,5 +1,6 @@
 'use client'
 
+import { DestinationBlogsSection } from '@/components/destination-blogs-section'
 import { useState, useEffect, useMemo } from 'react'
 import Image from 'next/image'
 import { Navbar } from '@/components/navbar'
@@ -761,6 +762,11 @@ export default function SpitiPage() {
             )}
           </div>
         </section>
+        {/* DESTINATION TRAVEL BLOGS & STORIES */}
+        <DestinationBlogsSection
+          destinationName="Spiti"
+          destinationSlug="spiti"
+        />
       </main>
 
       <Footer />

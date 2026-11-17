@@ -1,5 +1,6 @@
 'use client'
 
+import { DestinationBlogsSection } from '@/components/destination-blogs-section'
 import { useState, useEffect, useMemo } from 'react'
 import Image from 'next/image'
 import { Navbar } from '@/components/navbar'
@@ -881,6 +882,11 @@ export default function LehLadakhPage() {
             )}
           </div>
         </section>
+        {/* DESTINATION TRAVEL BLOGS & STORIES */}
+        <DestinationBlogsSection
+          destinationName="Leh Ladakh"
+          destinationSlug="leh-ladakh"
+        />
       </main >
 
       <Footer />

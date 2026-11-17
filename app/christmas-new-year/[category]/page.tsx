@@ -224,42 +224,49 @@ export default function ChristmasNewYearCategoryPage() {
   const allCategoryTrips = useMemo(() => {
     return combinedTrips.filter(
       (t) =>
-        t.category.trim().toLowerCase() === currentCategory.name.toLowerCase() ||
-        t.category.trim().toLowerCase() === currentCategory.id ||
-        t.slug.toLowerCase().includes(categoryId)
+        t.category?.trim().toLowerCase() === currentCategory.name.toLowerCase() ||
+        t.category?.trim().toLowerCase().replace(/\s+/g, '-') === categoryId ||
+        t.destination?.trim().toLowerCase() === currentCategory.name.toLowerCase() ||
+        t.destination?.trim().toLowerCase().replace(/\s+/g, '-') === categoryId ||
+        t.slug?.toLowerCase().includes(categoryId)
     )
-}, [combinedTrips, currentCategory, categoryId])
+  }, [combinedTrips, currentCategory, categoryId])
 
-// Filter only Christmas & New Year itineraries (18-31 Dec under the hood)
-const matchingHolidayTrips = useMemo(() => {
-  return getChristmasNewYearTrips(allCategoryTrips)
-}, [allCategoryTrips])
+  // Filter Christmas & New Year itineraries; if none has explicit December dates (e.g. customized packages like Meghalaya, Singapore), display all available tours for this destination so users can celebrate & book for the holidays!
+  const displayedHolidayTrips = useMemo(() => {
+    const matching = getChristmasNewYearTrips(allCategoryTrips)
+    if (matching.length > 0) return matching
+    return allCategoryTrips
+  }, [allCategoryTrips])
 
-// Other holiday destinations to explore
-const otherHolidayCategories = useMemo(() => {
-  const allowed = ['rajasthan', 'bhutan', 'thailand', 'sri-lanka', 'spiti', 'meghalaya', 'vietnam', 'singapore', 'bali', 'kashmir', 'himachal', 'leh-ladakh']
-  return allowed
-    .filter((id) => id !== currentCategory.id)
-    .slice(0, 4)
-    .map((id) => allCategories.find((c) => c.id === id))
-    .filter((c): c is typeof allCategories[number] => Boolean(c))
-    .map((cat) => {
+  // Other holiday destinations to explore
+  const otherHolidayCategories = useMemo(() => {
+    const allowed = ['rajasthan', 'meghalaya', 'bhutan', 'thailand', 'sri-lanka', 'singapore', 'spiti', 'vietnam', 'bali', 'kashmir', 'himachal', 'leh-ladakh']
+    return allowed
+      .filter((id) => id !== currentCategory.id)
+      .slice(0, 4)
+      .map((id) => allCategories.find((c) => c.id === id))
+      .filter((c): c is typeof allCategories[number] => Boolean(c))
+      .map((cat) => {
         const catTrips = combinedTrips.filter(
-        (t) =>
-          t.category.trim().toLowerCase() === cat.name.toLowerCase() ||
-          t.category.trim().toLowerCase() === cat.id
-      )
-      const price = getLowestPriceForTrips(catTrips)
-      const mappingCount = sectionMappings[cat.id]?.available?.length || 0
-      return {
-        id: cat.id,
-        name: cat.name,
-        image: cat.image,
-        price: price > 0 ? price : 15000,
-        tripCount: mappingCount > 0 ? mappingCount : 1,
-      }
-    })
-}, [allCategories, currentCategory.id])
+          (t) =>
+            t.category?.trim().toLowerCase() === cat.name.toLowerCase() ||
+            t.category?.trim().toLowerCase().replace(/\s+/g, '-') === cat.id ||
+            t.destination?.trim().toLowerCase() === cat.name.toLowerCase() ||
+            t.destination?.trim().toLowerCase().replace(/\s+/g, '-') === cat.id ||
+            t.slug?.toLowerCase().includes(cat.id)
+        )
+        const price = getLowestPriceForTrips(catTrips)
+        const mappingCount = sectionMappings[cat.id]?.available?.length || 0
+        return {
+          id: cat.id,
+          name: cat.name,
+          image: cat.image,
+          price: price > 0 ? price : 15000,
+          tripCount: mappingCount > 0 ? mappingCount : catTrips.length || 1,
+        }
+      })
+  }, [allCategories, currentCategory.id, combinedTrips])
 
 // Hero media for this destination
 const heroMedia: TripMediaItem[] = useMemo(() => {
@@ -371,9 +378,9 @@ return (
       <section className="py-14 sm:py-20 bg-slate-950 relative">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* If matching itineraries exist for this destination */}
-          {matchingHolidayTrips.length > 0 ? (
+          {displayedHolidayTrips.length > 0 ? (
             <HolidayTripSlider
-              trips={matchingHolidayTrips}
+              trips={displayedHolidayTrips}
               title={`Holiday Itineraries for ${currentCategory.name}`}
               subtitle={`Curated Christmas & New Year tours for ${currentCategory.name}.`}
               badge={`${currentCategory.name} Special Departures`}

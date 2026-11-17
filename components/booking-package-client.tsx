@@ -10,7 +10,8 @@ import { Input } from '@/components/ui/input'
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import OTPLogin from '@/components/otp-login'
 import { AuthUtils } from '@/lib/auth-utils'
-import { ChevronDown, CreditCard, User, Mail, Phone, Lock } from 'lucide-react'
+import { ChevronDown, CreditCard, User, Mail, Phone, Lock, MessageSquare } from 'lucide-react'
+import { RiWhatsappLine } from 'react-icons/ri'
 import { gtag } from '@/lib/gtag'
 import { RequestCallbackDialog } from '@/components/request-callback-dialog'
 import { CountryCodeSelect } from '@/components/ui/country-code-select'
@@ -25,6 +26,8 @@ export default function BookingPackageClient({ trip, slug }: BookingPackageClien
   const router = useRouter()
   const [showLoginDialog, setShowLoginDialog] = useState(false)
   const [callbackOpen, setCallbackOpen] = useState(false)
+  const [isEnquiring, setIsEnquiring] = useState(false)
+  const [enquirySuccessOpen, setEnquirySuccessOpen] = useState(false)
 
   const [selectedDateIndex, setSelectedDateIndex] = useState(0)
   const [selectedMonth, setSelectedMonth] = useState('All')
@@ -70,6 +73,8 @@ export default function BookingPackageClient({ trip, slug }: BookingPackageClien
   const upcomingBatchDates = getUpcomingBatchDates(trip.batchDates)
   const upcomingDates = getUpcomingTripDates(trip.dates)
 
+  const isGroupTrip = upcomingBatchDates.length > 0 || upcomingDates.length > 0
+
   let bookingDateOptions: BookingDateOption[] = []
 
   if (upcomingBatchDates.length > 0) {
@@ -95,50 +100,93 @@ export default function BookingPackageClient({ trip, slug }: BookingPackageClien
     }))
   }
 
-  // If no fixed future dates are in data, generate upcoming flexible departure options starting from TODAY / current month onwards - NEVER PAST DATES!
-  if (bookingDateOptions.length === 0) {
-    const today = new Date()
-    const currentMonthName = today.toLocaleString('default', { month: 'short' })
-    const nextMonthDate = new Date(today.getFullYear(), today.getMonth() + 1, 1)
-    const nextMonthName = nextMonthDate.toLocaleString('default', { month: 'short' })
-    const monthAfterDate = new Date(today.getFullYear(), today.getMonth() + 2, 1)
-    const monthAfterName = monthAfterDate.toLocaleString('default', { month: 'short' })
-    const formatIso = (d: Date) =>
-      `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+  // Date helper functions
+  const formatIsoDate = (d: Date) =>
+    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 
-    const tripDuration = trip.duration || 7
+  const todayIso = formatIsoDate(new Date())
 
-    bookingDateOptions = [
-      {
-        month: currentMonthName,
-        label: `${currentMonthName} Departures (Flexible / On Request)`,
-        startDate: formatIso(today),
-        endDate: formatIso(new Date(today.getTime() + tripDuration * 86400000)),
-      },
-      {
-        month: nextMonthName,
-        label: `${nextMonthName} Departures (Upcoming Batch / On Request)`,
-        startDate: formatIso(nextMonthDate),
-        endDate: formatIso(new Date(nextMonthDate.getTime() + tripDuration * 86400000)),
-      },
-      {
-        month: monthAfterName,
-        label: `${monthAfterName} Departures (Upcoming Batch / On Request)`,
-        startDate: formatIso(monthAfterDate),
-        endDate: formatIso(new Date(monthAfterDate.getTime() + tripDuration * 86400000)),
-      },
-    ]
+  const defaultDurationDays = trip.duration && trip.duration > 0 ? trip.duration : 7
+  const defaultNights = trip.nights !== undefined ? trip.nights : Math.max(0, defaultDurationDays - 1)
+
+  const getInitialStartDate = () => {
+    const d = new Date()
+    d.setDate(d.getDate() + 1) // default to tomorrow
+    return formatIsoDate(d)
   }
 
-  const monthTabs = [
-    'All',
-    ...Array.from(new Set(bookingDateOptions.map((option) => option.month)))
-  ]
+  const getInitialEndDate = (startIso: string) => {
+    const s = new Date(startIso)
+    if (isNaN(s.getTime())) return startIso
+    const e = new Date(s)
+    e.setDate(e.getDate() + Math.max(1, defaultDurationDays - 1))
+    return formatIsoDate(e)
+  }
 
-  const filteredDates =
-    selectedMonth === 'All'
-      ? bookingDateOptions
-      : bookingDateOptions.filter((option) => option.month === selectedMonth)
+  const [customStartDate, setCustomStartDate] = useState<string>(getInitialStartDate)
+  const [customEndDate, setCustomEndDate] = useState<string>(() => getInitialEndDate(getInitialStartDate()))
+
+  const handleCustomStartDateChange = (newStart: string) => {
+    setCustomStartDate(newStart)
+    if (newStart) {
+      const s = new Date(newStart)
+      if (!isNaN(s.getTime())) {
+        const autoEnd = new Date(s)
+        autoEnd.setDate(autoEnd.getDate() + Math.max(1, defaultDurationDays - 1))
+        setCustomEndDate(formatIsoDate(autoEnd))
+      }
+    }
+  }
+
+  const handleCustomEndDateChange = (newEnd: string) => {
+    setCustomEndDate(newEnd)
+  }
+
+  const formatFriendlyDate = (dateStr?: string) => {
+    if (!dateStr) return ''
+    try {
+      const parts = dateStr.split('-')
+      if (parts.length === 3) {
+        const d = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]))
+        if (!isNaN(d.getTime())) {
+          return d.toLocaleDateString('en-IN', {
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric',
+          })
+        }
+      }
+      return dateStr
+    } catch {
+      return dateStr
+    }
+  }
+
+  const getCustomDuration = () => {
+    if (!customStartDate || !customEndDate) {
+      return { days: defaultDurationDays, nights: defaultNights }
+    }
+    const s = new Date(customStartDate)
+    const e = new Date(customEndDate)
+    if (isNaN(s.getTime()) || isNaN(e.getTime())) {
+      return { days: defaultDurationDays, nights: defaultNights }
+    }
+    const diffDays = Math.max(1, Math.round((e.getTime() - s.getTime()) / (1000 * 60 * 60 * 24)) + 1)
+    const diffNights = Math.max(0, diffDays - 1)
+    return { days: diffDays, nights: diffNights }
+  }
+
+  const currentDuration = getCustomDuration()
+
+  const monthTabs = isGroupTrip
+    ? ['All', ...Array.from(new Set(bookingDateOptions.map((option) => option.month)))]
+    : []
+
+  const filteredDates = isGroupTrip
+    ? (selectedMonth === 'All'
+        ? bookingDateOptions
+        : bookingDateOptions.filter((option) => option.month === selectedMonth))
+    : []
 
   const selectedBookingOption = filteredDates[selectedDateIndex] || filteredDates[0]
 
@@ -150,11 +198,16 @@ export default function BookingPackageClient({ trip, slug }: BookingPackageClien
     }
   }
 
-  const selectedDateValue = selectedBookingOption
-    ? selectedBookingOption.startDate && selectedBookingOption.endDate
-      ? { startDate: selectedBookingOption.startDate, endDate: selectedBookingOption.endDate }
-      : parseBatchRange(selectedBookingOption.label)
-    : { startDate: '', endDate: '' }
+  const selectedDateValue = isGroupTrip
+    ? (selectedBookingOption
+        ? (selectedBookingOption.startDate && selectedBookingOption.endDate
+            ? { startDate: selectedBookingOption.startDate, endDate: selectedBookingOption.endDate }
+            : parseBatchRange(selectedBookingOption.label))
+        : { startDate: '', endDate: '' })
+    : {
+        startDate: customStartDate,
+        endDate: customEndDate,
+      }
 
   const subtotal =
     costingItems.reduce<number>(
@@ -196,6 +249,11 @@ export default function BookingPackageClient({ trip, slug }: BookingPackageClien
       if (el) {
         el.scrollIntoView({ behavior: 'smooth', block: 'center' })
       }
+      return
+    }
+
+    if (!isGroupTrip && (!customStartDate || !customEndDate)) {
+      alert('Please select your travel start and end dates.')
       return
     }
 
@@ -367,6 +425,87 @@ export default function BookingPackageClient({ trip, slug }: BookingPackageClien
     }
   }
 
+  const whatsappUrl = `https://wa.me/919217664099?text=${encodeURIComponent(
+    `Hi Wanderphilia! I want to inquire about customizing "${trip.title}".\n` +
+    (isGroupTrip
+      ? `Batch: ${selectedBookingOption?.label || 'Upcoming'}\n`
+      : `Dates: ${formatFriendlyDate(customStartDate)} to ${formatFriendlyDate(customEndDate)} (${currentDuration.days}D / ${currentDuration.nights}N)\n`) +
+    `Guests: ${costingQuantities.reduce((sum, q) => sum + q, 0) || 1}\n` +
+    `Please share details & custom quote.`
+  )}`
+
+  const handleRequestQuote = async () => {
+    gtag.event({
+      action: 'click',
+      category: 'Enquiry',
+      label: `Request Custom Quote: ${trip.title}`,
+    })
+
+    if (!validateForm()) {
+      const el = document.getElementById('contact-info-section')
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }
+      return
+    }
+
+    if (!isGroupTrip && (!customStartDate || !customEndDate)) {
+      alert('Please select your preferred travel start and end dates.')
+      return
+    }
+
+    setIsEnquiring(true)
+
+    try {
+      const totalGuests = costingQuantities.reduce((sum, q) => sum + q, 0)
+      const selectedPricingOptions = costingItems
+        .map((item, idx) => ({ label: item.label, qty: costingQuantities[idx] }))
+        .filter((opt) => opt.qty > 0)
+        .map((opt) => `${opt.label} (Qty: ${opt.qty})`)
+        .join(', ')
+
+      let sharingType = ''
+      const selectedIndex = costingQuantities.findIndex((q) => q > 0)
+      if (selectedIndex !== -1) {
+        const label = costingItems[selectedIndex].label
+        if (/double/i.test(label)) sharingType = 'Double Sharing'
+        else if (/triple/i.test(label)) sharingType = 'Triple Sharing'
+        else if (/quad/i.test(label)) sharingType = 'Quad Sharing'
+        else if (/single/i.test(label)) sharingType = 'Single Sharing'
+      }
+
+      await fetch('/api/checkout/initiate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fullName,
+          mobileNumber,
+          countryCode,
+          email: emailAddress,
+          tripSlug: slug,
+          tripTitle: trip.title,
+          destination: trip.destination,
+          numberOfGuests: totalGuests || 1,
+          pricingOptions: selectedPricingOptions || 'Customized Quote Request',
+          sharingType: sharingType || 'Flexible',
+          startDate: selectedDateValue.startDate,
+          endDate: selectedDateValue.endDate,
+          subtotal,
+          gst,
+          totalAmount: total,
+          notes: 'Customer requested a tailored customized quote without online payment.',
+        }),
+      })
+
+      setEnquirySuccessOpen(true)
+    } catch (err) {
+      console.error('[Quote Request Error]:', err)
+      alert('Could not submit inquiry at this moment. Please reach out to us via WhatsApp.')
+    } finally {
+      setIsEnquiring(false)
+    }
+  }
+
   const handleLoginSuccess = () => {
     setShowLoginDialog(false)
   }
@@ -379,50 +518,137 @@ export default function BookingPackageClient({ trip, slug }: BookingPackageClien
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-16 grid gap-6 lg:gap-10 lg:grid-cols-[2fr_1fr]">
           {/* LEFT SIDE */}
           <div className="space-y-6">
-            {/* TRIP DETAILS */}
+            {/* TRIP DETAILS & DATE SELECTION */}
             <div className="rounded-3xl bg-white border border-gray-200 shadow-sm p-5 sm:p-6 lg:p-8">
-              <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
-                {trip.title}
-              </h2>
-
-              <div className="mt-6">
-                {/* MONTH FILTER */}
-                <div className="flex flex-wrap gap-2">
-                  {monthTabs.map((month) => (
-                    <button
-                      key={month}
-                      className={`rounded-full px-4 py-2 text-sm transition-colors ${selectedMonth === month
-                        ? 'bg-primary text-white'
-                        : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                        }`}
-                      onClick={() => {
-                        setSelectedMonth(month)
-                        setSelectedDateIndex(0)
-                      }}
-                    >
-                      {month}
-                    </button>
-                  ))}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-100 pb-5">
+                <div>
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-orange-50 text-orange-600 border border-orange-200 mb-2">
+                    {isGroupTrip ? 'Fixed Departure Group Tour' : 'Customized Private Tour'}
+                  </span>
+                  <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
+                    {trip.title}
+                  </h2>
                 </div>
-
-                {/* DATES */}
-                <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {filteredDates.map((date, index) => (
-                    <button
-                      key={index}
-                      className={`rounded-xl border p-4 text-left transition-all ${selectedDateIndex === index
-                        ? 'border-primary ring-2 ring-primary/20 bg-primary/5'
-                        : 'border-slate-200 hover:border-slate-300 bg-white'
-                        }`}
-                      onClick={() => setSelectedDateIndex(index)}
-                    >
-                      <p className="font-semibold text-slate-900">
-                        {date.label}
-                      </p>
-                    </button>
-                  ))}
+                <div className="text-left sm:text-right shrink-0">
+                  <span className="text-xs uppercase tracking-wider text-slate-500 font-semibold block">Duration</span>
+                  <span className="text-sm font-bold text-slate-800">
+                    {trip.duration || 6} Days / {trip.nights || (trip.duration ? trip.duration - 1 : 5)} Nights
+                  </span>
                 </div>
               </div>
+
+              {isGroupTrip ? (
+                /* GROUP TRIP: FIXED BATCH DATES */
+                <div className="mt-6">
+                  <p className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">
+                    Select Departure Batch
+                  </p>
+                  {/* MONTH FILTER */}
+                  <div className="flex flex-wrap gap-2">
+                    {monthTabs.map((month) => (
+                      <button
+                        key={month}
+                        className={`rounded-full px-4 py-2 text-sm font-semibold transition-all cursor-pointer ${
+                          selectedMonth === month
+                            ? 'bg-primary text-white shadow-sm'
+                            : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                        }`}
+                        onClick={() => {
+                          setSelectedMonth(month)
+                          setSelectedDateIndex(0)
+                        }}
+                      >
+                        {month}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* DATES */}
+                  <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {filteredDates.map((date, index) => (
+                      <button
+                        key={index}
+                        className={`rounded-2xl border p-4 text-left transition-all cursor-pointer ${
+                          selectedDateIndex === index
+                            ? 'border-primary ring-2 ring-primary/20 bg-primary/5 shadow-xs'
+                            : 'border-slate-200 hover:border-slate-300 bg-white'
+                        }`}
+                        onClick={() => setSelectedDateIndex(index)}
+                      >
+                        <div className="flex items-center justify-between">
+                          <p className="font-semibold text-slate-900">
+                            {date.label}
+                          </p>
+                          {selectedDateIndex === index && (
+                            <span className="w-5 h-5 rounded-full bg-primary text-white flex items-center justify-center text-xs font-bold shrink-0">
+                              ✓
+                            </span>
+                          )}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                /* CUSTOMIZED TRIP: START & END DATE SELECTOR */
+                <div className="mt-6 space-y-5">
+                  <div className="rounded-2xl bg-gradient-to-r from-orange-50/80 via-amber-50/50 to-orange-50/80 border border-orange-200/80 p-4">
+                    <p className="text-sm font-bold text-orange-900 flex items-center gap-2">
+                      <span className="text-base">✨</span> Choose Your Preferred Travel Dates
+                    </p>
+                    <p className="text-xs text-orange-700 mt-1 leading-relaxed">
+                      This is a customized tour package. Select your travel start and end dates as per your convenience. Our travel specialist will curate your bookings and itinerary for your chosen dates.
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* START DATE */}
+                    <div className="rounded-2xl border border-slate-200 bg-slate-50/60 p-4 hover:border-slate-300 transition-colors">
+                      <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">
+                        Trip Start Date <span className="text-red-500">*</span>
+                      </label>
+                      <Input
+                        type="date"
+                        min={todayIso}
+                        value={customStartDate}
+                        onChange={(e) => handleCustomStartDateChange(e.target.value)}
+                        className="h-12 bg-white rounded-xl border-slate-200 font-medium text-slate-900 focus-visible:ring-primary/20 cursor-pointer"
+                      />
+                      <p className="text-xs text-slate-500 mt-2 font-medium">
+                        Starts: <span className="text-slate-800 font-semibold">{formatFriendlyDate(customStartDate) || 'Select date'}</span>
+                      </p>
+                    </div>
+
+                    {/* END DATE */}
+                    <div className="rounded-2xl border border-slate-200 bg-slate-50/60 p-4 hover:border-slate-300 transition-colors">
+                      <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">
+                        Trip End Date <span className="text-red-500">*</span>
+                      </label>
+                      <Input
+                        type="date"
+                        min={customStartDate || todayIso}
+                        value={customEndDate}
+                        onChange={(e) => handleCustomEndDateChange(e.target.value)}
+                        className="h-12 bg-white rounded-xl border-slate-200 font-medium text-slate-900 focus-visible:ring-primary/20 cursor-pointer"
+                      />
+                      <p className="text-xs text-slate-500 mt-2 font-medium">
+                        Ends: <span className="text-slate-800 font-semibold">{formatFriendlyDate(customEndDate) || 'Select date'}</span>
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* DURATION PILL */}
+                  <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs text-slate-600 font-medium">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                      <span>Selected Duration: <strong className="text-slate-900 font-bold">{currentDuration.days} Days / {currentDuration.nights} Nights</strong></span>
+                    </div>
+                    <span className="text-slate-500">
+                      Standard package is {defaultDurationDays}D / {defaultNights}N
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* PRICING */}
@@ -571,12 +797,28 @@ export default function BookingPackageClient({ trip, slug }: BookingPackageClien
               </div>
 
               <div className="space-y-3 text-sm text-slate-700 mb-6">
-                <div className="flex justify-between">
-                  <span>Batch</span>
-                  <span className="font-medium text-slate-900">
-                    {selectedBookingOption ? selectedBookingOption.label : 'TBA'}
+                <div className="flex justify-between items-start gap-3">
+                  <span className="shrink-0 text-slate-500">
+                    {isGroupTrip ? 'Batch' : 'Travel Dates'}
+                  </span>
+                  <span className="font-semibold text-slate-900 text-right">
+                    {isGroupTrip
+                      ? (selectedBookingOption ? selectedBookingOption.label : 'TBA')
+                      : (customStartDate && customEndDate
+                          ? `${formatFriendlyDate(customStartDate)} – ${formatFriendlyDate(customEndDate)}`
+                          : 'Select dates')
+                    }
                   </span>
                 </div>
+
+                {!isGroupTrip && (
+                  <div className="flex justify-between text-xs">
+                    <span className="text-slate-500">Trip Type</span>
+                    <span className="font-semibold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-md border border-orange-200">
+                      Customized Tour
+                    </span>
+                  </div>
+                )}
 
                 <div className="flex justify-between">
                   <span>Riders selected</span>
@@ -603,45 +845,135 @@ export default function BookingPackageClient({ trip, slug }: BookingPackageClien
                 </div>
               </div>
 
-              <Button
-                size="lg"
-                className="w-full justify-center gap-2 bg-primary hover:bg-primary/90 text-white font-bold h-12 rounded-2xl"
-                onClick={handleProceedToPayment}
-                disabled={subtotal === 0 || isProcessing}
-              >
-                {isProcessing ? (
-                  <>
-                    <span className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2"></span>
-                    Processing...
-                  </>
-                ) : (
-                  <>
-                    <Lock size={16} />
-                    Proceed to Payment
-                  </>
-                )}
-              </Button>
+              <div className="space-y-2.5">
+                <Button
+                  size="lg"
+                  className="w-full justify-center gap-2 bg-gradient-to-r from-orange-600 via-[#ff5d09] to-orange-500 hover:from-orange-500 hover:to-orange-600 text-white font-extrabold h-12 rounded-2xl shadow-md shadow-orange-500/20 cursor-pointer"
+                  onClick={handleProceedToPayment}
+                  disabled={subtotal === 0 || isProcessing}
+                >
+                  {isProcessing ? (
+                    <>
+                      <span className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2"></span>
+                      Processing...
+                    </>
+                  ) : (
+                    <>
+                      <Lock size={16} />
+                      Proceed to Payment
+                    </>
+                  )}
+                </Button>
+
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="lg"
+                  className="w-full justify-center gap-2 border-orange-400 text-orange-600 hover:bg-orange-50 font-bold h-12 rounded-2xl cursor-pointer"
+                  onClick={handleRequestQuote}
+                  disabled={isEnquiring || isProcessing}
+                >
+                  {isEnquiring ? (
+                    <>
+                      <span className="animate-spin rounded-full h-4 w-4 border-2 border-orange-500 border-t-transparent mr-2"></span>
+                      Submitting Enquiry...
+                    </>
+                  ) : (
+                    <>
+                      <MessageSquare size={16} />
+                      Request Custom Quote (No Payment)
+                    </>
+                  )}
+                </Button>
+
+                <a
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full flex items-center justify-center gap-2 h-11 rounded-2xl border border-emerald-300 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-bold text-xs transition-colors"
+                >
+                  <RiWhatsappLine size={16} className="text-emerald-600" />
+                  Customize on WhatsApp
+                </a>
+              </div>
+
+              <div className="mt-4 pt-3 border-t border-dashed border-gray-200 text-center">
+                <p className="text-[11px] text-slate-500 leading-snug">
+                  ✨ Want to tweak hotels, add flights or customize activities? Click <strong>Request Custom Quote</strong> or chat directly with our planner.
+                </p>
+              </div>
             </div>
           </aside>
         </section>
       </main>
 
       {/* MOBILE STICKY BAR */}
-      <div className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 p-4 flex items-center justify-between lg:hidden z-50">
+      <div className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 px-4 py-3 flex items-center justify-between lg:hidden z-50 gap-2 shadow-2xl">
         <div>
-          <p className="text-xs text-gray-500">Total</p>
-          <p className="text-lg font-bold text-slate-900">
+          <p className="text-[10px] text-gray-500 font-medium">Total</p>
+          <p className="text-base font-extrabold text-slate-900 leading-tight">
             ₹{total.toLocaleString('en-IN')}
           </p>
         </div>
-        <Button
-          onClick={handleProceedToPayment}
-          disabled={subtotal === 0 || isProcessing}
-          className="font-bold px-6 h-11 rounded-xl bg-primary text-white"
-        >
-          {isProcessing ? 'Processing...' : 'Pay Now'}
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={handleRequestQuote}
+            disabled={isEnquiring || isProcessing}
+            className="font-bold px-3.5 h-11 rounded-xl border-orange-400 text-orange-600 hover:bg-orange-50 text-xs shrink-0 cursor-pointer"
+          >
+            {isEnquiring ? 'Sending...' : 'Get Quote'}
+          </Button>
+          <Button
+            onClick={handleProceedToPayment}
+            disabled={subtotal === 0 || isProcessing}
+            className="font-bold px-4 h-11 rounded-xl bg-gradient-to-r from-orange-600 to-[#ff5d09] text-white text-xs shrink-0 cursor-pointer"
+          >
+            {isProcessing ? 'Processing...' : 'Pay Now'}
+          </Button>
+        </div>
       </div>
+
+      {/* ENQUIRY CONFIRMATION DIALOG */}
+      <Dialog open={enquirySuccessOpen} onOpenChange={setEnquirySuccessOpen}>
+        <DialogContent className="max-w-md p-6 bg-white rounded-3xl">
+          <div className="text-center space-y-4">
+            <div className="w-14 h-14 mx-auto rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-2xl font-bold">
+              ✓
+            </div>
+            <DialogTitle className="text-xl font-bold text-slate-900">
+              Custom Quote Request Sent!
+            </DialogTitle>
+            <DialogDescription className="text-sm text-slate-600 leading-relaxed">
+              Thank you, <strong className="text-slate-800">{fullName || 'traveler'}</strong>! We have received your query for <strong>{trip.title}</strong>
+              {!isGroupTrip && customStartDate && customEndDate && (
+                <> for <strong>{formatFriendlyDate(customStartDate)} – {formatFriendlyDate(customEndDate)}</strong></>
+              )}.
+              <br /><br />
+              Our destination specialist will connect with you on <strong>{countryCode} {mobileNumber}</strong> within 30 minutes with your customized quote and tailored itinerary.
+            </DialogDescription>
+            <div className="pt-2 flex flex-col gap-2">
+              <a
+                href={whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-[#25D366] text-white font-bold text-sm shadow-md hover:bg-emerald-600 transition"
+              >
+                <RiWhatsappLine size={18} />
+                Chat Now on WhatsApp
+              </a>
+              <Button
+                variant="outline"
+                className="w-full rounded-xl font-semibold"
+                onClick={() => setEnquirySuccessOpen(false)}
+              >
+                Close
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <RequestCallbackDialog
         open={callbackOpen}

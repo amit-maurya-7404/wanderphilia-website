@@ -146,7 +146,7 @@ export function ChristmasHomeBanner() {
 
   // Filter and enrich destinations that have holiday trips
   const destinations = useMemo(() => {
-    const featuredHolidayDestIds = ['rajasthan', 'bhutan', 'thailand', 'sri-lanka']
+    const featuredHolidayDestIds = ['rajasthan', 'bhutan', 'thailand', 'sri-lanka', 'meghalaya', 'singapore']
 
     return allCategories
       .map((cat) => {
@@ -170,6 +170,9 @@ export function ChristmasHomeBanner() {
           cat.id === 'bhutan' ||
           cat.id === 'thailand' ||
           cat.id === 'sri-lanka' ||
+          cat.id === 'singapore' ||
+          cat.id === 'vietnam' ||
+          cat.id === 'bali' ||
           catTrips.some((t) => t.tripType === 'International') ||
           allDestTrips.some((t) => t.tripType === 'International')
 
@@ -200,18 +203,18 @@ export function ChristmasHomeBanner() {
       .sort((a, b) => {
         const priorityOrder = [
           'rajasthan',
-          'bhutan',
-          'thailand',
-          'sri-lanka',
-          'spiti',
           'meghalaya',
-          'vietnam',
-          'singapore',
-          'bali',
+          'spiti',
           'kashmir',
           'himachal',
           'sikkim',
           'leh-ladakh',
+          'bhutan',
+          'thailand',
+          'sri-lanka',
+          'singapore',
+          'vietnam',
+          'bali',
         ]
         const aIdx = priorityOrder.indexOf(a.id)
         const bIdx = priorityOrder.indexOf(b.id)

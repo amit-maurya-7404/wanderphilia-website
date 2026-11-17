@@ -263,10 +263,13 @@ const resolveCategory = (id: string, defaultPrice: number = 15000): CategorySlid
     name: id.charAt(0).toUpperCase() + id.slice(1).replace(/-/g, ' '),
     image: `/images/${id}.jpg`,
   }
-    const categoryTrips = combinedTrips.filter(
+  const categoryTrips = combinedTrips.filter(
     (t) =>
-      t.category.trim().toLowerCase() === cat.name.toLowerCase() ||
-      t.category.trim().toLowerCase() === cat.id
+      t.category?.trim().toLowerCase() === cat.name.toLowerCase() ||
+      t.category?.trim().toLowerCase().replace(/\s+/g, '-') === cat.id ||
+      t.destination?.trim().toLowerCase() === cat.name.toLowerCase() ||
+      t.destination?.trim().toLowerCase().replace(/\s+/g, '-') === cat.id ||
+      t.slug?.toLowerCase().includes(cat.id)
   )
   const price = getLowestPriceForTrips(categoryTrips)
   const mappingCount = sectionMappings[cat.id]?.available?.length || 0
@@ -281,13 +284,13 @@ const resolveCategory = (id: string, defaultPrice: number = 15000): CategorySlid
 
 // 1. New Year in India destinations
 const indiaDestinations: CategorySliderCardProps[] = useMemo(() => {
-  const allowed = ['rajasthan', 'spiti', 'meghalaya', 'kashmir', 'himachal', 'sikkim', 'leh-ladakh']
+  const allowed = ['rajasthan', 'meghalaya', 'spiti', 'kashmir', 'himachal', 'sikkim', 'leh-ladakh']
   return allowed.map((id) => resolveCategory(id, 15000))
 }, [allCategories, combinedTrips])
 
 // 2. International New Year Trips destinations
 const internationalDestinations: CategorySliderCardProps[] = useMemo(() => {
-  const allowed = ['bhutan', 'thailand', 'sri-lanka', 'vietnam', 'singapore', 'bali', 'nepal', 'indonesia', 'japan']
+  const allowed = ['bhutan', 'thailand', 'sri-lanka', 'singapore', 'vietnam', 'bali', 'nepal', 'indonesia', 'japan']
   return allowed.map((id) => resolveCategory(id, 25000))
 }, [allCategories, combinedTrips])
 
