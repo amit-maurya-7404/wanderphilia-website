@@ -288,7 +288,7 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
             {isOnlineBookingEnabled && !isFullyPaid && (
               <button
                 type="button"
-                onClick={() => handleOpenBookModal('token')}
+                onClick={() => handleOpenBookModal(defaultInitialPaymentType)}
                 className="hidden sm:inline-flex items-center gap-1.5 bg-[#6E1E14] hover:bg-[#5C1810] text-white text-[11px] font-black px-3.5 py-1.5 rounded-full shadow-xs transition hover:scale-105 active:scale-95 uppercase tracking-wider cursor-pointer"
               >
                 <Lock className="w-3 h-3 text-amber-300" />
@@ -1636,16 +1636,26 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                   </button>
                 ) : (
                   <div className="flex items-center gap-2">
+                    {isTokenEnabled ? (
+                      <button
+                        type="button"
+                        onClick={() => handleOpenBookModal('token')}
+                        className="hidden sm:inline-flex bg-stone-100 hover:bg-stone-200 text-stone-900 border border-stone-300 font-black text-xs px-3.5 py-2.5 rounded-xl transition cursor-pointer"
+                      >
+                        Pay 10% Token (₹{tenPercentAmount.toLocaleString('en-IN')})
+                      </button>
+                    ) : isAdvanceEnabled ? (
+                      <button
+                        type="button"
+                        onClick={() => handleOpenBookModal('advance')}
+                        className="hidden sm:inline-flex bg-stone-100 hover:bg-stone-200 text-stone-900 border border-stone-300 font-black text-xs px-3.5 py-2.5 rounded-xl transition cursor-pointer"
+                      >
+                        Pay 50% Advance (₹{fiftyPercentAmount.toLocaleString('en-IN')})
+                      </button>
+                    ) : null}
                     <button
                       type="button"
-                      onClick={() => handleOpenBookModal('token')}
-                      className="hidden sm:inline-flex bg-stone-100 hover:bg-stone-200 text-stone-900 border border-stone-300 font-black text-xs px-3.5 py-2.5 rounded-xl transition cursor-pointer"
-                    >
-                      Pay 10% Token (₹{tenPercentAmount.toLocaleString('en-IN')})
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleOpenBookModal('token')}
+                      onClick={() => handleOpenBookModal(defaultInitialPaymentType)}
                       className="bg-gradient-to-r from-[#6E1E14] via-[#8A261A] to-[#6E1E14] hover:from-[#5C1810] hover:to-[#7A2016] text-white font-black text-xs sm:text-sm px-5 sm:px-7 py-2.5 sm:py-3 rounded-xl shadow-lg shadow-[#6E1E14]/30 flex items-center gap-2 cursor-pointer transition hover:scale-105 active:scale-95 uppercase tracking-wider ring-2 ring-amber-400/40"
                     >
                       <Lock className="w-3.5 h-3.5 text-amber-300" />
