@@ -6668,6 +6668,9 @@ export function itineraryDocumentToManualItinerary(itinerary: ItineraryDocument)
       // If created before cutoff (legacy/already sent to clients), strictly false.
       // If created on or after cutoff (fresh itinerary), true.
       return !isCreatedBeforeRollout && docCreatedAt >= FEATURE_ROLLOUT_TIMESTAMP;
-    })()
+    })(),
+    enableTokenPayment: itinerary.enableTokenPayment !== undefined ? Boolean(itinerary.enableTokenPayment) : undefined,
+    enableAdvancePayment: itinerary.enableAdvancePayment !== undefined ? Boolean(itinerary.enableAdvancePayment) : undefined,
+    enableFullPayment: itinerary.enableFullPayment !== undefined ? Boolean(itinerary.enableFullPayment) : undefined
   };
 }

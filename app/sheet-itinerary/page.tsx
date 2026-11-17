@@ -47,6 +47,7 @@ import {
   Image as ImageIcon,
   PenTool,
   Plane,
+  CreditCard,
   FileUp,
   File,
   Building2,
@@ -1629,6 +1630,11 @@ export {
 
 export default function SheetItineraryPage() {
   const [selectedOption, setSelectedOption] = useState<number>(1);
+
+  // Client Payment Options (Default: all 3 enabled)
+  const [enableTokenPayment, setEnableTokenPayment] = useState<boolean>(true);
+  const [enableAdvancePayment, setEnableAdvancePayment] = useState<boolean>(true);
+  const [enableFullPayment, setEnableFullPayment] = useState<boolean>(true);
 
   // Traveler Details (Independent of sheet)
   const [inquiryId, setInquiryId] = useState('');
@@ -5232,6 +5238,9 @@ const handleGenerateItinerary = async () => {
       points: md.sightseeingPoints.filter(p => p && p.trim())
     })) : undefined,
     optionNumber: selectedOption,
+    enableTokenPayment,
+    enableAdvancePayment,
+    enableFullPayment,
     baseQuotationAmount: baseQuotation ? Number(baseQuotation) : undefined,
     marginPercentage: marginPercent ? Number(marginPercent) : undefined,
     finalQuotationAmount: finalQuotation ? Number(finalQuotation) : undefined,
@@ -8875,6 +8884,86 @@ return (
             <p className="text-[11px] text-slate-500 mt-2">
               Options 1 to 8 generate separate unique luxury itinerary links.
             </p>
+
+            {/* PAYMENT OPTIONS SELECTOR (Token, Advance, Full Payment) */}
+            <div className="mt-4 pt-3.5 border-t border-slate-200">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-2">
+                <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                  <CreditCard className="w-3.5 h-3.5 text-orange-600" />
+                  Client Payment Options:
+                </span>
+                <span className="text-[10px] text-slate-500 font-medium">
+                  By default, all 3 are enabled. Uncheck any option (e.g. Token) to hide it from this itinerary.
+                </span>
+              </div>
+              <div className="flex flex-wrap gap-2.5">
+                <label className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-bold cursor-pointer transition-all ${
+                  enableTokenPayment
+                    ? 'bg-amber-50 border-amber-300 text-amber-950 shadow-2xs'
+                    : 'bg-slate-50 border-slate-200 text-slate-400 hover:bg-slate-100'
+                }`}>
+                  <input
+                    type="checkbox"
+                    checked={enableTokenPayment}
+                    onChange={e => {
+                      if (!e.target.checked && !enableAdvancePayment && !enableFullPayment) return;
+                      setEnableTokenPayment(e.target.checked);
+                    }}
+                    className="w-4 h-4 text-orange-600 rounded border-slate-300 focus:ring-orange-500 cursor-pointer"
+                  />
+                  <span>10% Token Payment</span>
+                  <span className={`text-[10px] px-1.5 py-0.5 rounded font-semibold ${
+                    enableTokenPayment ? 'bg-amber-200/80 text-amber-900' : 'bg-slate-200 text-slate-500'
+                  }`}>
+                    Stage 1
+                  </span>
+                </label>
+
+                <label className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-bold cursor-pointer transition-all ${
+                  enableAdvancePayment
+                    ? 'bg-emerald-50 border-emerald-300 text-emerald-950 shadow-2xs'
+                    : 'bg-slate-50 border-slate-200 text-slate-400 hover:bg-slate-100'
+                }`}>
+                  <input
+                    type="checkbox"
+                    checked={enableAdvancePayment}
+                    onChange={e => {
+                      if (!e.target.checked && !enableTokenPayment && !enableFullPayment) return;
+                      setEnableAdvancePayment(e.target.checked);
+                    }}
+                    className="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500 cursor-pointer"
+                  />
+                  <span>50% Advance Payment</span>
+                  <span className={`text-[10px] px-1.5 py-0.5 rounded font-semibold ${
+                    enableAdvancePayment ? 'bg-emerald-200/80 text-emerald-900' : 'bg-slate-200 text-slate-500'
+                  }`}>
+                    Stage 2
+                  </span>
+                </label>
+
+                <label className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-bold cursor-pointer transition-all ${
+                  enableFullPayment
+                    ? 'bg-blue-50 border-blue-300 text-blue-950 shadow-2xs'
+                    : 'bg-slate-50 border-slate-200 text-slate-400 hover:bg-slate-100'
+                }`}>
+                  <input
+                    type="checkbox"
+                    checked={enableFullPayment}
+                    onChange={e => {
+                      if (!e.target.checked && !enableTokenPayment && !enableAdvancePayment) return;
+                      setEnableFullPayment(e.target.checked);
+                    }}
+                    className="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500 cursor-pointer"
+                  />
+                  <span>100% Full Payment</span>
+                  <span className={`text-[10px] px-1.5 py-0.5 rounded font-semibold ${
+                    enableFullPayment ? 'bg-blue-200/80 text-blue-900' : 'bg-slate-200 text-slate-500'
+                  }`}>
+                    One-shot
+                  </span>
+                </label>
+              </div>
+            </div>
           </div>
 
           <div className="shrink-0 self-start md:self-auto flex flex-col items-end gap-1.5">

@@ -151,6 +151,9 @@ export interface ItineraryDocument {
   status: 'active' | 'draft' | 'archived';
   rawZohoData?: Record<string, any>;
   enableOnlineBooking?: boolean;
+  enableTokenPayment?: boolean;
+  enableAdvancePayment?: boolean;
+  enableFullPayment?: boolean;
   createdAt: string | Date;
   updatedAt: string | Date;
 }

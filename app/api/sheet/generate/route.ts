@@ -385,6 +385,9 @@ export async function POST(req: NextRequest) {
       advanceAmountPaid,
       balancePendingAmount,
       enableOnlineBooking: true,
+      enableTokenPayment: rawBody.enableTokenPayment !== undefined ? Boolean(rawBody.enableTokenPayment) : true,
+      enableAdvancePayment: rawBody.enableAdvancePayment !== undefined ? Boolean(rawBody.enableAdvancePayment) : true,
+      enableFullPayment: rawBody.enableFullPayment !== undefined ? Boolean(rawBody.enableFullPayment) : true,
       leadDetails: {
         name: fullName,
         firstName,

@@ -242,12 +242,16 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
   // Disabled for all past itineraries already sent to clients. Only active for new itineraries or when explicitly enabled.
   const isOnlineBookingEnabled = Boolean(itinerary.enableOnlineBooking);
   const isFullPaymentOnly = Boolean(itinerary.fullPaymentOnly);
+  const isTokenEnabled = itinerary.enableTokenPayment !== undefined ? Boolean(itinerary.enableTokenPayment) : (isFullPaymentOnly ? false : true);
+  const isAdvanceEnabled = itinerary.enableAdvancePayment !== undefined ? Boolean(itinerary.enableAdvancePayment) : (isFullPaymentOnly ? false : true);
+  const isFullEnabled = itinerary.enableFullPayment !== undefined ? Boolean(itinerary.enableFullPayment) : true;
 
   // Book Modal state
   const [isBookModalOpen, setIsBookModalOpen] = useState(false);
-  const [selectedPaymentType, setSelectedPaymentType] = useState<ItineraryPaymentType>('token');
+  const defaultInitialPaymentType: ItineraryPaymentType = isTokenEnabled ? 'token' : (isAdvanceEnabled ? 'advance' : 'full');
+  const [selectedPaymentType, setSelectedPaymentType] = useState<ItineraryPaymentType>(defaultInitialPaymentType);
 
-  const handleOpenBookModal = (type: ItineraryPaymentType = 'token') => {
+  const handleOpenBookModal = (type: ItineraryPaymentType = defaultInitialPaymentType) => {
     if (!isOnlineBookingEnabled) return;
     setSelectedPaymentType(type);
     setIsBookModalOpen(true);
@@ -996,9 +1000,10 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                           </div>
                         ) : (
                           <div className="text-[11px] text-white/90 space-y-0.5 pt-0.5 font-semibold">
-                            <div>• 10% Token: ₹{Math.round(grandTotal * 0.10).toLocaleString('en-IN')}/- (Locks proposal)</div>
-                            <div>• 50% Advance: ₹{Math.round(grandTotal * 0.50).toLocaleString('en-IN')}/- (Due in 7 days)</div>
-                            <div>• Final Balance: Due 15 days before travel</div>
+                            {isTokenEnabled && <div>• 10% Token: ₹{Math.round(grandTotal * 0.10).toLocaleString('en-IN')}/- (Locks proposal)</div>}
+                            {isAdvanceEnabled && <div>• 50% Advance: ₹{Math.round(grandTotal * 0.50).toLocaleString('en-IN')}/- (Due in 7 days)</div>}
+                            {isFullEnabled && !isTokenEnabled && !isAdvanceEnabled && <div>• 100% Full Payment: ₹{grandTotal.toLocaleString('en-IN')}/-</div>}
+                            {(isTokenEnabled || isAdvanceEnabled) && <div>• Final Balance: Due 15 days before travel</div>}
                           </div>
                         )}
                       </div>
@@ -1062,9 +1067,10 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                           </div>
                         ) : (
                           <div className="text-[11px] text-white/90 space-y-0.5 pt-0.5 font-semibold">
-                            <div>• 10% Token: ₹{Math.round(grandTotal * 0.10).toLocaleString('en-IN')}/- (Locks dates & proposal)</div>
-                            <div>• 50% Advance: ₹{Math.round(grandTotal * 0.50).toLocaleString('en-IN')}/- (Due in 7 days)</div>
-                            <div>• Final Balance: Due 15 days before departure</div>
+                            {isTokenEnabled && <div>• 10% Token: ₹{Math.round(grandTotal * 0.10).toLocaleString('en-IN')}/- (Locks dates & proposal)</div>}
+                            {isAdvanceEnabled && <div>• 50% Advance: ₹{Math.round(grandTotal * 0.50).toLocaleString('en-IN')}/- (Due in 7 days)</div>}
+                            {isFullEnabled && !isTokenEnabled && !isAdvanceEnabled && <div>• 100% Full Payment: ₹{grandTotal.toLocaleString('en-IN')}/-</div>}
+                            {(isTokenEnabled || isAdvanceEnabled) && <div>• Final Balance: Due 15 days before departure</div>}
                           </div>
                         )}
                       </div>
@@ -1148,94 +1154,106 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                     </div>
 
                     {alreadyPaid <= 0 ? (
-                      /* 3 OPTIONS FOR FRESH BOOKINGS (0% PAID) */
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      /* OPTIONS FOR FRESH BOOKINGS (0% PAID) */
+                      <div className={`grid grid-cols-1 ${
+                        [isTokenEnabled, isAdvanceEnabled, isFullEnabled].filter(Boolean).length === 1
+                          ? 'sm:grid-cols-1 max-w-sm mx-auto'
+                          : [isTokenEnabled, isAdvanceEnabled, isFullEnabled].filter(Boolean).length === 2
+                          ? 'sm:grid-cols-2 max-w-2xl mx-auto'
+                          : 'sm:grid-cols-3'
+                      } gap-3`}>
                         {/* 1. 10% Token Payment */}
-                        <div className="bg-white/95 rounded-xl p-3.5 border-2 border-amber-200/80 shadow-xs flex flex-col justify-between space-y-3 text-stone-900 transition hover:shadow-md hover:border-amber-400">
-                          <div className="space-y-1.5">
-                            <div className="flex items-center justify-between">
-                              <span className="bg-amber-100 text-amber-900 text-[9px] font-black uppercase px-2 py-0.5 rounded-full tracking-wider">
-                                10% Token
-                              </span>
-                              <span className="text-[10px] font-bold text-stone-500">Stage 1</span>
+                        {isTokenEnabled && (
+                          <div className="bg-white/95 rounded-xl p-3.5 border-2 border-amber-200/80 shadow-xs flex flex-col justify-between space-y-3 text-stone-900 transition hover:shadow-md hover:border-amber-400">
+                            <div className="space-y-1.5">
+                              <div className="flex items-center justify-between">
+                                <span className="bg-amber-100 text-amber-900 text-[9px] font-black uppercase px-2 py-0.5 rounded-full tracking-wider">
+                                  10% Token
+                                </span>
+                                <span className="text-[10px] font-bold text-stone-500">Stage 1</span>
+                              </div>
+                              <h5 className="text-xs font-black text-stone-900">Token Amount</h5>
+                              <div className="text-lg sm:text-xl font-black text-[#6E1E14]">
+                                ₹{tenPercentAmount.toLocaleString('en-IN')}/-
+                              </div>
+                              <p className="text-[10px] text-stone-600 leading-tight">
+                                Locks your itinerary proposal, dates & slot reservations. 50% advance payable within 7 days.
+                              </p>
                             </div>
-                            <h5 className="text-xs font-black text-stone-900">Token Amount</h5>
-                            <div className="text-lg sm:text-xl font-black text-[#6E1E14]">
-                              ₹{tenPercentAmount.toLocaleString('en-IN')}/-
-                            </div>
-                            <p className="text-[10px] text-stone-600 leading-tight">
-                              Locks your itinerary proposal, dates & slot reservations. 50% advance payable within 7 days.
-                            </p>
-                          </div>
 
-                          <button
-                            type="button"
-                            onClick={() => handleOpenBookModal('token')}
-                            className="w-full h-9 rounded-lg bg-stone-900 hover:bg-[#6E1E14] text-white text-[11px] font-black uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-sm transition hover:scale-[1.02] active:scale-95 cursor-pointer"
-                          >
-                            <Lock className="w-3 h-3 text-amber-300" />
-                            <span>Pay 10% Token</span>
-                          </button>
-                        </div>
+                            <button
+                              type="button"
+                              onClick={() => handleOpenBookModal('token')}
+                              className="w-full h-9 rounded-lg bg-stone-900 hover:bg-[#6E1E14] text-white text-[11px] font-black uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-sm transition hover:scale-[1.02] active:scale-95 cursor-pointer"
+                            >
+                              <Lock className="w-3 h-3 text-amber-300" />
+                              <span>Pay 10% Token</span>
+                            </button>
+                          </div>
+                        )}
 
                         {/* 2. 50% Advance Payment */}
-                        <div className="bg-white/95 rounded-xl p-3.5 border-2 border-[#6E1E14] shadow-xs flex flex-col justify-between space-y-3 text-stone-900 relative transition hover:shadow-md">
-                          <div className="absolute -top-2.5 right-3 bg-[#6E1E14] text-amber-300 text-[9px] font-black uppercase px-2 py-0.5 rounded-full tracking-wider shadow-xs">
-                            Recommended
-                          </div>
-                          <div className="space-y-1.5">
-                            <div className="flex items-center justify-between">
-                              <span className="bg-emerald-100 text-emerald-900 text-[9px] font-black uppercase px-2 py-0.5 rounded-full tracking-wider">
-                                50% Advance
-                              </span>
-                              <span className="text-[10px] font-bold text-stone-500">Stage 2</span>
+                        {isAdvanceEnabled && (
+                          <div className="bg-white/95 rounded-xl p-3.5 border-2 border-[#6E1E14] shadow-xs flex flex-col justify-between space-y-3 text-stone-900 relative transition hover:shadow-md">
+                            <div className="absolute -top-2.5 right-3 bg-[#6E1E14] text-amber-300 text-[9px] font-black uppercase px-2 py-0.5 rounded-full tracking-wider shadow-xs">
+                              Recommended
                             </div>
-                            <h5 className="text-xs font-black text-stone-900">Advance Amount</h5>
-                            <div className="text-lg sm:text-xl font-black text-[#6E1E14]">
-                              ₹{fiftyPercentAmount.toLocaleString('en-IN')}/-
+                            <div className="space-y-1.5">
+                              <div className="flex items-center justify-between">
+                                <span className="bg-emerald-100 text-emerald-900 text-[9px] font-black uppercase px-2 py-0.5 rounded-full tracking-wider">
+                                  50% Advance
+                                </span>
+                                <span className="text-[10px] font-bold text-stone-500">Stage 2</span>
+                              </div>
+                              <h5 className="text-xs font-black text-stone-900">Advance Amount</h5>
+                              <div className="text-lg sm:text-xl font-black text-[#6E1E14]">
+                                ₹{fiftyPercentAmount.toLocaleString('en-IN')}/-
+                              </div>
+                              <p className="text-[10px] text-stone-600 leading-tight">
+                                Immediately secures hotel rooms & confirms your private chauffeur transport.
+                              </p>
                             </div>
-                            <p className="text-[10px] text-stone-600 leading-tight">
-                              Immediately secures hotel rooms & confirms your private chauffeur transport.
-                            </p>
-                          </div>
 
-                          <button
-                            type="button"
-                            onClick={() => handleOpenBookModal('advance')}
-                            className="w-full h-9 rounded-lg bg-[#6E1E14] hover:bg-[#5C1810] text-white text-[11px] font-black uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-md transition hover:scale-[1.02] active:scale-95 cursor-pointer"
-                          >
-                            <Lock className="w-3 h-3 text-amber-300" />
-                            <span>Pay 50% Advance</span>
-                          </button>
-                        </div>
+                            <button
+                              type="button"
+                              onClick={() => handleOpenBookModal('advance')}
+                              className="w-full h-9 rounded-lg bg-[#6E1E14] hover:bg-[#5C1810] text-white text-[11px] font-black uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-md transition hover:scale-[1.02] active:scale-95 cursor-pointer"
+                            >
+                              <Lock className="w-3 h-3 text-amber-300" />
+                              <span>Pay 50% Advance</span>
+                            </button>
+                          </div>
+                        )}
 
                         {/* 3. 100% Full Payment */}
-                        <div className="bg-white/95 rounded-xl p-3.5 border-2 border-stone-300 shadow-xs flex flex-col justify-between space-y-3 text-stone-900 transition hover:shadow-md hover:border-stone-400">
-                          <div className="space-y-1.5">
-                            <div className="flex items-center justify-between">
-                              <span className="bg-stone-200 text-stone-900 text-[9px] font-black uppercase px-2 py-0.5 rounded-full tracking-wider">
-                                100% Full
-                              </span>
-                              <span className="text-[10px] font-bold text-stone-500">One-Shot</span>
+                        {isFullEnabled && (
+                          <div className="bg-white/95 rounded-xl p-3.5 border-2 border-stone-300 shadow-xs flex flex-col justify-between space-y-3 text-stone-900 transition hover:shadow-md hover:border-stone-400">
+                            <div className="space-y-1.5">
+                              <div className="flex items-center justify-between">
+                                <span className="bg-stone-200 text-stone-900 text-[9px] font-black uppercase px-2 py-0.5 rounded-full tracking-wider">
+                                  100% Full
+                                </span>
+                                <span className="text-[10px] font-bold text-stone-500">One-Shot</span>
+                              </div>
+                              <h5 className="text-xs font-black text-stone-900">Full Payment</h5>
+                              <div className="text-lg sm:text-xl font-black text-stone-900">
+                                ₹{totalQuotationAmount.toLocaleString('en-IN')}/-
+                              </div>
+                              <p className="text-[10px] text-stone-600 leading-tight">
+                                Clears 100% tour quotation upfront. Get priority voucher release.
+                              </p>
                             </div>
-                            <h5 className="text-xs font-black text-stone-900">Full Payment</h5>
-                            <div className="text-lg sm:text-xl font-black text-stone-900">
-                              ₹{totalQuotationAmount.toLocaleString('en-IN')}/-
-                            </div>
-                            <p className="text-[10px] text-stone-600 leading-tight">
-                              Clears 100% tour quotation upfront. Get priority voucher release.
-                            </p>
-                          </div>
 
-                          <button
-                            type="button"
-                            onClick={() => handleOpenBookModal('full')}
-                            className="w-full h-9 rounded-lg bg-stone-800 hover:bg-stone-950 text-white text-[11px] font-black uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-sm transition hover:scale-[1.02] active:scale-95 cursor-pointer"
-                          >
-                            <Lock className="w-3 h-3 text-amber-300" />
-                            <span>Pay Full Amount</span>
-                          </button>
-                        </div>
+                            <button
+                              type="button"
+                              onClick={() => handleOpenBookModal('full')}
+                              className="w-full h-9 rounded-lg bg-stone-800 hover:bg-stone-950 text-white text-[11px] font-black uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-sm transition hover:scale-[1.02] active:scale-95 cursor-pointer"
+                            >
+                              <Lock className="w-3 h-3 text-amber-300" />
+                              <span>Pay Full Amount</span>
+                            </button>
+                          </div>
+                        )}
                       </div>
                     ) : isTokenPaid ? (
                       /* TOKEN PAID: OFFER ADVANCE UPGRADE OR REMAINING BALANCE */
@@ -1668,6 +1686,9 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
             numNights={numNights}
             travelStartDate={travelStartDate}
             travelEndDate={travelEndDate}
+            enableTokenPayment={isTokenEnabled}
+            enableAdvancePayment={isAdvanceEnabled}
+            enableFullPayment={isFullEnabled}
           />
         </>
       )}

@@ -63,6 +63,9 @@ interface ItineraryBookModalProps {
   numNights?: number;
   travelStartDate?: string;
   travelEndDate?: string;
+  enableTokenPayment?: boolean;
+  enableAdvancePayment?: boolean;
+  enableFullPayment?: boolean;
   onPaymentSuccess?: (data: any) => void;
 }
 
@@ -94,9 +97,16 @@ export function ItineraryBookModal({
   numNights = 14,
   travelStartDate,
   travelEndDate,
+  enableTokenPayment,
+  enableAdvancePayment,
+  enableFullPayment,
   onPaymentSuccess,
 }: ItineraryBookModalProps) {
   const router = useRouter();
+
+  const isTokenAllowed = enableTokenPayment !== false;
+  const isAdvanceAllowed = enableAdvancePayment !== false;
+  const isFullAllowed = enableFullPayment !== false;
 
   // Indian trips have 0% TCS. International trips have GST + TCS.
   const isIntl = isInternationalTrip(destination, '');
@@ -113,8 +123,20 @@ export function ItineraryBookModal({
 
   // Compute default payment type based on current paid stage
   const getDefaultPaymentType = (): ItineraryPaymentType => {
-    if (initialPaymentType) return initialPaymentType;
-    if (alreadyPaid <= 0) return 'token'; // Default to 10% Token
+    if (initialPaymentType) {
+      if (initialPaymentType === 'token' && !isTokenAllowed) {
+        return isAdvanceAllowed ? 'advance' : 'full';
+      }
+      if (initialPaymentType === 'advance' && !isAdvanceAllowed) {
+        return isTokenAllowed ? 'token' : 'full';
+      }
+      return initialPaymentType;
+    }
+    if (alreadyPaid <= 0) {
+      if (isTokenAllowed) return 'token';
+      if (isAdvanceAllowed) return 'advance';
+      return 'full';
+    }
     if (alreadyPaid > 0 && alreadyPaid < fiftyPercentAmount) return 'remaining_advance';
     return 'remaining_balance';
   };
@@ -663,18 +685,25 @@ export function ItineraryBookModal({
                   <CreditCard className="w-3.5 h-3.5" /> Select Payment Option:
                 </label>
 
-                {/* CASE 1: 0% PAID (FRESH LINK) -> 3 OPTIONS */}
+                {/* CASE 1: 0% PAID (FRESH LINK) -> OPTIONS */}
                 {alreadyPaid <= 0 && (
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                  <div className={`grid grid-cols-1 ${
+                    [isTokenAllowed, isAdvanceAllowed, isFullAllowed].filter(Boolean).length === 1
+                      ? 'sm:grid-cols-1 max-w-xs'
+                      : [isTokenAllowed, isAdvanceAllowed, isFullAllowed].filter(Boolean).length === 2
+                      ? 'sm:grid-cols-2'
+                      : 'sm:grid-cols-3'
+                  } gap-2.5`}>
 
                     {/* OPTION 1: 10% TOKEN AMOUNT */}
-                    <div
-                      onClick={() => setPaymentType('token')}
-                      className={`p-3 rounded-xl border-2 transition-all cursor-pointer relative flex flex-col justify-between ${paymentType === 'token'
-                        ? 'border-[#6E1E14] bg-white shadow-md ring-2 ring-[#6E1E14]/20'
-                        : 'border-stone-200 bg-white/70 hover:border-stone-300 hover:bg-white'
-                        }`}
-                    >
+                    {isTokenAllowed && (
+                      <div
+                        onClick={() => setPaymentType('token')}
+                        className={`p-3 rounded-xl border-2 transition-all cursor-pointer relative flex flex-col justify-between ${paymentType === 'token'
+                          ? 'border-[#6E1E14] bg-white shadow-md ring-2 ring-[#6E1E14]/20'
+                          : 'border-stone-200 bg-white/70 hover:border-stone-300 hover:bg-white'
+                          }`}
+                      >
                       <div className="flex items-start justify-between gap-1.5">
                         <span className="bg-amber-100 text-amber-900 text-[9px] font-black px-1.5 py-0.5 rounded uppercase tracking-wider">
                           10% Token
@@ -697,68 +726,73 @@ export function ItineraryBookModal({
                         </p>
                       </div>
                     </div>
+                    )}
 
                     {/* OPTION 2: 50% ADVANCE AMOUNT */}
-                    <div
-                      onClick={() => setPaymentType('advance')}
-                      className={`p-3 rounded-xl border-2 transition-all cursor-pointer relative flex flex-col justify-between ${paymentType === 'advance'
-                        ? 'border-[#6E1E14] bg-white shadow-md ring-2 ring-[#6E1E14]/20'
-                        : 'border-stone-200 bg-white/70 hover:border-stone-300 hover:bg-white'
-                        }`}
-                    >
-                      <div className="flex items-start justify-between gap-1.5">
-                        <span className="bg-amber-400 text-stone-950 text-[9px] font-black px-1.5 py-0.5 rounded uppercase tracking-wider">
-                          Recommended
-                        </span>
-                        <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 ${paymentType === 'advance' ? 'border-[#6E1E14] bg-[#6E1E14]' : 'border-stone-300'
-                          }`}>
-                          {paymentType === 'advance' && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                    {isAdvanceAllowed && (
+                      <div
+                        onClick={() => setPaymentType('advance')}
+                        className={`p-3 rounded-xl border-2 transition-all cursor-pointer relative flex flex-col justify-between ${paymentType === 'advance'
+                          ? 'border-[#6E1E14] bg-white shadow-md ring-2 ring-[#6E1E14]/20'
+                          : 'border-stone-200 bg-white/70 hover:border-stone-300 hover:bg-white'
+                          }`}
+                      >
+                        <div className="flex items-start justify-between gap-1.5">
+                          <span className="bg-amber-400 text-stone-950 text-[9px] font-black px-1.5 py-0.5 rounded uppercase tracking-wider">
+                            Recommended
+                          </span>
+                          <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 ${paymentType === 'advance' ? 'border-[#6E1E14] bg-[#6E1E14]' : 'border-stone-300'
+                            }`}>
+                            {paymentType === 'advance' && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                          </div>
                         </div>
-                      </div>
 
-                      <div className="pt-2">
-                        <h4 className="text-xs font-black text-stone-900">
-                          50% Advance
-                        </h4>
-                        <div className="text-base sm:text-lg font-black text-[#6E1E14] pt-0.5">
-                          ₹{fiftyPercentAmount.toLocaleString('en-IN')}
+                        <div className="pt-2">
+                          <h4 className="text-xs font-black text-stone-900">
+                            50% Advance
+                          </h4>
+                          <div className="text-base sm:text-lg font-black text-[#6E1E14] pt-0.5">
+                            ₹{fiftyPercentAmount.toLocaleString('en-IN')}
+                          </div>
+                          <p className="text-[10px] text-stone-500 leading-tight pt-0.5">
+                            Locks hotel stays, activities & transfers. Balance due 15 days before departure.
+                          </p>
                         </div>
-                        <p className="text-[10px] text-stone-500 leading-tight pt-0.5">
-                          Locks hotel stays, activities & transfers. Balance due 15 days before departure.
-                        </p>
                       </div>
-                    </div>
+                    )}
 
                     {/* OPTION 3: FULL 100% PAYMENT */}
-                    <div
-                      onClick={() => setPaymentType('full')}
-                      className={`p-3 rounded-xl border-2 transition-all cursor-pointer relative flex flex-col justify-between ${paymentType === 'full'
-                        ? 'border-[#6E1E14] bg-white shadow-md ring-2 ring-[#6E1E14]/20'
-                        : 'border-stone-200 bg-white/70 hover:border-stone-300 hover:bg-white'
-                        }`}
-                    >
-                      <div className="flex items-start justify-between gap-1.5">
-                        <span className="bg-emerald-100 text-emerald-900 text-[9px] font-black px-1.5 py-0.5 rounded uppercase tracking-wider">
-                          100% Cleared
-                        </span>
-                        <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 ${paymentType === 'full' ? 'border-[#6E1E14] bg-[#6E1E14]' : 'border-stone-300'
-                          }`}>
-                          {paymentType === 'full' && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                    {isFullAllowed && (
+                      <div
+                        onClick={() => setPaymentType('full')}
+                        className={`p-3 rounded-xl border-2 transition-all cursor-pointer relative flex flex-col justify-between ${paymentType === 'full'
+                          ? 'border-[#6E1E14] bg-white shadow-md ring-2 ring-[#6E1E14]/20'
+                          : 'border-stone-200 bg-white/70 hover:border-stone-300 hover:bg-white'
+                          }`}
+                      >
+                        <div className="flex items-start justify-between gap-1.5">
+                          <span className="bg-emerald-100 text-emerald-900 text-[9px] font-black px-1.5 py-0.5 rounded uppercase tracking-wider">
+                            100% Cleared
+                          </span>
+                          <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 ${paymentType === 'full' ? 'border-[#6E1E14] bg-[#6E1E14]' : 'border-stone-300'
+                            }`}>
+                            {paymentType === 'full' && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                          </div>
                         </div>
-                      </div>
 
-                      <div className="pt-2">
-                        <h4 className="text-xs font-black text-stone-900">
-                          Full Payment
-                        </h4>
-                        <div className="text-base sm:text-lg font-black text-stone-900 pt-0.5">
-                          ₹{totalQuotationAmount.toLocaleString('en-IN')}
+                        <div className="pt-2">
+                          <h4 className="text-xs font-black text-stone-900">
+                            Full Payment
+                          </h4>
+                          <div className="text-base sm:text-lg font-black text-stone-900 pt-0.5">
+                            ₹{totalQuotationAmount.toLocaleString('en-IN')}
+                          </div>
+                          <p className="text-[10px] text-stone-500 leading-tight pt-0.5">
+                            Zero pending dues, instant confirmed booking.
+                          </p>
                         </div>
-                        <p className="text-[10px] text-stone-500 leading-tight pt-0.5">
-                          Zero pending dues, instant confirmed booking.
-                        </p>
                       </div>
-                    </div>
+                    )}
 
                   </div>
                 )}

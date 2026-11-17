@@ -177,5 +177,8 @@ export interface ManualItinerary {
   inquiryId?: string;
   enableOnlineBooking?: boolean;
   fullPaymentOnly?: boolean;
+  enableTokenPayment?: boolean;
+  enableAdvancePayment?: boolean;
+  enableFullPayment?: boolean;
 }
 
