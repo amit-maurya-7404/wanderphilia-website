@@ -74,9 +74,13 @@ export async function GET(req: NextRequest) {
     for (const doc of docs) {
       let optNum = doc.optionNumber;
       if (!optNum) {
-        if (doc.slug?.includes('-2-') || doc.id?.includes('-2-')) optNum = 2;
-        else if (doc.slug?.includes('-3-') || doc.id?.includes('-3-')) optNum = 3;
-        else optNum = 1;
+        const slugOrId = doc.slug || doc.id || '';
+        const match = slugOrId.match(/-([1-8])-[a-z0-9]+$/i) || slugOrId.match(/-([1-8])-/);
+        if (match) {
+          optNum = parseInt(match[1], 10);
+        } else {
+          optNum = 1;
+        }
       }
       optNum = Number(optNum) || 1;
 

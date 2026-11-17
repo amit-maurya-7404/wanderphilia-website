@@ -3306,7 +3306,7 @@ const checkExistingItineraryOptions = async (targetInquiryId: string, targetLead
         // If currently selected option is already generated, auto-switch to next available
         setSelectedOption(prev => {
           if (existingNums.includes(prev)) {
-            const nextAvailable = [1, 2, 3].find(n => !existingNums.includes(n));
+            const nextAvailable = [1, 2, 3, 4, 5, 6, 7, 8].find(n => !existingNums.includes(n));
             return nextAvailable || prev;
           }
           return prev;
@@ -5680,8 +5680,8 @@ return (
                 Already generated options are locked below to avoid accidental overwrite.
               </span>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
-              {[1, 2, 3].map(optNum => {
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2.5">
+              {[1, 2, 3, 4, 5, 6, 7, 8].map(optNum => {
                 const exist = existingOptions[optNum];
                 if (!exist) {
                   return (
@@ -8747,7 +8747,7 @@ return (
 
             {/* Option Selector Buttons */}
             <div className="flex flex-wrap items-center gap-2 bg-slate-100 p-1.5 rounded-xl border border-slate-300 inline-flex">
-              {[1, 2, 3].map(optNum => {
+              {[1, 2, 3, 4, 5, 6, 7, 8].map(optNum => {
                 const existing = existingOptions[optNum];
                 const isLocked = Boolean(existing && !unlockedOptions[optNum]);
                 const isSelected = selectedOption === optNum;
@@ -8812,7 +8812,7 @@ return (
                   Existing Generated Links for this Lead:
                 </span>
                 <div className="flex flex-col sm:flex-row flex-wrap gap-2">
-                  {[1, 2, 3].map(optNum => {
+                  {[1, 2, 3, 4, 5, 6, 7, 8].map(optNum => {
                     const exist = existingOptions[optNum];
                     if (!exist) return null;
                     const isUnlocked = Boolean(unlockedOptions[optNum]);
@@ -8873,7 +8873,7 @@ return (
             )}
 
             <p className="text-[11px] text-slate-500 mt-2">
-              Option 1, 2, and 3 generate separate luxury itinerary links.
+              Options 1 to 8 generate separate unique luxury itinerary links.
             </p>
           </div>
 

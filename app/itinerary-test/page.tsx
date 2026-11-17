@@ -84,7 +84,7 @@ export default function ItineraryTestPage() {
         const createdNums = optionsList.map((o: any) => o.optionNumber);
 
         // Auto-select first available option
-        const nextAvailable = [1, 2, 3].find(num => !createdNums.includes(num));
+        const nextAvailable = [1, 2, 3, 4, 5, 6, 7, 8].find(num => !createdNums.includes(num));
         if (nextAvailable) {
           setSelectedOptionNumber(nextAvailable);
         }
@@ -516,8 +516,8 @@ export default function ItineraryTestPage() {
               </span>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              {[1, 2, 3].map((optNum) => {
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {[1, 2, 3, 4, 5, 6, 7, 8].map((optNum) => {
                 const existing = existingOptions.find(o => o.optionNumber === optNum);
                 const isCreated = Boolean(existing);
                 const isSelected = selectedOptionNumber === optNum;
