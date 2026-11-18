@@ -5480,7 +5480,7 @@ export const thailandDimpleManualItinerary: ManualItinerary = {
   tripType: 'Customised Private Holiday',
   leadName: 'Ms. Dimple',
   vehicleType: 'Private SUV (1-SUV for All Sightseeing, Airport & Inter-City Transfers)',
-  mealPlan: 'Daily Breakfast at Hotels + Chao Phraya Princess Indian Dinner Cruise + Hong Island Picnic Lunch',
+  mealPlan: 'Self-Booked (Chao Phraya Dinner Cruise & Hong Island Lunch Included)',
   heroImage: 'https://images.unsplash.com/photo-1508009603885-50cf7c579365?auto=format&fit=crop&w=1600&q=85',
   galleryImages: [
     'https://images.unsplash.com/photo-1508009603885-50cf7c579365?auto=format&fit=crop&w=1200&q=80',
@@ -5491,9 +5491,9 @@ export const thailandDimpleManualItinerary: ManualItinerary = {
     'https://images.unsplash.com/photo-1537956965359-7573183d1f57?auto=format&fit=crop&w=1200&q=80'
   ],
   accommodations: [
-    { city: 'Bangkok', nights: 2, hotelName: 'Handpicked Deluxe Hotel (Bangkok City Center)', roomCategory: '02 Double Sharing Rooms with Breakfast' },
-    { city: 'Krabi', nights: 2, hotelName: 'Handpicked Tropical Beach Resort (Ao Nang / Krabi)', roomCategory: '02 Double Sharing Rooms with Breakfast' },
-    { city: 'Phuket', nights: 2, hotelName: 'Handpicked Luxury Resort (Patong / Phuket)', roomCategory: '02 Double Sharing Rooms with Breakfast' }
+    { city: 'Bangkok', nights: 2, hotelName: 'Self-Booked', roomCategory: 'Self-Booked' },
+    { city: 'Krabi', nights: 2, hotelName: 'Self-Booked', roomCategory: 'Self-Booked' },
+    { city: 'Phuket', nights: 2, hotelName: 'Self-Booked', roomCategory: 'Self-Booked' }
   ],
   dayPlans: [
     {
@@ -5523,7 +5523,7 @@ export const thailandDimpleManualItinerary: ManualItinerary = {
           ]
         }
       ],
-      stayLocation: 'Bangkok',
+      stayLocation: 'Bangkok (Self-Booked)',
       image: 'https://images.unsplash.com/photo-1508009603885-50cf7c579365?auto=format&fit=crop&w=1200&q=80',
       meals: 'Dinner on Cruise'
     },
@@ -5554,7 +5554,7 @@ export const thailandDimpleManualItinerary: ManualItinerary = {
           ]
         }
       ],
-      stayLocation: 'Bangkok',
+      stayLocation: 'Bangkok (Self-Booked)',
       image: 'https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&w=1200&q=80',
       meals: 'Breakfast'
     },
@@ -5575,7 +5575,7 @@ export const thailandDimpleManualItinerary: ManualItinerary = {
         'Afternoon & evening at leisure to explore Ao Nang Beach, vibrant night street markets, and seaside cafés',
         'Overnight stay in Krabi [1N]'
       ],
-      stayLocation: 'Krabi',
+      stayLocation: 'Krabi (Self-Booked)',
       image: 'https://images.unsplash.com/photo-1528181304800-259b08848526?auto=format&fit=crop&w=1200&q=80',
       meals: 'Breakfast'
     },
@@ -5608,7 +5608,7 @@ export const thailandDimpleManualItinerary: ManualItinerary = {
           ]
         }
       ],
-      stayLocation: 'Krabi',
+      stayLocation: 'Krabi (Self-Booked)',
       image: 'https://images.unsplash.com/photo-1506665531195-3566af2b4dfa?auto=format&fit=crop&w=1200&q=80',
       meals: 'Breakfast & Island Lunch'
     },
@@ -5639,7 +5639,7 @@ export const thailandDimpleManualItinerary: ManualItinerary = {
           ]
         }
       ],
-      stayLocation: 'Phuket',
+      stayLocation: 'Phuket (Self-Booked)',
       image: 'https://images.unsplash.com/photo-1589394815804-964ed0be2eb5?auto=format&fit=crop&w=1200&q=80',
       meals: 'Breakfast'
     },
@@ -5670,7 +5670,7 @@ export const thailandDimpleManualItinerary: ManualItinerary = {
           ]
         }
       ],
-      stayLocation: 'Phuket',
+      stayLocation: 'Phuket (Self-Booked)',
       image: 'https://images.unsplash.com/photo-1537956965359-7573183d1f57?auto=format&fit=crop&w=1200&q=80',
       meals: 'Breakfast'
     },
@@ -5696,9 +5696,7 @@ export const thailandDimpleManualItinerary: ManualItinerary = {
     }
   ],
   inclusions: [
-    '6 Nights Accommodation in handpicked 4-Star/Deluxe Hotels on Double Sharing (02 Rooms for 4 Adults)',
-    '2 Nights Bangkok + 2 Nights Krabi + 2 Nights Phuket',
-    'Daily Breakfast at all hotels',
+    'Hotels / Accommodations: Self-Booked',
     'Chao Phraya Princess River Dinner Cruise with Indian Buffet & Live Entertainment in Bangkok (4 Adults)',
     'Bangkok City & Temple Tour (Wat Traimit Golden Buddha & Mini Reclining Buddha tickets included for 4 Adults)',
     'King Power Mahanakhon SkyWalk Sunset 78th-Floor Glass Tray Observation Deck tickets (4 Adults)',
@@ -5711,7 +5709,8 @@ export const thailandDimpleManualItinerary: ManualItinerary = {
     'On-ground 24x7 Wanderphilia customer support throughout the trip'
   ],
   exclusions: [
-    'Flights (quoted separately as detailed in flight schedule)',
+    'Hotels / Resort Accommodations (Self-Booked)',
+    'Flights (Self-Booked - Details shown for travel schedule reference)',
     'National Park Fee for Hong Island Tour (payable directly on spot if applicable)',
     'Personal expenses, tips, porterage, telephone calls, laundry, room mini-bar',
     'Lunches and Dinners not specifically mentioned in the itinerary inclusions',
@@ -5807,7 +5806,7 @@ export const thailandDimpleManualItinerary: ManualItinerary = {
   tcsPercentage: 2,
   tcsAmount: 2837,
   finalQuotationAmount: 151765,
-  childPricingNote: '₹35,459/- per adult for 4 Adults (Total Base: ₹1,41,836/- + 5% GST: ₹7,092/- + 2% TCS: ₹2,837/- = ₹1,51,765/- Total for 4 Guests in 02 Rooms on Double Sharing Basis with Transfers, Activities, Sightseeing & Flights).',
+  childPricingNote: '₹35,459/- per adult for 4 Adults (Total Base: ₹1,41,836/- + 5% GST: ₹7,092/- + 2% TCS: ₹2,837/- = ₹1,51,765/- Total for 4 Guests with Private Transfers, Activities & Sightseeing. Note: Accommodations & Flights are Self-Booked).',
   enableOnlineBooking: true,
   enableTokenPayment: true,
   enableAdvancePayment: true,
