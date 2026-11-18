@@ -48,6 +48,26 @@ const nextConfig = {
         destination: '/itinerary/srilanka-shravya',
         permanent: false,
       },
+      {
+        source: '/thailand-dimple',
+        destination: '/itinerary/thailand-dimple',
+        permanent: false,
+      },
+      {
+        source: '/Thailand-dimple',
+        destination: '/itinerary/thailand-dimple',
+        permanent: false,
+      },
+      {
+        source: '/trips/thailand-dimple',
+        destination: '/itinerary/thailand-dimple',
+        permanent: false,
+      },
+      {
+        source: '/trips/Thailand-dimple',
+        destination: '/itinerary/thailand-dimple',
+        permanent: false,
+      },
     ]
   },
 }

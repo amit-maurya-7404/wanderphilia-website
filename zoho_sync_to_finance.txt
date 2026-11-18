@@ -1,0 +1,141 @@
+void automation.sync_operations_to_finance_1(String opsId)
+{
+	opsIdStr = opsId.toString();
+	
+	// 1. Fetch current Operations record
+	ops = zoho.crm.getRecordById("Operations", opsIdStr.toLong());
+	if(ops == null || ops.isEmpty())
+	{
+		ops = zoho.crm.getRecordById("CustomModule11", opsIdStr.toLong());
+	}
+	
+	if(ops == null || ops.isEmpty())
+	{
+		info "Operations record not found for ID: " + opsIdStr;
+		return;
+	}
+	
+	bId = ops.get("Booking_Id");
+	if(bId == null || bId == "")
+	{
+		info "No Booking_Id linked to this Operations record.";
+		return;
+	}
+	
+	bIdStr = bId.toString();
+	
+	// 2. Prepare Finance Data Map
+	finData = Map();
+	
+	// Copy Hotel 1 to 6 Details & Costs
+	if(ops.get("Hotel_1") != null)
+	{
+		h1 = ops.get("Hotel_1");
+		finData.put("Hotel_Name", ifnull(h1.get("id"), h1));
+	}
+	if(ops.get("Hotel_1_Cost") != null)
+	{
+		finData.put("Total_Hotel_Cost", ops.get("Hotel_1_Cost").toDecimal());
+	}
+	
+	if(ops.get("Hotel_2") != null)
+	{
+		h2 = ops.get("Hotel_2");
+		finData.put("Hotel_2_Name", ifnull(h2.get("id"), h2));
+	}
+	if(ops.get("Hotel_2_Cost") != null)
+	{
+		finData.put("Total_Hotel_2_Cost", ops.get("Hotel_2_Cost").toDecimal());
+	}
+	
+	if(ops.get("Hotel_3") != null)
+	{
+		h3 = ops.get("Hotel_3");
+		finData.put("Hotel_3_Name", ifnull(h3.get("id"), h3));
+	}
+	if(ops.get("Hotel_3_Cost") != null)
+	{
+		finData.put("Total_Hotel_3_Cost", ops.get("Hotel_3_Cost").toDecimal());
+	}
+	
+	if(ops.get("Hotel_4") != null)
+	{
+		h4 = ops.get("Hotel_4");
+		finData.put("Hotel_4_Name", ifnull(h4.get("id"), h4));
+	}
+	if(ops.get("Hotel_4_Cost") != null)
+	{
+		finData.put("Total_Hotel_4_Cost", ops.get("Hotel_4_Cost").toDecimal());
+	}
+	
+	if(ops.get("Hotel_5") != null)
+	{
+		h5 = ops.get("Hotel_5");
+		finData.put("Hotel_5_Name", ifnull(h5.get("id"), h5));
+	}
+	if(ops.get("Hotel_5_Cost") != null)
+	{
+		finData.put("Total_Hotel_5_Cost", ops.get("Hotel_5_Cost").toDecimal());
+	}
+	
+	if(ops.get("Hotel_6") != null)
+	{
+		h6 = ops.get("Hotel_6");
+		finData.put("Hotel_6_Name", ifnull(h6.get("id"), h6));
+	}
+	if(ops.get("Hotel_6_Cost") != null)
+	{
+		finData.put("Total_Hotel_6_Cost", ops.get("Hotel_6_Cost").toDecimal());
+	}
+	
+	// Copy Vehicle & Vendor Lookups & Transport Cost
+	if(ops.get("Vehicle_Type") != null)
+	{
+		veh = ops.get("Vehicle_Type");
+		finData.put("Vehicle_Name", ifnull(veh.get("id"), veh));
+	}
+	if(ops.get("Vendor_Name") != null)
+	{
+		ven = ops.get("Vendor_Name");
+		finData.put("Vendor_Name", ifnull(ven.get("id"), ven));
+	}
+	if(ops.get("Vehicle_Cost") != null)
+	{
+		finData.put("Total_Transport_Cost", ops.get("Vehicle_Cost").toDecimal());
+	}
+	
+	// 3. Find if Finance Record already exists for this Booking_ID
+	finRecords = zoho.crm.searchRecords("Finance", "(Booking_ID:equals:" + bIdStr + ")");
+	if(finRecords != null && finRecords.size() > 0)
+	{
+		finId = finRecords.get(0).get("id");
+		finRes = zoho.crm.updateRecord("Finance", finId.toLong(), finData);
+		info "FINANCE_RECORD_UPDATED: " + finRes;
+	}
+	else
+	{
+		// 4. CREATE NEW FINANCE RECORD: Fetch Deal to get client pricing
+		dealRec = zoho.crm.getRecordById("Deals", bIdStr.toLong());
+		if(dealRec != null && !dealRec.isEmpty())
+		{
+			finData.put("Name", ifnull(dealRec.get("Deal_Name"), ops.get("Name")));
+			finData.put("Booking_ID", bIdStr);
+			finData.put("Email", ifnull(dealRec.get("Email"), ops.get("Email")));
+			finData.put("Total_Receivable_Amount", ifnull(dealRec.get("Amount"), 0.0).toDecimal());
+			finData.put("Total_Amount_Received", ifnull(dealRec.get("Adv_Amount"), 0.0).toDecimal());
+			finData.put("Balance_Receivable", ifnull(dealRec.get("Pending_Balance_Amount"), 0.0).toDecimal());
+			finData.put("Payment_Status", ifnull(dealRec.get("Payment_Status"), "Advance Paid"));
+			finData.put("Status", "Pending");
+		}
+		else
+		{
+			finData.put("Name", ifnull(ops.get("Name"), "Tour Finance - " + bIdStr));
+			finData.put("Booking_ID", bIdStr);
+			finData.put("Email", ops.get("Email"));
+			finData.put("Status", "Pending");
+		}
+		
+		finRes = zoho.crm.createRecord("Finance", finData);
+		info "FINANCE_RECORD_CREATED: " + finRes;
+	}
+}

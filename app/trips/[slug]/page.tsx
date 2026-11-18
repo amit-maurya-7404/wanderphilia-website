@@ -28,6 +28,7 @@ import { DestinationPageTemplate } from '@/components/destination-page-template'
 import { DestinationBlogsSection } from '@/components/destination-blogs-section'
 import { DestinationPageItem } from '@/lib/destinations'
 import { cleanActivityTitle, sanitizeActivitiesList } from '@/lib/activities'
+import { getManualItinerary } from '@/data/manual-itineraries'
 
 
 function cleanLocation(loc: string): string {
@@ -1299,6 +1300,15 @@ export default function CatchAllTripDetailPage({ params }: PageProps = {}) {
   // If this slug is a dynamic Destination Page (created in Admin or builtin)
   if (!trip && destination) {
     return <DestinationPageTemplate destination={destination} />
+  }
+
+  // If this slug is a Manual / Customized Proposal Itinerary, redirect to /itinerary/[slug]
+  if (!trip && !destination && slug) {
+    const manual = getManualItinerary(slug);
+    if (manual) {
+      router.replace(`/itinerary/${slug}`);
+      return null;
+    }
   }
 
   if (!trip) return notFound()

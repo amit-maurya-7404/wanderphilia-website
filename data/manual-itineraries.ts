@@ -5464,6 +5464,356 @@ export const singaporeDeepakRevisedManualItinerary: ManualItinerary = {
   enableOnlineBooking: true
 };
 
+export const thailandDimpleManualItinerary: ManualItinerary = {
+  id: 'thailand-dimple',
+  slug: 'thailand-dimple',
+  title: "7 Days Curated Thailand Getaway Specially Curated for Ms. Dimple",
+  subtitle: 'Bangkok, Krabi & Phuket Tropical Luxury Escape',
+  duration: '6 Nights / 7 Days | 06 Dec – 12 Dec 2026',
+  numNights: 6,
+  numDays: 7,
+  dates: '06 Dec – 12 Dec 2026',
+  route: 'New Delhi → Bangkok (2N) → Krabi (2N) → Phuket (2N) → New Delhi',
+  routeSummary: '2N Bangkok | 2N Krabi | 2N Phuket',
+  destination: 'Thailand',
+  travelStyle: 'Curated Tropical Escape',
+  tripType: 'Customised Private Holiday',
+  leadName: 'Ms. Dimple',
+  vehicleType: 'Private SUV (1-SUV for All Sightseeing, Airport & Inter-City Transfers)',
+  mealPlan: 'Daily Breakfast at Hotels + Chao Phraya Princess Indian Dinner Cruise + Hong Island Picnic Lunch',
+  heroImage: 'https://images.unsplash.com/photo-1508009603885-50cf7c579365?auto=format&fit=crop&w=1600&q=85',
+  galleryImages: [
+    'https://images.unsplash.com/photo-1508009603885-50cf7c579365?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1528181304800-259b08848526?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1589394815804-964ed0be2eb5?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1506665531195-3566af2b4dfa?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1537956965359-7573183d1f57?auto=format&fit=crop&w=1200&q=80'
+  ],
+  accommodations: [
+    { city: 'Bangkok', nights: 2, hotelName: 'Handpicked Deluxe Hotel (Bangkok City Center)', roomCategory: '02 Double Sharing Rooms with Breakfast' },
+    { city: 'Krabi', nights: 2, hotelName: 'Handpicked Tropical Beach Resort (Ao Nang / Krabi)', roomCategory: '02 Double Sharing Rooms with Breakfast' },
+    { city: 'Phuket', nights: 2, hotelName: 'Handpicked Luxury Resort (Patong / Phuket)', roomCategory: '02 Double Sharing Rooms with Breakfast' }
+  ],
+  dayPlans: [
+    {
+      day: 1,
+      date: '06 Dec',
+      title: 'Day 1 | 06 Dec Welcome to Bangkok — Private SUV Arrival & Chao Phraya Princess Dinner Cruise',
+      route: 'Bangkok Airport (BKK) → Bangkok Hotel → Chao Phraya River Pier',
+      durationNote: 'Arrival & Evening Cruise',
+      intro: 'Sawasdee! Arrive in the vibrant capital of Thailand. Land at Bangkok Airport on Air India at 14:10, where your dedicated private SUV chauffeur welcomes you for a comfortable transfer to your hotel. Freshen up and get ready for an enchanting evening along the historic river of kings.',
+      timeline: [
+        '02:10 PM - Land at Bangkok Suvarnabhumi Airport (BKK) via Air India',
+        'Meet and greet by our airport representative',
+        'Private SUV Transfer from Bangkok Airport to Bangkok Hotel',
+        'Check-in at your hotel, freshen up and relax',
+        '06:30 PM - Private SUV pickup from hotel to Chao Phraya River pier',
+        'Chao Phraya Princess Dinner Cruise (Indian Dinner Buffet, Live Music, Wat Arun & Grand Palace illuminated view)',
+        'Private SUV return transfer to hotel',
+        'Overnight stay in Bangkok [1N]'
+      ],
+      sections: [
+        {
+          title: 'Evening River Cruise Inclusions:',
+          items: [
+            'Chao Phraya Princess Cruise with Indian Dinner Buffet for 4 Adults',
+            'Spectacular illuminated night views of Wat Arun, Wat Pho & Rama VIII Bridge',
+            'Live musical band, saxophone performance and international dessert counter'
+          ]
+        }
+      ],
+      stayLocation: 'Bangkok',
+      image: 'https://images.unsplash.com/photo-1508009603885-50cf7c579365?auto=format&fit=crop&w=1200&q=80',
+      meals: 'Dinner on Cruise'
+    },
+    {
+      day: 2,
+      date: '07 Dec',
+      title: 'Day 2 | 07 Dec Bangkok Sacred Temple Tour & King Power Mahanakhon SkyWalk Sunset',
+      route: 'Bangkok City Sightseeing & Mahanakhon',
+      durationNote: 'Full Day Sightseeing',
+      intro: 'Begin your day with a delicious breakfast followed by an immersive cultural and modern architecture tour of Bangkok in your private SUV.',
+      timeline: [
+        'Breakfast at hotel',
+        'Private SUV pickup for Bangkok City & Temple Tour',
+        'Visit Golden Buddha Temple (Wat Traimit) — world’s largest solid gold Buddha statue',
+        'Visit Mini Reclining Buddha Temple with rich historic murals',
+        'Leisure time for lunch and shopping in Bangkok center',
+        '04:00 PM - 07:00 PM: King Power Mahanakhon SkyWalk Sunset Experience (Sunset Tickets for 4 Adults)',
+        'Walk on the world-famous 314-meter-high glass tray floor overlooking the breathtaking Bangkok sunset skyline',
+        'Private SUV transfer back to hotel',
+        'Overnight stay in Bangkok [2N]'
+      ],
+      sections: [
+        {
+          title: 'Attraction Highlights:',
+          items: [
+            'Golden Buddha (Wat Traimit) & Mini Reclining Buddha entrance tickets included for 4 Adults',
+            'King Power Mahanakhon 78th-floor indoor & outdoor 360° observation deck sunset slot included'
+          ]
+        }
+      ],
+      stayLocation: 'Bangkok',
+      image: 'https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&w=1200&q=80',
+      meals: 'Breakfast'
+    },
+    {
+      day: 3,
+      date: '08 Dec',
+      title: 'Day 3 | 08 Dec Bangkok to Krabi — Domestic Flight & Tropical Beach Leisure',
+      route: 'Bangkok Hotel → Bangkok Airport → Krabi Airport → Krabi Resort',
+      durationNote: 'Flight & Transfer',
+      intro: 'Say goodbye to bustling Bangkok and fly south to the limestone cliff paradise of Krabi.',
+      timeline: [
+        'Early morning check-out from Bangkok hotel',
+        'Private SUV transfer to Bangkok Airport',
+        '07:00 AM - 08:30 AM: Flight Vietjet Air (Bangkok to Krabi)',
+        'Arrive at Krabi International Airport (KBV)',
+        'Private SUV transfer from Krabi Airport to Krabi Resort',
+        'Check-in at resort, relax amidst lush tropical greenery',
+        'Afternoon & evening at leisure to explore Ao Nang Beach, vibrant night street markets, and seaside cafés',
+        'Overnight stay in Krabi [1N]'
+      ],
+      stayLocation: 'Krabi',
+      image: 'https://images.unsplash.com/photo-1528181304800-259b08848526?auto=format&fit=crop&w=1200&q=80',
+      meals: 'Breakfast'
+    },
+    {
+      day: 4,
+      date: '09 Dec',
+      title: 'Day 4 | 09 Dec Full Day Krabi Hong Island Tour by Long Tail Boat with Lunch',
+      route: 'Krabi → Hong Island Archipelago → Krabi',
+      durationNote: 'Full Day Island Excursion (SIC Transfer)',
+      intro: 'Embark on an unforgettable island hopping adventure to the world-renowned Hong Islands, famous for its hidden emerald lagoon and powdery white sand beaches.',
+      timeline: [
+        'Breakfast at resort',
+        'Pickup for Hong Island Tour by Traditional Long Tail Boat (SIC)',
+        'Cruise to Koh Hong — explore the dramatic towering limestone rock formations',
+        'Swim inside Hong Lagoon (hidden sea lake surrounded by sheer cliffs)',
+        'Snorkeling among colorful coral reefs and tropical marine life',
+        'Boxed picnic lunch on the beach with island breeze',
+        'Panoramic Hong Island 360-degree viewpoint climb',
+        'Afternoon boat transfer back to Krabi pier and hotel drop-off',
+        'Evening at leisure to unwind in Krabi',
+        'Overnight stay in Krabi [2N]'
+      ],
+      sections: [
+        {
+          title: 'Tour Inclusions:',
+          items: [
+            'Long Tail Boat ride to Hong Islands with Life Jackets & Snorkeling Gear for 4 Adults',
+            'Beachside lunch and drinking water included',
+            'National Park Fee (NPF) payable directly on spot if applicable'
+          ]
+        }
+      ],
+      stayLocation: 'Krabi',
+      image: 'https://images.unsplash.com/photo-1506665531195-3566af2b4dfa?auto=format&fit=crop&w=1200&q=80',
+      meals: 'Breakfast & Island Lunch'
+    },
+    {
+      day: 5,
+      date: '10 Dec',
+      title: 'Day 5 | 10 Dec Krabi to Phuket Scenic Drive & Yona Floating Beach Club VIP Experience',
+      route: 'Krabi Resort → Phuket Hotel → Yona Beach Club (Patong Area)',
+      durationNote: 'Inter-City Drive & VIP Beach Club',
+      intro: 'Relish breakfast in Krabi before your scenic private overland SUV drive to Phuket. In the afternoon, experience the ultimate luxury highlight — Yona Beach Club, the world’s first floating beach club.',
+      timeline: [
+        'Breakfast and check-out from Krabi resort',
+        'Private SUV overland scenic transfer from Krabi to Phuket',
+        'Arrive in Phuket, check-in to your hotel and refresh',
+        'Afternoon Private SUV transfer from hotel to Yona Beach Club pier (Patong Area)',
+        'Board shuttle boat to Yona Floating Beach Club',
+        'Yona Beach Club Afternoon Pass for 4 Adults (Male & Lady Passes confirmed)',
+        'Enjoy 360° Andaman sea views, infinity swimming pool, world-class DJ beats, and coastal luxury ambiance',
+        'Private SUV pickup from pier and return transfer to hotel',
+        'Overnight stay in Phuket [1N]'
+      ],
+      sections: [
+        {
+          title: 'VIP Experience Inclusions:',
+          items: [
+            'Yona Beach Club confirmed afternoon access passes for 4 Adults (2 Male + 2 Lady passes per booking)',
+            'Private round-trip SUV transfers between Patong area hotel and Yona Pier'
+          ]
+        }
+      ],
+      stayLocation: 'Phuket',
+      image: 'https://images.unsplash.com/photo-1589394815804-964ed0be2eb5?auto=format&fit=crop&w=1200&q=80',
+      meals: 'Breakfast'
+    },
+    {
+      day: 6,
+      date: '11 Dec',
+      title: 'Day 6 | 11 Dec Phuket City Heritage Tour & 30-Min All-Terrain Vehicle (ATV) Jungle Safari',
+      route: 'Phuket City Tour & ATV Safari',
+      durationNote: 'Full Day Sightseeing & Adventure',
+      intro: 'Combine cultural exploration with heart-pumping off-road thrills as you discover Phuket’s top landmarks and conquer the jungle trails.',
+      timeline: [
+        'Breakfast at hotel',
+        'Private SUV pickup for Phuket City Sightseeing Tour',
+        'Visit Sino-Portuguese Old Phuket Town, vibrant heritage streets and art murals',
+        'Scenic viewpoints overlooking Kata, Karon and Andaman sea',
+        'Phuket ATV Adventure Park: 30-Minute Off-Road ATV Jungle Ride for 4 Adults with safety gear and instructor guide',
+        'Explore local Cashew Nut factory and Phuket honey farm',
+        'Private SUV transfer back to hotel',
+        'Evening free to explore bustling Bangla Road or Patong Night Market',
+        'Overnight stay in Phuket [2N]'
+      ],
+      sections: [
+        {
+          title: 'Adventure Inclusions:',
+          items: [
+            'Phuket ATV 30-Minute Quad Bike Ride tickets included for 4 Adults',
+            'Full safety briefing, helmets and guide included'
+          ]
+        }
+      ],
+      stayLocation: 'Phuket',
+      image: 'https://images.unsplash.com/photo-1537956965359-7573183d1f57?auto=format&fit=crop&w=1200&q=80',
+      meals: 'Breakfast'
+    },
+    {
+      day: 7,
+      date: '12 Dec',
+      title: 'Day 7 | 12 Dec Phuket Leisure, Souvenir Shopping & Departure to New Delhi',
+      route: 'Phuket Hotel → Phuket International Airport (HKT) → New Delhi (DEL)',
+      durationNote: 'Departure Transfer & Flight',
+      intro: 'Enjoy a leisurely final morning in paradise. Soak up the sun, shop for souvenirs, and prepare for your overnight flight back home.',
+      timeline: [
+        'Breakfast at hotel and check-out (luggage stored at hotel reception)',
+        'Day at leisure for beachside relaxation, Thai massage, and souvenir shopping at Jungceylon or Central Festival',
+        '07:30 PM - Private SUV pickup from Phuket hotel',
+        'Transfer to Phuket International Airport (HKT)',
+        '10:40 PM: Board IndiGo flight back to New Delhi',
+        '02:00 AM (+1 day, 13 Dec): Arrive at New Delhi (DEL) with unforgettable Thailand memories!'
+      ],
+      stayLocation: 'Onward Flight to New Delhi — Tour Concludes',
+      image: 'https://images.unsplash.com/photo-1508009603885-50cf7c579365?auto=format&fit=crop&w=1200&q=80',
+      meals: 'Breakfast',
+      signOff: 'Wishing Ms. Dimple an unforgettable Thailand holiday with Wanderphilia! 🌴✈️'
+    }
+  ],
+  inclusions: [
+    '6 Nights Accommodation in handpicked 4-Star/Deluxe Hotels on Double Sharing (02 Rooms for 4 Adults)',
+    '2 Nights Bangkok + 2 Nights Krabi + 2 Nights Phuket',
+    'Daily Breakfast at all hotels',
+    'Chao Phraya Princess River Dinner Cruise with Indian Buffet & Live Entertainment in Bangkok (4 Adults)',
+    'Bangkok City & Temple Tour (Wat Traimit Golden Buddha & Mini Reclining Buddha tickets included for 4 Adults)',
+    'King Power Mahanakhon SkyWalk Sunset 78th-Floor Glass Tray Observation Deck tickets (4 Adults)',
+    'Full Day Krabi Hong Island Tour by Long Tail Boat with Lunch & Snorkeling gear (SIC Transfer, 4 Adults)',
+    'Yona Floating Beach Club Afternoon Access Passes in Phuket (4 Adults - 2 Male + 2 Lady passes per booking)',
+    'Phuket City Heritage Sightseeing Tour (4 Adults)',
+    'Phuket 30-Minute Off-Road ATV Jungle Adventure Ride (4 Adults)',
+    'Private SUV (1-SUV) for all airport pickups, drops, city sightseeing & inter-city transfers as per itinerary',
+    'All driver allowances, fuel, tolls, and inter-city transport charges',
+    'On-ground 24x7 Wanderphilia customer support throughout the trip'
+  ],
+  exclusions: [
+    'Flights (quoted separately as detailed in flight schedule)',
+    'National Park Fee for Hong Island Tour (payable directly on spot if applicable)',
+    'Personal expenses, tips, porterage, telephone calls, laundry, room mini-bar',
+    'Lunches and Dinners not specifically mentioned in the itinerary inclusions',
+    'Any early check-in or late check-out charges',
+    'Travel insurance or anything not mentioned under package inclusions'
+  ],
+  thingsToCarry: [
+    'Original Passport with minimum 6 months validity from return date',
+    'Printout of return flight tickets and hotel vouchers',
+    'Lightweight cotton clothes, swimwear for beaches and Yona Beach Club',
+    'Modest attire covering shoulders and knees for Bangkok Buddhist Temples (Wat Traimit)',
+    'Comfortable walking shoes & flip-flops for beach excursions',
+    'High SPF sunscreen, UV sunglasses, and sun hat',
+    'Waterproof pouch for mobile phone and electronics during boat tours',
+    'Universal travel adapter (Thailand plugs Type A, B, C & O)',
+    'Forex card / Thai Baht currency for local shopping & personal expenses'
+  ],
+  flightQuotations: [
+    {
+      optionId: 'thailand-dimple-flights',
+      optionTitle: 'Confirmed Flight Schedule (Air India + Vietjet + IndiGo)',
+      totalPrice: 0,
+      paxDetails: '4 Adults (New Delhi - Bangkok - Krabi - Phuket - New Delhi)',
+      isExcludedFromPackage: false,
+      note: 'Flights as per traveler schedule: Air India (DEL-BKK 08:20-14:10), Vietjet Air (BKK-KBV 07:00-08:30), IndiGo (HKT-DEL 22:40-02:00+1).',
+      sectors: [
+        {
+          fromCity: 'New Delhi (DEL)',
+          toCity: 'Bangkok (BKK)',
+          fromAirport: 'Indira Gandhi International Airport (DEL)',
+          toAirport: 'Suvarnabhumi Airport (BKK)',
+          fromCode: 'DEL',
+          toCode: 'BKK',
+          airline: 'Air India',
+          flightNumber: 'Air India',
+          journeyType: 'Onward International',
+          departureDate: 'Sun, 06 Dec 2026',
+          departureTime: '08:20',
+          arrivalDate: 'Sun, 06 Dec 2026',
+          arrivalTime: '14:10',
+          duration: '4 h 20 m',
+          stops: 'Non Stop',
+          cabinClass: 'Economy',
+          baggage: 'Cabin 7 KG | Check-in 20 KG'
+        },
+        {
+          fromCity: 'Bangkok (BKK)',
+          toCity: 'Krabi (KBV)',
+          fromAirport: 'Suvarnabhumi Airport (BKK)',
+          toAirport: 'Krabi International Airport (KBV)',
+          fromCode: 'BKK',
+          toCode: 'KBV',
+          airline: 'Vietjet Air (Aero V.I.P. Ltd)',
+          flightNumber: 'Vietjet Air',
+          journeyType: 'Domestic Transfer',
+          departureDate: 'Tue, 08 Dec 2026',
+          departureTime: '07:00',
+          arrivalDate: 'Tue, 08 Dec 2026',
+          arrivalTime: '08:30',
+          duration: '1 h 30 m',
+          stops: 'Non Stop',
+          cabinClass: 'Economy',
+          baggage: 'Standard Baggage'
+        },
+        {
+          fromCity: 'Phuket (HKT)',
+          toCity: 'New Delhi (DEL)',
+          fromAirport: 'Phuket International Airport (HKT)',
+          toAirport: 'Indira Gandhi International Airport (DEL)',
+          fromCode: 'HKT',
+          toCode: 'DEL',
+          airline: 'IndiGo',
+          flightNumber: 'IndiGo',
+          journeyType: 'Return International',
+          departureDate: 'Sat, 12 Dec 2026',
+          departureTime: '22:40',
+          arrivalDate: 'Sun, 13 Dec 2026',
+          arrivalTime: '02:00',
+          duration: '4 h 50 m',
+          stops: 'Non Stop',
+          cabinClass: 'Economy',
+          baggage: 'Cabin 7 KG | Check-in 15 KG'
+        }
+      ]
+    }
+  ],
+  adults: 4,
+  kids: 0,
+  perAdultPrice: 35459,
+  baseAmount: 141836,
+  gstPercentage: 5,
+  gstAmount: 7092,
+  tcsPercentage: 2,
+  tcsAmount: 2837,
+  finalQuotationAmount: 151765,
+  childPricingNote: '₹35,459/- per adult for 4 Adults (Total Base: ₹1,41,836/- + 5% GST: ₹7,092/- + 2% TCS: ₹2,837/- = ₹1,51,765/- Total for 4 Guests in 02 Rooms on Double Sharing Basis with Transfers, Activities, Sightseeing & Flights).',
+  enableOnlineBooking: true,
+  enableTokenPayment: true,
+  enableAdvancePayment: true,
+  enableFullPayment: true
+};
+
 export const manualItinerariesRegistry: Record<string, ManualItinerary> = {
   // Meghalaya with Kaziranga (Mrs. Shravya)
   'meghalaya-with-kaziranga-mrs-shravya': meghalayaShravyaManualItinerary,
@@ -5642,7 +5992,18 @@ export const manualItinerariesRegistry: Record<string, ManualItinerary> = {
   'deepak-revised': singaporeDeepakRevisedManualItinerary,
   'deepak-singapore-revised': singaporeDeepakRevisedManualItinerary,
   'mr-deepak-singapore-revised': singaporeDeepakRevisedManualItinerary,
-  'wp-singapore-deepak-revised': singaporeDeepakRevisedManualItinerary
+  'wp-singapore-deepak-revised': singaporeDeepakRevisedManualItinerary,
+
+  // Thailand Dimple (6N / 7D, 06 Dec - 12 Dec 2026)
+  'thailand-dimple': thailandDimpleManualItinerary,
+  'thailand-dimple-4adults': thailandDimpleManualItinerary,
+  'thailand-dimple-trip': thailandDimpleManualItinerary,
+  'thailand-ms-dimple': thailandDimpleManualItinerary,
+  'ms-dimple': thailandDimpleManualItinerary,
+  'ms-dimple-thailand': thailandDimpleManualItinerary,
+  'dimple-thailand': thailandDimpleManualItinerary,
+  'dimple': thailandDimpleManualItinerary,
+  'wp-thailand-dimple': thailandDimpleManualItinerary
 };
 
 export function getManualItinerary(idOrSlug: string): ManualItinerary | null {
@@ -5655,6 +6016,7 @@ export function getManualItinerary(idOrSlug: string): ManualItinerary | null {
 
 export function getAllManualItineraries(): ManualItinerary[] {
   return [
+    thailandDimpleManualItinerary,
     meghalayaShravyaManualItinerary,
     vietnamShravyaManualItinerary,
     srilankaShravyaManualItinerary,
@@ -5679,13 +6041,23 @@ export function getAllManualItineraries(): ManualItinerary[] {
  * Helper to convert a ManualItinerary into an ItineraryDocument format
  */
 export function manualItineraryToDocument(manual: ManualItinerary): ItineraryDocument {
+  const isThailand = manual.destination.toLowerCase().includes('thailand') || manual.id.includes('thailand');
   const isVietnam = manual.destination.toLowerCase().includes('vietnam');
   const isSriLanka = manual.destination.toLowerCase().includes('sri lanka') || manual.destination.toLowerCase().includes('srilanka');
   const isRajasthan = manual.destination.toLowerCase().includes('rajasthan') || manual.id.includes('4002b3f4');
   const isSpiti = manual.destination.toLowerCase().includes('spiti') || manual.id.includes('spiti') || manual.destination.toLowerCase().includes('kinnaur');
   const isAlibaug = manual.destination.toLowerCase().includes('alibaug') || manual.id.includes('alibaug');
   const isMeghalaya = manual.destination.toLowerCase().includes('meghalaya') || manual.destination.toLowerCase().includes('kaziranga') || manual.destination.toLowerCase().includes('assam');
-  const defaultHighlights = isVietnam ? [
+  const defaultHighlights = isThailand ? [
+    'Evening Chao Phraya Princess Dinner Cruise with Live Music & Indian Buffet',
+    'Bangkok Iconic Temples: Golden Buddha (Wat Traimit) & Mini Reclining Buddha',
+    'King Power Mahanakhon SkyWalk 360° Glass Floor Sunset Experience',
+    'Scenic Domestic Flight to Krabi Tropical Paradise',
+    'Full Day Krabi Hong Island Tour by Long Tail Boat & Emerald Lagoon Snorkeling',
+    'Scenic Private Overland Transfer through Krabi & Phang Nga Karsts to Phuket',
+    'Exclusive Yona Floating Beach Club Afternoon VIP Experience in Patong',
+    'Phuket Island City Heritage Tour & 30-Min All-Terrain Vehicle (ATV) Jungle Safari'
+  ] : (isVietnam ? [
     'Ho Chi Minh City Highlights & Cu Chi Underground Tunnels',
     'Phu Quoc Island: 3 Islands Speedboat, VinWonders & Vinpearl Safari',
     'Hon Thom World’s Longest Over-Sea Cable Car & Sunset Town Kiss Bridge',
@@ -5730,7 +6102,7 @@ export function manualItineraryToDocument(manual: ManualItinerary): ItineraryDoc
     'Snow Activities in Solang Valley & New Year Party in Manali',
     'River Rafting Experience in Manali',
     'Kasol & Parvati Valley Exploration'
-  ])));
+  ]))));
 
   return {
     id: manual.id,
@@ -5739,7 +6111,7 @@ export function manualItineraryToDocument(manual: ManualItinerary): ItineraryDoc
     subTitle: manual.subtitle || `${manual.numNights} Nights / ${manual.numDays} Days Signature Experience`,
     description: `Custom ${manual.duration} expedition exploring ${manual.route}`,
     destination: manual.destination,
-    stateOrCountry: isSriLanka ? 'Sri Lanka' : (isVietnam ? 'Vietnam' : (isRajasthan ? 'Rajasthan, India' : (isSpiti ? 'Himachal Pradesh (Spiti & Kinnaur), India' : (isAlibaug ? 'Maharashtra, India' : (isMeghalaya ? 'Meghalaya & Assam, India' : 'Himachal Pradesh, India'))))),
+    stateOrCountry: isThailand ? 'Thailand' : (isSriLanka ? 'Sri Lanka' : (isVietnam ? 'Vietnam' : (isRajasthan ? 'Rajasthan, India' : (isSpiti ? 'Himachal Pradesh (Spiti & Kinnaur), India' : (isAlibaug ? 'Maharashtra, India' : (isMeghalaya ? 'Meghalaya & Assam, India' : 'Himachal Pradesh, India')))))),
     travelStyle: manual.travelStyle || 'Signature Tour',
     tripType: manual.tripType || 'Customised Trip',
     vehicleType: manual.vehicleType || 'Private AC Van with Dedicated Driver',

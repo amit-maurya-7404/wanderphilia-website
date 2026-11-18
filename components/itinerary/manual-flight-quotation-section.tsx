@@ -35,7 +35,7 @@ export function ManualFlightQuotationSection({ flightQuotations }: ManualFlightQ
             <span>Flight Schedule & Timing</span>
           </div>
           <h2 className={`${playfair.className} text-xl sm:text-2xl font-black text-stone-900 mt-0.5`}>
-            Preferred Flights
+            Flight Details
           </h2>
         </div>
         <div className="bg-amber-100/90 border border-amber-300 text-amber-900 text-[10px] sm:text-[11px] font-bold px-3 py-1 rounded-full flex items-center gap-1.5 w-fit">
@@ -193,74 +193,76 @@ export function ManualFlightQuotationSection({ flightQuotations }: ManualFlightQ
                 })}
               </div>
 
-              {/* 3. FLIGHT PRICING & FARE DETAILS (SHOWN SEPARATELY BELOW THE FLIGHT DETAILS) */}
-              <div className="bg-gradient-to-br from-stone-900 via-stone-850 to-stone-900 rounded-2xl p-5 sm:p-6 text-white shadow-xl border border-amber-500/30 space-y-4">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-white/15 pb-3">
-                  <div className="space-y-0.5">
-                    <div className="flex items-center gap-1.5 text-[10px] sm:text-xs font-black uppercase tracking-widest text-amber-300">
-                      <Plane className="w-3.5 h-3.5 text-amber-300" />
-                      <span>Flight Fare Summary (Indicative Fares)</span>
+              {/* 3. FLIGHT PRICING & FARE DETAILS (SHOWN ONLY IF PRICE IS SPECIFIED > 0) */}
+              {(Boolean(option.totalPrice && option.totalPrice > 0) || Boolean(option.perPersonPrice && option.perPersonPrice > 0)) && (
+                <div className="bg-gradient-to-br from-stone-900 via-stone-850 to-stone-900 rounded-2xl p-5 sm:p-6 text-white shadow-xl border border-amber-500/30 space-y-4">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-white/15 pb-3">
+                    <div className="space-y-0.5">
+                      <div className="flex items-center gap-1.5 text-[10px] sm:text-xs font-black uppercase tracking-widest text-amber-300">
+                        <Plane className="w-3.5 h-3.5 text-amber-300" />
+                        <span>Flight Fare Summary (Indicative Fares)</span>
+                      </div>
+                      <h4 className={`${playfair.className} text-lg sm:text-xl font-black text-white`}>
+                        Airfare Details & Pricing
+                      </h4>
                     </div>
-                    <h4 className={`${playfair.className} text-lg sm:text-xl font-black text-white`}>
-                      Airfare Details & Pricing
-                    </h4>
+                    {isExcluded ? (
+                      <div className="bg-amber-400/20 text-amber-300 border border-amber-400/40 text-[10px] sm:text-[11px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
+                        Not Included in Package Quotation
+                      </div>
+                    ) : (
+                      <div className="bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 text-[10px] sm:text-[11px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
+                        Flight Fare Included
+                      </div>
+                    )}
                   </div>
-                  {isExcluded ? (
-                    <div className="bg-amber-400/20 text-amber-300 border border-amber-400/40 text-[10px] sm:text-[11px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
-                      Not Included in Package Quotation
-                    </div>
-                  ) : (
-                    <div className="bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 text-[10px] sm:text-[11px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
-                      Flight Fare Included
-                    </div>
-                  )}
-                </div>
 
-                {/* PRICING NUMBERS GRID */}
-                <div className={`grid grid-cols-1 ${option.perPersonPrice ? 'sm:grid-cols-2' : ''} gap-3.5`}>
-                  {/* Per Person Price (Only if specified) */}
-                  {option.perPersonPrice ? (
+                  {/* PRICING NUMBERS GRID */}
+                  <div className={`grid grid-cols-1 ${option.perPersonPrice ? 'sm:grid-cols-2' : ''} gap-3.5`}>
+                    {/* Per Person Price (Only if specified) */}
+                    {option.perPersonPrice ? (
+                      <div className="bg-white/10 backdrop-blur-md rounded-xl p-3.5 sm:p-4 border border-white/15 flex flex-col justify-between space-y-1.5">
+                        <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-amber-300">
+                          Estimated Cost Per Person
+                        </span>
+                        <div className="text-xl sm:text-2xl font-black text-white">
+                          ₹{option.perPersonPrice.toLocaleString('en-IN')}/-
+                          <span className="text-xs font-normal text-stone-300 ml-1">/ person</span>
+                        </div>
+                        <span className="text-[10px] text-stone-400 leading-tight">
+                          Round-trip Return Flights ({option.sectors?.[0]?.fromCity || 'Origin'} ↔ {option.sectors?.[0]?.toCity || 'Destination'})
+                        </span>
+                      </div>
+                    ) : null}
+
+                    {/* Total Amount */}
                     <div className="bg-white/10 backdrop-blur-md rounded-xl p-3.5 sm:p-4 border border-white/15 flex flex-col justify-between space-y-1.5">
                       <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-amber-300">
-                        Estimated Cost Per Person
+                        Total Flights Cost ({option.paxDetails || 'All Guests'})
                       </span>
-                      <div className="text-xl sm:text-2xl font-black text-white">
-                        ₹{option.perPersonPrice.toLocaleString('en-IN')}/-
-                        <span className="text-xs font-normal text-stone-300 ml-1">/ person</span>
+                      <div className="text-xl sm:text-2xl font-black text-amber-300">
+                        ₹{(option.totalPrice || 0).toLocaleString('en-IN')}/-
                       </div>
                       <span className="text-[10px] text-stone-400 leading-tight">
-                        Round-trip Return Flights ({option.sectors?.[0]?.fromCity || 'Origin'} ↔ {option.sectors?.[0]?.toCity || 'Destination'})
+                        {option.paxDetails ? `${option.paxDetails}` : `Round-trip (${option.sectors?.[0]?.fromCity || ''} ↔ ${option.sectors?.[0]?.toCity || ''})`}
                       </span>
                     </div>
-                  ) : null}
+                  </div>
 
-                  {/* Total Amount */}
-                  <div className="bg-white/10 backdrop-blur-md rounded-xl p-3.5 sm:p-4 border border-white/15 flex flex-col justify-between space-y-1.5">
-                    <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-amber-300">
-                      Total Flights Cost ({option.paxDetails || 'All Guests'})
-                    </span>
-                    <div className="text-xl sm:text-2xl font-black text-amber-300">
-                      {option.totalPrice > 0 ? `₹${option.totalPrice.toLocaleString('en-IN')}/-` : 'Pricing on Request'}
+                  {/* IMPORTANT NOTICE BOX */}
+                  <div className="bg-amber-500/10 border border-amber-400/30 rounded-xl p-3.5 text-xs text-amber-200/95 flex items-start gap-2.5 leading-relaxed">
+                    <AlertCircle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                    <div>
+                      <span className="font-bold text-amber-300 block mb-0.5">
+                        {isExcluded ? 'Separate Airfare Notice:' : 'Dynamic Airfare Notice:'}
+                      </span>
+                      <span>
+                        {option.note || 'Flight costs are separate and NOT included in the land package quotation above.'}
+                      </span>
                     </div>
-                    <span className="text-[10px] text-stone-400 leading-tight">
-                      {option.paxDetails ? `${option.paxDetails}` : `Round-trip (${option.sectors?.[0]?.fromCity || ''} ↔ ${option.sectors?.[0]?.toCity || ''})`}
-                    </span>
                   </div>
                 </div>
-
-                {/* IMPORTANT NOTICE BOX */}
-                <div className="bg-amber-500/10 border border-amber-400/30 rounded-xl p-3.5 text-xs text-amber-200/95 flex items-start gap-2.5 leading-relaxed">
-                  <AlertCircle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-                  <div>
-                    <span className="font-bold text-amber-300 block mb-0.5">
-                      {isExcluded ? 'Separate Airfare Notice:' : 'Dynamic Airfare Notice:'}
-                    </span>
-                    <span>
-                      {option.note || 'Flight costs of ₹30,000 per person are separate and NOT included in the land package quotation above. Airfares are dynamic and will be booked at actual live market rates at the time of final booking confirmation.'}
-                    </span>
-                  </div>
-                </div>
-              </div>
+              )}
             </div>
           );
         })}

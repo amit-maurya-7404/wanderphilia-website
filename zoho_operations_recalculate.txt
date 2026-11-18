@@ -1,0 +1,339 @@
+void automation.recalculate_operations_costs(Int opsId)
+{
+	opsIdStr = opsId.toString();
+	
+	// 1. Fetch Operations Record
+	opsRec = zoho.crm.getRecordById("Operations", opsId.toLong());
+	if(opsRec == null || opsRec.isEmpty())
+	{
+		opsRec = zoho.crm.getRecordById("CustomModule11", opsId.toLong());
+	}
+	
+	if(opsRec != null && !opsRec.isEmpty())
+	{
+		// --------------------------------------------------------------------------
+		// CHECK IF MANUAL CALCULATION IS ENABLED BY OPERATIONS TEAM
+		// If checked, do NOT overwrite any manual amounts entered by the team!
+		// --------------------------------------------------------------------------
+		isManual = ifnull(opsRec.get("Manual_Calculation"), false);
+		if(isManual == true || isManual == "true")
+		{
+			info "Manual Calculation is ENABLED for Ops ID: " + opsIdStr + ". Skipping auto-recalculation to preserve manual amounts.";
+			return;
+		}
+		
+		roomsCount = ifnull(opsRec.get("Rooms_Count"), 1).toLong();
+		totalDays = ifnull(opsRec.get("No_of_Days"), 1).toLong();
+		defaultRoomCategory = ifnull(opsRec.get("Room_Category"), "Deluxe Room");
+		updateMap = Map();
+		
+		// --------------------------------------------------------------------------
+		// 2. RECALCULATE TRANSPORT / VEHICLE COST
+		// --------------------------------------------------------------------------
+		vehLookup = opsRec.get("Vehicle_Type");
+		vendorLookup = opsRec.get("Vendor_Name");
+		
+		if(vehLookup != null && vehLookup.get("id") != null)
+		{
+			vRec = zoho.crm.getRecordById("Vehicles", vehLookup.get("id").toLong());
+			if(vRec != null)
+			{
+				vendorPricingList = vRec.get("Vendor_Pricing");
+				selectedVendorName = "";
+				if(vendorLookup != null)
+				{
+					selectedVendorName = ifnull(vendorLookup.get("name"), "").toLowerCase();
+				}
+				
+				matchedCostPerDay = 0.0;
+				lowestCostPerDay = 9999999.0;
+				
+				if(vendorPricingList != null && vendorPricingList.size() > 0)
+				{
+					for each vp in vendorPricingList
+					{
+						cpd = ifnull(vp.get("Cost_Per_day"), 0.0).toDecimal();
+						vName = ifnull(vp.get("Vendor_Name"), "").toLowerCase();
+						
+						// If user picked a specific vendor in Operations, match it
+						if(selectedVendorName != "" && (vName == selectedVendorName || vName.contains(selectedVendorName) || selectedVendorName.contains(vName)))
+						{
+							if(cpd > 0)
+							{
+								matchedCostPerDay = cpd;
+								break;
+							}
+						}
+						
+						// Keep track of lowest vendor as fallback
+						if(cpd > 0 && cpd < lowestCostPerDay)
+						{
+							lowestCostPerDay = cpd;
+						}
+					}
+				}
+				
+				finalDailyCost = matchedCostPerDay;
+				if(finalDailyCost == 0.0 && lowestCostPerDay < 9999999.0)
+				{
+					finalDailyCost = lowestCostPerDay;
+				}
+				
+				if(finalDailyCost > 0)
+				{
+					updateMap.put("Vehicle_Cost", finalDailyCost * totalDays);
+				}
+			}
+		}
+		
+		// --------------------------------------------------------------------------
+		// 3. RECALCULATE HOTEL 1 TO 6 COSTS
+		// --------------------------------------------------------------------------
+		// Hotel 1
+		h1 = opsRec.get("Hotel_1");
+		if(h1 != null && h1.get("id") != null)
+		{
+			hRec1 = zoho.crm.getRecordById("Hotel", h1.get("id").toLong());
+			if(hRec1 != null)
+			{
+				ratesList1 = hRec1.get("Room_Rates_Pricing");
+				h1Nights = ifnull(opsRec.get("Hotel_1_Nights"), 1).toLong();
+				targetCat = ifnull(opsRec.get("Hotel_1_Category"), defaultRoomCategory).toLowerCase();
+				pNight1 = 0.0;
+				if(ratesList1 != null && ratesList1.size() > 0)
+				{
+					for each row in ratesList1
+					{
+						rowCat = ifnull(row.get("Hotel_Room_Category"), ifnull(row.get("Room_Category"), "")).toLowerCase();
+						rPrice = ifnull(row.get("Price_Per_Night"), ifnull(row.get("Base_Price"), 0.0)).toDecimal();
+						if((rowCat == targetCat || rowCat.contains(targetCat) || targetCat.contains(rowCat)) && rPrice > 0)
+						{
+							pNight1 = rPrice;
+							break;
+						}
+					}
+					if(pNight1 == 0.0)
+					{
+						for each row in ratesList1
+						{
+							rPrice = ifnull(row.get("Price_Per_Night"), ifnull(row.get("Base_Price"), 0.0)).toDecimal();
+							if(rPrice > 0) { pNight1 = rPrice; break; }
+						}
+					}
+				}
+				if(pNight1 == 0.0)
+				{
+					pNight1 = ifnull(hRec1.get("Price_Per_Night"), ifnull(hRec1.get("Base_Price"), ifnull(hRec1.get("Cost"), 0.0))).toDecimal();
+				}
+				updateMap.put("Hotel_1_Cost", pNight1 * roomsCount * h1Nights);
+			}
+		}
+		
+		// Hotel 2
+		h2 = opsRec.get("Hotel_2");
+		if(h2 != null && h2.get("id") != null)
+		{
+			hRec2 = zoho.crm.getRecordById("Hotel", h2.get("id").toLong());
+			if(hRec2 != null)
+			{
+				ratesList2 = hRec2.get("Room_Rates_Pricing");
+				h2Nights = ifnull(opsRec.get("Hotel_2_Nights"), 1).toLong();
+				targetCat = ifnull(opsRec.get("Hotel_2_Category"), defaultRoomCategory).toLowerCase();
+				pNight2 = 0.0;
+				if(ratesList2 != null && ratesList2.size() > 0)
+				{
+					for each row in ratesList2
+					{
+						rowCat = ifnull(row.get("Hotel_Room_Category"), ifnull(row.get("Room_Category"), "")).toLowerCase();
+						rPrice = ifnull(row.get("Price_Per_Night"), ifnull(row.get("Base_Price"), 0.0)).toDecimal();
+						if((rowCat == targetCat || rowCat.contains(targetCat) || targetCat.contains(rowCat)) && rPrice > 0)
+						{
+							pNight2 = rPrice;
+							break;
+						}
+					}
+					if(pNight2 == 0.0)
+					{
+						for each row in ratesList2
+						{
+							rPrice = ifnull(row.get("Price_Per_Night"), ifnull(row.get("Base_Price"), 0.0)).toDecimal();
+							if(rPrice > 0) { pNight2 = rPrice; break; }
+						}
+					}
+				}
+				if(pNight2 == 0.0)
+				{
+					pNight2 = ifnull(hRec2.get("Price_Per_Night"), ifnull(hRec2.get("Base_Price"), ifnull(hRec2.get("Cost"), 0.0))).toDecimal();
+				}
+				updateMap.put("Hotel_2_Cost", pNight2 * roomsCount * h2Nights);
+			}
+		}
+		
+		// Hotel 3
+		h3 = opsRec.get("Hotel_3");
+		if(h3 != null && h3.get("id") != null)
+		{
+			hRec3 = zoho.crm.getRecordById("Hotel", h3.get("id").toLong());
+			if(hRec3 != null)
+			{
+				ratesList3 = hRec3.get("Room_Rates_Pricing");
+				h3Nights = ifnull(opsRec.get("Hotel_3_Nights"), 1).toLong();
+				targetCat = ifnull(opsRec.get("Hotel_3_Category"), defaultRoomCategory).toLowerCase();
+				pNight3 = 0.0;
+				if(ratesList3 != null && ratesList3.size() > 0)
+				{
+					for each row in ratesList3
+					{
+						rowCat = ifnull(row.get("Hotel_Room_Category"), ifnull(row.get("Room_Category"), "")).toLowerCase();
+						rPrice = ifnull(row.get("Price_Per_Night"), ifnull(row.get("Base_Price"), 0.0)).toDecimal();
+						if((rowCat == targetCat || rowCat.contains(targetCat) || targetCat.contains(rowCat)) && rPrice > 0)
+						{
+							pNight3 = rPrice;
+							break;
+						}
+					}
+					if(pNight3 == 0.0)
+					{
+						for each row in ratesList3
+						{
+							rPrice = ifnull(row.get("Price_Per_Night"), ifnull(row.get("Base_Price"), 0.0)).toDecimal();
+							if(rPrice > 0) { pNight3 = rPrice; break; }
+						}
+					}
+				}
+				if(pNight3 == 0.0)
+				{
+					pNight3 = ifnull(hRec3.get("Price_Per_Night"), ifnull(hRec3.get("Base_Price"), ifnull(hRec3.get("Cost"), 0.0))).toDecimal();
+				}
+				updateMap.put("Hotel_3_Cost", pNight3 * roomsCount * h3Nights);
+			}
+		}
+		
+		// Hotel 4
+		h4 = opsRec.get("Hotel_4");
+		if(h4 != null && h4.get("id") != null)
+		{
+			hRec4 = zoho.crm.getRecordById("Hotel", h4.get("id").toLong());
+			if(hRec4 != null)
+			{
+				ratesList4 = hRec4.get("Room_Rates_Pricing");
+				h4Nights = ifnull(opsRec.get("Hotel_4_Nights"), 1).toLong();
+				targetCat = ifnull(opsRec.get("Hotel_4_Category"), defaultRoomCategory).toLowerCase();
+				pNight4 = 0.0;
+				if(ratesList4 != null && ratesList4.size() > 0)
+				{
+					for each row in ratesList4
+					{
+						rowCat = ifnull(row.get("Hotel_Room_Category"), ifnull(row.get("Room_Category"), "")).toLowerCase();
+						rPrice = ifnull(row.get("Price_Per_Night"), ifnull(row.get("Base_Price"), 0.0)).toDecimal();
+						if((rowCat == targetCat || rowCat.contains(targetCat) || targetCat.contains(rowCat)) && rPrice > 0)
+						{
+							pNight4 = rPrice;
+							break;
+						}
+					}
+					if(pNight4 == 0.0)
+					{
+						for each row in ratesList4
+						{
+							rPrice = ifnull(row.get("Price_Per_Night"), ifnull(row.get("Base_Price"), 0.0)).toDecimal();
+							if(rPrice > 0) { pNight4 = rPrice; break; }
+						}
+					}
+				}
+				if(pNight4 == 0.0)
+				{
+					pNight4 = ifnull(hRec4.get("Price_Per_Night"), ifnull(hRec4.get("Base_Price"), ifnull(hRec4.get("Cost"), 0.0))).toDecimal();
+				}
+				updateMap.put("Hotel_4_Cost", pNight4 * roomsCount * h4Nights);
+			}
+		}
+		
+		// Hotel 5
+		h5 = opsRec.get("Hotel_5");
+		if(h5 != null && h5.get("id") != null)
+		{
+			hRec5 = zoho.crm.getRecordById("Hotel", h5.get("id").toLong());
+			if(hRec5 != null)
+			{
+				ratesList5 = hRec5.get("Room_Rates_Pricing");
+				h5Nights = ifnull(opsRec.get("Hotel_5_Nights"), 1).toLong();
+				targetCat = ifnull(opsRec.get("Hotel_5_Category"), defaultRoomCategory).toLowerCase();
+				pNight5 = 0.0;
+				if(ratesList5 != null && ratesList5.size() > 0)
+				{
+					for each row in ratesList5
+					{
+						rowCat = ifnull(row.get("Hotel_Room_Category"), ifnull(row.get("Room_Category"), "")).toLowerCase();
+						rPrice = ifnull(row.get("Price_Per_Night"), ifnull(row.get("Base_Price"), 0.0)).toDecimal();
+						if((rowCat == targetCat || rowCat.contains(targetCat) || targetCat.contains(rowCat)) && rPrice > 0)
+						{
+							pNight5 = rPrice;
+							break;
+						}
+					}
+					if(pNight5 == 0.0)
+					{
+						for each row in ratesList5
+						{
+							rPrice = ifnull(row.get("Price_Per_Night"), ifnull(row.get("Base_Price"), 0.0)).toDecimal();
+							if(rPrice > 0) { pNight5 = rPrice; break; }
+						}
+					}
+				}
+				if(pNight5 == 0.0)
+				{
+					pNight5 = ifnull(hRec5.get("Price_Per_Night"), ifnull(hRec5.get("Base_Price"), ifnull(hRec5.get("Cost"), 0.0))).toDecimal();
+				}
+				updateMap.put("Hotel_5_Cost", pNight5 * roomsCount * h5Nights);
+			}
+		}
+		
+		// Hotel 6
+		h6 = opsRec.get("Hotel_6");
+		if(h6 != null && h6.get("id") != null)
+		{
+			hRec6 = zoho.crm.getRecordById("Hotel", h6.get("id").toLong());
+			if(hRec6 != null)
+			{
+				ratesList6 = hRec6.get("Room_Rates_Pricing");
+				h6Nights = ifnull(opsRec.get("Hotel_6_Nights"), 1).toLong();
+				targetCat = ifnull(opsRec.get("Hotel_6_Category"), defaultRoomCategory).toLowerCase();
+				pNight6 = 0.0;
+				if(ratesList6 != null && ratesList6.size() > 0)
+				{
+					for each row in ratesList6
+					{
+						rowCat = ifnull(row.get("Hotel_Room_Category"), ifnull(row.get("Room_Category"), "")).toLowerCase();
+						rPrice = ifnull(row.get("Price_Per_Night"), ifnull(row.get("Base_Price"), 0.0)).toDecimal();
+						if((rowCat == targetCat || rowCat.contains(targetCat) || targetCat.contains(rowCat)) && rPrice > 0)
+						{
+							pNight6 = rPrice;
+							break;
+						}
+					}
+					if(pNight6 == 0.0)
+					{
+						for each row in ratesList6
+						{
+							rPrice = ifnull(row.get("Price_Per_Night"), ifnull(row.get("Base_Price"), 0.0)).toDecimal();
+							if(rPrice > 0) { pNight6 = rPrice; break; }
+						}
+					}
+				}
+				if(pNight6 == 0.0)
+				{
+					pNight6 = ifnull(hRec6.get("Price_Per_Night"), ifnull(hRec6.get("Base_Price"), ifnull(hRec6.get("Cost"), 0.0))).toDecimal();
+				}
+				updateMap.put("Hotel_6_Cost", pNight6 * roomsCount * h6Nights);
+			}
+		}
+		
+		// Update Operations Record with Recalculated Costs
+		if(updateMap.size() > 0)
+		{
+			res = zoho.crm.updateRecord("Operations", opsId.toLong(), updateMap);
+			info "OPERATIONS_COSTS_UPDATED: " + res;
+		}
+	}
+}
