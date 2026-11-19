@@ -180,5 +180,6 @@ export interface ManualItinerary {
   enableTokenPayment?: boolean;
   enableAdvancePayment?: boolean;
   enableFullPayment?: boolean;
+  showWithoutTaxesInProposal?: boolean;
 }
 

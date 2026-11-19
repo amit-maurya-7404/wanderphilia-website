@@ -238,6 +238,22 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
   const isAdvancePaid = alreadyPaid >= fiftyPercentAmount && !isFullyPaid;
   const isTokenPaid = alreadyPaid > 0 && alreadyPaid < fiftyPercentAmount;
 
+  // Without-Taxes proposal display check (shows base rate upfront; taxes calculated in checkout modal)
+  const isExcludedTaxesDisplay = Boolean(
+    itinerary.showWithoutTaxesInProposal ||
+    itinerary.id === 'bhutan-heer' ||
+    itinerary.id === 'thailand-dimple-revised' ||
+    itinerary.slug === 'bhutan-heer' ||
+    itinerary.slug === 'thailand-dimple-revised' ||
+    itinerary.id?.includes('bhutan-heer') ||
+    itinerary.id?.includes('thailand-dimple-revised')
+  );
+  const displayTotalAmount = isExcludedTaxesDisplay
+    ? Math.round(Number(currentBaseAmount || totalQuotationAmount))
+    : totalQuotationAmount;
+  const displayTenPercentAmount = Math.round(displayTotalAmount * 0.1);
+  const displayFiftyPercentAmount = Math.round(displayTotalAmount * 0.5);
+
   // Online Booking Feature Flag:
   // Disabled for all past itineraries already sent to clients. Only active for new itineraries or when explicitly enabled.
   const isOnlineBookingEnabled = Boolean(itinerary.enableOnlineBooking);
@@ -930,13 +946,21 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                             ₹{adultBase.toLocaleString('en-IN')}/-
                           </div>
                           <div className="space-y-0.5 pt-0.5 text-[10px] sm:text-[11px] text-amber-200/95 font-semibold leading-tight">
-                            <div>+ {gstPct}% GST: ₹{adultGst.toLocaleString('en-IN')}/-</div>
-                            {tcsTotal > 0 && <div>+ {tcsPct}% TCS: ₹{adultTcs.toLocaleString('en-IN')}/-</div>}
+                            {isExcludedTaxesDisplay ? (
+                              <div className="text-amber-300/90 font-medium">+ {gstPct}% GST{tcsTotal > 0 ? ` & ${tcsPct}% TCS` : ''} applicable extra</div>
+                            ) : (
+                              <>
+                                <div>+ {gstPct}% GST: ₹{adultGst.toLocaleString('en-IN')}/-</div>
+                                {tcsTotal > 0 && <div>+ {tcsPct}% TCS: ₹{adultTcs.toLocaleString('en-IN')}/-</div>}
+                              </>
+                            )}
                           </div>
                         </div>
                         <div className="pt-2 border-t border-white/15 text-[11px] text-white/90 font-medium flex items-center justify-between">
-                          <span className="text-white/70">Grand Total:</span>
-                          <span className="text-amber-300 font-black text-xs sm:text-sm">₹{adultGrand.toLocaleString('en-IN')}/-</span>
+                          <span className="text-white/70">{isExcludedTaxesDisplay ? 'Rate Per Adult:' : 'Grand Total:'}</span>
+                          <span className="text-amber-300 font-black text-xs sm:text-sm">
+                            ₹{(isExcludedTaxesDisplay ? adultBase : adultGrand).toLocaleString('en-IN')}/-
+                          </span>
                         </div>
                       </div>
 
@@ -951,16 +975,24 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                             ₹{kidBase.toLocaleString('en-IN')}/-
                           </div>
                           <div className="space-y-0.5 pt-0.5 text-[10px] sm:text-[11px] text-amber-200/95 font-semibold leading-tight">
-                            <div>+ {gstPct}% GST: ₹{kidGst.toLocaleString('en-IN')}/-</div>
-                            {tcsTotal > 0 && <div>+ {tcsPct}% TCS: ₹{kidTcs.toLocaleString('en-IN')}/-</div>}
+                            {isExcludedTaxesDisplay ? (
+                              <div className="text-amber-300/90 font-medium">+ {gstPct}% GST{tcsTotal > 0 ? ` & ${tcsPct}% TCS` : ''} applicable extra</div>
+                            ) : (
+                              <>
+                                <div>+ {gstPct}% GST: ₹{kidGst.toLocaleString('en-IN')}/-</div>
+                                {tcsTotal > 0 && <div>+ {tcsPct}% TCS: ₹{kidTcs.toLocaleString('en-IN')}/-</div>}
+                              </>
+                            )}
                           </div>
                           <div className="text-[10px] text-emerald-300 font-bold pt-1 leading-tight">
                             Dedicated Extra Bed Included
                           </div>
                         </div>
                         <div className="pt-2 border-t border-white/15 text-[11px] text-white/90 font-medium flex items-center justify-between">
-                          <span className="text-white/70">Grand Total:</span>
-                          <span className="text-amber-300 font-black text-xs sm:text-sm">₹{kidGrand.toLocaleString('en-IN')}/-</span>
+                          <span className="text-white/70">{isExcludedTaxesDisplay ? 'Rate Per Child:' : 'Grand Total:'}</span>
+                          <span className="text-amber-300 font-black text-xs sm:text-sm">
+                            ₹{(isExcludedTaxesDisplay ? kidBase : kidGrand).toLocaleString('en-IN')}/-
+                          </span>
                         </div>
                       </div>
 
@@ -975,13 +1007,21 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                             ₹{baseTotal.toLocaleString('en-IN')}/-
                           </div>
                           <div className="space-y-0.5 pt-0.5 text-[10px] sm:text-[11px] text-amber-200/95 font-semibold leading-tight">
-                            <div>+ {gstPct}% GST: ₹{gstTotal.toLocaleString('en-IN')}/-</div>
-                            {tcsTotal > 0 && <div>+ {tcsPct}% TCS: ₹{tcsTotal.toLocaleString('en-IN')}/-</div>}
+                            {isExcludedTaxesDisplay ? (
+                              <div className="text-amber-300/90 font-medium">+ {gstPct}% GST{tcsTotal > 0 ? ` & ${tcsPct}% TCS` : ''} applicable extra</div>
+                            ) : (
+                              <>
+                                <div>+ {gstPct}% GST: ₹{gstTotal.toLocaleString('en-IN')}/-</div>
+                                {tcsTotal > 0 && <div>+ {tcsPct}% TCS: ₹{tcsTotal.toLocaleString('en-IN')}/-</div>}
+                              </>
+                            )}
                           </div>
                         </div>
                         <div className="pt-2 border-t border-white/15 text-[11px] text-white/90 font-medium flex items-center justify-between">
-                          <span className="text-white/70">Grand Total:</span>
-                          <span className="text-amber-300 font-black text-xs sm:text-sm">₹{grandTotal.toLocaleString('en-IN')}/-</span>
+                          <span className="text-white/70">{isExcludedTaxesDisplay ? 'Total Package:' : 'Grand Total:'}</span>
+                          <span className="text-amber-300 font-black text-xs sm:text-sm">
+                            ₹{(isExcludedTaxesDisplay ? baseTotal : grandTotal).toLocaleString('en-IN')}/-
+                          </span>
                         </div>
                       </div>
 
@@ -993,16 +1033,16 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                         </div>
                         {isFullPaymentOnly ? (
                           <div className="text-[11px] text-white/90 space-y-1 pt-0.5 font-semibold">
-                            <div>• 100% Full Payment: ₹{grandTotal.toLocaleString('en-IN')}/-</div>
+                            <div>• 100% Full Payment: ₹{(isExcludedTaxesDisplay ? baseTotal : grandTotal).toLocaleString('en-IN')}/-</div>
                             <div className="text-[10px] text-amber-200/90 font-normal leading-tight">
                               Full amount is payable in a single transaction to confirm booking.
                             </div>
                           </div>
                         ) : (
                           <div className="text-[11px] text-white/90 space-y-0.5 pt-0.5 font-semibold">
-                            {isTokenEnabled && <div>• 10% Token: ₹{Math.round(grandTotal * 0.10).toLocaleString('en-IN')}/- (Locks proposal)</div>}
-                            {isAdvanceEnabled && <div>• 50% Advance: ₹{Math.round(grandTotal * 0.50).toLocaleString('en-IN')}/- (Due in 7 days)</div>}
-                            {isFullEnabled && !isTokenEnabled && !isAdvanceEnabled && <div>• 100% Full Payment: ₹{grandTotal.toLocaleString('en-IN')}/-</div>}
+                            {isTokenEnabled && <div>• 10% Token: ₹{Math.round((isExcludedTaxesDisplay ? baseTotal : grandTotal) * 0.10).toLocaleString('en-IN')}/- (Locks proposal)</div>}
+                            {isAdvanceEnabled && <div>• 50% Advance: ₹{Math.round((isExcludedTaxesDisplay ? baseTotal : grandTotal) * 0.50).toLocaleString('en-IN')}/- (Due in 7 days)</div>}
+                            {isFullEnabled && !isTokenEnabled && !isAdvanceEnabled && <div>• 100% Full Payment: ₹{(isExcludedTaxesDisplay ? baseTotal : grandTotal).toLocaleString('en-IN')}/-</div>}
                             {(isTokenEnabled || isAdvanceEnabled) && <div>• Final Balance: Due 15 days before travel</div>}
                           </div>
                         )}
@@ -1021,13 +1061,21 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                             ₹{adultBase.toLocaleString('en-IN')}/-
                           </div>
                           <div className="space-y-0.5 pt-0.5 text-[11px] text-amber-200/95 font-semibold leading-tight">
-                            <div>+ {gstPct}% GST: ₹{adultGst.toLocaleString('en-IN')}/-</div>
-                            {tcsTotal > 0 && <div>+ {tcsPct}% TCS: ₹{adultTcs.toLocaleString('en-IN')}/-</div>}
+                            {isExcludedTaxesDisplay ? (
+                              <div className="text-amber-300/90 font-medium">+ {gstPct}% GST{tcsTotal > 0 ? ` & ${tcsPct}% TCS` : ''} applicable extra</div>
+                            ) : (
+                              <>
+                                <div>+ {gstPct}% GST: ₹{adultGst.toLocaleString('en-IN')}/-</div>
+                                {tcsTotal > 0 && <div>+ {tcsPct}% TCS: ₹{adultTcs.toLocaleString('en-IN')}/-</div>}
+                              </>
+                            )}
                           </div>
                         </div>
                         <div className="pt-2 border-t border-white/15 text-[11px] text-white/90 font-medium flex items-center justify-between">
-                          <span className="text-white/70">Grand Total:</span>
-                          <span className="text-amber-300 font-black text-xs sm:text-sm">₹{adultGrand.toLocaleString('en-IN')}/-</span>
+                          <span className="text-white/70">{isExcludedTaxesDisplay ? 'Rate Per Guest:' : 'Grand Total:'}</span>
+                          <span className="text-amber-300 font-black text-xs sm:text-sm">
+                            ₹{(isExcludedTaxesDisplay ? adultBase : adultGrand).toLocaleString('en-IN')}/-
+                          </span>
                         </div>
                       </div>
 
@@ -1042,13 +1090,21 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                             ₹{baseTotal.toLocaleString('en-IN')}/-
                           </div>
                           <div className="space-y-0.5 pt-0.5 text-[11px] text-amber-200/95 font-semibold leading-tight">
-                            <div>+ {gstPct}% GST: ₹{gstTotal.toLocaleString('en-IN')}/-</div>
-                            {tcsTotal > 0 && <div>+ {tcsPct}% TCS: ₹{tcsTotal.toLocaleString('en-IN')}/-</div>}
+                            {isExcludedTaxesDisplay ? (
+                              <div className="text-amber-300/90 font-medium">+ {gstPct}% GST{tcsTotal > 0 ? ` & ${tcsPct}% TCS` : ''} applicable extra</div>
+                            ) : (
+                              <>
+                                <div>+ {gstPct}% GST: ₹{gstTotal.toLocaleString('en-IN')}/-</div>
+                                {tcsTotal > 0 && <div>+ {tcsPct}% TCS: ₹{tcsTotal.toLocaleString('en-IN')}/-</div>}
+                              </>
+                            )}
                           </div>
                         </div>
                         <div className="pt-2 border-t border-white/15 text-[11px] text-white/90 font-medium flex items-center justify-between">
-                          <span className="text-white/70">Grand Total:</span>
-                          <span className="text-amber-300 font-black text-xs sm:text-sm">₹{grandTotal.toLocaleString('en-IN')}/-</span>
+                          <span className="text-white/70">{isExcludedTaxesDisplay ? 'Total Package:' : 'Grand Total:'}</span>
+                          <span className="text-amber-300 font-black text-xs sm:text-sm">
+                            ₹{(isExcludedTaxesDisplay ? baseTotal : grandTotal).toLocaleString('en-IN')}/-
+                          </span>
                         </div>
                       </div>
 
@@ -1060,16 +1116,16 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                         </div>
                         {isFullPaymentOnly ? (
                           <div className="text-[11px] text-white/90 space-y-1 pt-0.5 font-semibold">
-                            <div>• 100% Full Payment: ₹{grandTotal.toLocaleString('en-IN')}/-</div>
+                            <div>• 100% Full Payment: ₹{(isExcludedTaxesDisplay ? baseTotal : grandTotal).toLocaleString('en-IN')}/-</div>
                             <div className="text-[10px] text-amber-200/90 font-normal leading-tight">
                               Full amount is payable in a single transaction to confirm booking.
                             </div>
                           </div>
                         ) : (
                           <div className="text-[11px] text-white/90 space-y-0.5 pt-0.5 font-semibold">
-                            {isTokenEnabled && <div>• 10% Token: ₹{Math.round(grandTotal * 0.10).toLocaleString('en-IN')}/- (Locks dates & proposal)</div>}
-                            {isAdvanceEnabled && <div>• 50% Advance: ₹{Math.round(grandTotal * 0.50).toLocaleString('en-IN')}/- (Due in 7 days)</div>}
-                            {isFullEnabled && !isTokenEnabled && !isAdvanceEnabled && <div>• 100% Full Payment: ₹{grandTotal.toLocaleString('en-IN')}/-</div>}
+                            {isTokenEnabled && <div>• 10% Token: ₹{Math.round((isExcludedTaxesDisplay ? baseTotal : grandTotal) * 0.10).toLocaleString('en-IN')}/- (Locks dates & proposal)</div>}
+                            {isAdvanceEnabled && <div>• 50% Advance: ₹{Math.round((isExcludedTaxesDisplay ? baseTotal : grandTotal) * 0.50).toLocaleString('en-IN')}/- (Due in 7 days)</div>}
+                            {isFullEnabled && !isTokenEnabled && !isAdvanceEnabled && <div>• 100% Full Payment: ₹{(isExcludedTaxesDisplay ? baseTotal : grandTotal).toLocaleString('en-IN')}/-</div>}
                             {(isTokenEnabled || isAdvanceEnabled) && <div>• Final Balance: Due 15 days before departure</div>}
                           </div>
                         )}
@@ -1174,7 +1230,7 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                               </div>
                               <h5 className="text-xs font-black text-stone-900">Token Amount</h5>
                               <div className="text-lg sm:text-xl font-black text-[#6E1E14]">
-                                ₹{tenPercentAmount.toLocaleString('en-IN')}/-
+                                ₹{displayTenPercentAmount.toLocaleString('en-IN')}/-
                               </div>
                               <p className="text-[10px] text-stone-600 leading-tight">
                                 Locks your itinerary proposal, dates & slot reservations. 50% advance payable within 7 days.
@@ -1207,7 +1263,7 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                               </div>
                               <h5 className="text-xs font-black text-stone-900">Advance Amount</h5>
                               <div className="text-lg sm:text-xl font-black text-[#6E1E14]">
-                                ₹{fiftyPercentAmount.toLocaleString('en-IN')}/-
+                                ₹{displayFiftyPercentAmount.toLocaleString('en-IN')}/-
                               </div>
                               <p className="text-[10px] text-stone-600 leading-tight">
                                 Immediately secures hotel rooms & confirms your private chauffeur transport.
@@ -1237,7 +1293,7 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                               </div>
                               <h5 className="text-xs font-black text-stone-900">Full Payment</h5>
                               <div className="text-lg sm:text-xl font-black text-stone-900">
-                                ₹{totalQuotationAmount.toLocaleString('en-IN')}/-
+                                ₹{displayTotalAmount.toLocaleString('en-IN')}/-
                               </div>
                               <p className="text-[10px] text-stone-600 leading-tight">
                                 Clears 100% tour quotation upfront. Get priority voucher release.
@@ -1616,10 +1672,14 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                 </div>
                 <div className="flex items-baseline gap-2">
                   <span className="text-base sm:text-xl font-black text-stone-900 tracking-tight">
-                    ₹{totalQuotationAmount.toLocaleString('en-IN')}/-
+                    ₹{displayTotalAmount.toLocaleString('en-IN')}/-
                   </span>
                   <span className="text-[10px] sm:text-xs text-stone-500 font-medium hidden md:inline">
-                    Total for {(activeOption?.kids ?? itinerary.kids) ? `${(activeOption?.adults ?? itinerary.adults) || 2} Adults + ${activeOption?.kids ?? itinerary.kids} Kids` : `${(activeOption?.adults ?? itinerary.adults) || 2} Adults`} ({currentGstPct}% GST{currentTcsPct > 0 ? ` & ${currentTcsPct}% TCS` : ''} included)
+                    {isExcludedTaxesDisplay ? (
+                      <>Total for {(activeOption?.kids ?? itinerary.kids) ? `${(activeOption?.adults ?? itinerary.adults) || 2} Adults + ${activeOption?.kids ?? itinerary.kids} Kids` : `${(activeOption?.adults ?? itinerary.adults) || 2} Adults`} (+ {currentGstPct}% GST{currentTcsPct > 0 ? ` & ${currentTcsPct}% TCS` : ''} extra)</>
+                    ) : (
+                      <>Total for {(activeOption?.kids ?? itinerary.kids) ? `${(activeOption?.adults ?? itinerary.adults) || 2} Adults + ${activeOption?.kids ?? itinerary.kids} Kids` : `${(activeOption?.adults ?? itinerary.adults) || 2} Adults`} ({currentGstPct}% GST{currentTcsPct > 0 ? ` & ${currentTcsPct}% TCS` : ''} included)</>
+                    )}
                   </span>
                 </div>
               </div>
@@ -1642,7 +1702,7 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                         onClick={() => handleOpenBookModal('token')}
                         className="hidden sm:inline-flex bg-stone-100 hover:bg-stone-200 text-stone-900 border border-stone-300 font-black text-xs px-3.5 py-2.5 rounded-xl transition cursor-pointer"
                       >
-                        Pay 10% Token (₹{tenPercentAmount.toLocaleString('en-IN')})
+                        Pay 10% Token (₹{displayTenPercentAmount.toLocaleString('en-IN')})
                       </button>
                     ) : isAdvanceEnabled ? (
                       <button
@@ -1650,7 +1710,7 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                         onClick={() => handleOpenBookModal('advance')}
                         className="hidden sm:inline-flex bg-stone-100 hover:bg-stone-200 text-stone-900 border border-stone-300 font-black text-xs px-3.5 py-2.5 rounded-xl transition cursor-pointer"
                       >
-                        Pay 50% Advance (₹{fiftyPercentAmount.toLocaleString('en-IN')})
+                        Pay 50% Advance (₹{displayFiftyPercentAmount.toLocaleString('en-IN')})
                       </button>
                     ) : null}
                     <button

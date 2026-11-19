@@ -6110,6 +6110,7 @@ export const bhutanHeerManualItinerary: ManualItinerary = {
       ]
     }
   ],
+  showWithoutTaxesInProposal: true,
   adults: 5,
   kids: 2,
   perAdultPrice: 35500,
@@ -6120,7 +6121,7 @@ export const bhutanHeerManualItinerary: ManualItinerary = {
   tcsPercentage: 0,
   tcsAmount: 0,
   finalQuotationAmount: 186375,
-  childPricingNote: '₹35,500/- per adult for 5 Adults (Total Base: ₹1,77,500/- + 5% GST: ₹8,875/- = ₹1,86,375/- Total for 5 Adults in 01 Double Room + 01 Triple Room on MAP Plan. Kids Stay Complimentary: 2 Children aged 3 yrs stay free). Roundtrip Flight fare of ₹1,40,478/- for 5 Adults + 2 Kids is quoted separately.',
+  childPricingNote: '₹35,500/- per adult for 5 Adults (Total Package: ₹1,77,500/- for 5 Adults in 01 Double Room + 01 Triple Room on MAP Plan; 5% GST applicable extra). Kids Stay Complimentary (2 Children aged 3 yrs stay free). Roundtrip Flight fare of ₹1,40,478/- for 5 Adults + 2 Kids is quoted separately.',
   enableOnlineBooking: true,
   enableTokenPayment: true,
   enableAdvancePayment: true,
@@ -6458,6 +6459,7 @@ export const thailandDimpleRevisedManualItinerary: ManualItinerary = {
       ]
     }
   ],
+  showWithoutTaxesInProposal: true,
   adults: 4,
   kids: 0,
   perAdultPrice: 20450,
@@ -6467,7 +6469,7 @@ export const thailandDimpleRevisedManualItinerary: ManualItinerary = {
   tcsPercentage: 2,
   tcsAmount: 1636,
   finalQuotationAmount: 87526,
-  childPricingNote: '₹20,450/- per adult for 4 Adults (Total Base: ₹81,800/- + 5% GST: ₹4,090/- + 2% TCS: ₹1,636/- = ₹87,526/- Total for 4 Guests with Private 1-SUV Transfers, Grand Palace & Wat Arun Tickets, Chao Phraya Dinner Cruise, Krabi 4-Island Tour & Phi Phi Island Speedboat Tour. Note: Accommodations & Flights are Self-Booked).',
+  childPricingNote: '₹20,450/- per adult for 4 Adults (Total Package: ₹81,800/-; 5% GST & 2% TCS applicable extra). Includes Private 1-SUV Transfers, Grand Palace & Wat Arun Tickets, Chao Phraya Dinner Cruise, Krabi 4-Island Tour & Phi Phi Island Speedboat Tour. Note: Accommodations & Flights are Self-Booked.',
   enableOnlineBooking: true,
   enableTokenPayment: true,
   enableAdvancePayment: true,
