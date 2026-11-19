@@ -5813,6 +5813,261 @@ export const thailandDimpleManualItinerary: ManualItinerary = {
   enableFullPayment: true
 };
 
+export const bhutanHeerManualItinerary: ManualItinerary = {
+  id: 'bhutan-heer',
+  slug: 'bhutan-heer',
+  title: "Wonderful Bhutan Road Trip Specially Curated for Ms. Heer",
+  subtitle: '6N/7D Scenic Himalayan Valleys, Tiger’s Nest Hike, Punakha River Rafting & Hot Stone Bath',
+  duration: '6 Nights / 7 Days | 22 Dec – 28 Dec 2026',
+  numNights: 6,
+  numDays: 7,
+  dates: '22 Dec – 28 Dec 2026',
+  route: 'Bagdogra → Phuentsholing (1N) → Thimphu (2N) → Paro (2N) → Phuentsholing (1N) → Bagdogra',
+  routeSummary: '1N Phuentsholing | 2N Thimphu | 2N Paro | 1N Phuentsholing',
+  destination: 'Bhutan',
+  travelStyle: 'Curated Mountain Expedition',
+  tripType: 'Girls Trip / Customised Private Holiday',
+  leadName: 'Ms Heer',
+  vehicleType: 'Innova Crysta (Indian Sector) + Dedicated 7-Seater Vehicle (Bhutan Sector)',
+  mealPlan: 'Daily Breakfast & Dinner (Breakfast except Day 1 & Dinner except Day 7)',
+  heroImage: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=1600&q=85',
+  galleryImages: [
+    'https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1508873696983-2df5293cb395?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1530866495561-507c9faab2ed?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80'
+  ],
+  accommodations: [
+    { city: 'Phuentsholing', nights: 1, hotelName: 'Handpicked Deluxe Hotel (Phuentsholing)', roomCategory: '01 Double Room + 01 Triple Room (MAP Plan)' },
+    { city: 'Thimphu', nights: 2, hotelName: 'Handpicked Deluxe Hotel (Thimphu)', roomCategory: '01 Double Room + 01 Triple Room (MAP Plan)' },
+    { city: 'Paro', nights: 2, hotelName: 'Handpicked Deluxe Resort / Hotel (Paro)', roomCategory: '01 Double Room + 01 Triple Room (MAP Plan)' },
+    { city: 'Phuentsholing', nights: 1, hotelName: 'Handpicked Deluxe Hotel (Phuentsholing)', roomCategory: '01 Double Room + 01 Triple Room (MAP Plan)' }
+  ],
+  dayPlans: [
+    {
+      day: 1,
+      date: '22 Dec',
+      title: 'Day 1 | 22 Dec Arrival in Bagdogra — Transfer to Phuentsholing',
+      route: 'Bagdogra Airport (IXB) → Jaigaon → Phuentsholing',
+      durationNote: 'Scenic Drive (approx. 4 - 4.5 hrs)',
+      intro: 'Upon arrival at Bagdogra Airport, meet our representative who will help you board your private Innova Crysta transfer to Bhutan. Enjoy your drive to the last Indian border town called Jaigaon, after which you will enter Bhutan. Arrive in Phuentsholing in the evening, check in to your hotel, and relax.',
+      timeline: [
+        'Arrival at Bagdogra Airport (IXB) and warm meet-and-greet by our representative',
+        'Board your comfortable Innova Crysta for a scenic drive through Dooars tea estates to Jaigaon',
+        'Cross the vibrant Indo-Bhutan border into Phuentsholing',
+        'Check-in to your hotel in Phuentsholing & freshen up',
+        'Evening free to explore the peaceful border town and colorful local markets',
+        'Delicious dinner and overnight stay in Phuentsholing [1N]'
+      ],
+      stayLocation: 'Phuentsholing',
+      image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80',
+      meals: 'Dinner'
+    },
+    {
+      day: 2,
+      date: '23 Dec',
+      title: 'Day 2 | 23 Dec Phuentsholing to Thimphu — Travel to the Capital City of Bhutan',
+      route: 'Phuentsholing → Chuzom Confluence → Thimphu',
+      durationNote: 'Scenic Mountain Drive (approx. 5 - 6 hrs)',
+      intro: 'Post breakfast, complete the permit formalities at Jaigaon/Phuentsholing and start your drive to Thimphu. Today’s road journey will take you through some of the most beautiful countryside landscapes of Bhutan.',
+      timeline: [
+        'Post breakfast at hotel, complete tourist permit formalities',
+        'Board your spacious 7-seater vehicle with dedicated Bhutanese chauffeur & local guide',
+        'Pass through meandering mountain roads lined with broad-leaved forests, waterfalls, and quaint villages',
+        'En route, take a small stopover at Chuzom Bridge — the beautiful confluence of the Paro and Thimphu rivers with portraits of the King and Queen',
+        'By evening, reach Thimphu (2,334m) and check in to your hotel',
+        'Explore Thimphu — the only capital city in the world without traffic lights — or stroll through local handicraft markets',
+        'Dinner and overnight stay in Thimphu [1N]'
+      ],
+      stayLocation: 'Thimphu',
+      image: 'https://images.unsplash.com/photo-1508873696983-2df5293cb395?auto=format&fit=crop&w=1200&q=80',
+      meals: 'Breakfast & Dinner'
+    },
+    {
+      day: 3,
+      date: '24 Dec',
+      title: 'Day 3 | 24 Dec Excursion to Punakha — Dochu La Pass, Chimi Lhakhang & River Rafting',
+      route: 'Thimphu → Dochula Pass (3,100m) → Punakha Valley → Thimphu',
+      durationNote: 'Full Day Excursion & Adventure',
+      intro: 'Have your breakfast in the morning and get ready for a memorable day. Today, we take you to Punakha, located 75 km to the east of Thimphu, crossing the scenic Dochula Pass and enjoying an exhilarating river rafting experience.',
+      timeline: [
+        'Breakfast at hotel in Thimphu',
+        'First stop at Dochu La (3,100m) — one of Bhutan’s most scenic mountain passes',
+        'Admire panoramic views of the snow-clad eastern Himalayas while sipping hot tea/coffee at the pass café',
+        'Visit the 108 Druk Wangyal Chortens built in memory of fallen Bhutanese soldiers',
+        'Descend into the warm subtropical Punakha Valley',
+        'Experience thrilling River Rafting on the scenic Mo Chhu / Po Chhu river',
+        'Short hike across picturesque paddy fields to Chimi Lhakhang (the famed Temple of Fertility dedicated to Lam Drukpa Kuenley)',
+        'Marvel at the architectural grandeur of Punakha Dzong at the confluence of two rivers',
+        'Scenic drive back to Thimphu by evening',
+        'Dinner and overnight stay in Thimphu [2N]'
+      ],
+      sections: [
+        {
+          title: 'Included Punakha Highlights:',
+          items: [
+            '108 Druk Wangyal Chortens & Himalayan viewpoint at Dochula Pass (3,100m)',
+            'River Rafting session in Punakha included for the group',
+            'Chimi Lhakhang fertility temple hike & Punakha Dzong view'
+          ]
+        }
+      ],
+      stayLocation: 'Thimphu',
+      image: 'https://images.unsplash.com/photo-1530866495561-507c9faab2ed?auto=format&fit=crop&w=1200&q=80',
+      meals: 'Breakfast & Dinner'
+    },
+    {
+      day: 4,
+      date: '25 Dec',
+      title: 'Day 4 | 25 Dec Thimphu Local Sightseeing & Transfer to Paro',
+      route: 'Thimphu City Sightseeing → Paro Valley',
+      durationNote: 'Sightseeing & 1.5 hr Drive',
+      intro: 'Wake up to a joyful Christmas morning in Bhutan. Post breakfast, explore the spiritual and cultural highlights of Thimphu before boarding your transfers along the scenic river to Paro.',
+      timeline: [
+        'Breakfast at hotel and check-out',
+        'Visit the colossal Buddha Dordenma (Buddha Point) overlooking the entire Thimphu valley',
+        'Visit Simply Bhutan — living cultural museum showcasing traditional dress, music, and Bhutanese heritage',
+        'Board your transfers to Paro along the scenic Pa Chhu river (approx. 1.5 hrs drive)',
+        'Arrive in Paro and check in to your hotel/resort',
+        'Afternoon leisure to stroll through Paro town and quaint handicraft shops',
+        'Dinner and overnight stay in Paro [1N]'
+      ],
+      sections: [
+        {
+          title: 'Included Highlights Today:',
+          items: [
+            'Buddha Dordenma (Great Buddha Statue) viewpoint visit',
+            'Simply Bhutan living cultural museum experience',
+            'Scenic valley transfer from Thimphu to Paro'
+          ]
+        }
+      ],
+      stayLocation: 'Paro',
+      image: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80',
+      meals: 'Breakfast & Dinner'
+    },
+    {
+      day: 5,
+      date: '26 Dec',
+      title: 'Day 5 | 26 Dec Paro Sightseeing — Hike to Iconic Tiger’s Nest & Hot Stone Bath',
+      route: 'Paro → Taktsang Hiking Trail → Traditional Hot Stone Bath → Paro',
+      durationNote: 'Pilgrimage Hike & Rejuvenation',
+      intro: 'Post breakfast, get ready to watch the most magical sight of Bhutan — the famous Taktsang Monastery (Tiger’s Nest), clinging impossibly to a sheer cliff 900 meters above the valley. In the evening, rejuvenate with a traditional Bhutanese Hot Stone Bath.',
+      timeline: [
+        'Early breakfast at hotel',
+        'Drive to the starting point of the Taktsang hiking trail (11 km from Paro)',
+        'Begin your hike through beautiful pine forests and fluttering prayer flags',
+        'Hike for 2-4 hours to reach the magnificent Tiger’s Nest Monastery perched at 3,120m',
+        'Spend peaceful time walking around the monastery, listening to prayer chants, and meditating in holy caves',
+        'Return trek to the base and drive back to Paro',
+        'Indulge in a unique Traditional Bhutanese Hot Stone Bath in Paro — river stones heated in wood fire infuse therapeutic minerals into fresh mountain spring water',
+        'Delicious dinner and overnight stay in Paro [2N]'
+      ],
+      sections: [
+        {
+          title: 'Included Signature Experiences:',
+          items: [
+            'Guided hike to Paro Taktsang (Tiger’s Nest Monastery)',
+            'Traditional Bhutanese Hot Stone Bath experience in Paro included for the group'
+          ]
+        }
+      ],
+      stayLocation: 'Paro',
+      image: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=1200&q=80',
+      meals: 'Breakfast & Dinner'
+    },
+    {
+      day: 6,
+      date: '27 Dec',
+      title: 'Day 6 | 27 Dec Paro to Phuentsholing — Embark on a Scenic Road Journey',
+      route: 'Paro → Chuzom → Phuentsholing',
+      durationNote: 'Scenic Road Journey (approx. 5 hrs)',
+      intro: 'Have your breakfast in the morning and get ready to start your return journey. Board your transfers and enjoy a beautiful return road journey through Bhutan’s pristine hills back to Phuentsholing.',
+      timeline: [
+        'Breakfast at hotel and check-out',
+        'Board your comfortable vehicle and embark on a scenic downhill return road trip',
+        'Enjoy panoramic mountain vistas, valleys, and river streams along the drive',
+        'Reach Phuentsholing by evening',
+        'Check-in to the hotel and unwind',
+        'Evening at leisure for last-minute shopping and exploration',
+        'Dinner and overnight stay in Phuentsholing [2N]'
+      ],
+      stayLocation: 'Phuentsholing',
+      image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80',
+      meals: 'Breakfast & Dinner'
+    },
+    {
+      day: 7,
+      date: '28 Dec',
+      title: 'Day 7 | 28 Dec Departure — Phuentsholing to Bagdogra Airport',
+      route: 'Phuentsholing → Jaigaon → Bagdogra Airport (IXB)',
+      durationNote: 'Return Transfer (approx. 4 hrs)',
+      intro: 'After breakfast in the morning, check out from your hotel and board your Innova Crysta transfer to Bagdogra Airport. Depart with a treasure of happy memories to cherish for a lifetime!',
+      timeline: [
+        'Breakfast at hotel and check-out',
+        'Cross the border into Jaigaon and meet your Innova Crysta driver',
+        'Smooth drive back through North Bengal to Bagdogra Airport (IXB)',
+        'Drop-off at Bagdogra Airport as per flight timings',
+        'Tour concludes with wonderful Bhutan memories with Wanderphilia! 🇧🇹'
+      ],
+      stayLocation: 'Tour Concludes at Bagdogra Airport',
+      image: 'https://images.unsplash.com/photo-1508873696983-2df5293cb395?auto=format&fit=crop&w=1200&q=80',
+      meals: 'Breakfast',
+      signOff: 'Wishing Ms. Heer and friends a magical, safe, and joyful journey with Wanderphilia! 🌸✨'
+    }
+  ],
+  inclusions: [
+    '6 Nights stay accommodation on Triple & Double sharing basis (01 Double Room + 01 Triple Room for 5 Adults + 2 Kids)',
+    'Daily Breakfast & Dinner included (Breakfast except Day 1 & Dinner except Day 7)',
+    'Exciting River Rafting experience in Punakha included',
+    'Unique Traditional Bhutanese Hot Stone Bath in Paro included',
+    'Comfortable & Spacious 7-Seater Car for 6 Days in Bhutan Sector',
+    'Innova Crysta Car for Indian Sector (Bagdogra Airport ↔ Jaigaon / Phuentsholing roundtrip)',
+    'Professional Local English-Speaking Bhutanese Guide to make your journey comfortable & memorable',
+    'Bhutan Government Sustainable Development Fee (SDF) included for all nights in Bhutan',
+    'All toll charges, parking fees, fuel, driver allowances & driver night charges included',
+    '24x7 Dedicated Wanderphilia trip assistance throughout the tour'
+  ],
+  exclusions: [
+    'Airfare / Train tickets to and from Bagdogra',
+    'GST (5%) is applicable extra',
+    'Entry tickets to monuments, museums, or attractions (payable directly on spot)',
+    'Any food or beverage not included in the package (highway meals, refreshments, mineral water, alcoholic drinks)',
+    'Any personal expenses (tips to drivers/guide, camera fees, laundry, telephone bills, etc.)',
+    'Any cost arising due to natural calamities such as landslides or roadblocks',
+    'Cost arising due to any change in tourism policy between Bhutan and India',
+    'Cost arising due to change or delay in flight timings',
+    'Travel insurance or anything not specifically mentioned in inclusions'
+  ],
+  thingsToCarry: [
+    'Original Passport with minimum 6 months validity or original Voter ID Card',
+    'Passport-size photographs (minimum 4 copies)',
+    'Warm woolens, thermal innerwear, windbreaker jacket & gloves (December is chilly in Thimphu & Paro)',
+    'Sturdy trekking shoes / sneakers with good grip for Tiger’s Nest hike',
+    'Modest attire covering shoulders and knees for visiting Dzongs and Monasteries',
+    'Personal medicines, motion sickness tablets & lip balm / moisturizer',
+    'Sunglasses, sun hat & high SPF sunscreen',
+    'Universal power adapter & mobile power bank',
+    'Indian Currency notes (INR notes of ₹10, ₹20, ₹50, ₹100 & ₹500 are widely accepted in Bhutan)'
+  ],
+  adults: 5,
+  kids: 2,
+  perAdultPrice: 0,
+  baseAmount: 0,
+  gstPercentage: 5,
+  gstAmount: 0,
+  tcsPercentage: 0,
+  tcsAmount: 0,
+  finalQuotationAmount: 0,
+  childPricingNote: 'Specially Curated Girls Trip for Ms. Heer — 5 Adults & 2 Kids (Both 3 yrs of age) in 01 Double Room + 01 Triple Room on MAP Plan (Breakfast & Dinner). Pricing to be updated upon confirmation.',
+  enableOnlineBooking: true,
+  enableTokenPayment: true,
+  enableAdvancePayment: true,
+  enableFullPayment: true
+};
+
 export const manualItinerariesRegistry: Record<string, ManualItinerary> = {
   // Meghalaya with Kaziranga (Mrs. Shravya)
   'meghalaya-with-kaziranga-mrs-shravya': meghalayaShravyaManualItinerary,
@@ -6002,7 +6257,17 @@ export const manualItinerariesRegistry: Record<string, ManualItinerary> = {
   'ms-dimple-thailand': thailandDimpleManualItinerary,
   'dimple-thailand': thailandDimpleManualItinerary,
   'dimple': thailandDimpleManualItinerary,
-  'wp-thailand-dimple': thailandDimpleManualItinerary
+  'wp-thailand-dimple': thailandDimpleManualItinerary,
+
+  // Bhutan Heer (6N / 7D, 22 Dec - 28 Dec 2026, 5 Adults + 2 Kids Girls Trip)
+  'bhutan-heer': bhutanHeerManualItinerary,
+  'bhutan-heer-girls-trip': bhutanHeerManualItinerary,
+  'bhutan-heer-6n7d': bhutanHeerManualItinerary,
+  'wonderful-bhutan-heer': bhutanHeerManualItinerary,
+  'ms-heer-bhutan': bhutanHeerManualItinerary,
+  'heer-bhutan': bhutanHeerManualItinerary,
+  'bhutan-ms-heer': bhutanHeerManualItinerary,
+  'wp-bhutan-heer': bhutanHeerManualItinerary
 };
 
 export function getManualItinerary(idOrSlug: string): ManualItinerary | null {
@@ -6015,6 +6280,7 @@ export function getManualItinerary(idOrSlug: string): ManualItinerary | null {
 
 export function getAllManualItineraries(): ManualItinerary[] {
   return [
+    bhutanHeerManualItinerary,
     thailandDimpleManualItinerary,
     meghalayaShravyaManualItinerary,
     vietnamShravyaManualItinerary,

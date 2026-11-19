@@ -68,6 +68,26 @@ const nextConfig = {
         destination: '/itinerary/thailand-dimple',
         permanent: false,
       },
+      {
+        source: '/bhutan-heer',
+        destination: '/itinerary/bhutan-heer',
+        permanent: false,
+      },
+      {
+        source: '/Bhutan-heer',
+        destination: '/itinerary/bhutan-heer',
+        permanent: false,
+      },
+      {
+        source: '/trips/bhutan-heer',
+        destination: '/itinerary/bhutan-heer',
+        permanent: false,
+      },
+      {
+        source: '/trips/Bhutan-heer',
+        destination: '/itinerary/bhutan-heer',
+        permanent: false,
+      },
     ]
   },
 }
