@@ -5822,28 +5822,32 @@ export const bhutanHeerManualItinerary: ManualItinerary = {
   numNights: 6,
   numDays: 7,
   dates: '22 Dec – 28 Dec 2026',
-  route: 'Bagdogra → Phuentsholing (1N) → Thimphu (2N) → Paro (2N) → Phuentsholing (1N) → Bagdogra',
-  routeSummary: '1N Phuentsholing | 2N Thimphu | 2N Paro | 1N Phuentsholing',
+  route: 'Navi Mumbai ✈ Bagdogra → Phuentsholing (1N) → Thimphu (2N) → Paro (2N) → Siliguri (1N) → Bagdogra ✈ Navi Mumbai',
+  routeSummary: '1N Phuentsholing | 2N Thimphu | 2N Paro | 1N Siliguri',
   destination: 'Bhutan',
   travelStyle: 'Curated Mountain Expedition',
   tripType: 'Girls Trip / Customised Private Holiday',
   leadName: 'Ms Heer',
-  vehicleType: 'Innova Crysta (Indian Sector) + Dedicated 7-Seater Vehicle (Bhutan Sector)',
+  vehicleType: 'Innova Crysta (Indian Sector) + Dedicated Toyota Hiace / Tata Winger (Bhutan Sector)',
   mealPlan: 'Daily Breakfast & Dinner (Breakfast except Day 1 & Dinner except Day 7)',
-  heroImage: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=1600&q=85',
+  heroImage: '/images/bhutan-cover1.jpg',
   galleryImages: [
-    'https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=1200&q=80',
-    'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80',
-    'https://images.unsplash.com/photo-1508873696983-2df5293cb395?auto=format&fit=crop&w=1200&q=80',
-    'https://images.unsplash.com/photo-1530866495561-507c9faab2ed?auto=format&fit=crop&w=1200&q=80',
-    'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80',
-    'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80'
+    '/images/bhutan-cover1.jpg',
+    '/images/bhutan-cover2.jpg',
+    '/images/bhutan-cover3.PNG',
+    '/images/bhutan-cover4.PNG',
+    '/images/bhutan1.jpg',
+    '/images/bhutan2.jpg',
+    '/images/bhutan3.jpg',
+    '/images/bhutan5.PNG',
+    '/images/bhutan6.PNG',
+    '/images/bhutan7.PNG'
   ],
   accommodations: [
-    { city: 'Phuentsholing', nights: 1, hotelName: 'Handpicked Deluxe Hotel (Phuentsholing)', roomCategory: '01 Double Room + 01 Triple Room (MAP Plan)' },
-    { city: 'Thimphu', nights: 2, hotelName: 'Handpicked Deluxe Hotel (Thimphu)', roomCategory: '01 Double Room + 01 Triple Room (MAP Plan)' },
-    { city: 'Paro', nights: 2, hotelName: 'Handpicked Deluxe Resort / Hotel (Paro)', roomCategory: '01 Double Room + 01 Triple Room (MAP Plan)' },
-    { city: 'Phuentsholing', nights: 1, hotelName: 'Handpicked Deluxe Hotel (Phuentsholing)', roomCategory: '01 Double Room + 01 Triple Room (MAP Plan)' }
+    { city: 'Phuentsholing', nights: 1, hotelName: 'Hotel Lakhi / Similar', roomCategory: '01 Double Room + 01 Triple Room (Deluxe Stay | MAP Plan)' },
+    { city: 'Thimphu', nights: 2, hotelName: 'Hotel White Tara / Similar', roomCategory: '01 Double Room + 01 Triple Room (Deluxe Stay | MAP Plan)' },
+    { city: 'Paro', nights: 2, hotelName: 'Udhumara Resort / Similar', roomCategory: '01 Double Room + 01 Triple Room (Deluxe Stay | MAP Plan)' },
+    { city: 'Siliguri', nights: 1, hotelName: 'Hotel Yashi Imperial / Similar', roomCategory: '01 Double Room + 01 Triple Room (Deluxe Stay | MAP Plan)' }
   ],
   dayPlans: [
     {
@@ -5861,8 +5865,8 @@ export const bhutanHeerManualItinerary: ManualItinerary = {
         'Evening free to explore the peaceful border town and colorful local markets',
         'Delicious dinner and overnight stay in Phuentsholing [1N]'
       ],
-      stayLocation: 'Phuentsholing',
-      image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80',
+      stayLocation: 'Phuentsholing (Hotel Lakhi / Similar)',
+      image: '/images/bhutan2.jpg',
       meals: 'Dinner'
     },
     {
@@ -5874,15 +5878,15 @@ export const bhutanHeerManualItinerary: ManualItinerary = {
       intro: 'Post breakfast, complete the permit formalities at Jaigaon/Phuentsholing and start your drive to Thimphu. Today’s road journey will take you through some of the most beautiful countryside landscapes of Bhutan.',
       timeline: [
         'Post breakfast at hotel, complete tourist permit formalities',
-        'Board your spacious 7-seater vehicle with dedicated Bhutanese chauffeur & local guide',
+        'Board your dedicated Toyota Hiace / Tata Winger with professional Bhutanese chauffeur & local guide',
         'Pass through meandering mountain roads lined with broad-leaved forests, waterfalls, and quaint villages',
         'En route, take a small stopover at Chuzom Bridge — the beautiful confluence of the Paro and Thimphu rivers with portraits of the King and Queen',
         'By evening, reach Thimphu (2,334m) and check in to your hotel',
         'Explore Thimphu — the only capital city in the world without traffic lights — or stroll through local handicraft markets',
         'Dinner and overnight stay in Thimphu [1N]'
       ],
-      stayLocation: 'Thimphu',
-      image: 'https://images.unsplash.com/photo-1508873696983-2df5293cb395?auto=format&fit=crop&w=1200&q=80',
+      stayLocation: 'Thimphu (Hotel White Tara / Similar)',
+      image: '/images/bhutan-cover2.jpg',
       meals: 'Breakfast & Dinner'
     },
     {
@@ -5914,8 +5918,8 @@ export const bhutanHeerManualItinerary: ManualItinerary = {
           ]
         }
       ],
-      stayLocation: 'Thimphu',
-      image: 'https://images.unsplash.com/photo-1530866495561-507c9faab2ed?auto=format&fit=crop&w=1200&q=80',
+      stayLocation: 'Thimphu (Hotel White Tara / Similar)',
+      image: '/images/bhutan6.PNG',
       meals: 'Breakfast & Dinner'
     },
     {
@@ -5944,8 +5948,8 @@ export const bhutanHeerManualItinerary: ManualItinerary = {
           ]
         }
       ],
-      stayLocation: 'Paro',
-      image: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80',
+      stayLocation: 'Paro (Udhumara Resort / Similar)',
+      image: '/images/bhutan-cover3.PNG',
       meals: 'Breakfast & Dinner'
     },
     {
@@ -5974,68 +5978,72 @@ export const bhutanHeerManualItinerary: ManualItinerary = {
           ]
         }
       ],
-      stayLocation: 'Paro',
-      image: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=1200&q=80',
+      stayLocation: 'Paro (Udhumara Resort / Similar)',
+      image: '/images/bhutan-cover1.jpg',
       meals: 'Breakfast & Dinner'
     },
     {
       day: 6,
       date: '27 Dec',
-      title: 'Day 6 | 27 Dec Paro to Phuentsholing — Embark on a Scenic Road Journey',
-      route: 'Paro → Chuzom → Phuentsholing',
-      durationNote: 'Scenic Road Journey (approx. 5 hrs)',
-      intro: 'Have your breakfast in the morning and get ready to start your return journey. Board your transfers and enjoy a beautiful return road journey through Bhutan’s pristine hills back to Phuentsholing.',
+      title: 'Day 6 | 27 Dec Paro to Siliguri — Scenic Mountain Descent & Border Crossing',
+      route: 'Paro Valley → Chuzom → Phuentsholing / Jaigaon → Siliguri',
+      durationNote: 'Scenic Return Journey (approx. 5 - 6 hrs)',
+      intro: 'Have your breakfast in Paro and start your return road trip descending through Bhutan’s picturesque mountain corridors back across the border to Siliguri. Staying in Siliguri tonight ensures you are just 20 minutes away from Bagdogra Airport for your early morning flight tomorrow.',
       timeline: [
-        'Breakfast at hotel and check-out',
-        'Board your comfortable vehicle and embark on a scenic downhill return road trip',
+        'Breakfast at resort and check-out',
+        'Board your dedicated Toyota Hiace / Tata Winger and embark on a scenic downhill return road trip from Paro',
         'Enjoy panoramic mountain vistas, valleys, and river streams along the drive',
-        'Reach Phuentsholing by evening',
-        'Check-in to the hotel and unwind',
-        'Evening at leisure for last-minute shopping and exploration',
-        'Dinner and overnight stay in Phuentsholing [2N]'
+        'Reach Phuentsholing by afternoon and complete border crossing formalities into Jaigaon',
+        'Board your private Innova Crysta for a smooth drive through Dooars tea estates to Siliguri',
+        'Check-in to Hotel Yashi Imperial / Similar in Siliguri',
+        'Relax and unwind after the road journey',
+        'Dinner and overnight stay in Siliguri [1N]'
       ],
-      stayLocation: 'Phuentsholing',
-      image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80',
+      stayLocation: 'Siliguri (Hotel Yashi Imperial / Similar)',
+      image: '/images/bhutan-cover4.PNG',
       meals: 'Breakfast & Dinner'
     },
     {
       day: 7,
       date: '28 Dec',
-      title: 'Day 7 | 28 Dec Departure — Phuentsholing to Bagdogra Airport',
-      route: 'Phuentsholing → Jaigaon → Bagdogra Airport (IXB)',
-      durationNote: 'Return Transfer (approx. 4 hrs)',
-      intro: 'After breakfast in the morning, check out from your hotel and board your Innova Crysta transfer to Bagdogra Airport. Depart with a treasure of happy memories to cherish for a lifetime!',
+      title: 'Day 7 | 28 Dec Morning Departure — Bagdogra to Navi Mumbai via Akasa Air',
+      route: 'Siliguri Hotel → Bagdogra Airport (IXB) ✈ Navi Mumbai (NMI)',
+      durationNote: 'Airport Transfer & Return Flight (QP - 2034)',
+      intro: 'After early morning breakfast, take a quick 20-30 minute transfer from your Siliguri hotel to Bagdogra International Airport. Board your direct Akasa Air flight back to Navi Mumbai with sweet smiles and unforgettable Bhutan memories!',
       timeline: [
-        'Breakfast at hotel and check-out',
-        'Cross the border into Jaigaon and meet your Innova Crysta driver',
-        'Smooth drive back through North Bengal to Bagdogra Airport (IXB)',
-        'Drop-off at Bagdogra Airport as per flight timings',
-        'Tour concludes with wonderful Bhutan memories with Wanderphilia! 🇧🇹'
+        'Early breakfast at hotel and check-out',
+        'Transfer from Siliguri hotel to Bagdogra International Airport (IXB)',
+        '09:50 AM: Depart Bagdogra on Akasa Air (QP - 2034) direct to Navi Mumbai',
+        '01:10 PM: Land at Navi Mumbai International Airport (NMI) (3 h 20 m Non Stop)',
+        'Tour concludes with wonderful lifelong memories of your Bhutan girls expedition with Wanderphilia! 🇧🇹✨'
       ],
-      stayLocation: 'Tour Concludes at Bagdogra Airport',
-      image: 'https://images.unsplash.com/photo-1508873696983-2df5293cb395?auto=format&fit=crop&w=1200&q=80',
+      stayLocation: 'Onward Flight to Navi Mumbai — Tour Concludes',
+      image: '/images/bhutan3.jpg',
       meals: 'Breakfast',
       signOff: 'Wishing Ms. Heer and friends a magical, safe, and joyful journey with Wanderphilia! 🌸✨'
     }
   ],
   inclusions: [
-    '6 Nights stay accommodation on Triple & Double sharing basis (01 Double Room + 01 Triple Room for 5 Adults + 2 Kids)',
+    '6 Nights Deluxe stay accommodation on Triple & Double sharing basis (01 Double Room + 01 Triple Room for 5 Adults + 2 Kids)',
+    'Stay Details: Hotel Lakhi / Similar (Phuentsholing) + Hotel White Tara / Similar (Thimphu) + Udhumara Resort / Similar (Paro) + Hotel Yashi Imperial / Similar (Siliguri)',
     'Daily Breakfast & Dinner included (Breakfast except Day 1 & Dinner except Day 7)',
+    'Kids Stay Complimentary (2 Children aged 3 yrs stay free)',
     'Exciting River Rafting experience in Punakha included',
     'Unique Traditional Bhutanese Hot Stone Bath in Paro included',
-    'Comfortable & Spacious 7-Seater Car for 6 Days in Bhutan Sector',
-    'Innova Crysta Car for Indian Sector (Bagdogra Airport ↔ Jaigaon / Phuentsholing roundtrip)',
+    'Comfortable & Spacious Toyota Hiace or Tata Winger for 6 Days in Bhutan Sector',
+    'Innova Crysta Car for Indian Sector (Bagdogra Airport ↔ Jaigaon / Phuentsholing & Siliguri)',
     'Professional Local English-Speaking Bhutanese Guide to make your journey comfortable & memorable',
     'Bhutan Government Sustainable Development Fee (SDF) included for all nights in Bhutan',
     'All toll charges, parking fees, fuel, driver allowances & driver night charges included',
     '24x7 Dedicated Wanderphilia trip assistance throughout the tour'
   ],
   exclusions: [
-    'Airfare / Train tickets to and from Bagdogra',
-    'GST (5%) is applicable extra',
+    'Return flight tickets: Akasa Air Navi Mumbai ⇄ Bagdogra (Quoted separately at ₹1,40,478/- all-inclusive for 5 Adults + 2 Children)',
+    'GST (5%) is applicable extra on land package',
     'Entry tickets to monuments, museums, or attractions (payable directly on spot)',
     'Any food or beverage not included in the package (highway meals, refreshments, mineral water, alcoholic drinks)',
     'Any personal expenses (tips to drivers/guide, camera fees, laundry, telephone bills, etc.)',
+    'Return transfer from Siliguri hotel to airport (self-conveyance / auto / cab as per flight timings)',
     'Any cost arising due to natural calamities such as landslides or roadblocks',
     'Cost arising due to any change in tourism policy between Bhutan and India',
     'Cost arising due to change or delay in flight timings',
@@ -6052,16 +6060,414 @@ export const bhutanHeerManualItinerary: ManualItinerary = {
     'Universal power adapter & mobile power bank',
     'Indian Currency notes (INR notes of ₹10, ₹20, ₹50, ₹100 & ₹500 are widely accepted in Bhutan)'
   ],
+  flightQuotations: [
+    {
+      optionId: 'bhutan-heer-flights',
+      optionTitle: 'Roundtrip Flights (Akasa Air: Navi Mumbai ⇄ Bagdogra)',
+      totalPrice: 140478,
+      paxDetails: '5 Adults, 2 Children (Economy | Navi Mumbai ⇄ Bagdogra)',
+      isExcludedFromPackage: true,
+      note: 'Akasa Air (QP-2033 NMI-IXB 06:05-09:00 & QP-2034 IXB-NMI 09:50-13:10). Total price ₹1,40,478/- inclusive of taxes. Airline ticket pricing is dynamic. Fares are valid as of now and might change at the time of issuance. For assistance contact: Bhavin Thakker (+91 9987602328 / experiences@wanderphilia.com).',
+      sectors: [
+        {
+          fromCity: 'Navi Mumbai (NMI)',
+          toCity: 'Bagdogra (IXB)',
+          fromAirport: 'Navi Mumbai International Airport (NMI)',
+          toAirport: 'Bagdogra International Airport (IXB)',
+          fromCode: 'NMI',
+          toCode: 'IXB',
+          airline: 'Akasa Air',
+          flightNumber: 'QP - 2033',
+          journeyType: 'Onward Flight',
+          departureDate: 'Tue, 22 Dec 2026',
+          departureTime: '06:05',
+          arrivalDate: 'Tue, 22 Dec 2026',
+          arrivalTime: '09:00',
+          duration: '2 h 55 m',
+          stops: 'Non Stop',
+          cabinClass: 'Economy',
+          baggage: 'Cabin 7 KG | Check-in 15 KG'
+        },
+        {
+          fromCity: 'Bagdogra (IXB)',
+          toCity: 'Navi Mumbai (NMI)',
+          fromAirport: 'Bagdogra International Airport (IXB)',
+          toAirport: 'Navi Mumbai International Airport (NMI)',
+          fromCode: 'IXB',
+          toCode: 'NMI',
+          airline: 'Akasa Air',
+          flightNumber: 'QP - 2034',
+          journeyType: 'Return Flight',
+          departureDate: 'Mon, 28 Dec 2026',
+          departureTime: '09:50',
+          arrivalDate: 'Mon, 28 Dec 2026',
+          arrivalTime: '13:10',
+          duration: '3 h 20 m',
+          stops: 'Non Stop',
+          cabinClass: 'Economy',
+          baggage: 'Cabin 7 KG | Check-in 15 KG'
+        }
+      ]
+    }
+  ],
   adults: 5,
   kids: 2,
-  perAdultPrice: 0,
-  baseAmount: 0,
+  perAdultPrice: 35500,
+  perKidPrice: 0,
+  baseAmount: 177500,
   gstPercentage: 5,
-  gstAmount: 0,
+  gstAmount: 8875,
   tcsPercentage: 0,
   tcsAmount: 0,
-  finalQuotationAmount: 0,
-  childPricingNote: 'Specially Curated Girls Trip for Ms. Heer — 5 Adults & 2 Kids (Both 3 yrs of age) in 01 Double Room + 01 Triple Room on MAP Plan (Breakfast & Dinner). Pricing to be updated upon confirmation.',
+  finalQuotationAmount: 186375,
+  childPricingNote: '₹35,500/- per adult for 5 Adults (Total Base: ₹1,77,500/- + 5% GST: ₹8,875/- = ₹1,86,375/- Total for 5 Adults in 01 Double Room + 01 Triple Room on MAP Plan. Kids Stay Complimentary: 2 Children aged 3 yrs stay free). Roundtrip Flight fare of ₹1,40,478/- for 5 Adults + 2 Kids is quoted separately.',
+  enableOnlineBooking: true,
+  enableTokenPayment: true,
+  enableAdvancePayment: true,
+  enableFullPayment: true
+};
+
+export const thailandDimpleRevisedManualItinerary: ManualItinerary = {
+  id: 'thailand-dimple-revised',
+  slug: 'thailand-dimple-revised',
+  title: "7 Days Curated Thailand Getaway Specially Curated for Ms. Dimple",
+  subtitle: 'Bangkok, Krabi & Phuket Tropical Holiday (Revised Itinerary)',
+  duration: '6 Nights / 7 Days | 06 Dec – 12 Dec 2026',
+  numNights: 6,
+  numDays: 7,
+  dates: '06 Dec – 12 Dec 2026',
+  route: 'New Delhi → Bangkok (2N) → Krabi (2N) → Phuket (2N) → New Delhi',
+  routeSummary: '2N Bangkok | 2N Krabi | 2N Phuket',
+  destination: 'Thailand',
+  travelStyle: 'Curated Tropical Escape',
+  tripType: 'Customised Private Holiday',
+  leadName: 'Ms. Dimple',
+  vehicleType: 'Private SUV (1-SUV) for Airport, Inter-City & Sightseeing Transfers',
+  mealPlan: 'Self-Booked (Chao Phraya Indian Dinner Cruise, Krabi 4-Island Lunch & Phi Phi Island Lunch Included)',
+  heroImage: 'https://images.unsplash.com/photo-1508009603885-50cf7c579365?auto=format&fit=crop&w=1600&q=85',
+  galleryImages: [
+    'https://images.unsplash.com/photo-1508009603885-50cf7c579365?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1528181304800-259b08848526?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1589394815804-964ed0be2eb5?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1506665531195-3566af2b4dfa?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1537956965359-7573183d1f57?auto=format&fit=crop&w=1200&q=80'
+  ],
+  accommodations: [
+    { city: 'Bangkok', nights: 2, hotelName: 'Self-Booked', roomCategory: 'Self-Booked' },
+    { city: 'Krabi', nights: 2, hotelName: 'Self-Booked', roomCategory: 'Self-Booked' },
+    { city: 'Phuket', nights: 2, hotelName: 'Self-Booked', roomCategory: 'Self-Booked' }
+  ],
+  dayPlans: [
+    {
+      day: 1,
+      date: '06 Dec',
+      title: 'Day 1 | 06 Dec Welcome to Bangkok — Private 1-SUV Airport Transfer & Leisure',
+      route: 'Bangkok Airport (BKK) → Bangkok Hotel',
+      durationNote: 'Arrival & Private Transfer',
+      intro: 'Sawasdee! Arrive in vibrant Bangkok at 14:10 on Air India from New Delhi. Meet our representative and board your dedicated private SUV (1-SUV) for a smooth transfer to your Bangkok hotel. Check-in, unpack, and enjoy your evening at leisure exploring nearby night markets or relaxing.',
+      timeline: [
+        '02:10 PM - Land at Bangkok Suvarnabhumi Airport (BKK) via Air India',
+        'Warm meet-and-greet by our representative at the airport arrival hall',
+        'Private SUV (1-SUV) transfer from Bangkok Airport to Bangkok hotel',
+        'Check-in at your hotel, freshen up and relax',
+        'Evening at leisure to explore local night markets, riverside cafés, or Thai massage centers',
+        'Overnight stay in Bangkok [1N]'
+      ],
+      stayLocation: 'Bangkok (Self-Booked)',
+      image: 'https://images.unsplash.com/photo-1508009603885-50cf7c579365?auto=format&fit=crop&w=1200&q=80',
+      meals: 'Self-Arranged'
+    },
+    {
+      day: 2,
+      date: '07 Dec',
+      title: 'Day 2 | 07 Dec Grand Palace, Emerald Buddha & Wat Arun Tour + Chao Phraya Dinner Cruise',
+      route: 'Grand Palace & Temples → Gems Gallery → Chao Phraya River Pier',
+      durationNote: 'Full Day Sightseeing & River Cruise',
+      intro: 'Explore the crown jewels of Thai royal heritage in your dedicated 1-SUV, visiting the iconic Grand Palace, Wat Phra Kaew (Emerald Buddha), Wat Arun (Temple of Dawn), and Gems Gallery. In the evening, savor a lavish Indian buffet dinner cruise along the illuminated Chao Phraya River.',
+      timeline: [
+        'Breakfast at hotel',
+        'Private SUV (1-SUV) pickup for Bangkok Grand Palace & Temples Tour',
+        'Visit the majestic Grand Palace & Wat Phra Kaew (Temple of the Emerald Buddha) — entrance tickets included for 4 Adults',
+        'Visit the iconic Wat Arun Ratchawararam (Temple of Dawn) along the Chao Phraya River — entrance tickets included for 4 Adults',
+        'Visit Gems Gallery world-class handcrafted gemstone and jewelry center with dedicated transfer',
+        'Return to hotel to relax and freshen up',
+        'Evening SIC transfer to Chao Phraya River Pier',
+        'Board the Chao Phraya Dinner Cruise with Indian Buffet Dinner, live band music, and illuminated views of the riverfront for 4 Adults',
+        'SIC return transfer back to hotel',
+        'Overnight stay in Bangkok [2N]'
+      ],
+      sections: [
+        {
+          title: 'Included Sightseeing & Attractions Today:',
+          items: [
+            'Grand Palace & Emerald Buddha Temple tickets included for 4 Adults',
+            'Wat Arun Ratchawararam Temple tickets included for 4 Adults',
+            'Private 1-SUV for Grand Palace, Temples & Gems Gallery tour',
+            'Chao Phraya Dinner Cruise with Indian Buffet Dinner & SIC Transfers for 4 Adults'
+          ]
+        }
+      ],
+      stayLocation: 'Bangkok (Self-Booked)',
+      image: 'https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&w=1200&q=80',
+      meals: 'Breakfast & Cruise Dinner'
+    },
+    {
+      day: 3,
+      date: '08 Dec',
+      title: 'Day 3 | 08 Dec Fly to Krabi — Private 1-SUV Airport Transfers & Beachside Leisure',
+      route: 'Bangkok Hotel → BKK Airport ✈ Krabi Airport (KBV) → Krabi Hotel',
+      durationNote: 'Domestic Flight & Private Transfers',
+      intro: 'Say goodbye to bustling Bangkok and fly south to the limestone cliff paradise of Krabi with seamless private 1-SUV airport transfers at both ends.',
+      timeline: [
+        'Early morning check-out from Bangkok hotel',
+        'Private SUV (1-SUV) transfer from Bangkok hotel to Bangkok Airport (BKK)',
+        '07:00 AM - 08:30 AM: Flight Vietjet Air to Krabi International Airport (KBV)',
+        'Arrival at Krabi Airport & private SUV (1-SUV) transfer to your Krabi hotel',
+        'Check-in at hotel and relax amidst lush tropical greenery',
+        'Afternoon & evening at leisure to explore Ao Nang Beach, vibrant night street markets, and seaside cafés',
+        'Overnight stay in Krabi [1N]'
+      ],
+      stayLocation: 'Krabi (Self-Booked)',
+      image: 'https://images.unsplash.com/photo-1528181304800-259b08848526?auto=format&fit=crop&w=1200&q=80',
+      meals: 'Breakfast'
+    },
+    {
+      day: 4,
+      date: '09 Dec',
+      title: 'Day 4 | 09 Dec Krabi 4-Island Tour by Long Tail Boat with Lunch',
+      route: 'Ao Nang Pier ⛵ Koh Poda, Chicken Island, Tup Island & Phra Nang Cave Beach',
+      durationNote: 'Island Hopping Excursion (SIC Transfer - Tuk Tuk)',
+      intro: 'Set sail on a traditional Long Tail Boat to Krabi’s iconic 4 islands, known for breathtaking sandbars, limestone formations, and turquoise snorkeling bays.',
+      timeline: [
+        'Breakfast at hotel',
+        'Morning pickup by Tuk Tuk / SIC transfer from hotel to the boat pier',
+        'Board traditional Long Tail Boat for Krabi 4 Island Tour (4 Adults)',
+        'Visit Koh Poda with white powdery sands and clear blue sea',
+        'Cruise past unique Chicken Island with photo stops and snorkeling',
+        'Walk across the miraculous sandbar connecting Tup and Mor Islands during low tide',
+        'Visit sacred Phra Nang Cave Beach with towering limestone cliffs and emerald waters',
+        'Picnic lunch included on the island',
+        'Afternoon boat ride back to mainland pier and Tuk Tuk transfer back to hotel',
+        'Evening at leisure in Ao Nang',
+        'Overnight stay in Krabi [2N]'
+      ],
+      sections: [
+        {
+          title: 'Krabi 4-Island Tour Details:',
+          items: [
+            'Long Tail Boat 4-Island Tour with life jackets & snorkeling masks (4 Adults)',
+            'Boxed picnic lunch & drinking water included',
+            'Roundtrip Tuk Tuk / SIC pier transfers included',
+            'Note: National Park Fee (NPF) payable directly on spot if applicable'
+          ]
+        }
+      ],
+      stayLocation: 'Krabi (Self-Booked)',
+      image: 'https://images.unsplash.com/photo-1506665531195-3566af2b4dfa?auto=format&fit=crop&w=1200&q=80',
+      meals: 'Breakfast & Island Lunch'
+    },
+    {
+      day: 5,
+      date: '10 Dec',
+      title: 'Day 5 | 10 Dec Scenic Overland Drive to Phuket with Enroute Phuket City Tour',
+      route: 'Krabi Hotel → Scenic Overland Route → Enroute Phuket City Tour → Phuket Hotel',
+      durationNote: 'Inter-City Drive & City Sightseeing (1-SUV)',
+      intro: 'Enjoy breakfast in Krabi before boarding your private SUV for a scenic overland journey across Phang Nga into Phuket, combined with an enroute city highlights tour.',
+      timeline: [
+        'Breakfast at hotel and check-out',
+        'Private SUV (1-SUV) pickup from Krabi hotel',
+        'Scenic overland road journey from Krabi to Phuket',
+        'Cross the iconic Sarasin Bridge connecting the mainland to Phuket Island',
+        'Enroute Phuket City Tour in your private 1-SUV — explore historic Old Phuket Town, Sino-Portuguese colonial shophouses, street murals, and scenic coastal viewpoints',
+        'Arrive at your Phuket hotel and check-in',
+        'Evening free to stroll along Patong Beach or experience nightlife at Bangla Road',
+        'Overnight stay in Phuket [1N]'
+      ],
+      sections: [
+        {
+          title: 'Highlights Today:',
+          items: [
+            'Private SUV (1-SUV) for entire Krabi to Phuket overland transfer',
+            'Enroute Phuket City Tour included in the private SUV'
+          ]
+        }
+      ],
+      stayLocation: 'Phuket (Self-Booked)',
+      image: 'https://images.unsplash.com/photo-1589394815804-964ed0be2eb5?auto=format&fit=crop&w=1200&q=80',
+      meals: 'Breakfast'
+    },
+    {
+      day: 6,
+      date: '11 Dec',
+      title: 'Day 6 | 11 Dec Phuket to Phi Phi Islands Tour by Speed Boat with Lunch',
+      route: 'Phuket Boat Pier 🚤 Phi Phi Don, Maya Bay, Viking Cave & Coral Reefs',
+      durationNote: 'Full Day Speedboat Excursion (SIC Transfer)',
+      intro: 'Experience Thailand’s ultimate marine jewel — the world-famous Phi Phi Islands — on an exhilarating speedboat tour with snorkeling and lunch.',
+      timeline: [
+        'Early breakfast at hotel',
+        'SIC transfer pickup from hotel to the Phuket boat pier',
+        'Board high-speed Speed Boat for full day Phi Phi Island Tour (4 Adults)',
+        'Cruise into world-famous Maya Bay (featured in the movie "The Beach")',
+        'Sightseeing at Viking Cave, Pileh Lagoon, and Monkey Beach',
+        'Snorkeling in crystal-clear emerald waters amongst colorful coral reefs and marine life',
+        'Delicious buffet lunch included at a beachside restaurant on Phi Phi Don',
+        'Relax on pristine white sand beaches and take stunning tropical photos',
+        'Afternoon speedboat cruise back to Phuket pier',
+        'SIC transfer back to your hotel',
+        'Overnight stay in Phuket [2N]'
+      ],
+      sections: [
+        {
+          title: 'Phi Phi Tour Inclusions:',
+          items: [
+            'Speed Boat excursion to Phi Phi Islands with life jackets & snorkeling gear (4 Adults)',
+            'Buffet lunch on the island included',
+            'Roundtrip hotel-pier SIC transfers included',
+            'Note: National Park Fee (NPF) payable directly on spot if applicable'
+          ]
+        }
+      ],
+      stayLocation: 'Phuket (Self-Booked)',
+      image: 'https://images.unsplash.com/photo-1537956965359-7573183d1f57?auto=format&fit=crop&w=1200&q=80',
+      meals: 'Breakfast & Island Lunch'
+    },
+    {
+      day: 7,
+      date: '12 Dec',
+      title: 'Day 7 | 12 Dec Phuket Leisure & Private 1-SUV Departure Transfer to Airport',
+      route: 'Phuket Hotel → Phuket International Airport (HKT) → New Delhi (DEL)',
+      durationNote: 'Leisure Day & Departure Transfer (1-SUV)',
+      intro: 'Spend your final day in Phuket relaxing, shopping, and taking in the tropical vibes before your private 1-SUV evening airport transfer.',
+      timeline: [
+        'Breakfast at hotel and check-out (luggage stored securely at hotel reception)',
+        'Full day at leisure for beachside relaxation, Thai massage, and shopping at Jungceylon or Central Phuket',
+        '07:30 PM: Dedicated Private SUV (1-SUV) pickup from Phuket hotel',
+        'Smooth private transfer to Phuket International Airport (HKT)',
+        '10:40 PM: Board IndiGo flight back to New Delhi',
+        '02:00 AM (+1 day, 13 Dec): Land at New Delhi (DEL) with unforgettable memories of your Thailand vacation!'
+      ],
+      stayLocation: 'Onward Flight to New Delhi — Tour Concludes',
+      image: 'https://images.unsplash.com/photo-1508009603885-50cf7c579365?auto=format&fit=crop&w=1200&q=80',
+      meals: 'Breakfast',
+      signOff: 'Wishing Ms. Dimple a magical and unforgettable Thailand holiday with Wanderphilia! 🌴✈️'
+    }
+  ],
+  inclusions: [
+    'Hotels / Accommodations: Self-Booked',
+    'Bangkok Airport to Bangkok Hotel Private Transfer (1-SUV)',
+    'Grand Palace & Emerald Buddha Tour with 2 Temples & Gems Gallery in Bangkok (1-SUV, 4 Adults)',
+    'Grand Palace & Wat Phra Kaew (Emerald Buddha) Temple Entrance Tickets included (4 Adults)',
+    'Wat Arun Ratchawararam Temple Entrance Tickets included (4 Adults)',
+    'Chao Phraya River Dinner Cruise with Indian Buffet & SIC Transfers included (4 Adults)',
+    'Bangkok Hotel to Bangkok Airport Private Transfer (1-SUV)',
+    'Krabi Airport to Krabi Hotel Private Transfer (1-SUV)',
+    'Krabi 4 Island Tour by Long Tail Boat with Lunch & SIC Tuk-Tuk Transfers (4 Adults)',
+    'Krabi Hotel to Phuket Hotel Private Transfer with Enroute Phuket City Tour (1-SUV)',
+    'Phuket Phi Phi Islands Tour by Speed Boat with Lunch & SIC Transfers (4 Adults)',
+    'Phuket Hotel to Phuket Airport Private Transfer (1-SUV)',
+    'All driver allowances, fuel, tolls, and inter-city transport charges',
+    'On-ground 24x7 Wanderphilia customer support throughout the trip'
+  ],
+  exclusions: [
+    'Hotels / Resort Accommodations (Self-Booked)',
+    'Flights (Self-Booked - Details shown for travel schedule reference)',
+    'National Park Fees (NPF) for Krabi 4 Island Tour & Phi Phi Island Tour (payable directly on spot)',
+    'Personal expenses, tips, porterage, telephone calls, laundry, room mini-bar',
+    'Meals and drinks not mentioned under package inclusions',
+    'Any early check-in or late check-out charges',
+    'Travel insurance or anything not mentioned under package inclusions'
+  ],
+  thingsToCarry: [
+    'Original Passport with minimum 6 months validity from return date',
+    'Printout of return flight tickets and hotel vouchers',
+    'Lightweight cotton clothes and swimwear for beaches and islands',
+    'Modest attire covering shoulders and knees for Bangkok Grand Palace & Temples',
+    'Comfortable walking shoes & flip-flops for beach excursions',
+    'High SPF sunscreen, UV sunglasses, and sun hat',
+    'Waterproof pouch for mobile phone and electronics during boat tours',
+    'Universal travel adapter (Thailand plugs Type A, B, C & O)',
+    'Forex card / Thai Baht currency for local shopping & personal expenses'
+  ],
+  flightQuotations: [
+    {
+      optionId: 'thailand-dimple-revised-flights',
+      optionTitle: 'Confirmed Flight Schedule (Air India + Vietjet + IndiGo)',
+      totalPrice: 0,
+      paxDetails: '4 Adults (New Delhi - Bangkok - Krabi - Phuket - New Delhi)',
+      isExcludedFromPackage: false,
+      note: 'Flights as per traveler schedule: Air India (DEL-BKK 08:20-14:10), Vietjet Air (BKK-KBV 07:00-08:30), IndiGo (HKT-DEL 22:40-02:00+1).',
+      sectors: [
+        {
+          fromCity: 'New Delhi (DEL)',
+          toCity: 'Bangkok (BKK)',
+          fromAirport: 'Indira Gandhi International Airport (DEL)',
+          toAirport: 'Suvarnabhumi Airport (BKK)',
+          fromCode: 'DEL',
+          toCode: 'BKK',
+          airline: 'Air India',
+          flightNumber: 'Air India',
+          journeyType: 'Onward International',
+          departureDate: 'Sun, 06 Dec 2026',
+          departureTime: '08:20',
+          arrivalDate: 'Sun, 06 Dec 2026',
+          arrivalTime: '14:10',
+          duration: '4 h 20 m',
+          stops: 'Non Stop',
+          cabinClass: 'Economy',
+          baggage: 'Cabin 7 KG | Check-in 20 KG'
+        },
+        {
+          fromCity: 'Bangkok (BKK)',
+          toCity: 'Krabi (KBV)',
+          fromAirport: 'Suvarnabhumi Airport (BKK)',
+          toAirport: 'Krabi International Airport (KBV)',
+          fromCode: 'BKK',
+          toCode: 'KBV',
+          airline: 'Vietjet Air (Aero V.I.P. Ltd)',
+          flightNumber: 'Vietjet Air',
+          journeyType: 'Domestic Transfer',
+          departureDate: 'Tue, 08 Dec 2026',
+          departureTime: '07:00',
+          arrivalDate: 'Tue, 08 Dec 2026',
+          arrivalTime: '08:30',
+          duration: '1 h 30 m',
+          stops: 'Non Stop',
+          cabinClass: 'Economy',
+          baggage: 'Standard Baggage'
+        },
+        {
+          fromCity: 'Phuket (HKT)',
+          toCity: 'New Delhi (DEL)',
+          fromAirport: 'Phuket International Airport (HKT)',
+          toAirport: 'Indira Gandhi International Airport (DEL)',
+          fromCode: 'HKT',
+          toCode: 'DEL',
+          airline: 'IndiGo',
+          flightNumber: 'IndiGo',
+          journeyType: 'Return International',
+          departureDate: 'Sat, 12 Dec 2026',
+          departureTime: '22:40',
+          arrivalDate: 'Sun, 13 Dec 2026',
+          arrivalTime: '02:00',
+          duration: '4 h 50 m',
+          stops: 'Non Stop',
+          cabinClass: 'Economy',
+          baggage: 'Cabin 7 KG | Check-in 15 KG'
+        }
+      ]
+    }
+  ],
+  adults: 4,
+  kids: 0,
+  perAdultPrice: 20450,
+  baseAmount: 81800,
+  gstPercentage: 5,
+  gstAmount: 4090,
+  tcsPercentage: 2,
+  tcsAmount: 1636,
+  finalQuotationAmount: 87526,
+  childPricingNote: '₹20,450/- per adult for 4 Adults (Total Base: ₹81,800/- + 5% GST: ₹4,090/- + 2% TCS: ₹1,636/- = ₹87,526/- Total for 4 Guests with Private 1-SUV Transfers, Grand Palace & Wat Arun Tickets, Chao Phraya Dinner Cruise, Krabi 4-Island Tour & Phi Phi Island Speedboat Tour. Note: Accommodations & Flights are Self-Booked).',
   enableOnlineBooking: true,
   enableTokenPayment: true,
   enableAdvancePayment: true,
@@ -6267,7 +6673,15 @@ export const manualItinerariesRegistry: Record<string, ManualItinerary> = {
   'ms-heer-bhutan': bhutanHeerManualItinerary,
   'heer-bhutan': bhutanHeerManualItinerary,
   'bhutan-ms-heer': bhutanHeerManualItinerary,
-  'wp-bhutan-heer': bhutanHeerManualItinerary
+  'wp-bhutan-heer': bhutanHeerManualItinerary,
+
+  // Thailand Dimple (Revised Itinerary: Grand Palace, Wat Arun, Krabi 4-Island, Phi Phi Island)
+  'thailand-dimple-revised': thailandDimpleRevisedManualItinerary,
+  'thailand-dimple-new': thailandDimpleRevisedManualItinerary,
+  'thailand-dimple-v2': thailandDimpleRevisedManualItinerary,
+  'dimple-revised': thailandDimpleRevisedManualItinerary,
+  'dimple-thailand-revised': thailandDimpleRevisedManualItinerary,
+  'wp-thailand-dimple-revised': thailandDimpleRevisedManualItinerary
 };
 
 export function getManualItinerary(idOrSlug: string): ManualItinerary | null {
@@ -6280,6 +6694,7 @@ export function getManualItinerary(idOrSlug: string): ManualItinerary | null {
 
 export function getAllManualItineraries(): ManualItinerary[] {
   return [
+    thailandDimpleRevisedManualItinerary,
     bhutanHeerManualItinerary,
     thailandDimpleManualItinerary,
     meghalayaShravyaManualItinerary,
