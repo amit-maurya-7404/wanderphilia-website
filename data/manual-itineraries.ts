@@ -6476,6 +6476,360 @@ export const thailandDimpleRevisedManualItinerary: ManualItinerary = {
   enableFullPayment: true
 };
 
+export const vietnamSunilVermaManualItinerary: ManualItinerary = {
+  id: 'vietnam-sunil-verma',
+  slug: 'vietnam-sunil-verma',
+  title: '7 Days Curated Vietnam Splendors for Mr. Sunil Verma & Group',
+  subtitle: 'Senior-Friendly Handpicked Tour • Hanoi, Ninh Binh, Ha Long Bay 5★ Cruise, Da Nang, Ba Na Hills & Hoi An',
+  duration: '6 Nights / 7 Days | 09 Jan – 15 Jan 2027',
+  numNights: 6,
+  numDays: 7,
+  dates: '09 Jan – 15 Jan 2027',
+  route: 'Hanoi (2N) → Ninh Binh → Ha Long Bay (1N 5★ Cruise) → Da Nang (3N) → Ba Na Hills → Hoi An → Da Nang',
+  routeSummary: '2N Hanoi | 1N Ha Long Bay Cruise | 3N Da Nang',
+  destination: 'Vietnam',
+  travelStyle: 'Senior-Friendly Handpicked Tour',
+  tripType: 'Customised Private Group Tour (10 Senior Citizens / 5 Couples)',
+  leadName: 'Mr. Sunil Verma',
+  vehicleType: 'Private Mini Bus for all airport, inter-city and sightseeing transfers',
+  mealPlan: 'Daily Breakfast at hotel (except Day 1) + Full Board on Cruise (Lunch, Dinner & Day 4 Brunch)',
+  heroImage: '/images/banner-vietnam-cruise.png',
+  galleryImages: [
+    '/images/banner-vietnam-cruise.png',
+    '/images/vietnam/hanoi-heritage.jpg',
+    '/images/vietnam/ninh-binh-tam-coc.jpg',
+    '/images/vietnam/bana-hills-bridge.jpg',
+    '/images/vietnam/hoi-an-lanterns.jpg',
+    '/images/vietnam/da-nang-coast.jpg',
+    '/images/vietnam-beauty.png',
+    '/images/vietnam-wonders.png'
+  ],
+  accommodations: [
+    { city: 'Hanoi', nights: 2, hotelName: 'Babylon Grand Hotel / Similar (3-Star Standard)', roomCategory: 'ROH (Run of House) Room' },
+    { city: 'Ha Long Bay', nights: 1, hotelName: 'Golden 5-Star Cruise', roomCategory: 'Deluxe Cabin (Full Board B/L/D)' },
+    { city: 'Da Nang', nights: 3, hotelName: 'Sepon Blue Hotel / Similar (3-Star Standard)', roomCategory: 'Deluxe Room' }
+  ],
+  dayPlans: [
+    {
+      day: 1,
+      date: '09 Jan',
+      title: 'Day 1 | 09 Jan Welcome to Hanoi — City Highlights, Temple of Literature & Train Street',
+      route: 'Hanoi Airport (HAN) → Hanoi City Tour → Hotel Check-in',
+      durationNote: 'Arrival & Half-Day Guided Tour (Driver + Guide)',
+      intro: 'Xin Chào! Welcome to Vietnam. Upon arrival at Noi Bai International Airport in Hanoi, you will be warmly received by your dedicated English-speaking tour guide and chauffeur with a comfortable private mini bus. Embark on a relaxed, leisurely half-day city tour exploring the historic 1000-year-old capital.',
+      timeline: [
+        '00:40 AM - Board Air India AI-2390 from New Delhi (DEL)',
+        '06:45 AM - Land at Hanoi Noi Bai International Airport (HAN)',
+        'Warm meet-and-greet by our representative, English-speaking guide & chauffeur with private mini bus',
+        'Visit the historic Temple of Literature (Van Mieu), Vietnam’s first national university dating back to 1070',
+        'Scenic stroll around serene Hoan Kiem Lake (Lake of the Returned Sword) and visit Ngoc Son Temple',
+        'Explore the vibrant Hanoi Old Quarter and witness the famous Hanoi Train Street café scene',
+        'In the afternoon, transfer to hotel and check-in (early check-in not included)',
+        'Evening at leisure to rest, stroll around French quarter streets, or try authentic Vietnamese cuisine',
+        'Overnight stay at Babylon Grand Hotel, Hanoi [1N]'
+      ],
+      stayLocation: 'Hanoi (Babylon Grand Hotel / Similar)',
+      image: '/images/vietnam/hanoi-heritage.jpg',
+      meals: 'On own / In-flight'
+    },
+    {
+      day: 2,
+      date: '10 Jan',
+      title: 'Day 2 | 10 Jan Hanoi to Ninh Binh Day Excursion — Tam Coc Bamboo Boat Ride, Bich Dong & Hoa Lu',
+      route: 'Hanoi → Ninh Binh → Tam Coc (Ngo Dong River) → Bich Dong Pagoda → Hoa Lu → Hanoi',
+      durationNote: 'Full Day Guided Excursion (Driver + Guide)',
+      intro: 'After breakfast at your hotel, set out on a scenic journey through the Red River Delta to Ninh Binh, often called the "Ha Long Bay on Land" for its majestic limestone karsts emerging from emerald rice paddies.',
+      timeline: [
+        'Breakfast at hotel in Hanoi',
+        'Morning departure by private mini bus towards picturesque Ninh Binh province',
+        'Board traditional sampan bamboo boats rowed along the tranquil Ngo Dong River through the 3 karst caves of Tam Coc',
+        'Glide gently past stunning limestone cliffs, tranquil water lily ponds, and emerald rice fields',
+        'Visit Bich Dong Pagoda, a serene 15th-century Buddhist pagoda built right into the limestone mountain with scenic views',
+        'Conclude with a visit to the ancient capital Hoa Lu before returning to Hanoi in the afternoon',
+        'Comfortable return drive by private mini bus back to Hanoi',
+        'Evening free at leisure in Hanoi for shopping, local coffee, and relaxation',
+        'Overnight stay at Babylon Grand Hotel, Hanoi [2N]'
+      ],
+      sections: [
+        {
+          title: 'Senior Citizen Friendly Note:',
+          items: [
+            'Tam Coc boat ride is completely seated and peaceful with no strenuous walking required',
+            'Bich Dong Pagoda and Hoa Lu offer easy walking paths suitable for senior travelers',
+            'Dedicated private mini bus with AC ensures a comfortable, relaxed journey'
+          ]
+        }
+      ],
+      stayLocation: 'Hanoi (Babylon Grand Hotel / Similar)',
+      image: '/images/vietnam/ninh-binh-tam-coc.jpg',
+      meals: 'Breakfast (B)'
+    },
+    {
+      day: 3,
+      date: '11 Jan',
+      title: 'Day 3 | 11 Jan Hanoi to Ha Long Bay — 5★ Overnight Cruise & Sunset over Emerald Waters',
+      route: 'Hanoi → Ha Long Bay Marina → 5★ Cruise Embarkation',
+      durationNote: 'Scenic Transfer & Overnight Cruise Experience (Driver + Guide)',
+      intro: 'Enjoy breakfast at hotel before departing for Ha Long Bay, a UNESCO World Heritage Site renowned for thousands of towering limestone islands and emerald waters. Board your 5-star cruise for an unforgettable overnight voyage.',
+      timeline: [
+        '08:00 AM: Journey to Ha Long Bay, a UNESCO World Heritage Site, by private mini bus',
+        '11:30 AM: Embark on an overnight cruise to discover the emerald waters and majestic limestone karsts of Ha Long Bay',
+        'Welcome drink and check-in to your deluxe ocean-view cabin on Golden 5-Star Cruise',
+        'Savor a delicious multi-course lunch while cruising among thousands of limestone karsts and islets',
+        'Enjoy onboard activities, cave sightseeing, or simply unwind on the sun deck',
+        'Witness the magnificent sunset over Ha Long Bay',
+        'Lavish dinner served on board featuring fresh seafood and Vietnamese delicacies',
+        'Overnight stay on board Golden 5-Star Cruise in Ha Long Bay [1N]'
+      ],
+      sections: [
+        {
+          title: '5★ Cruise Highlights Included:',
+          items: [
+            'Overnight accommodation in Deluxe Cabin on Golden 5-Star Cruise',
+            'Full board meals: Buffet/Set Lunch, Dinner, and Day 4 Brunch',
+            'Onboard activities, cave sightseeing & sunset viewing on sundeck'
+          ]
+        }
+      ],
+      stayLocation: 'Ha Long Bay (Golden 5-Star Cruise — Deluxe Cabin)',
+      image: '/images/banner-vietnam-cruise.png',
+      meals: 'Breakfast at hotel, Lunch & Dinner on cruise (B/L/D)'
+    },
+    {
+      day: 4,
+      date: '12 Jan',
+      title: 'Day 4 | 12 Jan Ha Long Bay Morning Cruise → Disembarkation → Flight to Da Nang',
+      route: 'Ha Long Bay Cruise → Hanoi Airport (HAN) ✈ Da Nang Airport (DAD) → Da Nang Hotel',
+      durationNote: 'Cruise Brunch, Airport Transfer & Domestic Flight (Driver + Guide)',
+      intro: 'Wake up to the peaceful morning mist over the bay. Enjoy breakfast or morning tea followed by a sumptuous brunch on board before cruising back to the harbor and flying south to coastal Da Nang.',
+      timeline: [
+        'Morning Tai Chi session on the sun deck or watch sunrise over the limestone seascape',
+        'Enjoy a leisurely morning cruise past iconic karst formations',
+        '11:30 AM: Disembark the cruise after brunch',
+        'Driver will pick up and transfer by private mini bus back to Hanoi Noi Bai Airport (HAN)',
+        '05:40 PM - 06:55 PM: Domestic flight Hanoi (HAN) to Hue/Da Nang (HUI) via VietJet Air VJ-565',
+        'Upon arrival: Warm welcome by driver & guide with private mini bus',
+        'Transfer to Sepon Blue Hotel in Da Nang and check in',
+        'Evening at leisure to explore Da Nang beachfront, illuminated Dragon Bridge, or seaside cafes',
+        'Overnight stay at Sepon Blue Hotel, Da Nang [1N]'
+      ],
+      stayLocation: 'Da Nang (Sepon Blue Hotel / Similar)',
+      image: '/images/vietnam-wonders.png',
+      meals: 'Brunch on Cruise'
+    },
+    {
+      day: 5,
+      date: '13 Jan',
+      title: 'Day 5 | 13 Jan Ba Na Hills Mountain Excursion — Iconic Golden Bridge & French Village',
+      route: 'Da Nang Hotel → Ba Na Hills Cable Car → Golden Bridge → French Village → Da Nang',
+      durationNote: 'Full Day Guided Mountain Tour (Driver + Guide)',
+      intro: 'Following breakfast, depart for Ba Na Hills and enjoy a scenic cable car ride offering breathtaking mountain views. Explore the iconic Golden Bridge held by giant stone hands, stroll through the charming French Village, and experience the fun attractions at Fantasy Park.',
+      timeline: [
+        'Following breakfast, depart for Ba Na Hills in your private mini bus',
+        'Enjoy a scenic cable car ride offering breathtaking mountain views',
+        'Explore the iconic Golden Bridge held by giant hands overlooking the misty peaks',
+        'Stroll through the charming French Village with European architecture and cobbled squares',
+        'Experience the fun attractions, arcade games, and rides at Fantasy Park',
+        'In the afternoon, return by cable car and private mini bus transfer back to hotel Da Nang',
+        'Evening free to relax or explore Da Nang night markets',
+        'Overnight stay at Sepon Blue Hotel, Da Nang [2N]'
+      ],
+      sections: [
+        {
+          title: 'Included Ba Na Hills Highlights:',
+          items: [
+            'Roundtrip Ba Na Hills cable car tickets for all 10 travelers',
+            'Golden Bridge (Giant Stone Hands) access and viewpoints',
+            'French Village, Le Jardin D’Amour gardens & Fantasy Park entry',
+            'English-speaking guide assistance and private mini bus transfers'
+          ]
+        }
+      ],
+      stayLocation: 'Da Nang (Sepon Blue Hotel / Similar)',
+      image: '/images/vietnam/bana-hills-bridge.jpg',
+      meals: 'Breakfast (B)'
+    },
+    {
+      day: 6,
+      date: '14 Jan',
+      title: 'Day 6 | 14 Jan Linh Ung Pagoda, Coconut Forest Basket Boat & Hoi An Ancient Town',
+      route: 'Da Nang → Son Tra Peninsula (Lady Buddha) → Coconut Forest → Hoi An Ancient Town → Da Nang',
+      durationNote: 'Full Day Guided Cultural Tour (Driver + Guide)',
+      intro: 'After breakfast, begin the day with a visit to Linh Ung Pagoda, home to the impressive Lady Buddha statue overlooking the sea. The journey then leads to Coconut Forest to take a basket boat ride before heading to Hoi An Ancient Town for a walking tour through lantern-lit streets.',
+      timeline: [
+        'After breakfast, begin the day with a visit to Linh Ung Pagoda, home to the impressive Lady Buddha statue overlooking the sea',
+        'Enjoy panoramic ocean views across the Da Nang coastline from Son Tra Peninsula',
+        'The journey then leads to Coconut Forest to take a fun bamboo basket boat ride through water coconut waterways',
+        'Watch local boatmen demonstrate boat spinning tricks and traditional cast net fishing',
+        'Head to Hoi An Ancient Town for a guided walking tour through lantern-lit streets',
+        'Discover centuries-old architecture, the Japanese Covered Bridge, and assembly halls',
+        'In the evening, return to Da Nang and enjoy the rest of the day at leisure',
+        'Overnight stay at Sepon Blue Hotel, Da Nang [3N]'
+      ],
+      sections: [
+        {
+          title: 'Included Highlights Today:',
+          items: [
+            'Linh Ung Pagoda & 67m Lady Buddha statue visit',
+            'Coconut Forest round basket boat ride with local boatmen',
+            'Hoi An UNESCO Ancient Town guided walking tour & lantern atmosphere',
+            'Private mini bus transportation and English-speaking guide'
+          ]
+        }
+      ],
+      stayLocation: 'Da Nang (Sepon Blue Hotel / Similar)',
+      image: '/images/vietnam/hoi-an-lanterns.jpg',
+      meals: 'Breakfast (B)'
+    },
+    {
+      day: 7,
+      date: '15 Jan',
+      title: 'Day 7 | 15 Jan Departure from Da Nang — Airport Transfer for Onward Flight',
+      route: 'Da Nang Hotel → Da Nang International Airport (DAD)',
+      durationNote: 'Airport Transfer (Driver)',
+      intro: 'After breakfast and check-out, meet your driver for a private mini bus transfer to Da Nang International Airport for your departure flight back home.',
+      timeline: [
+        'After breakfast, check out from Sepon Blue Hotel',
+        'Private mini bus airport transfer to Da Nang International Airport (DAD)',
+        '02:30 PM - Depart Da Nang (DAD) via VietJet Air VJ-631 / VJ-895 (1 Stop)',
+        '10:50 PM - Land at New Delhi Indira Gandhi International Airport (DEL)',
+        'Tour concludes with heartwarming memories curated by Wanderphilia'
+      ],
+      stayLocation: 'Onward Flight — Tour Concludes',
+      image: '/images/vietnam/da-nang-coast.jpg',
+      meals: 'Breakfast (B)',
+      signOff: 'Wishing Mr. Sunil Verma and the entire senior group a wonderful, safe and memorable journey with Wanderphilia! 🇻🇳✈️'
+    }
+  ],
+  inclusions: [
+    'All transfers and sightseeing by dedicated PRIVATE MINI BUS throughout the itinerary',
+    '02 Nights accommodation in Hanoi at Babylon Grand Hotel / Similar (ROH Room)',
+    '01 Night accommodation in Ha Long Bay on Golden 5-Star Cruise (Deluxe Cabin)',
+    '03 Nights accommodation in Da Nang at Sepon Blue Hotel / Similar (Deluxe Room)',
+    'Daily breakfast at hotel (except Day 1) + all meals on the cruise (Lunch, Dinner & Day 4 Brunch)',
+    'Hanoi Half-Day City Tour: Temple of Literature, Hoan Kiem Lake, Ngoc Son Temple, Old Quarter & Train Street',
+    'Full-day Ninh Binh tour with Tam Coc bamboo boat ride, Bich Dong Pagoda & Hoa Lu ancient capital',
+    '2D1N Ha Long Bay overnight cruise with onboard activities, cave sightseeing, and sunset over the bay',
+    'Ba Na Hills roundtrip cable car tickets for all 10 passengers',
+    'Ba Na Hills tour: iconic Golden Bridge (held by giant hands), French Village & Fantasy Park',
+    'Coconut Forest round bamboo basket boat ride with local boatmen',
+    'Hoi An Ancient Town guided walking tour through lantern-lit streets',
+    'Visit to Son Tra Peninsula, Linh Ung Pagoda and the 67m tall Lady Buddha statue',
+    'Dedicated English-speaking tour guide as mentioned (Day 1, 2, 3, 4 Da Nang, 5, 6)',
+    'Complimentary drinking water on tour (2 bottles per person per day)',
+    'All driver allowances, fuel, tolls, parking charges, and government taxes & service charges'
+  ],
+  exclusions: [
+    'Flight tickets: International & domestic flights quoted separately (Available at ₹52,100 per adult on Air India & VietJet Air as detailed in Flight Schedule below)',
+    'Compulsory tipping for both guide & driver: 3 USD / pax / day tour with guide',
+    'Early check-in at Hanoi hotel or late check-out at Da Nang hotel',
+    'Meals and drinks not mentioned under package inclusions',
+    'Vietnam visa fees and travel insurance (can be arranged on request)',
+    'Personal expenses (laundry, telephone calls, room service, souvenirs, etc.)',
+    'Any other items or activities not specifically mentioned in inclusions'
+  ],
+  thingsToCarry: [
+    'Original Passport with minimum 6 months validity & printed Vietnam e-Visa copies',
+    'Printed copies of return flight tickets and hotel vouchers',
+    'Comfortable walking shoes with good support and slip-on sandals',
+    'Lightweight cotton clothes and a light jacket / cardigan for cool evenings or AC buses',
+    'Modest attire covering shoulders and knees when visiting pagodas and temples',
+    'High SPF sunscreen, UV sunglasses, and sun hat',
+    'Personal daily medications and first-aid supplies',
+    'Universal travel adapter (Vietnam uses Type A, C, and G plugs)',
+    'Vietnamese Dong (VND) or international debit/credit cards for local expenses and tipping'
+  ],
+  flightQuotations: [
+    {
+      optionId: 'vietnam-sunil-verma-flights',
+      optionTitle: 'Confirmed Flight Schedule (Air India + VietJet Air)',
+      totalPrice: 521000,
+      perPersonPrice: 52100,
+      paxDetails: '10 Adults (New Delhi - Hanoi - Da Nang/Hue - New Delhi)',
+      isExcludedFromPackage: true,
+      note: 'Airline ticket pricing is dynamic. Fares are indicative as of now (₹52,100 per adult inclusive of all taxes) and subject to change at the time of issuance/booking. Airfare is separate from the ground package.',
+      sectors: [
+        {
+          fromCity: 'New Delhi (DEL)',
+          toCity: 'Hanoi (HAN)',
+          fromAirport: 'Indira Gandhi International Airport (DEL)',
+          toAirport: 'Noi Bai International Airport (HAN)',
+          fromCode: 'DEL',
+          toCode: 'HAN',
+          airline: 'Air India',
+          flightNumber: 'AI - 2390',
+          journeyType: 'Onward International Flight',
+          departureDate: 'Sat, 09 Jan 2027',
+          departureTime: '00:40',
+          arrivalDate: 'Sat, 09 Jan 2027',
+          arrivalTime: '06:45',
+          duration: '4 h 35 m',
+          stops: 'Non Stop',
+          cabinClass: 'Economy',
+          baggage: 'Cabin 7 KG | Check-in 25 KG',
+          price: 21000
+        },
+        {
+          fromCity: 'Hanoi (HAN)',
+          toCity: 'Hue / Da Nang (HUI)',
+          fromAirport: 'Noi Bai International Airport (HAN)',
+          toAirport: 'Phu Bai International Airport (HUI)',
+          fromCode: 'HAN',
+          toCode: 'HUI',
+          airline: 'VietJet Air',
+          flightNumber: 'VJ - 565',
+          journeyType: 'Domestic Sector',
+          departureDate: 'Tue, 12 Jan 2027',
+          departureTime: '17:40',
+          arrivalDate: 'Tue, 12 Jan 2027',
+          arrivalTime: '18:55',
+          duration: '1 h 15 m',
+          stops: 'Non Stop',
+          cabinClass: 'Economy',
+          baggage: 'Cabin 7 KG (1 PCS) | Check-in 20 KG',
+          price: 6000
+        },
+        {
+          fromCity: 'Da Nang (DAD)',
+          toCity: 'New Delhi (DEL)',
+          fromAirport: 'Da Nang International Airport (DAD)',
+          toAirport: 'Indira Gandhi International Airport (DEL)',
+          fromCode: 'DAD',
+          toCode: 'DEL',
+          airline: 'VietJet Air',
+          flightNumber: 'VJ - 631 / VJ - 895',
+          journeyType: 'Return International Flight',
+          departureDate: 'Fri, 15 Jan 2027',
+          departureTime: '14:30',
+          arrivalDate: 'Fri, 15 Jan 2027',
+          arrivalTime: '22:50',
+          duration: '9 h 50 m',
+          stops: '1 Stop',
+          cabinClass: 'Economy',
+          baggage: 'Cabin 7 KG (1 PCS) | Check-in 20 KG',
+          price: 25100
+        }
+      ]
+    }
+  ],
+  showWithoutTaxesInProposal: true,
+  adults: 10,
+  kids: 0,
+  perAdultPrice: 45495,
+  perKidPrice: 0,
+  baseAmount: 454950,
+  gstPercentage: 5,
+  gstAmount: 22748,
+  tcsPercentage: 2,
+  tcsAmount: 9099,
+  finalQuotationAmount: 486797,
+  childPricingNote: '₹45,495/- per person for 10 Pax Senior Citizens on Double / Twin sharing basis (Total Ground Package: ₹4,54,950/- for 10 Adults across 5 Double/Twin Rooms; 5% GST & 2% TCS applicable extra). Round-trip Return Flights on Air India & VietJet Air quoted separately at ₹52,100/- per adult (Total ₹5,21,000/- for 10 Adults).',
+  enableOnlineBooking: true,
+  enableTokenPayment: true,
+  enableAdvancePayment: true,
+  enableFullPayment: true
+};
+
 export const manualItinerariesRegistry: Record<string, ManualItinerary> = {
   // Meghalaya with Kaziranga (Mrs. Shravya)
   'meghalaya-with-kaziranga-mrs-shravya': meghalayaShravyaManualItinerary,
@@ -6683,7 +7037,17 @@ export const manualItinerariesRegistry: Record<string, ManualItinerary> = {
   'thailand-dimple-v2': thailandDimpleRevisedManualItinerary,
   'dimple-revised': thailandDimpleRevisedManualItinerary,
   'dimple-thailand-revised': thailandDimpleRevisedManualItinerary,
-  'wp-thailand-dimple-revised': thailandDimpleRevisedManualItinerary
+  'wp-thailand-dimple-revised': thailandDimpleRevisedManualItinerary,
+  // Vietnam Sunil Verma (6N / 7D, 09 Jan - 15 Jan 2027, 10 Senior Citizens)
+  'vietnam-sunil-verma': vietnamSunilVermaManualItinerary,
+  'sunil-verma-vietnam': vietnamSunilVermaManualItinerary,
+  'sunil-verma': vietnamSunilVermaManualItinerary,
+  'mr-sunil-verma': vietnamSunilVermaManualItinerary,
+  'mr-sunil-verma-vietnam': vietnamSunilVermaManualItinerary,
+  'vietnam-sunil': vietnamSunilVermaManualItinerary,
+  'wp-vietnam-sunil-verma': vietnamSunilVermaManualItinerary,
+  'vietnam-10pax-senior-citizen': vietnamSunilVermaManualItinerary,
+  'vietnam-senior-citizen': vietnamSunilVermaManualItinerary,
 };
 
 export function getManualItinerary(idOrSlug: string): ManualItinerary | null {
@@ -6696,6 +7060,7 @@ export function getManualItinerary(idOrSlug: string): ManualItinerary | null {
 
 export function getAllManualItineraries(): ManualItinerary[] {
   return [
+    vietnamSunilVermaManualItinerary,
     thailandDimpleRevisedManualItinerary,
     bhutanHeerManualItinerary,
     thailandDimpleManualItinerary,

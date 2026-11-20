@@ -1,4 +1,4 @@
-void automation.sync_deal_to_operations_and_finance(Int dealId)
+void automation.sync_deal_to_operations_and_finance(int dealId)
 {
 	dealIdStr = dealId.toString();
 	
@@ -10,24 +10,29 @@ void automation.sync_deal_to_operations_and_finance(Int dealId)
 	}
 	if(dealMap != null && !dealMap.isEmpty())
 	{
-		customerName = ifnull(dealMap.get("Deal_Name"),"");
+		dealName = ifnull(dealMap.get("Deal_Name"),"");
 		destination = ifnull(dealMap.get("Destination"),ifnull(dealMap.get("Destinations"),""));
 		startDate = dealMap.get("Start_Date");
 		endDate = dealMap.get("End_Date");
 		
-		// Calculate Days and Nights
-		totalDays = 1;
-		totalNights = 1;
-		if(startDate != null && endDate != null)
+		// Days & Nights
+		totalDays = ifnull(dealMap.get("No_of_Days"),0).toLong();
+		totalNights = ifnull(dealMap.get("No_of_Nights"),0).toLong();
+		if(totalDays <= 0 && startDate != null && endDate != null)
 		{
 			totalDays = daysBetween(startDate.toDate(),endDate.toDate()) + 1;
 			totalNights = if(totalDays > 1,totalDays - 1,1);
 		}
 		
-		adults = ifnull(dealMap.get("Number_of_Adults"),2).toLong();
-		kids = ifnull(dealMap.get("No_of_Kids"),0).toLong();
-		totalPax = adults + kids;
+		// Pax & Room setup
+		adults = ifnull(dealMap.get("Number_of_Adults"),ifnull(dealMap.get("Adults"),2)).toLong();
+		kids = ifnull(dealMap.get("No_of_Kids"),ifnull(dealMap.get("Children"),0)).toLong();
+		totalPax = ifnull(dealMap.get("Number_of_Guests"),ifnull(dealMap.get("No_of_Pax"),adults + kids)).toLong();
 		roomsCount = ifnull(dealMap.get("Rooms_Count"),1).toLong();
+		if(roomsCount <= 0)
+		{
+			roomsCount = 1;
+		}
 		sharingType = ifnull(dealMap.get("Sharing_Type"),"Double Sharing");
 		roomCategory = ifnull(dealMap.get("Preferred_Room_Category"),"Deluxe Room");
 		hotelCategory = ifnull(dealMap.get("Hotel_Category"),ifnull(dealMap.get("Deal_Hotel_Category"),""));
@@ -35,13 +40,32 @@ void automation.sync_deal_to_operations_and_finance(Int dealId)
 		itineraryUrl = ifnull(dealMap.get("Itinerary_URL"),"");
 		customerEmail = ifnull(dealMap.get("Email"),ifnull(dealMap.get("Secondary_Email"),""));
 		
+		// Customer Name as String
+		custName = "";
+		contactObj = dealMap.get("Contact_Name");
+		if(contactObj != null)
+		{
+			custName = ifnull(contactObj.get("name"),contactObj.toString()).trim();
+		}
+		if(custName == "")
+		{
+			custName = dealName;
+		}
+
+		// Financials from Deal
+		totalPackageCost = ifnull(dealMap.get("Cost"),ifnull(dealMap.get("Amount"),0.0)).toDecimal();
+		advancePaid = ifnull(dealMap.get("Adv_Amount"),ifnull(dealMap.get("Advance_Paid"),0.0)).toDecimal();
+		balanceDue = ifnull(dealMap.get("Pending_Balance_Amount"),totalPackageCost - advancePaid).toDecimal();
+		payStatus = ifnull(dealMap.get("Payment_Status"),if(balanceDue <= 0 && totalPackageCost > 0,"Full Paid",if(advancePaid > 0,"Advance Paid","Pending")));
+
 		// --------------------------------------------------------------------------
 		// 2. VEHICLE & LOWEST VENDOR RESOLUTION
 		// --------------------------------------------------------------------------
 		vehicleLookupId = null;
 		vendorLookupId = null;
-		totalTransportCost = 0.0;
-		if(destination != "")
+		selectedVehicleName = ifnull(dealMap.get("Vehicle_Type"),"");
+		totalTransportCost = ifnull(dealMap.get("Vehicle_Total_Cost"),ifnull(dealMap.get("Vehicle_Cost"),0.0)).toDecimal();
+		if(destination != "" && totalTransportCost == 0.0)
 		{
 			vehicleList = zoho.crm.searchRecords("Vehicles","(State:equals:" + destination + ")");
 			matchedVehicle = null;
@@ -61,6 +85,7 @@ void automation.sync_deal_to_operations_and_finance(Int dealId)
 			if(matchedVehicle != null)
 			{
 				vehicleLookupId = matchedVehicle.get("id");
+				selectedVehicleName = ifnull(matchedVehicle.get("Name"),selectedVehicleName);
 				vRec = zoho.crm.getRecordById("Vehicles",vehicleLookupId.toLong());
 				vendorPricingSubform = vRec.get("Vendor_Pricing");
 				lowestCostPerDay = 9999999.0;
@@ -91,293 +116,118 @@ void automation.sync_deal_to_operations_and_finance(Int dealId)
 				}
 			}
 		}
-		
+
 		// --------------------------------------------------------------------------
-		// 3. HOTEL 1 TO 6 LOOKUPS & B2B COST CALCULATIONS
+		// 3. HOTEL 1 TO 6 LOOKUPS, ROOM NAMES & DYNAMIC B2B COST CALCULATION
 		// --------------------------------------------------------------------------
-		// Hotel 1
-		h1Lookup = dealMap.get("st_Hotel");
-		h1Nights = ifnull(dealMap.get("st_Hotel_Nights"),totalNights).toLong();
-		h1Cost = 0.0;
-		if(h1Lookup != null && h1Lookup.get("id") != null)
+		hotelIds = Map();
+		hotelNames = Map();
+		hotelCities = Map();
+		hotelNights = Map();
+		hotelDates = Map();
+		hotelCategories = Map();
+		hotelRoomNames = Map();
+		hotelCosts = Map();
+
+		hConfigs = list();
+		hConfigs.add({1, "st_Hotel", "st_Hotel_City", "st_Hotel_Nights", "st_Hotel_Stay_Dates", "Hotel_1_Category", "Hotel_1_Room_Name"});
+		hConfigs.add({2, "nd_Hotel", "nd_Hotel_City", "nd_Hotel_Nights", "nd_Hotel_Stay_Dates", "Hotel_2_Category", "Hotel_2_Room_Name"});
+		hConfigs.add({3, "rd_Hotel", "rd_Hotel_City", "rd_Hotel_Nights", "rd_Hotel_Stay_Dates", "Hotel_3_Category", "Hotel_3_Room_Name"});
+		hConfigs.add({4, "th_Hotel2", "th_Hotel_City", "th_Hotel_Nights2", "th_Hotel_Stay_Dates2", "Hotel_4_Category", "Hotel_4_Room_Name"});
+		hConfigs.add({5, "th_Hotel1", "th_Hotel_City1", "th_Hotel_Nights1", "th_Hotel_Stay_Dates1", "Hotel_5_Category", "Hotel_5_Room_Name"});
+		hConfigs.add({6, "th_Hotel", "th_Hotel_City2", "th_Hotel_Nights", "th_Hotel_Stay_Dates", "Hotel_6_Category", "Hotel_6_Room_Name"});
+
+		for each  cfg in hConfigs
 		{
-			hRec1 = zoho.crm.getRecordById("Hotel",h1Lookup.get("id").toLong());
-			if(hRec1 != null)
+			idx = cfg.get(0);
+			hField = cfg.get(1);
+			cityField = cfg.get(2);
+			nightsField = cfg.get(3);
+			datesField = cfg.get(4);
+			catField = cfg.get(5);
+			roomField = cfg.get(6);
+
+			hObj = ifnull(dealMap.get(hField),dealMap.get("Hotel_" + idx));
+			if(hObj != null && hObj.get("id") != null)
 			{
-				ratesList1 = hRec1.get("Room_Rates_Pricing");
-				pNight1 = 0.0;
-				if(ratesList1 != null && ratesList1.size() > 0)
+				hId = hObj.get("id").toLong();
+				hotelIds.put(idx,hId);
+				hotelNames.put(idx,ifnull(hObj.get("name"),"Hotel " + idx));
+				hotelCities.put(idx,ifnull(dealMap.get(cityField),dealMap.get("Hotel_" + idx + "_City")));
+				
+				hn = ifnull(dealMap.get(nightsField),ifnull(dealMap.get("Hotel_" + idx + "_Nights"),1)).toLong();
+				if(hn <= 0)
 				{
-					targetCat = ifnull(dealMap.get("Hotel_1_Category"),roomCategory).toLowerCase();
-					for each  row in ratesList1
+					hn = 1;
+				}
+				hotelNights.put(idx,hn);
+				hotelDates.put(idx,ifnull(dealMap.get(datesField),dealMap.get("Hotel_" + idx + "_Dates")));
+				hotelCategories.put(idx,ifnull(dealMap.get(catField),hotelCategory));
+
+				rName = ifnull(dealMap.get(roomField),"").toString().trim();
+				calculatedCost = 0.0;
+				pricePerNight = 0.0;
+
+				hRec = zoho.crm.getRecordById("Hotel",hId);
+				if(hRec != null)
+				{
+					pricingList = hRec.get("Room_Rates_Pricing");
+					if(pricingList != null && pricingList.size() > 0)
 					{
-						rowCat = ifnull(row.get("Room_Category"),"").toLowerCase();
-						rPrice = ifnull(row.get("Price_Per_Night"),ifnull(row.get("Base_Price"),ifnull(row.get("Double_Occupancy"),ifnull(row.get("Price"),ifnull(row.get("Rate"),ifnull(row.get("Cost"),0.0)))))).toDecimal();
-						if((rowCat == targetCat || rowCat.contains(targetCat) || targetCat.contains(rowCat)) && rPrice > 0)
+						if(rName != "" && rName != "null" && rName != "-None-")
 						{
-							pNight1 = rPrice;
-							break;
-						}
-					}
-					if(pNight1 == 0.0)
-					{
-						for each  row in ratesList1
-						{
-							rPrice = ifnull(row.get("Price_Per_Night"),ifnull(row.get("Base_Price"),ifnull(row.get("Double_Occupancy"),ifnull(row.get("Price"),ifnull(row.get("Rate"),ifnull(row.get("Cost"),0.0)))))).toDecimal();
-							if(rPrice > 0)
+							for each  pr in pricingList
 							{
-								pNight1 = rPrice;
-								break;
+								pCat = ifnull(pr.get("Hotel_Room_Category"),"").toString().trim();
+								if(pCat.equalsIgnoreCase(rName))
+								{
+									pricePerNight = ifnull(pr.get("Price_Per_Night"),ifnull(pr.get("Base_Price"),0.0)).toDecimal();
+									break;
+								}
 							}
 						}
-					}
-				}
-				if(pNight1 == 0.0)
-				{
-					pNight1 = ifnull(hRec1.get("Price_Per_Night"),ifnull(hRec1.get("Base_Price"),ifnull(hRec1.get("Cost"),0.0))).toDecimal();
-				}
-				h1Cost = pNight1 * roomsCount * h1Nights;
-			}
-		}
-		
-		// Hotel 2
-		h2Lookup = dealMap.get("nd_Hotel");
-		h2Nights = ifnull(dealMap.get("nd_Hotel_Nights"),1).toLong();
-		h2Cost = 0.0;
-		if(h2Lookup != null && h2Lookup.get("id") != null)
-		{
-			hRec2 = zoho.crm.getRecordById("Hotel",h2Lookup.get("id").toLong());
-			if(hRec2 != null)
-			{
-				ratesList2 = hRec2.get("Room_Rates_Pricing");
-				pNight2 = 0.0;
-				if(ratesList2 != null && ratesList2.size() > 0)
-				{
-					targetCat = ifnull(dealMap.get("Hotel_2_Category"),roomCategory).toLowerCase();
-					for each  row in ratesList2
-					{
-						rowCat = ifnull(row.get("Room_Category"),"").toLowerCase();
-						rPrice = ifnull(row.get("Price_Per_Night"),ifnull(row.get("Base_Price"),ifnull(row.get("Double_Occupancy"),ifnull(row.get("Price"),ifnull(row.get("Rate"),ifnull(row.get("Cost"),0.0)))))).toDecimal();
-						if((rowCat == targetCat || rowCat.contains(targetCat) || targetCat.contains(rowCat)) && rPrice > 0)
+						if(pricePerNight == 0.0)
 						{
-							pNight2 = rPrice;
-							break;
-						}
-					}
-					if(pNight2 == 0.0)
-					{
-						for each  row in ratesList2
-						{
-							rPrice = ifnull(row.get("Price_Per_Night"),ifnull(row.get("Base_Price"),ifnull(row.get("Double_Occupancy"),ifnull(row.get("Price"),ifnull(row.get("Rate"),ifnull(row.get("Cost"),0.0)))))).toDecimal();
-							if(rPrice > 0)
+							firstPr = pricingList.get(0);
+							if(rName == "" || rName == "null" || rName == "-None-")
 							{
-								pNight2 = rPrice;
-								break;
+								rName = ifnull(firstPr.get("Hotel_Room_Category"),"Deluxe Room").toString().trim();
 							}
+							pricePerNight = ifnull(firstPr.get("Price_Per_Night"),ifnull(firstPr.get("Base_Price"),0.0)).toDecimal();
 						}
 					}
 				}
-				if(pNight2 == 0.0)
+				if(rName == "" || rName == "null")
 				{
-					pNight2 = ifnull(hRec2.get("Price_Per_Night"),ifnull(hRec2.get("Base_Price"),ifnull(hRec2.get("Cost"),0.0))).toDecimal();
+					rName = "Deluxe Room";
 				}
-				h2Cost = pNight2 * roomsCount * h2Nights;
+				hotelRoomNames.put(idx,rName);
+
+				calculatedCost = pricePerNight * roomsCount * hn;
+				hotelCosts.put(idx,calculatedCost);
 			}
 		}
-		
-		// Hotel 3
-		h3Lookup = dealMap.get("rd_Hotel");
-		h3Nights = ifnull(dealMap.get("rd_Hotel_Nights"),1).toLong();
-		h3Cost = 0.0;
-		if(h3Lookup != null && h3Lookup.get("id") != null)
-		{
-			hRec3 = zoho.crm.getRecordById("Hotel",h3Lookup.get("id").toLong());
-			if(hRec3 != null)
-			{
-				ratesList3 = hRec3.get("Room_Rates_Pricing");
-				pNight3 = 0.0;
-				if(ratesList3 != null && ratesList3.size() > 0)
-				{
-					targetCat = ifnull(dealMap.get("Hotel_3_Category"),roomCategory).toLowerCase();
-					for each  row in ratesList3
-					{
-						rowCat = ifnull(row.get("Room_Category"),"").toLowerCase();
-						rPrice = ifnull(row.get("Price_Per_Night"),ifnull(row.get("Base_Price"),ifnull(row.get("Double_Occupancy"),ifnull(row.get("Price"),ifnull(row.get("Rate"),ifnull(row.get("Cost"),0.0)))))).toDecimal();
-						if((rowCat == targetCat || rowCat.contains(targetCat) || targetCat.contains(rowCat)) && rPrice > 0)
-						{
-							pNight3 = rPrice;
-							break;
-						}
-					}
-					if(pNight3 == 0.0)
-					{
-						for each  row in ratesList3
-						{
-							rPrice = ifnull(row.get("Price_Per_Night"),ifnull(row.get("Base_Price"),ifnull(row.get("Double_Occupancy"),ifnull(row.get("Price"),ifnull(row.get("Rate"),ifnull(row.get("Cost"),0.0)))))).toDecimal();
-							if(rPrice > 0)
-							{
-								pNight3 = rPrice;
-								break;
-							}
-						}
-					}
-				}
-				if(pNight3 == 0.0)
-				{
-					pNight3 = ifnull(hRec3.get("Price_Per_Night"),ifnull(hRec3.get("Base_Price"),ifnull(hRec3.get("Cost"),0.0))).toDecimal();
-				}
-				h3Cost = pNight3 * roomsCount * h3Nights;
-			}
-		}
-		
-		// Hotel 4
-		h4Lookup = dealMap.get("th_Hotel2");
-		h4Nights = ifnull(dealMap.get("th_Hotel_Nights2"),1).toLong();
-		h4Cost = 0.0;
-		if(h4Lookup != null && h4Lookup.get("id") != null)
-		{
-			hRec4 = zoho.crm.getRecordById("Hotel",h4Lookup.get("id").toLong());
-			if(hRec4 != null)
-			{
-				ratesList4 = hRec4.get("Room_Rates_Pricing");
-				pNight4 = 0.0;
-				if(ratesList4 != null && ratesList4.size() > 0)
-				{
-					targetCat = ifnull(dealMap.get("Hotel_4_Category"),roomCategory).toLowerCase();
-					for each  row in ratesList4
-					{
-						rowCat = ifnull(row.get("Room_Category"),"").toLowerCase();
-						rPrice = ifnull(row.get("Price_Per_Night"),ifnull(row.get("Base_Price"),ifnull(row.get("Double_Occupancy"),ifnull(row.get("Price"),ifnull(row.get("Rate"),ifnull(row.get("Cost"),0.0)))))).toDecimal();
-						if((rowCat == targetCat || rowCat.contains(targetCat) || targetCat.contains(rowCat)) && rPrice > 0)
-						{
-							pNight4 = rPrice;
-							break;
-						}
-					}
-					if(pNight4 == 0.0)
-					{
-						for each  row in ratesList4
-						{
-							rPrice = ifnull(row.get("Price_Per_Night"),ifnull(row.get("Base_Price"),ifnull(row.get("Double_Occupancy"),ifnull(row.get("Price"),ifnull(row.get("Rate"),ifnull(row.get("Cost"),0.0)))))).toDecimal();
-							if(rPrice > 0)
-							{
-								pNight4 = rPrice;
-								break;
-							}
-						}
-					}
-				}
-				if(pNight4 == 0.0)
-				{
-					pNight4 = ifnull(hRec4.get("Price_Per_Night"),ifnull(hRec4.get("Base_Price"),ifnull(hRec4.get("Cost"),0.0))).toDecimal();
-				}
-				h4Cost = pNight4 * roomsCount * h4Nights;
-			}
-		}
-		
-		// Hotel 5
-		h5Lookup = dealMap.get("th_Hotel1");
-		h5Nights = ifnull(dealMap.get("th_Hotel_Nights1"),1).toLong();
-		h5Cost = 0.0;
-		if(h5Lookup != null && h5Lookup.get("id") != null)
-		{
-			hRec5 = zoho.crm.getRecordById("Hotel",h5Lookup.get("id").toLong());
-			if(hRec5 != null)
-			{
-				ratesList5 = hRec5.get("Room_Rates_Pricing");
-				pNight5 = 0.0;
-				if(ratesList5 != null && ratesList5.size() > 0)
-				{
-					targetCat = ifnull(dealMap.get("Hotel_5_Category"),roomCategory).toLowerCase();
-					for each  row in ratesList5
-					{
-						rowCat = ifnull(row.get("Room_Category"),"").toLowerCase();
-						rPrice = ifnull(row.get("Price_Per_Night"),ifnull(row.get("Base_Price"),ifnull(row.get("Double_Occupancy"),ifnull(row.get("Price"),ifnull(row.get("Rate"),ifnull(row.get("Cost"),0.0)))))).toDecimal();
-						if((rowCat == targetCat || rowCat.contains(targetCat) || targetCat.contains(rowCat)) && rPrice > 0)
-						{
-							pNight5 = rPrice;
-							break;
-						}
-					}
-					if(pNight5 == 0.0)
-					{
-						for each  row in ratesList5
-						{
-							rPrice = ifnull(row.get("Price_Per_Night"),ifnull(row.get("Base_Price"),ifnull(row.get("Double_Occupancy"),ifnull(row.get("Price"),ifnull(row.get("Rate"),ifnull(row.get("Cost"),0.0)))))).toDecimal();
-							if(rPrice > 0)
-							{
-								pNight5 = rPrice;
-								break;
-							}
-						}
-					}
-				}
-				if(pNight5 == 0.0)
-				{
-					pNight5 = ifnull(hRec5.get("Price_Per_Night"),ifnull(hRec5.get("Base_Price"),ifnull(hRec5.get("Cost"),0.0))).toDecimal();
-				}
-				h5Cost = pNight5 * roomsCount * h5Nights;
-			}
-		}
-		
-		// Hotel 6
-		h6Lookup = dealMap.get("th_Hotel");
-		h6Nights = ifnull(dealMap.get("th_Hotel_Nights"),1).toLong();
-		h6Cost = 0.0;
-		if(h6Lookup != null && h6Lookup.get("id") != null)
-		{
-			hRec6 = zoho.crm.getRecordById("Hotel",h6Lookup.get("id").toLong());
-			if(hRec6 != null)
-			{
-				ratesList6 = hRec6.get("Room_Rates_Pricing");
-				pNight6 = 0.0;
-				if(ratesList6 != null && ratesList6.size() > 0)
-				{
-					targetCat = ifnull(dealMap.get("Hotel_6_Category"),roomCategory).toLowerCase();
-					for each  row in ratesList6
-					{
-						rowCat = ifnull(row.get("Room_Category"),"").toLowerCase();
-						rPrice = ifnull(row.get("Price_Per_Night"),ifnull(row.get("Base_Price"),ifnull(row.get("Double_Occupancy"),ifnull(row.get("Price"),ifnull(row.get("Rate"),ifnull(row.get("Cost"),0.0)))))).toDecimal();
-						if((rowCat == targetCat || rowCat.contains(targetCat) || targetCat.contains(rowCat)) && rPrice > 0)
-						{
-							pNight6 = rPrice;
-							break;
-						}
-					}
-					if(pNight6 == 0.0)
-					{
-						for each  row in ratesList6
-						{
-							rPrice = ifnull(row.get("Price_Per_Night"),ifnull(row.get("Base_Price"),ifnull(row.get("Double_Occupancy"),ifnull(row.get("Price"),ifnull(row.get("Rate"),ifnull(row.get("Cost"),0.0)))))).toDecimal();
-							if(rPrice > 0)
-							{
-								pNight6 = rPrice;
-								break;
-							}
-						}
-					}
-				}
-				if(pNight6 == 0.0)
-				{
-					pNight6 = ifnull(hRec6.get("Price_Per_Night"),ifnull(hRec6.get("Base_Price"),ifnull(hRec6.get("Cost"),0.0))).toDecimal();
-				}
-				h6Cost = pNight6 * roomsCount * h6Nights;
-			}
-		}
-		
+
 		// --------------------------------------------------------------------------
-		// 4. CREATE / UPDATE OPERATIONS MODULE RECORD
+		// 4. MAP DATA TO OPERATIONS
 		// --------------------------------------------------------------------------
 		opsMap = Map();
-		opsMap.put("Name",customerName + " - " + destination + " Tour");
 		opsMap.put("Booking_Id",dealIdStr);
-		opsMap.put("Customer_Name",customerName);
+		opsMap.put("Name",dealName);
+		if(custName != "")
+		{
+			opsMap.put("Customer_Name",custName);
+		}
 		opsMap.put("Destination",destination);
+		opsMap.put("Start_Date",startDate);
+		opsMap.put("End_Date",endDate);
 		opsMap.put("No_of_Days",totalDays);
 		opsMap.put("No_of_Nights",totalNights);
 		opsMap.put("No_of_Guests",totalPax);
 		opsMap.put("No_of_Adults",adults);
 		opsMap.put("Kids_Age",kids);
+		if(dealMap.get("Child_1_Age") != null) { opsMap.put("Child_1_Age",dealMap.get("Child_1_Age")); }
+		if(dealMap.get("Child_1_Bed_Preference") != null) { opsMap.put("Child_1_Bed_Preference",dealMap.get("Child_1_Bed_Preference")); }
 		opsMap.put("Rooms_Count",roomsCount);
 		opsMap.put("Sharing_Type",sharingType);
 		opsMap.put("Room_Category",roomCategory);
@@ -392,28 +242,21 @@ void automation.sync_deal_to_operations_and_finance(Int dealId)
 		{
 			opsMap.put("Email",customerEmail);
 		}
-		
-		// Checkboxes
-		opsMap.put("Transport_Booked",false);
-		opsMap.put("All_Hotels_Booked",false);
-		opsMap.put("Activities_Booked",false);
-		opsMap.put("Sync_to_Finance",false);
-		
-		// Itinerary Lookup if present in Deal
+		if(dealMap.get("Secondary_Email") != null)
+		{
+			opsMap.put("Secondary_Email",dealMap.get("Secondary_Email"));
+		}
 		if(dealMap.get("Itinerary") != null && dealMap.get("Itinerary").get("id") != null)
 		{
 			opsMap.put("Itinerary",dealMap.get("Itinerary").get("id"));
 		}
-		
-		if(startDate != null)
+
+		// Transport
+		if(dealMap.get("Vehicle_Type") != null)
 		{
-			opsMap.put("Start_Date",startDate);
+			opsMap.put("Vehicle_Type",dealMap.get("Vehicle_Type"));
 		}
-		if(endDate != null)
-		{
-			opsMap.put("End_Date",endDate);
-		}
-		if(vehicleLookupId != null)
+		else if(vehicleLookupId != null)
 		{
 			opsMap.put("Vehicle_Type",vehicleLookupId);
 		}
@@ -425,81 +268,31 @@ void automation.sync_deal_to_operations_and_finance(Int dealId)
 		{
 			opsMap.put("Vehicle_Cost",totalTransportCost);
 		}
-		
-		// Hotel 1 in Operations
-		if(h1Lookup != null && h1Lookup.get("id") != null)
+
+		// Hotels 1 to 6
+		for each  idx in {1,2,3,4,5,6}
 		{
-			opsMap.put("Hotel_1",h1Lookup.get("id"));
-			opsMap.put("Hotel_1_City",dealMap.get("st_Hotel_City"));
-			opsMap.put("Hotel_1_Nights",h1Nights);
-			opsMap.put("Hotel_1_Dates",dealMap.get("st_Hotel_Stay_Dates"));
-			opsMap.put("Hotel_1_Category",ifnull(dealMap.get("Hotel_1_Category"),roomCategory));
-			opsMap.put("Hotel_1_Cost",h1Cost);
-			opsMap.put("Hotel_1_Booked",false);
+			if(hotelIds.containsKey(idx))
+			{
+				opsMap.put("Hotel_" + idx,hotelIds.get(idx));
+				opsMap.put("Hotel_" + idx + "_City",hotelCities.get(idx));
+				opsMap.put("Hotel_" + idx + "_Category",hotelCategories.get(idx));
+				opsMap.put("Hotel_" + idx + "_Nights",hotelNights.get(idx));
+				opsMap.put("Hotel_" + idx + "_Dates",hotelDates.get(idx));
+				opsMap.put("Hotel_" + idx + "_Cost",hotelCosts.get(idx));
+				if(hotelRoomNames.get(idx) != null && hotelRoomNames.get(idx) != "")
+				{
+					opsMap.put("Hotel_" + idx + "_Room_Name",hotelRoomNames.get(idx));
+				}
+			}
 		}
-		
-		// Hotel 2 in Operations
-		if(h2Lookup != null && h2Lookup.get("id") != null)
+
+		// Activities Subform Sync
+		dealActivities = dealMap.get("activities_and_experince_Details");
+		if(dealActivities == null || dealActivities.isEmpty())
 		{
-			opsMap.put("Hotel_2",h2Lookup.get("id"));
-			opsMap.put("Hotel_2_City",dealMap.get("nd_Hotel_City"));
-			opsMap.put("Hotel_2_Nights",h2Nights);
-			opsMap.put("Hotel_2_Dates",dealMap.get("nd_Hotel_Stay_Dates"));
-			opsMap.put("Hotel_2_Category",ifnull(dealMap.get("Hotel_2_Category"),roomCategory));
-			opsMap.put("Hotel_2_Cost",h2Cost);
-			opsMap.put("Hotel_2_Booked",false);
+			dealActivities = dealMap.get("Activities_and_Experiences_operations");
 		}
-		
-		// Hotel 3 in Operations
-		if(h3Lookup != null && h3Lookup.get("id") != null)
-		{
-			opsMap.put("Hotel_3",h3Lookup.get("id"));
-			opsMap.put("Hotel_3_City",dealMap.get("rd_Hotel_City"));
-			opsMap.put("Hotel_3_Nights",h3Nights);
-			opsMap.put("Hotel_3_Dates",dealMap.get("rd_Hotel_Stay_Dates"));
-			opsMap.put("Hotel_3_Category",ifnull(dealMap.get("Hotel_3_Category"),roomCategory));
-			opsMap.put("Hotel_3_Cost",h3Cost);
-			opsMap.put("Hotel_3_Booked",false);
-		}
-		
-		// Hotel 4 in Operations
-		if(h4Lookup != null && h4Lookup.get("id") != null)
-		{
-			opsMap.put("Hotel_4",h4Lookup.get("id"));
-			opsMap.put("Hotel_4_City",dealMap.get("th_Hotel_City"));
-			opsMap.put("Hotel_4_Nights",h4Nights);
-			opsMap.put("Hotel_4_Dates",dealMap.get("th_Hotel_Stay_Dates2"));
-			opsMap.put("Hotel_4_Category",ifnull(dealMap.get("Hotel_4_Category"),roomCategory));
-			opsMap.put("Hotel_4_Cost",h4Cost);
-			opsMap.put("Hotel_4_Booked",false);
-		}
-		
-		// Hotel 5 in Operations
-		if(h5Lookup != null && h5Lookup.get("id") != null)
-		{
-			opsMap.put("Hotel_5",h5Lookup.get("id"));
-			opsMap.put("Hotel_5_City",dealMap.get("th_Hotel_City1"));
-			opsMap.put("Hotel_5_Nights",h5Nights);
-			opsMap.put("Hotel_5_Dates",dealMap.get("th_Hotel_Stay_Dates1"));
-			opsMap.put("Hotel_5_Category",ifnull(dealMap.get("Hotel_5_Category"),roomCategory));
-			opsMap.put("Hotel_5_Cost",h5Cost);
-			opsMap.put("Hotel_5_Booked",false);
-		}
-		
-		// Hotel 6 in Operations
-		if(h6Lookup != null && h6Lookup.get("id") != null)
-		{
-			opsMap.put("Hotel_6",h6Lookup.get("id"));
-			opsMap.put("Hotel_6_City",dealMap.get("th_Hotel_City2"));
-			opsMap.put("Hotel_6_Nights",h6Nights);
-			opsMap.put("Hotel_6_Dates",dealMap.get("th_Hotel_Stay_Dates"));
-			opsMap.put("Hotel_6_Category",ifnull(dealMap.get("Hotel_6_Category"),roomCategory));
-			opsMap.put("Hotel_6_Cost",h6Cost);
-			opsMap.put("Hotel_6_Booked",false);
-		}
-		
-		// Activities Subform Sync (if present in Deal)
-		dealActivities = dealMap.get("Activities_and_Experiences_operations");
 		if(dealActivities == null || dealActivities.isEmpty())
 		{
 			dealActivities = dealMap.get("Activities_and_Experiences");
@@ -514,11 +307,19 @@ void automation.sync_deal_to_operations_and_finance(Int dealId)
 				if(act.get("City") != null) { rowMap.put("City",act.get("City")); }
 				if(act.get("City_2") != null) { rowMap.put("City_2",act.get("City_2")); }
 				if(act.get("Guided_Tour") != null) { rowMap.put("Guided_Tour",act.get("Guided_Tour")); }
-				if(act.get("En_route_Experiences") != null) { rowMap.put("En_route_Experiences",act.get("En_route_Experiences")); }
-				if(act.get("Experience_1") != null) { rowMap.put("Experience_1",act.get("Experience_1")); }
-				if(act.get("Experience_2") != null) { rowMap.put("Experience_2",act.get("Experience_2")); }
-				if(act.get("Experience_3") != null) { rowMap.put("Experience_3",act.get("Experience_3")); }
-				if(act.get("Experience_4") != null) { rowMap.put("Experience_4",act.get("Experience_4")); }
+				enRoute = ifnull(act.get("En_Route_Experinces"),act.get("En_route_Experiences"));
+				if(enRoute != null)
+				{
+					rowMap.put("En_Route_Experinces",ifnull(enRoute.get("id"),enRoute));
+				}
+				for each  expIdx in {1,2,3,4}
+				{
+					expVal = act.get("Experience_" + expIdx);
+					if(expVal != null)
+					{
+						rowMap.put("Experience_" + expIdx,ifnull(expVal.get("id"),expVal));
+					}
+				}
 				actRows.add(rowMap);
 			}
 			if(actRows.size() > 0)
@@ -526,19 +327,160 @@ void automation.sync_deal_to_operations_and_finance(Int dealId)
 				opsMap.put("Activities_and_Experiences_operations",actRows);
 			}
 		}
-		
+
+		// Save Operations
 		existingOps = zoho.crm.searchRecords("Operations","(Booking_Id:equals:" + dealIdStr + ")");
-		opsRes = Map();
 		if(existingOps != null && existingOps.size() > 0)
 		{
 			opsId = existingOps.get(0).get("id");
 			opsRes = zoho.crm.updateRecord("Operations",opsId.toLong(),opsMap);
+			info "Operations Updated: " + opsRes;
 		}
 		else
 		{
 			opsRes = zoho.crm.createRecord("Operations",opsMap);
+			info "Operations Created: " + opsRes;
 		}
-		info "OPERATIONS_RESPONSE: " + opsRes;
-		info "Operations synced successfully for Deal: " + dealIdStr;
+
+		// --------------------------------------------------------------------------
+		// 5. MAP CLIENT PAYMENT & DETAILS TO FINANCE
+		// --------------------------------------------------------------------------
+		finMap = Map();
+		finMap.put("Booking_ID",dealIdStr);
+		finMap.put("Name",dealName);
+		finMap.put("Total_Receivable_Amount",totalPackageCost);
+		finMap.put("Total_Amount_Received",advancePaid);
+		finMap.put("Balance_Receivable",balanceDue);
+		finMap.put("Payment_Status",payStatus);
+		finMap.put("Status","Pending");
+		
+		if(vehicleLookupId != null)
+		{
+			finMap.put("Vehicle_Name",vehicleLookupId);
+		}
+		if(vendorLookupId != null)
+		{
+			finMap.put("Vendor_Name",vendorLookupId);
+		}
+		if(totalTransportCost > 0)
+		{
+			finMap.put("Total_Transport_Cost",totalTransportCost);
+		}
+
+		if(hotelIds.containsKey(1)) { finMap.put("Hotel_Name",hotelIds.get(1)); finMap.put("Total_Hotel_Cost",hotelCosts.get(1)); }
+		if(hotelIds.containsKey(2)) { finMap.put("Hotel_2_Name",hotelIds.get(2)); finMap.put("Total_Hotel_2_Cost",hotelCosts.get(2)); }
+		if(hotelIds.containsKey(3)) { finMap.put("Hotel_3_Name",hotelIds.get(3)); finMap.put("Total_Hotel_3_Cost",hotelCosts.get(3)); }
+		if(hotelIds.containsKey(4)) { finMap.put("Hotel_4_Name",hotelIds.get(4)); finMap.put("Total_Hotel_4_Cost",hotelCosts.get(4)); }
+		if(hotelIds.containsKey(5)) { finMap.put("Hotel_5_Name",hotelIds.get(5)); finMap.put("Total_Hotel_5_Cost",hotelCosts.get(5)); }
+		if(hotelIds.containsKey(6)) { finMap.put("Hotel_6_Name",hotelIds.get(6)); finMap.put("Total_Hotel_6_Cost",hotelCosts.get(6)); }
+
+		// Save Finance
+		existingFin = zoho.crm.searchRecords("Finance","(Booking_ID:equals:" + dealIdStr + ")");
+		if(existingFin != null && existingFin.size() > 0)
+		{
+			finId = existingFin.get(0).get("id");
+			finRes = zoho.crm.updateRecord("Finance",finId.toLong(),finMap);
+			info "Finance Updated: " + finRes;
+		}
+		else
+		{
+			finRes = zoho.crm.createRecord("Finance",finMap);
+			info "Finance Created: " + finRes;
+		}
+
+		// --------------------------------------------------------------------------
+		// 6. SEND EMAIL ALERTS TO OPERATIONS & FINANCE
+		// --------------------------------------------------------------------------
+		try 
+		{
+			// Operations Email Body
+			opsEmailContent = "<html><body style='font-family:Arial,sans-serif;line-height:1.6;color:#333;'>";
+			opsEmailContent = opsEmailContent + "<h2 style='color:#0d6efd;'>New Booking Alert - Operations Team</h2>";
+			opsEmailContent = opsEmailContent + "<p>A new booking has been confirmed. Below are the trip and operations details:</p>";
+			opsEmailContent = opsEmailContent + "<table border='1' cellpadding='8' cellspacing='0' style='border-collapse:collapse;width:100%;max-width:600px;'>";
+			opsEmailContent = opsEmailContent + "<tr><td style='background:#f4f4f4;'><b>Booking ID</b></td><td>" + dealIdStr + "</td></tr>";
+			opsEmailContent = opsEmailContent + "<tr><td style='background:#f4f4f4;'><b>Deal Name</b></td><td>" + dealName + "</td></tr>";
+			opsEmailContent = opsEmailContent + "<tr><td style='background:#f4f4f4;'><b>Customer Name</b></td><td>" + custName + "</td></tr>";
+			opsEmailContent = opsEmailContent + "<tr><td style='background:#f4f4f4;'><b>Destination</b></td><td>" + destination + "</td></tr>";
+			opsEmailContent = opsEmailContent + "<tr><td style='background:#f4f4f4;'><b>Travel Dates</b></td><td>" + startDate + " to " + endDate + " (" + totalDays + " Days / " + totalNights + " Nights)</td></tr>";
+			opsEmailContent = opsEmailContent + "<tr><td style='background:#f4f4f4;'><b>Total Guests</b></td><td>" + totalPax + " (" + adults + " Adults, " + kids + " Kids)</td></tr>";
+			opsEmailContent = opsEmailContent + "<tr><td style='background:#f4f4f4;'><b>Rooms & Sharing</b></td><td>" + roomsCount + " Room(s), " + sharingType + " (" + roomCategory + ")</td></tr>";
+			opsEmailContent = opsEmailContent + "<tr><td style='background:#f4f4f4;'><b>Vehicle Type</b></td><td>" + selectedVehicleName + "</td></tr>";
+			opsEmailContent = opsEmailContent + "</table>";
+
+			// Hotel breakdown in Operations Email
+			if(hotelIds.size() > 0)
+			{
+				opsEmailContent = opsEmailContent + "<h3 style='margin-top:20px;'>Hotel Reservations Required:</h3>";
+				opsEmailContent = opsEmailContent + "<table border='1' cellpadding='8' cellspacing='0' style='border-collapse:collapse;width:100%;max-width:600px;'>";
+				opsEmailContent = opsEmailContent + "<tr style='background:#f4f4f4;'><th>#</th><th>Hotel Name</th><th>City</th><th>Room Category</th><th>Stay Dates</th></tr>";
+				for each  idx in {1,2,3,4,5,6}
+				{
+					if(hotelIds.containsKey(idx))
+					{
+						opsEmailContent = opsEmailContent + "<tr><td>" + idx + "</td><td>" + hotelNames.get(idx) + "</td><td>" + hotelCities.get(idx) + "</td><td>" + hotelRoomNames.get(idx) + "</td><td>" + hotelDates.get(idx) + "</td></tr>";
+					}
+				}
+				opsEmailContent = opsEmailContent + "</table>";
+			}
+			opsEmailContent = opsEmailContent + "<p style='margin-top:20px;'>Please initiate supplier bookings accordingly.</p>";
+			opsEmailContent = opsEmailContent + "</body></html>";
+
+			sendmail
+			[
+				from: zoho.loginuserid
+				to: "operations@wanderphilia.com"
+				subject: "New Booking Confirmed: " + dealName + " (" + destination + ")"
+				message: opsEmailContent
+			]
+			info "Operations email sent successfully.";
+
+			// Finance Email Body
+			finEmailContent = "<html><body style='font-family:Arial,sans-serif;line-height:1.6;color:#333;'>";
+			finEmailContent = finEmailContent + "<h2 style='color:#198754;'>New Booking Payment & Cost Summary - Finance Team</h2>";
+			finEmailContent = finEmailContent + "<p>A new booking has been confirmed. Below are the client payment and vendor costing details:</p>";
+			finEmailContent = finEmailContent + "<table border='1' cellpadding='8' cellspacing='0' style='border-collapse:collapse;width:100%;max-width:600px;'>";
+			finEmailContent = finEmailContent + "<tr><td style='background:#f4f4f4;'><b>Booking ID</b></td><td>" + dealIdStr + "</td></tr>";
+			finEmailContent = finEmailContent + "<tr><td style='background:#f4f4f4;'><b>Customer Name</b></td><td>" + custName + "</td></tr>";
+			finEmailContent = finEmailContent + "<tr><td style='background:#f4f4f4;'><b>Destination</b></td><td>" + destination + "</td></tr>";
+			finEmailContent = finEmailContent + "<tr><td style='background:#f4f4f4;'><b>Total Package Amount</b></td><td><b>INR " + totalPackageCost + "</b></td></tr>";
+			finEmailContent = finEmailContent + "<tr><td style='background:#f4f4f4;'><b>Advance Received</b></td><td style='color:green;'><b>INR " + advancePaid + "</b></td></tr>";
+			finEmailContent = finEmailContent + "<tr><td style='background:#f4f4f4;'><b>Balance Receivable</b></td><td style='color:red;'><b>INR " + balanceDue + "</b></td></tr>";
+			finEmailContent = finEmailContent + "<tr><td style='background:#f4f4f4;'><b>Payment Status</b></td><td>" + payStatus + "</td></tr>";
+			finEmailContent = finEmailContent + "<tr><td style='background:#f4f4f4;'><b>Transport B2B Cost</b></td><td>INR " + totalTransportCost + "</td></tr>";
+			finEmailContent = finEmailContent + "</table>";
+
+			if(hotelCosts.size() > 0)
+			{
+				finEmailContent = finEmailContent + "<h3 style='margin-top:20px;'>Hotel B2B Costs Payable:</h3>";
+				finEmailContent = finEmailContent + "<table border='1' cellpadding='8' cellspacing='0' style='border-collapse:collapse;width:100%;max-width:600px;'>";
+				finEmailContent = finEmailContent + "<tr style='background:#f4f4f4;'><th>#</th><th>Hotel Name</th><th>Nights</th><th>B2B Cost</th></tr>";
+				for each  idx in {1,2,3,4,5,6}
+				{
+					if(hotelIds.containsKey(idx))
+					{
+						finEmailContent = finEmailContent + "<tr><td>" + idx + "</td><td>" + hotelNames.get(idx) + "</td><td>" + hotelNights.get(idx) + "</td><td>INR " + hotelCosts.get(idx) + "</td></tr>";
+					}
+				}
+				finEmailContent = finEmailContent + "</table>";
+			}
+			finEmailContent = finEmailContent + "<p style='margin-top:20px;'>Please verify client receipts and plan vendor payouts.</p>";
+			finEmailContent = finEmailContent + "</body></html>";
+
+			sendmail
+			[
+				from: zoho.loginuserid
+				to: "experiences@wanderphilia.com"
+				subject: "Payment & Financials Alert: " + dealName + " | INR " + totalPackageCost
+				message: finEmailContent
+			]
+			info "Finance email sent successfully.";
+		}
+		catch (mailEx)
+		{
+			info "Mail sending exception: " + mailEx;
+		}
+
+		info "Sync & Notifications Completed Successfully for Booking ID: " + dealIdStr;
 	}
 }
