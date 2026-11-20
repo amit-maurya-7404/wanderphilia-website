@@ -5464,6 +5464,315 @@ export const singaporeDeepakRevisedManualItinerary: ManualItinerary = {
   enableOnlineBooking: true
 };
 
+export const singaporeDeepakRevised2ManualItinerary: ManualItinerary = {
+  id: 'singapore-deepak-revised-2',
+  slug: 'singapore-deepak-revised-2',
+  title: '6 Days Trip to Singapore Specially Curated for Mr. Deepak & Family (Revised 2)',
+  subtitle: 'Singapore – A Beautiful Family Escape (Luxury Beach & Island Stay)',
+  duration: '5 Nights / 6 Days | 06 Dec – 11 Dec 2026',
+  numNights: 5,
+  numDays: 6,
+  dates: '06 Dec – 11 Dec 2026',
+  route: 'Mumbai → Singapore (Sentosa Island 5N) → Mumbai',
+  routeSummary: '5N Shangri-La\'s Rasa Sentosa Resort & Spa',
+  destination: 'Singapore',
+  travelStyle: 'Luxury Beach & Island Family Escape',
+  tripType: 'Customised Luxury Tour',
+  leadName: 'Mr. Deepak & Family',
+  vehicleType: 'Private Mercedes-Benz V Class / Luxury MPV with Chauffeur',
+  mealPlan: 'Daily Buffet Breakfast at Shangri-La & Curated Indian Dining Recommendations',
+  heroImage: '/images/singapore.png',
+  galleryImages: [
+    '/images/singapore1.jpg',
+    '/images/singapore2.jpg',
+    '/images/singapore3.jpg',
+    '/images/singapore4.jpg',
+    '/images/singapore5.jpg',
+    '/images/singapore.png'
+  ],
+  accommodations: [
+    {
+      city: 'Sentosa Island, Singapore',
+      nights: 5,
+      hotelName: "Shangri-La's Rasa Sentosa Resort & Spa (5 Star)",
+      roomCategory: 'Family Garden King, Room With Free Cancellation | Breakfast only (3 Adults, 2 Children)'
+    }
+  ],
+  hotelCostDetails: {
+    hotelName: "Shangri-La's Rasa Sentosa Resort & Spa",
+    rating: '5 Star',
+    checkIn: 'Sun, 6 Dec 2026',
+    checkOut: 'Fri, 11 Dec 2026',
+    nights: 5,
+    roomsCount: 1,
+    roomCategory: 'Family Garden King, Room With Free Cancellation | Breakfast only',
+    paxDetails: '3 Adults, 2 Children (1 room, 5 nights)',
+    totalCost: 346197,
+    note: 'Family Garden King, Room With Free Cancellation | Breakfast only. Total price is inclusive of all taxes. Contact: Bhavin Thakker (9987602328 | experiences@wanderphilia.com).'
+  },
+  dayPlans: [
+    {
+      day: 1,
+      date: 'Sun, 06 Dec 2026',
+      title: 'Day 1 | Arrival in Singapore, Check-in at Shangri-La Rasa Sentosa & Gardens by the Bay',
+      route: 'Singapore Changi Airport → Shangri-La Rasa Sentosa → Gardens by the Bay',
+      durationNote: '5h 25m Flight | Private Luxury Chauffeur Airport Transfer',
+      intro: 'Welcome to Singapore! Land at Changi Airport via Singapore Airlines SQ-423 at 07:30 AM. Private luxury chauffeur transfer to Shangri-La\'s Rasa Sentosa Resort & Spa on Sentosa Island. Check-in, refresh, and in late afternoon experience Gardens by the Bay (Flower Dome, Cloud Forest & Jurassic World Experience), followed by the enchanting Garden Rhapsody Light Show.',
+      timeline: [
+        '07:30 AM - Arrive at Singapore Changi Airport (SIN) via Singapore Airlines Flight SQ - 423',
+        'Warm welcome by our representative and private luxury MPV transfer to Shangri-La\'s Rasa Sentosa Resort & Spa',
+        'Check-in and refresh in your spacious Family Garden King Room with beachfront tropical surroundings',
+        'Late Afternoon: Experience Gardens by the Bay – explore the climate-controlled Flower Dome, Cloud Forest & Jurassic World Experience',
+        'Evening (07:45 PM – 08:15 PM): Witness the magical Garden Rhapsody Light & Sound Show amidst the illuminated Supertrees',
+        'Dinner at curated Indian Restaurant',
+        'Private chauffeur transfer back to your resort',
+        'Overnight stay at Shangri-La\'s Rasa Sentosa Resort & Spa, Sentosa Island'
+      ],
+      stayLocation: "Shangri-La's Rasa Sentosa Resort & Spa, Sentosa Island",
+      image: '/images/singapore1.jpg',
+      meals: 'Dinner at Indian Restaurant'
+    },
+    {
+      day: 2,
+      date: 'Mon, 07 Dec 2026',
+      title: 'Day 2 | Singapore Iconic City Highlights, Colourful Lanes & Singapore Flyer',
+      route: 'Shangri-La Rasa Sentosa → Haji Lane & Arab Street → Singapore Flyer → Marina Bay & Orchard Rd',
+      intro: 'Discover Singapore’s vibrant cultural lanes in Haji Lane and Arab Street, admire the breathtaking city skyline from the giant Singapore Flyer observation wheel, and spend the evening exploring Merlion Park, Marina Bay waterfront, Helix Bridge, and world-class shopping on Orchard Road.',
+      timeline: [
+        'Morning: Sumptuous buffet breakfast at Shangri-La Rasa Sentosa',
+        'Private chauffeur pickup for iconic cultural & city exploration',
+        'Visit Haji Lane & Arab Street – wander colourful shophouse lanes, striking street art murals & eclectic boutique shops',
+        'After Lunch: Experience panoramic 360-degree skyline views on the Singapore Flyer observation wheel',
+        'Evening: Visit Merlion Park & Marina Bay waterfront promenade for classic photo opportunities',
+        'Explore The Shoppes at Marina Bay Sands and walk through the architectural marvel of Helix Bridge',
+        'Visit Orchard Road for premier shopping, lifestyle department stores, and street food delights',
+        'Private transfer back to Sentosa Island',
+        'Overnight stay at Shangri-La\'s Rasa Sentosa Resort & Spa, Sentosa Island'
+      ],
+      stayLocation: "Shangri-La's Rasa Sentosa Resort & Spa, Sentosa Island",
+      image: '/images/singapore3.jpg',
+      meals: 'Breakfast'
+    },
+    {
+      day: 3,
+      date: 'Tue, 08 Dec 2026',
+      title: 'Day 3 | Bird Paradise & Singapore Zoo, Relaxing Beachside Leisure at Sentosa',
+      route: 'Shangri-La Rasa Sentosa → Mandai Wildlife Reserve (Bird Paradise & Zoo) → Sentosa',
+      intro: 'An exhilarating nature and wildlife day at Mandai Wildlife Reserve! Discover the breathtaking walk-in aviaries of Bird Paradise in the morning, followed by the world-famous open-concept Singapore Zoo in the afternoon. Return to Sentosa for a tranquil beachside evening at Shangri-La.',
+      timeline: [
+        'Sumptuous buffet breakfast at Shangri-La Rasa Sentosa',
+        'Private MPV transfer to Mandai Wildlife Reserve',
+        'Morning: Explore Bird Paradise – Asia’s largest bird sanctuary with 8 massive walk-in aviaries, penguin cove & vibrant bird feedings',
+        'Afternoon: Explore Singapore Zoo with guided tram tour, open rainforest habitats, and captivating wildlife presentations',
+        'Private transfer back to Sentosa Island and your resort',
+        'Late Afternoon & Evening: Relax on the private beachfront of Shangri-La Rasa Sentosa, enjoy the lagoon pools, water slides, and sunset sea breeze',
+        'Dinner at leisure',
+        'Overnight stay at Shangri-La\'s Rasa Sentosa Resort & Spa, Sentosa Island'
+      ],
+      stayLocation: "Shangri-La's Rasa Sentosa Resort & Spa, Sentosa Island",
+      image: '/images/singapore5.jpg',
+      meals: 'Breakfast'
+    },
+    {
+      day: 4,
+      date: 'Wed, 09 Dec 2026',
+      title: 'Day 4 | Full Day Universal Studios Singapore with VIP Express Pass',
+      route: 'Shangri-La Rasa Sentosa → Resorts World Sentosa (Universal Studios) → Shangri-La',
+      intro: 'A blockbuster day of action, thrill rides, movie magic, and character encounters at Universal Studios Singapore with VIP Express Pass access to bypass the regular queues all day long!',
+      timeline: [
+        'Sumptuous buffet breakfast at Shangri-La Rasa Sentosa',
+        'Short transfer to Resorts World Sentosa',
+        'Full Day at Universal Studios Singapore with VIP Express Pass (Skip regular ride queues for all guests)',
+        'Experience Transformers: The Ride 3D, Battlestar Galactica duelling rollercoasters, Jurassic Park Rapids Adventure, and Revenge of the Mummy',
+        'Explore Far Far Away, Ancient Egypt, Sci-Fi City, and delightful character meet-and-greets',
+        'Evening: Unwind with relaxing beach time and sunset stroll on Sentosa Island',
+        'Dinner at Sentosa dining precinct or beachside bistro',
+        'Overnight stay at Shangri-La\'s Rasa Sentosa Resort & Spa, Sentosa Island'
+      ],
+      stayLocation: "Shangri-La's Rasa Sentosa Resort & Spa, Sentosa Island",
+      image: '/images/singapore2.jpg',
+      meals: 'Breakfast'
+    },
+    {
+      day: 5,
+      date: 'Thu, 10 Dec 2026',
+      title: 'Day 5 | Singapore Oceanarium, Thrilling Skyline Luge & Skyride & Wings of Time Show',
+      route: 'Shangri-La Rasa Sentosa → S.E.A. Aquarium → Skyline Luge → Siloso Beach',
+      intro: 'Dive deep into marine wonders at Singapore Oceanarium (S.E.A. Aquarium), feel the adrenaline on the gravity-fueled Skyline Luge & Skyride, and culminate your night with the breathtaking Wings of Time water, laser, and pyrotechnic show.',
+      timeline: [
+        'Sumptuous buffet breakfast at Shangri-La Rasa Sentosa',
+        'Morning: Discover Singapore Oceanarium (S.E.A. Aquarium), home to over 100,000 marine animals, shark seas & giant oceanic habitats',
+        'Afternoon: Thrilling Skyline Luge & Skyride – take the scenic chairlift up and race down purpose-built tracks on Sentosa',
+        'Late Afternoon: Leisure stroll around Sentosa boardwalk or relaxing spa time at Shangri-La Chi The Spa',
+        'Evening: Witness the spectacular Wings of Time multi-sensory night show at Siloso Beach with pyrotechnics, laser displays & water fountains',
+        'Dinner at curated Indian / beachfront restaurant',
+        'Overnight stay at Shangri-La\'s Rasa Sentosa Resort & Spa, Sentosa Island'
+      ],
+      stayLocation: "Shangri-La's Rasa Sentosa Resort & Spa, Sentosa Island",
+      image: '/images/singapore4.jpg',
+      meals: 'Breakfast'
+    },
+    {
+      day: 6,
+      date: 'Fri, 11 Dec 2026',
+      title: 'Day 6 | Leisure Morning at Shangri-La, Jewel Changi Airport & Departure',
+      route: 'Shangri-La Rasa Sentosa → Jewel Changi Airport → Mumbai',
+      durationNote: 'Private Luxury MPV Airport Transfer | 5h 40m Flight',
+      intro: 'Savor your final morning at Shangri-La Rasa Sentosa, check-out, and transfer comfortably to Changi Airport. Discover the awe-inspiring Rain Vortex at Jewel Changi before boarding your flight back home to Mumbai with unforgettable memories.',
+      timeline: [
+        'Relaxed buffet breakfast at Shangri-La Rasa Sentosa overlooking the South China Sea',
+        'Morning at leisure enjoying Shangri-La’s tropical pool, beach activities, or watersports',
+        '12:00 PM - Check-out from Shangri-La\'s Rasa Sentosa Resort & Spa',
+        'Private luxury MPV transfer to Singapore Changi Airport (SIN) Terminal',
+        'Explore Jewel Changi Airport – marvel at the world-famous HSBC Rain Vortex indoor waterfall and lush Forest Valley',
+        '19:40 - Board IndiGo Flight 6E - 1164 to Mumbai',
+        '22:50 - Arrive safely in Mumbai (BOM)',
+        'Come back home with wonderful, lifelong family memories of Singapore!'
+      ],
+      stayLocation: 'Mumbai',
+      image: '/images/singapore.png',
+      meals: 'Breakfast'
+    }
+  ],
+  inclusions: [
+    'Handpicked 5-Star Luxury Resort: 5 Nights at Shangri-La\'s Rasa Sentosa Resort & Spa (Family Garden King Room)',
+    'Daily Sumptuous Buffet Breakfast for all guests at Shangri-La Rasa Sentosa',
+    'Private Airport & All Sightseeing Transfers in Private Luxury Mercedes-Benz V Class / MPV with Chauffeur',
+    'Gardens by the Bay – Flower Dome, Cloud Forest & Jurassic World Experience Admission Tickets',
+    'Garden Rhapsody Supertree Light & Sound Show (Evening 7:45 PM – 8:15 PM show)',
+    'Full Day Universal Studios Singapore with VIP Express Pass (Skip regular ride queues)',
+    'Bird Paradise (Mandai Wildlife Reserve) Admission Tickets',
+    'Singapore Zoo Admission Tickets with Tram Rides',
+    'Singapore Oceanarium (S.E.A. Aquarium) Admission Tickets',
+    'Singapore Flyer Scenic Skyline Observation Wheel Admission Tickets',
+    'Skyline Luge & Sky Ride Experience on Sentosa Island',
+    'Wings of Time Spectacular Night Light, Laser & Water Show at Siloso Beach',
+    'Guided Exploration of Haji Lane, Arab Street, Merlion Park, Helix Bridge, Marina Bay & Orchard Road',
+    'Curated Indian Restaurant Dining Experience on Day 1',
+    'All Expressway / Toll Charges, Parking Fees & Chauffeur Allowances Included Throughout'
+  ],
+  exclusions: [
+    'Flights quoted separately as detailed (Economy @ ₹3,60,968 or Premium Economy @ ₹6,07,000 for 5 Pax).',
+    'Hotel stay cost quoted separately as detailed (Shangri-La Rasa Sentosa @ ₹3,46,197 for 5 Nights).',
+    'GST (5%) & TCS (2%) applicable extra on land package.',
+    'Any personal expenses such as telephone calls, laundry, room service, alcoholic beverages, or porterage.',
+    'Meals and refreshments other than specified under inclusions.',
+    'Singapore Visa fees & Travel Insurance (can be assisted on request).',
+    'Anything not explicitly mentioned in the inclusions list.'
+  ],
+  flightQuotations: [
+    {
+      optionId: 'economy-class-sq-6e',
+      optionTitle: 'Economy Class Round-Trip (Singapore Airlines + IndiGo)',
+      totalPrice: 360968,
+      paxDetails: '3 Adults, 2 Children (Total Price Inclusive of All Taxes)',
+      isExcludedFromPackage: false,
+      note: 'ONWARD SQ-423 (BOM-SIN) 30KG Baggage + RETURN 6E-1164 (SIN-BOM) 30KG Baggage. Airline ticket pricing is dynamic. Fares are valid as of now and might change at issuance. Contact: Bhavin Thakker (9987602328 | experiences@wanderphilia.com).',
+      sectors: [
+        {
+          fromCity: 'MUM (Mumbai)',
+          toCity: 'SIN (Singapore)',
+          fromAirport: 'Chhatrapati Shivaji Maharaj International Airport (BOM)',
+          toAirport: 'Singapore Changi Airport (SIN)',
+          fromCode: 'BOM',
+          toCode: 'SIN',
+          airline: 'Singapore Airlines',
+          flightNumber: 'SQ - 423',
+          journeyType: 'Onward Journey',
+          departureDate: 'Sat, 05 Dec 2026',
+          departureTime: '23:35',
+          arrivalDate: 'Sun, 06 Dec 2026',
+          arrivalTime: '07:30',
+          duration: '5 h 25 m',
+          stops: 'Non Stop',
+          cabinClass: 'Economy Class',
+          baggage: '1 PCS | 30 KGS Check-in'
+        },
+        {
+          fromCity: 'SIN (Singapore)',
+          toCity: 'MUM (Mumbai)',
+          fromAirport: 'Singapore Changi Airport (SIN)',
+          toAirport: 'Chhatrapati Shivaji Maharaj International Airport (BOM)',
+          fromCode: 'SIN',
+          toCode: 'BOM',
+          airline: 'IndiGo',
+          flightNumber: '6E - 1164',
+          journeyType: 'Return Journey',
+          departureDate: 'Fri, 11 Dec 2026',
+          departureTime: '19:40',
+          arrivalDate: 'Fri, 11 Dec 2026',
+          arrivalTime: '22:50',
+          duration: '5 h 40 m',
+          stops: 'Non Stop',
+          cabinClass: 'Economy Class',
+          baggage: '7 KGS Cabin | 30 KGS Check-in'
+        }
+      ]
+    },
+    {
+      optionId: 'premium-economy-class-sq',
+      optionTitle: 'Premium Economy Class Round-Trip',
+      totalPrice: 607000,
+      paxDetails: '3 Adults, 2 Children (Total Price Inclusive of All Taxes)',
+      isExcludedFromPackage: false,
+      note: 'Premium Economy Class for Mumbai ↔ Singapore round-trip. Wider seats, priority boarding & check-in, enhanced baggage. Fares are dynamic. Contact: Bhavin Thakker (9987602328 | experiences@wanderphilia.com).',
+      sectors: [
+        {
+          fromCity: 'MUM (Mumbai)',
+          toCity: 'SIN (Singapore)',
+          fromAirport: 'Chhatrapati Shivaji Maharaj International Airport (BOM)',
+          toAirport: 'Singapore Changi Airport (SIN)',
+          fromCode: 'BOM',
+          toCode: 'SIN',
+          airline: 'Singapore Airlines',
+          flightNumber: 'SQ - 423',
+          journeyType: 'Onward Journey',
+          departureDate: 'Sat, 05 Dec 2026',
+          departureTime: '23:35',
+          arrivalDate: 'Sun, 06 Dec 2026',
+          arrivalTime: '07:30',
+          duration: '5 h 25 m',
+          stops: 'Non Stop',
+          cabinClass: 'Premium Economy Class',
+          baggage: '35 KGS Check-in'
+        },
+        {
+          fromCity: 'SIN (Singapore)',
+          toCity: 'MUM (Mumbai)',
+          fromAirport: 'Singapore Changi Airport (SIN)',
+          toAirport: 'Chhatrapati Shivaji Maharaj International Airport (BOM)',
+          fromCode: 'SIN',
+          toCode: 'BOM',
+          airline: 'Singapore Airlines / Partner',
+          flightNumber: 'SQ / Return',
+          journeyType: 'Return Journey',
+          departureDate: 'Fri, 11 Dec 2026',
+          departureTime: '19:40',
+          arrivalDate: 'Fri, 11 Dec 2026',
+          arrivalTime: '22:50',
+          duration: '5 h 40 m',
+          stops: 'Non Stop',
+          cabinClass: 'Premium Economy Class',
+          baggage: '35 KGS Check-in'
+        }
+      ]
+    }
+  ],
+  baseAmount: 284000,
+  gstPercentage: 5,
+  gstAmount: 14200,
+  tcsPercentage: 2,
+  tcsAmount: 5964,
+  finalQuotationAmount: 304164,
+  perAdultPrice: 72500,
+  perKidPrice: 66500,
+  adults: 3,
+  kids: 2,
+  kidsDetails: '11 Yrs (Child Cost: ₹66,500) • 2 Yrs (Complimentary / Free)',
+  childPricingNote: 'Total Land Cost (Sightseeing Entry Tickets, Guided Excursions & Private MPV Transfers): 3 Adults @ ₹72,500 = ₹2,17,500 + 1 Child (11 yrs) @ ₹66,500 = ₹66,500 (Child 2 yrs: Complimentary / Free of Cost). Base: ₹2,84,000 + 5% GST (₹14,200) + 2% TCS (₹5,964) = Grand Total ₹3,04,164/- (5-Star Shangri-La Rasa Sentosa Stay @ ₹3,46,197 and Flight options are quoted separately as detailed above).\n\nNote: The second child has been considered 2 years old, and accordingly, no additional cost has been included. If the child’s age is above 2 years, applicable additional charges will apply.',
+  enableOnlineBooking: true
+};
+
 export const thailandDimpleManualItinerary: ManualItinerary = {
   id: 'thailand-dimple',
   slug: 'thailand-dimple',
@@ -7010,6 +7319,15 @@ export const manualItinerariesRegistry: Record<string, ManualItinerary> = {
   'mr-deepak-singapore-revised': singaporeDeepakRevisedManualItinerary,
   'wp-singapore-deepak-revised': singaporeDeepakRevisedManualItinerary,
 
+  // Singapore Deepak Revised 2 (5N / 6D, 06 Dec - 11 Dec 2026, Shangri-La Rasa Sentosa)
+  'singapore-deepak-revised-2': singaporeDeepakRevised2ManualItinerary,
+  'singapore-deepak-revised-2-family': singaporeDeepakRevised2ManualItinerary,
+  'singapore-deepak-revised-2-itinerary': singaporeDeepakRevised2ManualItinerary,
+  'deepak-revised-2': singaporeDeepakRevised2ManualItinerary,
+  'deepak-singapore-revised-2': singaporeDeepakRevised2ManualItinerary,
+  'mr-deepak-singapore-revised-2': singaporeDeepakRevised2ManualItinerary,
+  'wp-singapore-deepak-revised-2': singaporeDeepakRevised2ManualItinerary,
+
   // Thailand Dimple (6N / 7D, 06 Dec - 12 Dec 2026)
   'thailand-dimple': thailandDimpleManualItinerary,
   'thailand-dimple-4adults': thailandDimpleManualItinerary,
@@ -7060,6 +7378,9 @@ export function getManualItinerary(idOrSlug: string): ManualItinerary | null {
 
 export function getAllManualItineraries(): ManualItinerary[] {
   return [
+    singaporeDeepakRevised2ManualItinerary,
+    singaporeDeepakRevisedManualItinerary,
+    singaporeDeepakManualItinerary,
     vietnamSunilVermaManualItinerary,
     thailandDimpleRevisedManualItinerary,
     bhutanHeerManualItinerary,

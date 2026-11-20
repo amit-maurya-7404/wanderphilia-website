@@ -1720,3 +1720,72 @@ export async function syncBookingAndTaskOnPayment(
     return result;
   }
 }
+
+/**
+ * Pushes final Operations booking confirmation directly to Zoho CRM Finance module
+ */
+export async function pushOperationsToZohoFinance(
+  booking: any
+): Promise<{ success: boolean; financeId?: string; error?: string }> {
+  try {
+    const accessToken = await getZohoAccessToken();
+    const dealId = booking.bookingId || '';
+
+    // Map hotel breakdowns
+    const hotelBreakdowns = (booking.hotels || []).map((h: any, i: number) => ({
+      index: i + 1,
+      lookup: h.hotelId ? { id: String(h.hotelId) } : null,
+      cost: Number(h.b2bTotalCost) || 0,
+    }));
+
+    const vehicleDetails = {
+      vehicleLookup: booking.transport?.vehicleId ? { id: String(booking.transport.vehicleId) } : null,
+      vendorLookup: booking.transport?.vendorId ? { id: String(booking.transport.vendorId) } : null,
+      vehicleCost: Number(booking.transport?.b2bTotalCost) || 0,
+    };
+
+    const finId = await syncFinanceRecord(
+      accessToken,
+      dealId,
+      {
+        itineraryId: booking.inquiryId,
+        itineraryUrl: booking.itineraryUrl,
+        paymentId: booking.utrNumber || `BANK-${Date.now()}`,
+        orderId: `ORD-${booking.inquiryId}`,
+        paymentType: booking.paymentMode || 'bank_transfer',
+        paidAmount: booking.advanceAmountPaid,
+        newTotalPaid: booking.advanceAmountPaid,
+        newBalanceDue: booking.balancePendingAmount,
+        totalQuotationAmount: booking.totalQuotationAmount,
+        invoiceNumber: `INV-${booking.inquiryId}`,
+        customerName: booking.customerName,
+        customerEmail: booking.customerEmail,
+        customerMobile: booking.customerMobile,
+        destination: booking.destination,
+        travelStartDate: booking.travelStartDate,
+        travelEndDate: booking.travelEndDate,
+        duration: booking.duration,
+        numberOfGuests: booking.numberOfGuests,
+        adults: booking.adults,
+        kids: booking.kids,
+        roomsCount: booking.roomsCount,
+        sharingType: booking.sharingType,
+        vehicleType: booking.transport?.vehicleType,
+        dayActivities: booking.dayActivities || [],
+      },
+      {
+        vehicleDetails,
+        hotelBreakdowns,
+      }
+    );
+
+    return {
+      success: Boolean(finId),
+      financeId: finId || undefined,
+    };
+  } catch (err: any) {
+    console.error('[Push Operations To Finance Error]:', err);
+    return { success: false, error: err.message || String(err) };
+  }
+}
+

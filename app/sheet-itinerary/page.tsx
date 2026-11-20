@@ -57,6 +57,7 @@ import {
 import { FlightQuotationOption, HotelQuotationDetails } from '@/types/manual-itinerary';
 import { getLuxuryImagesForDestination } from '@/lib/itinerary-images';
 import { ItineraryHistorySection } from '@/components/itinerary/itinerary-history-section';
+import { ConfirmBookingModal } from '@/components/itinerary/confirm-booking-modal';
 import {
   calculateRoomsAndBeds,
   calculateLeadPricingOffline,
@@ -1684,6 +1685,7 @@ export default function SheetItineraryPage() {
   const [unlockedOptions, setUnlockedOptions] = useState<Record<number, boolean>>({});
   const [optionLockAlert, setOptionLockAlert] = useState<string | null>(null);
   const [checkingOptions, setCheckingOptions] = useState(false);
+  const [isConfirmBookingModalOpen, setIsConfirmBookingModalOpen] = useState(false);
 
   // Zoho Fixed Itineraries Template Module
   const [zohoFixedItineraries, setZohoFixedItineraries] = useState<any[]>([]);
@@ -8885,6 +8887,30 @@ return (
               Options 1 to 8 generate separate unique luxury itinerary links.
             </p>
 
+            {/* CONFIRM BOOKING & HANDOVER TO OPERATIONS */}
+            {inquiryId && (
+              <div className="mt-4 pt-3.5 border-t border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-gradient-to-r from-orange-50 via-amber-50 to-orange-50 p-4 rounded-2xl border border-orange-200">
+                <div>
+                  <span className="text-xs font-black text-orange-950 flex items-center gap-1.5">
+                    <Sparkles className="w-4 h-4 text-orange-600" />
+                    Client Confirmed &amp; Made Bank Transfer?
+                  </span>
+                  <span className="text-[11px] text-slate-600 block mt-0.5">
+                    Hand over this booking directly to Operations team with UTR and advance payment details.
+                  </span>
+                </div>
+
+                <Button
+                  type="button"
+                  onClick={() => setIsConfirmBookingModalOpen(true)}
+                  className="px-4 py-2 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white rounded-xl text-xs font-black transition-all shadow-md shadow-orange-600/25 flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap"
+                >
+                  <CheckCircle2 className="w-4 h-4 text-white" />
+                  <span>Confirm Booking &amp; Send to Operations 🚀</span>
+                </Button>
+              </div>
+            )}
+
             {/* PAYMENT OPTIONS SELECTOR (Token, Advance, Full Payment) */}
             <div className="mt-4 pt-3.5 border-t border-slate-200">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-2">
@@ -9213,6 +9239,68 @@ return (
         </div>
       </div>
     )}
+
+    {/* POP-UP MODAL: SALES HANDOVER TO OPERATIONS */}
+    <ConfirmBookingModal
+      isOpen={isConfirmBookingModalOpen}
+      onClose={() => setIsConfirmBookingModalOpen(false)}
+      inquiryId={inquiryId || zohoInquiryInput || 'INQ-MANUAL'}
+      customerName={fullName || 'Valued Guest'}
+      customerMobile={mobile}
+      customerEmail={email}
+      destination={destination}
+      travelStartDate={startDate}
+      travelEndDate={endDate}
+      duration={`${noOfNights} Nights / ${noOfDays} Days`}
+      noOfDays={noOfDays}
+      noOfNights={noOfNights}
+      adults={adults}
+      kids={kids}
+      roomsCount={roomsCount}
+      sharingType={sharingType}
+      itineraryUrl={genSuccess?.url || (existingOptions[selectedOption]?.url) || ''}
+      zohoLeadId={zohoLeadId}
+      dayActivities={dayRows}
+      availableOptions={(() => {
+        const opts: any[] = [];
+        [1, 2, 3, 4, 5, 6, 7, 8].forEach(optNum => {
+          const exist = existingOptions[optNum];
+          if (exist) {
+            opts.push({
+              optionNumber: optNum,
+              title: exist.title || `Option ${optNum}`,
+              totalAmount: exist.quote || Number(finalQuotation) || 0,
+              hotels: hotels.map(h => ({
+                city: h.city,
+                nights: h.nights,
+                hotelName: h.hotelName,
+                roomCategory: h.roomCategory,
+                b2bTotalCost: (h.basePrice || 0) * (h.nights || 1) * (roomsCount || 1),
+              })),
+              vehicleType,
+              url: exist.url,
+            });
+          }
+        });
+        if (opts.length === 0) {
+          opts.push({
+            optionNumber: selectedOption,
+            title: `Option ${selectedOption}`,
+            totalAmount: Number(finalQuotation) || 0,
+            hotels: hotels.map(h => ({
+              city: h.city,
+              nights: h.nights,
+              hotelName: h.hotelName,
+              roomCategory: h.roomCategory,
+              b2bTotalCost: (h.basePrice || 0) * (h.nights || 1) * (roomsCount || 1),
+            })),
+            vehicleType,
+            url: genSuccess?.url || '',
+          });
+        }
+        return opts;
+      })()}
+    />
 
     <Footer />
   </div>
