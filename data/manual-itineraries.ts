@@ -5467,7 +5467,7 @@ export const singaporeDeepakRevisedManualItinerary: ManualItinerary = {
 export const singaporeDeepakRevised2ManualItinerary: ManualItinerary = {
   id: 'singapore-deepak-revised-2',
   slug: 'singapore-deepak-revised-2',
-  title: '6 Days Trip to Singapore Specially Curated for Mr. Deepak & Family (Revised 2)',
+  title: '6 Days Trip to Singapore Specially Curated for Mr. Deepak & Family',
   subtitle: 'Singapore – A Beautiful Family Escape (Luxury Beach & Island Stay)',
   duration: '5 Nights / 6 Days | 06 Dec – 11 Dec 2026',
   numNights: 5,
@@ -5513,7 +5513,7 @@ export const singaporeDeepakRevised2ManualItinerary: ManualItinerary = {
   dayPlans: [
     {
       day: 1,
-      date: 'Sun, 06 Dec 2026',
+      date: 'Sun, 06 Dec',
       title: 'Day 1 | Arrival in Singapore, Check-in at Shangri-La Rasa Sentosa & Gardens by the Bay',
       route: 'Singapore Changi Airport → Shangri-La Rasa Sentosa → Gardens by the Bay',
       durationNote: '5h 25m Flight | Private Luxury Chauffeur Airport Transfer',
@@ -5534,7 +5534,7 @@ export const singaporeDeepakRevised2ManualItinerary: ManualItinerary = {
     },
     {
       day: 2,
-      date: 'Mon, 07 Dec 2026',
+      date: 'Mon, 07 Dec',
       title: 'Day 2 | Singapore Iconic City Highlights, Colourful Lanes & Singapore Flyer',
       route: 'Shangri-La Rasa Sentosa → Haji Lane & Arab Street → Singapore Flyer → Marina Bay & Orchard Rd',
       intro: 'Discover Singapore’s vibrant cultural lanes in Haji Lane and Arab Street, admire the breathtaking city skyline from the giant Singapore Flyer observation wheel, and spend the evening exploring Merlion Park, Marina Bay waterfront, Helix Bridge, and world-class shopping on Orchard Road.',
@@ -5555,7 +5555,7 @@ export const singaporeDeepakRevised2ManualItinerary: ManualItinerary = {
     },
     {
       day: 3,
-      date: 'Tue, 08 Dec 2026',
+      date: 'Tue, 08 Dec',
       title: 'Day 3 | Bird Paradise & Singapore Zoo, Relaxing Beachside Leisure at Sentosa',
       route: 'Shangri-La Rasa Sentosa → Mandai Wildlife Reserve (Bird Paradise & Zoo) → Sentosa',
       intro: 'An exhilarating nature and wildlife day at Mandai Wildlife Reserve! Discover the breathtaking walk-in aviaries of Bird Paradise in the morning, followed by the world-famous open-concept Singapore Zoo in the afternoon. Return to Sentosa for a tranquil beachside evening at Shangri-La.',
@@ -5575,7 +5575,7 @@ export const singaporeDeepakRevised2ManualItinerary: ManualItinerary = {
     },
     {
       day: 4,
-      date: 'Wed, 09 Dec 2026',
+      date: 'Wed, 09 Dec',
       title: 'Day 4 | Full Day Universal Studios Singapore with VIP Express Pass',
       route: 'Shangri-La Rasa Sentosa → Resorts World Sentosa (Universal Studios) → Shangri-La',
       intro: 'A blockbuster day of action, thrill rides, movie magic, and character encounters at Universal Studios Singapore with VIP Express Pass access to bypass the regular queues all day long!',
@@ -5595,7 +5595,7 @@ export const singaporeDeepakRevised2ManualItinerary: ManualItinerary = {
     },
     {
       day: 5,
-      date: 'Thu, 10 Dec 2026',
+      date: 'Thu, 10 Dec',
       title: 'Day 5 | Singapore Oceanarium, Thrilling Skyline Luge & Skyride & Wings of Time Show',
       route: 'Shangri-La Rasa Sentosa → S.E.A. Aquarium → Skyline Luge → Siloso Beach',
       intro: 'Dive deep into marine wonders at Singapore Oceanarium (S.E.A. Aquarium), feel the adrenaline on the gravity-fueled Skyline Luge & Skyride, and culminate your night with the breathtaking Wings of Time water, laser, and pyrotechnic show.',
@@ -5614,7 +5614,7 @@ export const singaporeDeepakRevised2ManualItinerary: ManualItinerary = {
     },
     {
       day: 6,
-      date: 'Fri, 11 Dec 2026',
+      date: 'Fri, 11 Dec',
       title: 'Day 6 | Leisure Morning at Shangri-La, Jewel Changi Airport & Departure',
       route: 'Shangri-La Rasa Sentosa → Jewel Changi Airport → Mumbai',
       durationNote: 'Private Luxury MPV Airport Transfer | 5h 40m Flight',
@@ -5769,7 +5769,8 @@ export const singaporeDeepakRevised2ManualItinerary: ManualItinerary = {
   adults: 3,
   kids: 2,
   kidsDetails: '11 Yrs (Child Cost: ₹66,500) • 2 Yrs (Complimentary / Free)',
-  childPricingNote: 'Total Land Cost (Sightseeing Entry Tickets, Guided Excursions & Private MPV Transfers): 3 Adults @ ₹72,500 = ₹2,17,500 + 1 Child (11 yrs) @ ₹66,500 = ₹66,500 (Child 2 yrs: Complimentary / Free of Cost). Base: ₹2,84,000 + 5% GST (₹14,200) + 2% TCS (₹5,964) = Grand Total ₹3,04,164/- (5-Star Shangri-La Rasa Sentosa Stay @ ₹3,46,197 and Flight options are quoted separately as detailed above).\n\nNote: The second child has been considered 2 years old, and accordingly, no additional cost has been included. If the child’s age is above 2 years, applicable additional charges will apply.',
+  childPricingNote: 'Total Land Cost (Sightseeing Entry Tickets, Guided Excursions & Private MPV Transfers): 3 Adults @ ₹72,500 = ₹2,17,500 + 1 Child (11 yrs) @ ₹66,500 = ₹66,500 (Child 2 yrs: Complimentary / Free of Cost). Total Land Package: ₹2,84,000/- (Applicable taxes are calculated at checkout upon booking. 5-Star Shangri-La Rasa Sentosa Stay @ ₹3,46,197 and Flight options are quoted separately as detailed above).\n\nNote: The second child has been considered 2 years old, and accordingly, no additional cost has been included. If the child’s age is above 2 years, applicable additional charges will apply.',
+  showWithoutTaxesInProposal: true,
   enableOnlineBooking: true
 };
 

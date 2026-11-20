@@ -201,7 +201,7 @@ export function ManualFlowchartSection({
                   </span>
                   {day.date && (
                     <span className="text-[10px] sm:text-[11px] font-bold text-[#8B2519] mt-1 whitespace-nowrap text-center">
-                      {day.date}
+                      {day.date.replace(/,?\s*\b20\d{2}\b/g, '').replace(/,?\s*\b\d{4}\b/g, '').trim()}
                     </span>
                   )}
                 </div>
