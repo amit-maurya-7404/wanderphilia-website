@@ -246,11 +246,14 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
     itinerary.slug === 'bhutan-heer' ||
     itinerary.slug === 'thailand-dimple-revised' ||
     itinerary.id?.includes('bhutan-heer') ||
-    itinerary.id?.includes('thailand-dimple-revised') ||
+    itinerary.id?.includes('thailand-dimple') ||
+    itinerary.slug?.includes('thailand-dimple') ||
     itinerary.id?.includes('singapore-deepak') ||
     itinerary.slug?.includes('singapore-deepak') ||
     itinerary.id?.includes('deepak') ||
-    itinerary.slug?.includes('deepak')
+    itinerary.slug?.includes('deepak') ||
+    itinerary.id?.includes('dimple') ||
+    itinerary.slug?.includes('dimple')
   );
   const displayTotalAmount = isExcludedTaxesDisplay
     ? Math.round(Number(currentBaseAmount || totalQuotationAmount))

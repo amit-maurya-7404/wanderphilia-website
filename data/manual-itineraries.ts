@@ -6786,6 +6786,351 @@ export const thailandDimpleRevisedManualItinerary: ManualItinerary = {
   enableFullPayment: true
 };
 
+export const thailandDimpleRevised2ManualItinerary: ManualItinerary = {
+  id: 'thailand-dimple-revised-2',
+  slug: 'thailand-dimple-revised-2',
+  title: "7 Days Curated Thailand Getaway Specially Curated for Ms. Dimple",
+  subtitle: 'Bangkok, Krabi & Phuket Tropical Holiday',
+  duration: '6 Nights / 7 Days | 06 Dec – 12 Dec 2026',
+  numNights: 6,
+  numDays: 7,
+  dates: '06 Dec – 12 Dec 2026',
+  route: 'New Delhi → Bangkok (2N) → Krabi (2N) → Phuket (2N) → New Delhi',
+  routeSummary: '2N Bangkok | 2N Krabi | 2N Phuket',
+  destination: 'Thailand',
+  travelStyle: 'Curated Tropical Escape',
+  tripType: 'Customised Private Holiday',
+  leadName: 'Ms. Dimple',
+  vehicleType: 'Private 1-SUV for Airport & Overland Transfers + 2 Private Sedans Bangkok Airport Arrival',
+  mealPlan: 'Self-Booked (Chao Phraya Indian Dinner Cruise, Krabi 4-Island Lunch & Phi Phi Island Lunch Included)',
+  heroImage: 'https://images.unsplash.com/photo-1508009603885-50cf7c579365?auto=format&fit=crop&w=1600&q=85',
+  galleryImages: [
+    'https://images.unsplash.com/photo-1508009603885-50cf7c579365?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1528181304800-259b08848526?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1589394815804-964ed0be2eb5?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1506665531195-3566af2b4dfa?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1537956965359-7573183d1f57?auto=format&fit=crop&w=1200&q=80'
+  ],
+  accommodations: [
+    { city: 'Bangkok', nights: 2, hotelName: 'Self-Booked', roomCategory: 'Self-Booked' },
+    { city: 'Krabi', nights: 2, hotelName: 'Self-Booked', roomCategory: 'Self-Booked' },
+    { city: 'Phuket', nights: 2, hotelName: 'Self-Booked', roomCategory: 'Self-Booked' }
+  ],
+  dayPlans: [
+    {
+      day: 1,
+      date: 'Sun, 06 Dec',
+      title: 'Day 1 | Welcome to Bangkok — Private Transfer (2 Sedans) & Leisure',
+      route: 'Bangkok Suvarnabhumi Airport (BKK) → Bangkok Hotel',
+      durationNote: 'Arrival & Private Transfer (1-Sedan + 1-Sedan)',
+      intro: 'Sawasdee! Arrive in vibrant Bangkok at 14:10 on Air India from New Delhi. Meet our representative at the airport arrival hall and board your two private sedans (1-Sedan + 1-Sedan) for a smooth and comfortable transfer to your Bangkok hotel. Check-in, unpack, and enjoy your evening at leisure exploring nearby night markets, riverside cafés, or relaxing with authentic Thai massage.',
+      timeline: [
+        '02:10 PM - Land at Bangkok Suvarnabhumi Airport (BKK) via Air India Flight from New Delhi',
+        'Warm meet-and-greet by our representative at the airport arrival hall',
+        'Private transfer from Bangkok Airport to Bangkok hotel in 2 private sedans (1-Sedan + 1-Sedan)',
+        'Check-in at your hotel, freshen up and relax',
+        'Evening at leisure to explore local night markets, vibrant street food, or riverside walkways',
+        'Overnight stay in Bangkok [1N]'
+      ],
+      stayLocation: 'Bangkok (Self-Booked)',
+      image: 'https://images.unsplash.com/photo-1508009603885-50cf7c579365?auto=format&fit=crop&w=1200&q=80',
+      meals: 'Self-Arranged'
+    },
+    {
+      day: 2,
+      date: 'Mon, 07 Dec',
+      title: 'Day 2 | Bangkok City Highlights Tour (Golden Buddha & Mini Reclining Buddha) + Chao Phraya Dinner Cruise',
+      route: 'Wat Traimit (Golden Buddha) → Wat Pho / Mini Reclining Buddha → Gems Gallery → Chao Phraya River Pier',
+      durationNote: 'City Tour with Guide & Evening Indian Dinner Cruise (SIC Transfers)',
+      intro: 'Embark on a captivating Bangkok city tour with a professional English-speaking guide. Visit the world-renowned Wat Traimit housing the 5.5-ton solid gold Golden Buddha, the revered Mini Reclining Buddha temple, and the world-class Gems Gallery. In the evening, board the romantic Chao Phraya Dinner Cruise featuring a delicious Indian buffet dinner, live band entertainment, and panoramic night views of Bangkok\'s illuminated riverside landmarks.',
+      timeline: [
+        'Morning: Breakfast at your hotel',
+        'Guided Bangkok City Tour pickup with professional guide (SIC Transfer for 4 Adults)',
+        'Visit Wat Traimit – admire the world-famous Golden Buddha, the world\'s largest solid-gold statue',
+        'Visit Mini Reclining Buddha temple – witness the intricate craftsmanship and spiritual heritage',
+        'Visit Gems Gallery – Asia\'s largest international gemstone and jewelry center with guided jewelry presentation',
+        'Return to hotel to freshen up and relax',
+        'Evening: SIC transfer to Chao Phraya River Pier',
+        'Board the Chao Phraya River Dinner Cruise – indulge in an exquisite Indian buffet dinner, live band music, and illuminated views of Bangkok\'s historic riverside temples and bridges',
+        'SIC return transfer back to hotel',
+        'Overnight stay in Bangkok [2N]'
+      ],
+      sections: [
+        {
+          title: 'Included Sightseeing & Attractions Today:',
+          items: [
+            'Bangkok City Tour: Golden Buddha + Mini Reclining Buddha + Gems Gallery with Guide (SIC Transfer for 4 Adults)',
+            'Gems Gallery visit with transfer',
+            'Chao Phraya River Dinner Cruise with Indian Buffet Dinner & roundtrip SIC transfers for 4 Adults'
+          ]
+        }
+      ],
+      stayLocation: 'Bangkok (Self-Booked)',
+      image: 'https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&w=1200&q=80',
+      meals: 'Breakfast & Cruise Dinner'
+    },
+    {
+      day: 3,
+      date: 'Tue, 08 Dec',
+      title: 'Day 3 | Fly to Krabi — Private 1-SUV Airport Transfers & Beachside Relaxation',
+      route: 'Bangkok Hotel → BKK Airport ✈ Krabi Airport (KBV) → Krabi Hotel',
+      durationNote: 'Domestic Flight & Private 1-SUV Transfers',
+      intro: 'Check out from Bangkok and transfer in your private SUV (1-SUV) to Bangkok Airport for your morning flight to Krabi. On arrival at Krabi International Airport, your private SUV awaits to whisk you to your tropical resort. Spend the afternoon and evening at leisure on Ao Nang Beach.',
+      timeline: [
+        'Early morning check-out from Bangkok hotel',
+        'Private SUV (1-SUV) transfer from Bangkok hotel to Bangkok Airport (BKK)',
+        '07:00 AM - 08:30 AM: Flight Vietjet Air to Krabi International Airport (KBV)',
+        'Arrival at Krabi Airport & private SUV (1-SUV) transfer to your Krabi hotel',
+        'Check-in at your hotel and relax amidst lush limestone cliffs and sea breeze',
+        'Afternoon & evening at leisure to explore Ao Nang Beach, local night markets, and seaside cafés',
+        'Overnight stay in Krabi [1N]'
+      ],
+      stayLocation: 'Krabi (Self-Booked)',
+      image: 'https://images.unsplash.com/photo-1528181304800-259b08848526?auto=format&fit=crop&w=1200&q=80',
+      meals: 'Breakfast'
+    },
+    {
+      day: 4,
+      date: 'Wed, 09 Dec',
+      title: 'Day 4 | Krabi 4-Island Tour by Long Tail Boat with Lunch',
+      route: 'Ao Nang Pier ⛵ Koh Poda, Chicken Island, Tup Island & Phra Nang Cave Beach',
+      durationNote: 'Island Hopping Excursion (SIC Transfer - Tuk Tuk)',
+      intro: 'Embark on Krabi\'s signature island hopping adventure by traditional Long Tail Boat! Cruise across turquoise Andaman waters to Koh Poda, Chicken Island, the famous sandbar at Tup Island, and dramatic Phra Nang Cave Beach. Enjoy snorkeling among coral reefs and a delicious island lunch.',
+      timeline: [
+        'Breakfast at hotel',
+        'Morning pickup by Tuk Tuk / SIC transfer from hotel to the boat pier',
+        'Board traditional Long Tail Boat for Krabi 4 Island Tour (4 Adults)',
+        'Visit Koh Poda with powdery white sands and crystal-clear waters',
+        'Cruise past Chicken Island for photo opportunities and vibrant reef snorkeling',
+        'Walk across the miraculous sandbar connecting Tup and Mor Islands during low tide',
+        'Visit sacred Phra Nang Cave Beach surrounded by limestone karsts and emerald lagoons',
+        'Picnic lunch included on the island',
+        'Afternoon boat ride back to pier and Tuk Tuk transfer back to hotel',
+        'Evening at leisure in Ao Nang',
+        'Overnight stay in Krabi [2N]'
+      ],
+      sections: [
+        {
+          title: 'Krabi 4-Island Tour Details:',
+          items: [
+            'Long Tail Boat 4-Island Tour with life jackets & snorkeling masks (4 Adults)',
+            'Boxed picnic lunch & drinking water included',
+            'Roundtrip Tuk Tuk / SIC pier transfers included',
+            'Note: National Park Fee (NPF) payable directly on spot as per government rules'
+          ]
+        }
+      ],
+      stayLocation: 'Krabi (Self-Booked)',
+      image: 'https://images.unsplash.com/photo-1506665531195-3566af2b4dfa?auto=format&fit=crop&w=1200&q=80',
+      meals: 'Breakfast & Island Lunch'
+    },
+    {
+      day: 5,
+      date: 'Thu, 10 Dec',
+      title: 'Day 5 | Scenic Overland Drive to Phuket with Enroute Phuket City Tour',
+      route: 'Krabi Hotel → Scenic Overland Route across Sarasin Bridge → Enroute Phuket City Tour → Phuket Hotel',
+      durationNote: 'Inter-City Drive & City Sightseeing in Private 1-SUV',
+      intro: 'After breakfast, board your private 1-SUV for a picturesque overland drive from Krabi to Phuket Island via Phang Nga. Along the way, enjoy an enroute Phuket City Tour discovering historic Sino-Portuguese architecture in Old Phuket Town, street murals, and scenic coastal viewpoints before checking into your Phuket hotel.',
+      timeline: [
+        'Breakfast at hotel and check-out',
+        'Private SUV (1-SUV) pickup from Krabi hotel',
+        'Scenic overland journey from Krabi through Phang Nga province',
+        'Cross the iconic Sarasin Bridge connecting the mainland to Phuket Island',
+        'Enroute Phuket City Tour in your private 1-SUV — explore historic Old Phuket Town, colonial Sino-Portuguese shophouses, street art murals, and scenic island viewpoints',
+        'Arrive at your Phuket hotel and check-in',
+        'Evening free to stroll along Patong Beach or experience vibrant night markets',
+        'Overnight stay in Phuket [1N]'
+      ],
+      sections: [
+        {
+          title: 'Highlights Today:',
+          items: [
+            'Private SUV (1-SUV) for entire Krabi to Phuket overland transfer',
+            'Enroute Phuket City Tour included in the private SUV'
+          ]
+        }
+      ],
+      stayLocation: 'Phuket (Self-Booked)',
+      image: 'https://images.unsplash.com/photo-1589394815804-964ed0be2eb5?auto=format&fit=crop&w=1200&q=80',
+      meals: 'Breakfast'
+    },
+    {
+      day: 6,
+      date: 'Fri, 11 Dec',
+      title: 'Day 6 | Phuket to Phi Phi Islands Excursion by Speed Boat with Lunch',
+      route: 'Phuket Boat Pier 🚤 Maya Bay, Viking Cave, Pileh Lagoon, Monkey Beach & Phi Phi Don',
+      durationNote: 'Full Day Speedboat Excursion (SIC Transfer)',
+      intro: 'Discover the world-famous Phi Phi Islands on an exhilarating high-speed speedboat tour! Cruise into world-famous Maya Bay, swim in the turquoise waters of Pileh Lagoon, see Viking Cave and Monkey Beach, and snorkel with exotic marine life before enjoying a buffet lunch on Phi Phi Don.',
+      timeline: [
+        'Early breakfast at hotel',
+        'SIC transfer pickup from hotel to the Phuket boat pier',
+        'Board high-speed Speed Boat for full day Phi Phi Island Tour (4 Adults)',
+        'Cruise into world-famous Maya Bay (featured in the movie "The Beach")',
+        'Sightseeing at Viking Cave, emerald Pileh Lagoon, and Monkey Beach',
+        'Snorkeling in crystal-clear waters amongst colorful coral reefs and exotic fish',
+        'Delicious buffet lunch included at a beachside restaurant on Phi Phi Don',
+        'Relax on white powdery sands and capture unforgettable tropical photos',
+        'Afternoon speedboat cruise back to Phuket pier',
+        'SIC transfer back to your hotel',
+        'Overnight stay in Phuket [2N]'
+      ],
+      sections: [
+        {
+          title: 'Phi Phi Tour Inclusions:',
+          items: [
+            'Speed Boat excursion to Phi Phi Islands with life jackets & snorkeling gear (4 Adults)',
+            'Buffet lunch on the island included',
+            'Roundtrip hotel-pier SIC transfers included',
+            'Note: National Park Fee (NPF) payable directly on spot as per government rules'
+          ]
+        }
+      ],
+      stayLocation: 'Phuket (Self-Booked)',
+      image: 'https://images.unsplash.com/photo-1537956965359-7573183d1f57?auto=format&fit=crop&w=1200&q=80',
+      meals: 'Breakfast & Island Lunch'
+    },
+    {
+      day: 7,
+      date: 'Sat, 12 Dec',
+      title: 'Day 7 | Leisure Day in Phuket & Private 1-SUV Departure Airport Transfer',
+      route: 'Phuket Hotel → Phuket International Airport (HKT) → New Delhi (DEL)',
+      durationNote: 'Leisure Day & Departure Transfer in Private 1-SUV',
+      intro: 'Enjoy your final day at leisure in Phuket for beachside relaxation, last-minute shopping at Jungceylon or Central Phuket, and indulging in Thai street food before your private 1-SUV evening transfer to Phuket International Airport for your flight home to New Delhi.',
+      timeline: [
+        'Breakfast at hotel and check-out (luggage stored safely at hotel reception)',
+        'Full day at leisure for beach activities, Thai massage, and souvenir shopping',
+        '07:30 PM: Private SUV (1-SUV) pickup from Phuket hotel',
+        'Smooth private transfer to Phuket International Airport (HKT)',
+        '10:40 PM: Board IndiGo flight back to New Delhi',
+        '02:00 AM (+1 day, 13 Dec): Land safely at New Delhi (DEL) with wonderful, lifelong memories of your Thailand vacation!'
+      ],
+      stayLocation: 'Onward Flight to New Delhi — Tour Concludes',
+      image: 'https://images.unsplash.com/photo-1508009603885-50cf7c579365?auto=format&fit=crop&w=1200&q=80',
+      meals: 'Breakfast',
+      signOff: 'Wishing Ms. Dimple a magical and unforgettable Thailand holiday with Wanderphilia! 🌴✈️'
+    }
+  ],
+  inclusions: [
+    'Hotels / Accommodations: Self-Booked',
+    'Bangkok Airport to Bangkok Hotel Private Transfer (1-Sedan + 1-Sedan)',
+    'Bangkok City Tour: Golden Buddha + Mini Reclining Buddha + Gems Gallery with Guide (SIC Transfer, 4 Adults)',
+    'Chao Phraya River Dinner Cruise with Indian Buffet & SIC Transfers (4 Adults)',
+    'Bangkok Hotel to Bangkok Airport Private Transfer (1-SUV)',
+    'Krabi Airport to Krabi Hotel Private Transfer (1-SUV)',
+    'Krabi 4 Island Tour by Long Tail Boat with Lunch & SIC Tuk-Tuk Transfers (4 Adults)',
+    'Krabi Hotel to Phuket Hotel Private Transfer with Enroute Phuket City Tour (1-SUV)',
+    'Phuket Phi Phi Islands Tour by Speed Boat with Lunch & SIC Transfers (4 Adults)',
+    'Phuket Hotel to Phuket Airport Private Transfer (1-SUV)',
+    'All driver allowances, fuel, tolls, and inter-city transport charges',
+    'On-ground 24x7 Wanderphilia customer support throughout the trip'
+  ],
+  exclusions: [
+    'Hotels / Resort Accommodations (Self-Booked)',
+    'Flights (Self-Booked - Details shown for travel schedule reference)',
+    'National Park Fees (NPF) for Krabi 4 Island Tour & Phi Phi Island Tour (payable directly on spot)',
+    'Personal expenses, tips, porterage, telephone calls, laundry, room mini-bar',
+    'Meals and drinks not mentioned under package inclusions',
+    'Any early check-in or late check-out charges',
+    'Travel insurance or anything not mentioned under package inclusions'
+  ],
+  thingsToCarry: [
+    'Original Passport with minimum 6 months validity from return date',
+    'Printout of return flight tickets and hotel vouchers',
+    'Lightweight cotton clothes and swimwear for beaches and islands',
+    'Modest attire covering shoulders and knees for Bangkok Temples',
+    'Comfortable walking shoes & flip-flops for beach excursions',
+    'High SPF sunscreen, UV sunglasses, and sun hat',
+    'Waterproof pouch for mobile phone and electronics during boat tours',
+    'Universal travel adapter (Thailand plugs Type A, B, C & O)',
+    'Forex card / Thai Baht currency for local shopping & personal expenses'
+  ],
+  flightQuotations: [
+    {
+      optionId: 'thailand-dimple-revised-2-flights',
+      optionTitle: 'Confirmed Flight Schedule (Air India + Vietjet + IndiGo)',
+      totalPrice: 0,
+      paxDetails: '4 Adults (New Delhi - Bangkok - Krabi - Phuket - New Delhi)',
+      isExcludedFromPackage: false,
+      note: 'Flights as per traveler schedule: Air India (DEL-BKK 08:20-14:10), Vietjet Air (BKK-KBV 07:00-08:30), IndiGo (HKT-DEL 22:40-02:00+1).',
+      sectors: [
+        {
+          fromCity: 'New Delhi (DEL)',
+          toCity: 'Bangkok (BKK)',
+          fromAirport: 'Indira Gandhi International Airport (DEL)',
+          toAirport: 'Suvarnabhumi Airport (BKK)',
+          fromCode: 'DEL',
+          toCode: 'BKK',
+          airline: 'Air India',
+          flightNumber: 'Air India',
+          journeyType: 'Onward International',
+          departureDate: 'Sun, 06 Dec',
+          departureTime: '08:20',
+          arrivalDate: 'Sun, 06 Dec',
+          arrivalTime: '14:10',
+          duration: '4 h 20 m',
+          stops: 'Non Stop',
+          cabinClass: 'Economy',
+          baggage: 'Cabin 7 KG | Check-in 20 KG'
+        },
+        {
+          fromCity: 'Bangkok (BKK)',
+          toCity: 'Krabi (KBV)',
+          fromAirport: 'Suvarnabhumi Airport (BKK)',
+          toAirport: 'Krabi International Airport (KBV)',
+          fromCode: 'BKK',
+          toCode: 'KBV',
+          airline: 'Vietjet Air (Aero V.I.P. Ltd)',
+          flightNumber: 'Vietjet Air',
+          journeyType: 'Domestic Transfer',
+          departureDate: 'Tue, 08 Dec',
+          departureTime: '07:00',
+          arrivalDate: 'Tue, 08 Dec',
+          arrivalTime: '08:30',
+          duration: '1 h 30 m',
+          stops: 'Non Stop',
+          cabinClass: 'Economy',
+          baggage: 'Standard Baggage'
+        },
+        {
+          fromCity: 'Phuket (HKT)',
+          toCity: 'New Delhi (DEL)',
+          fromAirport: 'Phuket International Airport (HKT)',
+          toAirport: 'Indira Gandhi International Airport (DEL)',
+          fromCode: 'HKT',
+          toCode: 'DEL',
+          airline: 'IndiGo',
+          flightNumber: 'IndiGo',
+          journeyType: 'Return International',
+          departureDate: 'Sat, 12 Dec',
+          departureTime: '22:40',
+          arrivalDate: 'Sun, 13 Dec',
+          arrivalTime: '02:00',
+          duration: '4 h 50 m',
+          stops: 'Non Stop',
+          cabinClass: 'Economy',
+          baggage: 'Cabin 7 KG | Check-in 15 KG'
+        }
+      ]
+    }
+  ],
+  showWithoutTaxesInProposal: true,
+  adults: 4,
+  kids: 0,
+  perAdultPrice: 19659,
+  baseAmount: 78636,
+  gstPercentage: 5,
+  gstAmount: 3932,
+  tcsPercentage: 2,
+  tcsAmount: 1573,
+  finalQuotationAmount: 84141,
+  childPricingNote: '₹19,659/- per adult for 4 Adults (Total Package: ₹78,636/-; 5% GST & 2% TCS applicable extra). Includes 2 Sedans arrival transfer, Bangkok City Tour (Golden Buddha & Mini Reclining Buddha) with Gems Gallery & Guide, Chao Phraya Indian Dinner Cruise, 1-SUV Bangkok & Krabi airport transfers, Krabi 4-Island Tour by Long Tail Boat with Lunch, 1-SUV Krabi to Phuket transfer with enroute City Tour, Phi Phi Island Speedboat Tour with Lunch & 1-SUV Phuket departure transfer. Note: Accommodations & Flights are Self-Booked.',
+  enableOnlineBooking: true,
+  enableTokenPayment: true,
+  enableAdvancePayment: true,
+  enableFullPayment: true
+};
+
 export const vietnamSunilVermaManualItinerary: ManualItinerary = {
   id: 'vietnam-sunil-verma',
   slug: 'vietnam-sunil-verma',
@@ -7357,6 +7702,14 @@ export const manualItinerariesRegistry: Record<string, ManualItinerary> = {
   'dimple-revised': thailandDimpleRevisedManualItinerary,
   'dimple-thailand-revised': thailandDimpleRevisedManualItinerary,
   'wp-thailand-dimple-revised': thailandDimpleRevisedManualItinerary,
+
+  // Thailand Dimple (Revised 2 Itinerary: Golden Buddha, Gems Gallery, Krabi 4-Island, Enroute Phuket City Tour, Phi Phi Island)
+  'thailand-dimple-revised-2': thailandDimpleRevised2ManualItinerary,
+  'thailand-dimple-v3': thailandDimpleRevised2ManualItinerary,
+  'dimple-revised-2': thailandDimpleRevised2ManualItinerary,
+  'dimple-thailand-revised-2': thailandDimpleRevised2ManualItinerary,
+  'wp-thailand-dimple-revised-2': thailandDimpleRevised2ManualItinerary,
+  'thailand-dimple-new-2': thailandDimpleRevised2ManualItinerary,
   // Vietnam Sunil Verma (6N / 7D, 09 Jan - 15 Jan 2027, 10 Senior Citizens)
   'vietnam-sunil-verma': vietnamSunilVermaManualItinerary,
   'sunil-verma-vietnam': vietnamSunilVermaManualItinerary,
@@ -7379,6 +7732,7 @@ export function getManualItinerary(idOrSlug: string): ManualItinerary | null {
 
 export function getAllManualItineraries(): ManualItinerary[] {
   return [
+    thailandDimpleRevised2ManualItinerary,
     singaporeDeepakRevised2ManualItinerary,
     singaporeDeepakRevisedManualItinerary,
     singaporeDeepakManualItinerary,
