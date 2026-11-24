@@ -525,12 +525,48 @@ export async function findZohoLeadId(query: {
       if (id) return id;
     }
 
-    // 2. Search by Mobile
+    // 2. Search by Mobile (both phone param and criteria)
     if (query.mobile && query.mobile.trim()) {
-      const cleanMobile = query.mobile.replace(/\D/g, '').slice(-10);
+      const rawMobile = query.mobile.trim();
+      const cleanMobile = rawMobile.replace(/\D/g, '').slice(-10);
+
+      // A. Try dedicated phone endpoint (handles +91, leading 0, spaces automatically)
+      try {
+        const phoneUrl = getZohoApiUrl(`/crm/v3/Leads/search?phone=${encodeURIComponent(rawMobile)}`);
+        const phoneRes = await fetch(phoneUrl, {
+          headers: { 'Authorization': `Zoho-oauthtoken ${accessToken}` },
+          cache: 'no-store',
+        });
+        if (phoneRes.ok && phoneRes.status !== 204) {
+          const pJson = await phoneRes.json();
+          if (pJson.data && pJson.data[0] && pJson.data[0].id) {
+            return String(pJson.data[0].id);
+          }
+        }
+      } catch {}
+
+      if (cleanMobile && cleanMobile !== rawMobile) {
+        try {
+          const phoneUrl = getZohoApiUrl(`/crm/v3/Leads/search?phone=${cleanMobile}`);
+          const phoneRes = await fetch(phoneUrl, {
+            headers: { 'Authorization': `Zoho-oauthtoken ${accessToken}` },
+            cache: 'no-store',
+          });
+          if (phoneRes.ok && phoneRes.status !== 204) {
+            const pJson = await phoneRes.json();
+            if (pJson.data && pJson.data[0] && pJson.data[0].id) {
+              return String(pJson.data[0].id);
+            }
+          }
+        } catch {}
+      }
+
+      // B. Criteria match fallback
       if (cleanMobile) {
         const id = await searchCriteria(`(Mobile:equals:${cleanMobile})`);
         if (id) return id;
+        const idWithZero = await searchCriteria(`(Mobile:equals:0${cleanMobile})`);
+        if (idWithZero) return idWithZero;
       }
     }
 
