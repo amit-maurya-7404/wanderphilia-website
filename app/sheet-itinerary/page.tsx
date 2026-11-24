@@ -1186,7 +1186,7 @@ function LookupField({ value = '', onChange, options = [], placeholder, classNam
             onChange(v);
             setIsOpen(true);
           }}
-          className={`pr-7 text-xs h-9 bg-white border border-slate-400 text-slate-900 placeholder:text-slate-500 rounded-md font-medium shadow-none focus-visible:ring-1 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-colors ${className || ''}`}
+          className={`pr-14 pl-3 text-xs h-9 bg-slate-900 border border-slate-700 text-white placeholder:text-slate-500 rounded-xl font-medium shadow-none focus-visible:ring-1 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-colors ${className || ''}`}
         />
 
         <div className="absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center gap-0.5">
@@ -1198,7 +1198,7 @@ function LookupField({ value = '', onChange, options = [], placeholder, classNam
                 onChange('');
                 setSearch('');
               }}
-              className="text-slate-500 hover:text-slate-800 p-0.5"
+              className="text-slate-400 hover:text-white p-0.5 cursor-pointer"
             >
               <X className="w-3.5 h-3.5" />
             </button>
@@ -1210,7 +1210,7 @@ function LookupField({ value = '', onChange, options = [], placeholder, classNam
               if (!isOpen) setSearch(safeValue);
               setIsOpen(!isOpen);
             }}
-            className="text-slate-500 hover:text-slate-800 p-0.5"
+            className="text-slate-400 hover:text-white p-0.5 cursor-pointer"
           >
             <ChevronDown className="w-3.5 h-3.5" />
           </button>
@@ -1218,7 +1218,7 @@ function LookupField({ value = '', onChange, options = [], placeholder, classNam
       </div>
 
       {isOpen && !disabled && (
-        <div className="absolute z-50 left-0 w-full min-w-[320px] max-w-[460px] mt-1 max-h-60 overflow-y-auto overflow-x-hidden bg-white border border-slate-300 rounded-lg shadow-2xl py-1 text-xs divide-y divide-slate-100">
+        <div className="absolute z-50 left-0 w-full min-w-[320px] max-w-[460px] mt-1 max-h-60 overflow-y-auto overflow-x-hidden bg-slate-900 border border-slate-700 rounded-xl shadow-2xl py-1 text-xs divide-y divide-slate-800">
           {filteredOptions.length > 0 ? (
             filteredOptions.map((opt, i) => {
               const isSelected = !opt.disabled && safeValue.toLowerCase() === (opt.value || '').toLowerCase();
@@ -1233,20 +1233,20 @@ function LookupField({ value = '', onChange, options = [], placeholder, classNam
                     setSearch(opt.value);
                     setIsOpen(false);
                   }}
-                  className={`w-full text-left px-3 py-2 flex items-center justify-between gap-2 transition-colors ${opt.disabled
-                      ? 'bg-slate-50 text-slate-400 italic cursor-not-allowed select-none'
+                  className={`w-full text-left px-3 py-2 flex items-center justify-between gap-2 transition-colors cursor-pointer ${opt.disabled
+                      ? 'bg-slate-950/60 text-slate-500 italic cursor-not-allowed select-none'
                       : isSelected
-                        ? 'bg-orange-50 text-orange-700 font-bold'
-                        : 'text-slate-800 hover:bg-slate-50 hover:text-slate-900'
+                        ? 'bg-orange-500/20 text-orange-300 font-bold'
+                        : 'text-slate-200 hover:bg-slate-800 hover:text-white'
                     }`}
                 >
                   <span className="truncate font-semibold flex-1 min-w-0">{opt.label}</span>
                   {opt.badge && (
-                    <span className={`text-[10px] px-1.5 py-0.5 rounded border shrink-0 whitespace-nowrap font-medium ${opt.disabled
-                        ? 'bg-slate-100 border-slate-200 text-slate-400 font-normal'
+                    <span className={`text-[10px] px-2 py-0.5 rounded border shrink-0 whitespace-nowrap font-medium ${opt.disabled
+                        ? 'bg-slate-800 border-slate-700 text-slate-500 font-normal'
                         : isSelected
-                          ? 'bg-orange-100 border-orange-300 text-orange-900 font-bold'
-                          : 'bg-slate-100 border-slate-200 text-slate-700'
+                          ? 'bg-orange-500/30 border-orange-500/50 text-orange-300 font-bold'
+                          : 'bg-slate-800 border-slate-700 text-slate-300'
                       }`}>
                       {opt.badge}
                     </span>
@@ -1255,7 +1255,7 @@ function LookupField({ value = '', onChange, options = [], placeholder, classNam
               );
             })
           ) : (
-            <div className="px-3 py-2 text-slate-500 text-[11px] italic">
+            <div className="px-3 py-2 text-slate-400 text-[11px] italic">
               No matching lookup item. Keep &quot;{search}&quot; as custom.
             </div>
           )}
@@ -2981,10 +2981,54 @@ export default function SheetItineraryPage() {
     }
   }, [sheetHotelsByCity, masterHotelCategory]);
 
-  // Available Vehicle options from Zoho CRM Vehicles module or fallback
+// Helper to match vehicle state with booking destination and cities
+function matchVehicleState(vehicleState: string, destination: string, cities: string[] = []): boolean {
+  if (!vehicleState) return true;
+  const vStateClean = vehicleState.toLowerCase().replace(/[^a-z0-9]/g, '');
+  const destClean = (destination || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+
+  if (vStateClean === destClean || destClean.includes(vStateClean) || vStateClean.includes(destClean)) {
+    return true;
+  }
+
+  const stateAliases: Record<string, string[]> = {
+    rajasthan: ['jaipur', 'jodhpur', 'udaipur', 'jaisalmer', 'jawai', 'bikaner', 'pushkar', 'ranthambore', 'mountabu'],
+    himachal: ['himachalpradesh', 'spiti', 'spitivalley', 'manali', 'shimla', 'dharamshala', 'jibhi', 'kasol', 'dalhousie'],
+    himachalpradesh: ['himachal', 'spiti', 'spitivalley', 'manali', 'shimla', 'dharamshala', 'jibhi', 'kasol', 'dalhousie'],
+    uttarakhand: ['rishikesh', 'haridwar', 'dehradun', 'mussoorie', 'nainital', 'jimcorbett', 'auli'],
+    kashmir: ['srinagar', 'gulmarg', 'pahalgam', 'sonamarg', 'jammu', 'ladakh', 'leh'],
+    kerala: ['kochi', 'munnar', 'thekkady', 'alleppey', 'kumarakom', 'kovalam', 'wayanad'],
+    maharashtra: ['mumbai', 'pune', 'lonavala', 'mahabaleshwar', 'alibaug', 'shirdi', 'nashik'],
+    goa: ['northgoa', 'southgoa', 'panaji', 'calangute'],
+    karnataka: ['bangalore', 'coorg', 'mysore', 'chikmagalur', 'hampi', 'gokarna'],
+    tamilnadu: ['chennai', 'ooty', 'kodaikanal', 'madurai', 'rameswaram', 'kanyakumari', 'pondicherry'],
+    sikkim: ['gangtok', 'darjeeling', 'pelling', 'lachung', 'namchi'],
+    andaman: ['portblair', 'havelock', 'neilisland']
+  };
+
+  const aliases = stateAliases[vStateClean];
+  if (aliases) {
+    if (aliases.some(a => destClean.includes(a) || a.includes(destClean))) {
+      return true;
+    }
+    for (const c of cities) {
+      const cClean = c.toLowerCase().replace(/[^a-z0-9]/g, '');
+      if (aliases.some(a => cClean.includes(a) || a.includes(cClean))) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+  // Available Vehicle options from Zoho CRM Vehicles module strictly filtered for the selected destination/state
   const vehicleOptions = useMemo(() => {
     if (zohoVehicles && zohoVehicles.length > 0) {
-      return zohoVehicles.map(v => ({
+      const hotelCities = (hotels || []).map(h => h.city).filter(Boolean);
+      const filtered = zohoVehicles.filter(v => matchVehicleState(v.state, destination, hotelCities));
+      const listToUse = filtered.length > 0 ? filtered : zohoVehicles;
+      return listToUse.map(v => ({
         label: v.name,
         value: v.name,
         badge: v.cost ? `₹${Number(v.cost).toLocaleString('en-IN')}/day • Up to ${v.maxCapacity} Pax` : `Up to ${v.maxCapacity} Pax`
@@ -2999,7 +3043,7 @@ export default function SheetItineraryPage() {
       'AC Ertiga',
       'Toyota Fortuner'
     ];
-  }, [zohoVehicles]);
+  }, [zohoVehicles, destination, hotels]);
 
   const getExperiencesLookupForDay = (city1?: string, city2?: string) => {
     const map = new Map<string, { label: string; value: string; badge?: string; meta?: any }>();
@@ -3636,9 +3680,21 @@ const handleFetchFromZoho = async () => {
           optionalExperiences: ['', ''],
           optionalDescriptions: ['', ''],
           optionalExperienceCosts: [0, 0],
-          breakfast: act.breakfast !== undefined ? Boolean(act.breakfast) : getDefaultMealsForDay(act.dayNumber || idx + 1, (raw.dayActivities || []).length || 5, rawMeal || mealPlan).breakfast,
-          lunch: act.lunch !== undefined ? Boolean(act.lunch) : getDefaultMealsForDay(act.dayNumber || idx + 1, (raw.dayActivities || []).length || 5, rawMeal || mealPlan).lunch,
-          dinner: act.dinner !== undefined ? Boolean(act.dinner) : getDefaultMealsForDay(act.dayNumber || idx + 1, (raw.dayActivities || []).length || 5, rawMeal || mealPlan).dinner,
+          breakfast: (() => {
+            if (act.breakfast !== undefined) return Boolean(act.breakfast);
+            const dTot = (raw.dayActivities || []).length || daysCount || 5;
+            return getDefaultMealsForDay(act.dayNumber || idx + 1, dTot, rawMeal || mealPlan).breakfast;
+          })(),
+          lunch: act.lunch !== undefined ? Boolean(act.lunch) : getDefaultMealsForDay(act.dayNumber || idx + 1, (raw.dayActivities || []).length || daysCount || 5, rawMeal || mealPlan).lunch,
+          dinner: (() => {
+            const dNum = act.dayNumber || idx + 1;
+            const dTot = (raw.dayActivities || []).length || daysCount || 5;
+            const isLast = dNum === dTot && dTot > 1;
+            if (isLast) return false;
+            const dMeals = getDefaultMealsForDay(dNum, dTot, rawMeal || mealPlan);
+            if (dMeals.dinner) return true;
+            return act.dinner !== undefined ? Boolean(act.dinner) : false;
+          })(),
         };
       });
       setDayRows(mappedRows);
@@ -3885,7 +3941,7 @@ const handleApplyZohoFixedItinerary = async (idToUse?: string) => {
 
     if (Array.isArray(itin.dayRows) && itin.dayRows.length > 0) {
       // Auto-match activity per-person cost and auto-fill descriptions from catalog if available
-      const updatedRows = itin.dayRows.map((r: any) => {
+      const updatedRows = itin.dayRows.map((r: any, idx: number) => {
         const cClean = (r.city || itin.destination || destination).trim().toLowerCase().replace(/[^a-z0-9]/g, '');
         const cityLookup = sheetExpByCity[cClean] || [];
         const exps = Array.isArray(r.experiences) && r.experiences.length >= 4
@@ -3958,9 +4014,22 @@ const handleApplyZohoFixedItinerary = async (idToUse?: string) => {
           experiencePrivateCosts: privCosts,
           optionalExperienceCosts: [0, 0],
           optionalExperiencePrivateCosts: [0, 0],
-          breakfast: r.breakfast !== undefined ? Boolean(r.breakfast) : getDefaultMealsForDay(r.dayNumber || 1, itin.dayRows.length, itin.mealPlan || mealPlan).breakfast,
+          breakfast: (() => {
+            const dTot = itin.dayRows?.length || 5;
+            const dNum = r.dayNumber || idx + 1;
+            const dMeals = getDefaultMealsForDay(dNum, dTot, itin.mealPlan || mealPlan);
+            return r.breakfast !== undefined ? Boolean(r.breakfast) : dMeals.breakfast;
+          })(),
           lunch: r.lunch !== undefined ? Boolean(r.lunch) : getDefaultMealsForDay(r.dayNumber || 1, itin.dayRows.length, itin.mealPlan || mealPlan).lunch,
-          dinner: r.dinner !== undefined ? Boolean(r.dinner) : getDefaultMealsForDay(r.dayNumber || 1, itin.dayRows.length, itin.mealPlan || mealPlan).dinner
+          dinner: (() => {
+            const dTot = itin.dayRows?.length || 5;
+            const dNum = r.dayNumber || idx + 1;
+            const isLast = dNum === dTot && dTot > 1;
+            if (isLast) return false;
+            const dMeals = getDefaultMealsForDay(dNum, dTot, itin.mealPlan || mealPlan);
+            if (dMeals.dinner) return true;
+            return r.dinner !== undefined ? Boolean(r.dinner) : false;
+          })()
         };
       });
       setDayRows(updatedRows);
@@ -4002,16 +4071,28 @@ const handleDaysCountChange = (newCount: number, autoUpdateEndDate = true) => {
   }
 
   setDayRows(prev => {
-    if (prev.length === count) return prev;
-    if (prev.length < count) {
+    // Re-synchronize meals for existing days so previous last-day (e.g. Day 5) automatically gets dinner checked
+    const updatedPrev = prev.map((row, idx) => {
+      const dayNum = idx + 1;
+      const isNewLastDay = dayNum === count;
+      const dMeals = getDefaultMealsForDay(dayNum, count, mealPlan);
+      return {
+        ...row,
+        breakfast: dMeals.breakfast,
+        dinner: isNewLastDay ? false : (dMeals.dinner || row.dinner)
+      };
+    });
+
+    if (updatedPrev.length === count) return updatedPrev;
+    if (updatedPrev.length < count) {
       const added: TableDayRow[] = [];
       const defaultCity = availableCitiesForDestination[0] || destination;
-      for (let i = prev.length + 1; i <= count; i++) {
+      for (let i = updatedPrev.length + 1; i <= count; i++) {
         added.push(createInitialDayRow(i, defaultCity, count, mealPlan));
       }
-      return [...prev, ...added];
+      return [...updatedPrev, ...added];
     }
-    return prev.slice(0, count);
+    return updatedPrev.slice(0, count);
   });
 };
 
@@ -4265,7 +4346,18 @@ const updateDayField = (dayIdx: number, field: keyof TableDayRow, value: any) =>
 const addDay = () => {
   const nextDayNum = dayRows.length + 1;
   const defaultCity = availableCitiesForDestination[0] || destination;
-  setDayRows(prev => [...prev, createInitialDayRow(nextDayNum, defaultCity, nextDayNum, mealPlan)]);
+  setDayRows(prev => {
+    const updatedPrev = prev.map((row, idx) => {
+      const dNum = idx + 1;
+      const dMeals = getDefaultMealsForDay(dNum, nextDayNum, mealPlan);
+      return {
+        ...row,
+        breakfast: dMeals.breakfast,
+        dinner: dMeals.dinner || row.dinner
+      };
+    });
+    return [...updatedPrev, createInitialDayRow(nextDayNum, defaultCity, nextDayNum, mealPlan)];
+  });
   setNoOfDays(nextDayNum);
   const nights = nextDayNum > 1 ? nextDayNum - 1 : 1;
   setNoOfNights(nights);
@@ -7369,38 +7461,38 @@ return (
                     Guided Tour
                   </th>
                   {/* 3. Meals Included */}
-                  <th className="px-3 py-3 w-64 border-r border-slate-300 text-amber-950 font-bold bg-amber-50/70">
+                  <th className="px-3 py-3 w-72 min-w-[280px] border-r border-slate-300 text-amber-950 font-bold bg-amber-50/70">
                     <div className="flex items-center gap-1.5">
                       <Utensils className="w-3.5 h-3.5 text-amber-700 shrink-0" />
                       <span>Meals Included</span>
                     </div>
                   </th>
                   {/* 4. City */}
-                  <th className="px-3 py-3 w-44 border-r border-slate-300 text-slate-800 font-bold">
+                  <th className="px-3 py-3 w-52 min-w-[190px] border-r border-slate-300 text-slate-800 font-bold">
                     City
                   </th>
                   {/* 4. En-route Experience */}
-                  <th className="px-3 py-3 w-56 border-r border-slate-300 text-slate-800 font-bold">
+                  <th className="px-3 py-3 w-60 min-w-[220px] border-r border-slate-300 text-slate-800 font-bold">
                     En-route Experience
                   </th>
                   {/* 5. City 2 */}
-                  <th className="px-3 py-3 w-44 border-r border-slate-300 text-slate-800 font-bold">
+                  <th className="px-3 py-3 w-52 min-w-[190px] border-r border-slate-300 text-slate-800 font-bold">
                     City 2
                   </th>
                   {/* 6. Experience 1 */}
-                  <th className="px-3 py-3 w-56 border-r border-slate-300 text-blue-900 font-extrabold">
+                  <th className="px-3 py-3 w-60 min-w-[220px] border-r border-slate-300 text-blue-900 font-extrabold">
                     Experience 1
                   </th>
                   {/* 7. Experience 2 */}
-                  <th className="px-3 py-3 w-56 border-r border-slate-300 text-blue-900 font-extrabold">
+                  <th className="px-3 py-3 w-60 min-w-[220px] border-r border-slate-300 text-blue-900 font-extrabold">
                     Experience 2
                   </th>
                   {/* 8. Experience 3 */}
-                  <th className="px-3 py-3 w-56 border-r border-slate-300 text-blue-900 font-extrabold">
+                  <th className="px-3 py-3 w-60 min-w-[220px] border-r border-slate-300 text-blue-900 font-extrabold">
                     Experience 3
                   </th>
                   {/* 9. Experience 4 */}
-                  <th className="px-3 py-3 w-64 border-r border-slate-300 text-blue-900 font-extrabold">
+                  <th className="px-3 py-3 w-64 min-w-[240px] border-r border-slate-300 text-blue-900 font-extrabold">
                     Experience 4 (+)
                   </th>
                   {/* 10. Optional Experience 1 */}
@@ -7481,70 +7573,71 @@ return (
 
                     {/* 3. Meals Included (Breakfast, Lunch, Dinner toggles) */}
                     <td className="px-3 py-2 border-r border-slate-300 bg-amber-50/20">
-                      <div className="flex flex-col gap-1.5 min-w-[210px]">
-                        <div className="flex items-center gap-1.5">
+                      <div className="flex flex-col gap-1.5 min-w-[260px]">
+                        <div className="flex items-center gap-1.5 flex-wrap">
                           {/* Breakfast Toggle */}
                           <label
                             title="Include Breakfast on this day"
-                            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-bold cursor-pointer border select-none transition-all ${Boolean(day.breakfast)
-                                ? 'bg-amber-100/90 border-amber-300 text-amber-900 shadow-2xs'
-                                : 'bg-white border-slate-200 text-slate-400 opacity-60 hover:opacity-90'
-                              }`}
+                            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold cursor-pointer border select-none transition-all shadow-xs ${
+                              Boolean(day.breakfast)
+                                ? 'bg-amber-500/20 border-amber-500/60 text-amber-300'
+                                : 'bg-slate-900 border-slate-700 text-slate-500 hover:text-slate-300'
+                            }`}
                           >
                             <input
                               type="checkbox"
                               checked={Boolean(day.breakfast)}
                               onChange={e => updateDayMeal(dIdx, 'breakfast', e.target.checked)}
-                              className="w-3.5 h-3.5 accent-amber-600 rounded cursor-pointer"
+                              className="w-3.5 h-3.5 accent-amber-500 rounded cursor-pointer"
                             />
-                            <span>B</span>
-                            <span className="hidden xl:inline text-[10px] font-medium text-amber-800">reakfast</span>
+                            <span className="whitespace-nowrap">Breakfast</span>
                           </label>
 
                           {/* Lunch Toggle */}
                           <label
                             title="Include Lunch on this day"
-                            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-bold cursor-pointer border select-none transition-all ${Boolean(day.lunch)
-                                ? 'bg-orange-100/90 border-orange-300 text-orange-900 shadow-2xs'
-                                : 'bg-white border-slate-200 text-slate-400 opacity-60 hover:opacity-90'
-                              }`}
+                            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold cursor-pointer border select-none transition-all shadow-xs ${
+                              Boolean(day.lunch)
+                                ? 'bg-orange-500/20 border-orange-500/60 text-orange-300'
+                                : 'bg-slate-900 border-slate-700 text-slate-500 hover:text-slate-300'
+                            }`}
                           >
                             <input
                               type="checkbox"
                               checked={Boolean(day.lunch)}
                               onChange={e => updateDayMeal(dIdx, 'lunch', e.target.checked)}
-                              className="w-3.5 h-3.5 accent-orange-600 rounded cursor-pointer"
+                              className="w-3.5 h-3.5 accent-orange-500 rounded cursor-pointer"
                             />
-                            <span>L</span>
-                            <span className="hidden xl:inline text-[10px] font-medium text-orange-800">unch</span>
+                            <span className="whitespace-nowrap">Lunch</span>
                           </label>
 
                           {/* Dinner Toggle */}
                           <label
                             title="Include Dinner on this day"
-                            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-bold cursor-pointer border select-none transition-all ${Boolean(day.dinner)
-                                ? 'bg-indigo-100/90 border-indigo-300 text-indigo-900 shadow-2xs'
-                                : 'bg-white border-slate-200 text-slate-400 opacity-60 hover:opacity-90'
-                              }`}
+                            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold cursor-pointer border select-none transition-all shadow-xs ${
+                              Boolean(day.dinner)
+                                ? 'bg-indigo-500/20 border-indigo-500/60 text-indigo-300'
+                                : 'bg-slate-900 border-slate-700 text-slate-500 hover:text-slate-300'
+                            }`}
                           >
                             <input
                               type="checkbox"
                               checked={Boolean(day.dinner)}
                               onChange={e => updateDayMeal(dIdx, 'dinner', e.target.checked)}
-                              className="w-3.5 h-3.5 accent-indigo-600 rounded cursor-pointer"
+                              className="w-3.5 h-3.5 accent-indigo-500 rounded cursor-pointer"
                             />
-                            <span>D</span>
-                            <span className="hidden xl:inline text-[10px] font-medium text-indigo-800">inner</span>
+                            <span className="whitespace-nowrap">Dinner</span>
                           </label>
                         </div>
 
                         {/* Live preview badge */}
                         <div className="flex items-center gap-1">
                           <span
-                            className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] truncate ${formatDayMeals(day.breakfast, day.lunch, day.dinner)
-                                ? 'font-bold bg-emerald-50 text-emerald-800 border border-emerald-200'
-                                : 'font-medium bg-rose-50 text-rose-600 border border-rose-200 italic'
-                              }`}
+                            className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold truncate ${
+                              formatDayMeals(day.breakfast, day.lunch, day.dinner)
+                                ? 'bg-emerald-950/80 text-emerald-300 border border-emerald-700/80'
+                                : 'bg-rose-950/80 text-rose-400 border border-rose-800/80 italic'
+                            }`}
                           >
                             {formatDayMeals(day.breakfast, day.lunch, day.dinner)
                               ? `✓ ${formatDayMeals(day.breakfast, day.lunch, day.dinner)}`

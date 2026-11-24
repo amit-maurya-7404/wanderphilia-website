@@ -1,12 +1,9 @@
 [
   {
-    "id": "OPS-WNDPQ709",
-    "bookingId": "843125000013290001",
-    "inquiryId": "WNDPQ709",
-    "zohoLeadId": "843125000012819067",
-    "zohoOperationsId": "843125000012914006",
-    "zohoFinanceId": "843125000013292001",
-    "customerName": "Amit Maurya",
+    "id": "OPS-WNDPQ751",
+    "inquiryId": "WNDPQ751",
+    "zohoLeadId": "843125000013306003",
+    "customerName": "Amit Maurya 5",
     "customerMobile": "09137290903",
     "customerEmail": "amit.maurya7404@gmail.com",
     "destination": "Rajasthan",
@@ -15,36 +12,36 @@
     "duration": "8 Nights / 9 Days",
     "noOfDays": 9,
     "noOfNights": 8,
-    "adults": 2,
+    "adults": 3,
     "kids": 0,
-    "numberOfGuests": 2,
+    "numberOfGuests": 3,
     "roomsCount": 1,
     "sharingType": "Double Sharing",
     "selectedOptionNumber": 1,
-    "selectedOptionTitle": "Option 1",
-    "itineraryUrl": "",
-    "totalQuotationAmount": 74800,
-    "advanceAmountPaid": 18700,
-    "balancePendingAmount": 56100,
+    "selectedOptionTitle": "8 Nights / 9 Days Rajasthan Tour Itinerary",
+    "itineraryUrl": "/itinerary/amit-maurya-5-8ab21a0",
+    "totalQuotationAmount": 108941,
+    "advanceAmountPaid": 21180,
+    "balancePendingAmount": 87761,
     "paymentMode": "bank_transfer",
-    "utrNumber": "gvhjhkhn",
-    "paymentDate": "2026-11-20",
+    "utrNumber": "sdfvdxcv dxc",
+    "paymentDate": "2026-11-24",
     "paymentProofUrl": "",
     "salesRepName": "Sales Team",
     "salesNotes": "",
-    "handedOverAt": "2026-11-20T09:53:17.570Z",
+    "handedOverAt": "2026-11-24T07:58:46.934Z",
     "opsStatus": "pending_ops",
     "hotels": [
       {
         "id": "hotel-1",
         "city": "Jawai",
         "nights": 1,
-        "hotelName": "Bera Safari Lodge Jawai",
-        "roomCategory": "Junior suite",
+        "hotelName": "Thour Nature Resort",
+        "roomCategory": "Luxury Cottage",
         "roomsCount": 1,
         "sharingType": "Double Sharing",
-        "b2bCostPerNight": 27500,
-        "b2bTotalCost": 27500,
+        "b2bCostPerNight": 6000,
+        "b2bTotalCost": 6000,
         "clientQuotationCost": 0,
         "status": "requested",
         "confirmationNumber": "",
@@ -103,12 +100,12 @@
         "id": "hotel-5",
         "city": "Bikaner",
         "nights": 1,
-        "hotelName": "The Lallghar Palace",
-        "roomCategory": "Executive Room",
+        "hotelName": "Hotel Sagar Niwas",
+        "roomCategory": "Deluxe Room",
         "roomsCount": 1,
         "sharingType": "Double Sharing",
-        "b2bCostPerNight": 6000,
-        "b2bTotalCost": 6000,
+        "b2bCostPerNight": 4000,
+        "b2bTotalCost": 4000,
         "clientQuotationCost": 0,
         "status": "requested",
         "confirmationNumber": "",
@@ -535,12 +532,571 @@
       }
     ],
     "specialRequirements": "",
-    "totalB2BHotelCost": 58000,
+    "totalB2BHotelCost": 34500,
     "totalB2BTransportCost": 0,
-    "totalB2BCost": 58000,
+    "totalB2BCost": 34500,
+    "grossMarginAmount": 74441,
+    "grossMarginPercentage": 68,
+    "updatedAt": "2026-11-24T07:58:46.935Z",
+    "createdAt": "2026-11-24T07:58:46.935Z"
+  },
+  {
+    "_id": "6b00188e7c2a040d6e47400f",
+    "id": "OPS-WNDPQ709",
+    "adults": 2,
+    "advanceAmountPaid": 18700,
+    "balancePendingAmount": 56100,
+    "bookingId": "843125000013290001",
+    "createdAt": "2026-11-20T09:53:17.570Z",
+    "customerEmail": "amit.maurya7404@gmail.com",
+    "customerMobile": "09137290903",
+    "customerName": "Amit Maurya",
+    "dayActivities": [
+      {
+        "dayNumber": 1,
+        "dayText": "Day 1",
+        "guidedTour": false,
+        "city": "Jawai",
+        "city2": "Jawai",
+        "enRouteExperiences": [
+          ""
+        ],
+        "experiences": [
+          "Evening Jawai Wildlife Safari",
+          "",
+          "",
+          ""
+        ],
+        "descriptions": [
+          "Beautiful evening sunset safari experience rugged landscape and spot leopards, crocodiles and diverse wildlife.",
+          "",
+          "",
+          ""
+        ],
+        "experienceCosts": [
+          6000,
+          0,
+          0,
+          0
+        ],
+        "optionalExperiences": [
+          "",
+          ""
+        ],
+        "optionalDescriptions": [
+          "",
+          ""
+        ],
+        "optionalExperienceCosts": [
+          0,
+          0
+        ],
+        "breakfast": false,
+        "lunch": false,
+        "dinner": true
+      },
+      {
+        "dayNumber": 2,
+        "dayText": "Day 2",
+        "guidedTour": false,
+        "city": "Jawai",
+        "city2": "Jodhpur",
+        "enRouteExperiences": [
+          ""
+        ],
+        "experiences": [
+          "Mehrangarh Fort & Museum",
+          "Guided Blue City Tour & Food Tour",
+          "",
+          ""
+        ],
+        "descriptions": [
+          "Explore the magnificent Mehrangarh Fort, royal palaces, museum & Enjoy the Mehrangarh Fort Zipline & also enjoy the Rao Jodha Desert Park (Optional)",
+          "Explore Jodhpur’s Blue City on a guided walking and food tour, discovering vibrant blue streets, hidden gems, and local culture. Savour iconic local treats, including Shahi Samosa near Clock Tower, Mirchi Bada at Manak Chowk, and Moti Jalebi at Tripoliya Bazaar for an authentic taste of Jodhpur.",
+          "",
+          ""
+        ],
+        "experienceCosts": [
+          0,
+          1500,
+          0,
+          0
+        ],
+        "optionalExperiences": [
+          "",
+          ""
+        ],
+        "optionalDescriptions": [
+          "",
+          ""
+        ],
+        "optionalExperienceCosts": [
+          0,
+          0
+        ],
+        "breakfast": true,
+        "lunch": false,
+        "dinner": true
+      },
+      {
+        "dayNumber": 3,
+        "dayText": "Day 3",
+        "guidedTour": false,
+        "city": "Jodhpur",
+        "city2": "Jaisalmer",
+        "enRouteExperiences": [
+          ""
+        ],
+        "experiences": [
+          "Umaid Bhavan Palace",
+          "Jaswant Thada",
+          "Gadisar lake & Sound & Light Show",
+          ""
+        ],
+        "descriptions": [
+          "Explore Umaid Bhawan Palace, showcasing grand architecture, royal heritage and elegance.",
+          "Beautiful white-marble royal memorial with peaceful surroundings and city views.",
+          "Enjoy Gadisar Lake, followed by an entertaining cultural sound and light show.",
+          ""
+        ],
+        "experienceCosts": [
+          0,
+          0,
+          150,
+          0
+        ],
+        "optionalExperiences": [
+          "",
+          ""
+        ],
+        "optionalDescriptions": [
+          "",
+          ""
+        ],
+        "optionalExperienceCosts": [
+          0,
+          0
+        ],
+        "breakfast": true,
+        "lunch": false,
+        "dinner": true
+      },
+      {
+        "dayNumber": 4,
+        "dayText": "Day 4",
+        "guidedTour": false,
+        "city": "Jaisalmer",
+        "city2": "Jaisalmer Dessert",
+        "enRouteExperiences": [
+          ""
+        ],
+        "experiences": [
+          "Jaisalmer Fort",
+          "Patwon Ki Haveli & Museum",
+          "Bada Bagh",
+          "Sam Dunes"
+        ],
+        "descriptions": [
+          "Explore the magnificent Jaisalmer Fort, showcasing golden sandstone architecture and rich heritage.",
+          "Explore Patwon Ki Haveli, showcasing intricate architecture, heritage and traditional craftsmanship",
+          "Explore Bada Bagh’s magnificent royal cenotaphs and historic sandstone architecture.",
+          "Experience the Sam Dunes with stunning sunsets, desert camel safaris, cultural activities and camping."
+        ],
+        "experienceCosts": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "optionalExperiences": [
+          "",
+          ""
+        ],
+        "optionalDescriptions": [
+          "",
+          ""
+        ],
+        "optionalExperienceCosts": [
+          0,
+          0
+        ],
+        "breakfast": true,
+        "lunch": false,
+        "dinner": true
+      },
+      {
+        "dayNumber": 5,
+        "dayText": "Day 5",
+        "guidedTour": false,
+        "city": "Jaisalmer Dessert",
+        "city2": "Bikaner",
+        "enRouteExperiences": [
+          ""
+        ],
+        "experiences": [
+          "Karni Mata Temple",
+          "Bada Bazaar",
+          "Khari Bazaar",
+          "Usta Arts"
+        ],
+        "descriptions": [
+          "Famous as the Rat Temple, this unique shrine is home to thousands of sacred rats worshipped by devotees.",
+          "A lively traditional market offering Rajasthani textiles, handicrafts, jewellery, footwear and local specialities.",
+          "Explore traditional local shops, regional snacks, Bikaneri sweets and authentic old-city market life.",
+          "Explore Bikaner's traditional gold embossing and intricate naqashi craftsmanship, a distinctive local art form."
+        ],
+        "experienceCosts": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "optionalExperiences": [
+          "",
+          ""
+        ],
+        "optionalDescriptions": [
+          "",
+          ""
+        ],
+        "optionalExperienceCosts": [
+          0,
+          0
+        ],
+        "breakfast": true,
+        "lunch": false,
+        "dinner": false
+      },
+      {
+        "dayNumber": 6,
+        "dayText": "Day 6",
+        "guidedTour": false,
+        "city": "Bikaner",
+        "city2": "Jaipur",
+        "enRouteExperiences": [
+          ""
+        ],
+        "experiences": [
+          "Junagarh Fort",
+          "Prachina Musuem",
+          "Lalgarh Palace",
+          "Johari Bazaar"
+        ],
+        "descriptions": [
+          "One of Rajasthan's most magnificent forts, known for its grand courtyards, ornate balconies, beautiful palaces and impressive Rajput architecture. Inside Visit Sheesh Mahal , Anup Mahal , Chand Mahal",
+          "A heritage museum showcasing royal costumes, jewellery, textiles, paintings and traditional artefacts.",
+          "A beautiful red sandstone palace blending Rajput, Mughal and European architectural styles.",
+          "Explore Jaipur’s vibrant Johari Bazaar, known for traditional jewellery, handicrafts, textiles and colourful local shopping and authentic"
+        ],
+        "experienceCosts": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "optionalExperiences": [
+          "",
+          ""
+        ],
+        "optionalDescriptions": [
+          "",
+          ""
+        ],
+        "optionalExperienceCosts": [
+          0,
+          0
+        ],
+        "breakfast": true,
+        "lunch": false,
+        "dinner": true
+      },
+      {
+        "dayNumber": 7,
+        "dayText": "Day 7",
+        "guidedTour": false,
+        "city": "Jaipur",
+        "city2": "Jaipur",
+        "enRouteExperiences": [
+          ""
+        ],
+        "experiences": [
+          "Amber Fort",
+          "Jaigarh Fort",
+          "Jal Mahal",
+          "Nahargarh Fort With RTDC Durg Cafeteria Nahargarh Fort Sunset Dining Experience"
+        ],
+        "descriptions": [
+          "Explore the magnificent Amber Fort and admire its grand palaces, courtyards, intricate architecture and rich Rajput heritage",
+          "Explore the impressive Jaigarh Fort, known for its grand fortifications, historic architecture, panoramic Aravalli views and the famous Jaivana Cannon.",
+          "Admire the beautiful Jal Mahal, the iconic water palace set in the middle of Man Sagar Lake, and enjoy stunning views from the lakeside.",
+          "Enjoy a spectacular sunset at Nahargarh Fort with a memorable dining experience at RTDC Durg Cafeteria, overlooking Jaipur’s beautiful cityscape."
+        ],
+        "experienceCosts": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "optionalExperiences": [
+          "",
+          ""
+        ],
+        "optionalDescriptions": [
+          "",
+          ""
+        ],
+        "optionalExperienceCosts": [
+          0,
+          0
+        ],
+        "breakfast": true,
+        "lunch": false,
+        "dinner": true
+      },
+      {
+        "dayNumber": 8,
+        "dayText": "Day 8",
+        "guidedTour": false,
+        "city": "Jaipur",
+        "city2": "Jaipur",
+        "enRouteExperiences": [
+          ""
+        ],
+        "experiences": [
+          "Hawa Mahal",
+          "City Palace",
+          "Jaipur Local Food City Tour With Guide",
+          "Patrika Gate"
+        ],
+        "descriptions": [
+          "Visit the iconic Hawa Mahal and admire its stunning pink façade, intricate windows and unique Rajput-era architecture.",
+          "Explore the magnificent City Palace and discover Jaipur’s royal heritage through its grand courtyards, palaces, museums and traditional architecture.",
+          "Explore Jaipur’s local flavours with a guide, enjoying authentic Rajasthani food around Badi Chaupar and Hawa Mahal.",
+          "Visit the stunning Patrika Gate at Jawahar Circle, admired for its colourful artwork, intricate architecture and beautifully painted traditional Rajasthani designs."
+        ],
+        "experienceCosts": [
+          0,
+          0,
+          1500,
+          0
+        ],
+        "optionalExperiences": [
+          "",
+          ""
+        ],
+        "optionalDescriptions": [
+          "",
+          ""
+        ],
+        "optionalExperienceCosts": [
+          0,
+          0
+        ],
+        "breakfast": true,
+        "lunch": false,
+        "dinner": true
+      },
+      {
+        "dayNumber": 9,
+        "dayText": "Day 9",
+        "guidedTour": false,
+        "city": "Jaipur",
+        "city2": "",
+        "enRouteExperiences": [
+          ""
+        ],
+        "experiences": [
+          "",
+          "",
+          "",
+          ""
+        ],
+        "descriptions": [
+          "",
+          "",
+          "",
+          ""
+        ],
+        "experienceCosts": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "optionalExperiences": [
+          "",
+          ""
+        ],
+        "optionalDescriptions": [
+          "",
+          ""
+        ],
+        "optionalExperienceCosts": [
+          0,
+          0
+        ],
+        "breakfast": true,
+        "lunch": false,
+        "dinner": true
+      }
+    ],
+    "destination": "Rajasthan",
+    "duration": "8 Nights / 9 Days",
     "grossMarginAmount": 16800,
     "grossMarginPercentage": 22,
-    "updatedAt": "2026-11-20T09:53:32.340Z",
-    "createdAt": "2026-11-20T09:53:17.570Z"
+    "handedOverAt": "2026-11-20T09:53:17.570Z",
+    "hotels": [
+      {
+        "id": "hotel-1",
+        "city": "Jawai",
+        "nights": 1,
+        "hotelName": "Bera Safari Lodge Jawai",
+        "hotelId": null,
+        "roomCategory": "Junior suite",
+        "roomsCount": 1,
+        "sharingType": "Double Sharing",
+        "b2bCostPerNight": 27500,
+        "b2bTotalCost": 27500,
+        "clientQuotationCost": 0,
+        "status": "requested",
+        "confirmationNumber": "",
+        "notes": "",
+        "isManualCost": false
+      },
+      {
+        "id": "hotel-2",
+        "city": "Jodhpur",
+        "nights": 1,
+        "hotelName": "Kuchaman Haveli",
+        "hotelId": null,
+        "roomCategory": "Deluxe Room",
+        "roomsCount": 1,
+        "sharingType": "Double Sharing",
+        "b2bCostPerNight": 4000,
+        "b2bTotalCost": 4000,
+        "clientQuotationCost": 0,
+        "status": "requested",
+        "confirmationNumber": "",
+        "notes": "",
+        "isManualCost": false
+      },
+      {
+        "id": "hotel-3",
+        "city": "Jaisalmer",
+        "nights": 1,
+        "hotelName": "Antra Inn",
+        "hotelId": null,
+        "roomCategory": "Deluxe Room",
+        "roomsCount": 1,
+        "sharingType": "Double Sharing",
+        "b2bCostPerNight": 4500,
+        "b2bTotalCost": 4500,
+        "clientQuotationCost": 0,
+        "status": "requested",
+        "confirmationNumber": "",
+        "notes": "",
+        "isManualCost": false
+      },
+      {
+        "id": "hotel-4",
+        "city": "Jaisalmer Dessert",
+        "nights": 1,
+        "hotelName": "Kk Groups Camp",
+        "hotelId": null,
+        "roomCategory": "Deluxe Camp",
+        "roomsCount": 1,
+        "sharingType": "Double Sharing",
+        "b2bCostPerNight": 4000,
+        "b2bTotalCost": 4000,
+        "clientQuotationCost": 0,
+        "status": "requested",
+        "confirmationNumber": "",
+        "notes": "",
+        "isManualCost": false
+      },
+      {
+        "id": "hotel-5",
+        "city": "Bikaner",
+        "nights": 1,
+        "hotelName": "The Lallghar Palace",
+        "hotelId": null,
+        "roomCategory": "Executive Room",
+        "roomsCount": 1,
+        "sharingType": "Double Sharing",
+        "b2bCostPerNight": 6000,
+        "b2bTotalCost": 6000,
+        "clientQuotationCost": 0,
+        "status": "requested",
+        "confirmationNumber": "",
+        "notes": "",
+        "isManualCost": false
+      },
+      {
+        "id": "hotel-6",
+        "city": "Jaipur",
+        "nights": 3,
+        "hotelName": "Hotel Magenta",
+        "hotelId": null,
+        "roomCategory": "Deluxe Room",
+        "roomsCount": 1,
+        "sharingType": "Double Sharing",
+        "b2bCostPerNight": 4000,
+        "b2bTotalCost": 12000,
+        "clientQuotationCost": 0,
+        "status": "requested",
+        "confirmationNumber": "",
+        "notes": "",
+        "isManualCost": false
+      }
+    ],
+    "inquiryId": "WNDPQ709",
+    "itineraryDocId": null,
+    "itineraryUrl": "",
+    "kids": 0,
+    "noOfDays": 9,
+    "noOfNights": 8,
+    "numberOfGuests": 2,
+    "opsStatus": "synced_to_finance",
+    "paymentDate": "2026-11-20",
+    "paymentMode": "bank_transfer",
+    "paymentProofUrl": "",
+    "roomsCount": 1,
+    "salesNotes": "",
+    "salesRepName": "Sales Team",
+    "selectedOptionNumber": 1,
+    "selectedOptionTitle": "Option 1",
+    "sharingType": "Double Sharing",
+    "specialRequirements": "",
+    "totalB2BCost": 58000,
+    "totalB2BHotelCost": 58000,
+    "totalB2BTransportCost": 0,
+    "totalQuotationAmount": 74800,
+    "transport": {
+      "vehicleType": "Seden",
+      "vehicleId": null,
+      "vendorName": "",
+      "vendorId": null,
+      "totalDays": 9,
+      "costPerDay": 0,
+      "b2bTotalCost": 0,
+      "status": "assigned",
+      "driverName": "",
+      "driverMobile": "",
+      "vehicleNumber": "",
+      "notes": "",
+      "isManualCost": false
+    },
+    "travelEndDate": "2026-12-03",
+    "travelStartDate": "2026-11-25",
+    "updatedAt": "2026-11-23T11:55:44.654Z",
+    "utrNumber": "gvhjhkhn",
+    "zohoFinanceId": "843125000013292001",
+    "zohoLeadId": "843125000012819067",
+    "zohoOperationsId": "843125000012914006",
+    "syncedToFinanceAt": "2026-11-23T11:55:44.638Z",
+    "financeSyncResponse": {
+      "success": true,
+      "financeId": "843125000013292001"
+    }
   }
 ]

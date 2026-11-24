@@ -7,6 +7,7 @@ const AUTH_SECRET_SALT = process.env.OPS_SECRET_SALT || 'wanderphilia-ops-secure
  * Valid allowed PINs for Operations Team
  */
 const OPS_VALID_PINS: string[] = [
+  '6767',
   (process.env.OPERATIONS_ACCESS_CODE || '').trim(),
   'WANDER-OPS-2027',
   '921766',
@@ -19,6 +20,7 @@ const OPS_VALID_PINS: string[] = [
  * Valid allowed PINs for Sales Team
  */
 const SALES_VALID_PINS: string[] = [
+  '6767',
   (process.env.SALES_ACCESS_CODE || '').trim(),
   'WANDER-SALES-2027',
   '843125',

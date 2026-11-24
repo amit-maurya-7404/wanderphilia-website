@@ -44,10 +44,12 @@ export interface ConfirmBookingModalProps {
     title: string;
     totalAmount: number;
     hotels?: any[];
+    dayActivities?: any[];
     vehicleType?: string;
     b2bTransportCost?: number;
     url?: string;
   }>;
+  initialSelectedOption?: number;
   onBookingConfirmed?: (booking: any) => void;
 }
 
@@ -72,17 +74,27 @@ export function ConfirmBookingModal({
   zohoLeadId,
   dayActivities,
   availableOptions,
+  initialSelectedOption,
   onBookingConfirmed,
 }: ConfirmBookingModalProps) {
   const [selectedOptNum, setSelectedOptNum] = useState<number>(() => {
-    return availableOptions[0]?.optionNumber || 1;
+    return initialSelectedOption || availableOptions[0]?.optionNumber || 1;
   });
+
+  React.useEffect(() => {
+    if (initialSelectedOption) {
+      setSelectedOptNum(initialSelectedOption);
+    } else if (availableOptions.length > 0) {
+      setSelectedOptNum(availableOptions[0].optionNumber);
+    }
+  }, [initialSelectedOption, isOpen]);
 
   const activeOption = availableOptions.find(o => o.optionNumber === selectedOptNum) || availableOptions[0] || {
     optionNumber: 1,
     title: 'Option 1',
     totalAmount: 0,
     hotels: [],
+    dayActivities: [],
     vehicleType: 'Dedicated Private Cab',
     b2bTransportCost: 0,
   };
@@ -145,7 +157,7 @@ export function ConfirmBookingModal({
         hotels: activeOption.hotels || [],
         vehicleType: activeOption.vehicleType || 'Dedicated Private Cab',
         transportCost: activeOption.b2bTransportCost || 0,
-        dayActivities: dayActivities || [],
+        dayActivities: (activeOption.dayActivities && activeOption.dayActivities.length > 0) ? activeOption.dayActivities : (dayActivities || []),
       };
 
       const res = await fetch('/api/operations/bookings', {
