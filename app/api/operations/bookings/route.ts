@@ -349,10 +349,11 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // 4. Synchronize Booking & Task: Converts Zoho Lead to Deal/Booking, creates Ops entry & 48h Task
+    // 4. Synchronize Booking & Task: Converts Zoho Lead to Deal/Booking, creates Ops entry & 48h Task (Finance is pushed later when Operations confirms)
     let zohoSyncResult: any = null;
     try {
       zohoSyncResult = await syncBookingAndTaskOnPayment({
+        skipFinanceSync: true,
         itineraryId: saved.inquiryId,
         itineraryUrl: saved.itineraryUrl,
         paymentId: saved.utrNumber || `BANK-${Date.now()}`,

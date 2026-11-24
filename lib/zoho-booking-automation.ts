@@ -48,6 +48,7 @@ export interface BookingPaymentSyncParams {
   }>;
   specialRequirements?: string;
   noOfDays?: number;
+  skipFinanceSync?: boolean;
   noOfNights?: number;
 }
 
@@ -1180,6 +1181,7 @@ async function syncFinanceRecord(
       vendorLookup: { id: string } | null;
       vehicleCost: number | null;
     };
+    existingFinanceId?: string;
     hotelBreakdowns?: Array<{
       index: number;
       lookup: { id: string } | null;
@@ -1188,10 +1190,12 @@ async function syncFinanceRecord(
   }
 ): Promise<string> {
   try {
-    let existingFinId = '';
+    let existingFinId = (syncMeta?.existingFinanceId && /^\d{15,22}$/.test(String(syncMeta.existingFinanceId).trim()))
+      ? String(syncMeta.existingFinanceId).trim()
+      : '';
 
     // 1. Search for existing Finance record linked to this Booking_ID
-    if (dealId) {
+    if (!existingFinId && dealId && dealId.trim()) {
       try {
         const searchCriteria = `(Booking_ID:equals:${encodeURIComponent(dealId.trim())})`;
         const searchUrl = getZohoApiUrl(`/crm/v3/Finance/search?criteria=${searchCriteria}`);
@@ -1207,6 +1211,45 @@ async function syncFinanceRecord(
         }
       } catch (searchErr) {
         console.warn('[Zoho Finance Search Warning]:', searchErr);
+      }
+    }
+
+    // 2. Search by Finance Record Name (e.g. "Amit Maurya 5 - Rajasthan Tour") to prevent duplicates
+    if (!existingFinId && params.customerName) {
+      try {
+        const targetName = `${params.customerName} - ${params.destination} Tour`;
+        const nameSearchUrl = getZohoApiUrl(`/crm/v3/Finance/search?criteria=(Name:equals:${encodeURIComponent(targetName)})`);
+        const nameRes = await fetch(nameSearchUrl, {
+          headers: { Authorization: `Zoho-oauthtoken ${accessToken}` },
+          cache: 'no-store',
+        });
+        if (nameRes.ok && nameRes.status !== 204) {
+          const nameJson = await nameRes.json().catch(() => null);
+          if (nameJson?.data && nameJson.data.length > 0 && nameJson.data[0].id) {
+            existingFinId = String(nameJson.data[0].id);
+          }
+        }
+      } catch (nameErr) {
+        console.warn('[Zoho Finance Name Search Warning]:', nameErr);
+      }
+    }
+
+    // 3. Search by Customer Email if available
+    if (!existingFinId && params.customerEmail && params.customerEmail.includes('@')) {
+      try {
+        const emailSearchUrl = getZohoApiUrl(`/crm/v3/Finance/search?criteria=(Email:equals:${encodeURIComponent(params.customerEmail.trim())})`);
+        const emailRes = await fetch(emailSearchUrl, {
+          headers: { Authorization: `Zoho-oauthtoken ${accessToken}` },
+          cache: 'no-store',
+        });
+        if (emailRes.ok && emailRes.status !== 204) {
+          const emailJson = await emailRes.json().catch(() => null);
+          if (emailJson?.data && emailJson.data.length > 0 && emailJson.data[0].id) {
+            existingFinId = String(emailJson.data[0].id);
+          }
+        }
+      } catch (emailErr) {
+        console.warn('[Zoho Finance Email Search Warning]:', emailErr);
       }
     }
 
@@ -1814,7 +1857,7 @@ export async function syncBookingAndTaskOnPayment(
 
     // 2.6 CREATE OR UPDATE RECORD IN ZOHO 'FINANCE' CUSTOM MODULE (Client Revenue Details)
     let financeId = '';
-    if (dealId) {
+    if (dealId && !params.skipFinanceSync) {
       financeId = await syncFinanceRecord(
         accessToken,
         dealId,
@@ -2002,6 +2045,7 @@ export async function pushOperationsToZohoFinance(
         dayActivities: booking.dayActivities || [],
       },
       {
+        existingFinanceId: booking.zohoFinanceId || undefined,
         vehicleDetails,
         hotelBreakdowns,
       }

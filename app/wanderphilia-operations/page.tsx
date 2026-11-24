@@ -1815,14 +1815,27 @@ export default function WanderphiliaOperationsPage() {
                         </span>
                       </div>
 
-                      <button
-                        type="button"
-                        onClick={() => copyToClipboard(generateDriverDutySlip(), 'duty_slip')}
-                        className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-md"
-                      >
-                        {copiedText === 'duty_slip' ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                        <span>{copiedText === 'duty_slip' ? 'Slip Copied!' : 'Copy Duty Slip'}</span>
-                      </button>
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => copyToClipboard(generateDriverDutySlip(), 'duty_slip')}
+                          className="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                        >
+                          {copiedText === 'duty_slip' ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                          <span>{copiedText === 'duty_slip' ? 'Slip Copied!' : 'Copy Duty Slip'}</span>
+                        </button>
+
+                        {activeBooking.transport?.driverMobile && (
+                          <a
+                            href={`https://wa.me/${activeBooking.transport.driverMobile.replace(/[^0-9]/g, '').startsWith('91') ? activeBooking.transport.driverMobile.replace(/[^0-9]/g, '') : `91${activeBooking.transport.driverMobile.replace(/[^0-9]/g, '')}`}?text=${encodeURIComponent(generateDriverDutySlip())}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-md"
+                          >
+                            <span>Send WhatsApp 📲</span>
+                          </a>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -2205,9 +2218,9 @@ export default function WanderphiliaOperationsPage() {
                   <button
                     type="button"
                     onClick={handleInitiateSyncFinance}
-                    disabled={isSyncingFinance || activeBooking.opsStatus === 'synced_to_finance'}
+                    disabled={isSyncingFinance}
                     className={`flex-1 sm:flex-none px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg ${activeBooking.opsStatus === 'synced_to_finance'
-                      ? 'bg-purple-950/80 text-purple-300 border border-purple-700/80 cursor-default'
+                      ? 'bg-purple-950/90 hover:bg-purple-900/90 text-purple-200 border border-purple-600/80 shadow-purple-900/20'
                       : 'bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white shadow-orange-600/30'
                       }`}
                   >
@@ -2218,8 +2231,8 @@ export default function WanderphiliaOperationsPage() {
                       </>
                     ) : activeBooking.opsStatus === 'synced_to_finance' ? (
                       <>
-                        <Sparkles className="w-3.5 h-3.5 text-purple-300" />
-                        <span>Synced to Zoho Finance ✓</span>
+                        <RefreshCw className="w-3.5 h-3.5 text-purple-300" />
+                        <span>Update in Finance (Zoho CRM) ↻</span>
                       </>
                     ) : (
                       <>
