@@ -119,7 +119,7 @@ export async function GET(req: NextRequest) {
           exclusions: doc.exclusions || [],
           flightQuotations: doc.flightQuotations || [],
           hotelCostDetails: doc.hotelCostDetails || null,
-          specialRequirements: doc.specialRequirements || '',
+          specialRequirements: (doc as any).specialRequirements || '',
           createdAt: createdDate,
           updatedAt: updatedDate
         };

@@ -193,7 +193,7 @@ export async function POST(req: NextRequest) {
       totalQuotationAmount: totalQuotation,
       advanceAmountPaid: advancePaid,
       balancePendingAmount: balanceDue,
-      paymentMode,
+      paymentMode: (paymentMode as any),
       utrNumber,
       paymentDate,
       paymentProofUrl: body.paymentProofUrl || '',
@@ -210,12 +210,12 @@ export async function POST(req: NextRequest) {
       dayActivities: body.dayActivities || [],
       specialRequirements: body.specialRequirements || body.salesNotes || '',
 
-      totalB2BHotelCost: hotels.reduce((sum, h) => sum + (h.b2bTotalCost || 0), 0),
+      totalB2BHotelCost: hotels.reduce((sum: number, h: any) => sum + (h.b2bTotalCost || 0), 0),
       totalB2BTransportCost: transport.b2bTotalCost || 0,
-      totalB2BCost: hotels.reduce((sum, h) => sum + (h.b2bTotalCost || 0), 0) + (transport.b2bTotalCost || 0),
-      grossMarginAmount: Math.max(0, totalQuotation - (hotels.reduce((sum, h) => sum + (h.b2bTotalCost || 0), 0) + (transport.b2bTotalCost || 0))),
+      totalB2BCost: hotels.reduce((sum: number, h: any) => sum + (h.b2bTotalCost || 0), 0) + (transport.b2bTotalCost || 0),
+      grossMarginAmount: Math.max(0, totalQuotation - (hotels.reduce((sum: number, h: any) => sum + (h.b2bTotalCost || 0), 0) + (transport.b2bTotalCost || 0))),
       grossMarginPercentage: totalQuotation > 0
-        ? Math.round(((totalQuotation - (hotels.reduce((sum, h) => sum + (h.b2bTotalCost || 0), 0) + (transport.b2bTotalCost || 0))) / totalQuotation) * 100)
+        ? Math.round(((totalQuotation - (hotels.reduce((sum: number, h: any) => sum + (h.b2bTotalCost || 0), 0) + (transport.b2bTotalCost || 0))) / totalQuotation) * 100)
         : 0,
 
       updatedAt: new Date().toISOString(),
@@ -367,6 +367,7 @@ export async function POST(req: NextRequest) {
         roomsCount: saved.roomsCount,
         sharingType: saved.sharingType,
         vehicleType: saved.transport.vehicleType,
+        transportCost: saved.transport.b2bTotalCost || (saved as any).transportCost || body.transportCost || 0,
         preferredRoomCategory: hotels[0]?.roomCategory || 'Deluxe Room',
         hotelCategory: hotels[0]?.roomCategory || 'Deluxe',
         mealPlan: body.mealPlan || 'Breakfast & Dinner',
@@ -378,6 +379,9 @@ export async function POST(req: NextRequest) {
           roomCategory: h.roomCategory,
           category: h.roomCategory,
           stayDates: (h as any).stayDates || undefined,
+          hotelId: (h as any).hotelId || (h as any).id || undefined,
+          b2bCostPerNight: h.b2bCostPerNight || (h as any).basePrice || 0,
+          b2bTotalCost: h.b2bTotalCost || ((h.b2bCostPerNight || (h as any).basePrice || 0) * (h.nights || 1) * (saved.roomsCount || 1)),
         })),
         dayActivities: saved.dayActivities || [],
       });
@@ -446,7 +450,7 @@ export async function POST(req: NextRequest) {
             ...(saved.itineraryDocId ? [{ _id: saved.itineraryDocId }] : []),
             ...(saved.itineraryUrl ? [{ url: saved.itineraryUrl }, { slug: saved.itineraryUrl.split('/').pop() }] : []),
           ],
-        },
+        } as any,
         {
           $set: updatePayload,
           $push: { payments: paymentRecord as any },

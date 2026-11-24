@@ -134,6 +134,9 @@ export interface ItineraryDocument {
   paymentStage?: 'unpaid' | 'token_paid' | 'advance_paid' | 'fully_paid';
   payments?: ItineraryPaymentRecord[];
   dayPlans?: ItineraryDayPlan[];
+  dayActivities?: any[];
+  dayRows?: any[];
+  specialRequirements?: string;
   highlights?: string[];
   flightQuotations?: any[];
   hotelCostDetails?: any;

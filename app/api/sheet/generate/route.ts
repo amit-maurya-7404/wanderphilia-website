@@ -434,6 +434,8 @@ export async function POST(req: NextRequest) {
       },
       highlights: resolvedHighlights,
       dayPlans: resolvedDayPlans,
+      dayActivities: dayActivities.length > 0 ? dayActivities : undefined,
+      dayRows: dayActivities.length > 0 ? dayActivities : undefined,
       inclusions: customInclusions || aiContent.inclusions,
       exclusions: customExclusions || aiContent.exclusions,
       amenities: aiContent.amenities,

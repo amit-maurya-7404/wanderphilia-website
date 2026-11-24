@@ -30,6 +30,7 @@ export interface BookingPaymentSyncParams {
   sharingType?: string;
   preferredRoomCategory?: string;
   vehicleType?: string;
+  transportCost?: number;
   mealPlan?: string;
   hotelCategory?: string;
   dayActivities?: any[];
@@ -40,6 +41,10 @@ export interface BookingPaymentSyncParams {
     roomCategory?: string;
     category?: string;
     stayDates?: string;
+    hotelId?: string;
+    b2bCostPerNight?: number;
+    b2bTotalCost?: number;
+    basePrice?: number;
   }>;
   specialRequirements?: string;
   noOfDays?: number;
@@ -422,6 +427,16 @@ async function buildOperationsHotelPayload(
         }
       }
 
+      if ((singleHotelCost === null || singleHotelCost === 0) && h) {
+        const b2bTotal = Number((h as any).b2bTotalCost || 0);
+        const b2bPerNight = Number((h as any).b2bCostPerNight || (h as any).basePrice || 0);
+        if (b2bTotal > 0) {
+          singleHotelCost = b2bTotal;
+        } else if (b2bPerNight > 0) {
+          singleHotelCost = Math.round(b2bPerNight * nights * Math.max(1, roomsCount));
+        }
+      }
+
       payload[`${prefix}_Cost`] = singleHotelCost;
       hotelBreakdowns.push({ index: i, lookup: lookup || null, cost: singleHotelCost });
     } else {
@@ -480,6 +495,54 @@ async function getZohoActivitiesMap(accessToken: string): Promise<Map<string, st
 }
 
 /**
+ * Extracts a clean city name from a potentially complex string (e.g. "Jawai Bera Leopard Camp, Jawai" -> "Jawai").
+ * Strips hotel words, prefixes, and commas.
+ */
+function extractCleanCityName(val: any, fallback: string = ''): string {
+  if (!val) return fallback.trim();
+  if (typeof val === 'object' && val !== null) {
+    val = val.name || val.city || val.cityName || '';
+  }
+  let str = String(val).trim();
+  if (!str) return fallback.trim();
+
+  // If contains comma (e.g. "Jawai Bera Leopard Camp, Jawai" or "Kuchaman Haveli, Jodhpur")
+  if (str.includes(',')) {
+    const parts = str.split(',').map(p => p.trim()).filter(Boolean);
+    const lastPart = parts[parts.length - 1];
+    // Check if last token is not a hotel word
+    if (lastPart && !/\b(hotel|resort|camp|palace|haveli|inn|villas|suites|stay|cottage)\b/i.test(lastPart)) {
+      return lastPart;
+    }
+  }
+
+  // Remove common stay/hotel prefixes
+  str = str.replace(/^(?:Stay at|Stay in|Overnight at|Overnight in|Hotel|Resort|Camp)\s*[:\-–—]?\s*/i, '').trim();
+  return str || fallback.trim();
+}
+
+/**
+ * Checks if a string is a generic itinerary milestone or timeline notice rather than a real activity.
+ */
+function isGenericNonActivity(name: string): boolean {
+  if (!name || !name.trim()) return true;
+  const lower = name.trim().toLowerCase();
+  return (
+    lower.includes('arrival & hotel check-in') ||
+    lower.includes('arrival & transfer') ||
+    lower.includes('breakfast & departure transfer') ||
+    lower.includes('departure transfer') ||
+    lower.includes('check out and transfer') ||
+    lower.includes('overnight stay') ||
+    lower.includes('check-in formalities') ||
+    lower.startsWith('transfer to ') ||
+    lower.startsWith('transfer from ') ||
+    lower.startsWith('return to the hotel') ||
+    lower.startsWith('complete smooth')
+  );
+}
+
+/**
  * Builds the subform rows for Activities_and_Experiences_operations
  */
 async function buildOperationsActivitiesSubform(
@@ -497,33 +560,43 @@ async function buildOperationsActivitiesSubform(
   for (let i = 0; i < dayActivities.length; i++) {
     const day = dayActivities[i];
     const dayText = day.dayText || `Day ${day.dayNumber || day.day || (i + 1)}`;
-    const dayCity = day.city || day.stayLocation || destination || '';
+    const cleanCity = extractCleanCityName(day.city || day.fromCity || day.stayLocation, destination);
 
     const row: Record<string, any> = {
       Days: dayText,
-      City: dayCity,
+      City: cleanCity || destination,
       Guided_Tour: Boolean(day.guidedTour),
     };
 
     // If there are multiple en-route experiences, join them with comma so they fit in the single CRM field
-    const enrouteVal = day.enRouteExperiences || day.en_route_experiences || day.enRoute || '';
+    const enrouteVal = day.enRouteExperiences || day.en_route_experiences || day.enRoute || day.enRouteStops || '';
     const enrouteStr = Array.isArray(enrouteVal)
-      ? enrouteVal.filter(Boolean).join(', ')
+      ? enrouteVal.map(e => (typeof e === 'object' ? (e?.name || '') : String(e || ''))).filter(Boolean).join(', ')
       : String(enrouteVal || '').trim();
     if (enrouteStr) {
       row.En_route_Experiences = enrouteStr;
     }
 
-    if (day.city2) {
-      row.City_2 = day.city2;
+    const rawCity2 = day.city2 || day.toCity || day.stayCity || day.nightStayCity || (i < dayActivities.length - 1 ? (dayActivities[i + 1].city || cleanCity) : cleanCity);
+    const cleanCity2 = extractCleanCityName(rawCity2, cleanCity);
+    if (cleanCity2) {
+      row.City_2 = cleanCity2;
     }
 
-    let rawExps: any[] = [];
+    let candidateExps: any[] = [];
     if (Array.isArray(day.experiences) && day.experiences.length > 0) {
-      rawExps = day.experiences;
+      candidateExps = day.experiences;
     } else if (Array.isArray(day.activities) && day.activities.length > 0) {
-      rawExps = day.activities;
+      candidateExps = day.activities;
+    } else if (Array.isArray(day.sightseeingPoints) && day.sightseeingPoints.length > 0) {
+      candidateExps = day.sightseeingPoints;
     }
+
+    // Filter out generic milestones (e.g. "Arrival & Hotel Check-in") so slot 1 is a real experience
+    const rawExps = candidateExps.filter(exp => {
+      const expName = typeof exp === 'string' ? exp : (exp?.name || exp?.title || '');
+      return Boolean(expName.trim()) && !isGenericNonActivity(expName);
+    });
 
     // Zoho CRM subform supports exactly 4 Experience slots (Experience_1 to Experience_4)
     for (let expIdx = 0; expIdx < Math.min(rawExps.length, 4); expIdx++) {
@@ -683,8 +756,12 @@ async function resolveVehicleAndLowestVendor(
       dailyCost = Number(lowestVendorRow.Cost_Per_day);
 
       const vName = lowestVendorRow.Vendor_Name;
-      if (vName && String(vName).trim()) {
-        try {
+      const vPhone = lowestVendorRow.Contact_Number || lowestVendorRow.Phone;
+      const vEmail = lowestVendorRow.Email;
+
+      // Try searching Zoho Vendors by Name, Phone, or Email
+      try {
+        if (vName && String(vName).trim()) {
           const searchVUrl = getZohoApiUrl(`/crm/v3/Vendors/search?criteria=(Vendor_Name:equals:${encodeURIComponent(String(vName).trim())})`);
           const vRes = await fetch(searchVUrl, {
             headers: { Authorization: `Zoho-oauthtoken ${accessToken}` },
@@ -696,9 +773,42 @@ async function resolveVehicleAndLowestVendor(
               vendorLookup = { id: String(vJson.data[0].id) };
             }
           }
-        } catch (vErr) {
-          console.warn('[Vendor Search Warning]:', vErr);
         }
+
+        // Secondary search by phone / contact number if name didn't match
+        if (!vendorLookup && vPhone && String(vPhone).trim()) {
+          const cleanPhone = String(vPhone).replace(/\D/g, '').slice(-10);
+          if (cleanPhone) {
+            const pUrl = getZohoApiUrl(`/crm/v3/Vendors/search?criteria=(Phone:contains:${cleanPhone})`);
+            const pRes = await fetch(pUrl, {
+              headers: { Authorization: `Zoho-oauthtoken ${accessToken}` },
+              cache: 'no-store'
+            });
+            if (pRes.ok && pRes.status !== 204) {
+              const pJson = await pRes.json().catch(() => null);
+              if (pJson?.data && pJson.data[0] && pJson.data[0].id) {
+                vendorLookup = { id: String(pJson.data[0].id) };
+              }
+            }
+          }
+        }
+
+        // Tertiary search by email
+        if (!vendorLookup && vEmail && String(vEmail).trim()) {
+          const eUrl = getZohoApiUrl(`/crm/v3/Vendors/search?criteria=(Email:equals:${encodeURIComponent(String(vEmail).trim())})`);
+          const eRes = await fetch(eUrl, {
+            headers: { Authorization: `Zoho-oauthtoken ${accessToken}` },
+            cache: 'no-store'
+          });
+          if (eRes.ok && eRes.status !== 204) {
+            const eJson = await eRes.json().catch(() => null);
+            if (eJson?.data && eJson.data[0] && eJson.data[0].id) {
+              vendorLookup = { id: String(eJson.data[0].id) };
+            }
+          }
+        }
+      } catch (vErr) {
+        console.warn('[Vendor Search Warning]:', vErr);
       }
     }
 
@@ -1104,7 +1214,7 @@ async function syncFinanceRecord(
 
     const finPayload: Record<string, any> = {
       Name: `${params.customerName} - ${params.destination} Tour`,
-      Booking_ID: dealId,
+      Booking_ID: String(dealId),
       Email: params.customerEmail || undefined,
       Total_Receivable_Amount: params.totalQuotationAmount,
       Total_Amount_Received: params.newTotalPaid,
@@ -1113,42 +1223,80 @@ async function syncFinanceRecord(
       Status: 'Pending',
     };
 
+    const hotelsMap = await getZohoHotelsMap(accessToken);
+    const roomsCount = Math.max(1, Number(params.roomsCount) || 1);
+
     // Populate Vehicle & Vendor in Finance
-    if (syncMeta?.vehicleDetails?.vehicleLookup) {
-      finPayload.Vehicle_Name = syncMeta.vehicleDetails.vehicleLookup;
+    let vehicleLookup = syncMeta?.vehicleDetails?.vehicleLookup || null;
+    let vendorLookup = syncMeta?.vehicleDetails?.vendorLookup || null;
+    let transportCost = syncMeta?.vehicleDetails?.vehicleCost ?? null;
+
+    if (!vehicleLookup && params.vehicleType) {
+      try {
+        const vRes = await resolveVehicleAndLowestVendor(
+          accessToken,
+          params.vehicleType,
+          params.destination,
+          params.numberOfGuests || 2,
+          params.noOfDays || 5
+        );
+        if (vRes.vehicleLookup) vehicleLookup = vRes.vehicleLookup;
+        if (vRes.vendorLookup) vendorLookup = vRes.vendorLookup;
+        if (transportCost === null || transportCost === 0) {
+          transportCost = vRes.vehicleCost;
+        }
+      } catch (vehErr) {
+        console.warn('[Finance Vehicle Resolve Warning]:', vehErr);
+      }
     }
-    if (syncMeta?.vehicleDetails?.vendorLookup) {
-      finPayload.Vendor_Name = syncMeta.vehicleDetails.vendorLookup;
-    }
-    if (syncMeta?.vehicleDetails?.vehicleCost !== null && syncMeta?.vehicleDetails?.vehicleCost !== undefined) {
-      finPayload.Total_Transport_Cost = syncMeta.vehicleDetails.vehicleCost;
+
+    if ((transportCost === null || transportCost === 0) && params.transportCost !== undefined && params.transportCost !== null) {
+      transportCost = Number(params.transportCost);
     }
 
-    // Populate Hotels & Costs in Finance
-    if (Array.isArray(syncMeta?.hotelBreakdowns) && syncMeta.hotelBreakdowns.length > 0) {
-      const h1 = syncMeta.hotelBreakdowns.find(h => h.index === 1);
-      if (h1?.lookup) finPayload.Hotel_Name = h1.lookup;
-      if (h1?.cost !== null && h1?.cost !== undefined) finPayload.Total_Hotel_Cost = h1.cost;
+    if (vehicleLookup) finPayload.Vehicle_Name = vehicleLookup;
+    if (vendorLookup) finPayload.Vendor_Name = vendorLookup;
+    if (transportCost !== null && transportCost !== undefined) {
+      finPayload.Total_Transport_Cost = transportCost;
+      finPayload.Transport_Balance_Payable = transportCost;
+    }
+    finPayload.Transport_Paid = false;
+    finPayload.All_Hotel_Paid = false;
+    finPayload.Transport_Amount_Paid = 0;
+    finPayload.Full_Paid_1st = false;
+    finPayload.Full_Paid_2nd = false;
+    finPayload.Full_Paid_3rd = false;
+    finPayload.Full_Paid_4th = false;
+    finPayload.Full_Paid_5th = false;
+    finPayload.Full_Paid_6th = false;
 
-      const h2 = syncMeta.hotelBreakdowns.find(h => h.index === 2);
-      if (h2?.lookup) finPayload.Hotel_2_Name = h2.lookup;
-      if (h2?.cost !== null && h2?.cost !== undefined) finPayload.Total_Hotel_2_Cost = h2.cost;
+    // Populate Hotels & Costs in Finance (Hotels 1 to 6)
+    const hotelList = Array.isArray(params.hotels) ? params.hotels : [];
+    for (let i = 1; i <= 6; i++) {
+      const hParam = hotelList[i - 1];
+      const hBreakdown = syncMeta?.hotelBreakdowns?.find(h => h.index === i);
+      let lookup = hBreakdown?.lookup || null;
+      if (!lookup && hParam) {
+        lookup = resolveHotelLookupId(hParam, hotelsMap) || null;
+      }
 
-      const h3 = syncMeta.hotelBreakdowns.find(h => h.index === 3);
-      if (h3?.lookup) finPayload.Hotel_3_Name = h3.lookup;
-      if (h3?.cost !== null && h3?.cost !== undefined) finPayload.Total_Hotel_3_Cost = h3.cost;
+      let cost = hBreakdown?.cost ?? null;
+      if ((cost === null || cost === 0) && hParam) {
+        const nights = Number(hParam.nights) || 1;
+        const b2bTotal = Number((hParam as any).b2bTotalCost || 0);
+        const b2bPerNight = Number((hParam as any).b2bCostPerNight || (hParam as any).basePrice || 0);
+        if (b2bTotal > 0) {
+          cost = b2bTotal;
+        } else if (b2bPerNight > 0) {
+          cost = Math.round(b2bPerNight * nights * roomsCount);
+        }
+      }
 
-      const h4 = syncMeta.hotelBreakdowns.find(h => h.index === 4);
-      if (h4?.lookup) finPayload.Hotel_4_Name = h4.lookup;
-      if (h4?.cost !== null && h4?.cost !== undefined) finPayload.Total_Hotel_4_Cost = h4.cost;
+      const nameField = i === 1 ? 'Hotel_Name' : `Hotel_${i}_Name`;
+      const costField = i === 1 ? 'Total_Hotel_Cost' : `Total_Hotel_${i}_Cost`;
 
-      const h5 = syncMeta.hotelBreakdowns.find(h => h.index === 5);
-      if (h5?.lookup) finPayload.Hotel_5_Name = h5.lookup;
-      if (h5?.cost !== null && h5?.cost !== undefined) finPayload.Total_Hotel_5_Cost = h5.cost;
-
-      const h6 = syncMeta.hotelBreakdowns.find(h => h.index === 6);
-      if (h6?.lookup) finPayload.Hotel_6_Name = h6.lookup;
-      if (h6?.cost !== null && h6?.cost !== undefined) finPayload.Total_Hotel_6_Cost = h6.cost;
+      if (lookup) finPayload[nameField] = lookup;
+      if (cost !== null && cost !== undefined) finPayload[costField] = cost;
     }
 
     // Build activities subform for Finance

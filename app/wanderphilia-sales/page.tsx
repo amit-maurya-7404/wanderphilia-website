@@ -9917,7 +9917,9 @@ export default function SheetItineraryPage() {
 
               const optDayActivities = (Array.isArray(exist.dayActivities) && exist.dayActivities.length > 0)
                 ? exist.dayActivities
-                : ((Array.isArray(exist.dayPlans) && exist.dayPlans.length > 0) ? exist.dayPlans : dayRows);
+                : ((Array.isArray(exist.dayRows) && exist.dayRows.length > 0)
+                    ? exist.dayRows
+                    : (Array.isArray(dayRows) && dayRows.length > 0 ? dayRows : (exist.dayPlans || [])));
 
               opts.push({
                 optionNumber: optNum,
