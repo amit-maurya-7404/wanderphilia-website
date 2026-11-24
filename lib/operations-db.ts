@@ -47,26 +47,6 @@ async function writeLocalOpsDb(data: OperationsBooking[]): Promise<void> {
 }
 
 export function ensureValidTransportCost(b: OperationsBooking): OperationsBooking {
-  if (!b || !b.transport) return b;
-  const days = Number(b.noOfDays || b.transport.totalDays || 1);
-  const currentCost = Number(b.transport.b2bTotalCost || 0);
-
-  if (currentCost === 0 && !b.transport.isManualCost) {
-    const vClean = (b.transport.vehicleType || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-    let rate = 4000;
-    if (vClean.includes('tempo') || vClean.includes('traveller')) rate = 7500;
-    else if (vClean.includes('innova') || vClean.includes('crysta')) rate = 5500;
-    else if (vClean.includes('ertiga') || vClean.includes('rumion') || vClean.includes('rumoin')) rate = 4500;
-    else if (vClean.includes('seden') || vClean.includes('sedan') || vClean.includes('dzire') || vClean.includes('etios')) rate = 4000;
-
-    const computed = rate * days;
-    b.transport.b2bTotalCost = computed;
-    b.transport.costPerDay = rate;
-    b.totalB2BTransportCost = computed;
-    b.totalB2BCost = (b.totalB2BHotelCost || 0) + computed;
-    b.grossMarginAmount = Math.max(0, (b.totalQuotationAmount || 0) - b.totalB2BCost);
-    b.grossMarginPercentage = (b.totalQuotationAmount || 0) > 0 ? Math.round((b.grossMarginAmount / (b.totalQuotationAmount || 1)) * 100) : 0;
-  }
   return b;
 }
 

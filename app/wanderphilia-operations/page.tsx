@@ -1972,7 +1972,7 @@ export default function WanderphiliaOperationsPage() {
                             const d = new Date(activeBooking.travelStartDate);
                             d.setDate(d.getDate() + (dayNum - 1));
                             stayDateStr = d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', weekday: 'short' });
-                          } catch (_) {}
+                          } catch (_) { }
                         }
 
                         // Parse meals
@@ -2349,11 +2349,10 @@ export default function WanderphiliaOperationsPage() {
                             setSwapHotelCategory(salesSelectedCategory);
                             setShowAllCategories(false);
                           }}
-                          className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border transition-all cursor-pointer flex items-center gap-1 ${
-                            !showAllCategories && swapHotelCategory.toLowerCase().trim() === salesSelectedCategory.toLowerCase().trim()
-                              ? 'bg-orange-600 text-white border-orange-500 shadow-sm'
-                              : 'bg-slate-950 text-slate-400 border-slate-800 hover:border-slate-700'
-                          }`}
+                          className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border transition-all cursor-pointer flex items-center gap-1 ${!showAllCategories && swapHotelCategory.toLowerCase().trim() === salesSelectedCategory.toLowerCase().trim()
+                            ? 'bg-orange-600 text-white border-orange-500 shadow-sm'
+                            : 'bg-slate-950 text-slate-400 border-slate-800 hover:border-slate-700'
+                            }`}
                         >
                           <span>{salesSelectedCategory} (Sales Selection)</span>
                         </button>
@@ -2370,11 +2369,10 @@ export default function WanderphiliaOperationsPage() {
                               setSwapHotelCategory(cat);
                               setShowAllCategories(false);
                             }}
-                            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border transition-all cursor-pointer ${
-                              !showAllCategories && swapHotelCategory.toLowerCase().trim() === cat.toLowerCase().trim()
-                                ? 'bg-orange-600 text-white border-orange-500 shadow-sm'
-                                : 'bg-slate-950 text-slate-400 border-slate-800 hover:border-slate-700'
-                            }`}
+                            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border transition-all cursor-pointer ${!showAllCategories && swapHotelCategory.toLowerCase().trim() === cat.toLowerCase().trim()
+                              ? 'bg-orange-600 text-white border-orange-500 shadow-sm'
+                              : 'bg-slate-950 text-slate-400 border-slate-800 hover:border-slate-700'
+                              }`}
                           >
                             {cat}
                           </button>
@@ -2383,11 +2381,10 @@ export default function WanderphiliaOperationsPage() {
                       <button
                         type="button"
                         onClick={() => setShowAllCategories(true)}
-                        className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border transition-all cursor-pointer ${
-                          showAllCategories
-                            ? 'bg-slate-700 text-white border-slate-600'
-                            : 'bg-slate-950 text-slate-400 border-slate-800 hover:border-slate-700'
-                        }`}
+                        className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border transition-all cursor-pointer ${showAllCategories
+                          ? 'bg-slate-700 text-white border-slate-600'
+                          : 'bg-slate-950 text-slate-400 border-slate-800 hover:border-slate-700'
+                          }`}
                       >
                         All ({allZohoHotelsInCity.length})
                       </button>
@@ -2442,11 +2439,10 @@ export default function WanderphiliaOperationsPage() {
                             <div
                               key={rIdx}
                               onClick={() => handleSelectZohoRoomCategory(r.roomCategory)}
-                              className={`p-2.5 rounded-xl border text-left cursor-pointer transition-all ${
-                                isSelected
-                                  ? 'bg-orange-950/60 border-orange-500 text-white ring-1 ring-orange-500/50 shadow-sm'
-                                  : 'bg-slate-950 border-slate-800 hover:border-slate-700 text-slate-300'
-                              }`}
+                              className={`p-2.5 rounded-xl border text-left cursor-pointer transition-all ${isSelected
+                                ? 'bg-orange-950/60 border-orange-500 text-white ring-1 ring-orange-500/50 shadow-sm'
+                                : 'bg-slate-950 border-slate-800 hover:border-slate-700 text-slate-300'
+                                }`}
                             >
                               <div className="flex items-center justify-between gap-1">
                                 <span className="font-bold text-xs truncate">{r.roomCategory}</span>

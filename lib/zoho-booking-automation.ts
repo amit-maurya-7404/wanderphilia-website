@@ -1226,10 +1226,12 @@ async function syncFinanceRecord(
     const hotelsMap = await getZohoHotelsMap(accessToken);
     const roomsCount = Math.max(1, Number(params.roomsCount) || 1);
 
-    // Populate Vehicle & Vendor in Finance
+    // Populate Vehicle & Vendor in Finance - Strictly respect Operations transport cost
     let vehicleLookup = syncMeta?.vehicleDetails?.vehicleLookup || null;
     let vendorLookup = syncMeta?.vehicleDetails?.vendorLookup || null;
-    let transportCost = syncMeta?.vehicleDetails?.vehicleCost ?? null;
+    let transportCost = (syncMeta?.vehicleDetails?.vehicleCost !== undefined && syncMeta?.vehicleDetails?.vehicleCost !== null)
+      ? Number(syncMeta.vehicleDetails.vehicleCost)
+      : (params.transportCost !== undefined && params.transportCost !== null ? Number(params.transportCost) : null);
 
     if (!vehicleLookup && params.vehicleType) {
       try {
@@ -1241,17 +1243,14 @@ async function syncFinanceRecord(
           params.noOfDays || 5
         );
         if (vRes.vehicleLookup) vehicleLookup = vRes.vehicleLookup;
-        if (vRes.vendorLookup) vendorLookup = vRes.vendorLookup;
-        if (transportCost === null || transportCost === 0) {
+        if (!vendorLookup && vRes.vendorLookup) vendorLookup = vRes.vendorLookup;
+        // ONLY use fallback if transportCost was not provided at all
+        if (transportCost === null) {
           transportCost = vRes.vehicleCost;
         }
       } catch (vehErr) {
         console.warn('[Finance Vehicle Resolve Warning]:', vehErr);
       }
-    }
-
-    if ((transportCost === null || transportCost === 0) && params.transportCost !== undefined && params.transportCost !== null) {
-      transportCost = Number(params.transportCost);
     }
 
     if (vehicleLookup) finPayload.Vehicle_Name = vehicleLookup;
@@ -1276,8 +1275,8 @@ async function syncFinanceRecord(
       const hParam = hotelList[i - 1];
       const hBreakdown = syncMeta?.hotelBreakdowns?.find(h => h.index === i);
       let lookup = hBreakdown?.lookup || null;
-      if (!lookup && hParam) {
-        lookup = resolveHotelLookupId(hParam, hotelsMap) || null;
+      if (!lookup || (lookup.id && !/^\d{15,22}$/.test(String(lookup.id)))) {
+        lookup = resolveHotelLookupId(hParam || hBreakdown, hotelsMap) || null;
       }
 
       let cost = hBreakdown?.cost ?? null;
@@ -1927,18 +1926,48 @@ export async function pushOperationsToZohoFinance(
   try {
     const accessToken = await getZohoAccessToken();
     const dealId = booking.bookingId || '';
+    const hotelsMap = await getZohoHotelsMap(accessToken);
 
-    // Map hotel breakdowns
-    const hotelBreakdowns = (booking.hotels || []).map((h: any, i: number) => ({
-      index: i + 1,
-      lookup: h.hotelId ? { id: String(h.hotelId) } : null,
-      cost: Number(h.b2bTotalCost) || 0,
-    }));
+    // Map hotel breakdowns with proper Zoho CRM hotel lookups
+    const hotelBreakdowns = (booking.hotels || []).map((h: any, i: number) => {
+      const lookup = resolveHotelLookupId(h, hotelsMap);
+      return {
+        index: i + 1,
+        lookup: lookup || null,
+        cost: Number(h.b2bTotalCost) || 0,
+      };
+    });
+
+    // Transport cost strictly from what was entered/set in Operations
+    const vehicleCost = Number(booking.transport?.b2bTotalCost) || 0;
+
+    let vehicleLookup = (booking.transport?.vehicleId && /^\d+$/.test(String(booking.transport.vehicleId)))
+      ? { id: String(booking.transport.vehicleId) }
+      : null;
+
+    if (!vehicleLookup && booking.transport?.vehicleType) {
+      try {
+        const vRes = await resolveVehicleAndLowestVendor(
+          accessToken,
+          booking.transport.vehicleType,
+          booking.destination,
+          booking.numberOfGuests || 2,
+          booking.noOfDays || 5
+        );
+        if (vRes.vehicleLookup) vehicleLookup = vRes.vehicleLookup;
+      } catch (vErr) {
+        console.warn('[Finance vehicle resolve warn]:', vErr);
+      }
+    }
+
+    const vendorLookup = (booking.transport?.vendorId && /^\d+$/.test(String(booking.transport.vendorId)))
+      ? { id: String(booking.transport.vendorId) }
+      : null;
 
     const vehicleDetails = {
-      vehicleLookup: booking.transport?.vehicleId ? { id: String(booking.transport.vehicleId) } : null,
-      vendorLookup: booking.transport?.vendorId ? { id: String(booking.transport.vendorId) } : null,
-      vehicleCost: Number(booking.transport?.b2bTotalCost) || 0,
+      vehicleLookup,
+      vendorLookup,
+      vehicleCost,
     };
 
     const finId = await syncFinanceRecord(
@@ -1967,7 +1996,9 @@ export async function pushOperationsToZohoFinance(
         kids: booking.kids,
         roomsCount: booking.roomsCount,
         sharingType: booking.sharingType,
+        hotels: booking.hotels || [],
         vehicleType: booking.transport?.vehicleType,
+        transportCost: vehicleCost,
         dayActivities: booking.dayActivities || [],
       },
       {

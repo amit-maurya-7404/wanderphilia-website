@@ -24,8 +24,18 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, error: 'Booking record not found.' }, { status: 404 });
     }
 
+    // Merge live changes sent from operations page so manual transport cost and hotels are strictly preserved
+    const effectiveBooking: any = {
+      ...booking,
+      hotels: (Array.isArray(body.hotels) && body.hotels.length > 0) ? body.hotels : booking.hotels,
+      transport: body.transport ? { ...booking.transport, ...body.transport } : booking.transport,
+    };
+    if (body.transportCost !== undefined && effectiveBooking.transport) {
+      effectiveBooking.transport.b2bTotalCost = Number(body.transportCost);
+    }
+
     // Call Zoho Finance Sync
-    const syncRes = await pushOperationsToZohoFinance(booking);
+    const syncRes = await pushOperationsToZohoFinance(effectiveBooking);
 
     if (!syncRes.success && !syncRes.financeId) {
       return NextResponse.json(
@@ -39,6 +49,7 @@ export async function POST(req: NextRequest) {
 
     const now = new Date().toISOString();
     const updated = await updateOperationsBooking(booking.id, {
+      ...effectiveBooking,
       opsStatus: 'synced_to_finance',
       zohoFinanceId: syncRes.financeId || booking.zohoFinanceId,
       syncedToFinanceAt: now,
