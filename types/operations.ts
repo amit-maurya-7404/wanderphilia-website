@@ -67,6 +67,8 @@ export interface OperationsBooking {
   kids: number;
   childrenDetails?: ChildTravelerDetail[];
   numberOfGuests: number;
+  adultsCount?: number;
+  paxCount?: number;
   hotelCategory?: string; // Deluxe, Luxury, Premium, Standard
   roomsCount: number;
   sharingType: string;

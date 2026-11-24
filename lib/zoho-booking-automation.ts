@@ -17,6 +17,7 @@ export interface BookingPaymentSyncParams {
   customerName: string;
   customerEmail?: string;
   customerMobile?: string;
+  paymentProofUrl?: string;
   destination: string;
   departureCity?: string;
   travelStartDate?: string;
@@ -1312,16 +1313,15 @@ async function syncFinanceRecord(
     finPayload.Full_Paid_5th = false;
     finPayload.Full_Paid_6th = false;
 
-    // Populate Hotels & Costs in Finance (Hotels 1 to 6)
+    // Populate Hotels & Costs in Finance (Hotels 1 to 6) and aggregate full hotel B2B costs
     const hotelList = Array.isArray(params.hotels) ? params.hotels : [];
-    for (let i = 1; i <= 6; i++) {
-      const hParam = hotelList[i - 1];
-      const hBreakdown = syncMeta?.hotelBreakdowns?.find(h => h.index === i);
-      let lookup = hBreakdown?.lookup || null;
-      if (!lookup || (lookup.id && !/^\d{15,22}$/.test(String(lookup.id)))) {
-        lookup = resolveHotelLookupId(hParam || hBreakdown, hotelsMap) || null;
-      }
+    let totalB2BHotels = 0;
+    const additionalHotelsSummary: string[] = [];
 
+    for (let i = 0; i < hotelList.length; i++) {
+      const hParam = hotelList[i];
+      const hIndex = i + 1;
+      const hBreakdown = syncMeta?.hotelBreakdowns?.find(h => h.index === hIndex);
       let cost = hBreakdown?.cost ?? null;
       if ((cost === null || cost === 0) && hParam) {
         const nights = Number(hParam.nights) || 1;
@@ -1334,11 +1334,29 @@ async function syncFinanceRecord(
         }
       }
 
-      const nameField = i === 1 ? 'Hotel_Name' : `Hotel_${i}_Name`;
-      const costField = i === 1 ? 'Total_Hotel_Cost' : `Total_Hotel_${i}_Cost`;
+      if (cost !== null && cost > 0) {
+        totalB2BHotels += cost;
+      }
 
-      if (lookup) finPayload[nameField] = lookup;
-      if (cost !== null && cost !== undefined) finPayload[costField] = cost;
+      if (hIndex <= 6) {
+        let lookup = hBreakdown?.lookup || null;
+        if (!lookup || (lookup.id && !/^\d{15,22}$/.test(String(lookup.id)))) {
+          lookup = resolveHotelLookupId(hParam || hBreakdown, hotelsMap) || null;
+        }
+
+        const nameField = hIndex === 1 ? 'Hotel_Name' : `Hotel_${hIndex}_Name`;
+        const costField = hIndex === 1 ? 'Total_Hotel_Cost' : `Total_Hotel_${hIndex}_Cost`;
+
+        if (lookup) finPayload[nameField] = lookup;
+        if (cost !== null && cost !== undefined) finPayload[costField] = cost;
+      } else {
+        // Hotels 7 and beyond
+        const hotelName = hParam?.hotelName || (hParam as any)?.name || `Hotel ${hIndex}`;
+        const city = hParam?.city || 'N/A';
+        const nights = hParam?.nights || 1;
+        const costStr = cost !== null ? `₹${cost.toLocaleString('en-IN')}` : 'To be confirmed';
+        additionalHotelsSummary.push(`• Hotel ${hIndex}: ${hotelName} (${city}) - ${nights} Nights | B2B Cost: ${costStr}`);
+      }
     }
 
     // Build activities subform for Finance
@@ -1404,6 +1422,7 @@ async function syncFinanceRecord(
       }
     }
 
+    let finalFinId = existingFinId;
     if (existingFinId) {
       // Update existing record (e.g. multi-stage installment / balance payments)
       const updateUrl = getZohoApiUrl(`/crm/v3/Finance/${existingFinId}`);
@@ -1417,7 +1436,7 @@ async function syncFinanceRecord(
       });
       if (updateRes.ok) {
         console.log(`[Zoho Finance Module] Successfully updated existing Finance record ${existingFinId}`);
-        return existingFinId;
+        finalFinId = existingFinId;
       } else {
         const errText = await updateRes.text();
         console.warn('[Zoho Finance Module Update Warning]:', errText);
@@ -1437,14 +1456,67 @@ async function syncFinanceRecord(
         const createJson = await createRes.json();
         const newFinId = String(createJson.data?.[0]?.details?.id || '');
         console.log(`[Zoho Finance Module] Successfully created new Finance record ${newFinId}`);
-        return newFinId;
+        finalFinId = newFinId;
       } else {
         const errText = await createRes.text();
         console.error('[Zoho Finance Module Create Failed]:', errText);
       }
     }
 
-    return existingFinId;
+    // Attach Financial Breakdown & Profit Margin Note to Finance Record
+    if (finalFinId) {
+      try {
+        const quotedRevenue = Number(params.totalQuotationAmount || 0);
+        const totalB2BTransport = Number(transportCost || 0);
+        const totalB2BCost = totalB2BHotels + totalB2BTransport;
+        const grossProfit = quotedRevenue - totalB2BCost;
+        const grossMarginPct = quotedRevenue > 0 ? Math.round((grossProfit / quotedRevenue) * 100) : 0;
+
+        const noteLines: string[] = [
+          `[FINANCIAL BREAKDOWN & PROFIT MARGIN]`,
+          `• Quoted Client Revenue: ₹${quotedRevenue.toLocaleString('en-IN')}`,
+          `• Total B2B Hotel Cost: ₹${totalB2BHotels.toLocaleString('en-IN')}`,
+          `• Total B2B Transport Cost: ₹${totalB2BTransport.toLocaleString('en-IN')}`,
+          `• Net B2B Payable Cost: ₹${totalB2BCost.toLocaleString('en-IN')}`,
+          `• Gross Margin Profit: ₹${grossProfit.toLocaleString('en-IN')} (${grossMarginPct}%)`,
+          `• Advance Received: ₹${Number(params.newTotalPaid || 0).toLocaleString('en-IN')}`,
+          `• Balance Receivable: ₹${Number(params.newBalanceDue || 0).toLocaleString('en-IN')}`
+        ];
+
+        if (params.paymentProofUrl) {
+          noteLines.push(`• Payment Proof Receipt: ${params.paymentProofUrl}`);
+        }
+
+        if (additionalHotelsSummary.length > 0) {
+          noteLines.push(``, `[ADDITIONAL HOTELS (7+) DETAILS]:`, ...additionalHotelsSummary);
+        }
+
+        const noteContent = noteLines.join('\n');
+        const noteUrl = getZohoApiUrl('/crm/v3/Notes');
+        await fetch(noteUrl, {
+          method: 'POST',
+          headers: {
+            Authorization: `Zoho-oauthtoken ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            data: [
+              {
+                Note_Title: 'Financial Breakdown & Vendor Payables',
+                Note_Content: noteContent,
+                Parent_Id: finalFinId,
+                $se_module: 'Finance',
+              },
+            ],
+          }),
+        });
+        console.log(`[Zoho Finance Note] Successfully added financial breakdown note to Finance record ${finalFinId}`);
+      } catch (noteErr) {
+        console.warn('[Zoho Finance Note Creation Warning]:', noteErr);
+      }
+    }
+
+    return finalFinId;
   } catch (err) {
     console.error('[Zoho Finance Module Exception]:', err);
     return '';
@@ -2042,6 +2114,7 @@ export async function pushOperationsToZohoFinance(
         hotels: booking.hotels || [],
         vehicleType: booking.transport?.vehicleType,
         transportCost: vehicleCost,
+        paymentProofUrl: booking.paymentProofUrl || '',
         dayActivities: booking.dayActivities || [],
       },
       {

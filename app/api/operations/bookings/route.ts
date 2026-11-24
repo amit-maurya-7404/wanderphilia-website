@@ -99,20 +99,48 @@ export async function POST(req: NextRequest) {
     const utrNumber = String(body.utrNumber || body.transactionId || '').trim();
     const paymentDate = String(body.paymentDate || new Date().toISOString().split('T')[0]);
 
-    // Construct Hotels array with B2B costs
+    // Construct Hotels array with stay dates & B2B costs
+    const travelStartInput = body.travelStartDate || body.startDate || '';
+    let runningDate: Date | null = null;
+    if (travelStartInput) {
+      if (/^\d{4}-\d{2}-\d{2}/.test(travelStartInput)) {
+        runningDate = new Date(travelStartInput);
+      } else if (/^\d{1,2}[\/\-]\d{1,2}[\/\-]\d{4}/.test(travelStartInput)) {
+        const [d, m, y] = travelStartInput.split(/[\/\-]/);
+        runningDate = new Date(Number(y), Number(m) - 1, Number(d));
+      }
+    }
+
+    let cumulativeNights = 0;
     const hotels = (Array.isArray(body.hotels) ? body.hotels : []).map((h: any, idx: number) => {
       const nights = Number(h.nights) || 1;
       const rooms = Number(h.roomsCount || body.roomsCount || 1);
       const b2bCost = Number(h.b2bTotalCost || h.totalCost || (h.b2bCostPerNight ? h.b2bCostPerNight * nights * rooms : 0));
+
+      let dates = h.dates || h.stayDates || '';
+      if (!dates && runningDate && !isNaN(runningDate.getTime())) {
+        const inDate = new Date(runningDate);
+        inDate.setDate(inDate.getDate() + cumulativeNights);
+        const outDate = new Date(inDate);
+        outDate.setDate(outDate.getDate() + nights);
+        const inStr = inDate.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+        const outStr = outDate.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+        dates = `${inStr} to ${outStr}`;
+        cumulativeNights += nights;
+      }
+
       return {
         id: h.id || `hotel-${idx + 1}`,
         city: String(h.city || 'City').trim(),
         nights,
         hotelName: String(h.hotelName || h.name || 'Selected Property').trim(),
         hotelId: h.hotelId || undefined,
+        category: h.category || undefined,
         roomCategory: String(h.roomCategory || h.category || 'Deluxe Room').trim(),
         roomsCount: rooms,
         sharingType: h.sharingType || body.sharingType || 'Double Sharing',
+        dates,
+        stayDates: dates,
         b2bCostPerNight: h.b2bCostPerNight ? Number(h.b2bCostPerNight) : (nights > 0 ? Math.round(b2bCost / nights) : b2bCost),
         b2bTotalCost: b2bCost,
         clientQuotationCost: Number(h.clientQuotationCost || 0),
@@ -120,7 +148,6 @@ export async function POST(req: NextRequest) {
         confirmationNumber: h.confirmationNumber || '',
         notes: h.notes || '',
         isManualCost: Boolean(h.isManualCost),
-        stayDates: h.stayDates || undefined,
       };
     });
 
@@ -338,6 +365,7 @@ export async function POST(req: NextRequest) {
           `• Total Package Cost: ₹${totalQuotation.toLocaleString('en-IN')}\n` +
           `• Remaining Balance: ₹${balanceDue.toLocaleString('en-IN')}\n` +
           `• Handed Over By: ${saved.salesRepName}\n` +
+          (saved.paymentProofUrl ? `• Payment Proof Receipt: ${saved.paymentProofUrl}\n` : '') +
           (saved.salesNotes ? `• Sales Notes: ${saved.salesNotes}\n` : '') +
           (saved.itineraryUrl ? `• Itinerary Link: ${saved.itineraryUrl}\n` : '') +
           `• Handover Timestamp: ${formattedDate}\n\n` +

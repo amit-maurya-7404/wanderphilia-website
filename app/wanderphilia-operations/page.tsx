@@ -43,7 +43,11 @@ import {
   ToggleLeft,
   ToggleRight,
   PartyPopper,
-  Trophy
+  Trophy,
+  Camera,
+  Ticket,
+  Plus,
+  Trash2
 } from 'lucide-react';
 import { OperationsBooking, OperationsHotelItem, OperationsStatus, OperationsSummaryStats } from '@/types/operations';
 
@@ -203,6 +207,10 @@ export default function WanderphiliaOperationsPage() {
   const [showAllVendors, setShowAllVendors] = useState<boolean>(false);
   const [isCustomVendor, setIsCustomVendor] = useState<boolean>(false);
 
+  // Activity modal & search state
+  const [activityModalDayIdx, setActivityModalDayIdx] = useState<number | null>(null);
+  const [activitySearchQuery, setActivitySearchQuery] = useState<string>('');
+
   // Check saved token on mount
   useEffect(() => {
     const savedToken =
@@ -229,6 +237,79 @@ export default function WanderphiliaOperationsPage() {
     } finally {
       setIsLoadingMasterData(false);
     }
+  }, []);
+
+  // Flatten all experiences from masterData across all cities
+  const allZohoExperiences = useMemo(() => {
+    if (!masterData?.experiencesByCity) return [];
+    const list: any[] = [];
+    Object.entries(masterData.experiencesByCity).forEach(([cityKey, exps]) => {
+      if (Array.isArray(exps)) {
+        exps.forEach(e => list.push({ ...e, cityKey }));
+      }
+    });
+    return list;
+  }, [masterData?.experiencesByCity]);
+
+  // Match an experience name with Zoho CRM
+  const matchZohoActivity = useCallback((name: string, city?: string) => {
+    if (!name || allZohoExperiences.length === 0) return null;
+    const cleanName = name.toLowerCase().replace(/[^a-z0-9]/g, '');
+    const cleanCity = (city || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+
+    // 1. Match name + city
+    let found = allZohoExperiences.find(e => {
+      const eCity = (e.city || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+      const eName = (e.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+      return (!cleanCity || eCity === cleanCity || cleanCity.includes(eCity) || eCity.includes(cleanCity)) &&
+        (eName === cleanName || eName.includes(cleanName) || cleanName.includes(eName));
+    });
+
+    // 2. Fallback to name only
+    if (!found) {
+      found = allZohoExperiences.find(e => {
+        const eName = (e.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+        return eName === cleanName || eName.includes(cleanName) || cleanName.includes(eName);
+      });
+    }
+
+    return found || null;
+  }, [allZohoExperiences]);
+
+  // Helper to resolve hotel stay dates
+  const getHotelStayDates = useCallback((hotel: any, index: number, allHotels: any[], travelStartDate?: string) => {
+    if (hotel.dates && hotel.dates.includes('-') && !hotel.dates.startsWith('0')) {
+      return hotel.dates;
+    }
+    if (hotel.stayDates && hotel.stayDates.includes('-')) {
+      return hotel.stayDates;
+    }
+    let baseDate: Date | null = null;
+    if (travelStartDate) {
+      if (/^\d{4}-\d{2}-\d{2}/.test(travelStartDate)) {
+        baseDate = new Date(travelStartDate);
+      } else if (/^\d{1,2}[\/\-]\d{1,2}[\/\-]\d{4}/.test(travelStartDate)) {
+        const [d, m, y] = travelStartDate.split(/[\/\-]/);
+        baseDate = new Date(Number(y), Number(m) - 1, Number(d));
+      }
+    }
+    if (!baseDate || isNaN(baseDate.getTime())) {
+      return hotel.dates || `${hotel.nights || 1} Night(s)`;
+    }
+
+    let cumulativeNights = 0;
+    for (let i = 0; i < index; i++) {
+      cumulativeNights += Number(allHotels[i]?.nights || 1);
+    }
+    const nights = Number(hotel.nights || 1);
+    const inDate = new Date(baseDate);
+    inDate.setDate(inDate.getDate() + cumulativeNights);
+    const outDate = new Date(inDate);
+    outDate.setDate(outDate.getDate() + nights);
+
+    const inStr = inDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    const outStr = outDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    return `${inStr} → ${outStr}`;
   }, []);
 
   // Fetch bookings when authenticated
@@ -749,6 +830,93 @@ export default function WanderphiliaOperationsPage() {
     navigator.clipboard.writeText(text);
     setCopiedText(label);
     setTimeout(() => setCopiedText(null), 2500);
+  };
+
+  // Activity / Experience operations handlers
+  const handleUpdateExperienceStatus = (dayIdx: number, expIdx: number, status: string) => {
+    if (!activeBooking) return;
+    const dayActivities = [...(activeBooking.dayActivities || [])];
+    const day = { ...dayActivities[dayIdx] };
+    const exps = Array.isArray(day.experiences) ? [...day.experiences] : [];
+    if (typeof exps[expIdx] === 'string') {
+      exps[expIdx] = { name: exps[expIdx], status };
+    } else if (exps[expIdx]) {
+      exps[expIdx] = { ...exps[expIdx], status };
+    }
+    day.experiences = exps;
+    dayActivities[dayIdx] = day;
+    setActiveBooking({ ...activeBooking, dayActivities });
+  };
+
+  const handleUpdateExperienceVoucher = (dayIdx: number, expIdx: number, voucherNumber: string) => {
+    if (!activeBooking) return;
+    const dayActivities = [...(activeBooking.dayActivities || [])];
+    const day = { ...dayActivities[dayIdx] };
+    const exps = Array.isArray(day.experiences) ? [...day.experiences] : [];
+    if (typeof exps[expIdx] === 'string') {
+      exps[expIdx] = { name: exps[expIdx], confirmationNumber: voucherNumber };
+    } else if (exps[expIdx]) {
+      exps[expIdx] = { ...exps[expIdx], confirmationNumber: voucherNumber };
+    }
+    day.experiences = exps;
+    dayActivities[dayIdx] = day;
+    setActiveBooking({ ...activeBooking, dayActivities });
+  };
+
+  const handleUpdateExperienceCost = (dayIdx: number, expIdx: number, cost: number) => {
+    if (!activeBooking) return;
+    const dayActivities = [...(activeBooking.dayActivities || [])];
+    const day = { ...dayActivities[dayIdx] };
+    const exps = Array.isArray(day.experiences) ? [...day.experiences] : [];
+    if (typeof exps[expIdx] === 'string') {
+      exps[expIdx] = { name: exps[expIdx], cost, isManualCost: true };
+    } else if (exps[expIdx]) {
+      exps[expIdx] = { ...exps[expIdx], cost, isManualCost: true };
+    }
+    day.experiences = exps;
+    dayActivities[dayIdx] = day;
+    setActiveBooking({ ...activeBooking, dayActivities });
+  };
+
+  const handleRemoveExperience = (dayIdx: number, expIdx: number) => {
+    if (!activeBooking) return;
+    const dayActivities = [...(activeBooking.dayActivities || [])];
+    const day = { ...dayActivities[dayIdx] };
+    const exps = Array.isArray(day.experiences) ? [...day.experiences] : [];
+    exps.splice(expIdx, 1);
+    day.experiences = exps;
+    dayActivities[dayIdx] = day;
+    setActiveBooking({ ...activeBooking, dayActivities });
+  };
+
+  const handleAddZohoExperienceToDay = (dayIdx: number, zohoExp: any) => {
+    if (!activeBooking) return;
+    const dayActivities = [...(activeBooking.dayActivities || [])];
+    const day = { ...(dayActivities[dayIdx] || { dayNumber: dayIdx + 1, experiences: [] }) };
+    const exps = Array.isArray(day.experiences) ? [...day.experiences] : [];
+    const pax = activeBooking.numberOfGuests || activeBooking.adults || 2;
+    const cost = zohoExp.privateCost && zohoExp.privateCost > 0
+      ? zohoExp.privateCost
+      : (zohoExp.ppCost || 0) * pax;
+
+    exps.push({
+      name: zohoExp.name,
+      id: zohoExp.id,
+      city: zohoExp.city,
+      category: zohoExp.category,
+      timing: zohoExp.timing,
+      openingTime: zohoExp.openingTime,
+      closingTime: zohoExp.closingTime,
+      ppCost: zohoExp.ppCost,
+      privateCost: zohoExp.privateCost,
+      cost: cost,
+      status: 'requested',
+      confirmationNumber: '',
+    });
+    day.experiences = exps;
+    dayActivities[dayIdx] = day;
+    setActiveBooking({ ...activeBooking, dayActivities });
+    setActivityModalDayIdx(null);
   };
 
   // --------------------------------------------------------------------------
@@ -1350,6 +1518,39 @@ export default function WanderphiliaOperationsPage() {
                     </span>
                   </div>
                 </div>
+
+                {/* PAYMENT PROOF RECEIPT ATTACHMENT */}
+                {activeBooking.paymentProofUrl && (
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-2xl bg-emerald-950/40 border border-emerald-600/50 text-xs shadow-md">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className="w-8 h-8 rounded-xl bg-emerald-800/80 border border-emerald-500 flex items-center justify-center shrink-0">
+                        <Camera className="w-4 h-4 text-emerald-200" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-emerald-200">
+                            Bank Payment Proof Attached
+                          </span>
+                          <span className="text-[10px] bg-emerald-800/60 text-emerald-300 font-mono px-2 py-0.5 rounded-full font-bold">
+                            {activeBooking.paymentMode ? activeBooking.paymentMode.toUpperCase() : 'BANK TRANSFER'}
+                          </span>
+                        </div>
+                        <span className="text-[11px] text-slate-400 font-mono">
+                          UTR: <strong className="text-white">{activeBooking.utrNumber || 'N/A'}</strong> &bull; Advance Received: <strong className="text-emerald-400">₹{(activeBooking.advanceAmountPaid || 0).toLocaleString('en-IN')}</strong>
+                        </span>
+                      </div>
+                    </div>
+                    <a
+                      href={activeBooking.paymentProofUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-3.5 py-1.5 bg-emerald-700 hover:bg-emerald-600 text-white rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-md shrink-0 cursor-pointer"
+                    >
+                      <ExternalLink className="w-3.5 h-3.5" />
+                      <span>View Payment Screenshot ↗</span>
+                    </a>
+                  </div>
+                )}
               </div>
 
               {/* TABS NAVIGATION */}
@@ -1435,17 +1636,19 @@ export default function WanderphiliaOperationsPage() {
                                 {hIdx + 1}
                               </span>
                               <div>
-                                <div className="flex items-center gap-2">
+                                <div className="flex flex-wrap items-center gap-2">
                                   <span className="font-bold text-sm text-white">{hotel.hotelName}</span>
                                   {hotel.category && (
                                     <span className="text-[10px] font-bold bg-slate-800 text-orange-300 px-2 py-0.5 rounded-md">
                                       {hotel.category}
                                     </span>
                                   )}
+                                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-amber-500/15 border border-amber-500/40 text-amber-300 font-mono text-[11px] font-bold shadow-xs">
+                                    📅 Dates: {getHotelStayDates(hotel, hIdx, activeBooking.hotels, activeBooking.travelStartDate)}
+                                  </span>
                                 </div>
                                 <span className="text-xs text-slate-400">
                                   City: <strong className="text-slate-300">{hotel.city}</strong>
-                                  {hotel.dates && <span className="ml-2 text-slate-500 font-medium">({hotel.dates})</span>}
                                 </span>
                               </div>
                             </div>
@@ -1483,7 +1686,7 @@ export default function WanderphiliaOperationsPage() {
                           </div>
 
                           {/* Hotel Details Grid */}
-                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                          <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 text-xs">
                             <div>
                               <span className="text-[10px] text-slate-500 font-bold block uppercase">Room Category</span>
                               <span className="font-semibold text-slate-300">{hotel.roomCategory}</span>
@@ -1493,6 +1696,13 @@ export default function WanderphiliaOperationsPage() {
                               <span className="text-[10px] text-slate-500 font-bold block uppercase">Nights &amp; Rooms</span>
                               <span className="font-semibold text-slate-300">
                                 {hotel.nights} Night(s) &bull; {hotel.roomsCount} Room(s)
+                              </span>
+                            </div>
+
+                            <div>
+                              <span className="text-[10px] text-amber-500/90 font-bold block uppercase">Stay Check-in ➔ Out</span>
+                              <span className="font-semibold text-amber-300 font-mono text-xs block truncate" title={getHotelStayDates(hotel, hIdx, activeBooking.hotels, activeBooking.travelStartDate)}>
+                                {getHotelStayDates(hotel, hIdx, activeBooking.hotels, activeBooking.travelStartDate)}
                               </span>
                             </div>
 
@@ -1844,16 +2054,25 @@ export default function WanderphiliaOperationsPage() {
               {/* TAB 3: ACTIVITIES & EXPERIENCES OPERATIONS */}
               {activeTab === 'activities' && (
                 <div className="space-y-4">
-                  <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
-                    <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-                      <div className="flex items-center gap-2">
-                        <Compass className="w-5 h-5 text-orange-400" />
+                  {/* Top Header Card with KPI counters */}
+                  <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-5 space-y-3">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800/80 pb-3">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-9 h-9 rounded-xl bg-orange-600/20 text-orange-400 border border-orange-500/30 flex items-center justify-center">
+                          <Compass className="w-5 h-5" />
+                        </div>
                         <div>
-                          <h3 className="font-bold text-white text-sm">
-                            Activities and Experiences operations
-                          </h3>
-                          <span className="text-[10px] text-slate-400">
-                            Subform matching Zoho CRM CustomModule11
+                          <div className="flex items-center gap-2">
+                            <h3 className="font-bold text-white text-sm">
+                              Day-Wise Activities &amp; Sightseeing Operations
+                            </h3>
+                            <span className="text-[10px] bg-emerald-950 text-emerald-300 border border-emerald-700/80 px-2 py-0.5 rounded-full font-bold flex items-center gap-1">
+                              <Sparkles className="w-2.5 h-2.5" />
+                              Zoho CRM Master Synced
+                            </span>
+                          </div>
+                          <span className="text-[11px] text-slate-400">
+                            Live rates from Zoho Activities &amp; Experiences master module &bull; Matches Operations &amp; Finance subform
                           </span>
                         </div>
                       </div>
@@ -1868,56 +2087,251 @@ export default function WanderphiliaOperationsPage() {
                               isActivitiesBooked: !activeBooking.isActivitiesBooked
                             })
                           }
-                          className={`px-3 py-1 rounded-lg text-xs font-bold border transition-all cursor-pointer ${activeBooking.isActivitiesBooked
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer ${activeBooking.isActivitiesBooked
                             ? 'bg-emerald-950 text-emerald-300 border-emerald-700'
                             : 'bg-amber-950 text-amber-300 border-amber-700'
                             }`}
                         >
-                          {activeBooking.isActivitiesBooked ? 'Confirmed ✓' : 'Pending'}
+                          {activeBooking.isActivitiesBooked ? 'All Confirmed ✓' : 'Pending Booking'}
                         </button>
                       </div>
                     </div>
 
-                    {/* Activities List */}
-                    {activeBooking.dayActivities && activeBooking.dayActivities.length > 0 ? (
-                      <div className="divide-y divide-slate-800 text-xs">
-                        {activeBooking.dayActivities.map((act: any, aIdx: number) => (
-                          <div key={aIdx} className="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                            <div className="flex items-center gap-3">
-                              <span className="w-6 h-6 rounded-lg bg-orange-600/20 text-orange-400 flex items-center justify-center font-bold text-xs shrink-0">
-                                D{act.day || aIdx + 1}
-                              </span>
-                              <div>
-                                <span className="font-bold text-white block">
-                                  {act.title || act.name || `Day ${aIdx + 1} Experience`}
+                    <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-400">
+                      <div>
+                        Total Days: <strong className="text-white">{activeBooking.dayActivities?.length || activeBooking.hotels?.length || 0} Days</strong>
+                        &nbsp;&bull;&nbsp;
+                        Guests: <strong className="text-white">{activeBooking.numberOfGuests || activeBooking.adults || 2} Pax</strong>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-slate-400 text-xs">Estimated Activities B2B Cost: </span>
+                        <strong className="text-amber-400 font-mono text-sm">
+                          ₹{(() => {
+                            let total = 0;
+                            const pax = activeBooking.numberOfGuests || activeBooking.adults || 2;
+                            (activeBooking.dayActivities || []).forEach(day => {
+                              (day.experiences || []).forEach((exp: any) => {
+                                if (typeof exp === 'object' && exp.cost !== undefined) {
+                                  total += Number(exp.cost) || 0;
+                                } else {
+                                  const expName = typeof exp === 'string' ? exp : (exp.name || exp.title || '');
+                                  const m = matchZohoActivity(expName, day.city);
+                                  if (m) {
+                                    total += (m.privateCost > 0 ? m.privateCost : ((m.ppCost || 0) * pax));
+                                  }
+                                }
+                              });
+                            });
+                            return total.toLocaleString('en-IN');
+                          })()}
+                        </strong>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Day-by-Day Cards */}
+                  {activeBooking.dayActivities && activeBooking.dayActivities.length > 0 ? (
+                    <div className="space-y-4">
+                      {activeBooking.dayActivities.map((day: any, dIdx: number) => {
+                        const dayNum = day.dayNumber || dIdx + 1;
+                        let stayDateStr = '';
+                        if (activeBooking.travelStartDate && /^\d{4}-\d{2}-\d{2}$/.test(activeBooking.travelStartDate)) {
+                          try {
+                            const d = new Date(activeBooking.travelStartDate);
+                            d.setDate(d.getDate() + (dayNum - 1));
+                            stayDateStr = d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', weekday: 'short', year: 'numeric' });
+                          } catch (_) { }
+                        }
+
+                        // Parse experiences
+                        const expsList: any[] = [];
+                        if (Array.isArray(day.experiences)) {
+                          day.experiences.forEach((item: any, eIdx: number) => {
+                            if (typeof item === 'string') {
+                              expsList.push({ name: item, originalIdx: eIdx });
+                            } else if (item && typeof item === 'object') {
+                              expsList.push({ ...item, originalIdx: eIdx });
+                            }
+                          });
+                        }
+                        if (expsList.length === 0 && day.title) {
+                          expsList.push({ name: day.title, originalIdx: 0 });
+                        }
+
+                        const dayCity = day.city || day.fromCity || activeBooking.destination;
+                        const pax = activeBooking.numberOfGuests || activeBooking.adults || 2;
+
+                        return (
+                          <div
+                            key={dIdx}
+                            className="bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-2xl p-4 sm:p-5 space-y-3 transition-all shadow-md"
+                          >
+                            {/* Day Header */}
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
+                              <div className="flex flex-wrap items-center gap-2">
+                                <span className="px-3 py-1 rounded-xl bg-orange-600 text-white font-black text-xs shadow-xs">
+                                  Day {dayNum}
                                 </span>
-                                <span className="text-[11px] text-slate-400">
-                                  {act.city || activeBooking.destination} &bull; {act.time || 'Full Day'}
+                                {stayDateStr && (
+                                  <span className="text-xs font-mono font-bold text-amber-300 bg-amber-950/60 border border-amber-800/80 px-2.5 py-0.5 rounded-lg">
+                                    📅 {stayDateStr}
+                                  </span>
+                                )}
+                                <span className="text-xs text-slate-300 font-bold">
+                                  📍 {dayCity}
                                 </span>
+                                {day.stayLocation && (
+                                  <span className="text-[11px] text-slate-400 bg-slate-800 px-2 py-0.5 rounded-md">
+                                    Stay: {day.stayLocation}
+                                  </span>
+                                )}
                               </div>
+
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setActivityModalDayIdx(dIdx);
+                                  setActivitySearchQuery('');
+                                }}
+                                className="px-3 py-1.5 bg-orange-600/20 hover:bg-orange-600 text-orange-300 hover:text-white border border-orange-500/40 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-xs shrink-0"
+                              >
+                                <Plus className="w-3.5 h-3.5" />
+                                <span>+ Add Attraction from Zoho CRM</span>
+                              </button>
                             </div>
 
-                            <div className="flex items-center gap-2">
-                              {act.guidedTour && (
-                                <span className="bg-blue-950 text-blue-300 border border-blue-800 text-[10px] font-bold px-2 py-0.5 rounded-md">
-                                  Guided Tour
-                                </span>
-                              )}
-                              <span className="text-[11px] font-bold text-emerald-400 bg-emerald-950/60 border border-emerald-800 px-2 py-0.5 rounded-md">
-                                Included
-                              </span>
-                            </div>
+                            {/* Attractions List for this Day */}
+                            {expsList.length > 0 ? (
+                              <div className="divide-y divide-slate-800/80 space-y-1">
+                                {expsList.map((exp: any, eIdx: number) => {
+                                  const expName = exp.name || exp.title || `Experience ${eIdx + 1}`;
+                                  const zohoMatch = matchZohoActivity(expName, dayCity);
+                                  const ppCost = zohoMatch?.ppCost || 0;
+                                  const privateCost = zohoMatch?.privateCost || 0;
+                                  const calculatedCost = exp.cost !== undefined
+                                    ? exp.cost
+                                    : (privateCost > 0 ? privateCost : (ppCost * pax));
+                                  const status = exp.status || 'requested';
+                                  const voucherNo = exp.confirmationNumber || exp.voucherNumber || '';
+
+                                  return (
+                                    <div key={eIdx} className="pt-2.5 pb-2 flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs">
+                                      {/* Left: Name, Badges, Operating Times */}
+                                      <div className="space-y-1 min-w-0 flex-1">
+                                        <div className="flex flex-wrap items-center gap-2">
+                                          <span className="font-bold text-white text-xs">{expName}</span>
+                                          {zohoMatch ? (
+                                            <span className="text-[10px] bg-emerald-950 text-emerald-300 border border-emerald-800 font-mono px-2 py-0.2 rounded-md font-bold">
+                                              Zoho Master ✓
+                                            </span>
+                                          ) : (
+                                            <span className="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.2 rounded-md">
+                                              Custom
+                                            </span>
+                                          )}
+                                          {(zohoMatch?.category || exp.category) && (
+                                            <span className="text-[10px] bg-slate-800/80 text-orange-300 px-1.5 py-0.2 rounded">
+                                              {zohoMatch?.category || exp.category}
+                                            </span>
+                                          )}
+                                        </div>
+
+                                        <div className="flex flex-wrap items-center gap-3 text-[11px] text-slate-400">
+                                          {(zohoMatch?.timing || exp.timing) && (
+                                            <span>⏱ Timing: {zohoMatch?.timing || exp.timing}</span>
+                                          )}
+                                          {zohoMatch?.openingTime && (
+                                            <span>🕒 Hours: {zohoMatch.openingTime} - {zohoMatch.closingTime || 'Evening'}</span>
+                                          )}
+                                          {ppCost > 0 && (
+                                            <span className="text-slate-300 font-mono">
+                                              B2B: ₹{ppCost.toLocaleString('en-IN')}/pax
+                                            </span>
+                                          )}
+                                        </div>
+                                      </div>
+
+                                      {/* Right: Cost, Booking Status, Voucher #, Delete */}
+                                      <div className="flex flex-wrap items-center gap-2 shrink-0">
+                                        {/* Cost input / display */}
+                                        <div className="bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1 text-center min-w-[90px]">
+                                          <span className="text-[9px] text-slate-500 uppercase font-bold block">B2B Cost</span>
+                                          <span className="font-bold text-amber-400 font-mono text-xs">
+                                            ₹{Number(calculatedCost).toLocaleString('en-IN')}
+                                          </span>
+                                        </div>
+
+                                        {/* Status Dropdown */}
+                                        <select
+                                          value={status}
+                                          onChange={e => handleUpdateExperienceStatus(dIdx, exp.originalIdx, e.target.value)}
+                                          className={`text-xs font-bold rounded-lg px-2.5 py-1.5 border cursor-pointer ${
+                                            status === 'confirmed'
+                                              ? 'bg-emerald-950 text-emerald-300 border-emerald-700'
+                                              : status === 'voucher_issued'
+                                              ? 'bg-blue-950 text-blue-300 border-blue-700'
+                                              : status === 'free'
+                                              ? 'bg-slate-800 text-slate-300 border-slate-700'
+                                              : 'bg-amber-950 text-amber-300 border-amber-700'
+                                          }`}
+                                        >
+                                          <option value="requested">Requested</option>
+                                          <option value="confirmed">Confirmed ✓</option>
+                                          <option value="voucher_issued">Voucher Issued</option>
+                                          <option value="free">Not Required / Free</option>
+                                        </select>
+
+                                        {/* Ticket / Voucher input */}
+                                        <input
+                                          type="text"
+                                          placeholder="Ticket / Ref #"
+                                          value={voucherNo}
+                                          onChange={e => handleUpdateExperienceVoucher(dIdx, exp.originalIdx, e.target.value)}
+                                          className="w-28 bg-slate-950 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-orange-500"
+                                        />
+
+                                        {/* Delete Button */}
+                                        <button
+                                          type="button"
+                                          onClick={() => handleRemoveExperience(dIdx, exp.originalIdx)}
+                                          className="p-1.5 text-slate-500 hover:text-red-400 hover:bg-red-950/40 rounded-lg transition cursor-pointer"
+                                          title="Remove attraction"
+                                        >
+                                          <Trash2 className="w-3.5 h-3.5" />
+                                        </button>
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            ) : (
+                              <div className="py-4 text-center text-slate-500 text-xs space-y-1">
+                                <p>No specific ticketed attractions added for Day {dayNum} yet.</p>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setActivityModalDayIdx(dIdx);
+                                    setActivitySearchQuery('');
+                                  }}
+                                  className="text-orange-400 hover:underline font-bold text-xs cursor-pointer"
+                                >
+                                  + Select from Zoho Master Experiences
+                                </button>
+                              </div>
+                            )}
                           </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="p-6 text-center text-slate-500 text-xs space-y-2">
-                        <Compass className="w-8 h-8 mx-auto text-slate-600 opacity-60" />
-                        <p>Standard destination sightseeing &amp; en-route experiences as scheduled in proposal.</p>
-                        <p className="text-[10px]">All major attractions are included in the driver duty itinerary.</p>
-                      </div>
-                    )}
-                  </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="p-8 text-center text-slate-500 text-xs space-y-2 bg-slate-900 border border-slate-800 rounded-2xl">
+                      <Compass className="w-8 h-8 mx-auto text-slate-600 opacity-60" />
+                      <p className="text-white font-bold">No day-wise activities configured yet.</p>
+                      <p className="text-slate-400 text-[11px]">
+                        Activities will be auto-populated from itinerary days or you can add them manually.
+                      </p>
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -2867,6 +3281,153 @@ export default function WanderphiliaOperationsPage() {
                 </div>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: ADD ATTRACTION FROM ZOHO CRM */}
+      {activityModalDayIdx !== null && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-2xl w-full max-h-[85vh] flex flex-col overflow-hidden shadow-2xl">
+            {/* Modal Header */}
+            <div className="p-5 border-b border-slate-800 flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-orange-600/20 text-orange-400 border border-orange-500/30 flex items-center justify-center">
+                  <Compass className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-white text-sm">
+                    Add Attraction from Zoho CRM
+                  </h3>
+                  <span className="text-[11px] text-slate-400">
+                    Day {activityModalDayIdx + 1} &bull; City: <strong className="text-slate-300">{activeBooking?.dayActivities?.[activityModalDayIdx]?.city || activeBooking?.destination}</strong>
+                  </span>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setActivityModalDayIdx(null)}
+                className="w-8 h-8 rounded-xl bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Search Input */}
+            <div className="p-4 border-b border-slate-800 bg-slate-950/60">
+              <div className="relative">
+                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  placeholder="Search attraction name, fort, temple, safari, food tour..."
+                  value={activitySearchQuery}
+                  onChange={e => setActivitySearchQuery(e.target.value)}
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl pl-9 pr-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-orange-500"
+                  autoFocus
+                />
+              </div>
+            </div>
+
+            {/* Attractions List */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-2">
+              {(() => {
+                const targetCity = (activeBooking?.dayActivities?.[activityModalDayIdx]?.city || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+                const cleanQuery = activitySearchQuery.toLowerCase().trim();
+
+                const filtered = allZohoExperiences.filter(exp => {
+                  const expName = (exp.name || '').toLowerCase();
+                  const expCity = (exp.city || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+                  const expDest = (exp.destination || '').toLowerCase();
+
+                  if (cleanQuery) {
+                    return expName.includes(cleanQuery) || expCity.includes(cleanQuery) || expDest.includes(cleanQuery);
+                  }
+                  return targetCity ? (expCity === targetCity || expCity.includes(targetCity) || targetCity.includes(expCity)) : true;
+                });
+
+                if (filtered.length === 0) {
+                  return (
+                    <div className="py-12 text-center text-slate-500 text-xs space-y-2">
+                      <p>No Zoho master activities found matching &ldquo;{activitySearchQuery}&rdquo;.</p>
+                      <button
+                        type="button"
+                        onClick={() => setActivitySearchQuery('')}
+                        className="text-orange-400 hover:underline font-bold text-xs cursor-pointer"
+                      >
+                        Clear search filter
+                      </button>
+                    </div>
+                  );
+                }
+
+                return filtered.map((exp: any, idx: number) => {
+                  const pax = activeBooking?.numberOfGuests || activeBooking?.adults || 2;
+                  const estimatedCost = exp.privateCost && exp.privateCost > 0
+                    ? exp.privateCost
+                    : ((exp.ppCost || 0) * pax);
+
+                  return (
+                    <div
+                      key={exp.id || idx}
+                      className="bg-slate-950/80 hover:bg-slate-950 border border-slate-800 hover:border-orange-500/50 rounded-xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-all text-xs"
+                    >
+                      <div className="space-y-1 min-w-0 flex-1">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="font-bold text-white text-xs">{exp.name}</span>
+                          {exp.city && (
+                            <span className="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.2 rounded-md">
+                              {exp.city}
+                            </span>
+                          )}
+                          {exp.category && (
+                            <span className="text-[10px] bg-orange-950/60 text-orange-300 border border-orange-900 px-1.5 py-0.2 rounded">
+                              {exp.category}
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="flex flex-wrap items-center gap-3 text-[11px] text-slate-400">
+                          {exp.timing && <span>⏱ {exp.timing}</span>}
+                          {exp.openingTime && <span>🕒 {exp.openingTime} - {exp.closingTime || 'Close'}</span>}
+                          {exp.ppCost > 0 && <span className="text-slate-300 font-mono">B2B: ₹{exp.ppCost}/pax</span>}
+                          {exp.privateCost > 0 && <span className="text-slate-300 font-mono">Private: ₹{exp.privateCost}</span>}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2 shrink-0">
+                        <div className="text-right pr-2">
+                          <span className="text-[9px] text-slate-500 block uppercase font-bold">Total ({pax} Pax)</span>
+                          <span className="font-bold text-amber-400 font-mono text-xs">
+                            ₹{estimatedCost.toLocaleString('en-IN')}
+                          </span>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => handleAddZohoExperienceToDay(activityModalDayIdx, exp)}
+                          className="px-3 py-1.5 bg-orange-600 hover:bg-orange-500 text-white rounded-xl text-xs font-bold transition flex items-center gap-1 cursor-pointer shadow-md"
+                        >
+                          <Plus className="w-3.5 h-3.5" />
+                          <span>Add</span>
+                        </button>
+                      </div>
+                    </div>
+                  );
+                });
+              })()}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-4 border-t border-slate-800 bg-slate-950/60 flex items-center justify-between text-xs text-slate-400">
+              <span>{allZohoExperiences.length} total Zoho master activities available</span>
+              <button
+                type="button"
+                onClick={() => setActivityModalDayIdx(null)}
+                className="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-bold cursor-pointer transition"
+              >
+                Close
+              </button>
+            </div>
           </div>
         </div>
       )}

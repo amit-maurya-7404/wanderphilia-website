@@ -30,7 +30,8 @@ import {
   Luggage,
   Lock,
   ArrowRight,
-  Check
+  Check,
+  FileText
 } from 'lucide-react';
 import { Parachute } from '@/components/parachute-icon';
 import { RiWhatsappLine } from 'react-icons/ri';
@@ -261,9 +262,18 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
   const displayTenPercentAmount = Math.round(displayTotalAmount * 0.1);
   const displayFiftyPercentAmount = Math.round(displayTotalAmount * 0.5);
 
+  // Option index resolution for Handover / Operations confirmation
+  const currentOptionIndex = itinerary.options && itinerary.options.length > 0 
+    ? itinerary.options.findIndex(o => o.id === selectedOptionId) 
+    : 0;
+  const currentOptionNum = currentOptionIndex >= 0 ? currentOptionIndex + 1 : 1;
+  const isThisOptionConfirmed = Boolean(itinerary.isHandedOver && itinerary.confirmedOptionNumber === currentOptionNum);
+  const isOtherOptionConfirmed = Boolean(itinerary.isHandedOver && itinerary.confirmedOptionNumber !== undefined && itinerary.confirmedOptionNumber !== currentOptionNum);
+
   // Online Booking Feature Flag:
   // Disabled for all past itineraries already sent to clients. Only active for new itineraries or when explicitly enabled.
-  const isOnlineBookingEnabled = Boolean(itinerary.enableOnlineBooking);
+  // Also locked out if this option is not the one confirmed in Operations.
+  const isOnlineBookingEnabled = Boolean(itinerary.enableOnlineBooking) && !isOtherOptionConfirmed;
   const isFullPaymentOnly = Boolean(itinerary.fullPaymentOnly);
   const isTokenEnabled = itinerary.enableTokenPayment !== undefined ? Boolean(itinerary.enableTokenPayment) : (isFullPaymentOnly ? false : true);
   const isAdvanceEnabled = itinerary.enableAdvancePayment !== undefined ? Boolean(itinerary.enableAdvancePayment) : (isFullPaymentOnly ? false : true);
@@ -331,6 +341,66 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
           </div>
         </div>
       </header>
+
+      {/* Handover & Confirmation Status Banners */}
+      {isThisOptionConfirmed && (
+        <div className="bg-gradient-to-r from-emerald-900 via-emerald-800 to-teal-900 text-white border-b-2 border-amber-400/50 py-3 px-4 sm:px-8 shadow-md print:hidden">
+          <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-full bg-emerald-700/80 border border-emerald-400 flex items-center justify-center shrink-0">
+                <CheckCircle2 className="w-5 h-5 text-amber-300" />
+              </div>
+              <div>
+                <div className="text-xs sm:text-sm font-black tracking-wide flex items-center gap-2 justify-center sm:justify-start">
+                  <span>✨ Booking Confirmed & Handed Over to Operations</span>
+                  <span className="bg-amber-400 text-stone-950 text-[10px] font-black px-2 py-0.5 rounded-full uppercase">Option {itinerary.confirmedOptionNumber}</span>
+                </div>
+                <p className="text-[11px] text-emerald-100 font-medium">
+                  {itinerary.confirmedOptionTitle ? `${itinerary.confirmedOptionTitle} has been secured.` : 'Your package has been finalized.'} Hotel vouchers and transport dispatches are being processed by operations.
+                </p>
+              </div>
+            </div>
+            <a
+              href={`/api/itinerary/invoice?id=${itinerary.id}`}
+              download={`Wanderphilia_Invoice_${itinerary.id}.pdf`}
+              className="inline-flex items-center gap-1.5 bg-amber-400 hover:bg-amber-300 text-stone-950 text-xs font-black px-4 py-2 rounded-xl shadow-md transition hover:scale-105 active:scale-95 shrink-0"
+            >
+              <FileText className="w-4 h-4 text-stone-950" />
+              <span>Download Official Invoice 📄</span>
+            </a>
+          </div>
+        </div>
+      )}
+
+      {isOtherOptionConfirmed && (
+        <div className="bg-gradient-to-r from-amber-950 via-stone-900 to-amber-950 text-amber-100 border-b-2 border-amber-500 py-3 px-4 sm:px-8 shadow-md print:hidden">
+          <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-full bg-amber-900/80 border border-amber-500 flex items-center justify-center shrink-0">
+                <Lock className="w-4 h-4 text-amber-400" />
+              </div>
+              <div>
+                <div className="text-xs sm:text-sm font-black tracking-wide text-amber-300">
+                  🔒 Option {itinerary.confirmedOptionNumber} is Confirmed for this Trip (Reference Only)
+                </div>
+                <p className="text-[11px] text-amber-200 font-medium">
+                  You are viewing Option {currentOptionNum}. Option {itinerary.confirmedOptionNumber} was locked in and sent to operations.
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                const targetOpt = itinerary.options?.[(itinerary.confirmedOptionNumber || 1) - 1];
+                if (targetOpt) handleSelectOption(targetOpt.id);
+              }}
+              className="inline-flex items-center gap-1.5 bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs font-black px-4 py-2 rounded-xl shadow-md transition hover:scale-105 active:scale-95 shrink-0 cursor-pointer"
+            >
+              <span>Switch to Confirmed Option {itinerary.confirmedOptionNumber} →</span>
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* DOCUMENT CONTAINER (A4 / Canva Sheet Style Pages) */}
       <main className="max-w-4xl mx-auto px-0 sm:px-4 pt-6 space-y-10">
@@ -1662,9 +1732,9 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
       </main>
 
       {/* ========================================================= */}
-      {/* FLOATING STICKY BOTTOM BAR ("BOOK NOW") */}
+      {/* FLOATING STICKY BOTTOM BAR ("BOOK NOW" / "CONFIRMED") */}
       {/* ========================================================= */}
-      {isOnlineBookingEnabled && (
+      {(isOnlineBookingEnabled || isThisOptionConfirmed || isOtherOptionConfirmed) && (
         <>
           <aside aria-label="Book proposal action bar" className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-stone-200/90 shadow-[0_-8px_30px_rgba(0,0,0,0.12)] p-3 sm:p-4 print:hidden">
             <div className="max-w-4xl mx-auto flex items-center justify-between gap-3 sm:gap-4">
@@ -1692,7 +1762,28 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
               </div>
 
               <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-                {isFullyPaid ? (
+                {isThisOptionConfirmed ? (
+                  <a
+                    href={`/api/itinerary/invoice?id=${itinerary.id}`}
+                    download={`Wanderphilia_Invoice_${itinerary.id}.pdf`}
+                    className="bg-emerald-700 hover:bg-emerald-800 text-white font-black text-xs sm:text-sm px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl shadow-md flex items-center gap-2 cursor-pointer transition hover:scale-105 active:scale-95 uppercase tracking-wider"
+                  >
+                    <FileText className="w-4 h-4 text-emerald-200" />
+                    <span>✓ Confirmed (Invoice 📄)</span>
+                  </a>
+                ) : isOtherOptionConfirmed ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const targetOpt = itinerary.options?.[(itinerary.confirmedOptionNumber || 1) - 1];
+                      if (targetOpt) handleSelectOption(targetOpt.id);
+                    }}
+                    className="bg-amber-600 hover:bg-amber-700 text-white font-black text-xs sm:text-sm px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl shadow-md flex items-center gap-2 cursor-pointer transition hover:scale-105 active:scale-95 uppercase tracking-wider"
+                  >
+                    <Lock className="w-4 h-4 text-amber-200" />
+                    <span>Switch to Option {itinerary.confirmedOptionNumber}</span>
+                  </button>
+                ) : isFullyPaid ? (
                   <button
                     type="button"
                     onClick={() => handleOpenBookModal('full')}

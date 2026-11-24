@@ -16,7 +16,11 @@ import {
   RefreshCw,
   Sparkles,
   Copy,
-  Check
+  Check,
+  Upload,
+  FileText,
+  Camera,
+  Paperclip
 } from 'lucide-react';
 
 export interface ConfirmBookingModalProps {
@@ -108,9 +112,38 @@ export function ConfirmBookingModal({
   const [paymentDate, setPaymentDate] = useState<string>(() => new Date().toISOString().split('T')[0]);
   const [salesRepName, setSalesRepName] = useState<string>('');
   const [salesNotes, setSalesNotes] = useState<string>('');
+  const [paymentProofUrl, setPaymentProofUrl] = useState<string>('');
+  const [paymentProofName, setPaymentProofName] = useState<string>('');
+  const [isUploadingProof, setIsUploadingProof] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [confirmedResult, setConfirmedResult] = useState<any | null>(null);
   const [copiedLink, setCopiedLink] = useState<boolean>(false);
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploadingProof(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
+      if (data.url) {
+        setPaymentProofUrl(data.url);
+        setPaymentProofName(file.name);
+      } else {
+        alert(data.error || 'Failed to upload payment proof');
+      }
+    } catch (err) {
+      alert('Upload failed. Please check network connection.');
+    } finally {
+      setIsUploadingProof(false);
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -152,6 +185,7 @@ export function ConfirmBookingModal({
         paymentMode,
         utrNumber: utrNumber.trim(),
         paymentDate,
+        paymentProofUrl: paymentProofUrl.trim(),
         salesRepName: salesRepName.trim() || 'Sales Team',
         salesNotes: salesNotes.trim(),
         hotels: activeOption.hotels || [],
@@ -372,6 +406,84 @@ export function ConfirmBookingModal({
                     onChange={e => setPaymentDate(e.target.value)}
                     className="w-full bg-slate-900 border border-slate-700 rounded-xl p-2 text-white text-xs"
                   />
+                </div>
+
+                {/* PAYMENT PROOF / SCREENSHOT UPLOAD */}
+                <div className="sm:col-span-2 pt-2 border-t border-slate-800/80">
+                  <label className="text-[10px] text-slate-400 uppercase font-bold block mb-1.5 flex items-center justify-between">
+                    <span className="flex items-center gap-1.5 text-amber-400">
+                      <Camera className="w-3.5 h-3.5" />
+                      <span>Payment Screenshot / Receipt Proof (For Finance & Ops)</span>
+                    </span>
+                    <span className="text-[10px] text-slate-500 font-normal">PNG, JPG, PDF (Max 10MB)</span>
+                  </label>
+
+                  {paymentProofUrl ? (
+                    <div className="bg-emerald-950/70 border border-emerald-600/80 rounded-xl p-3 flex items-center justify-between gap-3 shadow-md">
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <div className="w-8 h-8 rounded-lg bg-emerald-800/80 border border-emerald-500 flex items-center justify-center shrink-0">
+                          <CheckCircle2 className="w-4 h-4 text-emerald-200" />
+                        </div>
+                        <div className="min-w-0">
+                          <span className="text-xs font-bold text-emerald-200 truncate block">
+                            {paymentProofName || 'Payment_Proof_Attachment'}
+                          </span>
+                          <span className="text-[10px] text-emerald-400 font-mono">
+                            ✓ Proof attached for Operations & Finance
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <a
+                          href={paymentProofUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-2.5 py-1 bg-emerald-700 hover:bg-emerald-600 text-white rounded-lg text-xs font-bold transition flex items-center gap-1 shadow-xs"
+                        >
+                          <ExternalLink className="w-3 h-3" />
+                          <span>View</span>
+                        </a>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setPaymentProofUrl('');
+                            setPaymentProofName('');
+                          }}
+                          className="px-2.5 py-1 bg-slate-800 hover:bg-red-900/60 hover:text-red-300 text-slate-400 rounded-lg text-xs font-bold transition cursor-pointer"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <label className="border-2 border-dashed border-slate-700 hover:border-orange-500/70 bg-slate-950/60 hover:bg-slate-950 rounded-xl p-3.5 text-center flex flex-col items-center justify-center gap-1.5 cursor-pointer transition group">
+                      <input
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp,application/pdf"
+                        onChange={handleFileUpload}
+                        disabled={isUploadingProof}
+                        className="hidden"
+                      />
+                      {isUploadingProof ? (
+                        <div className="flex items-center gap-2 text-xs text-orange-400 font-bold py-1">
+                          <RefreshCw className="w-4 h-4 animate-spin" />
+                          <span>Uploading receipt proof...</span>
+                        </div>
+                      ) : (
+                        <>
+                          <div className="w-8 h-8 rounded-full bg-slate-800 group-hover:bg-orange-500/20 text-slate-400 group-hover:text-orange-400 flex items-center justify-center transition">
+                            <Upload className="w-4 h-4" />
+                          </div>
+                          <div className="text-xs text-slate-300 font-medium">
+                            <span className="text-orange-400 font-bold group-hover:underline">Click to upload payment screenshot</span> or drag &amp; drop
+                          </div>
+                          <span className="text-[10px] text-slate-500">
+                            Automatically attached to Operations &amp; Zoho Finance module
+                          </span>
+                        </>
+                      )}
+                    </label>
+                  )}
                 </div>
               </div>
             </div>

@@ -181,5 +181,10 @@ export interface ManualItinerary {
   enableAdvancePayment?: boolean;
   enableFullPayment?: boolean;
   showWithoutTaxesInProposal?: boolean;
+  isHandedOver?: boolean;
+  confirmedOptionNumber?: number;
+  confirmedOptionTitle?: string;
+  utrNumber?: string;
+  paymentMode?: string;
 }
 

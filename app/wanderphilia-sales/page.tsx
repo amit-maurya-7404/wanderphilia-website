@@ -9889,17 +9889,52 @@ export default function SheetItineraryPage() {
         zohoLeadId={zohoLeadId}
         dayActivities={(existingOptions[handoverTargetOption || selectedOption]?.dayActivities) || dayRows}
         availableOptions={(() => {
+          const computeHotelDatesWithNights = (rawHotelsList: any[], startDateInput?: string) => {
+            let baseDate: Date | null = null;
+            if (startDateInput) {
+              if (/^\d{4}-\d{2}-\d{2}/.test(startDateInput)) {
+                baseDate = new Date(startDateInput);
+              } else if (/^\d{1,2}[\/\-]\d{1,2}[\/\-]\d{4}/.test(startDateInput)) {
+                const [d, m, y] = startDateInput.split(/[\/\-]/);
+                baseDate = new Date(Number(y), Number(m) - 1, Number(d));
+              }
+            }
+
+            let cumulativeNights = 0;
+            return rawHotelsList.map((h: any) => {
+              const nights = Number(h.nights || 1);
+              let dates = h.dates || h.stayDates || '';
+              if (!dates && baseDate && !isNaN(baseDate.getTime())) {
+                const inDate = new Date(baseDate);
+                inDate.setDate(inDate.getDate() + cumulativeNights);
+                const outDate = new Date(inDate);
+                outDate.setDate(outDate.getDate() + nights);
+                const inStr = inDate.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+                const outStr = outDate.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+                dates = `${inStr} to ${outStr}`;
+                cumulativeNights += nights;
+              }
+              return {
+                ...h,
+                dates,
+                stayDates: dates,
+              };
+            });
+          };
+
           const opts: any[] = [];
           [1, 2, 3, 4, 5, 6, 7, 8].forEach(optNum => {
             const exist = existingOptions[optNum];
             if (exist) {
-              const optHotels = (Array.isArray(exist.hotels) && exist.hotels.length > 0)
+              const rawOptHotels = (Array.isArray(exist.hotels) && exist.hotels.length > 0)
                 ? exist.hotels.map((h: any) => ({
                     city: h.city,
                     nights: h.nights,
                     hotelName: h.hotelName,
                     roomCategory: h.roomCategory,
                     category: h.category,
+                    dates: h.dates || h.stayDates || '',
+                    stayDates: h.stayDates || h.dates || '',
                     b2bTotalCost: (Number(h.basePrice) || 0) * (Number(h.nights) || 1) * (Number(exist.roomsCount) || Number(roomsCount) || 1),
                     basePrice: h.basePrice,
                     extraBedPrice: h.extraBedPrice,
@@ -9910,10 +9945,14 @@ export default function SheetItineraryPage() {
                     hotelName: h.hotelName,
                     roomCategory: h.roomCategory,
                     category: h.category,
+                    dates: (h as any).dates || (h as any).stayDates || '',
+                    stayDates: (h as any).stayDates || (h as any).dates || '',
                     b2bTotalCost: (Number(h.basePrice) || 0) * (Number(h.nights) || 1) * (Number(roomsCount) || 1),
                     basePrice: h.basePrice,
                     extraBedPrice: h.extraBedPrice,
                   }));
+
+              const optHotels = computeHotelDatesWithNights(rawOptHotels, exist.startDate || startDate);
 
               const optDayActivities = (Array.isArray(exist.dayActivities) && exist.dayActivities.length > 0)
                 ? exist.dayActivities
@@ -9955,16 +9994,21 @@ export default function SheetItineraryPage() {
               optionNumber: selectedOption,
               title: `Option ${selectedOption}`,
               totalAmount: Number(finalQuotation) || 0,
-              hotels: hotels.map(h => ({
-                city: h.city,
-                nights: h.nights,
-                hotelName: h.hotelName,
-                roomCategory: h.roomCategory,
-                category: h.category,
-                b2bTotalCost: (Number(h.basePrice) || 0) * (Number(h.nights) || 1) * (Number(roomsCount) || 1),
-                basePrice: h.basePrice,
-                extraBedPrice: h.extraBedPrice,
-              })),
+              hotels: computeHotelDatesWithNights(
+                hotels.map(h => ({
+                  city: h.city,
+                  nights: h.nights,
+                  hotelName: h.hotelName,
+                  roomCategory: h.roomCategory,
+                  category: h.category,
+                  dates: (h as any).dates || (h as any).stayDates || '',
+                  stayDates: (h as any).stayDates || (h as any).dates || '',
+                  b2bTotalCost: (Number(h.basePrice) || 0) * (Number(h.nights) || 1) * (Number(roomsCount) || 1),
+                  basePrice: h.basePrice,
+                  extraBedPrice: h.extraBedPrice,
+                })),
+                startDate
+              ),
               vehicleType,
               b2bTransportCost: fallbackTransportCost,
               dayActivities: dayRows,

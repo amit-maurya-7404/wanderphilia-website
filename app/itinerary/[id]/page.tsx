@@ -117,6 +117,40 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
+async function enrichWithOperationsBooking(manual: any, id: string): Promise<any> {
+  try {
+    const db = await getDb();
+    const criteria: any[] = [{ itineraryDocId: id }, { itineraryDocId: manual.id }];
+    if (manual.inquiryId) criteria.push({ inquiryId: manual.inquiryId });
+    if (manual.zohoLeadId) criteria.push({ zohoLeadId: manual.zohoLeadId });
+    if (id) criteria.push({ itineraryUrl: { $regex: id, $options: 'i' } });
+
+    const opsBooking = await db.collection('operations_bookings').findOne({
+      $or: criteria
+    });
+
+    if (opsBooking) {
+      manual.isHandedOver = true;
+      manual.confirmedOptionNumber = Number(opsBooking.selectedOptionNumber || 1);
+      manual.confirmedOptionTitle = opsBooking.selectedOptionTitle || `Option ${opsBooking.selectedOptionNumber || 1}`;
+      if (opsBooking.advanceAmountPaid !== undefined && opsBooking.advanceAmountPaid > 0) {
+        manual.advanceAmountPaid = opsBooking.advanceAmountPaid;
+      }
+      if (opsBooking.balancePendingAmount !== undefined) {
+        manual.balancePendingAmount = opsBooking.balancePendingAmount;
+      }
+      manual.paymentStage = (opsBooking.balancePendingAmount !== undefined && opsBooking.balancePendingAmount <= 0)
+        ? 'fully_paid'
+        : 'advance_paid';
+      manual.utrNumber = opsBooking.utrNumber;
+      manual.paymentMode = opsBooking.paymentMode;
+    }
+  } catch (err) {
+    console.warn('[Enrich with Operations Booking Notice]:', err);
+  }
+  return manual;
+}
+
 export default async function ItineraryPage({ params }: PageProps) {
   const { id } = await params;
 
@@ -136,7 +170,8 @@ export default async function ItineraryPage({ params }: PageProps) {
     } catch (e) {
       console.warn('[Manual Itinerary DB Fetch Error]:', e);
     }
-    return <ManualItineraryTemplate itinerary={manual} />;
+    const enrichedManual = await enrichWithOperationsBooking(manual, id);
+    return <ManualItineraryTemplate itinerary={enrichedManual} />;
   }
 
   // 2. Fetch from DB (Zoho CRM fetched or saved itinerary document)
@@ -148,6 +183,7 @@ export default async function ItineraryPage({ params }: PageProps) {
 
   // Convert Zoho / DB ItineraryDocument to ManualItinerary format to render the exact same rich, 6-page Canva-style UI
   const manualItinerary = itineraryDocumentToManualItinerary(itinerary);
+  const enrichedManualItinerary = await enrichWithOperationsBooking(manualItinerary, id);
 
-  return <ManualItineraryTemplate itinerary={manualItinerary} />;
+  return <ManualItineraryTemplate itinerary={enrichedManualItinerary} />;
 }
