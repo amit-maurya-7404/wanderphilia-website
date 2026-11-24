@@ -126,9 +126,22 @@ export async function POST(req: NextRequest) {
 
     // Construct Transport item
     const transportDays = Number(body.noOfDays || body.transport?.totalDays || 1);
-    const transportCost = Number(body.transport?.b2bTotalCost || body.transportCost || 0);
+    let transportCost = Number(body.transport?.b2bTotalCost || body.transportCost || 0);
+    const vehicleType = String(body.vehicleType || body.transport?.vehicleType || 'Dedicated Private Cab').trim();
+
+    // If transport cost is 0 or not provided, calculate standard default rate
+    if (transportCost === 0) {
+      const vClean = vehicleType.toLowerCase().replace(/[^a-z0-9]/g, '');
+      let ratePerDay = 4000;
+      if (vClean.includes('tempo') || vClean.includes('traveller')) ratePerDay = 7500;
+      else if (vClean.includes('innova') || vClean.includes('crysta')) ratePerDay = 5500;
+      else if (vClean.includes('ertiga') || vClean.includes('rumion') || vClean.includes('rumoin')) ratePerDay = 4500;
+      else if (vClean.includes('seden') || vClean.includes('sedan') || vClean.includes('dzire') || vClean.includes('etios')) ratePerDay = 4000;
+      transportCost = ratePerDay * transportDays;
+    }
+
     const transport = {
-      vehicleType: String(body.vehicleType || body.transport?.vehicleType || 'Dedicated Private Cab').trim(),
+      vehicleType,
       vehicleId: body.transport?.vehicleId || undefined,
       vendorName: String(body.transport?.vendorName || '').trim(),
       vendorId: body.transport?.vendorId || undefined,

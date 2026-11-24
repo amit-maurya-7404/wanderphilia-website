@@ -9921,18 +9921,36 @@ export default function SheetItineraryPage() {
                     ? exist.dayRows
                     : (Array.isArray(dayRows) && dayRows.length > 0 ? dayRows : (exist.dayPlans || [])));
 
+              const optVehType = exist.vehicleType || vehicleType;
+              const matchedVeh = (zohoVehicles || []).find((v: any) => {
+                const vClean = (v.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+                const curClean = optVehType.toLowerCase().replace(/[^a-z0-9]/g, '');
+                return vClean === curClean || curClean.includes(vClean) || vClean.includes(curClean);
+              });
+              const optDays = Number(exist.noOfDays) || Number(noOfDays) || 1;
+              const optTransportCost = matchedVeh?.cost ? (matchedVeh.cost * optDays) : (optDays * 4000);
+
               opts.push({
                 optionNumber: optNum,
                 title: exist.title || `Option ${optNum}`,
                 totalAmount: exist.quote ?? exist.finalQuotationAmount ?? Number(finalQuotation) ?? 0,
                 hotels: optHotels,
-                vehicleType: exist.vehicleType || vehicleType,
+                vehicleType: optVehType,
+                b2bTransportCost: optTransportCost,
                 dayActivities: optDayActivities,
                 url: exist.url,
               });
             }
           });
           if (opts.length === 0) {
+            const currentDays = Number(noOfDays) || 1;
+            const matchedVeh = (zohoVehicles || []).find((v: any) => {
+              const vClean = (v.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+              const curClean = (vehicleType || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+              return vClean === curClean || curClean.includes(vClean) || vClean.includes(curClean);
+            });
+            const fallbackTransportCost = matchedVeh?.cost ? (matchedVeh.cost * currentDays) : (currentDays * 4000);
+
             opts.push({
               optionNumber: selectedOption,
               title: `Option ${selectedOption}`,
@@ -9948,6 +9966,7 @@ export default function SheetItineraryPage() {
                 extraBedPrice: h.extraBedPrice,
               })),
               vehicleType,
+              b2bTransportCost: fallbackTransportCost,
               dayActivities: dayRows,
               url: genSuccess?.url || '',
             });

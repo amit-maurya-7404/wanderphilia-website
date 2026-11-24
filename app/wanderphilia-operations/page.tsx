@@ -97,6 +97,49 @@ function matchVehicleState(vehicleState: string, destination: string, cities: st
   return false;
 }
 
+// Helper to match vendor state/city with booking destination and cities
+function matchVendorState(vendorState: string, vendorCity: string, destination: string, cities: string[] = []): boolean {
+  if (!vendorState && !vendorCity) return true;
+  const vStateClean = (vendorState || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  const vCityClean = (vendorCity || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  const destClean = (destination || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+
+  if (vStateClean && (vStateClean === destClean || destClean.includes(vStateClean) || vStateClean.includes(destClean))) {
+    return true;
+  }
+  if (vCityClean && (vCityClean === destClean || destClean.includes(vCityClean) || vCityClean.includes(destClean))) {
+    return true;
+  }
+
+  const stateAliases: Record<string, string[]> = {
+    rajasthan: ['jaipur', 'jodhpur', 'udaipur', 'jaisalmer', 'jawai', 'bikaner', 'pushkar', 'ranthambore', 'mountabu'],
+    himachal: ['himachalpradesh', 'spiti', 'spitivalley', 'manali', 'shimla', 'dharamshala', 'jibhi', 'kasol', 'dalhousie'],
+    himachalpradesh: ['himachal', 'spiti', 'spitivalley', 'manali', 'shimla', 'dharamshala', 'jibhi', 'kasol', 'dalhousie'],
+    uttarakhand: ['rishikesh', 'haridwar', 'dehradun', 'mussoorie', 'nainital', 'jimcorbett', 'auli'],
+    kashmir: ['srinagar', 'gulmarg', 'pahalgam', 'sonamarg', 'jammu', 'ladakh', 'leh'],
+    kerala: ['kochi', 'munnar', 'thekkady', 'alleppey', 'kumarakom', 'kovalam', 'wayanad'],
+    maharashtra: ['mumbai', 'pune', 'lonavala', 'mahabaleshwar', 'alibaug', 'shirdi', 'nashik'],
+    goa: ['northgoa', 'southgoa', 'panaji', 'calangute'],
+    karnataka: ['bangalore', 'coorg', 'mysore', 'chikmagalur', 'hampi', 'gokarna'],
+    tamilnadu: ['chennai', 'ooty', 'kodaikanal', 'madurai', 'rameswaram', 'kanyakumari', 'pondicherry'],
+    sikkim: ['gangtok', 'darjeeling', 'pelling', 'lachung', 'namchi'],
+    andaman: ['portblair', 'havelock', 'neilisland']
+  };
+
+  const aliases = stateAliases[vStateClean] || stateAliases[destClean];
+  if (aliases) {
+    if (vStateClean && aliases.some(a => destClean.includes(a) || a.includes(destClean))) return true;
+    if (vCityClean && aliases.some(a => a.includes(vCityClean) || vCityClean.includes(a))) return true;
+    for (const c of cities) {
+      const cClean = c.toLowerCase().replace(/[^a-z0-9]/g, '');
+      if (aliases.some(a => cClean.includes(a) || a.includes(cClean))) return true;
+      if (vCityClean && (vCityClean === cClean || cClean.includes(vCityClean) || vCityClean.includes(cClean))) return true;
+    }
+  }
+
+  return false;
+}
+
 export default function WanderphiliaOperationsPage() {
   // Authentication State
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
@@ -118,6 +161,7 @@ export default function WanderphiliaOperationsPage() {
   const [masterData, setMasterData] = useState<{
     hotelsByCity: Record<string, any[]>;
     vehicles: any[];
+    vendors?: any[];
     destinations: string[];
     citiesByDestination: Record<string, string[]>;
     experiencesByCity: Record<string, any[]>;
@@ -125,6 +169,7 @@ export default function WanderphiliaOperationsPage() {
       activitiesCount?: number;
       hotelsCount?: number;
       vehiclesCount?: number;
+      vendorsCount?: number;
     };
   } | null>(null);
   const [isLoadingMasterData, setIsLoadingMasterData] = useState<boolean>(false);
@@ -155,6 +200,8 @@ export default function WanderphiliaOperationsPage() {
   const [swapRooms, setSwapRooms] = useState<number>(1);
   const [swapManualTotalCost, setSwapManualTotalCost] = useState<string>('');
   const [showAllVehicleStates, setShowAllVehicleStates] = useState<boolean>(false);
+  const [showAllVendors, setShowAllVendors] = useState<boolean>(false);
+  const [isCustomVendor, setIsCustomVendor] = useState<boolean>(false);
 
   // Check saved token on mount
   useEffect(() => {
@@ -576,6 +623,63 @@ export default function WanderphiliaOperationsPage() {
 
     return filtered.length > 0 ? filtered : masterData.vehicles;
   }, [masterData?.vehicles, activeBooking, showAllVehicleStates]);
+
+  // Filtered vendors strictly based on activeBooking destination & state
+  const availableVendorsForBooking = useMemo(() => {
+    if (!masterData?.vendors || masterData.vendors.length === 0) return [];
+    if (showAllVendors || !activeBooking) return masterData.vendors;
+
+    const dest = activeBooking.destination || '';
+    const hotelCities = (activeBooking.hotels || []).map(h => h.city).filter(Boolean);
+
+    const filtered = masterData.vendors.filter(v =>
+      matchVendorState(v.state, v.city, dest, hotelCities)
+    );
+
+    return filtered.length > 0 ? filtered : masterData.vendors;
+  }, [masterData?.vendors, activeBooking, showAllVendors]);
+
+  // Auto-select transport from itinerary option and auto-calculate B2B cost
+  useEffect(() => {
+    if (!activeBooking || !masterData?.vehicles || masterData.vehicles.length === 0) return;
+
+    const currentVehType = (activeBooking.transport?.vehicleType || '').trim();
+    const currentCost = Number(activeBooking.transport?.b2bTotalCost || 0);
+    const days = Number(activeBooking.noOfDays || 1);
+
+    // Try matching vehicle from masterData
+    const matchVeh = masterData.vehicles.find(v => {
+      const vClean = v.name.toLowerCase().replace(/[^a-z0-9]/g, '');
+      const curClean = currentVehType.toLowerCase().replace(/[^a-z0-9]/g, '');
+      return vClean === curClean || curClean.includes(vClean) || vClean.includes(curClean);
+    }) || availableVehiclesForBooking[0] || masterData.vehicles[0];
+
+    const needsTypeUpdate = !currentVehType || currentVehType === 'Dedicated Private Cab';
+    const needsCostUpdate = currentCost === 0 && matchVeh && matchVeh.cost > 0 && !activeBooking.transport?.isManualCost;
+
+    if (needsTypeUpdate || needsCostUpdate) {
+      const targetVehName = (matchVeh && (needsTypeUpdate || !currentVehType)) ? matchVeh.name : currentVehType;
+      const targetCost = needsCostUpdate ? (matchVeh.cost * days) : currentCost;
+
+      if (activeBooking.transport?.vehicleType === targetVehName && activeBooking.transport?.b2bTotalCost === targetCost) {
+        return;
+      }
+
+      setActiveBooking(prev => {
+        if (!prev) return null;
+        return {
+          ...prev,
+          transport: {
+            ...prev.transport,
+            vehicleType: targetVehName,
+            b2bTotalCost: targetCost,
+            totalDays: days,
+            costPerDay: matchVeh?.cost || prev.transport?.costPerDay || 0
+          }
+        };
+      });
+    }
+  }, [activeBookingId, masterData?.vehicles, availableVehiclesForBooking]);
 
   // Apply Hotel Swap
   const handleApplyHotelSwap = () => {
@@ -1523,23 +1627,104 @@ export default function WanderphiliaOperationsPage() {
                         )}
                       </div>
 
-                      {/* Vendor Name */}
+                      {/* Vendor Name (Zoho CRM Vendors Module & Vehicle Vendors Filtered by State) */}
                       <div>
-                        <label className="text-[10px] font-bold text-slate-400 uppercase block mb-1">
-                          Transport Vendor Name (Zoho CRM)
-                        </label>
-                        <input
-                          type="text"
-                          value={activeBooking.transport?.vendorName || ''}
-                          placeholder="Vendor Name (e.g. Royal Rajasthan Cabs)"
-                          onChange={e => {
-                            setActiveBooking({
-                              ...activeBooking,
-                              transport: { ...activeBooking.transport, vendorName: e.target.value }
-                            });
-                          }}
-                          className="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white"
-                        />
+                        <div className="flex items-center justify-between mb-1">
+                          <label className="text-[10px] font-bold text-slate-400 uppercase">
+                            Transport Vendor ({showAllVendors ? 'All States' : `State: ${activeBooking.destination || 'State'}`})
+                          </label>
+                          {masterData?.vendors && masterData.vendors.length > 0 && (
+                            <button
+                              type="button"
+                              onClick={() => setShowAllVendors(!showAllVendors)}
+                              className="text-[9px] text-orange-400 hover:text-orange-300 font-bold underline cursor-pointer"
+                            >
+                              {showAllVendors ? `← Filter for ${activeBooking.destination || 'State'}` : `All Vendors (${masterData.vendors.length})`}
+                            </button>
+                          )}
+                        </div>
+
+                        {isCustomVendor ? (
+                          <div className="flex items-center gap-1.5">
+                            <input
+                              type="text"
+                              value={activeBooking.transport?.vendorName || ''}
+                              placeholder="Type custom vendor name..."
+                              onChange={e => {
+                                setActiveBooking({
+                                  ...activeBooking,
+                                  transport: { ...activeBooking.transport, vendorName: e.target.value }
+                                });
+                              }}
+                              className="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white text-xs font-semibold focus:outline-none focus:border-orange-500"
+                              autoFocus
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setIsCustomVendor(false)}
+                              className="px-2.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] rounded-lg font-bold whitespace-nowrap cursor-pointer"
+                              title="Switch back to Zoho Vendors list"
+                            >
+                              List ↩
+                            </button>
+                          </div>
+                        ) : (
+                          <select
+                            value={
+                              availableVendorsForBooking.some(v => v.id === activeBooking.transport?.vendorId || v.name === activeBooking.transport?.vendorName)
+                                ? (availableVendorsForBooking.find(v => v.id === activeBooking.transport?.vendorId || v.name === activeBooking.transport?.vendorName)?.id || '')
+                                : (activeBooking.transport?.vendorName ? '__custom__' : '')
+                            }
+                            onChange={e => {
+                              const val = e.target.value;
+                              if (val === '__custom__') {
+                                setIsCustomVendor(true);
+                                return;
+                              }
+                              const selVendor = availableVendorsForBooking.find(v => v.id === val);
+                              if (selVendor) {
+                                const days = activeBooking.noOfDays || 1;
+                                let newCost = activeBooking.transport?.b2bTotalCost || 0;
+                                if (selVendor.costPerDay && selVendor.costPerDay > 0 && !activeBooking.transport?.isManualCost) {
+                                  newCost = selVendor.costPerDay * days;
+                                }
+
+                                setActiveBooking({
+                                  ...activeBooking,
+                                  transport: {
+                                    ...activeBooking.transport,
+                                    vendorName: selVendor.name,
+                                    vendorId: selVendor.id,
+                                    driverMobile: activeBooking.transport?.driverMobile || selVendor.phone || '',
+                                    b2bTotalCost: newCost,
+                                    costPerDay: selVendor.costPerDay || activeBooking.transport?.costPerDay || 0
+                                  }
+                                });
+                              } else {
+                                setActiveBooking({
+                                  ...activeBooking,
+                                  transport: {
+                                    ...activeBooking.transport,
+                                    vendorName: '',
+                                    vendorId: undefined
+                                  }
+                                });
+                              }
+                            }}
+                            className="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white text-xs font-semibold focus:outline-none focus:border-orange-500 cursor-pointer"
+                          >
+                            <option value="">-- Select Vendor ({showAllVendors ? 'All States' : (activeBooking.destination || 'State')}) --</option>
+                            {availableVendorsForBooking.map(v => (
+                              <option key={v.id} value={v.id}>
+                                {v.name}
+                                {v.city ? ` (${v.city})` : (v.state ? ` (${v.state})` : '')}
+                                {v.costPerDay ? ` • ₹${v.costPerDay}/day` : ''}
+                                {v.phone ? ` • ${v.phone}` : ''}
+                              </option>
+                            ))}
+                            <option value="__custom__">✏️ Custom / Other Vendor</option>
+                          </select>
+                        )}
                       </div>
 
                       {/* Vehicle Cost */}

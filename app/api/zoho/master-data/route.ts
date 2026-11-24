@@ -84,6 +84,31 @@ export async function GET(req: NextRequest) {
       '/crm/v3/Vehicles?fields=Name,State,Cost,Min_Capacity,Max_Capacity,Vendor_Pricing'
     );
 
+    // Fetch full vehicle records in parallel to retrieve complete Vendor_Pricing subforms
+    const detailedVehiclesMap = new Map<string, any>();
+    await Promise.all(
+      rawVehicles.map(async v => {
+        if (!v.id) return;
+        try {
+          const vUrl = getZohoApiUrl(`/crm/v3/Vehicles/${v.id}`);
+          const vRes = await fetch(vUrl, { headers: fetchHeaders, cache: 'no-store' });
+          if (vRes.ok) {
+            const vJson = await vRes.json();
+            if (vJson?.data && vJson.data[0]) {
+              detailedVehiclesMap.set(String(v.id), vJson.data[0]);
+            }
+          }
+        } catch {
+          // ignore
+        }
+      })
+    );
+
+    // 4. Fetch all Vendors from Zoho CRM
+    const rawVendors = await fetchZohoPagedRecords(
+      '/crm/v3/Vendors?fields=id,Vendor_Name,Email,Phone,State,City,Street'
+    );
+
     // Grouping & Normalization
     const destinationsSet = new Set<string>([
       'Spiti Valley',
@@ -370,6 +395,64 @@ export async function GET(req: NextRequest) {
       maxCapacity: Number(v.Max_Capacity) || 7
     })).filter(v => Boolean(v.name));
 
+    // Process Vendors (from Vendors module + Vehicle Vendor_Pricing subforms)
+    const vendorsList: Array<{
+      id: string;
+      name: string;
+      state: string;
+      city: string;
+      phone: string;
+      email: string;
+      costPerDay?: number;
+      vehicleName?: string;
+      source: 'vendors_module' | 'vehicle_pricing';
+    }> = [];
+
+    // 1. From Zoho CRM Vendors module
+    rawVendors.forEach(v => {
+      const name = String(v.Vendor_Name || '').trim();
+      if (!name) return;
+      vendorsList.push({
+        id: String(v.id || ''),
+        name,
+        state: String(v.State || '').trim(),
+        city: String(v.City || '').trim(),
+        phone: String(v.Phone || '').trim(),
+        email: String(v.Email || '').trim(),
+        source: 'vendors_module'
+      });
+    });
+
+    // 2. From Zoho CRM Vehicle Vendor_Pricing subforms
+    detailedVehiclesMap.forEach((vehRecord, vehId) => {
+      const vehName = String(vehRecord.Name || '').trim();
+      const vehState = String(vehRecord.State || 'Rajasthan').trim();
+      const vendorPricing = vehRecord.Vendor_Pricing || [];
+      if (Array.isArray(vendorPricing)) {
+        vendorPricing.forEach((vp: any, idx: number) => {
+          const vpVendorName = String(vp.Vendor_Name || vp.Vendor?.name || vp.Name || '').trim();
+          if (!vpVendorName) return;
+          const vpPhone = String(vp.Contact_Number || vp.Phone || vp.Mobile || '').trim();
+          const vpEmail = String(vp.Email || '').trim();
+          const vpCost = Number(vp.Cost_Per_day || vp.Cost_per_day || vp.Cost || vp.Rate || 0);
+
+          vendorsList.push({
+            id: `veh_vp_${vehId}_${idx}`,
+            name: `${vpVendorName} (${vehName})`,
+            state: vehState,
+            city: '',
+            phone: vpPhone,
+            email: vpEmail,
+            costPerDay: vpCost,
+            vehicleName: vehName,
+            source: 'vehicle_pricing'
+          });
+        });
+      }
+    });
+
+    vendorsList.sort((a, b) => a.name.localeCompare(b.name));
+
     // Convert sets to arrays
     const formattedCitiesByDest: Record<string, string[]> = {};
     for (const dKey in citiesByDestination) {
@@ -382,13 +465,15 @@ export async function GET(req: NextRequest) {
       stats: {
         activitiesCount: rawActivities.length,
         hotelsCount: rawHotels.length,
-        vehiclesCount: vehiclesList.length
+        vehiclesCount: vehiclesList.length,
+        vendorsCount: vendorsList.length
       },
       destinations: Array.from(destinationsSet).sort(),
       citiesByDestination: formattedCitiesByDest,
       experiencesByCity,
       hotelsByCity,
-      vehicles: vehiclesList
+      vehicles: vehiclesList,
+      vendors: vendorsList
     };
 
     cachedMasterData = responsePayload;
