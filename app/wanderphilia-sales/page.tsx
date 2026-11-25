@@ -1909,6 +1909,30 @@ export default function SheetItineraryPage() {
     }
   ]);
 
+  // Curated Wanderphilia Moments State (Pure Experiences Only)
+  const [customMoments, setCustomMoments] = useState<string[]>([
+    'Tandem Paragliding Flight from World-Renowned Takeoff Site',
+    'Exploring Majestic High-Altitude Himalayan Landscapes & Sacred Shrines',
+    'Scenic Forest Walk Along the Roaring River to Quiet Mountain Villages',
+    'Experiencing Local Monasteries, Spiritual Culture & Vibrant Mountain Cafés'
+  ]);
+
+  const addCustomMoment = () => {
+    setCustomMoments(prev => [...prev, '']);
+  };
+
+  const updateCustomMoment = (index: number, val: string) => {
+    setCustomMoments(prev => {
+      const updated = [...prev];
+      updated[index] = val;
+      return updated;
+    });
+  };
+
+  const deleteCustomMoment = (index: number) => {
+    setCustomMoments(prev => prev.filter((_, i) => i !== index));
+  };
+
   // Manual Mode Actions & Handlers
   const addManualDay = () => {
     setManualDays(prev => {
@@ -2130,7 +2154,26 @@ export default function SheetItineraryPage() {
     if (exist.isManualItinerary || exist.creationMode === 'manual') {
       setCreationMode('manual');
       if (Array.isArray(exist.manualDayPlans) && exist.manualDayPlans.length > 0) {
-        setManualDays(exist.manualDayPlans);
+        const normalized = exist.manualDayPlans.map((md: any, idx: number) => ({
+          dayNumber: md.dayNumber || idx + 1,
+          title: md.title || `Day ${idx + 1}`,
+          fromCity: md.fromCity || '',
+          enRouteStops: Array.isArray(md.enRouteStops) ? md.enRouteStops : [],
+          toCity: md.toCity || md.stayCity || md.city || '',
+          breakfast: Boolean(md.breakfast),
+          lunch: Boolean(md.lunch),
+          dinner: Boolean(md.dinner),
+          guidedTour: Boolean(md.guidedTour),
+          sightseeingPoints: (Array.isArray(md.sightseeingPoints) && md.sightseeingPoints.length > 0)
+            ? md.sightseeingPoints
+            : (Array.isArray(md.points) ? md.points : [])
+        }));
+        setManualDays(normalized);
+      }
+      if (Array.isArray(exist.moments) && exist.moments.length > 0) {
+        setCustomMoments(exist.moments);
+      } else if (Array.isArray(exist.highlights) && exist.highlights.length > 0) {
+        setCustomMoments(exist.highlights);
       }
     } else {
       setCreationMode('sheet');
@@ -4260,6 +4303,34 @@ export default function SheetItineraryPage() {
       }
       return prev.slice(0, count);
     });
+
+    setManualDays(prev => {
+      if (prev.length === count) return prev;
+      if (prev.length < count) {
+        const last = prev[prev.length - 1];
+        const added: typeof prev = [];
+        for (let i = prev.length + 1; i <= count; i++) {
+          added.push({
+            dayNumber: i,
+            title: `Day ${i}: Sightseeing & Exploration`,
+            fromCity: last?.toCity || '',
+            enRouteStops: [],
+            toCity: last?.toCity || '',
+            breakfast: true,
+            lunch: false,
+            dinner: true,
+            guidedTour: false,
+            sightseeingPoints: [
+              'Morning breakfast before departing for sightseeing.',
+              'Explore prominent local attractions, cultural landmarks and scenic spots.',
+              'Evening at leisure and overnight stay.'
+            ]
+          });
+        }
+        return [...prev, ...added];
+      }
+      return prev.slice(0, count);
+    });
   };
 
   // Handle Start Date Change: keeps days/nights in sync and shifts end date & hotel stay dates
@@ -5293,8 +5364,8 @@ export default function SheetItineraryPage() {
           index: idx + 1,
           hotelName: hs.hotelName || `Hotel in ${hs.city}`,
           city: hs.city || destination || 'City',
-          nights: hs.nights || 1,
-          roomCategory: hs.roomCategory || 'Deluxe Room',
+          nights: Number(hs.nights) || 1,
+          roomCategory: hs.roomCategory || (sharingType ? `${sharingType} Deluxe Room` : 'Deluxe Room'),
           category: hs.category || 'Deluxe',
           stayDates: '',
           basePrice: 0,
@@ -5303,6 +5374,11 @@ export default function SheetItineraryPage() {
         }));
         setHotels(mappedHotels);
         setIsHotelsManuallyCustomized(true);
+      }
+
+      // 8b. Curated Wanderphilia Moments (Pure Experiences Only)
+      if (Array.isArray(data.moments) && data.moments.length > 0) {
+        setCustomMoments(data.moments);
       }
 
       // 9. Dedicated Flight Quotations (Airline, routes, cabin class, tickets)
@@ -5317,10 +5393,19 @@ export default function SheetItineraryPage() {
 
       // 11. Pricing Breakdown
       if (data.pricing) {
-        if (data.pricing.baseAmount) setBaseQuotation(String(data.pricing.baseAmount));
-        if (data.pricing.finalQuotationAmount) setFinalQuotation(String(data.pricing.finalQuotationAmount));
-        if (data.pricing.perAdultPrice) setPerAdultPrice(String(data.pricing.perAdultPrice));
-        if (data.pricing.perKidPrice) setPerKidPrice(String(data.pricing.perKidPrice));
+        const adultsCount = Number(data.adults !== undefined ? data.adults : adults) || 1;
+        const kidsCount = Number(data.kids !== undefined ? data.kids : kids) || 0;
+        const perAdult = Number(data.pricing.perAdultPrice) || 0;
+        const perKid = Number(data.pricing.perKidPrice) || 0;
+        const calculatedTotal = perAdult > 0 ? (perAdult * adultsCount + perKid * kidsCount) : 0;
+        const totalBase = data.pricing.baseAmount ? Number(data.pricing.baseAmount) : calculatedTotal;
+        const finalQ = data.pricing.finalQuotationAmount ? Number(data.pricing.finalQuotationAmount) : totalBase;
+
+        if (perAdult > 0) setPerAdultPrice(String(perAdult));
+        if (perKid > 0) setPerKidPrice(String(perKid));
+        if (totalBase > 0) setBaseQuotation(String(totalBase));
+        if (finalQ > 0) setFinalQuotation(String(finalQ));
+        if (data.pricing.advanceAmount) setAdvanceAmount(String(data.pricing.advanceAmount));
         if (data.pricing.gstPercentage) setGstPercentage(Number(data.pricing.gstPercentage));
         if (data.pricing.tcsPercentage) setTcsPercentage(Number(data.pricing.tcsPercentage));
         if (data.pricing.childPricingNote) setChildPricingNote(data.pricing.childPricingNote);
@@ -5487,8 +5572,10 @@ export default function SheetItineraryPage() {
         lunch: md.lunch,
         dinner: md.dinner,
         guidedTour: md.guidedTour,
-        points: md.sightseeingPoints.filter(p => p && p.trim())
+        points: md.sightseeingPoints.filter(p => p && p.trim()),
+        sightseeingPoints: md.sightseeingPoints.filter(p => p && p.trim())
       })) : undefined,
+      moments: customMoments.length > 0 ? customMoments.filter(m => m && m.trim()) : undefined,
       optionNumber: selectedOption,
       enableTokenPayment,
       enableAdvancePayment,
@@ -6872,7 +6959,10 @@ export default function SheetItineraryPage() {
                   type="button"
                   onClick={() => {
                     setIsHotelsManuallyCustomized(false);
-                    const derived = deriveHotelsFromDayRows(dayRows, noOfNights, masterHotelCategory);
+                    const rowsToUse = creationMode === 'manual'
+                      ? manualDays.map(d => ({ city: d.fromCity, city2: d.toCity }))
+                      : dayRows;
+                    const derived = deriveHotelsFromDayRows(rowsToUse, noOfNights, masterHotelCategory);
                     if (derived.length > 0) setHotels(derived);
                   }}
                   variant="outline"
@@ -7594,24 +7684,24 @@ export default function SheetItineraryPage() {
 
           {/* SECTION 5: DAY-WISE ITINERARY (SWITCHABLE: MANUAL POINTS MODE vs SHEET SUBFORM VIEW) */}
           {creationMode === 'manual' ? (
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
-              {/* Header matching user reference screenshot */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 border-b border-slate-200 pb-4">
+            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-6">
+              {/* Header */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
                 <div>
-                  <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                    <PenTool className="w-4 h-4 text-sky-600" />
+                  <h3 className="text-base font-bold text-white flex items-center gap-2">
+                    <PenTool className="w-4 h-4 text-sky-400" />
                     5. Day-by-Day Itinerary (Manual Points Mode)
-                    <span className="text-[10px] font-extrabold bg-sky-100 text-sky-800 border border-sky-300 px-2 py-0.5 rounded-full uppercase">
+                    <span className="text-[10px] font-extrabold bg-sky-950 text-sky-300 border border-sky-700/60 px-2.5 py-0.5 rounded-full uppercase">
                       Custom Highlights
                     </span>
                   </h3>
-                  <p className="text-xs text-slate-500 mt-0.5">
-                    Each day includes custom heading, meals, route points, and highlights. All sightseeing points will appear exactly as written.
+                  <p className="text-xs text-slate-400 mt-0.5">
+                    Each day has custom narrative headings, route movements, and exact milestone sightseeing points. Fits cleanly on all screens.
                   </p>
                 </div>
 
                 <div className="flex items-center gap-2.5">
-                  <span className="text-xs font-bold text-slate-600 bg-slate-100 border border-slate-300 px-3 py-1.5 rounded-xl">
+                  <span className="text-xs font-bold text-slate-300 bg-slate-950 border border-slate-800 px-3 py-1.5 rounded-xl">
                     {manualDays.length} Days Planned
                   </span>
                   <Button
@@ -7619,7 +7709,7 @@ export default function SheetItineraryPage() {
                     onClick={addManualDay}
                     variant="outline"
                     size="sm"
-                    className="h-9 text-xs border border-sky-500 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl flex items-center gap-1.5 shadow-2xs cursor-pointer"
+                    className="h-9 text-xs border border-sky-500 bg-sky-600 hover:bg-sky-500 text-white font-bold rounded-xl flex items-center gap-1.5 shadow-sm cursor-pointer"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     Add Day
@@ -7627,258 +7717,327 @@ export default function SheetItineraryPage() {
                 </div>
               </div>
 
-              {/* Table layout matching screenshot */}
-              <div className="overflow-x-auto rounded-xl border border-slate-300 bg-white shadow-2xs">
-                <table className="w-full border-collapse text-left text-xs min-w-[1250px]">
-                  <thead>
-                    <tr className="bg-slate-50 text-slate-600 border-b border-slate-300 text-[11px] font-black uppercase tracking-wider">
-                      <th className="px-3 py-3 w-14 text-center">DAY</th>
-                      <th className="px-3 py-3 w-64">DAY NARRATIVE TITLE / HEADING</th>
-                      <th className="px-3 py-3 w-28 text-center">MEALS</th>
-                      <th className="px-3 py-3 w-20 text-center">GUIDE</th>
-                      <th className="px-3 py-3 w-36">FROM CITY</th>
-                      <th className="px-3 py-3 w-48">EN-ROUTE STOPS</th>
-                      <th className="px-3 py-3 w-36">TO / STAY CITY</th>
-                      <th className="px-3 py-3 min-w-[380px]">SIGHTSEEING &amp; ACTIVITIES (ALL HIGHLIGHTS)</th>
-                      <th className="px-2 py-3 w-24 text-center">ACTIONS</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-200">
-                    {manualDays.map((day, dIdx) => (
-                      <tr key={dIdx} className="hover:bg-slate-50/50 transition-colors align-top">
-                        {/* DAY */}
-                        <td className="px-3 py-4 text-center">
-                          <div className="w-7 h-7 rounded-full bg-sky-600 text-white font-black flex items-center justify-center text-xs mx-auto shadow-xs">
-                            {day.dayNumber}
-                          </div>
-                        </td>
-
-                        {/* DAY NARRATIVE TITLE / HEADING */}
-                        <td className="px-3 py-4">
+              {/* Responsive Day Cards (Zero Horizontal Scrollbar!) */}
+              <div className="space-y-4">
+                {manualDays.map((day, dIdx) => (
+                  <div
+                    key={dIdx}
+                    className="bg-slate-950 border border-slate-800 rounded-2xl p-4 sm:p-5 shadow-lg space-y-4 transition-all hover:border-sky-500/40"
+                  >
+                    {/* Day Top Bar: Badge, Title Input, Meals, Guide, Day Actions */}
+                    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 border-b border-slate-800/80 pb-3">
+                      <div className="flex items-center gap-3 flex-1 min-w-[280px]">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-600 to-blue-500 text-white font-black flex items-center justify-center text-sm shrink-0 shadow-md">
+                          D{day.dayNumber}
+                        </div>
+                        <div className="flex-1">
+                          <label className="block text-[10px] font-bold text-slate-400 uppercase mb-0.5">
+                            Day {day.dayNumber} Narrative Title / Heading
+                          </label>
                           <Input
                             type="text"
                             value={day.title}
                             onChange={e => updateManualDay(dIdx, 'title', e.target.value)}
-                            placeholder="e.g. Arrival in Sri Lanka → Negombo"
-                            className="text-xs h-9 bg-white border border-slate-300 text-slate-900 font-semibold focus-visible:ring-sky-500 rounded-lg shadow-none"
+                            placeholder={`e.g. Day ${day.dayNumber}: Arrival & Exploration`}
+                            className="text-xs h-9 bg-slate-900 border border-slate-700 text-white font-semibold focus-visible:ring-sky-500 rounded-xl w-full"
                           />
-                        </td>
+                        </div>
+                      </div>
 
-                        {/* MEALS: B, L, D */}
-                        <td className="px-3 py-4 text-center">
-                          <div className="inline-flex items-center gap-1 bg-slate-100 p-1 rounded-lg border border-slate-200">
-                            <button
-                              type="button"
-                              onClick={() => toggleManualMeal(dIdx, 'breakfast')}
-                              className={`w-6 h-6 rounded text-[11px] font-black transition-colors cursor-pointer ${day.breakfast ? 'bg-sky-600 text-white shadow-2xs' : 'text-slate-400 hover:text-slate-700'
-                                }`}
-                              title={day.breakfast ? 'Breakfast Included' : 'No Breakfast'}
-                            >
-                              B
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => toggleManualMeal(dIdx, 'lunch')}
-                              className={`w-6 h-6 rounded text-[11px] font-black transition-colors cursor-pointer ${day.lunch ? 'bg-sky-600 text-white shadow-2xs' : 'text-slate-400 hover:text-slate-700'
-                                }`}
-                              title={day.lunch ? 'Lunch Included' : 'No Lunch'}
-                            >
-                              L
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => toggleManualMeal(dIdx, 'dinner')}
-                              className={`w-6 h-6 rounded text-[11px] font-black transition-colors cursor-pointer ${day.dinner ? 'bg-sky-600 text-white shadow-2xs' : 'text-slate-400 hover:text-slate-700'
-                                }`}
-                              title={day.dinner ? 'Dinner Included' : 'No Dinner'}
-                            >
-                              D
-                            </button>
-                          </div>
-                        </td>
-
-                        {/* GUIDE */}
-                        <td className="px-3 py-4 text-center">
+                      {/* Meals, Guide & Day Controls */}
+                      <div className="flex flex-wrap items-center gap-2.5">
+                        {/* Meal Toggles */}
+                        <div className="flex items-center gap-1 bg-slate-900 p-1 rounded-xl border border-slate-800">
+                          <span className="text-[10px] text-slate-400 font-bold px-1.5 uppercase">Meals:</span>
                           <button
                             type="button"
-                            onClick={() => toggleManualGuide(dIdx)}
-                            className={`px-2.5 py-1 rounded-md text-xs font-bold border transition-colors cursor-pointer ${day.guidedTour
-                                ? 'bg-amber-100 text-amber-800 border-amber-300 shadow-2xs'
-                                : 'bg-slate-100 text-slate-500 border-slate-200'
-                              }`}
+                            onClick={() => toggleManualMeal(dIdx, 'breakfast')}
+                            className={`w-7 h-7 rounded-lg text-xs font-black transition-all cursor-pointer ${
+                              day.breakfast
+                                ? 'bg-sky-600 text-white shadow-xs'
+                                : 'text-slate-400 hover:text-white bg-slate-800/50'
+                            }`}
+                            title={day.breakfast ? 'Breakfast Included' : 'No Breakfast'}
                           >
-                            {day.guidedTour ? 'Yes' : 'No'}
+                            B
                           </button>
-                        </td>
+                          <button
+                            type="button"
+                            onClick={() => toggleManualMeal(dIdx, 'lunch')}
+                            className={`w-7 h-7 rounded-lg text-xs font-black transition-all cursor-pointer ${
+                              day.lunch
+                                ? 'bg-sky-600 text-white shadow-xs'
+                                : 'text-slate-400 hover:text-white bg-slate-800/50'
+                            }`}
+                            title={day.lunch ? 'Lunch Included' : 'No Lunch'}
+                          >
+                            L
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => toggleManualMeal(dIdx, 'dinner')}
+                            className={`w-7 h-7 rounded-lg text-xs font-black transition-all cursor-pointer ${
+                              day.dinner
+                                ? 'bg-sky-600 text-white shadow-xs'
+                                : 'text-slate-400 hover:text-white bg-slate-800/50'
+                            }`}
+                            title={day.dinner ? 'Dinner Included' : 'No Dinner'}
+                          >
+                            D
+                          </button>
+                        </div>
 
-                        {/* FROM CITY */}
-                        <td className="px-3 py-4">
-                          <Input
-                            type="text"
-                            value={day.fromCity}
-                            onChange={e => updateManualDay(dIdx, 'fromCity', e.target.value)}
-                            placeholder="e.g. Colombo"
-                            className="text-xs h-9 bg-white border border-slate-300 text-slate-900 rounded-lg shadow-none"
-                          />
-                        </td>
+                        {/* Guide Toggle */}
+                        <button
+                          type="button"
+                          onClick={() => toggleManualGuide(dIdx)}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer flex items-center gap-1.5 ${
+                            day.guidedTour
+                              ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 shadow-xs'
+                              : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200'
+                          }`}
+                        >
+                          <span>Guide:</span>
+                          <span className="font-extrabold">{day.guidedTour ? 'Yes ✓' : 'No'}</span>
+                        </button>
 
-                        {/* EN-ROUTE STOPS */}
-                        <td className="px-3 py-4">
-                          <div className="space-y-1.5">
-                            {day.enRouteStops.length > 0 && (
-                              <div className="flex flex-wrap gap-1 mb-1">
-                                {day.enRouteStops.map((stop, sIdx) => (
-                                  <span
-                                    key={sIdx}
-                                    className="inline-flex items-center gap-1 text-[11px] bg-slate-100 text-slate-800 px-2 py-0.5 rounded border border-slate-300 font-medium"
-                                  >
-                                    {stop}
-                                    <button
-                                      type="button"
-                                      onClick={() => removeManualEnRouteStop(dIdx, sIdx)}
-                                      className="text-slate-400 hover:text-red-600 text-xs font-bold ml-0.5"
-                                    >
-                                      ×
-                                    </button>
-                                  </span>
-                                ))}
-                              </div>
-                            )}
-                            <div className="flex items-center gap-1">
-                              <input
-                                type="text"
-                                placeholder="e.g. Umiam Lake"
-                                id={`manual-enroute-${dIdx}`}
-                                onKeyDown={e => {
-                                  if (e.key === 'Enter') {
-                                    e.preventDefault();
-                                    const target = e.currentTarget;
-                                    if (target.value.trim()) {
-                                      addManualEnRouteStop(dIdx, target.value.trim());
-                                      target.value = '';
-                                    }
-                                  }
-                                }}
-                                className="text-xs h-8 px-2 bg-white border border-slate-300 text-slate-900 rounded-md flex-1 min-w-0"
-                              />
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  const el = document.getElementById(`manual-enroute-${dIdx}`) as HTMLInputElement;
-                                  if (el && el.value.trim()) {
-                                    addManualEnRouteStop(dIdx, el.value.trim());
-                                    el.value = '';
-                                  }
-                                }}
-                                className="text-[11px] font-bold text-sky-600 hover:text-sky-800 shrink-0 px-1 py-1"
-                              >
-                                + Add stop
-                              </button>
-                            </div>
-                          </div>
-                        </td>
+                        {/* Day Reorder / Delete */}
+                        <div className="flex items-center gap-1 border-l border-slate-800 pl-2">
+                          <button
+                            type="button"
+                            disabled={dIdx === 0}
+                            onClick={() => moveManualDay(dIdx, -1)}
+                            className="text-slate-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed p-1.5 rounded-lg hover:bg-slate-800 transition"
+                            title="Move Up"
+                          >
+                            <ArrowUp className="w-4 h-4" />
+                          </button>
+                          <button
+                            type="button"
+                            disabled={dIdx === manualDays.length - 1}
+                            onClick={() => moveManualDay(dIdx, 1)}
+                            className="text-slate-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed p-1.5 rounded-lg hover:bg-slate-800 transition"
+                            title="Move Down"
+                          >
+                            <ArrowDown className="w-4 h-4" />
+                          </button>
+                          <button
+                            type="button"
+                            disabled={manualDays.length <= 1}
+                            onClick={() => deleteManualDay(dIdx)}
+                            className="text-slate-400 hover:text-red-400 disabled:opacity-30 disabled:cursor-not-allowed p-1.5 rounded-lg hover:bg-red-950/40 transition"
+                            title="Delete Day"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
 
-                        {/* TO / STAY CITY */}
-                        <td className="px-3 py-4">
-                          <Input
-                            type="text"
-                            value={day.toCity}
-                            onChange={e => updateManualDay(dIdx, 'toCity', e.target.value)}
-                            placeholder="e.g. Negombo"
-                            className="text-xs h-9 bg-white border border-slate-300 text-slate-900 rounded-lg shadow-none"
-                          />
-                        </td>
+                    {/* Route Row: From City, En-Route Stops, To City */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 bg-slate-900/60 p-3 rounded-xl border border-slate-800/80">
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">
+                          From City (Start)
+                        </label>
+                        <Input
+                          type="text"
+                          value={day.fromCity}
+                          onChange={e => updateManualDay(dIdx, 'fromCity', e.target.value)}
+                          placeholder="e.g. Chandigarh / Colombo"
+                          className="text-xs h-9 bg-slate-950 border border-slate-700 text-white rounded-xl shadow-none"
+                        />
+                      </div>
 
-                        {/* SIGHTSEEING & ACTIVITIES (ALL HIGHLIGHTS) */}
-                        <td className="px-3 py-4">
-                          <div className="space-y-1.5 w-full">
-                            {day.sightseeingPoints.map((point, pIdx) => (
-                              <div key={pIdx} className="flex items-center gap-2 w-full">
-                                <span className="w-5 h-5 rounded-full bg-sky-100 text-sky-800 text-[11px] font-bold flex items-center justify-center shrink-0">
-                                  {pIdx + 1}
-                                </span>
-                                <Input
-                                  type="text"
-                                  value={point}
-                                  onChange={e => updateManualSightseeingPoint(dIdx, pIdx, e.target.value)}
-                                  placeholder={`Milestone / activity point ${pIdx + 1}...`}
-                                  className="h-8 text-xs bg-white border border-slate-300 text-slate-900 rounded-md flex-1 shadow-none focus-visible:ring-sky-500"
-                                />
-                                <button
-                                  type="button"
-                                  onClick={() => deleteManualSightseeingPoint(dIdx, pIdx)}
-                                  className="text-slate-400 hover:text-red-600 p-1 transition-colors shrink-0"
-                                  title="Delete point"
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">
+                          En-Route Stops (Optional)
+                        </label>
+                        <div className="space-y-1.5">
+                          {day.enRouteStops.length > 0 && (
+                            <div className="flex flex-wrap gap-1">
+                              {day.enRouteStops.map((stop, sIdx) => (
+                                <span
+                                  key={sIdx}
+                                  className="inline-flex items-center gap-1 text-[11px] bg-slate-800 text-slate-200 px-2 py-0.5 rounded-lg border border-slate-700 font-medium"
                                 >
-                                  <Trash2 className="w-3.5 h-3.5" />
-                                </button>
-                              </div>
-                            ))}
-                            <div className="flex items-center justify-between pt-1">
-                              <button
-                                type="button"
-                                onClick={() => addManualSightseeingPoint(dIdx)}
-                                className="text-xs font-bold text-sky-600 hover:text-sky-800 flex items-center gap-1 cursor-pointer py-1"
-                              >
-                                <Plus className="w-3.5 h-3.5" />
-                                + Add Sightseeing
-                              </button>
-                              <span className="text-[10px] text-slate-400 font-medium">
-                                {day.sightseeingPoints.length} points
-                              </span>
+                                  {stop}
+                                  <button
+                                    type="button"
+                                    onClick={() => removeManualEnRouteStop(dIdx, sIdx)}
+                                    className="text-slate-400 hover:text-red-400 text-xs font-bold ml-0.5"
+                                  >
+                                    ×
+                                  </button>
+                                </span>
+                              ))}
                             </div>
+                          )}
+                          <div className="flex items-center gap-1">
+                            <input
+                              type="text"
+                              placeholder="e.g. Sissu Lake, Atal Tunnel"
+                              id={`manual-enroute-${dIdx}`}
+                              onKeyDown={e => {
+                                if (e.key === 'Enter') {
+                                  e.preventDefault();
+                                  const target = e.currentTarget;
+                                  if (target.value.trim()) {
+                                    addManualEnRouteStop(dIdx, target.value.trim());
+                                    target.value = '';
+                                  }
+                                }
+                              }}
+                              className="text-xs h-9 px-3 bg-slate-950 border border-slate-700 text-white rounded-xl flex-1 min-w-0"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const el = document.getElementById(`manual-enroute-${dIdx}`) as HTMLInputElement;
+                                if (el && el.value.trim()) {
+                                  addManualEnRouteStop(dIdx, el.value.trim());
+                                  el.value = '';
+                                }
+                              }}
+                              className="text-xs font-bold text-sky-400 hover:text-sky-300 bg-slate-800 px-3 py-2 rounded-xl shrink-0 border border-slate-700 cursor-pointer"
+                            >
+                              + Add
+                            </button>
                           </div>
-                        </td>
+                        </div>
+                      </div>
 
-                        {/* ACTIONS */}
-                        <td className="px-2 py-4 text-center">
-                          <div className="flex items-center justify-center gap-1">
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">
+                          To / Night Stay City
+                        </label>
+                        <Input
+                          type="text"
+                          value={day.toCity}
+                          onChange={e => updateManualDay(dIdx, 'toCity', e.target.value)}
+                          placeholder="e.g. Manali / Kaza"
+                          className="text-xs h-9 bg-slate-950 border border-slate-700 text-white rounded-xl shadow-none"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Sightseeing & Milestone Points */}
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <label className="text-[11px] font-extrabold text-sky-400 uppercase tracking-wide flex items-center gap-1.5">
+                          <span>✦</span> Sightseeing Points &amp; Activities ({day.sightseeingPoints.length} points)
+                        </label>
+                        <span className="text-[10px] text-slate-500 font-medium hidden sm:inline">
+                          Press Enter on any point to quickly add the next point
+                        </span>
+                      </div>
+
+                      <div className="space-y-2">
+                        {day.sightseeingPoints.map((point, pIdx) => (
+                          <div key={pIdx} className="flex items-center gap-2 w-full">
+                            <span className="w-6 h-6 rounded-lg bg-sky-500/20 text-sky-300 border border-sky-500/30 text-xs font-bold flex items-center justify-center shrink-0">
+                              {pIdx + 1}
+                            </span>
+                            <Input
+                              type="text"
+                              value={point}
+                              onChange={e => updateManualSightseeingPoint(dIdx, pIdx, e.target.value)}
+                              onKeyDown={e => {
+                                if (e.key === 'Enter') {
+                                  e.preventDefault();
+                                  addManualSightseeingPoint(dIdx);
+                                }
+                              }}
+                              placeholder={`Point ${pIdx + 1}: e.g. Visit Hadimba Devi Temple surrounded by cedar forests...`}
+                              className="h-9 text-xs bg-slate-900 border border-slate-700 text-slate-100 rounded-xl flex-1 shadow-none focus-visible:ring-sky-500 font-medium"
+                            />
                             <button
                               type="button"
-                              disabled={dIdx === 0}
-                              onClick={() => moveManualDay(dIdx, -1)}
-                              className="text-slate-400 hover:text-slate-700 disabled:opacity-30 disabled:cursor-not-allowed p-1"
-                              title="Move Up"
+                              onClick={() => deleteManualSightseeingPoint(dIdx, pIdx)}
+                              className="text-slate-400 hover:text-red-400 p-2 rounded-lg hover:bg-slate-800 transition-colors shrink-0"
+                              title="Delete point"
                             >
-                              <ArrowUp className="w-3.5 h-3.5" />
-                            </button>
-                            <button
-                              type="button"
-                              disabled={dIdx === manualDays.length - 1}
-                              onClick={() => moveManualDay(dIdx, 1)}
-                              className="text-slate-400 hover:text-slate-700 disabled:opacity-30 disabled:cursor-not-allowed p-1"
-                              title="Move Down"
-                            >
-                              <ArrowDown className="w-3.5 h-3.5" />
-                            </button>
-                            <button
-                              type="button"
-                              disabled={manualDays.length <= 1}
-                              onClick={() => deleteManualDay(dIdx)}
-                              className="text-slate-400 hover:text-red-600 disabled:opacity-30 disabled:cursor-not-allowed p-1"
-                              title="Delete Day"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
+                              <Trash2 className="w-4 h-4" />
                             </button>
                           </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                        ))}
+                      </div>
+
+                      <div className="pt-1 flex items-center justify-between">
+                        <button
+                          type="button"
+                          onClick={() => addManualSightseeingPoint(dIdx)}
+                          className="text-xs font-bold text-sky-400 hover:text-sky-300 bg-sky-950/60 border border-sky-800/80 px-3 py-1.5 rounded-xl flex items-center gap-1.5 cursor-pointer transition shadow-xs"
+                        >
+                          <Plus className="w-3.5 h-3.5" />
+                          <span>+ Add Sightseeing Point</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
 
-              <div className="mt-4 flex justify-end">
+              {/* Bottom Add Day Button */}
+              <div className="flex justify-end pt-2">
                 <Button
                   type="button"
                   onClick={addManualDay}
                   variant="outline"
                   size="sm"
-                  className="h-9 text-xs border border-sky-400 text-sky-700 hover:bg-sky-50 bg-white font-bold rounded-xl flex items-center gap-1.5 shadow-2xs cursor-pointer"
+                  className="h-10 text-xs border border-sky-500 text-sky-300 hover:bg-sky-950/60 bg-slate-950 font-bold rounded-xl flex items-center gap-1.5 shadow-xs cursor-pointer"
                 >
-                  <Plus className="w-3.5 h-3.5" />
+                  <Plus className="w-4 h-4 text-sky-400" />
                   Add Another Day
                 </Button>
+              </div>
+
+              {/* Wanderphilia Moments (Curated Pure Experiences ONLY) */}
+              <div className="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-lg space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800/80 pb-3">
+                  <div>
+                    <h4 className="text-sm font-extrabold text-amber-300 flex items-center gap-2">
+                      <Sparkles className="w-4 h-4 text-amber-400" />
+                      Wanderphilia Moments (Pure Experiences Only)
+                    </h4>
+                    <p className="text-[11px] text-slate-400 mt-0.5">
+                      These appear as highlighted experience cards on the official proposal. Strictly authentic travel experiences (no transit/food boilerplate).
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={addCustomMoment}
+                    className="text-xs font-bold text-amber-400 hover:text-amber-300 bg-amber-950/60 border border-amber-800/80 px-3 py-1.5 rounded-xl flex items-center gap-1.5 cursor-pointer self-start sm:self-auto"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    + Add Moment
+                  </button>
+                </div>
+
+                <div className="space-y-2">
+                  {customMoments.map((moment, mIdx) => (
+                    <div key={mIdx} className="flex items-center gap-2">
+                      <span className="w-6 h-6 rounded-lg bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-bold flex items-center justify-center shrink-0">
+                        ✦
+                      </span>
+                      <Input
+                        type="text"
+                        value={moment}
+                        onChange={e => updateCustomMoment(mIdx, e.target.value)}
+                        placeholder="e.g. Tandem Paragliding Flight from World-Renowned Takeoff Site..."
+                        className="h-9 text-xs bg-slate-900 border border-slate-700 text-slate-100 rounded-xl flex-1 shadow-none focus-visible:ring-amber-500 font-medium"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => deleteCustomMoment(mIdx)}
+                        className="text-slate-400 hover:text-red-400 p-2 rounded-lg hover:bg-slate-800 transition-colors shrink-0"
+                        title="Delete moment"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           ) : (
@@ -8712,8 +8871,20 @@ export default function SheetItineraryPage() {
                   placeholder="Per Adult Price"
                   value={perAdultPrice}
                   onChange={e => {
+                    const val = e.target.value.replace(/\D/g, '');
                     setIsQuoteManuallyEdited(true);
-                    setPerAdultPrice(e.target.value.replace(/\D/g, ''));
+                    setPerAdultPrice(val);
+                    const perA = Number(val) || 0;
+                    if (perA > 0) {
+                      const adultsCount = Number(adults) || 1;
+                      const kidsCount = Number(kids) || 0;
+                      const perK = Number(perKidPrice) || 0;
+                      const calculatedBase = perA * adultsCount + perK * kidsCount;
+                      setBaseQuotation(String(calculatedBase));
+                      const margin = Number(marginPercent) || 0;
+                      const finalVal = margin > 0 ? Math.round(calculatedBase * (1 + margin / 100)) : calculatedBase;
+                      setFinalQuotation(String(finalVal));
+                    }
                   }}
                   className="bg-blue-50/50 border border-blue-400 text-xs h-10 font-bold text-blue-950 focus-visible:ring-blue-500"
                 />
