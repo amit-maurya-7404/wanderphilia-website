@@ -9997,6 +9997,7 @@ export default function SheetItineraryPage() {
         noOfNights={noOfNights}
         adults={adults}
         kids={kids}
+        childrenDetails={kidsDetails}
         roomsCount={roomsCount}
         sharingType={sharingType}
         itineraryUrl={(existingOptions[handoverTargetOption || selectedOption]?.url) || genSuccess?.url || ''}
@@ -10040,31 +10041,91 @@ export default function SheetItineraryPage() {
           [1, 2, 3, 4, 5, 6, 7, 8].forEach(optNum => {
             const exist = existingOptions[optNum];
             if (exist) {
+              const optAdults = Number(exist.adults) || Number(adults) || 2;
+              const optKids = Number(exist.kids) || Number(kids) || 0;
+              const optKidsDetails = exist.kidsDetails || kidsDetails;
+              const optSharingType = exist.sharingType || sharingType || 'Double Sharing';
+              const optRooms = Number(exist.roomsCount) || Number(roomsCount) || 1;
+
+              let optExtraBedKids = 0;
+              let optChildWithoutBedCount = 0;
+              if (Array.isArray(optKidsDetails)) {
+                optKidsDetails.slice(0, optKids).forEach((c: any) => {
+                  if (isExtraBed(c.bedPreference)) optExtraBedKids++;
+                  else if (isWithoutBed(c.bedPreference)) optChildWithoutBedCount++;
+                });
+              } else if (optKids > 0) {
+                optExtraBedKids = optKids;
+              }
+
+              const optRoomCalc = calculateRoomsAndBeds({
+                adults: optAdults,
+                sharingType: optSharingType,
+                totalKidsCount: optKids,
+                initialExtraBedCount: optExtraBedKids,
+              });
+
+              const optBillableExtraBeds = optRoomCalc.billableExtraBeds;
+
               const rawOptHotels = (Array.isArray(exist.hotels) && exist.hotels.length > 0)
-                ? exist.hotels.map((h: any) => ({
-                    city: h.city,
-                    nights: h.nights,
-                    hotelName: h.hotelName,
-                    roomCategory: h.roomCategory,
-                    category: h.category,
-                    dates: h.dates || h.stayDates || '',
-                    stayDates: h.stayDates || h.dates || '',
-                    b2bTotalCost: (Number(h.basePrice) || 0) * (Number(h.nights) || 1) * (Number(exist.roomsCount) || Number(roomsCount) || 1),
-                    basePrice: h.basePrice,
-                    extraBedPrice: h.extraBedPrice,
-                  }))
-                : hotels.map(h => ({
-                    city: h.city,
-                    nights: h.nights,
-                    hotelName: h.hotelName,
-                    roomCategory: h.roomCategory,
-                    category: h.category,
-                    dates: (h as any).dates || (h as any).stayDates || '',
-                    stayDates: (h as any).stayDates || (h as any).dates || '',
-                    b2bTotalCost: (Number(h.basePrice) || 0) * (Number(h.nights) || 1) * (Number(roomsCount) || 1),
-                    basePrice: h.basePrice,
-                    extraBedPrice: h.extraBedPrice,
-                  }));
+                ? exist.hotels.map((h: any) => {
+                    const nights = Number(h.nights) || 1;
+                    const basePrice = Number(h.basePrice || h.roomRate) || 0;
+                    const extraBedPrice = Number(h.extraBedPrice || h.extraBedRate) || 0;
+                    const childWithoutBedPrice = Number(h.childWithoutBedPrice || h.childNoBedRate) || 0;
+                    const baseRoomTotal = basePrice * nights * optRooms;
+                    const extraBedTotal = extraBedPrice * optBillableExtraBeds * nights;
+                    const childNoBedTotal = childWithoutBedPrice * optChildWithoutBedCount * nights;
+                    const calculatedTotal = baseRoomTotal + extraBedTotal + childNoBedTotal;
+
+                    return {
+                      city: h.city,
+                      nights,
+                      hotelName: h.hotelName,
+                      roomCategory: h.roomCategory,
+                      category: h.category,
+                      dates: h.dates || h.stayDates || '',
+                      stayDates: h.stayDates || h.dates || '',
+                      basePrice,
+                      b2bCostPerNight: basePrice,
+                      extraBedPrice,
+                      extraBedCount: optBillableExtraBeds,
+                      extraBedTotalCost: extraBedTotal,
+                      childWithoutBedPrice,
+                      childWithoutBedCount: optChildWithoutBedCount,
+                      childWithoutBedTotalCost: childNoBedTotal,
+                      b2bTotalCost: calculatedTotal > 0 ? calculatedTotal : (Number(h.b2bTotalCost) || 0),
+                    };
+                  })
+                : hotels.map(h => {
+                    const nights = Number(h.nights) || 1;
+                    const basePrice = Number(h.basePrice) || 0;
+                    const extraBedPrice = Number(h.extraBedPrice) || 0;
+                    const childWithoutBedPrice = Number(h.childWithoutBedPrice) || 0;
+                    const baseRoomTotal = basePrice * nights * optRooms;
+                    const extraBedTotal = extraBedPrice * optBillableExtraBeds * nights;
+                    const childNoBedTotal = childWithoutBedPrice * optChildWithoutBedCount * nights;
+                    const calculatedTotal = baseRoomTotal + extraBedTotal + childNoBedTotal;
+
+                    return {
+                      city: h.city,
+                      nights,
+                      hotelName: h.hotelName,
+                      roomCategory: h.roomCategory,
+                      category: h.category,
+                      dates: (h as any).dates || (h as any).stayDates || '',
+                      stayDates: (h as any).stayDates || (h as any).dates || '',
+                      basePrice,
+                      b2bCostPerNight: basePrice,
+                      extraBedPrice,
+                      extraBedCount: optBillableExtraBeds,
+                      extraBedTotalCost: extraBedTotal,
+                      childWithoutBedPrice,
+                      childWithoutBedCount: optChildWithoutBedCount,
+                      childWithoutBedTotalCost: childNoBedTotal,
+                      b2bTotalCost: calculatedTotal > 0 ? calculatedTotal : (Number((h as any).b2bTotalCost) || 0),
+                    };
+                  });
 
               const optHotels = computeHotelDatesWithNights(rawOptHotels, exist.startDate || startDate);
 
@@ -10097,6 +10158,10 @@ export default function SheetItineraryPage() {
           });
           if (opts.length === 0) {
             const currentDays = Number(noOfDays) || 1;
+            const currentRooms = Number(roomsCount) || 1;
+            const extraBedsCurrent = quotationCalculations?.billableExtraBeds || 0;
+            const childWithoutBedCurrent = quotationCalculations?.childWithoutBedCount || 0;
+
             const matchedVeh = (zohoVehicles || []).find((v: any) => {
               const vClean = (v.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
               const curClean = (vehicleType || '').toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -10109,18 +10174,35 @@ export default function SheetItineraryPage() {
               title: `Option ${selectedOption}`,
               totalAmount: Number(finalQuotation) || 0,
               hotels: computeHotelDatesWithNights(
-                hotels.map(h => ({
-                  city: h.city,
-                  nights: h.nights,
-                  hotelName: h.hotelName,
-                  roomCategory: h.roomCategory,
-                  category: h.category,
-                  dates: (h as any).dates || (h as any).stayDates || '',
-                  stayDates: (h as any).stayDates || (h as any).dates || '',
-                  b2bTotalCost: (Number(h.basePrice) || 0) * (Number(h.nights) || 1) * (Number(roomsCount) || 1),
-                  basePrice: h.basePrice,
-                  extraBedPrice: h.extraBedPrice,
-                })),
+                hotels.map(h => {
+                  const nights = Number(h.nights) || 1;
+                  const basePrice = Number(h.basePrice) || 0;
+                  const extraBedPrice = Number(h.extraBedPrice) || 0;
+                  const childWithoutBedPrice = Number(h.childWithoutBedPrice) || 0;
+                  const baseRoomTotal = basePrice * nights * currentRooms;
+                  const extraBedTotal = extraBedPrice * extraBedsCurrent * nights;
+                  const childNoBedTotal = childWithoutBedPrice * childWithoutBedCurrent * nights;
+                  const calculatedTotal = baseRoomTotal + extraBedTotal + childNoBedTotal;
+
+                  return {
+                    city: h.city,
+                    nights,
+                    hotelName: h.hotelName,
+                    roomCategory: h.roomCategory,
+                    category: h.category,
+                    dates: (h as any).dates || (h as any).stayDates || '',
+                    stayDates: (h as any).stayDates || (h as any).dates || '',
+                    basePrice,
+                    b2bCostPerNight: basePrice,
+                    extraBedPrice,
+                    extraBedCount: extraBedsCurrent,
+                    extraBedTotalCost: extraBedTotal,
+                    childWithoutBedPrice,
+                    childWithoutBedCount: childWithoutBedCurrent,
+                    childWithoutBedTotalCost: childNoBedTotal,
+                    b2bTotalCost: calculatedTotal > 0 ? calculatedTotal : (Number((h as any).b2bTotalCost) || 0),
+                  };
+                }),
                 startDate
               ),
               vehicleType,

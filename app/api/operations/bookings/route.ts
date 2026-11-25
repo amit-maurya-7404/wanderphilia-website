@@ -111,11 +111,50 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    const defaultExtraBedCount = (() => {
+      let extraBedKids = 0;
+      if (Array.isArray(body.childrenDetails)) {
+        body.childrenDetails.forEach((c: any) => {
+          const pref = String(c?.bedPreference || '').toLowerCase();
+          if (pref.includes('extra bed') || pref === 'with bed') extraBedKids++;
+        });
+      } else if (Number(body.kids) > 0) {
+        extraBedKids = Number(body.kids);
+      }
+      const sharing = String(body.sharingType || 'Double Sharing').toLowerCase();
+      const paxPerRoom = sharing.includes('triple') ? 3 : 2;
+      const adults = Math.max(1, Number(body.adults) || 1);
+      let baseRooms = Math.floor(adults / paxPerRoom) || 1;
+      let totalRooms = baseRooms;
+      let extraBedCount = extraBedKids;
+      const totalPersons = adults + extraBedCount;
+      if (totalPersons > totalRooms * 3) {
+        totalRooms += Math.floor((totalPersons - totalRooms * 3 + 2) / 3);
+      }
+      if (sharing.includes('double') && adults > 1 && adults % 2 !== 0 && Number(body.kids || 0) === 0) {
+        extraBedCount += 1;
+      }
+      const extraRoomsAdded = totalRooms - baseRooms;
+      const billable = extraRoomsAdded > 0 ? Math.max(0, extraBedCount - extraRoomsAdded) : extraBedCount;
+      return billable;
+    })();
+
     let cumulativeNights = 0;
     const hotels = (Array.isArray(body.hotels) ? body.hotels : []).map((h: any, idx: number) => {
       const nights = Number(h.nights) || 1;
       const rooms = Number(h.roomsCount || body.roomsCount || 1);
-      const b2bCost = Number(h.b2bTotalCost || h.totalCost || (h.b2bCostPerNight ? h.b2bCostPerNight * nights * rooms : 0));
+      const baseRate = Number(h.basePrice || h.roomRate || h.b2bCostPerNight) || 0;
+      const extraBedRate = Number(h.extraBedPrice || h.extraBedRate) || 0;
+      const extraBedCount = Number(h.extraBedCount !== undefined ? h.extraBedCount : defaultExtraBedCount);
+      const extraBedTotal = Number(h.extraBedTotalCost !== undefined ? h.extraBedTotalCost : (extraBedRate * extraBedCount * nights));
+      const childNoBedRate = Number(h.childWithoutBedPrice || h.childNoBedRate) || 0;
+      const childNoBedCount = Number(h.childWithoutBedCount || 0);
+      const childNoBedTotal = Number(h.childWithoutBedTotalCost !== undefined ? h.childWithoutBedTotalCost : (childNoBedRate * childNoBedCount * nights));
+
+      let b2bCost = Number(h.b2bTotalCost || h.totalCost || 0);
+      if (b2bCost <= 0 && baseRate > 0) {
+        b2bCost = (baseRate * nights * rooms) + extraBedTotal + childNoBedTotal;
+      }
 
       let dates = h.dates || h.stayDates || '';
       if (!dates && runningDate && !isNaN(runningDate.getTime())) {
@@ -141,7 +180,14 @@ export async function POST(req: NextRequest) {
         sharingType: h.sharingType || body.sharingType || 'Double Sharing',
         dates,
         stayDates: dates,
-        b2bCostPerNight: h.b2bCostPerNight ? Number(h.b2bCostPerNight) : (nights > 0 ? Math.round(b2bCost / nights) : b2bCost),
+        basePrice: baseRate > 0 ? baseRate : (nights > 0 ? Math.round(b2bCost / (nights * rooms)) : b2bCost),
+        b2bCostPerNight: baseRate > 0 ? baseRate : (nights > 0 ? Math.round(b2bCost / (nights * rooms)) : b2bCost),
+        extraBedPrice: extraBedRate,
+        extraBedCount: extraBedCount,
+        extraBedTotalCost: extraBedTotal,
+        childWithoutBedPrice: childNoBedRate,
+        childWithoutBedCount: childNoBedCount,
+        childWithoutBedTotalCost: childNoBedTotal,
         b2bTotalCost: b2bCost,
         clientQuotationCost: Number(h.clientQuotationCost || 0),
         status: h.status || 'requested',

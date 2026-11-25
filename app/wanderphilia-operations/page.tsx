@@ -50,6 +50,7 @@ import {
   Trash2
 } from 'lucide-react';
 import { OperationsBooking, OperationsHotelItem, OperationsStatus, OperationsSummaryStats } from '@/types/operations';
+import { calculateRoomsAndBeds, isExtraBed, isWithoutBed } from '@/lib/zoho-pricing';
 
 // City normalization helper matching Zoho CRM master data keys
 function normalizeCityKey(city: string): string {
@@ -200,6 +201,7 @@ export default function WanderphiliaOperationsPage() {
   const [showAllCategories, setShowAllCategories] = useState<boolean>(false);
   const [swapRoomCategory, setSwapRoomCategory] = useState<string>('');
   const [swapB2BCostPerNight, setSwapB2BCostPerNight] = useState<number>(0);
+  const [swapExtraBedPrice, setSwapExtraBedPrice] = useState<number>(0);
   const [swapNights, setSwapNights] = useState<number>(1);
   const [swapRooms, setSwapRooms] = useState<number>(1);
   const [swapManualTotalCost, setSwapManualTotalCost] = useState<string>('');
@@ -311,6 +313,86 @@ export default function WanderphiliaOperationsPage() {
     const outStr = outDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
     return `${inStr} → ${outStr}`;
   }, []);
+
+  // Calculation of extra beds required for the currently active booking
+  const bookingExtraBedCalc = useMemo(() => {
+    if (!activeBooking) return { billableExtraBeds: 0, childWithoutBedCount: 0 };
+
+    let extraBedKids = 0;
+    let childWithoutBedCount = 0;
+    if (Array.isArray(activeBooking.childrenDetails)) {
+      activeBooking.childrenDetails.forEach(c => {
+        if (isExtraBed(c.bedPreference)) extraBedKids++;
+        else if (isWithoutBed(c.bedPreference)) childWithoutBedCount++;
+      });
+    } else if (Number(activeBooking.kids) > 0) {
+      extraBedKids = Number(activeBooking.kids);
+    }
+
+    const roomCalc = calculateRoomsAndBeds({
+      adults: Number(activeBooking.adults) || 2,
+      sharingType: activeBooking.sharingType || 'Double Sharing',
+      totalKidsCount: Number(activeBooking.kids) || 0,
+      initialExtraBedCount: extraBedKids,
+    });
+
+    return {
+      billableExtraBeds: roomCalc.billableExtraBeds,
+      childWithoutBedCount,
+    };
+  }, [activeBooking]);
+
+  // Helper to resolve accurate Extra Bed Details and B2B costs per hotel
+  const getHotelExtraBedDetails = useCallback((hotel: OperationsHotelItem) => {
+    // 1. Extra bed count
+    let count = typeof hotel.extraBedCount === 'number' ? hotel.extraBedCount : undefined;
+    if (count === undefined && activeBooking) {
+      count = bookingExtraBedCalc.billableExtraBeds;
+    }
+    count = count || 0;
+
+    // 2. Extra bed rate per night
+    let rate = typeof hotel.extraBedPrice === 'number' && hotel.extraBedPrice > 0 ? hotel.extraBedPrice : 0;
+    if (rate === 0 && count > 0 && masterData?.hotelsByCity) {
+      const cityKey = normalizeCityKey(hotel.city);
+      const cityHotels = masterData.hotelsByCity[cityKey] || [];
+      const matchedH = cityHotels.find(h =>
+        (hotel.hotelId && String(h.id) === String(hotel.hotelId)) ||
+        (hotel.hotelName && h.hotelName.toLowerCase().trim() === hotel.hotelName.toLowerCase().trim())
+      );
+      if (matchedH?.rooms) {
+        const roomMatch = matchedH.rooms.find((r: any) =>
+          r.roomCategory.toLowerCase().trim() === (hotel.roomCategory || '').toLowerCase().trim()
+        ) || matchedH.rooms[0];
+        if (roomMatch?.extraBedPrice) {
+          rate = Number(roomMatch.extraBedPrice) || 0;
+        }
+      }
+    }
+    // Fallback standard Rajasthan extra bed rate if 0 and extra bed is required
+    if (rate === 0 && count > 0) {
+      rate = 1200;
+    }
+
+    // 3. Extra bed total cost
+    const nights = Number(hotel.nights) || 1;
+    const extraBedTotal = typeof hotel.extraBedTotalCost === 'number' && hotel.extraBedTotalCost > 0
+      ? hotel.extraBedTotalCost
+      : (rate * count * nights);
+
+    // 4. Base room price
+    const rooms = Number(hotel.roomsCount || activeBooking?.roomsCount || 1);
+    const baseRate = Number(hotel.basePrice || hotel.b2bCostPerNight || 0);
+    const baseRoomTotal = baseRate > 0 ? (baseRate * nights * rooms) : Math.max(0, (hotel.b2bTotalCost || 0) - extraBedTotal);
+
+    return {
+      count,
+      rate,
+      extraBedTotal,
+      baseRate,
+      baseRoomTotal,
+    };
+  }, [activeBooking, bookingExtraBedCalc, masterData?.hotelsByCity]);
 
   // Fetch bookings when authenticated
   const fetchBookings = useCallback(
@@ -579,6 +661,8 @@ export default function WanderphiliaOperationsPage() {
     setSwapHotelId(targetHotel.hotelId || '');
     setSwapRoomCategory(initialRoomCat);
     setSwapB2BCostPerNight(targetHotel.b2bCostPerNight || 0);
+    const extraBedDetails = getHotelExtraBedDetails(targetHotel);
+    setSwapExtraBedPrice(targetHotel.extraBedPrice !== undefined && targetHotel.extraBedPrice > 0 ? targetHotel.extraBedPrice : extraBedDetails.rate);
     setSwapNights(targetHotel.nights || 1);
     setSwapRooms(targetHotel.roomsCount || activeBooking.roomsCount || 1);
     setSwapManualTotalCost(String(targetHotel.b2bTotalCost || ''));
@@ -603,6 +687,9 @@ export default function WanderphiliaOperationsPage() {
           ) || match.rooms[0];
           setSwapRoomCategory(roomMatch.roomCategory);
           setSwapB2BCostPerNight(roomMatch.basePrice || 0);
+          if (roomMatch.extraBedPrice !== undefined) {
+            setSwapExtraBedPrice(Number(roomMatch.extraBedPrice) || 0);
+          }
         }
       }
     }
@@ -687,6 +774,9 @@ export default function WanderphiliaOperationsPage() {
     const roomMatch = availableRoomsForSelectedHotel.find((r: any) => r.roomCategory === roomCatName);
     if (roomMatch) {
       setSwapB2BCostPerNight(roomMatch.basePrice || 0);
+      if (roomMatch.extraBedPrice !== undefined) {
+        setSwapExtraBedPrice(Number(roomMatch.extraBedPrice) || 0);
+      }
     }
   };
 
@@ -772,17 +862,20 @@ export default function WanderphiliaOperationsPage() {
     let finalB2BCostPerNight = swapB2BCostPerNight;
     let isManual = false;
 
+    const updatedHotels = [...activeBooking.hotels];
+    const prev = updatedHotels[swapModalHotelIndex];
+    const extraBedInfo = getHotelExtraBedDetails(prev);
+    const extraBeds = prev.extraBedCount !== undefined ? prev.extraBedCount : extraBedInfo.count;
+    const extraBedTotal = swapExtraBedPrice * extraBeds * swapNights;
+
     if (swapSourceType === 'zoho') {
-      computedTotalCost = swapB2BCostPerNight * swapNights * swapRooms;
+      computedTotalCost = (swapB2BCostPerNight * swapNights * swapRooms) + extraBedTotal;
       isManual = false;
     } else {
       computedTotalCost = Number(swapManualTotalCost) || 0;
       finalB2BCostPerNight = swapNights > 0 ? Math.round(computedTotalCost / swapNights) : computedTotalCost;
       isManual = true;
     }
-
-    const updatedHotels = [...activeBooking.hotels];
-    const prev = updatedHotels[swapModalHotelIndex];
 
     updatedHotels[swapModalHotelIndex] = {
       ...prev,
@@ -793,7 +886,11 @@ export default function WanderphiliaOperationsPage() {
       roomCategory: finalRoomCategory || prev.roomCategory,
       nights: swapNights,
       roomsCount: swapRooms,
-      b2bCostPerNight: finalB2BCostPerNight,
+      basePrice: swapB2BCostPerNight,
+      b2bCostPerNight: swapB2BCostPerNight,
+      extraBedPrice: swapExtraBedPrice,
+      extraBedCount: extraBeds,
+      extraBedTotalCost: extraBedTotal,
       b2bTotalCost: computedTotalCost,
       isManualCost: isManual,
       status: 'confirmed'
@@ -1625,6 +1722,7 @@ export default function WanderphiliaOperationsPage() {
 
                   <div className="space-y-3">
                     {activeBooking.hotels?.map((hotel, hIdx) => {
+                      const extraBedInfo = getHotelExtraBedDetails(hotel);
                       return (
                         <div
                           key={hotel.id || hIdx}
@@ -1646,6 +1744,11 @@ export default function WanderphiliaOperationsPage() {
                                   <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-amber-500/15 border border-amber-500/40 text-amber-300 font-mono text-[11px] font-bold shadow-xs">
                                     📅 Dates: {getHotelStayDates(hotel, hIdx, activeBooking.hotels, activeBooking.travelStartDate)}
                                   </span>
+                                  {extraBedInfo.count > 0 && (
+                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-purple-500/20 border border-purple-500/50 text-purple-300 font-mono text-[11px] font-bold shadow-xs">
+                                      🛏️ {extraBedInfo.count} Extra Bed{extraBedInfo.count > 1 ? 's' : ''} (+₹{extraBedInfo.extraBedTotal.toLocaleString('en-IN')})
+                                    </span>
+                                  )}
                                 </div>
                                 <span className="text-xs text-slate-400">
                                   City: <strong className="text-slate-300">{hotel.city}</strong>
@@ -1686,10 +1789,15 @@ export default function WanderphiliaOperationsPage() {
                           </div>
 
                           {/* Hotel Details Grid */}
-                          <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 text-xs">
+                          <div className="grid grid-cols-2 sm:grid-cols-6 gap-3 text-xs">
                             <div>
                               <span className="text-[10px] text-slate-500 font-bold block uppercase">Room Category</span>
                               <span className="font-semibold text-slate-300">{hotel.roomCategory}</span>
+                              {extraBedInfo.baseRate > 0 && (
+                                <span className="text-[10px] text-slate-400 block font-mono">
+                                  ₹{extraBedInfo.baseRate.toLocaleString('en-IN')}/nt
+                                </span>
+                              )}
                             </div>
 
                             <div>
@@ -1707,10 +1815,36 @@ export default function WanderphiliaOperationsPage() {
                             </div>
 
                             <div>
+                              <span className="text-[10px] text-purple-400 font-bold block uppercase flex items-center gap-1">
+                                <span>Extra Bed Cost</span>
+                                {extraBedInfo.count > 0 && (
+                                  <span className="px-1.5 py-0.2 rounded bg-purple-500/20 text-purple-300 text-[9px] font-black">
+                                    {extraBedInfo.count} Bed{extraBedInfo.count > 1 ? 's' : ''}
+                                  </span>
+                                )}
+                              </span>
+                              {extraBedInfo.count > 0 ? (
+                                <div className="mt-0.5">
+                                  <span className="font-black text-purple-300 text-sm">
+                                    ₹{extraBedInfo.extraBedTotal.toLocaleString('en-IN')}
+                                  </span>
+                                  <span className="text-[10px] text-slate-400 block font-mono">
+                                    ₹{extraBedInfo.rate.toLocaleString('en-IN')}/nt &times; {hotel.nights}N
+                                  </span>
+                                </div>
+                              ) : (
+                                <div className="mt-0.5">
+                                  <span className="text-slate-500 font-semibold text-xs">₹0</span>
+                                  <span className="text-[10px] text-slate-600 block">No Extra Bed</span>
+                                </div>
+                              )}
+                            </div>
+
+                            <div>
                               <span className="text-[10px] text-slate-500 font-bold block uppercase">B2B Total Cost</span>
                               <div className="flex items-center gap-1.5 mt-0.5">
-                                <span className="font-black text-amber-400 text-sm">
-                                  ₹{(hotel.b2bTotalCost || 0).toLocaleString('en-IN')}
+                                <span className="font-black text-emerald-400 text-sm">
+                                  ₹{(hotel.b2bTotalCost || (extraBedInfo.baseRoomTotal + extraBedInfo.extraBedTotal) || 0).toLocaleString('en-IN')}
                                 </span>
                                 {hotel.isManualCost && (
                                   <span className="text-[9px] bg-amber-500/20 text-amber-400 px-1.5 py-0.2 rounded font-bold">
@@ -1718,6 +1852,11 @@ export default function WanderphiliaOperationsPage() {
                                   </span>
                                 )}
                               </div>
+                              {extraBedInfo.count > 0 && (
+                                <span className="text-[9px] text-slate-400 block truncate" title={`Base: ₹${extraBedInfo.baseRoomTotal.toLocaleString('en-IN')} + Bed: ₹${extraBedInfo.extraBedTotal.toLocaleString('en-IN')}`}>
+                                  (Base: ₹{extraBedInfo.baseRoomTotal.toLocaleString('en-IN')} + Bed: ₹{extraBedInfo.extraBedTotal.toLocaleString('en-IN')})
+                                </span>
+                              )}
                             </div>
 
                             <div>
@@ -2896,26 +3035,41 @@ export default function WanderphiliaOperationsPage() {
                       </div>
 
                       {/* Manual Room Category & Price Adjuster */}
-                      <div className="p-2.5 bg-slate-950 rounded-xl border border-slate-800 flex flex-wrap items-center gap-2 text-xs">
-                        <span className="text-[10px] text-slate-400 font-bold uppercase whitespace-nowrap">
-                          Active Room:
-                        </span>
-                        <input
-                          type="text"
-                          value={swapRoomCategory}
-                          onChange={e => setSwapRoomCategory(e.target.value)}
-                          placeholder="Room Category"
-                          className="flex-1 min-w-[140px] bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1 text-white text-xs"
-                        />
-                        <span className="text-[10px] text-slate-400 font-bold uppercase whitespace-nowrap">
-                          ₹ / Night:
-                        </span>
-                        <input
-                          type="number"
-                          value={swapB2BCostPerNight}
-                          onChange={e => setSwapB2BCostPerNight(Number(e.target.value) || 0)}
-                          className="w-24 bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1 text-amber-400 font-bold font-mono text-xs"
-                        />
+                      <div className="p-2.5 bg-slate-950 rounded-xl border border-slate-800 flex flex-wrap items-center gap-2.5 text-xs">
+                        <div className="flex items-center gap-1.5 flex-1 min-w-[130px]">
+                          <span className="text-[10px] text-slate-400 font-bold uppercase whitespace-nowrap">
+                            Active Room:
+                          </span>
+                          <input
+                            type="text"
+                            value={swapRoomCategory}
+                            onChange={e => setSwapRoomCategory(e.target.value)}
+                            placeholder="Room Category"
+                            className="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1 text-white text-xs"
+                          />
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-[10px] text-slate-400 font-bold uppercase whitespace-nowrap">
+                            ₹ Base/Nt:
+                          </span>
+                          <input
+                            type="number"
+                            value={swapB2BCostPerNight}
+                            onChange={e => setSwapB2BCostPerNight(Number(e.target.value) || 0)}
+                            className="w-20 bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-amber-400 font-bold font-mono text-xs"
+                          />
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-[10px] text-purple-400 font-bold uppercase whitespace-nowrap">
+                            🛏️ Ex.Bed/Nt:
+                          </span>
+                          <input
+                            type="number"
+                            value={swapExtraBedPrice}
+                            onChange={e => setSwapExtraBedPrice(Number(e.target.value) || 0)}
+                            className="w-20 bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-purple-300 font-bold font-mono text-xs"
+                          />
+                        </div>
                       </div>
                     </div>
                   ) : swapHotelId && (

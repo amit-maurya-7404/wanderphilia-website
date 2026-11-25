@@ -38,6 +38,7 @@ export interface ConfirmBookingModalProps {
   noOfNights: number;
   adults: number;
   kids: number;
+  childrenDetails?: any[];
   roomsCount: number;
   sharingType: string;
   itineraryUrl: string;
@@ -72,6 +73,7 @@ export function ConfirmBookingModal({
   noOfNights,
   adults,
   kids,
+  childrenDetails,
   roomsCount,
   sharingType,
   itineraryUrl,
@@ -175,6 +177,7 @@ export function ConfirmBookingModal({
         noOfNights,
         adults,
         kids,
+        childrenDetails: childrenDetails || [],
         roomsCount,
         sharingType,
         selectedOptionNumber: activeOption.optionNumber,

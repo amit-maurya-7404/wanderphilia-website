@@ -16,8 +16,15 @@ export interface OperationsHotelItem {
   roomsCount: number;
   sharingType?: string;
   dates?: string; // e.g. "25-Nov-2026 to 26-Nov-2026"
+  basePrice?: number;
   b2bCostPerNight?: number;
   b2bTotalCost: number;
+  extraBedPrice?: number; // Extra bed rate per night
+  extraBedCount?: number; // Number of extra beds required
+  extraBedTotalCost?: number; // Total extra bed cost (rate * count * nights)
+  childWithoutBedPrice?: number;
+  childWithoutBedCount?: number;
+  childWithoutBedTotalCost?: number;
   clientQuotationCost?: number;
   status: 'requested' | 'confirmed' | 'sold_out' | 'issue';
   confirmationNumber?: string;
