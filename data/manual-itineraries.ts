@@ -8374,10 +8374,24 @@ export function itineraryDocumentToManualItinerary(itinerary: ItineraryDocument)
   }
 
   if (dynamicExperiences.length === 0 && Array.isArray(itinerary.dayPlans)) {
+    const isLogistical = (text: string) => {
+      const lower = text.toLowerCase();
+      return (
+        lower.includes('arrive in') || lower.includes('arrival') ||
+        lower.includes('check into') || lower.includes('check in') || lower.includes('check out') || lower.includes('checkout') ||
+        lower.includes('relax and enjoy') || lower.includes('have lunch') || lower.includes('have dinner') ||
+        lower.includes('breakfast at') || lower.includes('dinner at') || lower.includes('lunch at') ||
+        lower.includes('overnight in') || lower.includes('overnight at') ||
+        lower.includes('drive to') || lower.includes('drive towards') || lower.includes('transfer to') ||
+        lower.includes('head towards') || lower.includes('continue towards') ||
+        lower.includes('keep this day') || lower.includes('return journey to')
+      );
+    };
+
     itinerary.dayPlans.forEach((dp) => {
       (dp.activities || []).forEach(act => {
         let clean = act.replace(/^Transfer from.*$/i, '').replace(/^Arrival.*$/i, '').trim();
-        if (clean && clean.length > 2 && !seenExp.has(clean.toLowerCase())) {
+        if (clean && clean.length > 5 && !isLogistical(clean) && !seenExp.has(clean.toLowerCase())) {
           seenExp.add(clean.toLowerCase());
           dynamicExperiences.push(clean);
         }
