@@ -21,6 +21,8 @@ export function MobileBottomNavConditional() {
     pathname.startsWith('/itinerary') ||
     pathname.startsWith('/manual-itinerary') ||
     pathname.startsWith('/itinerary-custom') ||
+    pathname.startsWith('/wanderphilia-sales') ||
+    pathname.startsWith('/wanderphilia-operations') ||
     pathname.startsWith('/admin')
 
   return <>{!hideMobileNav && <MobileBottomNav />}</>

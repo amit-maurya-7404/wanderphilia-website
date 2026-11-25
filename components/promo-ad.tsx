@@ -8,8 +8,10 @@ export function PromoAdCard() {
   const pathname = usePathname() || ''
   const [isOpen, setIsOpen] = useState(false)
 
-  // Disable completely on all itinerary pages, sheet-itinerary, booking, checkout, payment, and admin
+  // Disable completely on internal hubs, all itinerary pages, sheet-itinerary, booking, checkout, payment, and admin
   const isExcluded =
+    pathname.startsWith('/wanderphilia-sales') ||
+    pathname.startsWith('/wanderphilia-operations') ||
     pathname.startsWith('/sheet-itinerary') ||
     pathname.startsWith('/itinerary') ||
     pathname.includes('itinerary') ||

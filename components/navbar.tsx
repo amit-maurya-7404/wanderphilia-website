@@ -12,7 +12,12 @@ interface NavbarProps {
 }
 
 export function Navbar({ forceWhiteDesktop }: NavbarProps) {
-  const pathname = usePathname()
+  const pathname = usePathname() || ''
+
+  if (pathname.startsWith('/wanderphilia-sales') || pathname.startsWith('/wanderphilia-operations')) {
+    return null
+  }
+
   const isAboutPage = pathname === '/about'
   const [isDesktop, setIsDesktop] = useState<boolean | undefined>(undefined)
   const [isScrolled, setIsScrolled] = useState(false)

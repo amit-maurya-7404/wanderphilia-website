@@ -6,7 +6,10 @@ import { FaAngleUp } from "react-icons/fa6";
 
 const ScrollToTopButton = () => {
     const pathname = usePathname() || "";
-    const isExcluded = pathname.includes("sheet-itinerary");
+    const isExcluded =
+        pathname.includes("sheet-itinerary") ||
+        pathname.startsWith("/wanderphilia-sales") ||
+        pathname.startsWith("/wanderphilia-operations");
     const [visible, setVisible] = useState(false);
 
     useEffect(() => {

@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useMemo, useRef, useEffect, useCallback } from 'react';
-import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -5730,10 +5729,9 @@ export default function SheetItineraryPage() {
           background-color: rgba(30, 41, 59, 0.5) !important;
         }
       `}</style>
-      <Navbar />
 
       {/* SALES COMMAND EXECUTIVE TOP BAR */}
-      <div className="bg-slate-900/90 border-b border-slate-800 backdrop-blur-xl text-white py-3 px-4 sm:px-8 mt-16 sticky top-0 z-30 shadow-lg">
+      <div className="bg-slate-900/90 border-b border-slate-800 backdrop-blur-xl text-white py-3 px-4 sm:px-8 sticky top-0 z-30 shadow-lg">
         <div className="max-w-[1440px] mx-auto flex flex-wrap items-center justify-between gap-3 text-xs">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-orange-600 to-amber-500 flex items-center justify-center font-black text-white text-sm shadow-md">

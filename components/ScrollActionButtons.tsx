@@ -31,6 +31,8 @@ export default function ScrollActionButtons() {
         pathname.startsWith("/booking") ||
         pathname.startsWith("/payment") ||
         pathname.startsWith("/checkout") ||
+        pathname.startsWith("/wanderphilia-sales") ||
+        pathname.startsWith("/wanderphilia-operations") ||
         pathname.startsWith("/admin");
 
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
