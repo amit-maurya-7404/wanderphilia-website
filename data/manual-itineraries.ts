@@ -6123,6 +6123,235 @@ export const thailandDimpleManualItinerary: ManualItinerary = {
   enableFullPayment: true
 };
 
+
+export const winterSpitiHeerManualItinerary: ManualItinerary = {
+  id: 'heer-spiti',
+  slug: 'heer-spiti',
+  title: '7 Days Winter Spiti Valley Circuit | Private Customized Tour',
+  subtitle: '6 Nights / 7 Days Private Circuit (Chandigarh to Chandigarh)',
+  duration: '6 Nights / 7 Days | 22 Dec – 28 Dec 2026',
+  numNights: 6,
+  numDays: 7,
+  dates: '22 Dec – 28 Dec 2026',
+  route: 'Chandigarh → Sangla / Chitkul (1N) → Kalpa (1N) → Tabo (1N) → Kaza (2N) → Kalpa (1N) → Chandigarh',
+  routeSummary: '1N Sangla / Chitkul | 1N Kalpa | 1N Tabo | 2N Kaza | 1N Kalpa',
+  destination: 'Spiti Valley',
+  travelStyle: 'Private Customized Winter Circuit',
+  tripType: 'Private Himalayan Tour',
+  leadName: 'Heer',
+  vehicleType: 'Dedicated Private Mountain Vehicle (Chandigarh - Chandigarh)',
+  mealPlan: 'Daily Breakfast & Dinner (Except Day 1 Breakfast & Day 7 Dinner)',
+  heroImage: '/images/spiti-valley.jpg',
+  galleryImages: [
+    '/images/spiti-valley.jpg',
+    '/images/spiti1.JPG',
+    '/images/spiti2.JPG',
+    '/images/spiti3.jpg',
+    '/images/spiti5.JPG',
+    '/images/himachal.jpg',
+    '/images/himachal2.jpg',
+    '/images/himachal3.jpg'
+  ],
+  accommodations: [
+    { city: 'Sangla / Chitkul', nights: 1, hotelName: 'Hotel Kamru / Similar', roomCategory: 'Triple Sharing Deluxe' },
+    { city: 'Kalpa', nights: 1, hotelName: 'Wanderers Homestay / Similar', roomCategory: 'Triple Sharing Mountain View' },
+    { city: 'Tabo', nights: 1, hotelName: 'Aema Inn / Similar', roomCategory: 'Triple Sharing Traditional Mud Room' },
+    { city: 'Kaza', nights: 2, hotelName: 'Dragon Mud House / Similar', roomCategory: 'Triple Sharing Deluxe Mud House' },
+    { city: 'Kalpa', nights: 1, hotelName: 'Wanderers Homestay / Similar', roomCategory: 'Triple Sharing Mountain View' }
+  ],
+  moments: [
+    "Sending a Handwritten Postcard to Loved Ones from the World's Highest Post Office in Hikkim (14,567 ft)",
+    "Exploring the Sacred 1,000-Year-Old Cliffside Chambers & Savoring Butter Tea at Key Monastery",
+    "Standing Before the Iconic Giant Golden Buddha Statue Facing Snow Peaks in Langza Village",
+    "Walking Across Asia's Highest Suspension Bridge — Chicham Bridge Suspended 1,000+ Feet Above a Canyon",
+    "Stepping into the Ancient 996 AD Painted Murals and Mud Corridors of Tabo Monastery",
+    "Marveling at the Dramatic Cliff-Hanging Dhankar Monastery Overlooking the Spiti & Pin Confluence",
+    "Witnessing the Mystical Golden Sunset Glow Reflecting Upon the Sacred Kinnaur Kailash Range from Kalpa",
+    "Experiencing the Tranquil Riverside Vibes and Fairytale Wooden Houses of Chitkul (Last Indian Village)"
+  ],
+  highlights: [
+    "Sending a Handwritten Postcard to Loved Ones from the World's Highest Post Office in Hikkim (14,567 ft)",
+    "Exploring the Sacred 1,000-Year-Old Cliffside Chambers & Savoring Butter Tea at Key Monastery",
+    "Standing Before the Iconic Giant Golden Buddha Statue Facing Snow Peaks in Langza Village",
+    "Walking Across Asia's Highest Suspension Bridge — Chicham Bridge Suspended 1,000+ Feet Above a Canyon",
+    "Stepping into the Ancient 996 AD Painted Murals and Mud Corridors of Tabo Monastery",
+    "Marveling at the Dramatic Cliff-Hanging Dhankar Monastery Overlooking the Spiti & Pin Confluence",
+    "Witnessing the Mystical Golden Sunset Glow Reflecting Upon the Sacred Kinnaur Kailash Range from Kalpa",
+    "Experiencing the Tranquil Riverside Vibes and Fairytale Wooden Houses of Chitkul (Last Indian Village)"
+  ],
+  dayPlans: [
+    {
+      day: 1,
+      date: '22 Dec',
+      title: 'Day 1 — Chandigarh to Sangla / Chitkul | Gateway to Kinnaur',
+      route: 'Chandigarh → Sangla / Chitkul',
+      durationNote: 'Approx. 8–9 hrs | 240 km',
+      intro: 'Begin your high-altitude winter expedition with a picturesque climb into the majestic Himalayas.',
+      timeline: [
+        'Pickup in your private dedicated mountain vehicle from Chandigarh in the morning',
+        'Drive along the Himalayan Expressway past Shimla, Kufri, and Narkanda through pine-forested slopes',
+        'Traverse along the historic Indo-Tibetan Highway as the mountains grow dramatically steeper',
+        'Cross the iconic Gateway of Kinnaur rock-cut cliff tunnel entrance carved into sheer mountains',
+        'Follow the course of the roaring Sutlej and Baspa rivers into the scenic Kinnaur Valley',
+        'Arrive in Sangla / Chitkul by evening and settle into your cozy mountain stay',
+        'Enjoy a warm, freshly prepared dinner and rest for the night'
+      ],
+      stayLocation: 'Sangla / Chitkul (Hotel Kamru / Similar)',
+      image: '/images/himachal.jpg',
+      meals: 'Dinner'
+    },
+    {
+      day: 2,
+      date: '23 Dec',
+      title: "Day 2 — Chitkul to Kalpa | India's Last Village & Roghi Cliff",
+      route: 'Sangla / Chitkul → Kalpa',
+      durationNote: 'Approx. 3–4 hrs | 70 km',
+      intro: 'Discover the fairytale charm of India’s last border settlement followed by jaw-dropping Kinnauri cliffs.',
+      timeline: [
+        'Wake up to crisp winter mountain air and enjoy breakfast amidst the Baspa valley',
+        'Explore Chitkul village — the last inhabited settlement near the Indo-Tibet border',
+        'Walk along the crystal-clear Baspa riverbanks and admire ancient wooden Kinnauri houses',
+        'Drive towards Kalpa, ascending through cedar forests towards the upper Kinnaur ridges',
+        'Visit the exhilarating Roghi Village Suicide Point with sheer vertical cliff drops into the valley',
+        'Explore Reckong Peo main market for traditional Kinnauri woolen caps, shawls, and dry fruits',
+        'Arrive in Kalpa and check into your homestay offering uninterrupted views of the sacred Kinnaur Kailash peak',
+        'Warm mountain dinner and overnight stay in Kalpa'
+      ],
+      stayLocation: 'Kalpa (Wanderers Homestay / Similar)',
+      image: '/images/spiti1.JPG',
+      meals: 'Breakfast & Dinner'
+    },
+    {
+      day: 3,
+      date: '24 Dec',
+      title: 'Day 3 — Kalpa to Tabo via Nako | Entering the Spiti Valley',
+      route: 'Kalpa → Nako → Tabo',
+      durationNote: 'Approx. 6–7 hrs | 150 km',
+      intro: 'Cross the dramatic geological threshold from verdant Kinnaur into the high-altitude cold desert of Spiti.',
+      timeline: [
+        'Breakfast in Kalpa as the morning sun casts a golden glow over Kinnaur Kailash',
+        'Begin the rugged mountain ascent navigating the thrilling winding curves of the Ka loops',
+        'Arrive at Nako village, take a serene walk around the frozen/high-altitude Nako Lake and have lunch',
+        'Enter the Spiti Valley through the Sumdo border check post checkpoint',
+        'Drive along the turquoise Spiti River flanked by dramatic moonscape rock formations',
+        'Reach the ancient village of Tabo by late afternoon',
+        'Visit the 1,000+ year old Tabo Monastery (founded in 996 AD), celebrated as the "Ajanta of the Himalayas"',
+        'Check in to your cozy traditional mud homestay/inn in Tabo',
+        'Delicious hot dinner and overnight rest in Tabo'
+      ],
+      stayLocation: 'Tabo (Aema Inn / Similar)',
+      image: '/images/spiti2.JPG',
+      meals: 'Breakfast & Dinner'
+    },
+    {
+      day: 4,
+      date: '25 Dec',
+      title: 'Day 4 — Tabo to Kaza via Dhankar Monastery, Key Monastery & Chicham Bridge',
+      route: 'Tabo → Dhankar → Kaza → Key & Chicham',
+      durationNote: 'Approx. 5–6 hrs | 120 km',
+      intro: 'A landmark day encountering Spiti’s most dramatic monasteries and engineering wonders.',
+      timeline: [
+        'Wholesome breakfast at Tabo before setting out towards Kaza',
+        'Ascend to the breathtaking Dhankar Monastery, perched dramatically on a cliff spur above the confluence of Spiti and Pin rivers',
+        'Continue drive into Kaza, the bustling central hub and cultural capital of Spiti',
+        'Visit the iconic Key Gompa (Monastery), an 11th-century cliffside fortress and sanctuary with centuries-old thangkas',
+        'Enjoy a warm cup of traditional herbal/butter tea with the resident monks',
+        'Drive to the spectacular Chicham Bridge — Asia’s highest suspension bridge at 13,596 ft spanning a 1,000-ft deep canyon',
+        'Return to Kaza by evening, stroll through the quaint market streets and check into your mud house stay',
+        'Hearty dinner and overnight stay in Kaza'
+      ],
+      stayLocation: 'Kaza (Dragon Mud House / Similar)',
+      image: '/images/spiti-valley.jpg',
+      meals: 'Breakfast & Dinner'
+    },
+    {
+      day: 5,
+      date: '26 Dec',
+      title: 'Day 5 — High-Altitude Village Circuit | Hikkim, Komic & Langza',
+      route: 'Kaza → Hikkim → Komic → Langza → Kaza',
+      durationNote: 'Excursion Circuit | 80 km',
+      intro: 'Traverse some of the highest inhabited settlements on Earth under the endless Tibetan-blue skies.',
+      timeline: [
+        'Energizing breakfast in Kaza before embarking on the divine high-altitude circuit',
+        'Visit Hikkim (14,567 ft) and send stamped handwritten postcards to loved ones from the World’s Highest Post Office',
+        'Drive up to Komic (15,027 ft) — the world\'s highest village connected by a motorable road, and visit the sacred Lundup Chhemo Gompa',
+        'Arrive at the fairytale village of Langza, famous for ancient marine fossils embedded in sedimentary rocks',
+        'Marvel at the iconic giant golden statue of Lord Buddha standing in timeless serenity against Chau Chau Kang Nilda peak',
+        'Head back to Kaza by late afternoon for leisure time, café hopping, and shopping for Spitian sea buckthorn tea and souvenirs',
+        'Warm local dinner and overnight stay in Kaza'
+      ],
+      stayLocation: 'Kaza (Dragon Mud House / Similar)',
+      image: '/images/spiti5.JPG',
+      meals: 'Breakfast & Dinner'
+    },
+    {
+      day: 6,
+      date: '27 Dec',
+      title: 'Day 6 — Kaza to Kalpa | Return Journey Through the Spiti Canyons',
+      route: 'Kaza → Tabo → Sumdo → Kalpa',
+      durationNote: 'Approx. 7–8 hrs | 215 km',
+      intro: 'Begin the return descent across the rugged gorges of Spiti back into the pine-clad heights of Kalpa.',
+      timeline: [
+        'Early breakfast and check out from Kaza',
+        'Drive through the awe-inspiring high-altitude Spiti canyons with picturesque mountain stops',
+        'Descend past Sumdo and rejoin the scenic Hindustan-Tibet Highway along the Sutlej river gorge',
+        'Reach Kalpa by late afternoon/evening and check into your homestay',
+        'Unwind and witness the magnificent sunset lighting up the snowy crests of Kinnaur Kailash',
+        'Warm homemade dinner and relaxed overnight stay in Kalpa'
+      ],
+      stayLocation: 'Kalpa (Wanderers Homestay / Similar)',
+      image: '/images/spiti3.jpg',
+      meals: 'Breakfast & Dinner'
+    },
+    {
+      day: 7,
+      date: '28 Dec',
+      title: 'Day 7 — Kalpa to Chandigarh | Return with Timeless Memories',
+      route: 'Kalpa → Narkanda → Shimla → Chandigarh',
+      durationNote: 'Approx. 8–9 hrs | 310 km',
+      intro: 'Descend from the high mountains back to the plains of Chandigarh as your Spiti expedition concludes.',
+      timeline: [
+        'Breakfast with one last mesmerizing view of the Kinnaur mountains',
+        'Check out and commence the scenic drive back towards Chandigarh',
+        'Pass through Narkanda, the cedar forests of Kufri, and the outskirts of Shimla',
+        'Scenic lunch stop en route along the Himalayan highway',
+        'Reach Chandigarh by evening with lifelong memories of your private Winter Spiti Valley expedition',
+        'Drop off at Chandigarh railway station / airport for onward journey'
+      ],
+      stayLocation: 'Chandigarh',
+      image: '/images/himachal3.jpg',
+      meals: 'Breakfast'
+    }
+  ],
+  inclusions: [
+    '6 Nights Accommodation in handpicked boutique hotels & authentic cozy homestays on Triple Sharing basis',
+    'Dedicated Private Mountain Vehicle for the entire circuit from Chandigarh to Chandigarh (covering all sightseeing & intercity transfers)',
+    'Daily MAP Meal Plan: Breakfast & Dinner (Except Day 1 Breakfast & Day 7 Dinner)',
+    'All Inner Line Permits, Green Taxes & wildlife entry fees for Spiti Valley & Kinnaur',
+    '24x7 Emergency Medical Oxygen Cylinder in the vehicle throughout the journey',
+    'Experienced Mountain Chauffeur cum Local Guide well-versed in winter high-altitude terrain',
+    'All state border taxes, toll taxes, parking fees, driver night allowances and fuel charges',
+    'Dedicated 24x7 Wanderphilia On-Trip Concierge & Operational Assistance'
+  ],
+  exclusions: [
+    '5% GST (applicable extra)',
+    'Lunches, en-route highway snacks, bottled water, or personal refreshments',
+    'Any monument, monastery entrance fees, or photography/camera permits',
+    'Any personal expenses such as tips, laundry, porterage, or heater charges if requested extra',
+    'Any cost arising from natural calamities (heavy snowfall, landslides, road closures requiring 4x4 snow chains or additional stays)',
+    'Anything not explicitly mentioned in the package inclusions'
+  ],
+  perAdultPrice: 24590,
+  baseQuotationAmount: 73770,
+  finalQuotationAmount: 77459,
+  adults: 3,
+  kids: 0,
+  enableOnlineBooking: true,
+  enableTokenPayment: true,
+  enableAdvancePayment: true,
+  enableFullPayment: true
+};
+
 export const bhutanHeerManualItinerary: ManualItinerary = {
   id: 'bhutan-heer',
   slug: 'bhutan-heer',
@@ -7686,7 +7915,15 @@ export const manualItinerariesRegistry: Record<string, ManualItinerary> = {
   'wp-thailand-dimple': thailandDimpleManualItinerary,
 
   // Bhutan Heer (6N / 7D, 22 Dec - 28 Dec 2026, 5 Adults + 2 Kids Girls Trip)
-  'bhutan-heer': bhutanHeerManualItinerary,
+    'heer-spiti': winterSpitiHeerManualItinerary,
+  'spiti-heer': winterSpitiHeerManualItinerary,
+  'winter-spiti-heer': winterSpitiHeerManualItinerary,
+  'heer-winter-spiti': winterSpitiHeerManualItinerary,
+  'heer-spiti-winter': winterSpitiHeerManualItinerary,
+  'spiti-winter-heer': winterSpitiHeerManualItinerary,
+  'heer-spiti-7d': winterSpitiHeerManualItinerary,
+  'bhutan-heer': winterSpitiHeerManualItinerary,
+    bhutanHeerManualItinerary,
   'bhutan-heer-girls-trip': bhutanHeerManualItinerary,
   'bhutan-heer-6n7d': bhutanHeerManualItinerary,
   'wonderful-bhutan-heer': bhutanHeerManualItinerary,
