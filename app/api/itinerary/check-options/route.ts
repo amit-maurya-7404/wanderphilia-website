@@ -151,9 +151,15 @@ export async function GET(req: NextRequest) {
           totalQuotationAmount: matchedBooking.totalQuotationAmount || 0,
           balancePendingAmount: matchedBooking.balancePendingAmount || 0,
           utrNumber: matchedBooking.utrNumber || '',
+          paymentMode: matchedBooking.paymentMode || '',
+          paymentProofUrl: matchedBooking.paymentProofUrl || '',
           paymentDate: matchedBooking.paymentDate || '',
           handedOverAt: matchedBooking.handedOverAt || matchedBooking.createdAt,
           salesRepName: matchedBooking.salesRepName || '',
+          salesNotes: matchedBooking.salesNotes || '',
+          hotels: matchedBooking.hotels || [],
+          transport: matchedBooking.transport || null,
+          dayActivities: matchedBooking.dayActivities || [],
           zohoDealId: matchedBooking.bookingId,
           zohoOperationsId: matchedBooking.zohoOperationsId,
         };
@@ -181,6 +187,9 @@ export async function GET(req: NextRequest) {
             utrNumber: bAny.rawZohoData?.Last_Payment_Id || bAny.payments?.[0]?.paymentId || '',
             paymentDate: bAny.rawZohoData?.Payment_Date || bAny.payments?.[0]?.paidAt || '',
             handedOverAt: bookedDoc.updatedAt || bookedDoc.createdAt,
+            hotels: bAny.hotels || [],
+            dayActivities: bAny.dayActivities || bAny.dayRows || [],
+            transport: { vehicleType: bAny.vehicleType || 'Dedicated Cab' },
             zohoDealId: bAny.zohoDealId,
             zohoOperationsId: bAny.zohoOperationsId,
           };
@@ -195,6 +204,29 @@ export async function GET(req: NextRequest) {
       const bookedOptNum = Number(handedOverDetails.optionNumber);
       if (existingOptions[bookedOptNum]) {
         existingOptions[bookedOptNum].isHandedOver = true;
+        if ((!existingOptions[bookedOptNum].hotels || existingOptions[bookedOptNum].hotels.length === 0) && handedOverDetails.hotels?.length > 0) {
+          existingOptions[bookedOptNum].hotels = handedOverDetails.hotels;
+        }
+        if (!existingOptions[bookedOptNum].vehicleType && handedOverDetails.transport?.vehicleType) {
+          existingOptions[bookedOptNum].vehicleType = handedOverDetails.transport.vehicleType;
+        }
+      } else {
+        existingOptions[bookedOptNum] = {
+          id: handedOverDetails.bookingId || `option-${bookedOptNum}`,
+          slug: handedOverDetails.bookingId || `option-${bookedOptNum}`,
+          url: `/itinerary/${handedOverDetails.bookingId || `option-${bookedOptNum}`}`,
+          optionNumber: bookedOptNum,
+          title: handedOverDetails.optionTitle || `Option ${bookedOptNum} (Booked)`,
+          destination: docs[0]?.destination || 'Rajasthan',
+          quote: handedOverDetails.totalQuotationAmount,
+          finalQuotationAmount: handedOverDetails.totalQuotationAmount,
+          advancePaid: handedOverDetails.advanceAmountPaid,
+          balanceDue: handedOverDetails.balancePendingAmount,
+          hotels: handedOverDetails.hotels || [],
+          dayActivities: handedOverDetails.dayActivities || [],
+          vehicleType: handedOverDetails.transport?.vehicleType || 'Dedicated Private Cab',
+          isHandedOver: true,
+        };
       }
     }
 

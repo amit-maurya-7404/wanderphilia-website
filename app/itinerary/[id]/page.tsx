@@ -130,18 +130,12 @@ async function enrichWithOperationsBooking(manual: any, id: string): Promise<any
     });
 
     if (opsBooking) {
-      manual.isHandedOver = true;
-      manual.confirmedOptionNumber = Number(opsBooking.selectedOptionNumber || 1);
-      manual.confirmedOptionTitle = opsBooking.selectedOptionTitle || `Option ${opsBooking.selectedOptionNumber || 1}`;
       if (opsBooking.advanceAmountPaid !== undefined && opsBooking.advanceAmountPaid > 0) {
         manual.advanceAmountPaid = opsBooking.advanceAmountPaid;
       }
       if (opsBooking.balancePendingAmount !== undefined) {
         manual.balancePendingAmount = opsBooking.balancePendingAmount;
       }
-      manual.paymentStage = (opsBooking.balancePendingAmount !== undefined && opsBooking.balancePendingAmount <= 0)
-        ? 'fully_paid'
-        : 'advance_paid';
       manual.utrNumber = opsBooking.utrNumber;
       manual.paymentMode = opsBooking.paymentMode;
     }

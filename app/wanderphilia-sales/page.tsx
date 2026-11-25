@@ -53,7 +53,9 @@ import {
   File,
   Building2,
   Percent,
-  Upload
+  Upload,
+  Eye,
+  Receipt
 } from 'lucide-react';
 import { FlightQuotationOption, HotelQuotationDetails } from '@/types/manual-itinerary';
 import { getLuxuryImagesForDestination } from '@/lib/itinerary-images';
@@ -1723,6 +1725,7 @@ export default function SheetItineraryPage() {
   const [optionLockAlert, setOptionLockAlert] = useState<string | null>(null);
   const [checkingOptions, setCheckingOptions] = useState(false);
   const [isConfirmBookingModalOpen, setIsConfirmBookingModalOpen] = useState(false);
+  const [isCostingBreakdownModalOpen, setIsCostingBreakdownModalOpen] = useState(false);
   const [handoverTargetOption, setHandoverTargetOption] = useState<number | undefined>(undefined);
   const [isLeadHandedOver, setIsLeadHandedOver] = useState<boolean>(false);
   const [leadHandoverDetails, setLeadHandoverDetails] = useState<any>(null);
@@ -2061,8 +2064,8 @@ export default function SheetItineraryPage() {
   const [newExclusionText, setNewExclusionText] = useState<string>('');
 
   // Load full details of an existing generated option into the sales form
-  const loadOptionIntoForm = (optNum: number) => {
-    const exist = existingOptions[optNum];
+  const loadOptionIntoForm = (optNum: number, overrideOptions?: Record<number, any>) => {
+    const exist = (overrideOptions && overrideOptions[optNum]) || existingOptions[optNum];
     if (!exist) return;
 
     // 1. Costing, Profit Margin & Quotation
@@ -3534,17 +3537,26 @@ export default function SheetItineraryPage() {
         setLeadHandoverDetails(data.handedOverDetails || null);
         if (data.existingOptions) {
           setExistingOptions(data.existingOptions);
-          setUnlockedOptions({});
-          const existingNums = Object.keys(data.existingOptions).map(Number);
-          if (existingNums.length > 0) {
-            // If currently selected option is already generated, auto-switch to next available
-            setSelectedOption(prev => {
-              if (existingNums.includes(prev)) {
-                const nextAvailable = [1, 2, 3, 4, 5, 6, 7, 8].find(n => !existingNums.includes(n));
-                return nextAvailable || prev;
-              }
-              return prev;
-            });
+          
+          if (data.isHandedOver && data.handedOverDetails?.optionNumber) {
+            // Auto-load and unlock the booked option so sales executive can immediately inspect its costing, hotels, vehicle, and activities!
+            const bookedOpt = Number(data.handedOverDetails.optionNumber);
+            setSelectedOption(bookedOpt);
+            setUnlockedOptions(prev => ({ ...prev, [bookedOpt]: true }));
+            loadOptionIntoForm(bookedOpt, data.existingOptions);
+          } else {
+            setUnlockedOptions({});
+            const existingNums = Object.keys(data.existingOptions).map(Number);
+            if (existingNums.length > 0) {
+              // If currently selected option is already generated, auto-switch to next available
+              setSelectedOption(prev => {
+                if (existingNums.includes(prev)) {
+                  const nextAvailable = [1, 2, 3, 4, 5, 6, 7, 8].find(n => !existingNums.includes(n));
+                  return nextAvailable || prev;
+                }
+                return prev;
+              });
+            }
           }
         } else {
           setExistingOptions({});
@@ -9346,36 +9358,50 @@ export default function SheetItineraryPage() {
                   const existing = existingOptions[optNum];
                   const isLocked = Boolean(existing && !unlockedOptions[optNum]);
                   const isSelected = selectedOption === optNum;
+                  const isBooked = Boolean(isLeadHandedOver && leadHandoverDetails?.optionNumber === optNum);
 
                   return (
                     <button
                       key={optNum}
                       type="button"
                       onClick={() => {
-                        if (isLocked) {
-                          setOptionLockAlert(`Option ${optNum} link already exists (${existing.slug}). Cannot select to prevent accidental overwrite. Click "Open Link" to view it, or unlock it below if you intentionally want to overwrite.`);
-                          return;
-                        }
-                        setOptionLockAlert(null);
                         setSelectedOption(optNum);
                         loadOptionIntoForm(optNum);
+                        setUnlockedOptions(prev => ({ ...prev, [optNum]: true }));
+                        if (isBooked) {
+                          setOptionLockAlert(`Option ${optNum} is the booked option! Full costing, hotels, vehicle, and activities are loaded below for your inspection.`);
+                        } else if (existing) {
+                          setOptionLockAlert(`Option ${optNum} loaded into form. All hotels, vehicle, and costing details are visible below.`);
+                        } else {
+                          setOptionLockAlert(null);
+                        }
                       }}
-                      className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${isLocked
-                        ? 'bg-slate-900 text-slate-400 border border-slate-800 cursor-not-allowed hover:bg-slate-900'
-                        : isSelected
-                          ? 'bg-orange-500 text-white shadow-xs'
-                          : 'text-slate-300 hover:text-white hover:bg-slate-850'
-                        }`}
-                      title={isLocked ? `Option ${optNum} already generated. Locked to prevent overwrite.` : `Select Option ${optNum}`}
+                      className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                        isBooked
+                          ? isSelected
+                            ? 'bg-emerald-600 text-white shadow-md ring-2 ring-emerald-400/50'
+                            : 'bg-emerald-950/80 text-emerald-300 border border-emerald-600/70 hover:bg-emerald-900/60'
+                          : isSelected
+                            ? 'bg-orange-500 text-white shadow-xs'
+                            : isLocked
+                              ? 'bg-slate-900 text-amber-300 border border-amber-600/30 hover:bg-slate-850'
+                              : 'text-slate-300 hover:text-white hover:bg-slate-850'
+                      }`}
+                      title={isBooked ? `Option ${optNum} Booked & Handed over to Ops. Click to view full costing.` : (isLocked ? `Option ${optNum} generated. Click to view costing & selection.` : `Select Option ${optNum}`)}
                     >
-                      {isLocked ? (
+                      {isBooked ? (
+                        <>
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-300" />
+                          <span>Option {optNum} (Booked ✓)</span>
+                        </>
+                      ) : isLocked ? (
                         <>
                           <Lock className="w-3.5 h-3.5 text-amber-400" />
-                          Option {optNum} (Link Exists)
+                          <span>Option {optNum} (Link Exists)</span>
                         </>
                       ) : (
                         <>
-                          Option {optNum}
+                          <span>Option {optNum}</span>
                           {isSelected && <Check className="w-3.5 h-3.5 stroke-[3]" />}
                         </>
                       )}
@@ -9384,11 +9410,11 @@ export default function SheetItineraryPage() {
                 })}
               </div>
 
-              {/* Lock Alert if User Tries Clicking a Locked Option */}
+              {/* Lock Alert / Information message */}
               {optionLockAlert && (
-                <div className="mt-3 text-xs font-semibold px-3.5 py-2.5 rounded-xl bg-amber-950/80 border border-amber-700/60 text-amber-200 flex items-center justify-between gap-3 animate-in fade-in duration-200">
+                <div className="mt-3 text-xs font-semibold px-3.5 py-2.5 rounded-xl bg-slate-900/90 border border-orange-500/40 text-amber-200 flex items-center justify-between gap-3 animate-in fade-in duration-200">
                   <div className="flex items-center gap-2">
-                    <Lock className="w-4 h-4 text-amber-400 shrink-0" />
+                    <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
                     <span>{optionLockAlert}</span>
                   </div>
                   <button
@@ -9403,33 +9429,67 @@ export default function SheetItineraryPage() {
 
               {/* Prominent Lead Handed Over Banner */}
               {isLeadHandedOver && (
-                <div className="mt-3 p-3.5 bg-emerald-950/80 border border-emerald-500/60 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-lg">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center shrink-0">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                <div className="mt-3 p-4 bg-gradient-to-r from-emerald-950/90 via-slate-900 to-emerald-950/80 border border-emerald-500/60 rounded-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-xl">
+                  <div className="flex items-start gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center shrink-0 mt-0.5">
+                      <CheckCircle2 className="w-5 h-5 text-emerald-400" />
                     </div>
                     <div>
-                      <div className="text-xs font-black text-emerald-300 flex items-center gap-2">
+                      <div className="text-xs font-black text-emerald-300 flex flex-wrap items-center gap-2">
                         <span>✓ Handed Over to Operations (Booking Confirmed)</span>
                         {leadHandoverDetails?.optionNumber && (
-                          <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/30 text-emerald-200 border border-emerald-400/40">
+                          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/30 text-emerald-200 border border-emerald-400/40 shadow-xs">
                             Option {leadHandoverDetails.optionNumber} Booked
                           </span>
                         )}
+                        {leadHandoverDetails?.totalQuotationAmount > 0 && (
+                          <span className="text-amber-400 font-mono font-bold text-xs">
+                            Total: ₹{Number(leadHandoverDetails.totalQuotationAmount).toLocaleString('en-IN')}
+                          </span>
+                        )}
                       </div>
-                      <p className="text-[11px] text-emerald-400/80 mt-0.5">
-                        Yeh lead Operations team ko handover ho chuki hai. Dubara handover karne ke buttons disable kar diye gaye hain.
+                      <p className="text-[11px] text-emerald-400/80 mt-1">
+                        Yeh lead Operations team ko handover ho chuki hai. Neeche aap costing, selected hotels aur activities dekh sakte hain.
                         {leadHandoverDetails?.utrNumber ? ` • UTR: ${leadHandoverDetails.utrNumber}` : ''}
                         {leadHandoverDetails?.advanceAmountPaid ? ` • Advance: ₹${Number(leadHandoverDetails.advanceAmountPaid).toLocaleString('en-IN')}` : ''}
+                        {leadHandoverDetails?.salesRepName ? ` • By: ${leadHandoverDetails.salesRepName}` : ''}
                       </p>
                     </div>
                   </div>
-                  <a
-                    href="/wanderphilia-operations"
-                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-sm transition-all shrink-0"
-                  >
-                    <span>View in Ops ↗</span>
-                  </a>
+
+                  <div className="flex flex-wrap items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const opt = Number(leadHandoverDetails?.optionNumber || 1);
+                        setSelectedOption(opt);
+                        loadOptionIntoForm(opt);
+                        setUnlockedOptions(prev => ({ ...prev, [opt]: true }));
+                        const el = document.getElementById('sales-pricing-section') || document.querySelector('.main-quotation-card');
+                        if (el) el.scrollIntoView({ behavior: 'smooth' });
+                      }}
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-amber-600/20 hover:bg-amber-600 text-amber-300 hover:text-white border border-amber-500/50 font-bold text-xs shadow-sm transition-all cursor-pointer"
+                    >
+                      <Eye className="w-3.5 h-3.5" />
+                      <span>View in Form 👁️</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setIsCostingBreakdownModalOpen(true)}
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold text-xs shadow-md transition-all cursor-pointer"
+                    >
+                      <Receipt className="w-3.5 h-3.5" />
+                      <span>Costing Breakdown 📊</span>
+                    </button>
+
+                    <a
+                      href="/wanderphilia-operations"
+                      className="inline-flex items-center gap-1 px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 font-bold text-xs shadow-sm transition-all shrink-0"
+                    >
+                      <span>Ops Hub ↗</span>
+                    </a>
+                  </div>
                 </div>
               )}
 
@@ -9444,6 +9504,7 @@ export default function SheetItineraryPage() {
                       const exist = existingOptions[optNum];
                       if (!exist) return null;
                       const isUnlocked = Boolean(unlockedOptions[optNum]);
+                      const isBooked = Boolean(isLeadHandedOver && leadHandoverDetails?.optionNumber === optNum);
 
                       return (
                         <div
@@ -9451,9 +9512,25 @@ export default function SheetItineraryPage() {
                           className="flex flex-wrap items-center gap-2 bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 shadow-xs text-xs"
                         >
                           <span className="font-extrabold text-amber-400 flex items-center gap-1">
-                            <Lock className="w-3 h-3 text-amber-400" />
+                            {isBooked ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> : <Lock className="w-3 h-3 text-amber-400" />}
                             Option {optNum}:
                           </span>
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setUnlockedOptions(prev => ({ ...prev, [optNum]: true }));
+                              setSelectedOption(optNum);
+                              loadOptionIntoForm(optNum);
+                              const el = document.getElementById('sales-pricing-section') || document.querySelector('.main-quotation-card');
+                              if (el) el.scrollIntoView({ behavior: 'smooth' });
+                            }}
+                            className="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-600/20 hover:bg-amber-600 text-amber-300 hover:text-white border border-amber-500/40 rounded-md text-[11px] font-bold transition-colors cursor-pointer"
+                            title="View what costing, hotels, and activities were selected for this option"
+                          >
+                            <Eye className="w-3 h-3" />
+                            <span>View Costing &amp; Selection</span>
+                          </button>
 
                           <a
                             href={exist.url}
@@ -9462,7 +9539,7 @@ export default function SheetItineraryPage() {
                             className="inline-flex items-center gap-1 px-2.5 py-1 bg-orange-600 hover:bg-orange-500 text-white rounded-md text-[11px] font-bold transition-colors shadow-xs"
                           >
                             <ExternalLink className="w-3 h-3" />
-                            Open Option {optNum} Link ↗
+                            Open Link ↗
                           </a>
 
                           <button
@@ -9479,7 +9556,7 @@ export default function SheetItineraryPage() {
                             (leadHandoverDetails?.optionNumber === optNum) ? (
                               <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-950/90 text-emerald-300 border border-emerald-600/80 font-extrabold rounded-lg text-[11px] shadow-sm">
                                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                                <span>Handed Over to Ops (Booked) ✓</span>
+                                <span>Booked Option ✓</span>
                               </span>
                             ) : (
                               <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-slate-900 text-slate-500 border border-slate-800 rounded-lg text-[11px] font-semibold cursor-not-allowed">
@@ -9698,7 +9775,46 @@ export default function SheetItineraryPage() {
 
         {/* Section: Itinerary History Section */}
         <div className="mt-14 pt-8 border-t border-slate-300">
-          <ItineraryHistorySection lastGeneratedId={genSuccess?.id} />
+          <ItineraryHistorySection
+            lastGeneratedId={genSuccess?.id}
+            onLoadIntoForm={(item) => {
+              if (item.inquiryId) setInquiryId(item.inquiryId);
+              if (item.travelerName) setFullName(item.travelerName);
+              if (item.destination) setDestination(item.destination);
+              if (item.optionNumber) setSelectedOption(item.optionNumber);
+              if (item.finalQuotationAmount) setFinalQuotation(String(item.finalQuotationAmount));
+              if (item.baseQuotationAmount) setBaseQuotation(String(item.baseQuotationAmount));
+              if (item.marginPercentage) setMarginPercent(String(item.marginPercentage));
+              if (item.perAdultPrice) setPerAdultPrice(String(item.perAdultPrice));
+              if (item.perKidPrice) setPerKidPrice(String(item.perKidPrice));
+              if (item.advanceAmountPaid) setAdvanceAmount(String(item.advanceAmountPaid));
+              if (item.balancePendingAmount) setBalanceAmount(String(item.balancePendingAmount));
+              if (item.vehicleType) setVehicleType(item.vehicleType);
+              if (item.mealPlan) setMealPlan(item.mealPlan);
+              if (item.nights) setNoOfNights(item.nights);
+              if (item.days) setNoOfDays(item.days);
+              if (item.adults) setAdults(item.adults);
+              if (item.kids !== undefined) setKids(item.kids);
+              if (item.roomsCount) setRoomsCount(item.roomsCount);
+              if (Array.isArray(item.hotels) && item.hotels.length > 0) {
+                setHotels(item.hotels);
+                setIsHotelsManuallyCustomized(true);
+              }
+              if (Array.isArray(item.inclusions) && item.inclusions.length > 0) {
+                setInclusions(item.inclusions);
+                setIsCustomInclusionsEdited(true);
+              }
+              if (Array.isArray(item.exclusions) && item.exclusions.length > 0) {
+                setExclusions(item.exclusions);
+              }
+              if (Array.isArray(item.dayActivities) && item.dayActivities.length > 0) {
+                setDayRows(item.dayActivities);
+              }
+              setIsQuoteManuallyEdited(true);
+              const el = document.getElementById('sales-pricing-section') || document.querySelector('.main-quotation-card') || document.getElementById('sales-builder-content');
+              if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }}
+          />
         </div>
       </main>
 
@@ -10079,9 +10195,21 @@ export default function SheetItineraryPage() {
           </button>
 
           {isLeadHandedOver ? (
-            <div className="px-4 py-2 bg-emerald-950/90 border border-emerald-600/80 text-emerald-300 rounded-xl font-black text-xs flex items-center gap-1.5 shadow-lg whitespace-nowrap">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Handed Over to Ops ✓ (Option {leadHandoverDetails?.optionNumber || selectedOption})</span>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setIsCostingBreakdownModalOpen(true)}
+                className="px-3.5 py-2 bg-emerald-800/90 hover:bg-emerald-700 text-emerald-100 border border-emerald-500/60 rounded-xl font-black text-xs flex items-center gap-1.5 shadow-lg transition-all cursor-pointer whitespace-nowrap"
+                title="View what costing, hotels, vehicle and options were selected"
+              >
+                <Receipt className="w-3.5 h-3.5 text-emerald-300" />
+                <span>Costing Breakdown 📊</span>
+              </button>
+
+              <div className="px-3.5 py-2 bg-emerald-950/90 border border-emerald-600/80 text-emerald-300 rounded-xl font-black text-xs flex items-center gap-1.5 shadow-lg whitespace-nowrap">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Booked ✓ (Option {leadHandoverDetails?.optionNumber || selectedOption})</span>
+              </div>
             </div>
           ) : (
             <button
@@ -10095,6 +10223,289 @@ export default function SheetItineraryPage() {
           )}
         </div>
       </div>
+
+      {/* MODAL: BOOKED ITINERARY COSTING & SELECTION BREAKDOWN */}
+      {isCostingBreakdownModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-3xl w-full max-h-[90vh] flex flex-col overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+            {/* Header */}
+            <div className="p-5 border-b border-slate-800 flex items-center justify-between bg-slate-950/60">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-emerald-600/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400">
+                  <Receipt className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-base font-black text-white">
+                      Booked Option Costing &amp; Proposal Details
+                    </h3>
+                    <span className="text-[10px] font-black bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 px-2 py-0.5 rounded-full">
+                      Option {leadHandoverDetails?.optionNumber || selectedOption} Booked ✓
+                    </span>
+                  </div>
+                  <span className="text-xs text-slate-400">
+                    Lead: <strong className="text-white">{fullName || zohoInquiryInput || inquiryId}</strong> &bull; Destination: <strong className="text-amber-400">{destination}</strong>
+                  </span>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setIsCostingBreakdownModalOpen(false)}
+                className="w-8 h-8 rounded-xl bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="flex-1 overflow-y-auto p-5 space-y-5 text-xs">
+              {/* Financial Summary Cards */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div className="bg-slate-950 p-3.5 rounded-2xl border border-slate-800">
+                  <span className="text-[10px] text-slate-400 uppercase font-bold block">Quoted Price</span>
+                  <span className="text-lg font-black text-amber-400 font-mono mt-0.5 block">
+                    ₹{Number(leadHandoverDetails?.totalQuotationAmount || finalQuotation || 0).toLocaleString('en-IN')}
+                  </span>
+                </div>
+
+                <div className="bg-slate-950 p-3.5 rounded-2xl border border-slate-800">
+                  <span className="text-[10px] text-slate-400 uppercase font-bold block">Advance Received</span>
+                  <span className="text-lg font-black text-emerald-400 font-mono mt-0.5 block">
+                    ₹{Number(leadHandoverDetails?.advanceAmountPaid || advanceAmount || 0).toLocaleString('en-IN')}
+                  </span>
+                </div>
+
+                <div className="bg-slate-950 p-3.5 rounded-2xl border border-slate-800">
+                  <span className="text-[10px] text-slate-400 uppercase font-bold block">Balance Pending</span>
+                  <span className="text-lg font-black text-red-400 font-mono mt-0.5 block">
+                    ₹{Number(leadHandoverDetails?.balancePendingAmount || balanceAmount || 0).toLocaleString('en-IN')}
+                  </span>
+                </div>
+
+                <div className="bg-slate-950 p-3.5 rounded-2xl border border-slate-800">
+                  <span className="text-[10px] text-slate-400 uppercase font-bold block">Margin Locked</span>
+                  <span className="text-lg font-black text-blue-400 font-mono mt-0.5 block">
+                    {marginPercent || 15}%
+                  </span>
+                </div>
+              </div>
+
+              {/* Handover & Payment Details */}
+              <div className="p-3.5 bg-slate-950/70 border border-slate-800 rounded-2xl space-y-2">
+                <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">
+                  Payment Verification &amp; Handover Info
+                </span>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-slate-300 text-xs">
+                  <div>
+                    <span className="text-slate-500 block text-[10px]">Bank UTR / Transaction:</span>
+                    <strong className="text-white font-mono">{leadHandoverDetails?.utrNumber || 'N/A'}</strong>
+                  </div>
+                  <div>
+                    <span className="text-slate-500 block text-[10px]">Payment Mode &amp; Date:</span>
+                    <span className="font-semibold">{leadHandoverDetails?.paymentMode?.toUpperCase() || 'BANK TRANSFER'} &bull; {leadHandoverDetails?.paymentDate || 'N/A'}</span>
+                  </div>
+                  <div>
+                    <span className="text-slate-500 block text-[10px]">Sales Executive:</span>
+                    <span className="font-semibold">{leadHandoverDetails?.salesRepName || 'Sales Team'}</span>
+                  </div>
+                </div>
+
+                {leadHandoverDetails?.paymentProofUrl && (
+                  <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between">
+                    <span className="text-[11px] text-emerald-400 flex items-center gap-1.5 font-bold">
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                      Payment Receipt Attached
+                    </span>
+                    <a
+                      href={leadHandoverDetails.paymentProofUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-3 py-1 bg-emerald-600/30 hover:bg-emerald-600 text-emerald-300 hover:text-white border border-emerald-500/50 rounded-lg text-xs font-bold transition flex items-center gap-1 cursor-pointer"
+                    >
+                      <ExternalLink className="w-3 h-3" />
+                      <span>View Screenshot ↗</span>
+                    </a>
+                  </div>
+                )}
+              </div>
+
+              {/* Hotels Section */}
+              {(() => {
+                const computedTotalHotelsCost = hotels.reduce((sum, h) => {
+                  const hNights = Number(h.nights) || 1;
+                  const hBaseRate = Number(h.basePrice || 0);
+                  const hExtraBed = Number((h as any).extraBedPrice || 0);
+                  const hRooms = Number(roomsCount || 1);
+                  return sum + Number((h as any).b2bTotalCost || (hBaseRate * hRooms * hNights) + (hExtraBed * hNights));
+                }, 0);
+
+                const vName = String(vehicleType || '').toLowerCase();
+                let dailyRate = 4000;
+                if (vName.includes('crysta')) dailyRate = 6500;
+                else if (vName.includes('ertiga') || vName.includes('rumion') || vName.includes('rumoin')) dailyRate = 5500;
+                else if (vName.includes('tempo') || vName.includes('traveller')) dailyRate = 8000;
+                else if (vName.includes('innova')) dailyRate = 5000;
+                const computedTransportCost = dailyRate * (Number(noOfDays) || 7);
+
+                return (
+                  <>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[11px] font-black uppercase text-slate-300 tracking-wider flex items-center gap-1.5">
+                          <Building2 className="w-3.5 h-3.5 text-orange-400" />
+                          <span>Selected Hotels ({hotels.length} Properties)</span>
+                        </span>
+                        {computedTotalHotelsCost > 0 && (
+                          <span className="text-xs font-bold text-amber-400 bg-amber-950/50 border border-amber-800/60 px-2.5 py-0.5 rounded-lg font-mono">
+                            Total Hotel B2B: ₹{Math.round(computedTotalHotelsCost).toLocaleString('en-IN')}
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="border border-slate-800 rounded-2xl overflow-hidden divide-y divide-slate-800 bg-slate-950">
+                        {hotels.map((h, idx) => {
+                          const hNights = Number(h.nights) || 1;
+                          const hBaseRate = Number(h.basePrice || 0);
+                          const hExtraBed = Number((h as any).extraBedPrice || 0);
+                          const hRooms = Number(roomsCount || 1);
+                          const hTotal = Number((h as any).b2bTotalCost || (hBaseRate * hRooms * hNights) + (hExtraBed * hNights));
+
+                          return (
+                            <div key={idx} className="p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 hover:bg-slate-900/50 transition">
+                              <div className="space-y-0.5">
+                                <div className="flex items-center gap-2">
+                                  <span className="w-5 h-5 rounded-md bg-orange-500/20 text-orange-400 flex items-center justify-center font-bold text-[10px]">
+                                    {idx + 1}
+                                  </span>
+                                  <strong className="text-white text-xs">{h.hotelName || `Hotel ${idx + 1}`}</strong>
+                                  {h.category && (
+                                    <span className="text-[10px] bg-slate-800 text-orange-300 px-2 py-0.2 rounded font-bold">
+                                      {h.category}
+                                    </span>
+                                  )}
+                                </div>
+                                <div className="text-[11px] text-slate-400 pl-7">
+                                  City: <strong className="text-slate-300">{h.city}</strong> &bull; {h.roomCategory || 'Deluxe Room'} &bull; <strong className="text-white">{hNights} Night(s)</strong>
+                                  {h.stayDates && <span className="text-amber-400/90 ml-2 font-mono">({h.stayDates})</span>}
+                                </div>
+                                <div className="text-[10px] text-slate-500 pl-7 font-mono">
+                                  Base: ₹{hBaseRate.toLocaleString('en-IN')}/nt {hNights > 1 ? `× ${hNights} Nts = ₹${(hBaseRate * hNights).toLocaleString('en-IN')}` : ''}
+                                  {hExtraBed > 0 && <span className="text-amber-300/80 ml-1">+ Extra Bed: ₹{(hExtraBed * hNights).toLocaleString('en-IN')}</span>}
+                                </div>
+                              </div>
+
+                              <div className="text-right shrink-0 pl-7 sm:pl-0">
+                                <span className="text-[10px] text-slate-500 block">Property Total B2B</span>
+                                <strong className="text-amber-400 font-mono text-sm block">
+                                  ₹{hTotal.toLocaleString('en-IN')}
+                                </strong>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Vehicle & Meal Plan Section */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div className="bg-slate-950 p-3.5 rounded-2xl border border-slate-800 space-y-1.5">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] text-slate-400 uppercase font-bold flex items-center gap-1.5">
+                            <Car className="w-3.5 h-3.5 text-orange-400" />
+                            <span>Selected Transport</span>
+                          </span>
+                          {computedTransportCost > 0 && (
+                            <strong className="text-amber-400 font-mono text-xs">
+                              ₹{Math.round(computedTransportCost).toLocaleString('en-IN')}
+                            </strong>
+                          )}
+                        </div>
+                        <div className="text-xs font-bold text-white">{vehicleType || 'Dedicated Private Cab'}</div>
+                        <span className="text-[11px] text-slate-400 block">
+                          Duration: {noOfNights} Nights / {noOfDays} Days
+                        </span>
+                        <span className="text-[10px] text-slate-500 block">
+                          Includes fuel, driver allowance, toll, parking &amp; transfers
+                        </span>
+                      </div>
+
+                      <div className="bg-slate-950 p-3.5 rounded-2xl border border-slate-800 space-y-1">
+                        <span className="text-[10px] text-slate-400 uppercase font-bold flex items-center gap-1.5">
+                          <Utensils className="w-3.5 h-3.5 text-orange-400" />
+                          <span>Meal Plan</span>
+                        </span>
+                        <div className="text-xs font-bold text-white">{mealPlan || 'Breakfast & Dinner'}</div>
+                        <span className="text-[11px] text-slate-500 block">
+                          Included across all hotel stays
+                        </span>
+                      </div>
+                    </div>
+                  </>
+                );
+              })()}
+
+              {/* Day-Wise Sightseeing Summary */}
+              {dayRows && dayRows.length > 0 && (
+                <div className="space-y-2">
+                  <span className="text-[11px] font-black uppercase text-slate-300 tracking-wider flex items-center gap-1.5">
+                    <Compass className="w-3.5 h-3.5 text-orange-400" />
+                    <span>Day-Wise Sightseeing &amp; Experiences</span>
+                  </span>
+                  <div className="border border-slate-800 rounded-2xl divide-y divide-slate-800 bg-slate-950 max-h-48 overflow-y-auto">
+                    {dayRows.map((dr, idx) => {
+                      const expStr = Array.isArray(dr.experiences) ? dr.experiences.filter(Boolean).join(', ') : '';
+                      return (
+                        <div key={idx} className="p-2.5 flex items-start gap-2.5">
+                          <span className="px-2 py-0.5 rounded bg-orange-600/20 text-orange-400 font-bold text-[10px] shrink-0">
+                            Day {dr.dayNumber || idx + 1}
+                          </span>
+                          <div className="min-w-0">
+                            <span className="font-bold text-white text-xs">{dr.city || destination}: </span>
+                            <span className="text-slate-400 text-[11px]">{expStr || 'Local sightseeing & leisure'}</span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-4 border-t border-slate-800 bg-slate-950/80 flex flex-wrap items-center justify-between gap-2.5 text-xs">
+              <span className="text-slate-400 text-[11px]">
+                Tip: You can inspect and tweak options in the sales form directly.
+              </span>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const opt = Number(leadHandoverDetails?.optionNumber || 1);
+                    setSelectedOption(opt);
+                    loadOptionIntoForm(opt);
+                    setUnlockedOptions(prev => ({ ...prev, [opt]: true }));
+                    setIsCostingBreakdownModalOpen(false);
+                    const el = document.getElementById('sales-pricing-section') || document.querySelector('.main-quotation-card');
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white rounded-xl font-bold cursor-pointer transition shadow-md flex items-center gap-1.5"
+                >
+                  <Eye className="w-3.5 h-3.5" />
+                  <span>Load into Form &amp; Inspect</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsCostingBreakdownModalOpen(false)}
+                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-bold cursor-pointer transition"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <Footer />
     </div>

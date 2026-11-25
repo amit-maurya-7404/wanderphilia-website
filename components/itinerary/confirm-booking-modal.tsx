@@ -326,11 +326,10 @@ export function ConfirmBookingModal({
                         const total = opt.totalAmount || 0;
                         if (total > 0) setAdvanceAmount(String(Math.round(total * 0.25)));
                       }}
-                      className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
-                        isSel
-                          ? 'bg-orange-950/60 border-orange-500 text-white ring-1 ring-orange-500/50 shadow-md'
-                          : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'
-                      }`}
+                      className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${isSel
+                        ? 'bg-orange-950/60 border-orange-500 text-white ring-1 ring-orange-500/50 shadow-md'
+                        : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'
+                        }`}
                     >
                       <div className="flex items-center justify-between text-xs font-bold">
                         <span>Option {opt.optionNumber}</span>
