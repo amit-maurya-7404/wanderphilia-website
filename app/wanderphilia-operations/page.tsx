@@ -342,7 +342,7 @@ export default function WanderphiliaOperationsPage() {
     };
   }, [activeBooking]);
 
-  // Helper to resolve accurate Extra Bed Details and B2B costs per hotel
+  // Helper to resolve accurate Extra Bed Details, Per Night Price, and B2B costs per hotel
   const getHotelExtraBedDetails = useCallback((hotel: OperationsHotelItem) => {
     // 1. Extra bed count
     let count = typeof hotel.extraBedCount === 'number' ? hotel.extraBedCount : undefined;
@@ -380,17 +380,41 @@ export default function WanderphiliaOperationsPage() {
       ? hotel.extraBedTotalCost
       : (rate * count * nights);
 
-    // 4. Base room price
+    // 4. Resolve Actual B2B Per Night Price (Price_Per_Night from Zoho CRM)
+    let pricePerNight = typeof hotel.pricePerNight === 'number' && hotel.pricePerNight > 0 ? hotel.pricePerNight : 0;
+    if (pricePerNight === 0 && masterData?.hotelsByCity) {
+      const cityKey = normalizeCityKey(hotel.city);
+      const cityHotels = masterData.hotelsByCity[cityKey] || [];
+      const matchedH = cityHotels.find(h =>
+        (hotel.hotelId && String(h.id) === String(hotel.hotelId)) ||
+        (hotel.hotelName && h.hotelName.toLowerCase().trim() === hotel.hotelName.toLowerCase().trim())
+      );
+      if (matchedH?.rooms) {
+        const roomMatch = matchedH.rooms.find((r: any) =>
+          r.roomCategory.toLowerCase().trim() === (hotel.roomCategory || '').toLowerCase().trim()
+        ) || matchedH.rooms[0];
+        if (roomMatch?.pricePerNight) {
+          pricePerNight = Number(roomMatch.pricePerNight) || 0;
+        }
+      }
+    }
+    if (pricePerNight === 0) {
+      pricePerNight = Number(hotel.b2bCostPerNight || hotel.basePrice || 0);
+    }
+
     const rooms = Number(hotel.roomsCount || activeBooking?.roomsCount || 1);
-    const baseRate = Number(hotel.basePrice || hotel.b2bCostPerNight || 0);
-    const baseRoomTotal = baseRate > 0 ? (baseRate * nights * rooms) : Math.max(0, (hotel.b2bTotalCost || 0) - extraBedTotal);
+    const hotelRoomTotal = pricePerNight * nights * rooms;
+    const baseRate = Number(hotel.basePrice || pricePerNight);
+    const b2bTotal = hotelRoomTotal + extraBedTotal;
 
     return {
       count,
       rate,
       extraBedTotal,
+      pricePerNight,
       baseRate,
-      baseRoomTotal,
+      hotelRoomTotal,
+      b2bTotal,
     };
   }, [activeBooking, bookingExtraBedCalc, masterData?.hotelsByCity]);
 
@@ -773,7 +797,8 @@ export default function WanderphiliaOperationsPage() {
     setSwapRoomCategory(roomCatName);
     const roomMatch = availableRoomsForSelectedHotel.find((r: any) => r.roomCategory === roomCatName);
     if (roomMatch) {
-      setSwapB2BCostPerNight(roomMatch.basePrice || 0);
+      const perNight = Number(roomMatch.pricePerNight || roomMatch.basePrice || 0);
+      setSwapB2BCostPerNight(perNight);
       if (roomMatch.extraBedPrice !== undefined) {
         setSwapExtraBedPrice(Number(roomMatch.extraBedPrice) || 0);
       }
@@ -886,7 +911,8 @@ export default function WanderphiliaOperationsPage() {
       roomCategory: finalRoomCategory || prev.roomCategory,
       nights: swapNights,
       roomsCount: swapRooms,
-      basePrice: swapB2BCostPerNight,
+      basePrice: prev.basePrice || swapB2BCostPerNight,
+      pricePerNight: swapB2BCostPerNight,
       b2bCostPerNight: swapB2BCostPerNight,
       extraBedPrice: swapExtraBedPrice,
       extraBedCount: extraBeds,
@@ -1791,13 +1817,11 @@ export default function WanderphiliaOperationsPage() {
                           {/* Hotel Details Grid */}
                           <div className="grid grid-cols-2 sm:grid-cols-6 gap-3 text-xs">
                             <div>
-                              <span className="text-[10px] text-slate-500 font-bold block uppercase">Room Category</span>
+                              <span className="text-[10px] text-slate-500 font-bold block uppercase">Room &amp; Per Night Price</span>
                               <span className="font-semibold text-slate-300">{hotel.roomCategory}</span>
-                              {extraBedInfo.baseRate > 0 && (
-                                <span className="text-[10px] text-slate-400 block font-mono">
-                                  ₹{extraBedInfo.baseRate.toLocaleString('en-IN')}/nt
-                                </span>
-                              )}
+                              <span className="text-[11px] text-emerald-400 block font-mono font-bold mt-0.5">
+                                ₹{extraBedInfo.pricePerNight.toLocaleString('en-IN')}<span className="text-[9px] text-slate-400 font-normal"> /night</span>
+                              </span>
                             </div>
 
                             <div>
@@ -1844,7 +1868,7 @@ export default function WanderphiliaOperationsPage() {
                               <span className="text-[10px] text-slate-500 font-bold block uppercase">B2B Total Cost</span>
                               <div className="flex items-center gap-1.5 mt-0.5">
                                 <span className="font-black text-emerald-400 text-sm">
-                                  ₹{(hotel.b2bTotalCost || (extraBedInfo.baseRoomTotal + extraBedInfo.extraBedTotal) || 0).toLocaleString('en-IN')}
+                                  ₹{(hotel.b2bTotalCost || extraBedInfo.b2bTotal || 0).toLocaleString('en-IN')}
                                 </span>
                                 {hotel.isManualCost && (
                                   <span className="text-[9px] bg-amber-500/20 text-amber-400 px-1.5 py-0.2 rounded font-bold">
@@ -1852,11 +1876,9 @@ export default function WanderphiliaOperationsPage() {
                                   </span>
                                 )}
                               </div>
-                              {extraBedInfo.count > 0 && (
-                                <span className="text-[9px] text-slate-400 block truncate" title={`Base: ₹${extraBedInfo.baseRoomTotal.toLocaleString('en-IN')} + Bed: ₹${extraBedInfo.extraBedTotal.toLocaleString('en-IN')}`}>
-                                  (Base: ₹{extraBedInfo.baseRoomTotal.toLocaleString('en-IN')} + Bed: ₹{extraBedInfo.extraBedTotal.toLocaleString('en-IN')})
-                                </span>
-                              )}
+                              <span className="text-[9px] text-slate-400 block truncate" title={`Room: ₹${extraBedInfo.hotelRoomTotal.toLocaleString('en-IN')} (₹${extraBedInfo.pricePerNight}/nt × ${hotel.nights}N × ${hotel.roomsCount}R)${extraBedInfo.count > 0 ? ` + Bed: ₹${extraBedInfo.extraBedTotal.toLocaleString('en-IN')}` : ''}`}>
+                                (₹{extraBedInfo.pricePerNight.toLocaleString('en-IN')}/nt × {hotel.nights}N{extraBedInfo.count > 0 ? ` + Bed: ₹${extraBedInfo.extraBedTotal.toLocaleString('en-IN')}` : ''})
+                              </span>
                             </div>
 
                             <div>
@@ -1915,7 +1937,7 @@ export default function WanderphiliaOperationsPage() {
                       </select>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+                    <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 text-xs">
                       {/* Vehicle Type (Zoho dropdown strictly filtered by state or custom) */}
                       <div>
                         <div className="flex items-center justify-between mb-1">
@@ -1938,15 +1960,19 @@ export default function WanderphiliaOperationsPage() {
                             onChange={e => {
                               const selType = e.target.value;
                               const matchVeh = masterData?.vehicles?.find(v => v.name === selType);
-                              let newCost = activeBooking.transport?.b2bTotalCost || 0;
-                              if (matchVeh && matchVeh.cost && !activeBooking.transport?.isManualCost) {
-                                newCost = matchVeh.cost * (activeBooking.noOfDays || 1);
+                              const days = activeBooking.transport?.totalDays || activeBooking.noOfDays || 1;
+                              const perDay = (matchVeh && matchVeh.cost) ? matchVeh.cost : (activeBooking.transport?.costPerDay || 0);
+                              let newCost = perDay * days;
+                              if (activeBooking.transport?.isManualCost && activeBooking.transport?.b2bTotalCost) {
+                                newCost = activeBooking.transport.b2bTotalCost;
                               }
                               setActiveBooking({
                                 ...activeBooking,
                                 transport: {
                                   ...activeBooking.transport,
                                   vehicleType: selType,
+                                  costPerDay: perDay,
+                                  totalDays: days,
                                   b2bTotalCost: newCost
                                 }
                               });
@@ -2032,10 +2058,11 @@ export default function WanderphiliaOperationsPage() {
                               }
                               const selVendor = availableVendorsForBooking.find(v => v.id === val);
                               if (selVendor) {
-                                const days = activeBooking.noOfDays || 1;
-                                let newCost = activeBooking.transport?.b2bTotalCost || 0;
-                                if (selVendor.costPerDay && selVendor.costPerDay > 0 && !activeBooking.transport?.isManualCost) {
-                                  newCost = selVendor.costPerDay * days;
+                                const days = activeBooking.transport?.totalDays || activeBooking.noOfDays || 1;
+                                const perDay = (selVendor.costPerDay && selVendor.costPerDay > 0) ? selVendor.costPerDay : (activeBooking.transport?.costPerDay || 0);
+                                let newCost = perDay * days;
+                                if (activeBooking.transport?.isManualCost && activeBooking.transport?.b2bTotalCost) {
+                                  newCost = activeBooking.transport.b2bTotalCost;
                                 }
 
                                 setActiveBooking({
@@ -2046,7 +2073,8 @@ export default function WanderphiliaOperationsPage() {
                                     vendorId: selVendor.id,
                                     driverMobile: activeBooking.transport?.driverMobile || selVendor.phone || '',
                                     b2bTotalCost: newCost,
-                                    costPerDay: selVendor.costPerDay || activeBooking.transport?.costPerDay || 0
+                                    costPerDay: perDay,
+                                    totalDays: days,
                                   }
                                 });
                               } else {
@@ -2076,6 +2104,35 @@ export default function WanderphiliaOperationsPage() {
                         )}
                       </div>
 
+                      {/* Per Day Cost */}
+                      <div>
+                        <label className="text-[10px] font-bold text-slate-400 uppercase block mb-1">
+                          Per Day Cost (B2B ₹/Day)
+                        </label>
+                        <input
+                          type="number"
+                          value={activeBooking.transport?.costPerDay || 0}
+                          onChange={e => {
+                            const perDay = Number(e.target.value) || 0;
+                            const days = activeBooking.transport?.totalDays || activeBooking.noOfDays || 1;
+                            setActiveBooking({
+                              ...activeBooking,
+                              transport: {
+                                ...activeBooking.transport,
+                                costPerDay: perDay,
+                                totalDays: days,
+                                b2bTotalCost: perDay * days,
+                                isManualCost: true
+                              }
+                            });
+                          }}
+                          className="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-emerald-400 font-mono font-bold text-xs"
+                        />
+                        <span className="text-[9px] text-slate-500 mt-1 block">
+                          Cab contract cost per day
+                        </span>
+                      </div>
+
                       {/* Vehicle Cost */}
                       <div>
                         <label className="text-[10px] font-bold text-slate-400 uppercase block mb-1">
@@ -2085,17 +2142,23 @@ export default function WanderphiliaOperationsPage() {
                           type="number"
                           value={activeBooking.transport?.b2bTotalCost || 0}
                           onChange={e => {
+                            const newTotal = Number(e.target.value) || 0;
+                            const days = activeBooking.transport?.totalDays || activeBooking.noOfDays || 1;
                             setActiveBooking({
                               ...activeBooking,
                               transport: {
                                 ...activeBooking.transport,
-                                b2bTotalCost: Number(e.target.value) || 0,
+                                b2bTotalCost: newTotal,
+                                costPerDay: days > 0 ? Math.round(newTotal / days) : newTotal,
                                 isManualCost: true
                               }
                             });
                           }}
-                          className="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-amber-400 font-mono font-bold"
+                          className="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-amber-400 font-mono font-bold text-xs"
                         />
+                        <span className="text-[9px] text-slate-400 mt-1 block font-mono">
+                          ₹{(activeBooking.transport?.costPerDay || 0).toLocaleString('en-IN')}/day &times; {activeBooking.transport?.totalDays || activeBooking.noOfDays || 1} Days
+                        </span>
                       </div>
                     </div>
 
@@ -3020,8 +3083,8 @@ export default function WanderphiliaOperationsPage() {
                               </div>
                               <div className="mt-1.5 flex items-center justify-between text-[11px]">
                                 <span className="font-black text-amber-400">
-                                  ₹{(r.basePrice || 0).toLocaleString('en-IN')}
-                                  <span className="text-[9px] text-slate-400 font-normal"> /night</span>
+                                  ₹{(r.pricePerNight || r.basePrice || 0).toLocaleString('en-IN')}
+                                  <span className="text-[9px] text-slate-400 font-normal"> /night (Per Night Price)</span>
                                 </span>
                                 {r.extraBedPrice > 0 && (
                                   <span className="text-[10px] text-slate-500 font-medium">
@@ -3050,7 +3113,7 @@ export default function WanderphiliaOperationsPage() {
                         </div>
                         <div className="flex items-center gap-1.5">
                           <span className="text-[10px] text-slate-400 font-bold uppercase whitespace-nowrap">
-                            ₹ Base/Nt:
+                            ₹ Per Night:
                           </span>
                           <input
                             type="number"

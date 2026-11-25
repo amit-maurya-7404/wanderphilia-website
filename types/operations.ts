@@ -17,6 +17,7 @@ export interface OperationsHotelItem {
   sharingType?: string;
   dates?: string; // e.g. "25-Nov-2026 to 26-Nov-2026"
   basePrice?: number;
+  pricePerNight?: number; // Actual B2B net contract rate per night (Price_Per_Night)
   b2bCostPerNight?: number;
   b2bTotalCost: number;
   extraBedPrice?: number; // Extra bed rate per night

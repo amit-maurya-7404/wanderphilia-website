@@ -1049,6 +1049,7 @@ const HOTEL_CATEGORIES = [
 // STRICT RULE: No hardcoded fallback rates. If hotel not selected or rate missing, returns 0.
 export const getHotelRates = (h: any, _fallbackCategory?: string, selectedRoomCategory?: string) => {
   let baseRate = 0;
+  let pricePerNight = 0;
   let extraBedRate = 0;
   let childWithoutBedRate = 0;
   let roomCategory = '';
@@ -1087,19 +1088,22 @@ export const getHotelRates = (h: any, _fallbackCategory?: string, selectedRoomCa
     }
     if (matchedRoom) {
       roomCategory = matchedRoom.roomCategory || '';
-      // STRICT: Base Price column from subform!
-      baseRate = Number(matchedRoom.basePrice || matchedRoom.Base_Price || matchedRoom.Base_Price_INR || matchedRoom.Price_Per_Night || matchedRoom.Rate || matchedRoom.Price) || 0;
+      // Base Price column for client sales quote
+      baseRate = Number(matchedRoom.basePrice || matchedRoom.Base_Price || matchedRoom.Base_Price_INR || matchedRoom.Rate || matchedRoom.Price) || 0;
+      // Per Night Price column from Zoho for B2B operations
+      pricePerNight = Number(matchedRoom.pricePerNight || matchedRoom.Price_Per_Night || matchedRoom.Price_per_night || matchedRoom.Price_per_Night || matchedRoom.Per_Night_Price || matchedRoom.Per_Night_Cost) || 0;
       extraBedRate = Number(matchedRoom.extraBedPrice || matchedRoom.Extra_Bed || matchedRoom.Extra_Bed_INR || matchedRoom.Extra_Bed_Price) || 0;
       childWithoutBedRate = Number(matchedRoom.childWithoutBed || matchedRoom.Child_without_bed || 0);
     }
   } else if (h) {
-    baseRate = Number(h.basePrice || h.Base_Price || h.Base_Price_INR || h.Price_Per_Night || h.Price || h.Rate || 0);
+    baseRate = Number(h.basePrice || h.Base_Price || h.Base_Price_INR || h.Price || h.Rate || 0);
+    pricePerNight = Number(h.pricePerNight || h.Price_Per_Night || h.Price_per_night || h.Price_per_Night || h.Per_Night_Price || h.Per_Night_Cost) || 0;
     extraBedRate = Number(h.extraBedPrice || h.Extra_Bed || h.Extra_Bed_INR || h.Extra_Bed_Price) || 0;
     childWithoutBedRate = Number(h.childWithoutBedPrice || h.childWithoutBed || h.Child_without_bed || 0);
     roomCategory = h.roomCategory || '';
   }
 
-  return { baseRate, extraBedRate, childWithoutBedRate, roomCategory };
+  return { baseRate, pricePerNight, extraBedRate, childWithoutBedRate, roomCategory };
 };
 
 // --- REUSABLE LOOKUP FIELD COMPONENT ---
@@ -1488,6 +1492,7 @@ interface HotelItem {
   category: string;
   stayDates?: string;
   basePrice?: number;
+  pricePerNight?: number;
   extraBedPrice?: number;
   childWithoutBedPrice?: number;
 }
@@ -10071,12 +10076,14 @@ export default function SheetItineraryPage() {
                 ? exist.hotels.map((h: any) => {
                     const nights = Number(h.nights) || 1;
                     const basePrice = Number(h.basePrice || h.roomRate) || 0;
+                    const pricePerNight = Number(h.pricePerNight || (h as any).Price_Per_Night || (h as any).Price_per_night || 0);
+                    const b2bNightRate = pricePerNight > 0 ? pricePerNight : basePrice;
                     const extraBedPrice = Number(h.extraBedPrice || h.extraBedRate) || 0;
                     const childWithoutBedPrice = Number(h.childWithoutBedPrice || h.childNoBedRate) || 0;
-                    const baseRoomTotal = basePrice * nights * optRooms;
+                    const b2bRoomTotal = b2bNightRate * nights * optRooms;
                     const extraBedTotal = extraBedPrice * optBillableExtraBeds * nights;
                     const childNoBedTotal = childWithoutBedPrice * optChildWithoutBedCount * nights;
-                    const calculatedTotal = baseRoomTotal + extraBedTotal + childNoBedTotal;
+                    const calculatedTotal = b2bRoomTotal + extraBedTotal + childNoBedTotal;
 
                     return {
                       city: h.city,
@@ -10087,7 +10094,8 @@ export default function SheetItineraryPage() {
                       dates: h.dates || h.stayDates || '',
                       stayDates: h.stayDates || h.dates || '',
                       basePrice,
-                      b2bCostPerNight: basePrice,
+                      pricePerNight: b2bNightRate,
+                      b2bCostPerNight: b2bNightRate,
                       extraBedPrice,
                       extraBedCount: optBillableExtraBeds,
                       extraBedTotalCost: extraBedTotal,
@@ -10100,12 +10108,14 @@ export default function SheetItineraryPage() {
                 : hotels.map(h => {
                     const nights = Number(h.nights) || 1;
                     const basePrice = Number(h.basePrice) || 0;
+                    const pricePerNight = Number(h.pricePerNight || (h as any).Price_Per_Night || (h as any).Price_per_night || 0);
+                    const b2bNightRate = pricePerNight > 0 ? pricePerNight : basePrice;
                     const extraBedPrice = Number(h.extraBedPrice) || 0;
                     const childWithoutBedPrice = Number(h.childWithoutBedPrice) || 0;
-                    const baseRoomTotal = basePrice * nights * optRooms;
+                    const b2bRoomTotal = b2bNightRate * nights * optRooms;
                     const extraBedTotal = extraBedPrice * optBillableExtraBeds * nights;
                     const childNoBedTotal = childWithoutBedPrice * optChildWithoutBedCount * nights;
-                    const calculatedTotal = baseRoomTotal + extraBedTotal + childNoBedTotal;
+                    const calculatedTotal = b2bRoomTotal + extraBedTotal + childNoBedTotal;
 
                     return {
                       city: h.city,
@@ -10116,7 +10126,8 @@ export default function SheetItineraryPage() {
                       dates: (h as any).dates || (h as any).stayDates || '',
                       stayDates: (h as any).stayDates || (h as any).dates || '',
                       basePrice,
-                      b2bCostPerNight: basePrice,
+                      pricePerNight: b2bNightRate,
+                      b2bCostPerNight: b2bNightRate,
                       extraBedPrice,
                       extraBedCount: optBillableExtraBeds,
                       extraBedTotalCost: extraBedTotal,
@@ -10177,12 +10188,14 @@ export default function SheetItineraryPage() {
                 hotels.map(h => {
                   const nights = Number(h.nights) || 1;
                   const basePrice = Number(h.basePrice) || 0;
+                  const pricePerNight = Number(h.pricePerNight || (h as any).Price_Per_Night || (h as any).Price_per_night || 0);
+                  const b2bNightRate = pricePerNight > 0 ? pricePerNight : basePrice;
                   const extraBedPrice = Number(h.extraBedPrice) || 0;
                   const childWithoutBedPrice = Number(h.childWithoutBedPrice) || 0;
-                  const baseRoomTotal = basePrice * nights * currentRooms;
+                  const b2bRoomTotal = b2bNightRate * nights * currentRooms;
                   const extraBedTotal = extraBedPrice * extraBedsCurrent * nights;
                   const childNoBedTotal = childWithoutBedPrice * childWithoutBedCurrent * nights;
-                  const calculatedTotal = baseRoomTotal + extraBedTotal + childNoBedTotal;
+                  const calculatedTotal = b2bRoomTotal + extraBedTotal + childNoBedTotal;
 
                   return {
                     city: h.city,
@@ -10193,7 +10206,8 @@ export default function SheetItineraryPage() {
                     dates: (h as any).dates || (h as any).stayDates || '',
                     stayDates: (h as any).stayDates || (h as any).dates || '',
                     basePrice,
-                    b2bCostPerNight: basePrice,
+                    pricePerNight: b2bNightRate,
+                    b2bCostPerNight: b2bNightRate,
                     extraBedPrice,
                     extraBedCount: extraBedsCurrent,
                     extraBedTotalCost: extraBedTotal,

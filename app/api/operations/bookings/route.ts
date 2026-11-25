@@ -143,7 +143,8 @@ export async function POST(req: NextRequest) {
     const hotels = (Array.isArray(body.hotels) ? body.hotels : []).map((h: any, idx: number) => {
       const nights = Number(h.nights) || 1;
       const rooms = Number(h.roomsCount || body.roomsCount || 1);
-      const baseRate = Number(h.basePrice || h.roomRate || h.b2bCostPerNight) || 0;
+      const baseRate = Number(h.basePrice || h.roomRate) || 0;
+      const pricePerNight = Number(h.pricePerNight || h.Price_Per_Night || h.Price_per_night || h.b2bCostPerNight) || baseRate;
       const extraBedRate = Number(h.extraBedPrice || h.extraBedRate) || 0;
       const extraBedCount = Number(h.extraBedCount !== undefined ? h.extraBedCount : defaultExtraBedCount);
       const extraBedTotal = Number(h.extraBedTotalCost !== undefined ? h.extraBedTotalCost : (extraBedRate * extraBedCount * nights));
@@ -152,8 +153,8 @@ export async function POST(req: NextRequest) {
       const childNoBedTotal = Number(h.childWithoutBedTotalCost !== undefined ? h.childWithoutBedTotalCost : (childNoBedRate * childNoBedCount * nights));
 
       let b2bCost = Number(h.b2bTotalCost || h.totalCost || 0);
-      if (b2bCost <= 0 && baseRate > 0) {
-        b2bCost = (baseRate * nights * rooms) + extraBedTotal + childNoBedTotal;
+      if (b2bCost <= 0 && pricePerNight > 0) {
+        b2bCost = (pricePerNight * nights * rooms) + extraBedTotal + childNoBedTotal;
       }
 
       let dates = h.dates || h.stayDates || '';
@@ -181,7 +182,8 @@ export async function POST(req: NextRequest) {
         dates,
         stayDates: dates,
         basePrice: baseRate > 0 ? baseRate : (nights > 0 ? Math.round(b2bCost / (nights * rooms)) : b2bCost),
-        b2bCostPerNight: baseRate > 0 ? baseRate : (nights > 0 ? Math.round(b2bCost / (nights * rooms)) : b2bCost),
+        pricePerNight: pricePerNight > 0 ? pricePerNight : (baseRate > 0 ? baseRate : (nights > 0 ? Math.round(b2bCost / (nights * rooms)) : b2bCost)),
+        b2bCostPerNight: pricePerNight > 0 ? pricePerNight : (baseRate > 0 ? baseRate : (nights > 0 ? Math.round(b2bCost / (nights * rooms)) : b2bCost)),
         extraBedPrice: extraBedRate,
         extraBedCount: extraBedCount,
         extraBedTotalCost: extraBedTotal,
