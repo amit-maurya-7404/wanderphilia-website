@@ -342,7 +342,7 @@ export default function WanderphiliaOperationsPage() {
     };
   }, [activeBooking]);
 
-  // Helper to resolve accurate Extra Bed Details, Per Night Price, and B2B costs per hotel
+  // Helper to resolve accurate Extra Bed Details, Child Without Bed, Per Night Price, and B2B costs per hotel
   const getHotelExtraBedDetails = useCallback((hotel: OperationsHotelItem) => {
     // 1. Extra bed count
     let count = typeof hotel.extraBedCount === 'number' ? hotel.extraBedCount : undefined;
@@ -353,7 +353,21 @@ export default function WanderphiliaOperationsPage() {
 
     // 2. Extra bed rate per night
     let rate = typeof hotel.extraBedPrice === 'number' && hotel.extraBedPrice > 0 ? hotel.extraBedPrice : 0;
-    if (rate === 0 && count > 0 && masterData?.hotelsByCity) {
+
+    // 3. Child without bed count
+    let childCount = typeof hotel.childWithoutBedCount === 'number' ? hotel.childWithoutBedCount : undefined;
+    if (childCount === undefined && activeBooking) {
+      childCount = bookingExtraBedCalc.childWithoutBedCount;
+    }
+    childCount = childCount || 0;
+
+    // 4. Child without bed rate per night
+    let childRate = typeof hotel.childWithoutBedPrice === 'number' && hotel.childWithoutBedPrice > 0 ? hotel.childWithoutBedPrice : 0;
+
+    // 5. Look up Zoho CRM master data if any rate is missing
+    let pricePerNight = typeof hotel.pricePerNight === 'number' && hotel.pricePerNight > 0 ? hotel.pricePerNight : 0;
+
+    if (masterData?.hotelsByCity) {
       const cityKey = normalizeCityKey(hotel.city);
       const cityHotels = masterData.hotelsByCity[cityKey] || [];
       const matchedH = cityHotels.find(h =>
@@ -364,57 +378,58 @@ export default function WanderphiliaOperationsPage() {
         const roomMatch = matchedH.rooms.find((r: any) =>
           r.roomCategory.toLowerCase().trim() === (hotel.roomCategory || '').toLowerCase().trim()
         ) || matchedH.rooms[0];
-        if (roomMatch?.extraBedPrice) {
-          rate = Number(roomMatch.extraBedPrice) || 0;
+        if (roomMatch) {
+          if (roomMatch.pricePerNight && Number(roomMatch.pricePerNight) > 0) {
+            pricePerNight = Number(roomMatch.pricePerNight);
+          }
+          if (rate === 0 && count > 0 && roomMatch.extraBedPrice) {
+            rate = Number(roomMatch.extraBedPrice) || 0;
+          }
+          if (childRate === 0 && childCount > 0 && (roomMatch.childWithoutBed || roomMatch.childWithoutBedPrice)) {
+            childRate = Number(roomMatch.childWithoutBed || roomMatch.childWithoutBedPrice) || 0;
+          }
         }
       }
     }
-    // Fallback standard Rajasthan extra bed rate if 0 and extra bed is required
+
+    if (pricePerNight === 0) {
+      pricePerNight = Number(hotel.b2bCostPerNight || hotel.basePrice || 0);
+    }
     if (rate === 0 && count > 0) {
       rate = 1200;
     }
 
-    // 3. Extra bed total cost
     const nights = Number(hotel.nights) || 1;
+    const rooms = Number(hotel.roomsCount || activeBooking?.roomsCount || 1);
+
+    const hotelRoomTotal = pricePerNight * nights * rooms;
     const extraBedTotal = typeof hotel.extraBedTotalCost === 'number' && hotel.extraBedTotalCost > 0
       ? hotel.extraBedTotalCost
       : (rate * count * nights);
 
-    // 4. Resolve Actual B2B Per Night Price (Price_Per_Night from Zoho CRM)
-    let pricePerNight = typeof hotel.pricePerNight === 'number' && hotel.pricePerNight > 0 ? hotel.pricePerNight : 0;
-    if (pricePerNight === 0 && masterData?.hotelsByCity) {
-      const cityKey = normalizeCityKey(hotel.city);
-      const cityHotels = masterData.hotelsByCity[cityKey] || [];
-      const matchedH = cityHotels.find(h =>
-        (hotel.hotelId && String(h.id) === String(hotel.hotelId)) ||
-        (hotel.hotelName && h.hotelName.toLowerCase().trim() === hotel.hotelName.toLowerCase().trim())
-      );
-      if (matchedH?.rooms) {
-        const roomMatch = matchedH.rooms.find((r: any) =>
-          r.roomCategory.toLowerCase().trim() === (hotel.roomCategory || '').toLowerCase().trim()
-        ) || matchedH.rooms[0];
-        if (roomMatch?.pricePerNight) {
-          pricePerNight = Number(roomMatch.pricePerNight) || 0;
-        }
-      }
-    }
-    if (pricePerNight === 0) {
-      pricePerNight = Number(hotel.b2bCostPerNight || hotel.basePrice || 0);
-    }
+    const childNoBedTotal = typeof hotel.childWithoutBedTotalCost === 'number' && hotel.childWithoutBedTotalCost > 0
+      ? hotel.childWithoutBedTotalCost
+      : (childRate * childCount * nights);
 
-    const rooms = Number(hotel.roomsCount || activeBooking?.roomsCount || 1);
-    const hotelRoomTotal = pricePerNight * nights * rooms;
-    const baseRate = Number(hotel.basePrice || pricePerNight);
-    const b2bTotal = hotelRoomTotal + extraBedTotal;
+    const calculatedB2BTotal = hotelRoomTotal + extraBedTotal + childNoBedTotal;
+
+    const b2bTotal = hotel.isManualCost && typeof hotel.b2bTotalCost === 'number' && hotel.b2bTotalCost > 0
+      ? hotel.b2bTotalCost
+      : calculatedB2BTotal;
 
     return {
       count,
       rate,
       extraBedTotal,
+      childCount,
+      childRate,
+      childNoBedTotal,
       pricePerNight,
-      baseRate,
       hotelRoomTotal,
+      calculatedB2BTotal,
       b2bTotal,
+      nights,
+      rooms,
     };
   }, [activeBooking, bookingExtraBedCalc, masterData?.hotelsByCity]);
 
@@ -528,7 +543,10 @@ export default function WanderphiliaOperationsPage() {
 
     const sellingPrice = Number(activeBooking.totalQuotationAmount || 0);
     const b2bHotelTotal = (activeBooking.hotels || []).reduce(
-      (sum, h) => sum + (Number(h.b2bTotalCost) || 0),
+      (sum, h) => {
+        const extra = getHotelExtraBedDetails(h);
+        return sum + (h.isManualCost && typeof h.b2bTotalCost === 'number' && h.b2bTotalCost > 0 ? h.b2bTotalCost : extra.b2bTotal);
+      },
       0
     );
     const b2bTransportTotal = Number(activeBooking.transport?.b2bTotalCost || 0);
@@ -544,7 +562,7 @@ export default function WanderphiliaOperationsPage() {
       profit,
       marginPct
     };
-  }, [activeBooking]);
+  }, [activeBooking, getHotelExtraBedDetails]);
 
   // Compute if all hotels are booked
   const allHotelsConfirmed = useMemo(() => {
@@ -560,8 +578,25 @@ export default function WanderphiliaOperationsPage() {
     setSaveErrorMessage(null);
 
     try {
+      const syncedHotels = (activeBooking.hotels || []).map(h => {
+        const extra = getHotelExtraBedDetails(h);
+        return {
+          ...h,
+          pricePerNight: extra.pricePerNight,
+          b2bCostPerNight: extra.pricePerNight,
+          extraBedPrice: extra.rate,
+          extraBedCount: extra.count,
+          extraBedTotalCost: extra.extraBedTotal,
+          childWithoutBedPrice: extra.childRate,
+          childWithoutBedCount: extra.childCount,
+          childWithoutBedTotalCost: extra.childNoBedTotal,
+          b2bTotalCost: h.isManualCost && typeof h.b2bTotalCost === 'number' && h.b2bTotalCost > 0 ? h.b2bTotalCost : extra.b2bTotal,
+        };
+      });
+
       const updatedData: Partial<OperationsBooking> = {
         ...activeBooking,
+        hotels: syncedHotels,
         totalB2BHotelCost: liveMargins.b2bHotelTotal,
         totalB2BTransportCost: liveMargins.b2bTransportTotal,
         totalB2BCost: liveMargins.b2bGrandTotal,
@@ -684,8 +719,9 @@ export default function WanderphiliaOperationsPage() {
     setSwapHotelName(targetHotel.hotelName || '');
     setSwapHotelId(targetHotel.hotelId || '');
     setSwapRoomCategory(initialRoomCat);
-    setSwapB2BCostPerNight(targetHotel.b2bCostPerNight || 0);
+
     const extraBedDetails = getHotelExtraBedDetails(targetHotel);
+    setSwapB2BCostPerNight(extraBedDetails.pricePerNight || 0);
     setSwapExtraBedPrice(targetHotel.extraBedPrice !== undefined && targetHotel.extraBedPrice > 0 ? targetHotel.extraBedPrice : extraBedDetails.rate);
     setSwapNights(targetHotel.nights || 1);
     setSwapRooms(targetHotel.roomsCount || activeBooking.roomsCount || 1);
@@ -705,12 +741,13 @@ export default function WanderphiliaOperationsPage() {
       if (match) {
         setSwapHotelId(String(match.id));
         if (match.category) setSwapHotelCategory(match.category);
-        if ((!targetHotel.b2bCostPerNight || targetHotel.b2bCostPerNight === 0) && match.rooms && match.rooms.length > 0) {
+        if (match.rooms && match.rooms.length > 0) {
           const roomMatch = match.rooms.find((r: any) =>
             r.roomCategory.toLowerCase().trim() === initialRoomCat.toLowerCase().trim()
           ) || match.rooms[0];
           setSwapRoomCategory(roomMatch.roomCategory);
-          setSwapB2BCostPerNight(roomMatch.basePrice || 0);
+          const resolvedB2BPrice = Number(roomMatch.pricePerNight || roomMatch.basePrice || 0);
+          setSwapB2BCostPerNight(resolvedB2BPrice);
           if (roomMatch.extraBedPrice !== undefined) {
             setSwapExtraBedPrice(Number(roomMatch.extraBedPrice) || 0);
           }
@@ -784,10 +821,10 @@ export default function WanderphiliaOperationsPage() {
         );
         const chosenRoom = matchingRoom || found.rooms[0];
         setSwapRoomCategory(chosenRoom.roomCategory);
-        setSwapB2BCostPerNight(chosenRoom.basePrice || 0);
+        setSwapB2BCostPerNight(chosenRoom.pricePerNight || chosenRoom.basePrice || 0);
       } else {
         setSwapRoomCategory(salesSelectedRoomCategory || 'Standard Room');
-        setSwapB2BCostPerNight(found.basePrice || 0);
+        setSwapB2BCostPerNight(found.pricePerNight || found.basePrice || 0);
       }
     }
   };
@@ -1814,75 +1851,92 @@ export default function WanderphiliaOperationsPage() {
                             </div>
                           </div>
 
-                          {/* Hotel Details Grid */}
-                          <div className="grid grid-cols-2 sm:grid-cols-6 gap-3 text-xs">
-                            <div>
-                              <span className="text-[10px] text-slate-500 font-bold block uppercase">Room &amp; Per Night Price</span>
-                              <span className="font-semibold text-slate-300">{hotel.roomCategory}</span>
-                              <span className="text-[11px] text-emerald-400 block font-mono font-bold mt-0.5">
-                                ₹{extraBedInfo.pricePerNight.toLocaleString('en-IN')}<span className="text-[9px] text-slate-400 font-normal"> /night</span>
+                          {/* Structured B2B Breakdown Grid */}
+                          <div className="grid grid-cols-1 md:grid-cols-5 gap-3 bg-slate-950/80 border border-slate-800/90 rounded-xl p-3 sm:p-3.5 items-stretch">
+                            {/* Col 1: Room & B2B Night Rate */}
+                            <div className="space-y-1">
+                              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">
+                                Room &amp; B2B Rate
                               </span>
+                              <span className="font-semibold text-slate-200 text-xs block truncate" title={hotel.roomCategory}>
+                                {hotel.roomCategory}
+                              </span>
+                              <div className="flex items-baseline gap-1 mt-0.5">
+                                <span className="font-mono font-bold text-xs text-emerald-400">
+                                  ₹{extraBedInfo.pricePerNight.toLocaleString('en-IN')}
+                                </span>
+                                <span className="text-[10px] text-slate-400">/night</span>
+                                <span className="text-[10px] text-slate-500">• {hotel.nights}N &bull; {hotel.roomsCount || 1}R</span>
+                              </div>
                             </div>
 
-                            <div>
-                              <span className="text-[10px] text-slate-500 font-bold block uppercase">Nights &amp; Rooms</span>
-                              <span className="font-semibold text-slate-300">
-                                {hotel.nights} Night(s) &bull; {hotel.roomsCount} Room(s)
+                            {/* Col 2: Room B2B Subtotal */}
+                            <div className="space-y-1 md:border-l md:border-slate-800 md:pl-3">
+                              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">
+                                Room B2B Cost
                               </span>
+                              <div className="font-mono font-bold text-white text-xs mt-0.5">
+                                ₹{extraBedInfo.hotelRoomTotal.toLocaleString('en-IN')}
+                              </div>
+                              <div className="text-[10px] text-slate-400 font-mono">
+                                ₹{extraBedInfo.pricePerNight.toLocaleString('en-IN')}/nt &times; {hotel.nights}N &times; {hotel.roomsCount || 1}R
+                              </div>
                             </div>
 
-                            <div>
-                              <span className="text-[10px] text-amber-500/90 font-bold block uppercase">Stay Check-in ➔ Out</span>
-                              <span className="font-semibold text-amber-300 font-mono text-xs block truncate" title={getHotelStayDates(hotel, hIdx, activeBooking.hotels, activeBooking.travelStartDate)}>
-                                {getHotelStayDates(hotel, hIdx, activeBooking.hotels, activeBooking.travelStartDate)}
+                            {/* Col 3: Extra Bed / Child (No Bed) Cost */}
+                            <div className="space-y-1 md:border-l md:border-slate-800 md:pl-3">
+                              <span className="text-[10px] text-purple-400 font-bold uppercase tracking-wider block">
+                                Extra Bed / Child
                               </span>
-                            </div>
-
-                            <div>
-                              <span className="text-[10px] text-purple-400 font-bold block uppercase flex items-center gap-1">
-                                <span>Extra Bed Cost</span>
-                                {extraBedInfo.count > 0 && (
-                                  <span className="px-1.5 py-0.2 rounded bg-purple-500/20 text-purple-300 text-[9px] font-black">
-                                    {extraBedInfo.count} Bed{extraBedInfo.count > 1 ? 's' : ''}
-                                  </span>
-                                )}
-                              </span>
-                              {extraBedInfo.count > 0 ? (
-                                <div className="mt-0.5">
-                                  <span className="font-black text-purple-300 text-sm">
-                                    ₹{extraBedInfo.extraBedTotal.toLocaleString('en-IN')}
-                                  </span>
-                                  <span className="text-[10px] text-slate-400 block font-mono">
-                                    ₹{extraBedInfo.rate.toLocaleString('en-IN')}/nt &times; {hotel.nights}N
-                                  </span>
+                              {extraBedInfo.count > 0 || extraBedInfo.childCount > 0 ? (
+                                <div>
+                                  <div className="font-mono font-bold text-purple-300 text-xs mt-0.5">
+                                    +₹{(extraBedInfo.extraBedTotal + extraBedInfo.childNoBedTotal).toLocaleString('en-IN')}
+                                  </div>
+                                  <div className="text-[10px] text-slate-400 space-y-0.5 font-mono">
+                                    {extraBedInfo.count > 0 && (
+                                      <div>{extraBedInfo.count} Bed: ₹{extraBedInfo.rate.toLocaleString('en-IN')}/nt &times; {hotel.nights}N</div>
+                                    )}
+                                    {extraBedInfo.childCount > 0 && (
+                                      <div>{extraBedInfo.childCount} Child: ₹{extraBedInfo.childRate.toLocaleString('en-IN')}/nt &times; {hotel.nights}N</div>
+                                    )}
+                                  </div>
                                 </div>
                               ) : (
-                                <div className="mt-0.5">
-                                  <span className="text-slate-500 font-semibold text-xs">₹0</span>
-                                  <span className="text-[10px] text-slate-600 block">No Extra Bed</span>
+                                <div>
+                                  <div className="font-mono font-semibold text-slate-500 text-xs mt-0.5">₹0</div>
+                                  <div className="text-[10px] text-slate-600">No Extra Bed / Child</div>
                                 </div>
                               )}
                             </div>
 
-                            <div>
-                              <span className="text-[10px] text-slate-500 font-bold block uppercase">B2B Total Cost</span>
-                              <div className="flex items-center gap-1.5 mt-0.5">
-                                <span className="font-black text-emerald-400 text-sm">
-                                  ₹{(hotel.b2bTotalCost || extraBedInfo.b2bTotal || 0).toLocaleString('en-IN')}
+                            {/* Col 4: Total B2B Payable */}
+                            <div className="bg-emerald-950/40 border border-emerald-500/30 rounded-lg p-2.5 space-y-1 md:border-l">
+                              <div className="flex items-center justify-between">
+                                <span className="text-[10px] text-emerald-400 font-black uppercase tracking-wider">
+                                  Total B2B Payable
                                 </span>
                                 {hotel.isManualCost && (
-                                  <span className="text-[9px] bg-amber-500/20 text-amber-400 px-1.5 py-0.2 rounded font-bold">
+                                  <span className="text-[9px] bg-amber-500/20 text-amber-300 px-1.5 py-0.2 rounded font-bold border border-amber-500/40">
                                     Manual
                                   </span>
                                 )}
                               </div>
-                              <span className="text-[9px] text-slate-400 block truncate" title={`Room: ₹${extraBedInfo.hotelRoomTotal.toLocaleString('en-IN')} (₹${extraBedInfo.pricePerNight}/nt × ${hotel.nights}N × ${hotel.roomsCount}R)${extraBedInfo.count > 0 ? ` + Bed: ₹${extraBedInfo.extraBedTotal.toLocaleString('en-IN')}` : ''}`}>
-                                (₹{extraBedInfo.pricePerNight.toLocaleString('en-IN')}/nt × {hotel.nights}N{extraBedInfo.count > 0 ? ` + Bed: ₹${extraBedInfo.extraBedTotal.toLocaleString('en-IN')}` : ''})
-                              </span>
+                              <div className="font-mono font-black text-emerald-300 text-base">
+                                ₹{extraBedInfo.b2bTotal.toLocaleString('en-IN')}
+                              </div>
+                              <div className="text-[9px] text-slate-400 font-mono truncate" title={`Room ₹${extraBedInfo.hotelRoomTotal.toLocaleString('en-IN')}${extraBedInfo.extraBedTotal > 0 ? ` + Bed ₹${extraBedInfo.extraBedTotal.toLocaleString('en-IN')}` : ''}${extraBedInfo.childNoBedTotal > 0 ? ` + Child ₹${extraBedInfo.childNoBedTotal.toLocaleString('en-IN')}` : ''}`}>
+                                ₹{extraBedInfo.hotelRoomTotal.toLocaleString('en-IN')} (Room)
+                                {extraBedInfo.extraBedTotal > 0 && ` + ₹${extraBedInfo.extraBedTotal.toLocaleString('en-IN')} (Bed)`}
+                                {extraBedInfo.childNoBedTotal > 0 && ` + ₹${extraBedInfo.childNoBedTotal.toLocaleString('en-IN')} (Child)`}
+                              </div>
                             </div>
 
-                            <div>
-                              <span className="text-[10px] text-slate-500 font-bold block uppercase">Booking Ref / Voucher #</span>
+                            {/* Col 5: Booking Ref / Voucher # */}
+                            <div className="space-y-1 md:border-l md:border-slate-800 md:pl-3">
+                              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">
+                                Booking Ref / Voucher #
+                              </span>
                               <input
                                 type="text"
                                 placeholder="e.g. VOUCH-9812"
@@ -1893,7 +1947,7 @@ export default function WanderphiliaOperationsPage() {
                                   );
                                   setActiveBooking({ ...activeBooking, hotels: updated });
                                 }}
-                                className="w-full bg-slate-950 border border-slate-700 rounded-md px-2 py-1 text-xs text-white focus:outline-none focus:border-orange-500 mt-0.5"
+                                className="w-full bg-slate-950 border border-slate-700 rounded-md px-2.5 py-1 text-xs text-white placeholder:text-slate-600 focus:outline-none focus:border-orange-500 font-mono mt-0.5"
                               />
                             </div>
                           </div>
@@ -3034,7 +3088,7 @@ export default function WanderphiliaOperationsPage() {
                         <option value="">-- Select {swapHotelCategory || 'Category'} Hotel --</option>
                         {availableZohoHotelsForCity.map(h => (
                           <option key={h.id} value={h.id}>
-                            {h.hotelName} — ({h.category || 'Hotel'}) — B2B from ₹{(h.basePrice || h.rooms?.[0]?.basePrice || 0).toLocaleString('en-IN')}/nt
+                            {h.hotelName} — ({h.category || 'Hotel'}) — B2B from ₹{(h.rooms?.[0]?.pricePerNight || h.pricePerNight || h.basePrice || 0).toLocaleString('en-IN')}/nt
                           </option>
                         ))}
                       </select>
@@ -3160,22 +3214,38 @@ export default function WanderphiliaOperationsPage() {
                   )}
 
                   {/* Pricing Breakdown */}
-                  <div className="grid grid-cols-3 gap-2.5 p-3.5 bg-slate-950 rounded-xl border border-slate-800 text-center">
-                    <div>
-                      <span className="text-[10px] text-slate-500 block uppercase font-bold">Rate / Night</span>
-                      <span className="font-bold text-slate-200 text-xs">₹{swapB2BCostPerNight.toLocaleString('en-IN')}</span>
-                    </div>
-                    <div>
-                      <span className="text-[10px] text-slate-500 block uppercase font-bold">Nights &bull; Rooms</span>
-                      <span className="font-bold text-slate-200 text-xs">{swapNights}N &bull; {swapRooms}R</span>
-                    </div>
-                    <div>
-                      <span className="text-[10px] text-orange-400 block font-bold uppercase">Total B2B</span>
-                      <span className="font-black text-amber-400 text-sm">
-                        ₹{(swapB2BCostPerNight * swapNights * swapRooms).toLocaleString('en-IN')}
-                      </span>
-                    </div>
-                  </div>
+                  {(() => {
+                    const extraBeds = activeBooking ? bookingExtraBedCalc.billableExtraBeds : 0;
+                    const bedTotal = swapExtraBedPrice * extraBeds * swapNights;
+                    const roomTotal = swapB2BCostPerNight * swapNights * swapRooms;
+                    const grandTotal = roomTotal + bedTotal;
+                    return (
+                      <div className={`grid ${extraBeds > 0 ? 'grid-cols-4' : 'grid-cols-3'} gap-2.5 p-3.5 bg-slate-950 rounded-xl border border-slate-800 text-center`}>
+                        <div>
+                          <span className="text-[10px] text-slate-500 block uppercase font-bold">B2B Rate / Night</span>
+                          <span className="font-bold text-slate-200 text-xs">₹{swapB2BCostPerNight.toLocaleString('en-IN')}</span>
+                        </div>
+                        <div>
+                          <span className="text-[10px] text-slate-500 block uppercase font-bold">Room Cost</span>
+                          <span className="font-bold text-slate-200 text-xs">₹{roomTotal.toLocaleString('en-IN')}</span>
+                          <span className="text-[9px] text-slate-500 block">{swapNights}N &bull; {swapRooms}R</span>
+                        </div>
+                        {extraBeds > 0 && (
+                          <div>
+                            <span className="text-[10px] text-purple-400 block uppercase font-bold">Extra Bed</span>
+                            <span className="font-bold text-purple-300 text-xs">+₹{bedTotal.toLocaleString('en-IN')}</span>
+                            <span className="text-[9px] text-slate-500 block">{extraBeds} Bed &bull; ₹{swapExtraBedPrice}/nt</span>
+                          </div>
+                        )}
+                        <div>
+                          <span className="text-[10px] text-emerald-400 block font-bold uppercase">Total B2B</span>
+                          <span className="font-black text-emerald-400 text-sm">
+                            ₹{grandTotal.toLocaleString('en-IN')}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })()}
                 </>
               ) : (
                 <>

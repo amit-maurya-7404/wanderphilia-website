@@ -240,24 +240,11 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
   const isTokenPaid = alreadyPaid > 0 && alreadyPaid < fiftyPercentAmount;
 
   // Without-Taxes proposal display check (shows base rate upfront; taxes calculated in checkout modal)
-  const isExcludedTaxesDisplay = Boolean(
-    itinerary.showWithoutTaxesInProposal ||
-    itinerary.id === 'bhutan-heer' ||
-    itinerary.id === 'thailand-dimple-revised' ||
-    itinerary.slug === 'bhutan-heer' ||
-    itinerary.slug === 'thailand-dimple-revised' ||
-    itinerary.id?.includes('bhutan-heer') ||
-    itinerary.id?.includes('thailand-dimple') ||
-    itinerary.slug?.includes('thailand-dimple') ||
-    itinerary.id?.includes('singapore-deepak') ||
-    itinerary.slug?.includes('singapore-deepak') ||
-    itinerary.id?.includes('deepak') ||
-    itinerary.slug?.includes('deepak') ||
-    itinerary.id?.includes('dimple') ||
-    itinerary.slug?.includes('dimple')
-  );
+  // By default, ALL client proposals display the amount WITHOUT taxes upfront (+ GST extra),
+  // and full tax breakdown is calculated when clicking "Book Now" in checkout modal.
+  const isExcludedTaxesDisplay = itinerary.showTaxesIncludedInProposal === true ? false : true;
   const displayTotalAmount = isExcludedTaxesDisplay
-    ? Math.round(Number(currentBaseAmount || totalQuotationAmount))
+    ? Math.round(Number(currentBaseAmount || (totalQuotationAmount > 0 ? (totalQuotationAmount / (1 + (currentGstPct / 100))) : 0)))
     : totalQuotationAmount;
   const displayTenPercentAmount = Math.round(displayTotalAmount * 0.1);
   const displayFiftyPercentAmount = Math.round(displayTotalAmount * 0.5);
@@ -1680,11 +1667,11 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                     Ref: {itinerary.id}
                   </span>
                 </div>
-                <div className="flex items-baseline gap-2">
+                <div className="flex flex-wrap items-baseline gap-1.5 sm:gap-2">
                   <span className="text-base sm:text-xl font-black text-stone-900 tracking-tight">
                     ₹{displayTotalAmount.toLocaleString('en-IN')}/-
                   </span>
-                  <span className="text-[10px] sm:text-xs text-stone-500 font-medium hidden md:inline">
+                  <span className="text-[10px] sm:text-xs text-stone-500 font-medium inline">
                     {isExcludedTaxesDisplay ? (
                       <>Total for {(activeOption?.kids ?? itinerary.kids) ? `${(activeOption?.adults ?? itinerary.adults) || 2} Adults + ${activeOption?.kids ?? itinerary.kids} Kids` : `${(activeOption?.adults ?? itinerary.adults) || 2} Adults`} (+ {currentGstPct}% GST{currentTcsPct > 0 ? ` & ${currentTcsPct}% TCS` : ''} extra)</>
                     ) : (

@@ -181,6 +181,7 @@ export interface ManualItinerary {
   enableAdvancePayment?: boolean;
   enableFullPayment?: boolean;
   showWithoutTaxesInProposal?: boolean;
+  showTaxesIncludedInProposal?: boolean;
   isHandedOver?: boolean;
   confirmedOptionNumber?: number;
   confirmedOptionTitle?: string;
