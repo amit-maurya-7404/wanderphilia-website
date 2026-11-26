@@ -734,14 +734,25 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                       </h3>
                     </div>
 
-                    <div className="bg-white/10 backdrop-blur-md rounded-xl px-4 py-2.5 border border-white/20 text-right">
-                      <div className="text-[10px] uppercase font-bold text-amber-300 tracking-wider">
-                        Total Stay Price (Inclusive of Taxes)
+                    {hotel.totalCost !== undefined && hotel.totalCost !== null && Number(hotel.totalCost) > 0 ? (
+                      <div className="bg-white/10 backdrop-blur-md rounded-xl px-4 py-2.5 border border-white/20 text-right">
+                        <div className="text-[10px] uppercase font-bold text-amber-300 tracking-wider">
+                          Total Stay Price (Inclusive of Taxes)
+                        </div>
+                        <div className="text-xl sm:text-2xl font-black text-amber-300">
+                          ₹{Number(hotel.totalCost).toLocaleString('en-IN')}/-
+                        </div>
                       </div>
-                      <div className="text-xl sm:text-2xl font-black text-amber-300">
-                        ₹{hotel.totalCost.toLocaleString('en-IN')}/-
+                    ) : (
+                      <div className="bg-white/10 backdrop-blur-md rounded-xl px-4 py-2.5 border border-white/20 text-right">
+                        <div className="text-[10px] uppercase font-bold text-emerald-300 tracking-wider">
+                          Hotel Stay
+                        </div>
+                        <div className="text-sm sm:text-base font-extrabold text-white">
+                          Included in Package
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
 
                   <div className="p-4 sm:p-6 bg-[#FAF8F5] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 text-xs">
@@ -750,7 +761,7 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                         <Calendar className="w-3.5 h-3.5 text-[#8B261D]" /> Check-In
                       </div>
                       <div className="font-extrabold text-stone-900 text-sm">
-                        {hotel.checkIn}
+                        {hotel.checkIn || 'As per schedule'}
                       </div>
                     </div>
 
@@ -759,7 +770,7 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                         <Calendar className="w-3.5 h-3.5 text-[#8B261D]" /> Check-Out
                       </div>
                       <div className="font-extrabold text-stone-900 text-sm">
-                        {hotel.checkOut}
+                        {hotel.checkOut || 'As per schedule'}
                       </div>
                     </div>
 
@@ -878,23 +889,23 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
               },
               cardKey?: string | number
             ) => {
-              const adultsCount = (opt.adults ?? itinerary.adults) || 2;
+              const adultsCount = Number((opt.adults ?? itinerary.adults) || 2);
               const kidsCount = opt.kids ?? itinerary.kids;
-              const gstPct = opt.gstPercentage !== undefined ? opt.gstPercentage : currentGstPct;
-              const tcsPct = opt.tcsPercentage !== undefined ? opt.tcsPercentage : currentTcsPct;
-              const baseTotal = opt.baseAmount !== undefined ? opt.baseAmount : (opt.finalQuotationAmount ? Math.round(opt.finalQuotationAmount / (tcsPct > 0 ? (1 + (gstPct + tcsPct) / 100) : (1 + gstPct / 100))) : 638400);
-              const gstTotal = Math.round(opt.gstAmount !== undefined ? opt.gstAmount : baseTotal * (gstPct / 100));
-              const tcsTotal = Math.round(opt.tcsAmount !== undefined ? opt.tcsAmount : (tcsPct > 0 ? baseTotal * (tcsPct / 100) : 0));
-              const grandTotal = Math.round(opt.finalQuotationAmount !== undefined ? opt.finalQuotationAmount : (baseTotal + gstTotal + tcsTotal));
+              const gstPct = Number(opt.gstPercentage !== undefined ? opt.gstPercentage : currentGstPct) || 0;
+              const tcsPct = Number(opt.tcsPercentage !== undefined ? opt.tcsPercentage : currentTcsPct) || 0;
+              const baseTotal = Number(opt.baseAmount !== undefined ? opt.baseAmount : (opt.finalQuotationAmount ? Math.round(Number(opt.finalQuotationAmount) / (tcsPct > 0 ? (1 + (gstPct + tcsPct) / 100) : (1 + gstPct / 100))) : 0)) || 0;
+              const gstTotal = Math.round(Number(opt.gstAmount !== undefined ? opt.gstAmount : baseTotal * (gstPct / 100))) || 0;
+              const tcsTotal = Math.round(Number(opt.tcsAmount !== undefined ? opt.tcsAmount : (tcsPct > 0 ? baseTotal * (tcsPct / 100) : 0))) || 0;
+              const grandTotal = Math.round(Number(opt.finalQuotationAmount !== undefined ? opt.finalQuotationAmount : (baseTotal + gstTotal + tcsTotal))) || 0;
 
-              const hasKidPrice = Boolean(opt.perKidPrice && opt.perKidPrice > 0);
-              const adultBase = opt.perAdultPrice || Math.round(baseTotal / adultsCount);
-              const adultGst = Math.round(adultBase * (gstPct / 100));
+              const hasKidPrice = Boolean(opt.perKidPrice && Number(opt.perKidPrice) > 0);
+              const adultBase = Number(opt.perAdultPrice || Math.round(baseTotal / (adultsCount || 1))) || 0;
+              const adultGst = Math.round(adultBase * (gstPct / 100)) || 0;
               const adultTcs = tcsPct > 0 ? Math.round(adultBase * (tcsPct / 100)) : 0;
               const adultGrand = adultBase + adultGst + adultTcs;
 
-              const kidBase = opt.perKidPrice || 0;
-              const kidGst = Math.round(kidBase * (gstPct / 100));
+              const kidBase = Number(opt.perKidPrice) || 0;
+              const kidGst = Math.round(kidBase * (gstPct / 100)) || 0;
               const kidTcs = tcsPct > 0 ? Math.round(kidBase * (tcsPct / 100)) : 0;
               const kidGrand = kidBase + kidGst + kidTcs;
 

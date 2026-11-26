@@ -47,7 +47,9 @@ import {
   Camera,
   Ticket,
   Plus,
-  Trash2
+  Trash2,
+  Paperclip,
+  Upload
 } from 'lucide-react';
 import { OperationsBooking, OperationsHotelItem, OperationsStatus, OperationsSummaryStats } from '@/types/operations';
 import { calculateRoomsAndBeds, isExtraBed, isWithoutBed } from '@/lib/zoho-pricing';
@@ -205,6 +207,10 @@ export default function WanderphiliaOperationsPage() {
   const [swapNights, setSwapNights] = useState<number>(1);
   const [swapRooms, setSwapRooms] = useState<number>(1);
   const [swapManualTotalCost, setSwapManualTotalCost] = useState<string>('');
+  const [swapProofUrl, setSwapProofUrl] = useState<string>('');
+  const [swapProofFileName, setSwapProofFileName] = useState<string>('');
+  const [isUploadingProof, setIsUploadingProof] = useState<string | null>(null);
+  const [missingProofsList, setMissingProofsList] = useState<string[]>([]);
   const [showAllVehicleStates, setShowAllVehicleStates] = useState<boolean>(false);
   const [showAllVendors, setShowAllVendors] = useState<boolean>(false);
   const [isCustomVendor, setIsCustomVendor] = useState<boolean>(false);
@@ -564,6 +570,57 @@ export default function WanderphiliaOperationsPage() {
     };
   }, [activeBooking, getHotelExtraBedDetails]);
 
+  // Experiences Breakdown: Company Paid (Wanderphilia) vs Vendor Paid (Transport Vendor)
+  const experiencesBreakdown = useMemo(() => {
+    let wanderphiliaTotal = 0;
+    const wanderphiliaList: string[] = [];
+    let vendorTotal = 0;
+    const vendorList: string[] = [];
+    const pax = activeBooking?.numberOfGuests || activeBooking?.adults || 2;
+
+    (activeBooking?.dayActivities || []).forEach(day => {
+      const dayCity = day.city || day.fromCity || activeBooking?.destination;
+      (day.experiences || []).forEach((exp: any) => {
+        const expName = typeof exp === 'string' ? exp : (exp.name || exp.title || '');
+        if (!expName || !expName.trim()) return;
+
+        let cost = 0;
+        if (typeof exp === 'object' && exp.cost !== undefined && exp.cost !== null) {
+          cost = Number(exp.cost) || 0;
+        } else {
+          const m = matchZohoActivity(expName, dayCity);
+          if (m) {
+            cost = m.privateCost > 0 ? m.privateCost : ((m.ppCost || 0) * pax);
+          }
+        }
+
+        const paidBy = (typeof exp === 'object' && exp.paidBy) ? exp.paidBy : 'wanderphilia';
+
+        // Only include in costed lists if cost > 0
+        if (cost > 0) {
+          const formattedLine = `${expName.trim()} (₹${cost.toLocaleString('en-IN')})`;
+          if (paidBy === 'vendor') {
+            vendorTotal += cost;
+            vendorList.push(formattedLine);
+          } else {
+            wanderphiliaTotal += cost;
+            wanderphiliaList.push(formattedLine);
+          }
+        }
+      });
+    });
+
+    return {
+      wanderphiliaTotal,
+      wanderphiliaListText: wanderphiliaList.join('\n'),
+      wanderphiliaCount: wanderphiliaList.length,
+      vendorTotal,
+      vendorListText: vendorList.join('\n'),
+      vendorCount: vendorList.length,
+      totalAll: wanderphiliaTotal + vendorTotal,
+    };
+  }, [activeBooking?.dayActivities, activeBooking?.numberOfGuests, activeBooking?.adults, activeBooking?.destination, matchZohoActivity]);
+
   // Compute if all hotels are booked
   const allHotelsConfirmed = useMemo(() => {
     if (!activeBooking?.hotels || activeBooking.hotels.length === 0) return false;
@@ -638,6 +695,35 @@ export default function WanderphiliaOperationsPage() {
   // Push to Zoho CRM Finance Module (Celebration Themed Flow)
   const handleInitiateSyncFinance = () => {
     if (!activeBooking) return;
+
+    // Compulsory proof verification for manual cost overrides
+    const missing: string[] = [];
+    (activeBooking.hotels || []).forEach((h, idx) => {
+      if (h.isManualCost && !h.proofUrl) {
+        missing.push(`Hotel: ${h.hotelName || h.city || `Hotel #${idx + 1}`}`);
+      }
+    });
+    if (activeBooking.transport?.isManualCost && !activeBooking.transport.proofUrl) {
+      missing.push(`Transport: ${activeBooking.transport.vehicleType || 'Vehicle'}`);
+    }
+    (activeBooking.dayActivities || []).forEach((day: any, dIdx: number) => {
+      (day.experiences || []).forEach((exp: any) => {
+        const cost = typeof exp === 'object' ? Number(exp.cost || 0) : 0;
+        const isManual = typeof exp === 'object' && Boolean(exp.isManualCost);
+        const hasProof = typeof exp === 'object' && Boolean(exp.proofUrl);
+        if (isManual && cost > 0 && !hasProof) {
+          const name = typeof exp === 'object' ? (exp.name || exp.title || 'Experience') : String(exp);
+          missing.push(`Experience (Day ${day.dayNumber || dIdx + 1}): ${name}`);
+        }
+      });
+    });
+
+    if (missing.length > 0) {
+      setMissingProofsList(missing);
+      return;
+    }
+
+    setMissingProofsList([]);
     setFinanceSyncError(null);
     setFinanceModalState('confirm');
   };
@@ -670,7 +756,12 @@ export default function WanderphiliaOperationsPage() {
           profitMarginPct: liveMargins.marginPct,
           utrNumber: activeBooking.utrNumber,
           hotels: activeBooking.hotels,
-          transport: activeBooking.transport
+          transport: activeBooking.transport,
+          dayActivities: activeBooking.dayActivities,
+          experiencesTotalCost: experiencesBreakdown.wanderphiliaTotal,
+          experiencesListWithCost: experiencesBreakdown.wanderphiliaListText,
+          extraAmountPaidByTransportVendor: experiencesBreakdown.vendorTotal,
+          extraAmountDetails: experiencesBreakdown.vendorListText,
         })
       });
 
@@ -726,6 +817,8 @@ export default function WanderphiliaOperationsPage() {
     setSwapNights(targetHotel.nights || 1);
     setSwapRooms(targetHotel.roomsCount || activeBooking.roomsCount || 1);
     setSwapManualTotalCost(String(targetHotel.b2bTotalCost || ''));
+    setSwapProofUrl(targetHotel.proofUrl || '');
+    setSwapProofFileName(targetHotel.proofFileName || '');
 
     // Check if city exists in Zoho master data
     const cityKey = normalizeCityKey(targetHotel.city);
@@ -937,6 +1030,10 @@ export default function WanderphiliaOperationsPage() {
       computedTotalCost = Number(swapManualTotalCost) || 0;
       finalB2BCostPerNight = swapNights > 0 ? Math.round(computedTotalCost / swapNights) : computedTotalCost;
       isManual = true;
+      if (computedTotalCost > 0 && !swapProofUrl) {
+        alert('⚠️ Mandatory Proof Required: Please upload a rate proof screenshot when entering a custom hotel cost.');
+        return;
+      }
     }
 
     updatedHotels[swapModalHotelIndex] = {
@@ -956,6 +1053,8 @@ export default function WanderphiliaOperationsPage() {
       extraBedTotalCost: extraBedTotal,
       b2bTotalCost: computedTotalCost,
       isManualCost: isManual,
+      proofUrl: swapProofUrl || prev.proofUrl || '',
+      proofFileName: swapProofFileName || prev.proofFileName || '',
       status: 'confirmed'
     };
 
@@ -1038,12 +1137,91 @@ export default function WanderphiliaOperationsPage() {
     setActiveBooking({ ...activeBooking, dayActivities });
   };
 
+  const handleUpdateExperiencePayer = (dayIdx: number, expIdx: number, paidBy: 'wanderphilia' | 'vendor') => {
+    if (!activeBooking) return;
+    const dayActivities = [...(activeBooking.dayActivities || [])];
+    const day = { ...dayActivities[dayIdx] };
+    const exps = Array.isArray(day.experiences) ? [...day.experiences] : [];
+    if (typeof exps[expIdx] === 'string') {
+      exps[expIdx] = { name: exps[expIdx], paidBy };
+    } else if (exps[expIdx]) {
+      exps[expIdx] = { ...exps[expIdx], paidBy };
+    }
+    day.experiences = exps;
+    dayActivities[dayIdx] = day;
+    setActiveBooking({ ...activeBooking, dayActivities });
+  };
+
   const handleRemoveExperience = (dayIdx: number, expIdx: number) => {
     if (!activeBooking) return;
     const dayActivities = [...(activeBooking.dayActivities || [])];
     const day = { ...dayActivities[dayIdx] };
     const exps = Array.isArray(day.experiences) ? [...day.experiences] : [];
     exps.splice(expIdx, 1);
+    day.experiences = exps;
+    dayActivities[dayIdx] = day;
+    setActiveBooking({ ...activeBooking, dayActivities });
+  };
+
+  const handleProofFileUpload = async (
+    file: File,
+    targetKey: string,
+    onUploaded: (url: string, fileName: string) => void
+  ) => {
+    if (!file) return;
+    setIsUploadingProof(targetKey);
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      const res = await fetch('/api/upload', { method: 'POST', body: fd });
+      const data = await res.json();
+      if (data.url) {
+        onUploaded(data.url, file.name);
+      } else {
+        alert(data.error || 'Failed to upload proof screenshot');
+      }
+    } catch (err) {
+      alert('Upload failed. Please check network connection.');
+    } finally {
+      setIsUploadingProof(null);
+    }
+  };
+
+  const handleUpdateHotelProof = (hotelIdx: number, proofUrl: string, proofFileName: string) => {
+    if (!activeBooking) return;
+    const updated = activeBooking.hotels.map((h, i) =>
+      i === hotelIdx ? { ...h, proofUrl, proofFileName } : h
+    );
+    setActiveBooking({ ...activeBooking, hotels: updated });
+  };
+
+  const handleUpdateTransportProof = (proofUrl: string, proofFileName: string) => {
+    if (!activeBooking) return;
+    setActiveBooking({
+      ...activeBooking,
+      transport: {
+        ...activeBooking.transport,
+        proofUrl,
+        proofFileName
+      }
+    });
+  };
+
+  const handleUpdateExperienceProof = (
+    dayIdx: number,
+    expIdx: number,
+    proofUrl: string,
+    proofFileName: string
+  ) => {
+    if (!activeBooking) return;
+    const dayActivities = [...(activeBooking.dayActivities || [])];
+    const day = { ...dayActivities[dayIdx] };
+    const exps = Array.isArray(day.experiences) ? [...day.experiences] : [];
+    if (typeof exps[expIdx] === 'string') {
+      exps[expIdx] = { name: exps[expIdx], proofUrl, proofFileName };
+    } else if (exps[expIdx]) {
+      exps[expIdx] = { ...exps[expIdx], proofUrl, proofFileName };
+    }
     day.experiences = exps;
     dayActivities[dayIdx] = day;
     setActiveBooking({ ...activeBooking, dayActivities });
@@ -1932,8 +2110,8 @@ export default function WanderphiliaOperationsPage() {
                               </div>
                             </div>
 
-                            {/* Col 5: Booking Ref / Voucher # */}
-                            <div className="space-y-1 md:border-l md:border-slate-800 md:pl-3">
+                            {/* Col 5: Booking Ref & Rate Proof */}
+                            <div className="space-y-1.5 md:border-l md:border-slate-800 md:pl-3">
                               <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">
                                 Booking Ref / Voucher #
                               </span>
@@ -1947,8 +2125,48 @@ export default function WanderphiliaOperationsPage() {
                                   );
                                   setActiveBooking({ ...activeBooking, hotels: updated });
                                 }}
-                                className="w-full bg-slate-950 border border-slate-700 rounded-md px-2.5 py-1 text-xs text-white placeholder:text-slate-600 focus:outline-none focus:border-orange-500 font-mono mt-0.5"
+                                className="w-full bg-slate-950 border border-slate-700 rounded-md px-2.5 py-1 text-xs text-white placeholder:text-slate-600 focus:outline-none focus:border-orange-500 font-mono"
                               />
+
+                              {/* Rate Proof / Voucher Attachment */}
+                              <div className="pt-0.5 flex items-center justify-between gap-1.5">
+                                {hotel.proofUrl ? (
+                                  <div className="flex items-center gap-1.5 bg-emerald-950/70 border border-emerald-500/40 text-emerald-300 px-2 py-0.5 rounded text-[10px] font-bold">
+                                    <CheckCircle2 className="w-3 h-3 text-emerald-400 shrink-0" />
+                                    <a href={hotel.proofUrl} target="_blank" rel="noopener noreferrer" className="hover:underline truncate max-w-[90px]">
+                                      Proof ↗
+                                    </a>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleUpdateHotelProof(hIdx, '', '')}
+                                      className="text-slate-400 hover:text-red-400 ml-1 cursor-pointer"
+                                      title="Remove proof"
+                                    >
+                                      ✕
+                                    </button>
+                                  </div>
+                                ) : (
+                                  <label className={`cursor-pointer inline-flex items-center gap-1 px-2 py-1 rounded text-[10px] font-bold border transition ${
+                                    hotel.isManualCost
+                                      ? 'bg-red-950/80 border-red-500/60 text-red-300 animate-pulse hover:bg-red-900'
+                                      : 'bg-slate-800 border-slate-700 text-slate-400 hover:text-white'
+                                  }`}>
+                                    <Paperclip className="w-3 h-3 shrink-0" />
+                                    <span>{hotel.isManualCost ? '⚠️ Proof Req.' : '+ Proof'}</span>
+                                    <input
+                                      type="file"
+                                      accept="image/*,application/pdf"
+                                      className="hidden"
+                                      onChange={e => {
+                                        const f = e.target.files?.[0];
+                                        if (f) handleProofFileUpload(f, `hotel-${hIdx}`, (url, name) => {
+                                          handleUpdateHotelProof(hIdx, url, name);
+                                        });
+                                      }}
+                                    />
+                                  </label>
+                                )}
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -2216,6 +2434,58 @@ export default function WanderphiliaOperationsPage() {
                       </div>
                     </div>
 
+                    {/* Transport Vendor Rate Proof / Quotation Attachment */}
+                    <div className="p-3 bg-slate-950/80 border border-slate-800 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div>
+                        <span className="text-[11px] font-bold text-slate-200 flex items-center gap-1.5">
+                          <Camera className="w-3.5 h-3.5 text-orange-400" />
+                          Transport Vendor Quotation / Rate Proof Screenshot
+                        </span>
+                        <span className="text-[10px] text-slate-400 block mt-0.5">
+                          {activeBooking.transport?.isManualCost
+                            ? '⚠️ Manual transport cost entered: Vendor quotation screenshot proof is mandatory.'
+                            : 'Upload vendor rate quotation sheet or WhatsApp rate screenshot.'}
+                        </span>
+                      </div>
+
+                      {activeBooking.transport?.proofUrl ? (
+                        <div className="flex items-center gap-2 bg-emerald-950/70 border border-emerald-500/40 text-emerald-300 px-3 py-1.5 rounded-lg text-xs font-bold shrink-0">
+                          <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                          <a href={activeBooking.transport.proofUrl} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                            View Rate Proof ↗
+                          </a>
+                          <button
+                            type="button"
+                            onClick={() => handleUpdateTransportProof('', '')}
+                            className="text-slate-400 hover:text-red-400 ml-1 text-xs cursor-pointer"
+                            title="Remove proof"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ) : (
+                        <label className={`cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition shrink-0 ${
+                          activeBooking.transport?.isManualCost
+                            ? 'bg-red-950/80 border-red-500/60 text-red-300 animate-pulse hover:bg-red-900'
+                            : 'bg-slate-800 border-slate-700 text-slate-300 hover:text-white'
+                        }`}>
+                          <Upload className="w-3.5 h-3.5" />
+                          <span>{activeBooking.transport?.isManualCost ? '⚠️ Upload Mandatory Proof' : 'Upload Proof'}</span>
+                          <input
+                            type="file"
+                            accept="image/*,application/pdf"
+                            className="hidden"
+                            onChange={e => {
+                              const f = e.target.files?.[0];
+                              if (f) handleProofFileUpload(f, 'transport', (url, name) => {
+                                handleUpdateTransportProof(url, name);
+                              });
+                            }}
+                          />
+                        </label>
+                      )}
+                    </div>
+
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs pt-2 border-t border-slate-800">
                       <div>
                         <label className="text-[10px] font-bold text-slate-400 uppercase block mb-1">
@@ -2353,34 +2623,54 @@ export default function WanderphiliaOperationsPage() {
                       </div>
                     </div>
 
-                    <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-400">
-                      <div>
-                        Total Days: <strong className="text-white">{activeBooking.dayActivities?.length || activeBooking.hotels?.length || 0} Days</strong>
-                        &nbsp;&bull;&nbsp;
-                        Guests: <strong className="text-white">{activeBooking.numberOfGuests || activeBooking.adults || 2} Pax</strong>
+                    {/* Experiences Payer Split Cards (Zoho Finance CustomModule10 Integration) */}
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                      <div className="p-3 bg-slate-950/80 rounded-xl border border-sky-500/40 space-y-1">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] font-black uppercase text-sky-400 flex items-center gap-1.5">
+                            🏢 Company Paid
+                          </span>
+                          <span className="text-[10px] bg-sky-950 text-sky-300 font-mono px-1.5 py-0.5 rounded border border-sky-700">
+                            {experiencesBreakdown.wanderphiliaCount} Exps
+                          </span>
+                        </div>
+                        <div className="text-base font-black text-sky-300 font-mono">
+                          ₹{experiencesBreakdown.wanderphiliaTotal.toLocaleString('en-IN')}
+                        </div>
+                        <span className="text-[10px] text-slate-400 block leading-tight">
+                          Syncs to: <strong className="text-slate-300">Experiences Total Cost</strong> &amp; List
+                        </span>
                       </div>
-                      <div className="text-right">
-                        <span className="text-slate-400 text-xs">Estimated Activities B2B Cost: </span>
-                        <strong className="text-amber-400 font-mono text-sm">
-                          ₹{(() => {
-                            let total = 0;
-                            const pax = activeBooking.numberOfGuests || activeBooking.adults || 2;
-                            (activeBooking.dayActivities || []).forEach(day => {
-                              (day.experiences || []).forEach((exp: any) => {
-                                if (typeof exp === 'object' && exp.cost !== undefined) {
-                                  total += Number(exp.cost) || 0;
-                                } else {
-                                  const expName = typeof exp === 'string' ? exp : (exp.name || exp.title || '');
-                                  const m = matchZohoActivity(expName, day.city);
-                                  if (m) {
-                                    total += (m.privateCost > 0 ? m.privateCost : ((m.ppCost || 0) * pax));
-                                  }
-                                }
-                              });
-                            });
-                            return total.toLocaleString('en-IN');
-                          })()}
-                        </strong>
+
+                      <div className="p-3 bg-slate-950/80 rounded-xl border border-amber-500/40 space-y-1">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] font-black uppercase text-amber-400 flex items-center gap-1.5">
+                            🚗 Vendor Paid
+                          </span>
+                          <span className="text-[10px] bg-amber-950 text-amber-300 font-mono px-1.5 py-0.5 rounded border border-amber-700">
+                            {experiencesBreakdown.vendorCount} Exps
+                          </span>
+                        </div>
+                        <div className="text-base font-black text-amber-300 font-mono">
+                          ₹{experiencesBreakdown.vendorTotal.toLocaleString('en-IN')}
+                        </div>
+                        <span className="text-[10px] text-slate-400 block leading-tight">
+                          Syncs to: <strong className="text-slate-300">Extra amount paid by transport vendor</strong>
+                        </span>
+                      </div>
+
+                      <div className="p-3 bg-slate-950/80 rounded-xl border border-slate-800 space-y-1 flex flex-col justify-between">
+                        <div>
+                          <span className="text-[10px] font-bold uppercase text-slate-400 block">
+                            Total All Experiences
+                          </span>
+                          <div className="text-base font-black text-white font-mono mt-0.5">
+                            ₹{experiencesBreakdown.totalAll.toLocaleString('en-IN')}
+                          </div>
+                        </div>
+                        <span className="text-[10px] text-slate-400">
+                          {activeBooking.dayActivities?.length || 0} Days &bull; {activeBooking.numberOfGuests || activeBooking.adults || 2} Pax
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -2507,14 +2797,51 @@ export default function WanderphiliaOperationsPage() {
                                         </div>
                                       </div>
 
-                                      {/* Right: Cost, Booking Status, Voucher #, Delete */}
+                                      {/* Right: Payer Toggle, Cost, Booking Status, Voucher #, Delete */}
                                       <div className="flex flex-wrap items-center gap-2 shrink-0">
+                                        {/* Payer Toggle: Company Paid vs Vendor Paid */}
+                                        <div className="flex items-center gap-0.5 bg-slate-950 p-1 rounded-xl border border-slate-800">
+                                          <button
+                                            type="button"
+                                            onClick={() => handleUpdateExperiencePayer(dIdx, exp.originalIdx, 'wanderphilia')}
+                                            className={`px-2.5 py-1 rounded-lg text-[10px] font-black transition flex items-center gap-1 cursor-pointer ${
+                                              exp.paidBy !== 'vendor'
+                                                ? 'bg-sky-600 text-white shadow-xs'
+                                                : 'text-slate-400 hover:text-white'
+                                            }`}
+                                            title="Company Paid (Wanderphilia will pay -> Experiences Total Cost)"
+                                          >
+                                            <span>🏢 Company Paid</span>
+                                          </button>
+                                          <button
+                                            type="button"
+                                            onClick={() => handleUpdateExperiencePayer(dIdx, exp.originalIdx, 'vendor')}
+                                            className={`px-2.5 py-1 rounded-lg text-[10px] font-black transition flex items-center gap-1 cursor-pointer ${
+                                              exp.paidBy === 'vendor'
+                                                ? 'bg-amber-600 text-white shadow-xs'
+                                                : 'text-slate-400 hover:text-white'
+                                            }`}
+                                            title="Vendor Paid (Transport vendor will pay -> Extra amount paid by transport vendor)"
+                                          >
+                                            <span>🚗 Vendor Paid</span>
+                                          </button>
+                                        </div>
+
                                         {/* Cost input / display */}
-                                        <div className="bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1 text-center min-w-[90px]">
-                                          <span className="text-[9px] text-slate-500 uppercase font-bold block">B2B Cost</span>
-                                          <span className="font-bold text-amber-400 font-mono text-xs">
-                                            ₹{Number(calculatedCost).toLocaleString('en-IN')}
+                                        <div className="bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1 text-center min-w-[95px]">
+                                          <span className="text-[9px] text-slate-500 uppercase font-bold block">
+                                            {exp.paidBy === 'vendor' ? 'Vendor Cost' : 'B2B Cost'}
                                           </span>
+                                          <div className="flex items-center gap-0.5 justify-center">
+                                            <span className="text-xs text-amber-400 font-bold">₹</span>
+                                            <input
+                                              type="number"
+                                              value={calculatedCost || ''}
+                                              onChange={e => handleUpdateExperienceCost(dIdx, exp.originalIdx, Number(e.target.value) || 0)}
+                                              className="w-16 bg-transparent text-amber-400 font-mono font-bold text-xs focus:outline-none focus:ring-1 focus:ring-amber-500 rounded text-center"
+                                              placeholder="0"
+                                            />
+                                          </div>
                                         </div>
 
                                         {/* Status Dropdown */}
@@ -2543,8 +2870,72 @@ export default function WanderphiliaOperationsPage() {
                                           placeholder="Ticket / Ref #"
                                           value={voucherNo}
                                           onChange={e => handleUpdateExperienceVoucher(dIdx, exp.originalIdx, e.target.value)}
-                                          className="w-28 bg-slate-950 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-orange-500"
+                                          className="w-24 bg-slate-950 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-orange-500"
                                         />
+
+                                        {/* Proof Screenshot Attachment */}
+                                        {(() => {
+                                          const rawExp = activeBooking.dayActivities?.[dIdx]?.experiences?.[exp.originalIdx];
+                                          const hasProof = typeof rawExp === 'object' && Boolean(rawExp.proofUrl);
+                                          const isManual = typeof rawExp === 'object' && Boolean(rawExp.isManualCost);
+                                          const costVal = Number(calculatedCost) || 0;
+
+                                          if (hasProof) {
+                                            return (
+                                              <div className="flex items-center gap-1 bg-emerald-950/80 border border-emerald-500/50 text-emerald-300 px-2 py-1 rounded-lg text-[10px] font-bold shrink-0">
+                                                <CheckCircle2 className="w-3 h-3 text-emerald-400 shrink-0" />
+                                                <a href={rawExp.proofUrl} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                                                  Proof ↗
+                                                </a>
+                                                <button
+                                                  type="button"
+                                                  onClick={() => handleUpdateExperienceProof(dIdx, exp.originalIdx, '', '')}
+                                                  className="text-slate-400 hover:text-red-400 ml-0.5 cursor-pointer"
+                                                  title="Remove proof"
+                                                >
+                                                  ✕
+                                                </button>
+                                              </div>
+                                            );
+                                          }
+
+                                          if (isManual && costVal > 0) {
+                                            return (
+                                              <label className="cursor-pointer px-2 py-1 rounded-lg bg-red-950/80 border border-red-500/60 text-red-300 text-[10px] font-bold flex items-center gap-1 hover:bg-red-900 animate-pulse shrink-0" title="Upload Proof Screenshot for this manual cost">
+                                                <Camera className="w-3 h-3 shrink-0" />
+                                                <span>Proof Req.</span>
+                                                <input
+                                                  type="file"
+                                                  accept="image/*,application/pdf"
+                                                  className="hidden"
+                                                  onChange={e => {
+                                                    const f = e.target.files?.[0];
+                                                    if (f) handleProofFileUpload(f, `exp-${dIdx}-${exp.originalIdx}`, (url, name) => {
+                                                      handleUpdateExperienceProof(dIdx, exp.originalIdx, url, name);
+                                                    });
+                                                  }}
+                                                />
+                                              </label>
+                                            );
+                                          }
+
+                                          return (
+                                            <label className="cursor-pointer px-1.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white text-[10px] flex items-center gap-1 transition shrink-0" title="Attach voucher/receipt screenshot">
+                                              <Paperclip className="w-3 h-3 shrink-0" />
+                                              <input
+                                                type="file"
+                                                accept="image/*,application/pdf"
+                                                className="hidden"
+                                                onChange={e => {
+                                                  const f = e.target.files?.[0];
+                                                  if (f) handleProofFileUpload(f, `exp-${dIdx}-${exp.originalIdx}`, (url, name) => {
+                                                    handleUpdateExperienceProof(dIdx, exp.originalIdx, url, name);
+                                                  });
+                                                }}
+                                              />
+                                            </label>
+                                          );
+                                        })()}
 
                                         {/* Delete Button */}
                                         <button
@@ -3303,6 +3694,49 @@ export default function WanderphiliaOperationsPage() {
                       className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-amber-400 font-mono font-bold"
                     />
                   </div>
+
+                  {/* Compulsory Proof Upload for Custom Hotel */}
+                  <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+                    <label className="text-[10px] font-bold text-amber-300 uppercase flex items-center justify-between">
+                      <span className="flex items-center gap-1.5">
+                        <Camera className="w-3.5 h-3.5 text-amber-400" />
+                        Hotel Rate Proof Screenshot (Compulsory)
+                      </span>
+                      {swapProofUrl && (
+                        <span className="text-emerald-400 font-bold text-[10px] flex items-center gap-1">
+                          <CheckCircle2 className="w-3 h-3" /> Attached
+                        </span>
+                      )}
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <label className="cursor-pointer px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition flex items-center gap-1.5 cursor-pointer">
+                        <Upload className="w-3.5 h-3.5" />
+                        <span>{swapProofUrl ? 'Change Screenshot' : 'Upload Proof Screenshot'}</span>
+                        <input
+                          type="file"
+                          accept="image/*,application/pdf"
+                          className="hidden"
+                          onChange={e => {
+                            const f = e.target.files?.[0];
+                            if (f) handleProofFileUpload(f, 'swap-hotel', (url, name) => {
+                              setSwapProofUrl(url);
+                              setSwapProofFileName(name);
+                            });
+                          }}
+                        />
+                      </label>
+                      {swapProofUrl && (
+                        <a
+                          href={swapProofUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs text-indigo-300 hover:underline font-mono truncate max-w-[200px]"
+                        >
+                          View Uploaded ↗
+                        </a>
+                      )}
+                    </div>
+                  </div>
                 </>
               )}
             </div>
@@ -3434,6 +3868,20 @@ export default function WanderphiliaOperationsPage() {
                       <span className="text-[10px] font-bold text-slate-400 block uppercase">Transport B2B Cost</span>
                       <span className="text-xs font-bold text-slate-200">
                         ₹{liveMargins.b2bTransportTotal.toLocaleString('en-IN')}
+                      </span>
+                    </div>
+
+                    <div className="bg-slate-900/80 p-2.5 rounded-xl border border-sky-500/40">
+                      <span className="text-[10px] font-bold text-sky-400 block uppercase">Experiences (Company Paid)</span>
+                      <span className="text-xs font-bold text-sky-300">
+                        ₹{experiencesBreakdown.wanderphiliaTotal.toLocaleString('en-IN')}
+                      </span>
+                    </div>
+
+                    <div className="bg-slate-900/80 p-2.5 rounded-xl border border-amber-500/40">
+                      <span className="text-[10px] font-bold text-amber-400 block uppercase">Vendor Paid (Extra Amt)</span>
+                      <span className="text-xs font-bold text-amber-300">
+                        ₹{experiencesBreakdown.vendorTotal.toLocaleString('en-IN')}
                       </span>
                     </div>
                   </div>
@@ -3572,7 +4020,54 @@ export default function WanderphiliaOperationsPage() {
         </div>
       )}
 
-      {/* MODAL: ADD ATTRACTION FROM ZOHO CRM */}
+      {/* MANDATORY PROOFS MISSING WARNING MODAL */}
+      {missingProofsList.length > 0 && (
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-slate-900 border-2 border-red-500/60 rounded-3xl p-6 max-w-lg w-full space-y-4 shadow-2xl text-white animate-in zoom-in-95 duration-200">
+            <div className="flex items-center gap-3 border-b border-red-500/30 pb-3">
+              <div className="w-10 h-10 rounded-xl bg-red-500/20 text-red-400 flex items-center justify-center shrink-0">
+                <AlertTriangle className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-red-300">
+                  Mandatory Rate Proof Missing!
+                </h3>
+                <span className="text-xs text-slate-400">
+                  Manual cost override detected without proof screenshot
+                </span>
+              </div>
+            </div>
+
+            <div className="text-xs text-slate-300 leading-relaxed bg-red-950/40 border border-red-900/50 p-3 rounded-xl">
+              As per Operations policy, if you manually edit the cost of any Hotel, Transport, or Experience, attaching vendor quotation or screenshot proof is <strong>mandatory</strong> before syncing to Finance.
+            </div>
+
+            <div className="space-y-2">
+              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+                Pending Proofs ({missingProofsList.length} items):
+              </span>
+              <div className="bg-slate-950 border border-slate-800 rounded-xl p-3 space-y-1.5 max-h-48 overflow-y-auto">
+                {missingProofsList.map((item, idx) => (
+                  <div key={idx} className="flex items-center gap-2 text-xs text-amber-300 font-medium">
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-400 shrink-0" />
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-800">
+              <button
+                type="button"
+                onClick={() => setMissingProofsList([])}
+                className="px-5 py-2.5 bg-red-600 hover:bg-red-500 text-white rounded-xl text-xs font-bold transition cursor-pointer shadow-lg shadow-red-600/30"
+              >
+                Understood, Upload Proof
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {activityModalDayIdx !== null && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-2xl w-full max-h-[85vh] flex flex-col overflow-hidden shadow-2xl">

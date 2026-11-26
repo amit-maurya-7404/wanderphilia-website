@@ -32,6 +32,8 @@ export interface OperationsHotelItem {
   voucherUrl?: string;
   notes?: string;
   isManualCost?: boolean; // When manual cost override is toggled
+  proofUrl?: string; // Compulsory proof screenshot when manual cost is entered
+  proofFileName?: string;
 }
 
 export interface OperationsTransportItem {
@@ -48,6 +50,8 @@ export interface OperationsTransportItem {
   vehicleNumber?: string;
   notes?: string;
   isManualCost?: boolean;
+  proofUrl?: string; // Compulsory proof screenshot when manual transport cost is entered
+  proofFileName?: string;
 }
 
 export interface ChildTravelerDetail {
@@ -125,6 +129,10 @@ export interface OperationsBooking {
   // Finance Sync Info
   syncedToFinanceAt?: string;
   financeSyncResponse?: any;
+  experiencesTotalCost?: number;
+  experiencesListWithCost?: string;
+  extraAmountPaidByTransportVendor?: number;
+  extraAmountDetails?: string;
 
   // Audit Trail
   updatedAt: string;

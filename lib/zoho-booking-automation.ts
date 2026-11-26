@@ -50,6 +50,11 @@ export interface BookingPaymentSyncParams {
   specialRequirements?: string;
   noOfDays?: number;
   skipFinanceSync?: boolean;
+  isSalesInitialSync?: boolean;
+  experiencesTotalCost?: number;
+  experiencesListWithCost?: string;
+  extraAmountPaidByTransportVendor?: number;
+  extraAmountDetails?: string;
   noOfNights?: number;
 }
 
@@ -1188,6 +1193,8 @@ async function syncFinanceRecord(
       lookup: { id: string } | null;
       cost: number | null;
     }>;
+    isSalesInitialSync?: boolean;
+    isOperationsSync?: boolean;
   }
 ): Promise<string> {
   try {
@@ -1256,6 +1263,7 @@ async function syncFinanceRecord(
 
     const paymentStatus = params.newBalanceDue <= 0 ? 'Full Paid' : 'Advance Paid';
 
+    // BASE CLIENT REVENUE PAYLOAD (Client payments only)
     const finPayload: Record<string, any> = {
       Name: `${params.customerName} - ${params.destination} Tour`,
       Booking_ID: String(dealId),
@@ -1267,158 +1275,216 @@ async function syncFinanceRecord(
       Status: 'Pending',
     };
 
-    const hotelsMap = await getZohoHotelsMap(accessToken);
-    const roomsCount = Math.max(1, Number(params.roomsCount) || 1);
-
-    // Populate Vehicle & Vendor in Finance - Strictly respect Operations transport cost
-    let vehicleLookup = syncMeta?.vehicleDetails?.vehicleLookup || null;
-    let vendorLookup = syncMeta?.vehicleDetails?.vendorLookup || null;
-    let transportCost = (syncMeta?.vehicleDetails?.vehicleCost !== undefined && syncMeta?.vehicleDetails?.vehicleCost !== null)
-      ? Number(syncMeta.vehicleDetails.vehicleCost)
-      : (params.transportCost !== undefined && params.transportCost !== null ? Number(params.transportCost) : null);
-
-    if (!vehicleLookup && params.vehicleType) {
-      try {
-        const vRes = await resolveVehicleAndLowestVendor(
-          accessToken,
-          params.vehicleType,
-          params.destination,
-          params.numberOfGuests || 2,
-          params.noOfDays || 5
-        );
-        if (vRes.vehicleLookup) vehicleLookup = vRes.vehicleLookup;
-        if (!vendorLookup && vRes.vendorLookup) vendorLookup = vRes.vendorLookup;
-        // ONLY use fallback if transportCost was not provided at all
-        if (transportCost === null) {
-          transportCost = vRes.vehicleCost;
-        }
-      } catch (vehErr) {
-        console.warn('[Finance Vehicle Resolve Warning]:', vehErr);
-      }
-    }
-
-    if (vehicleLookup) finPayload.Vehicle_Name = vehicleLookup;
-    if (vendorLookup) finPayload.Vendor_Name = vendorLookup;
-    if (transportCost !== null && transportCost !== undefined) {
-      finPayload.Total_Transport_Cost = transportCost;
-      finPayload.Transport_Balance_Payable = transportCost;
-    }
-    finPayload.Transport_Paid = false;
-    finPayload.All_Hotel_Paid = false;
-    finPayload.Transport_Amount_Paid = 0;
-    finPayload.Full_Paid_1st = false;
-    finPayload.Full_Paid_2nd = false;
-    finPayload.Full_Paid_3rd = false;
-    finPayload.Full_Paid_4th = false;
-    finPayload.Full_Paid_5th = false;
-    finPayload.Full_Paid_6th = false;
-
-    // Populate Hotels & Costs in Finance (Hotels 1 to 6) and aggregate full hotel B2B costs
-    const hotelList = Array.isArray(params.hotels) ? params.hotels : [];
     let totalB2BHotels = 0;
     const additionalHotelsSummary: string[] = [];
+    let transportCost: number | null = null;
 
-    for (let i = 0; i < hotelList.length; i++) {
-      const hParam = hotelList[i];
-      const hIndex = i + 1;
-      const hBreakdown = syncMeta?.hotelBreakdowns?.find(h => h.index === hIndex);
-      let cost = hBreakdown?.cost ?? null;
-      if ((cost === null || cost === 0) && hParam) {
-        const nights = Number(hParam.nights) || 1;
-        const b2bTotal = Number((hParam as any).b2bTotalCost || 0);
-        const b2bPerNight = Number((hParam as any).b2bCostPerNight || (hParam as any).basePrice || 0);
-        if (b2bTotal > 0) {
-          cost = b2bTotal;
-        } else if (b2bPerNight > 0) {
-          cost = Math.round(b2bPerNight * nights * roomsCount);
-        }
-      }
+    // Strict requirement: When Sales confirms booking, ONLY client payments should show in Finance.
+    // Hotel, transport, and experiences must remain BLANK until Operations confirms.
+    if (syncMeta?.isSalesInitialSync) {
+      console.log(`[Zoho Finance Module] Initial Sales Handover for ${params.customerName} - syncing ONLY client payment details, leaving hotels/transport/experiences blank.`);
+    } else {
+      const hotelsMap = await getZohoHotelsMap(accessToken);
+      const roomsCount = Math.max(1, Number(params.roomsCount) || 1);
 
-      if (cost !== null && cost > 0) {
-        totalB2BHotels += cost;
-      }
+      // Populate Vehicle & Vendor in Finance - Strictly respect Operations transport cost
+      let vehicleLookup = syncMeta?.vehicleDetails?.vehicleLookup || null;
+      let vendorLookup = syncMeta?.vehicleDetails?.vendorLookup || null;
+      transportCost = (syncMeta?.vehicleDetails?.vehicleCost !== undefined && syncMeta?.vehicleDetails?.vehicleCost !== null)
+        ? Number(syncMeta.vehicleDetails.vehicleCost)
+        : (params.transportCost !== undefined && params.transportCost !== null ? Number(params.transportCost) : null);
 
-      if (hIndex <= 6) {
-        let lookup = hBreakdown?.lookup || null;
-        if (!lookup || (lookup.id && !/^\d{15,22}$/.test(String(lookup.id)))) {
-          lookup = resolveHotelLookupId(hParam || hBreakdown, hotelsMap) || null;
-        }
-
-        const nameField = hIndex === 1 ? 'Hotel_Name' : `Hotel_${hIndex}_Name`;
-        const costField = hIndex === 1 ? 'Total_Hotel_Cost' : `Total_Hotel_${hIndex}_Cost`;
-
-        if (lookup) finPayload[nameField] = lookup;
-        if (cost !== null && cost !== undefined) finPayload[costField] = cost;
-      } else {
-        // Hotels 7 and beyond
-        const hotelName = hParam?.hotelName || (hParam as any)?.name || `Hotel ${hIndex}`;
-        const city = hParam?.city || 'N/A';
-        const nights = hParam?.nights || 1;
-        const costStr = cost !== null ? `₹${cost.toLocaleString('en-IN')}` : 'To be confirmed';
-        additionalHotelsSummary.push(`• Hotel ${hIndex}: ${hotelName} (${city}) - ${nights} Nights | B2B Cost: ${costStr}`);
-      }
-    }
-
-    // Build activities subform for Finance
-    const rawSubformRows = await buildOperationsActivitiesSubform(
-      accessToken,
-      params.dayActivities,
-      params.destination
-    );
-
-    const financeSubformRows = rawSubformRows.map((r) => {
-      const row: Record<string, any> = {
-        Days: r.Days,
-        City: r.City,
-        Guided_Tour: Boolean(r.Guided_Tour),
-      };
-      if (r.City_2) row.City_2 = r.City_2;
-      if (r.En_route_Experiences || r.En_Route_Experiences) {
-        row.En_route_Experiences = r.En_route_Experiences || r.En_Route_Experiences;
-      }
-      if (r.Experience_1) row.Experience_1 = r.Experience_1;
-      if (r.Experience_2) row.Experience_2 = r.Experience_2;
-      if (r.Experience_3) row.Experience_3 = r.Experience_3;
-      if (r.Experience_4) row.Experience_4 = r.Experience_4;
-      return row;
-    });
-
-    if (financeSubformRows.length > 0) {
-      if (existingFinId) {
+      if (!vehicleLookup && params.vehicleType) {
         try {
-          const existingFinRes = await fetch(
-            getZohoApiUrl(`/crm/v3/Finance/${existingFinId}?fields=Activities_and_experiences_cost_By_guide`),
-            {
-              headers: { Authorization: `Zoho-oauthtoken ${accessToken}` },
-              cache: 'no-store',
-            }
+          const vRes = await resolveVehicleAndLowestVendor(
+            accessToken,
+            params.vehicleType,
+            params.destination,
+            params.numberOfGuests || 2,
+            params.noOfDays || 5
           );
-          if (existingFinRes.ok) {
-            const existingJson = await existingFinRes.json();
-            const existingSubform = existingJson.data?.[0]?.Activities_and_experiences_cost_By_guide || [];
+          if (vRes.vehicleLookup) vehicleLookup = vRes.vehicleLookup;
+          if (!vendorLookup && vRes.vendorLookup) vendorLookup = vRes.vendorLookup;
+          // ONLY use fallback if transportCost was not provided at all
+          if (transportCost === null) {
+            transportCost = vRes.vehicleCost;
+          }
+        } catch (vehErr) {
+          console.warn('[Finance Vehicle Resolve Warning]:', vehErr);
+        }
+      }
 
-            const mergedRows: any[] = [];
-            for (let i = 0; i < financeSubformRows.length; i++) {
-              if (existingSubform[i]?.id) {
-                mergedRows.push({ ...financeSubformRows[i], id: existingSubform[i].id });
+      if (vehicleLookup) finPayload.Vehicle_Name = vehicleLookup;
+      if (vendorLookup) finPayload.Vendor_Name = vendorLookup;
+      if (transportCost !== null && transportCost !== undefined) {
+        finPayload.Total_Transport_Cost = transportCost;
+        finPayload.Transport_Balance_Payable = transportCost;
+      }
+      finPayload.Transport_Paid = false;
+      finPayload.All_Hotel_Paid = false;
+      finPayload.Transport_Amount_Paid = 0;
+      finPayload.Full_Paid_1st = false;
+      finPayload.Full_Paid_2nd = false;
+      finPayload.Full_Paid_3rd = false;
+      finPayload.Full_Paid_4th = false;
+      finPayload.Full_Paid_5th = false;
+      finPayload.Full_Paid_6th = false;
+
+      // Populate Hotels & Costs in Finance (Hotels 1 to 6) and aggregate full hotel B2B costs
+      const hotelList = Array.isArray(params.hotels) ? params.hotels : [];
+
+      for (let i = 0; i < hotelList.length; i++) {
+        const hParam = hotelList[i];
+        const hIndex = i + 1;
+        const hBreakdown = syncMeta?.hotelBreakdowns?.find(h => h.index === hIndex);
+        let cost = hBreakdown?.cost ?? null;
+        if ((cost === null || cost === 0) && hParam) {
+          const nights = Number(hParam.nights) || 1;
+          const b2bTotal = Number((hParam as any).b2bTotalCost || 0);
+          const b2bPerNight = Number((hParam as any).b2bCostPerNight || (hParam as any).basePrice || 0);
+          if (b2bTotal > 0) {
+            cost = b2bTotal;
+          } else if (b2bPerNight > 0) {
+            cost = Math.round(b2bPerNight * nights * roomsCount);
+          }
+        }
+
+        if (cost !== null && cost > 0) {
+          totalB2BHotels += cost;
+        }
+
+        if (hIndex <= 6) {
+          let lookup = hBreakdown?.lookup || null;
+          if (!lookup || (lookup.id && !/^\d{15,22}$/.test(String(lookup.id)))) {
+            lookup = resolveHotelLookupId(hParam || hBreakdown, hotelsMap) || null;
+          }
+
+          const nameField = hIndex === 1 ? 'Hotel_Name' : `Hotel_${hIndex}_Name`;
+          const costField = hIndex === 1 ? 'Total_Hotel_Cost' : `Total_Hotel_${hIndex}_Cost`;
+
+          if (lookup) finPayload[nameField] = lookup;
+          if (cost !== null && cost !== undefined) finPayload[costField] = cost;
+        } else {
+          // Hotels 7 and beyond
+          const hotelName = hParam?.hotelName || (hParam as any)?.name || `Hotel ${hIndex}`;
+          const city = hParam?.city || 'N/A';
+          const nights = hParam?.nights || 1;
+          const costStr = cost !== null ? `₹${cost.toLocaleString('en-IN')}` : 'To be confirmed';
+          additionalHotelsSummary.push(`• Hotel ${hIndex}: ${hotelName} (${city}) - ${nights} Nights | B2B Cost: ${costStr}`);
+        }
+      }
+
+      // Populate Experiences Breakdown (Company Paid vs Vendor Paid)
+      let expTotalCost = params.experiencesTotalCost;
+      let expListWithCost = params.experiencesListWithCost;
+      let vendorExtraCost = params.extraAmountPaidByTransportVendor;
+      let vendorExtraDetails = params.extraAmountDetails;
+
+      if (expTotalCost === undefined || vendorExtraCost === undefined) {
+        let wanderphiliaTotal = 0;
+        const wanderphiliaList: string[] = [];
+        let vendorTotal = 0;
+        const vendorList: string[] = [];
+        const pax = params.numberOfGuests || params.adults || 2;
+
+        (params.dayActivities || []).forEach((day: any) => {
+          (day.experiences || []).forEach((exp: any) => {
+            const expName = typeof exp === 'string' ? exp : (exp.name || exp.title || '');
+            if (!expName || !expName.trim()) return;
+
+            const cost = typeof exp === 'object' && exp.cost !== undefined && exp.cost !== null
+              ? Number(exp.cost) || 0
+              : (typeof exp === 'object' && exp.ppCost !== undefined ? Number(exp.ppCost) * pax : 0);
+
+            const paidBy = (typeof exp === 'object' && exp.paidBy) ? exp.paidBy : 'wanderphilia';
+
+            // Only include in costed lists if cost > 0
+            if (cost > 0) {
+              const formattedLine = `${expName.trim()} (₹${cost.toLocaleString('en-IN')})`;
+              if (paidBy === 'vendor') {
+                vendorTotal += cost;
+                vendorList.push(formattedLine);
               } else {
-                mergedRows.push(financeSubformRows[i]);
+                wanderphiliaTotal += cost;
+                wanderphiliaList.push(formattedLine);
               }
             }
-            for (let i = financeSubformRows.length; i < existingSubform.length; i++) {
-              if (existingSubform[i]?.id) {
-                mergedRows.push({ id: existingSubform[i].id, _delete: null });
+          });
+        });
+
+        if (expTotalCost === undefined) expTotalCost = wanderphiliaTotal;
+        if (expListWithCost === undefined) expListWithCost = wanderphiliaList.join('\n');
+        if (vendorExtraCost === undefined) vendorExtraCost = vendorTotal;
+        if (vendorExtraDetails === undefined) vendorExtraDetails = vendorList.join('\n');
+      }
+
+      finPayload.Experiences_Total_Cost = Number(expTotalCost) || 0;
+      finPayload.Experiences_List_with_Cost = expListWithCost || '';
+      finPayload.Extra_amount_paid_by_transport_vendor = Number(vendorExtraCost) || 0;
+      finPayload.Extra_Amount_Details = vendorExtraDetails || '';
+      finPayload.Experience_Cost_Total = Number(expTotalCost) || 0;
+
+      // Build activities subform for Finance
+      const rawSubformRows = await buildOperationsActivitiesSubform(
+        accessToken,
+        params.dayActivities,
+        params.destination
+      );
+
+      const financeSubformRows = rawSubformRows.map((r) => {
+        const row: Record<string, any> = {
+          Days: r.Days,
+          City: r.City,
+          Guided_Tour: Boolean(r.Guided_Tour),
+        };
+        if (r.City_2) row.City_2 = r.City_2;
+        if (r.En_route_Experiences || r.En_Route_Experiences) {
+          row.En_route_Experiences = r.En_route_Experiences || r.En_Route_Experiences;
+        }
+        if (r.Experience_1) row.Experience_1 = r.Experience_1;
+        if (r.Experience_2) row.Experience_2 = r.Experience_2;
+        if (r.Experience_3) row.Experience_3 = r.Experience_3;
+        if (r.Experience_4) row.Experience_4 = r.Experience_4;
+        return row;
+      });
+
+      if (financeSubformRows.length > 0) {
+        if (existingFinId) {
+          try {
+            const existingFinRes = await fetch(
+              getZohoApiUrl(`/crm/v3/Finance/${existingFinId}?fields=Activities_and_experiences_cost_By_guide`),
+              {
+                headers: { Authorization: `Zoho-oauthtoken ${accessToken}` },
+                cache: 'no-store',
               }
+            );
+            if (existingFinRes.ok) {
+              const existingJson = await existingFinRes.json();
+              const existingSubform = existingJson.data?.[0]?.Activities_and_experiences_cost_By_guide || [];
+
+              const mergedRows: any[] = [];
+              for (let i = 0; i < financeSubformRows.length; i++) {
+                if (existingSubform[i]?.id) {
+                  mergedRows.push({ ...financeSubformRows[i], id: existingSubform[i].id });
+                } else {
+                  mergedRows.push(financeSubformRows[i]);
+                }
+              }
+              for (let i = financeSubformRows.length; i < existingSubform.length; i++) {
+                if (existingSubform[i]?.id) {
+                  mergedRows.push({ id: existingSubform[i].id, _delete: null });
+                }
+              }
+              finPayload.Activities_and_experiences_cost_By_guide = mergedRows;
+            } else {
+              finPayload.Activities_and_experiences_cost_By_guide = financeSubformRows;
             }
-            finPayload.Activities_and_experiences_cost_By_guide = mergedRows;
-          } else {
+          } catch {
             finPayload.Activities_and_experiences_cost_By_guide = financeSubformRows;
           }
-        } catch {
+        } else {
           finPayload.Activities_and_experiences_cost_By_guide = financeSubformRows;
         }
-      } else {
-        finPayload.Activities_and_experiences_cost_By_guide = financeSubformRows;
       }
     }
 
@@ -1463,8 +1529,8 @@ async function syncFinanceRecord(
       }
     }
 
-    // Attach Financial Breakdown & Profit Margin Note to Finance Record
-    if (finalFinId) {
+    // Attach Financial Breakdown & Profit Margin Note to Finance Record (only when confirmed by Operations)
+    if (finalFinId && !syncMeta?.isSalesInitialSync) {
       try {
         const quotedRevenue = Number(params.totalQuotationAmount || 0);
         const totalB2BTransport = Number(transportCost || 0);
@@ -1936,7 +2002,8 @@ export async function syncBookingAndTaskOnPayment(
         params,
         {
           vehicleDetails: opsSyncResult?.vehicleDetails,
-          hotelBreakdowns: opsSyncResult?.hotelBreakdowns
+          hotelBreakdowns: opsSyncResult?.hotelBreakdowns,
+          isSalesInitialSync: Boolean(params.isSalesInitialSync),
         }
       );
     }
@@ -2116,11 +2183,16 @@ export async function pushOperationsToZohoFinance(
         transportCost: vehicleCost,
         paymentProofUrl: booking.paymentProofUrl || '',
         dayActivities: booking.dayActivities || [],
+        experiencesTotalCost: booking.experiencesTotalCost,
+        experiencesListWithCost: booking.experiencesListWithCost,
+        extraAmountPaidByTransportVendor: booking.extraAmountPaidByTransportVendor,
+        extraAmountDetails: booking.extraAmountDetails,
       },
       {
         existingFinanceId: booking.zohoFinanceId || undefined,
         vehicleDetails,
         hotelBreakdowns,
+        isOperationsSync: true,
       }
     );
 

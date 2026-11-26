@@ -583,3 +583,41 @@ export async function findZohoLeadId(query: {
   }
 }
 
+/**
+ * Dynamic server loader for attachments to prevent bundling Node 'fs' in client components
+ */
+export async function uploadProofUrlToZohoRecords(
+  fileUrlOrPath: string,
+  defaultFileName: string,
+  targetRecords: Array<{ module: string; id: string }>
+): Promise<Array<{ module: string; id: string; success: boolean; attachmentId?: string }>> {
+  if (typeof window !== 'undefined') return [];
+  try {
+    const loader = new Function('return import("./zoho-attachments")');
+    const mod = await loader();
+    return mod.uploadProofUrlToZohoRecords(fileUrlOrPath, defaultFileName, targetRecords);
+  } catch (err) {
+    console.error('[uploadProofUrlToZohoRecords dynamic load error]:', err);
+    return [];
+  }
+}
+
+export async function uploadZohoRecordAttachment(
+  moduleName: string,
+  recordId: string,
+  fileBuffer: Buffer,
+  fileName: string,
+  mimeType: string = 'image/jpeg'
+): Promise<{ success: boolean; attachmentId?: string; error?: string }> {
+  if (typeof window !== 'undefined') return { success: false, error: 'Server only' };
+  try {
+    const loader = new Function('return import("./zoho-attachments")');
+    const mod = await loader();
+    return mod.uploadZohoRecordAttachment(moduleName, recordId, fileBuffer, fileName, mimeType);
+  } catch (err: any) {
+    console.error('[uploadZohoRecordAttachment dynamic load error]:', err);
+    return { success: false, error: err?.message || String(err) };
+  }
+}
+
+

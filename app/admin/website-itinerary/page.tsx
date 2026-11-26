@@ -2612,7 +2612,7 @@ function WebsiteItineraryInner() {
                     </span>
                   </h3>
                   <p className="text-xs text-slate-400">
-                    Agar aapke paas WhatsApp, Word doc ya text me pura write-up ready hai, toh yahan paste karein. Groq AI Title, Days, Hotels, Inclusions &amp; Pricing sab auto-fill kar dega.
+                    If you have a draft itinerary in WhatsApp, Word, or plain text, paste it here. Groq AI will automatically extract and populate the Title, Days, Hotels, Inclusions, and Pricing.
                   </p>
                 </div>
               </div>
@@ -2689,7 +2689,7 @@ function WebsiteItineraryInner() {
                   <h3 className="text-sm font-bold text-white">Manual Creation Mode Active</h3>
                 </div>
                 <p className="text-xs text-slate-300">
-                  Zoho CRM itinerary select karne ki koi zarurat nahi hai. Aap title, destination, days, hotels aur pricing manually type karke direct website par publish kar sakte hain.
+                  Manual mode is active. You can enter destination, days, hotels, and pricing directly and publish directly to the website without selecting a Zoho CRM itinerary.
                 </p>
               </div>
 

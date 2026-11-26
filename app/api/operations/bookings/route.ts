@@ -13,6 +13,7 @@ import {
   updateZohoLeadPaymentStatus,
   findZohoLeadId,
 } from '@/lib/zoho';
+import { uploadProofUrlToZohoRecords } from '@/lib/zoho-attachments';
 import {
   generateInvoicePDFBuffer,
   InvoiceData,
@@ -429,7 +430,8 @@ export async function POST(req: NextRequest) {
     let zohoSyncResult: any = null;
     try {
       zohoSyncResult = await syncBookingAndTaskOnPayment({
-        skipFinanceSync: true,
+        skipFinanceSync: false,
+        isSalesInitialSync: true,
         itineraryId: saved.inquiryId,
         itineraryUrl: saved.itineraryUrl,
         paymentId: saved.utrNumber || `BANK-${Date.now()}`,
@@ -483,6 +485,25 @@ export async function POST(req: NextRequest) {
         saved.zohoOperationsId = zohoSyncResult.operationsId || saved.zohoOperationsId;
         saved.zohoFinanceId = zohoSyncResult.financeId || saved.zohoFinanceId;
         await saveOperationsBooking(saved);
+
+        // Upload Client Payment Proof to Booking & Finance in Zoho CRM
+        if (saved.paymentProofUrl) {
+          try {
+            const targets: Array<{ module: string; id: string }> = [];
+            if (saved.bookingId) targets.push({ module: 'Deals', id: saved.bookingId });
+            if (saved.zohoFinanceId) targets.push({ module: 'Finance', id: saved.zohoFinanceId });
+            if (targets.length > 0) {
+              const safeName = (saved.customerName || 'Client').replace(/[^a-zA-Z0-9]/g, '_');
+              await uploadProofUrlToZohoRecords(
+                saved.paymentProofUrl,
+                `Client_Payment_Proof_${safeName}.jpg`,
+                targets
+              );
+            }
+          } catch (proofErr) {
+            console.warn('[Zoho Handover Payment Proof Upload Warning]:', proofErr);
+          }
+        }
       }
     } catch (zohoErr) {
       console.warn('[Zoho Booking Handover Async Sync Warning]:', zohoErr);

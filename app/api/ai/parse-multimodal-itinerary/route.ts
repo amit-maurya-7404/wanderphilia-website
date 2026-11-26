@@ -13,18 +13,9 @@ interface ExtractedFile {
 
 export async function POST(req: NextRequest) {
   try {
-    const contentType = req.headers.get('content-type') || '';
-    let prompt = '';
-    const fileEntries: any[] = [];
-
-    if (contentType.includes('application/json')) {
-      const jsonBody = await req.json().catch(() => ({}));
-      prompt = String(jsonBody.prompt || '').trim();
-    } else {
-      const formData = await req.formData();
-      prompt = String(formData.get('prompt') || '').trim();
-      fileEntries.push(...formData.getAll('files'));
-    }
+    const formData = await req.formData();
+    const prompt = String(formData.get('prompt') || '').trim();
+    const fileEntries = formData.getAll('files');
 
     const extractedFiles: ExtractedFile[] = [];
     const errors: string[] = [];
@@ -208,11 +199,6 @@ CRITICAL EXTRACTION REQUIREMENTS:
    - "noOfNights": number (e.g. 6)
    - "startDate": string or ""
    - "endDate": string or ""
-
-10. LEAD TRAVELER NAME & CONTACT:
-   - "leadTraveler": { "name": string, "phone": string, "email": string, "departureCity": string }
-   - If the user provides a client/guest name (e.g. "client name heer", "Heer Himachal", "Guest: Amit Maurya", "Heer"), extract the person's name (e.g. "Heer", "Amit Maurya") into "leadTraveler.name". Do NOT leave it empty if a name is mentioned!
-   - Extract departure city (e.g. "Chandigarh", "Delhi", "Mumbai") if given.
    - "leadTraveler": { "name": string, "phone": string, "email": string, "departureCity": string }
 
 Respond ONLY with a valid, clean JSON object matching this schema. Do not wrap in markdown quotes if possible, or use standard JSON.`;
@@ -241,7 +227,8 @@ Respond ONLY with a valid, clean JSON object matching this schema. Do not wrap i
               { role: 'user', content: userPrompt }
             ],
             response_format: { type: 'json_object' },
-            temperature: 0.2
+            temperature: 0.2,
+            max_tokens: 8192
           })
         });
 
@@ -271,33 +258,122 @@ Respond ONLY with a valid, clean JSON object matching this schema. Do not wrap i
       }
     }
 
+    // Heuristic Day Parser to guarantee 100% days extraction if AI truncated or missed days
+    const parseDaysFromTextFallback = (text: string) => {
+      const daySections = text.split(/(?:^|\n)\s*(?=Day\s*\d+)/i);
+      const results: any[] = [];
+      let autoDayNum = 1;
+
+      for (const sec of daySections) {
+        const trimmed = sec.trim();
+        const headerMatch = trimmed.match(/^Day\s*(\d+)?[\s:–—-]*(.*)/i);
+        if (!headerMatch) continue;
+
+        const dayNum = headerMatch[1] ? parseInt(headerMatch[1], 10) : autoDayNum;
+        autoDayNum = dayNum + 1;
+
+        const lines = trimmed.split('\n').map(l => l.trim()).filter(Boolean);
+        const titleLine = lines[0] || `Day ${dayNum}`;
+
+        let toCity = '';
+        const stayMatch = trimmed.match(/NIGHT\s*STAY\s*:\s*([A-Za-z\s\/]+)/i);
+        if (stayMatch) {
+          toCity = stayMatch[1].trim();
+        }
+
+        let fromCity = '';
+        const arrowMatch = titleLine.match(/(.+?)\s*(?:→|->|to)\s*(.+)/i);
+        if (arrowMatch) {
+          fromCity = arrowMatch[1].replace(/^Day\s*\d+\s*[–—:-]*\s*/i, '').trim();
+          if (!toCity) toCity = arrowMatch[2].replace(/\|.*/, '').trim();
+        }
+
+        const points: string[] = [];
+        lines.slice(1).forEach(l => {
+          if (/^(approx|night stay|from apple|welcome to|a day straight|every journey|start early|wake up|\*?Stay Details|\*?Inclusions|\*?Costing|\*?Hotels)/i.test(l)) return;
+          if (l.length > 8) {
+            points.push(l.replace(/^[-*•\d\.\)]\s*/, '').trim());
+          }
+        });
+
+        results.push({
+          day: dayNum,
+          title: titleLine.replace(/^Day\s*\d+\s*[–—:-]*\s*/i, `Day ${dayNum} – `),
+          fromCity: fromCity || (dayNum === 1 ? 'Chandigarh' : ''),
+          toCity: toCity || 'Destination',
+          enRouteStops: [],
+          meals: {
+            breakfast: /breakfast/i.test(trimmed),
+            lunch: /lunch/i.test(trimmed),
+            dinner: /dinner|overnight/i.test(trimmed)
+          },
+          guidedTour: true,
+          sightseeingPoints: points.length > 0 ? points : [titleLine]
+        });
+      }
+
+      return results;
+    };
+
     if (!parsedResult) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: `AI processing failed. ${lastError || 'Please try again with clearer files or prompt.'}`,
-          extractedFilesCount: extractedFiles.length,
-          fileErrors: errors
-        },
-        { status: 500 }
-      );
+      const fallbackDays = parseDaysFromTextFallback(compiledInputText);
+      if (fallbackDays.length > 0) {
+        parsedResult = {
+          destination: 'Himalayan Tour',
+          dayPlans: fallbackDays,
+          noOfDays: fallbackDays.length,
+          noOfNights: Math.max(1, fallbackDays.length - 1)
+        };
+      } else {
+        return NextResponse.json(
+          {
+            success: false,
+            error: `AI processing failed. ${lastError || 'Please try again with clearer files or prompt.'}`,
+            extractedFilesCount: extractedFiles.length,
+            fileErrors: errors
+          },
+          { status: 500 }
+        );
+      }
     }
 
     if (parsedResult) {
-      // Normalize dayPlans / dayItineraries
-      if (!parsedResult.dayPlans && parsedResult.dayItineraries) {
-        parsedResult.dayPlans = parsedResult.dayItineraries;
-      }
-      if (!parsedResult.dayItineraries && parsedResult.dayPlans) {
-        parsedResult.dayItineraries = parsedResult.dayPlans;
+      // 1. Normalize and guarantee dayPlans / dayItineraries / days
+      const textFallbackDays = parseDaysFromTextFallback(compiledInputText);
+      let rawDayPlans: any[] = parsedResult.dayPlans || parsedResult.dayItineraries || parsedResult.days || parsedResult.dayWiseItinerary || parsedResult.itinerary || [];
+
+      // If AI days are fewer than what was found in the text, merge to preserve all days
+      if (textFallbackDays.length > 0 && rawDayPlans.length < textFallbackDays.length) {
+        const mergedDays: any[] = [];
+        for (let i = 1; i <= textFallbackDays.length; i++) {
+          const existing = rawDayPlans.find((d: any) => Number(d.day || d.dayNumber) === i);
+          if (existing && Array.isArray(existing.sightseeingPoints) && existing.sightseeingPoints.length > 0) {
+            mergedDays.push(existing);
+          } else {
+            const fallback = textFallbackDays.find((d: any) => d.day === i);
+            if (fallback) mergedDays.push(fallback);
+            else if (existing) mergedDays.push(existing);
+          }
+        }
+        rawDayPlans = mergedDays;
+      } else if (rawDayPlans.length === 0 && textFallbackDays.length > 0) {
+        rawDayPlans = textFallbackDays;
       }
 
-      // 1. Post-process and ensure Moments are strictly pure experiences (no transit/logistics)
+      parsedResult.dayPlans = rawDayPlans;
+      parsedResult.dayItineraries = rawDayPlans;
+      parsedResult.days = rawDayPlans;
+      if (rawDayPlans.length > 0) {
+        parsedResult.noOfDays = rawDayPlans.length;
+        parsedResult.noOfNights = Math.max(1, rawDayPlans.length - 1);
+      }
+
+      // 2. Post-process and ensure Moments are strictly pure experiences (no transit/logistics)
       const isLogistical = (text: string) => {
         const lower = String(text || '').toLowerCase().trim();
         return /^(arrive|arrival|pickup|drop|transfer|drive|check[\s-]?in|check[\s-]?out|reach|overnight|morning breakfast|after breakfast|evening at leisure|dinner and overnight|proceed to)/i.test(lower) ||
-               /(hotel|resort|homestay|station|airport)\s*(check-in|checkout|transfer|stay)/i.test(lower) ||
-               /^(relax and enjoy lunch|evening at leisure|breakfast at|dinner and sleep)/i.test(lower);
+          /(hotel|resort|homestay|station|airport)\s*(check-in|checkout|transfer|stay)/i.test(lower) ||
+          /^(relax and enjoy lunch|evening at leisure|breakfast at|dinner and sleep)/i.test(lower);
       };
 
       let cleanMoments: string[] = [];
@@ -311,7 +387,7 @@ Respond ONLY with a valid, clean JSON object matching this schema. Do not wrap i
           const pts = Array.isArray(dp.sightseeingPoints) ? dp.sightseeingPoints : [];
           pts.forEach((pt: any) => {
             const s = String(pt || '').replace(/^\d+[\.\)]\s*/, '').replace(/^[-*•]\s*/, '').trim();
-            if (s && !isLogistical(s) && !cleanMoments.includes(s) && !extracted.includes(s)) {
+            if (s && s.length > 8 && !isLogistical(s) && !cleanMoments.includes(s) && !extracted.includes(s)) {
               extracted.push(s);
             }
           });
@@ -320,17 +396,54 @@ Respond ONLY with a valid, clean JSON object matching this schema. Do not wrap i
       }
       parsedResult.moments = cleanMoments;
 
-      // 2. Ensure Pricing is fully synchronized
-      if (parsedResult.pricing) {
-        const adults = Number(parsedResult.adults || parsedResult.pricing.adults || 1);
-        const perAdult = Number(parsedResult.pricing.perAdultPrice) || 0;
-        if (perAdult > 0) {
-          const baseCalc = perAdult * adults;
-          if (!parsedResult.pricing.baseAmount) {
-            parsedResult.pricing.baseAmount = baseCalc;
-          }
-          if (!parsedResult.pricing.finalQuotationAmount) {
-            parsedResult.pricing.finalQuotationAmount = baseCalc;
+      // 3. Ensure Pricing is fully synchronized whether nested in pricing or flat at root
+      const rawPerAdult = Number(parsedResult.pricing?.perAdultPrice || parsedResult.perAdultPrice) || 0;
+      const rawPerKid = Number(parsedResult.pricing?.perKidPrice || parsedResult.perKidPrice) || 0;
+      const adults = Number(parsedResult.pricing?.adults || parsedResult.adults || 3);
+      const kids = Number(parsedResult.pricing?.kids || parsedResult.kids || 0);
+      const baseCalc = rawPerAdult * adults;
+      const finalCalc = Number(parsedResult.pricing?.finalQuotationAmount || parsedResult.finalQuotationAmount) || baseCalc;
+      const advCalc = Number(parsedResult.pricing?.advanceAmount || parsedResult.advanceAmount) || (finalCalc > 0 ? Math.round(finalCalc * 0.1) : 0);
+
+      parsedResult.pricing = {
+        adults,
+        kids,
+        perAdultPrice: rawPerAdult > 0 ? rawPerAdult : null,
+        perKidPrice: rawPerKid > 0 ? rawPerKid : null,
+        baseAmount: baseCalc > 0 ? baseCalc : null,
+        finalQuotationAmount: finalCalc > 0 ? finalCalc : null,
+        advanceAmount: advCalc > 0 ? advCalc : null,
+        kidsDetails: parsedResult.kidsDetails || []
+      };
+      parsedResult.perAdultPrice = rawPerAdult;
+      parsedResult.baseAmount = baseCalc;
+      parsedResult.finalQuotationAmount = finalCalc;
+
+      // 4. Fallback for hotelStays if AI missed it
+      if (!Array.isArray(parsedResult.hotelStays) || parsedResult.hotelStays.length === 0) {
+        const stayRegex = /(?:Stay Details|Hotels)\s*:?\s*([\s\S]*?)(?=(?:Costing|Inclusions|Exclusions|\$))/i;
+        const stayMatch = compiledInputText.match(stayRegex);
+        if (stayMatch) {
+          const lines = stayMatch[1].split('\n').map(l => l.trim()).filter(Boolean);
+          const parsedStays: any[] = [];
+          lines.forEach(l => {
+            const colonMatch = l.match(/([^:]+)\s*:\s*(.+)/);
+            if (colonMatch) {
+              const city = colonMatch[1].replace(/^[-*•]\s*/, '').trim();
+              const hotelName = colonMatch[2].replace(/^[-*•]\s*/, '').trim();
+              if (city && hotelName) {
+                parsedStays.push({
+                  hotelName,
+                  city,
+                  nights: 1,
+                  roomCategory: 'Deluxe Room',
+                  category: 'Deluxe'
+                });
+              }
+            }
+          });
+          if (parsedStays.length > 0) {
+            parsedResult.hotelStays = parsedStays;
           }
         }
       }

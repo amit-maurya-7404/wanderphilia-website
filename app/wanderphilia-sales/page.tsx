@@ -1718,10 +1718,12 @@ export default function SheetItineraryPage() {
   const [travelStyle, setTravelStyle] = useState('Family Trip');
 
   // Optional Zoho Sync (Inquiry / Lead)
+  // Optional Zoho Sync (Inquiry / Lead) & Existing Itinerary Reload
   const [zohoInquiryInput, setZohoInquiryInput] = useState('');
   const [zohoLeadId, setZohoLeadId] = useState<string>('');
   const [fetchingZoho, setFetchingZoho] = useState(false);
   const [zohoSyncMsg, setZohoSyncMsg] = useState<string | null>(null);
+  const [loadedItineraryId, setLoadedItineraryId] = useState<string | null>(null);
 
   // Existing Generated Options for this Inquiry / Lead
   const [existingOptions, setExistingOptions] = useState<Record<number, any>>({});
@@ -1736,7 +1738,7 @@ export default function SheetItineraryPage() {
 
   const handleOpenHandoverForOption = (optNum: number) => {
     if (isLeadHandedOver) {
-      alert(`Yeh lead pehle se Operations ko handover ho chuki hai (Option ${leadHandoverDetails?.optionNumber || optNum}). Dubara handover nahi kiya ja sakta.`);
+      alert(`This lead has already been handed over to Operations (Option ${leadHandoverDetails?.optionNumber || optNum}). Duplicate handover is not permitted.`);
       return;
     }
     setHandoverTargetOption(optNum);
@@ -2062,6 +2064,73 @@ export default function SheetItineraryPage() {
       day.enRouteStops = day.enRouteStops.filter((_, i) => i !== stopIdx);
       updated[dayIdx] = day;
       return updated;
+    });
+  };
+
+  // Helper to generate a catchy narrative heading for a manual day
+  const generateCatchyHeadingForDay = (day: any, idx: number, total: number): string => {
+    const dayNum = day.dayNumber || idx + 1;
+    const from = String(day.fromCity || '').trim();
+    const to = String(day.toCity || '').trim();
+    const isCityTransfer = from && to && from.toLowerCase() !== to.toLowerCase();
+
+    // Extract notable landmarks or experiences from sightseeing points
+    const pts = (Array.isArray(day.sightseeingPoints) ? day.sightseeingPoints : []).map((p: any) =>
+      String(p).replace(/^\d+[\.\)]\s*/, '').replace(/^[-*•]\s*/, '').trim()
+    );
+    const notable: string[] = [];
+
+    pts.forEach((p: string) => {
+      const m = p.match(/(?:visit|explore|discover|trek to|walk across|reach|marvel at|witness|admire|experience)\s+([^,\.\|;]{4,35})/i) ||
+        p.match(/([A-Z][a-z]+(?:\s+[A-Z][a-z]+){1,3}(?:\s+(?:Monastery|Temple|Bridge|Lake|Valley|Village|Fort|Palace|Pass|Market|River|Gompa|Sanctuary|Camp|Ridge))?)/);
+      if (m && m[1]) {
+        const candidate = m[1].replace(/^(the|a|an)\s+/i, '').trim();
+        if (candidate.length > 3 && !notable.some(n => n.toLowerCase() === candidate.toLowerCase())) {
+          notable.push(candidate);
+        }
+      }
+    });
+
+    const stops = (Array.isArray(day.enRouteStops) ? day.enRouteStops : []).map((s: any) => String(s).trim()).filter(Boolean);
+    const highlights = [...notable, ...stops].slice(0, 2);
+
+    let baseRoute = '';
+    if (idx === 0) {
+      baseRoute = isCityTransfer ? `Arrive in ${to}` : `Arrival & Welcome in ${to || destination || 'Himalayas'}`;
+    } else if (idx === total - 1 && total > 1) {
+      baseRoute = isCityTransfer ? `${from} → ${to} Departure` : `${to || 'Departure'} | Journey Concludes`;
+    } else if (isCityTransfer) {
+      baseRoute = `${from} → ${to}`;
+    } else {
+      baseRoute = `${to || 'Local Exploration'}`;
+    }
+
+    if (highlights.length > 0) {
+      return `Day ${dayNum} — ${baseRoute} | ${highlights.join(' & ')}`;
+    }
+    return `Day ${dayNum} — ${baseRoute}`;
+  };
+
+  const handleRegenerateAllDayTitles = () => {
+    setManualDays(prev => {
+      const tot = prev.length;
+      return prev.map((day, idx) => ({
+        ...day,
+        title: generateCatchyHeadingForDay(day, idx, tot)
+      }));
+    });
+  };
+
+  const handleRegenerateSingleDayTitle = (dIdx: number) => {
+    setManualDays(prev => {
+      const tot = prev.length;
+      return prev.map((day, idx) => {
+        if (idx !== dIdx) return day;
+        return {
+          ...day,
+          title: generateCatchyHeadingForDay(day, idx, tot)
+        };
+      });
     });
   };
 
@@ -2403,7 +2472,21 @@ export default function SheetItineraryPage() {
   const handleMealPlanChange = (newMeal: string) => {
     setMealPlan(newMeal);
 
-    // Sync day-wise meal checkboxes to match newly selected meal plan
+    // Sync manualDays (Manual mode) to match newly selected meal plan
+    setManualDays(prev => {
+      const tot = prev.length;
+      return prev.map(day => {
+        const dMeals = getDefaultMealsForDay(day.dayNumber, tot, newMeal);
+        return {
+          ...day,
+          breakfast: dMeals.breakfast,
+          lunch: dMeals.lunch,
+          dinner: dMeals.dinner
+        };
+      });
+    });
+
+    // Sync day-wise meal checkboxes (Sheet mode) to match newly selected meal plan
     setDayRows(prev => {
       const tot = prev.length;
       return prev.map(row => {
@@ -3584,7 +3667,7 @@ export default function SheetItineraryPage() {
         setLeadHandoverDetails(data.handedOverDetails || null);
         if (data.existingOptions) {
           setExistingOptions(data.existingOptions);
-          
+
           if (data.isHandedOver && data.handedOverDetails?.optionNumber) {
             // Auto-load and unlock the booked option so sales executive can immediately inspect its costing, hotels, vehicle, and activities!
             const bookedOpt = Number(data.handedOverDetails.optionNumber);
@@ -3621,17 +3704,224 @@ export default function SheetItineraryPage() {
   };
 
   // Sync from Zoho Lead
+  // Load full details of an already generated itinerary document directly into the form
+  const loadExistingItineraryDocIntoForm = (doc: any) => {
+    const itId = doc.id || doc.slug || '';
+    setLoadedItineraryId(itId);
+
+    // 1. Inquiry ID & Lead ID
+    const resolvedInq = doc.inquiryId || doc.rawZohoData?.Inquiry_ID || doc.rawZohoData?.inquiryId || itId;
+    setInquiryId(resolvedInq);
+    if (doc.zohoLeadId || doc.rawZohoData?.id) {
+      setZohoLeadId(String(doc.zohoLeadId || doc.rawZohoData?.id));
+    }
+
+    // 2. Client & Lead Info
+    const raw = doc.rawZohoData || {};
+    const lead = doc.leadDetails || {};
+    const fName = lead.firstName || raw.First_Name || '';
+    const lName = lead.lastName || raw.Last_Name || '';
+    const cName = lead.name || raw.Full_Name || raw.leadName || doc.title || [fName, lName].filter(Boolean).join(' ') || 'Valued Guest';
+    setFirstName(fName);
+    setLastName(lName);
+    setFullName(cName);
+
+    setEmail(lead.email || raw.Email || '');
+    setMobile(lead.mobile || lead.phone || raw.Mobile || raw.Phone || '');
+    setDepartureCity(doc.departureCity || lead.departureCity || raw.Departure_City || '');
+
+    const dest = doc.destination || raw.Destination || raw.Destinations || raw.Destination_Location || '';
+    if (dest) setDestination(dest);
+
+    if (doc.destinationType || raw.Destination_Type) {
+      setDestinationType(doc.destinationType || raw.Destination_Type);
+    }
+    if (doc.travelStyle || raw.Travel_Style) {
+      setTravelStyle(doc.travelStyle || raw.Travel_Style);
+    }
+
+    // 3. Travel Dates & Duration
+    const sDate = doc.startDate || lead.startDate || raw.Preferred_Start_date || raw.Start_Date || raw.Travel_Start_Date;
+    if (sDate) setStartDate(toDateInputValue(sDate));
+
+    const eDate = doc.endDate || lead.endDate || raw.Travel_End_Date || raw.End_Date;
+    if (eDate) setEndDate(toDateInputValue(eDate));
+
+    if (doc.noOfDays || raw.No_of_Days) {
+      setNoOfDays(Number(doc.noOfDays || raw.No_of_Days));
+    }
+    if (doc.noOfNights || raw.No_of_Nights) {
+      setNoOfNights(Number(doc.noOfNights || raw.No_of_Nights));
+    }
+
+    // 4. Pax Breakdown & Kids Details
+    const aCount = doc.adults ?? lead.adults ?? raw.Adults ?? 2;
+    const kCount = doc.kids ?? lead.kids ?? raw.Kids ?? 0;
+    setAdults(Number(aCount));
+    setKids(Number(kCount));
+
+    const kDetails = Array.isArray(doc.kidsDetails) && doc.kidsDetails.length > 0
+      ? doc.kidsDetails
+      : (Array.isArray(raw.kidsDetails) && raw.kidsDetails.length > 0
+        ? raw.kidsDetails
+        : (Array.isArray(raw.childrenDetails) ? raw.childrenDetails : []));
+    if (kDetails.length > 0) {
+      setKidsDetails(kDetails.map((k: any, i: number) => ({
+        childIndex: i + 1,
+        age: Number(k.age) || 5,
+        bedType: k.bedType || 'extra_bed',
+        notes: k.notes || ''
+      })));
+    }
+
+    // 5. Vehicle & Meal Plan
+    if (doc.vehicleType || raw.Vehicle_Type) {
+      setVehicleType(doc.vehicleType || raw.Vehicle_Type);
+    }
+    if (doc.mealPlan || doc.stay?.mealPlan || raw.Meal_Plan) {
+      setMealPlan(doc.mealPlan || doc.stay?.mealPlan || raw.Meal_Plan);
+    }
+
+    // 6. Manual vs Sheet Mode detection
+    const isManual = Boolean(
+      doc.creationMode === 'manual' ||
+      doc.isManualItinerary ||
+      raw.isManualItinerary ||
+      (Array.isArray(doc.manualDayPlans) && doc.manualDayPlans.length > 0) ||
+      (Array.isArray(raw.manualDayPlans) && raw.manualDayPlans.length > 0)
+    );
+
+    if (isManual) {
+      setCreationMode('manual');
+      const incomingManual = (Array.isArray(doc.manualDayPlans) && doc.manualDayPlans.length > 0)
+        ? doc.manualDayPlans
+        : (Array.isArray(raw.manualDayPlans) ? raw.manualDayPlans : (Array.isArray(doc.dayPlans) ? doc.dayPlans : []));
+
+      if (incomingManual.length > 0) {
+        const normalized = incomingManual.map((md: any, idx: number) => ({
+          dayNumber: md.dayNumber || idx + 1,
+          title: md.title || `Day ${idx + 1}`,
+          fromCity: md.fromCity || '',
+          enRouteStops: Array.isArray(md.enRouteStops) ? md.enRouteStops : [],
+          toCity: md.toCity || md.stayCity || md.city || '',
+          breakfast: Boolean(md.breakfast),
+          lunch: Boolean(md.lunch),
+          dinner: Boolean(md.dinner),
+          guidedTour: md.guidedTour !== undefined ? Boolean(md.guidedTour) : true,
+          sightseeingPoints: (Array.isArray(md.sightseeingPoints) && md.sightseeingPoints.length > 0)
+            ? md.sightseeingPoints
+            : (Array.isArray(md.points) ? md.points : (Array.isArray(md.timeline) ? md.timeline : []))
+        }));
+        setManualDays(normalized);
+      }
+
+      if (Array.isArray(doc.moments) && doc.moments.length > 0) {
+        setCustomMoments(doc.moments);
+      } else if (Array.isArray(raw.moments) && raw.moments.length > 0) {
+        setCustomMoments(raw.moments);
+      } else if (Array.isArray(doc.highlights) && doc.highlights.length > 0) {
+        setCustomMoments(doc.highlights);
+      }
+    }
+
+    // 7. Hotels
+    const incomingHotels = (Array.isArray(doc.hotels) && doc.hotels.length > 0)
+      ? doc.hotels
+      : (Array.isArray(raw.hotels) ? raw.hotels : []);
+    if (incomingHotels.length > 0) {
+      setHotels(incomingHotels.map((h: any, idx: number) => ({
+        index: h.index || idx + 1,
+        hotelName: h.hotelName || '',
+        city: h.city || '',
+        nights: Number(h.nights) || 1,
+        roomCategory: h.roomCategory || '',
+        category: h.category || 'Deluxe',
+        stayDates: h.stayDates || '',
+        basePrice: Number(h.basePrice) || 0,
+        extraBedPrice: Number(h.extraBedPrice) || 0,
+        childWithoutBedPrice: Number(h.childWithoutBedPrice) || 0
+      })));
+      setIsHotelsManuallyCustomized(true);
+      if (incomingHotels[0]?.category) {
+        setMasterHotelCategory(incomingHotels[0].category);
+      }
+    }
+
+    // 8. Inclusions & Exclusions
+    if (Array.isArray(doc.inclusions) && doc.inclusions.length > 0) {
+      setInclusions(doc.inclusions);
+      setIsCustomInclusionsEdited(true);
+    }
+    if (Array.isArray(doc.exclusions) && doc.exclusions.length > 0) {
+      setExclusions(doc.exclusions);
+    }
+
+    // 9. Pricing & Quotation
+    setIsQuoteManuallyEdited(true);
+    if (doc.baseQuotationAmount !== undefined && doc.baseQuotationAmount !== null) {
+      setBaseQuotation(String(doc.baseQuotationAmount));
+    }
+    if (doc.marginPercentage !== undefined && doc.marginPercentage !== null) {
+      setMarginPercent(String(doc.marginPercentage));
+    }
+    if (doc.finalQuotationAmount !== undefined && doc.finalQuotationAmount !== null) {
+      setFinalQuotation(String(doc.finalQuotationAmount));
+    }
+    if (doc.perAdultPrice !== undefined && doc.perAdultPrice !== null) {
+      setPerAdultPrice(String(doc.perAdultPrice));
+    }
+    if (doc.perKidPrice !== undefined && doc.perKidPrice !== null) {
+      setPerKidPrice(String(doc.perKidPrice));
+    }
+    if (doc.advanceAmountPaid !== undefined && doc.advanceAmountPaid !== null) {
+      setAdvanceAmount(String(doc.advanceAmountPaid));
+    }
+    if (doc.balancePendingAmount !== undefined && doc.balancePendingAmount !== null) {
+      setBalanceAmount(String(doc.balancePendingAmount));
+    }
+
+    // Option Number
+    if (doc.optionNumber) {
+      setSelectedOption(Number(doc.optionNumber));
+    }
+
+    // Check existing options in MongoDB for this Inquiry ID
+    if (resolvedInq) {
+      checkExistingItineraryOptions(resolvedInq, doc.zohoLeadId || raw.id);
+    }
+
+    setZohoSyncMsg(`✅ Loaded Itinerary "${itId}" (Inquiry: ${resolvedInq}). You can make changes and click "Update Itinerary" to save.`);
+  };
+
+  // Sync from Zoho Lead OR Existing Manual Itinerary ID
   const handleFetchFromZoho = async () => {
     if (!zohoInquiryInput.trim()) return;
+    const rawInput = zohoInquiryInput.trim();
+    if (!rawInput) return;
     setFetchingZoho(true);
     setZohoSyncMsg(null);
     setOptionLockAlert(null);
+
     try {
-      const res = await fetch(`/api/zoho/fetch-lead?query=${encodeURIComponent(zohoInquiryInput.trim())}`);
+      // 1. First check if this query matches an existing generated manual or sheet itinerary in MongoDB / local
+      try {
+        const itRes = await fetch(`/api/itinerary/fetch-existing?query=${encodeURIComponent(rawInput)}`);
+        const itData = await itRes.json();
+        if (itRes.ok && itData.success && itData.found && itData.itinerary) {
+          loadExistingItineraryDocIntoForm(itData.itinerary);
+          return;
+        }
+      } catch (itErr) {
+        console.warn('[Fetch existing itinerary precheck failed]:', itErr);
+      }
+
+      // 2. Otherwise proceed to Zoho CRM lead lookup
+      const res = await fetch(`/api/zoho/fetch-lead?query=${encodeURIComponent(rawInput)}`);
       const data = await res.json();
       if (!res.ok || !data.success || !data.lead) throw new Error(data.error || 'Lead not found in Zoho.');
       const l = data.lead;
       const raw = l.rawLeadData || {};
+      setLoadedItineraryId(null);
 
       // 1. Inquiry ID & Zoho Lead ID
       const resolvedInquiryId = l.inquiryId || raw.Inquiry_ID || zohoInquiryInput.trim();
@@ -5333,24 +5623,32 @@ export default function SheetItineraryPage() {
       setCreationMode('manual');
 
       // 7. Day-wise Itinerary (Manual Days Table)
-      if (Array.isArray(data.dayPlans) && data.dayPlans.length > 0) {
-        const mappedManual = data.dayPlans.map((dp: any, idx: number) => {
+      const incomingDays = (Array.isArray(data.dayPlans) && data.dayPlans.length > 0)
+        ? data.dayPlans
+        : ((Array.isArray(data.days) && data.days.length > 0)
+          ? data.days
+          : ((Array.isArray(data.dayItineraries) && data.dayItineraries.length > 0) ? data.dayItineraries : []));
+
+      if (incomingDays.length > 0) {
+        const mappedManual = incomingDays.map((dp: any, idx: number) => {
           const rawPoints = Array.isArray(dp.sightseeingPoints) && dp.sightseeingPoints.length > 0
             ? dp.sightseeingPoints
-            : (Array.isArray(dp.timeline) && dp.timeline.length > 0 ? dp.timeline : []);
+            : (Array.isArray(dp.timeline) && dp.timeline.length > 0
+              ? dp.timeline
+              : (Array.isArray(dp.activities) && dp.activities.length > 0 ? dp.activities : []));
           const cleanPoints = rawPoints.map((p: any) => String(p).trim()).filter(Boolean);
 
           return {
-            dayNumber: dp.day || idx + 1,
+            dayNumber: dp.day || dp.dayNumber || idx + 1,
             title: dp.title || `Day ${dp.day || idx + 1}: ${dp.toCity || destination || 'Exploration'}`,
-            fromCity: dp.fromCity || (idx === 0 ? (departureCity || dp.city || '') : (data.dayPlans[idx - 1]?.toCity || dp.city || '')),
+            fromCity: dp.fromCity || (idx === 0 ? (departureCity || dp.city || '') : (incomingDays[idx - 1]?.toCity || dp.city || '')),
             enRouteStops: Array.isArray(dp.enRouteStops) ? dp.enRouteStops : [],
-            toCity: dp.toCity || dp.city || destination || 'City',
+            toCity: dp.toCity || dp.stayLocation || dp.city || destination || 'City',
             breakfast: Boolean(dp.meals?.breakfast),
             lunch: Boolean(dp.meals?.lunch),
             dinner: Boolean(dp.meals?.dinner),
-            guidedTour: Boolean(dp.guidedTour),
-            sightseeingPoints: cleanPoints.length > 0 ? cleanPoints : [`Sightseeing & luxury experiences in ${dp.toCity || destination}.`]
+            guidedTour: dp.guidedTour !== undefined ? Boolean(dp.guidedTour) : true,
+            sightseeingPoints: cleanPoints.length > 0 ? cleanPoints : [`Sightseeing & experiences in ${dp.toCity || destination}.`]
           };
         });
         setManualDays(mappedManual);
@@ -5392,23 +5690,33 @@ export default function SheetItineraryPage() {
       }
 
       // 11. Pricing Breakdown
-      if (data.pricing) {
-        const adultsCount = Number(data.adults !== undefined ? data.adults : adults) || 1;
-        const kidsCount = Number(data.kids !== undefined ? data.kids : kids) || 0;
-        const perAdult = Number(data.pricing.perAdultPrice) || 0;
-        const perKid = Number(data.pricing.perKidPrice) || 0;
+      const pricingObj = data.pricing || {
+        adults: data.adults,
+        kids: data.kids,
+        perAdultPrice: data.perAdultPrice,
+        perKidPrice: data.perKidPrice,
+        baseAmount: data.baseAmount,
+        finalQuotationAmount: data.finalQuotationAmount,
+        advanceAmount: data.advanceAmount
+      };
+
+      if (pricingObj) {
+        const adultsCount = Number(pricingObj.adults !== undefined ? pricingObj.adults : adults) || 1;
+        const kidsCount = Number(pricingObj.kids !== undefined ? pricingObj.kids : kids) || 0;
+        const perAdult = Number(pricingObj.perAdultPrice) || 0;
+        const perKid = Number(pricingObj.perKidPrice) || 0;
         const calculatedTotal = perAdult > 0 ? (perAdult * adultsCount + perKid * kidsCount) : 0;
-        const totalBase = data.pricing.baseAmount ? Number(data.pricing.baseAmount) : calculatedTotal;
-        const finalQ = data.pricing.finalQuotationAmount ? Number(data.pricing.finalQuotationAmount) : totalBase;
+        const totalBase = pricingObj.baseAmount ? Number(pricingObj.baseAmount) : calculatedTotal;
+        const finalQ = pricingObj.finalQuotationAmount ? Number(pricingObj.finalQuotationAmount) : totalBase;
 
         if (perAdult > 0) setPerAdultPrice(String(perAdult));
         if (perKid > 0) setPerKidPrice(String(perKid));
         if (totalBase > 0) setBaseQuotation(String(totalBase));
         if (finalQ > 0) setFinalQuotation(String(finalQ));
-        if (data.pricing.advanceAmount) setAdvanceAmount(String(data.pricing.advanceAmount));
-        if (data.pricing.gstPercentage) setGstPercentage(Number(data.pricing.gstPercentage));
-        if (data.pricing.tcsPercentage) setTcsPercentage(Number(data.pricing.tcsPercentage));
-        if (data.pricing.childPricingNote) setChildPricingNote(data.pricing.childPricingNote);
+        if (pricingObj.advanceAmount) setAdvanceAmount(String(pricingObj.advanceAmount));
+        if (pricingObj.gstPercentage) setGstPercentage(Number(pricingObj.gstPercentage));
+        if (pricingObj.tcsPercentage) setTcsPercentage(Number(pricingObj.tcsPercentage));
+        if (pricingObj.childPricingNote) setChildPricingNote(pricingObj.childPricingNote);
       }
 
       // 12. Inclusions & Exclusions
@@ -5496,6 +5804,8 @@ export default function SheetItineraryPage() {
               name: expName.trim(),
               description: (d.descriptions[idx] || '').trim(),
               ppCost: d.experienceCosts[idx] || 0,
+              cost: (d.experienceCosts[idx] || 0) * (Number(adults) || 2),
+              paidBy: 'wanderphilia',
               guidedTour: d.guidedTour
             });
           }
@@ -5957,8 +6267,8 @@ export default function SheetItineraryPage() {
                         setDestinationType(dest.type);
                       }}
                       className={`px-3 py-1.5 rounded-xl font-bold transition-all text-xs flex items-center gap-1.5 cursor-pointer border ${isSelected
-                          ? 'bg-gradient-to-r from-orange-600 to-amber-600 text-white border-orange-500 shadow-md shadow-orange-600/30 ring-1 ring-orange-500/50'
-                          : 'bg-slate-900 hover:bg-slate-800 text-slate-300 border-slate-800 hover:border-slate-700'
+                        ? 'bg-gradient-to-r from-orange-600 to-amber-600 text-white border-orange-500 shadow-md shadow-orange-600/30 ring-1 ring-orange-500/50'
+                        : 'bg-slate-900 hover:bg-slate-800 text-slate-300 border-slate-800 hover:border-slate-700'
                         }`}
                     >
                       <span>{dest.icon}</span>
@@ -6047,8 +6357,8 @@ export default function SheetItineraryPage() {
                 type="button"
                 onClick={() => setCreationMode('sheet')}
                 className={`px-4 py-2 rounded-lg text-xs font-extrabold transition-all flex items-center gap-2 cursor-pointer ${creationMode === 'sheet'
-                    ? 'bg-orange-600 text-white shadow-sm'
-                    : 'text-slate-400 hover:text-white'
+                  ? 'bg-orange-600 text-white shadow-sm'
+                  : 'text-slate-400 hover:text-white'
                   }`}
               >
                 <Layers className="w-3.5 h-3.5 text-orange-300" />
@@ -6056,10 +6366,13 @@ export default function SheetItineraryPage() {
               </button>
               <button
                 type="button"
-                onClick={() => setCreationMode('manual')}
+                onClick={() => {
+                  setCreationMode('manual');
+                  setShowMultimodalBuilder(true);
+                }}
                 className={`px-4 py-2 rounded-lg text-xs font-extrabold transition-all flex items-center gap-2 cursor-pointer ${creationMode === 'manual'
-                    ? 'bg-gradient-to-r from-sky-600 to-blue-600 text-white shadow-md'
-                    : 'text-slate-400 hover:text-white'
+                  ? 'bg-gradient-to-r from-sky-600 to-blue-600 text-white shadow-md'
+                  : 'text-slate-400 hover:text-white'
                   }`}
               >
                 <PenTool className="w-3.5 h-3.5" />
@@ -6083,235 +6396,237 @@ export default function SheetItineraryPage() {
           </div>
         </div>
 
-        {/* SMART MULTIMODAL AI ITINERARY BUILDER (PDF + SCREENSHOTS + PROMPT) */}
-        <div className="bg-gradient-to-br from-indigo-950 via-slate-900 to-purple-950 border-2 border-indigo-400/40 rounded-3xl p-6 mb-8 shadow-xl text-white relative overflow-hidden">
-          {/* Decorative ambient glow */}
-          <div className="absolute top-0 right-0 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute bottom-0 left-0 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+        {/* SMART MULTIMODAL AI ITINERARY BUILDER (PDF + SCREENSHOTS + PROMPT) - VISIBLE ONLY IN MANUAL ITINERARY MODE */}
+        {creationMode === 'manual' && (
+          <div className="bg-gradient-to-br from-indigo-950 via-slate-900 to-purple-950 border-2 border-indigo-400/40 rounded-3xl p-6 mb-8 shadow-xl text-white relative overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300">
+            {/* Decorative ambient glow */}
+            <div className="absolute top-0 right-0 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
 
-          <div className="relative z-10 space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-4">
-              <div className="flex items-center gap-3.5">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-500 border border-purple-300/40 flex items-center justify-center text-white shadow-lg shrink-0">
-                  <Sparkles className="w-6 h-6 animate-pulse text-amber-300" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-base font-extrabold text-white">
-                      Smart AI Itinerary Builder
-                    </h3>
-                    <span className="text-[10px] font-bold bg-purple-500/30 text-purple-200 border border-purple-400/30 px-2.5 py-0.5 rounded-full">
-                      ⚡ Multimodal AI
-                    </span>
-                    <span className="hidden md:inline-flex text-[10px] font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 px-2 py-0.5 rounded-full">
-                      PDFs + Screenshots + Chat Prompt
-                    </span>
+            <div className="relative z-10 space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-4">
+                <div className="flex items-center gap-3.5">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-500 border border-purple-300/40 flex items-center justify-center text-white shadow-lg shrink-0">
+                    <Sparkles className="w-6 h-6 animate-pulse text-amber-300" />
                   </div>
-                  <p className="text-xs text-slate-300 mt-1 leading-relaxed">
-                    Supplier ki PDF quote, flight ticket screenshot ya WhatsApp messages upload karein aur instructions likhein. AI pura form, flight details, hotel costs aur day-by-day table automatically bana dega!
-                  </p>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-base font-extrabold text-white">
+                        Smart AI Itinerary Builder
+                      </h3>
+                      <span className="text-[10px] font-bold bg-purple-500/30 text-purple-200 border border-purple-400/30 px-2.5 py-0.5 rounded-full">
+                        ⚡ Multimodal AI
+                      </span>
+                      <span className="hidden md:inline-flex text-[10px] font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 px-2 py-0.5 rounded-full">
+                        PDFs + Screenshots + Chat Prompt
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+                      Upload supplier PDF quotation, flight ticket screenshots, or chat notes with custom instructions. AI will automatically build the itinerary, flights, hotel quotes, and day-by-day table.
+                    </p>
+                  </div>
                 </div>
+
+                <Button
+                  type="button"
+                  size="sm"
+                  onClick={() => setShowMultimodalBuilder(!showMultimodalBuilder)}
+                  className="bg-white/10 hover:bg-white/20 text-white border border-white/20 text-xs h-9 px-4 rounded-xl cursor-pointer font-semibold shrink-0 transition"
+                >
+                  {showMultimodalBuilder ? 'Collapse Builder' : '✨ Open AI Builder'}
+                </Button>
               </div>
 
-              <Button
-                type="button"
-                size="sm"
-                onClick={() => setShowMultimodalBuilder(!showMultimodalBuilder)}
-                className="bg-white/10 hover:bg-white/20 text-white border border-white/20 text-xs h-9 px-4 rounded-xl cursor-pointer font-semibold shrink-0 transition"
-              >
-                {showMultimodalBuilder ? 'Collapse Builder' : '✨ Open AI Builder'}
-              </Button>
-            </div>
-
-            {showMultimodalBuilder && (
-              <div className="space-y-4 pt-1">
-                {/* File Upload Dropzone */}
-                <div>
-                  <label className="text-xs font-bold text-indigo-200 uppercase tracking-wider mb-2 flex items-center justify-between">
-                    <span className="flex items-center gap-1.5">
-                      <FileUp className="w-4 h-4 text-amber-400" />
-                      Attach Files (PDFs, Flight Tickets &amp; Rate Screenshots)
-                    </span>
-                    <span className="text-[11px] text-slate-400 font-normal">
-                      Supports multiple .pdf, .png, .jpg, .jpeg, .webp
-                    </span>
-                  </label>
-
-                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                    <label className="cursor-pointer border-2 border-dashed border-indigo-400/40 hover:border-indigo-400/80 bg-white/5 hover:bg-white/10 rounded-2xl p-4 flex flex-col items-center justify-center text-center transition flex-1 group">
-                      <div className="w-10 h-10 rounded-xl bg-indigo-500/20 border border-indigo-400/30 flex items-center justify-center text-indigo-300 group-hover:scale-110 transition mb-2">
-                        <UploadCloud className="w-5 h-5 text-indigo-300" />
-                      </div>
-                      <span className="text-xs font-bold text-white">
-                        Click to Browse or Drag &amp; Drop Documents / Screenshots
+              {showMultimodalBuilder && (
+                <div className="space-y-4 pt-1">
+                  {/* File Upload Dropzone */}
+                  <div>
+                    <label className="text-xs font-bold text-indigo-200 uppercase tracking-wider mb-2 flex items-center justify-between">
+                      <span className="flex items-center gap-1.5">
+                        <FileUp className="w-4 h-4 text-amber-400" />
+                        Attach Files (PDFs, Flight Tickets &amp; Rate Screenshots)
                       </span>
-                      <span className="text-[10px] text-slate-400 mt-0.5">
-                        Upload Supplier PDF, Flight Booking Image, WhatsApp Rates, Hotel Voucher
+                      <span className="text-[11px] text-slate-400 font-normal">
+                        Supports multiple .pdf, .png, .jpg, .jpeg, .webp
                       </span>
-                      <input
-                        type="file"
-                        multiple
-                        accept=".pdf,image/png,image/jpeg,image/jpg,image/webp"
-                        onChange={(e) => {
-                          const files = Array.from(e.target.files || []);
-                          if (files.length > 0) {
-                            setMultimodalFiles((prev) => [...prev, ...files]);
-                          }
-                        }}
-                        className="hidden"
-                      />
                     </label>
+
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                      <label className="cursor-pointer border-2 border-dashed border-indigo-400/40 hover:border-indigo-400/80 bg-white/5 hover:bg-white/10 rounded-2xl p-4 flex flex-col items-center justify-center text-center transition flex-1 group">
+                        <div className="w-10 h-10 rounded-xl bg-indigo-500/20 border border-indigo-400/30 flex items-center justify-center text-indigo-300 group-hover:scale-110 transition mb-2">
+                          <UploadCloud className="w-5 h-5 text-indigo-300" />
+                        </div>
+                        <span className="text-xs font-bold text-white">
+                          Click to Browse or Drag &amp; Drop Documents / Screenshots
+                        </span>
+                        <span className="text-[10px] text-slate-400 mt-0.5">
+                          Upload Supplier PDF, Flight Booking Image, WhatsApp Rates, Hotel Voucher
+                        </span>
+                        <input
+                          type="file"
+                          multiple
+                          accept=".pdf,image/png,image/jpeg,image/jpg,image/webp"
+                          onChange={(e) => {
+                            const files = Array.from(e.target.files || []);
+                            if (files.length > 0) {
+                              setMultimodalFiles((prev) => [...prev, ...files]);
+                            }
+                          }}
+                          className="hidden"
+                        />
+                      </label>
+                    </div>
+
+                    {/* Attached Files Chips */}
+                    {multimodalFiles.length > 0 && (
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {multimodalFiles.map((file, idx) => {
+                          const isPdf = file.name.toLowerCase().endsWith('.pdf') || file.type.includes('pdf');
+                          return (
+                            <div
+                              key={idx}
+                              className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-800/80 border border-slate-700 text-xs text-white shadow-sm"
+                            >
+                              {isPdf ? (
+                                <File className="w-3.5 h-3.5 text-rose-400 shrink-0" />
+                              ) : (
+                                <Camera className="w-3.5 h-3.5 text-sky-400 shrink-0" />
+                              )}
+                              <span className="font-medium truncate max-w-[180px]">{file.name}</span>
+                              <span className="text-[10px] text-slate-400 shrink-0">
+                                ({Math.round(file.size / 1024)} KB)
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setMultimodalFiles((prev) => prev.filter((_, i) => i !== idx));
+                                }}
+                                className="text-slate-400 hover:text-rose-400 ml-1 p-0.5 cursor-pointer"
+                                title="Remove file"
+                              >
+                                <X className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
                   </div>
 
-                  {/* Attached Files Chips */}
-                  {multimodalFiles.length > 0 && (
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {multimodalFiles.map((file, idx) => {
-                        const isPdf = file.name.toLowerCase().endsWith('.pdf') || file.type.includes('pdf');
-                        return (
-                          <div
-                            key={idx}
-                            className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-800/80 border border-slate-700 text-xs text-white shadow-sm"
-                          >
-                            {isPdf ? (
-                              <File className="w-3.5 h-3.5 text-rose-400 shrink-0" />
-                            ) : (
-                              <Camera className="w-3.5 h-3.5 text-sky-400 shrink-0" />
-                            )}
-                            <span className="font-medium truncate max-w-[180px]">{file.name}</span>
-                            <span className="text-[10px] text-slate-400 shrink-0">
-                              ({Math.round(file.size / 1024)} KB)
-                            </span>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setMultimodalFiles((prev) => prev.filter((_, i) => i !== idx));
-                              }}
-                              className="text-slate-400 hover:text-rose-400 ml-1 p-0.5 cursor-pointer"
-                              title="Remove file"
-                            >
-                              <X className="w-3.5 h-3.5" />
-                            </button>
-                          </div>
-                        );
-                      })}
+                  {/* Natural Instructions Prompt */}
+                  <div>
+                    <label className="text-xs font-bold text-indigo-200 uppercase tracking-wider mb-1.5 flex items-center justify-between">
+                      <span>Instructions for AI (Write in English / Hindi / Hinglish):</span>
+                      <span className="text-[11px] text-slate-400 font-normal">
+                        Give special notes, flight preferences, pax pricing, or custom requests
+                      </span>
+                    </label>
+
+                    <textarea
+                      value={multimodalPrompt}
+                      onChange={(e) => setMultimodalPrompt(e.target.value)}
+                      placeholder="e.g. Flight screenshot attached. Separate Marina Bay Sands hotel quote (5-Star Luxury Premier Room Harbour View @ ₹5,44,000). 1 child 11 yrs @ ₹66,500, 1 infant 2 yrs complimentary. Add 5% GST + 2% TCS. Mercedes-Benz V-Class chauffeur."
+                      rows={4}
+                      className="w-full bg-slate-950/80 border border-indigo-400/30 text-white placeholder-slate-500 text-xs rounded-xl p-3 focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400 font-sans leading-relaxed"
+                    />
+
+                    {/* Helpful Preset Instruction Badges */}
+                    <div className="flex flex-wrap items-center gap-1.5 mt-2">
+                      <span className="text-[10px] text-slate-400 font-semibold mr-1">Quick Add:</span>
+                      {[
+                        '✈️ Flight Details Attached',
+                        '🏨 Separate Hotel Cost (Marina Bay Sands)',
+                        '👶 1 Kid + 1 Infant Free Complimentary',
+                        '🏷️ 5% GST + 2% TCS Applicable',
+                        '🚗 Mercedes-Benz V Class with Chauffeur'
+                      ].map((preset) => (
+                        <button
+                          key={preset}
+                          type="button"
+                          onClick={() => {
+                            setMultimodalPrompt((prev) => (prev ? `${prev} | ${preset}` : preset));
+                          }}
+                          className="text-[11px] bg-white/5 hover:bg-white/10 text-indigo-200 border border-indigo-400/20 px-2.5 py-1 rounded-lg cursor-pointer transition"
+                        >
+                          {preset}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Actions & Submit */}
+                  <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-white/10">
+                    <div className="text-xs text-slate-300">
+                      {multimodalFiles.length > 0 ? (
+                        <span className="text-emerald-400 font-semibold">
+                          ✓ {multimodalFiles.length} file(s) attached and ready for AI analysis
+                        </span>
+                      ) : (
+                        <span>You can attach PDFs / images or just type your instructions.</span>
+                      )}
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      {(multimodalPrompt || multimodalFiles.length > 0) && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setMultimodalPrompt('');
+                            setMultimodalFiles([]);
+                            setMultimodalSummary(null);
+                            setMultimodalErrors([]);
+                          }}
+                          className="text-xs text-slate-400 hover:text-white px-2 py-1 cursor-pointer font-medium"
+                        >
+                          Clear All
+                        </button>
+                      )}
+
+                      <Button
+                        type="button"
+                        disabled={multimodalLoading || (!multimodalPrompt.trim() && multimodalFiles.length === 0)}
+                        onClick={handleMultimodalAIGenerate}
+                        className="bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-extrabold text-xs h-10 px-5 rounded-xl cursor-pointer shadow-lg shadow-orange-500/20 flex items-center gap-2 transition"
+                      >
+                        {multimodalLoading ? (
+                          <>
+                            <RefreshCw className="w-4 h-4 animate-spin" />
+                            <span>{multimodalProgress || 'AI Processing Files...'}</span>
+                          </>
+                        ) : (
+                          <>
+                            <Sparkles className="w-4 h-4 text-amber-200" />
+                            <span>✨ Auto-Generate Itinerary with AI</span>
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Success Result Banner */}
+                  {multimodalSummary && (
+                    <div className="p-3.5 bg-emerald-500/20 border border-emerald-400/40 rounded-xl text-emerald-200 text-xs font-bold flex items-center gap-2.5 animate-in fade-in">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <span>{multimodalSummary}</span>
+                    </div>
+                  )}
+
+                  {/* Warning/Errors Banner */}
+                  {multimodalErrors.length > 0 && (
+                    <div className="p-3 bg-amber-500/20 border border-amber-400/40 rounded-xl text-amber-200 text-xs space-y-1">
+                      <div className="font-bold flex items-center gap-1.5">
+                        <Info className="w-3.5 h-3.5" /> File Notice:
+                      </div>
+                      {multimodalErrors.map((err, i) => (
+                        <p key={i} className="text-[11px] text-amber-300">• {err}</p>
+                      ))}
                     </div>
                   )}
                 </div>
-
-                {/* Natural Instructions Prompt */}
-                <div>
-                  <label className="text-xs font-bold text-indigo-200 uppercase tracking-wider mb-1.5 flex items-center justify-between">
-                    <span>Instructions for AI (Write in English / Hindi / Hinglish):</span>
-                    <span className="text-[11px] text-slate-400 font-normal">
-                      Give special notes, flight preferences, pax pricing, or custom requests
-                    </span>
-                  </label>
-
-                  <textarea
-                    value={multimodalPrompt}
-                    onChange={(e) => setMultimodalPrompt(e.target.value)}
-                    placeholder="e.g. Flight screenshot attached hai. Hotel cost Marina Bay Sands alag se dikhana (5-Star Luxury Premier Room Harbour View @ ₹5,44,000). 1 kid 11 yr @ ₹66,500, 1 infant 2 yr complimentary free. 5% GST + 2% TCS add karna. Mercedes-Benz V Class car with chauffeur."
-                    rows={4}
-                    className="w-full bg-slate-950/80 border border-indigo-400/30 text-white placeholder-slate-500 text-xs rounded-xl p-3 focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400 font-sans leading-relaxed"
-                  />
-
-                  {/* Helpful Preset Instruction Badges */}
-                  <div className="flex flex-wrap items-center gap-1.5 mt-2">
-                    <span className="text-[10px] text-slate-400 font-semibold mr-1">Quick Add:</span>
-                    {[
-                      '✈️ Flight Details Attached',
-                      '🏨 Separate Hotel Cost (Marina Bay Sands)',
-                      '👶 1 Kid + 1 Infant Free Complimentary',
-                      '🏷️ 5% GST + 2% TCS Applicable',
-                      '🚗 Mercedes-Benz V Class with Chauffeur'
-                    ].map((preset) => (
-                      <button
-                        key={preset}
-                        type="button"
-                        onClick={() => {
-                          setMultimodalPrompt((prev) => (prev ? `${prev} | ${preset}` : preset));
-                        }}
-                        className="text-[11px] bg-white/5 hover:bg-white/10 text-indigo-200 border border-indigo-400/20 px-2.5 py-1 rounded-lg cursor-pointer transition"
-                      >
-                        {preset}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Actions & Submit */}
-                <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-white/10">
-                  <div className="text-xs text-slate-300">
-                    {multimodalFiles.length > 0 ? (
-                      <span className="text-emerald-400 font-semibold">
-                        ✓ {multimodalFiles.length} file(s) attached and ready for AI analysis
-                      </span>
-                    ) : (
-                      <span>You can attach PDFs / images or just type your instructions.</span>
-                    )}
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    {(multimodalPrompt || multimodalFiles.length > 0) && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setMultimodalPrompt('');
-                          setMultimodalFiles([]);
-                          setMultimodalSummary(null);
-                          setMultimodalErrors([]);
-                        }}
-                        className="text-xs text-slate-400 hover:text-white px-2 py-1 cursor-pointer font-medium"
-                      >
-                        Clear All
-                      </button>
-                    )}
-
-                    <Button
-                      type="button"
-                      disabled={multimodalLoading || (!multimodalPrompt.trim() && multimodalFiles.length === 0)}
-                      onClick={handleMultimodalAIGenerate}
-                      className="bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-extrabold text-xs h-10 px-5 rounded-xl cursor-pointer shadow-lg shadow-orange-500/20 flex items-center gap-2 transition"
-                    >
-                      {multimodalLoading ? (
-                        <>
-                          <RefreshCw className="w-4 h-4 animate-spin" />
-                          <span>{multimodalProgress || 'AI Processing Files...'}</span>
-                        </>
-                      ) : (
-                        <>
-                          <Sparkles className="w-4 h-4 text-amber-200" />
-                          <span>✨ Auto-Generate Itinerary with AI</span>
-                        </>
-                      )}
-                    </Button>
-                  </div>
-                </div>
-
-                {/* Success Result Banner */}
-                {multimodalSummary && (
-                  <div className="p-3.5 bg-emerald-500/20 border border-emerald-400/40 rounded-xl text-emerald-200 text-xs font-bold flex items-center gap-2.5 animate-in fade-in">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                    <span>{multimodalSummary}</span>
-                  </div>
-                )}
-
-                {/* Warning/Errors Banner */}
-                {multimodalErrors.length > 0 && (
-                  <div className="p-3 bg-amber-500/20 border border-amber-400/40 rounded-xl text-amber-200 text-xs space-y-1">
-                    <div className="font-bold flex items-center gap-1.5">
-                      <Info className="w-3.5 h-3.5" /> File Notice:
-                    </div>
-                    {multimodalErrors.map((err, i) => (
-                      <p key={i} className="text-[11px] text-amber-300">• {err}</p>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
+              )}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* SECTION 1: TRAVELER & CLIENT DETAILS */}
         <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 mb-8 shadow-xl">
@@ -6900,30 +7215,67 @@ export default function SheetItineraryPage() {
 
               <div>
                 <label className="block text-xs font-bold text-slate-800 mb-1">
-                  Meal Plan {creationMode === 'manual' && <span className="text-sky-600 font-semibold">(Typeable / Custom)</span>}
+                  Meal Plan (Select to Auto-Apply to All Days)
                 </label>
-                {creationMode === 'manual' ? (
-                  <Input
-                    type="text"
-                    value={mealPlan}
-                    onChange={e => handleMealPlanChange(e.target.value)}
-                    placeholder="e.g. Breakfast & Dinner (MAPAI) or All Meals"
-                    className="w-full bg-white border border-slate-400 text-slate-900 font-medium text-xs h-9 rounded-md px-3 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
-                  />
-                ) : (
+                <div className="space-y-1.5">
                   <select
-                    value={mealPlan}
-                    onChange={e => handleMealPlanChange(e.target.value)}
-                    className="w-full bg-white border border-slate-400 text-slate-900 font-medium text-xs h-9 rounded-md px-3 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
+                    value={
+                      [
+                        'Breakfast & Dinner (MAP)',
+                        'Breakfast & Dinner',
+                        'Breakfast Only (CP)',
+                        'Breakfast Only',
+                        'All Meals (AP) - Breakfast, Lunch & Dinner',
+                        'All Meals',
+                        'Breakfast, Lunch & Dinner',
+                        'Room Only (EP)',
+                        'Room Only',
+                        'Jain Breakfast & Dinner',
+                        'Jain All Meals'
+                      ].includes(mealPlan)
+                        ? mealPlan
+                        : 'custom'
+                    }
+                    onChange={e => {
+                      if (e.target.value === 'custom') {
+                        // User wants custom
+                      } else {
+                        handleMealPlanChange(e.target.value);
+                      }
+                    }}
+                    className="w-full bg-white border border-slate-400 text-slate-900 font-bold text-xs h-9 rounded-md px-2 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 cursor-pointer shadow-xs"
                   >
-                    <option value="Breakfast & Dinner">Breakfast &amp; Dinner (MAPAI)</option>
-                    <option value="Breakfast, Lunch & Dinner">Breakfast, Lunch &amp; Dinner (All Meals / APAI)</option>
-                    <option value="All Meals">All Meals (Breakfast, Lunch &amp; Dinner)</option>
-                    <option value="Breakfast Only">Breakfast Only (CP)</option>
-                    <option value="Breakfast & Lunch">Breakfast &amp; Lunch</option>
-                    <option value="Room Only">Room Only (EP)</option>
+                    <option value="Breakfast & Dinner (MAP)">🍽️ Breakfast & Dinner (MAP)</option>
+                    <option value="Breakfast Only (CP)">☕ Breakfast Only (CP)</option>
+                    <option value="All Meals (AP) - Breakfast, Lunch & Dinner">🍱 All Meals (AP) - Breakfast, Lunch & Dinner</option>
+                    <option value="Room Only (EP)">🛏️ Room Only (EP) - No Meals</option>
+                    <option value="Jain Breakfast & Dinner">🌱 Jain Breakfast & Dinner</option>
+                    <option value="Jain All Meals">🌱 Jain All Meals (Breakfast, Lunch & Dinner)</option>
+                    <option value="custom">✏️ Custom / Specific Plan...</option>
                   </select>
-                )}
+
+                  {(![
+                    'Breakfast & Dinner (MAP)',
+                    'Breakfast & Dinner',
+                    'Breakfast Only (CP)',
+                    'Breakfast Only',
+                    'All Meals (AP) - Breakfast, Lunch & Dinner',
+                    'All Meals',
+                    'Breakfast, Lunch & Dinner',
+                    'Room Only (EP)',
+                    'Room Only',
+                    'Jain Breakfast & Dinner',
+                    'Jain All Meals'
+                  ].includes(mealPlan)) && (
+                      <Input
+                        type="text"
+                        value={mealPlan}
+                        onChange={e => handleMealPlanChange(e.target.value)}
+                        placeholder="e.g. Jain Breakfast only, Dinner at local cafe"
+                        className="w-full bg-white border border-amber-400 text-slate-900 font-medium text-xs h-8 rounded-md px-3 focus:outline-none focus:border-sky-500"
+                      />
+                    )}
+                </div>
               </div>
 
               <div>
@@ -7700,10 +8052,21 @@ export default function SheetItineraryPage() {
                   </p>
                 </div>
 
-                <div className="flex items-center gap-2.5">
+                <div className="flex flex-wrap items-center gap-2.5">
                   <span className="text-xs font-bold text-slate-300 bg-slate-950 border border-slate-800 px-3 py-1.5 rounded-xl">
                     {manualDays.length} Days Planned
                   </span>
+                  <Button
+                    type="button"
+                    onClick={handleRegenerateAllDayTitles}
+                    variant="outline"
+                    size="sm"
+                    className="h-9 text-xs border border-amber-500/50 bg-gradient-to-r from-amber-500/20 via-orange-500/20 to-amber-500/20 hover:from-amber-500/30 hover:to-orange-500/30 text-amber-200 font-bold rounded-xl flex items-center gap-1.5 shadow-sm cursor-pointer transition active:scale-95"
+                    title="Generate catchy, luxury narrative headings for all days based on route & sightseeing"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                    Generate / Regenerate Day Headings
+                  </Button>
                   <Button
                     type="button"
                     onClick={addManualDay}
@@ -7734,13 +8097,24 @@ export default function SheetItineraryPage() {
                           <label className="block text-[10px] font-bold text-slate-400 uppercase mb-0.5">
                             Day {day.dayNumber} Narrative Title / Heading
                           </label>
-                          <Input
-                            type="text"
-                            value={day.title}
-                            onChange={e => updateManualDay(dIdx, 'title', e.target.value)}
-                            placeholder={`e.g. Day ${day.dayNumber}: Arrival & Exploration`}
-                            className="text-xs h-9 bg-slate-900 border border-slate-700 text-white font-semibold focus-visible:ring-sky-500 rounded-xl w-full"
-                          />
+                          <div className="flex items-center gap-1.5">
+                            <Input
+                              type="text"
+                              value={day.title}
+                              onChange={e => updateManualDay(dIdx, 'title', e.target.value)}
+                              placeholder={`e.g. Day ${day.dayNumber}: Arrival & Exploration`}
+                              className="text-xs h-9 bg-slate-900 border border-slate-700 text-white font-semibold focus-visible:ring-sky-500 rounded-xl w-full"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => handleRegenerateSingleDayTitle(dIdx)}
+                              className="h-9 px-2.5 text-slate-400 hover:text-amber-300 bg-slate-900 hover:bg-slate-800 border border-slate-700 rounded-xl transition cursor-pointer shrink-0 flex items-center gap-1"
+                              title="Regenerate this day's heading from route & sightseeing"
+                            >
+                              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                              <span className="text-[10px] font-bold hidden sm:inline">Regen</span>
+                            </button>
+                          </div>
                         </div>
                       </div>
 
@@ -7752,11 +8126,10 @@ export default function SheetItineraryPage() {
                           <button
                             type="button"
                             onClick={() => toggleManualMeal(dIdx, 'breakfast')}
-                            className={`w-7 h-7 rounded-lg text-xs font-black transition-all cursor-pointer ${
-                              day.breakfast
-                                ? 'bg-sky-600 text-white shadow-xs'
-                                : 'text-slate-400 hover:text-white bg-slate-800/50'
-                            }`}
+                            className={`w-7 h-7 rounded-lg text-xs font-black transition-all cursor-pointer ${day.breakfast
+                              ? 'bg-sky-600 text-white shadow-xs'
+                              : 'text-slate-400 hover:text-white bg-slate-800/50'
+                              }`}
                             title={day.breakfast ? 'Breakfast Included' : 'No Breakfast'}
                           >
                             B
@@ -7764,11 +8137,10 @@ export default function SheetItineraryPage() {
                           <button
                             type="button"
                             onClick={() => toggleManualMeal(dIdx, 'lunch')}
-                            className={`w-7 h-7 rounded-lg text-xs font-black transition-all cursor-pointer ${
-                              day.lunch
-                                ? 'bg-sky-600 text-white shadow-xs'
-                                : 'text-slate-400 hover:text-white bg-slate-800/50'
-                            }`}
+                            className={`w-7 h-7 rounded-lg text-xs font-black transition-all cursor-pointer ${day.lunch
+                              ? 'bg-sky-600 text-white shadow-xs'
+                              : 'text-slate-400 hover:text-white bg-slate-800/50'
+                              }`}
                             title={day.lunch ? 'Lunch Included' : 'No Lunch'}
                           >
                             L
@@ -7776,11 +8148,10 @@ export default function SheetItineraryPage() {
                           <button
                             type="button"
                             onClick={() => toggleManualMeal(dIdx, 'dinner')}
-                            className={`w-7 h-7 rounded-lg text-xs font-black transition-all cursor-pointer ${
-                              day.dinner
-                                ? 'bg-sky-600 text-white shadow-xs'
-                                : 'text-slate-400 hover:text-white bg-slate-800/50'
-                            }`}
+                            className={`w-7 h-7 rounded-lg text-xs font-black transition-all cursor-pointer ${day.dinner
+                              ? 'bg-sky-600 text-white shadow-xs'
+                              : 'text-slate-400 hover:text-white bg-slate-800/50'
+                              }`}
                             title={day.dinner ? 'Dinner Included' : 'No Dinner'}
                           >
                             D
@@ -7791,11 +8162,10 @@ export default function SheetItineraryPage() {
                         <button
                           type="button"
                           onClick={() => toggleManualGuide(dIdx)}
-                          className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer flex items-center gap-1.5 ${
-                            day.guidedTour
-                              ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 shadow-xs'
-                              : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200'
-                          }`}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer flex items-center gap-1.5 ${day.guidedTour
+                            ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 shadow-xs'
+                            : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200'
+                            }`}
                         >
                           <span>Guide:</span>
                           <span className="font-extrabold">{day.guidedTour ? 'Yes ✓' : 'No'}</span>
@@ -9550,17 +9920,16 @@ export default function SheetItineraryPage() {
                           setOptionLockAlert(null);
                         }
                       }}
-                      className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-                        isBooked
-                          ? isSelected
-                            ? 'bg-emerald-600 text-white shadow-md ring-2 ring-emerald-400/50'
-                            : 'bg-emerald-950/80 text-emerald-300 border border-emerald-600/70 hover:bg-emerald-900/60'
-                          : isSelected
-                            ? 'bg-orange-500 text-white shadow-xs'
-                            : isLocked
-                              ? 'bg-slate-900 text-amber-300 border border-amber-600/30 hover:bg-slate-850'
-                              : 'text-slate-300 hover:text-white hover:bg-slate-850'
-                      }`}
+                      className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${isBooked
+                        ? isSelected
+                          ? 'bg-emerald-600 text-white shadow-md ring-2 ring-emerald-400/50'
+                          : 'bg-emerald-950/80 text-emerald-300 border border-emerald-600/70 hover:bg-emerald-900/60'
+                        : isSelected
+                          ? 'bg-orange-500 text-white shadow-xs'
+                          : isLocked
+                            ? 'bg-slate-900 text-amber-300 border border-amber-600/30 hover:bg-slate-850'
+                            : 'text-slate-300 hover:text-white hover:bg-slate-850'
+                        }`}
                       title={isBooked ? `Option ${optNum} Booked & Handed over to Ops. Click to view full costing.` : (isLocked ? `Option ${optNum} generated. Click to view costing & selection.` : `Select Option ${optNum}`)}
                     >
                       {isBooked ? (
@@ -9792,8 +10161,8 @@ export default function SheetItineraryPage() {
                 </div>
                 <div className="flex flex-wrap gap-2.5">
                   <label className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-bold cursor-pointer transition-all ${enableTokenPayment
-                      ? 'bg-amber-950/80 border-amber-600/70 text-amber-200 shadow-xs'
-                      : 'bg-slate-950 border-slate-800 text-slate-400 hover:bg-slate-900'
+                    ? 'bg-amber-950/80 border-amber-600/70 text-amber-200 shadow-xs'
+                    : 'bg-slate-950 border-slate-800 text-slate-400 hover:bg-slate-900'
                     }`}>
                     <input
                       type="checkbox"
@@ -9812,8 +10181,8 @@ export default function SheetItineraryPage() {
                   </label>
 
                   <label className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-bold cursor-pointer transition-all ${enableAdvancePayment
-                      ? 'bg-emerald-950/80 border-emerald-600/70 text-emerald-200 shadow-xs'
-                      : 'bg-slate-950 border-slate-800 text-slate-400 hover:bg-slate-900'
+                    ? 'bg-emerald-950/80 border-emerald-600/70 text-emerald-200 shadow-xs'
+                    : 'bg-slate-950 border-slate-800 text-slate-400 hover:bg-slate-900'
                     }`}>
                     <input
                       type="checkbox"
@@ -9832,8 +10201,8 @@ export default function SheetItineraryPage() {
                   </label>
 
                   <label className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-bold cursor-pointer transition-all ${enableFullPayment
-                      ? 'bg-blue-950/80 border-blue-600/70 text-blue-200 shadow-xs'
-                      : 'bg-slate-950 border-slate-800 text-slate-400 hover:bg-slate-900'
+                    ? 'bg-blue-950/80 border-blue-600/70 text-blue-200 shadow-xs'
+                    : 'bg-slate-950 border-slate-800 text-slate-400 hover:bg-slate-900'
                     }`}>
                     <input
                       type="checkbox"
@@ -10245,77 +10614,77 @@ export default function SheetItineraryPage() {
 
               const rawOptHotels = (Array.isArray(exist.hotels) && exist.hotels.length > 0)
                 ? exist.hotels.map((h: any) => {
-                    const nights = Number(h.nights) || 1;
-                    const basePrice = Number(h.basePrice || h.roomRate) || 0;
-                    const pricePerNight = Number(h.pricePerNight || (h as any).Price_Per_Night || (h as any).Price_per_night || 0);
-                    const b2bNightRate = pricePerNight > 0 ? pricePerNight : basePrice;
-                    const extraBedPrice = Number(h.extraBedPrice || h.extraBedRate) || 0;
-                    const childWithoutBedPrice = Number(h.childWithoutBedPrice || h.childNoBedRate) || 0;
-                    const b2bRoomTotal = b2bNightRate * nights * optRooms;
-                    const extraBedTotal = extraBedPrice * optBillableExtraBeds * nights;
-                    const childNoBedTotal = childWithoutBedPrice * optChildWithoutBedCount * nights;
-                    const calculatedTotal = b2bRoomTotal + extraBedTotal + childNoBedTotal;
+                  const nights = Number(h.nights) || 1;
+                  const basePrice = Number(h.basePrice || h.roomRate) || 0;
+                  const pricePerNight = Number(h.pricePerNight || (h as any).Price_Per_Night || (h as any).Price_per_night || 0);
+                  const b2bNightRate = pricePerNight > 0 ? pricePerNight : basePrice;
+                  const extraBedPrice = Number(h.extraBedPrice || h.extraBedRate) || 0;
+                  const childWithoutBedPrice = Number(h.childWithoutBedPrice || h.childNoBedRate) || 0;
+                  const b2bRoomTotal = b2bNightRate * nights * optRooms;
+                  const extraBedTotal = extraBedPrice * optBillableExtraBeds * nights;
+                  const childNoBedTotal = childWithoutBedPrice * optChildWithoutBedCount * nights;
+                  const calculatedTotal = b2bRoomTotal + extraBedTotal + childNoBedTotal;
 
-                    return {
-                      city: h.city,
-                      nights,
-                      hotelName: h.hotelName,
-                      roomCategory: h.roomCategory,
-                      category: h.category,
-                      dates: h.dates || h.stayDates || '',
-                      stayDates: h.stayDates || h.dates || '',
-                      basePrice,
-                      pricePerNight: b2bNightRate,
-                      b2bCostPerNight: b2bNightRate,
-                      extraBedPrice,
-                      extraBedCount: optBillableExtraBeds,
-                      extraBedTotalCost: extraBedTotal,
-                      childWithoutBedPrice,
-                      childWithoutBedCount: optChildWithoutBedCount,
-                      childWithoutBedTotalCost: childNoBedTotal,
-                      b2bTotalCost: calculatedTotal > 0 ? calculatedTotal : (Number(h.b2bTotalCost) || 0),
-                    };
-                  })
+                  return {
+                    city: h.city,
+                    nights,
+                    hotelName: h.hotelName,
+                    roomCategory: h.roomCategory,
+                    category: h.category,
+                    dates: h.dates || h.stayDates || '',
+                    stayDates: h.stayDates || h.dates || '',
+                    basePrice,
+                    pricePerNight: b2bNightRate,
+                    b2bCostPerNight: b2bNightRate,
+                    extraBedPrice,
+                    extraBedCount: optBillableExtraBeds,
+                    extraBedTotalCost: extraBedTotal,
+                    childWithoutBedPrice,
+                    childWithoutBedCount: optChildWithoutBedCount,
+                    childWithoutBedTotalCost: childNoBedTotal,
+                    b2bTotalCost: calculatedTotal > 0 ? calculatedTotal : (Number(h.b2bTotalCost) || 0),
+                  };
+                })
                 : hotels.map(h => {
-                    const nights = Number(h.nights) || 1;
-                    const basePrice = Number(h.basePrice) || 0;
-                    const pricePerNight = Number(h.pricePerNight || (h as any).Price_Per_Night || (h as any).Price_per_night || 0);
-                    const b2bNightRate = pricePerNight > 0 ? pricePerNight : basePrice;
-                    const extraBedPrice = Number(h.extraBedPrice) || 0;
-                    const childWithoutBedPrice = Number(h.childWithoutBedPrice) || 0;
-                    const b2bRoomTotal = b2bNightRate * nights * optRooms;
-                    const extraBedTotal = extraBedPrice * optBillableExtraBeds * nights;
-                    const childNoBedTotal = childWithoutBedPrice * optChildWithoutBedCount * nights;
-                    const calculatedTotal = b2bRoomTotal + extraBedTotal + childNoBedTotal;
+                  const nights = Number(h.nights) || 1;
+                  const basePrice = Number(h.basePrice) || 0;
+                  const pricePerNight = Number(h.pricePerNight || (h as any).Price_Per_Night || (h as any).Price_per_night || 0);
+                  const b2bNightRate = pricePerNight > 0 ? pricePerNight : basePrice;
+                  const extraBedPrice = Number(h.extraBedPrice) || 0;
+                  const childWithoutBedPrice = Number(h.childWithoutBedPrice) || 0;
+                  const b2bRoomTotal = b2bNightRate * nights * optRooms;
+                  const extraBedTotal = extraBedPrice * optBillableExtraBeds * nights;
+                  const childNoBedTotal = childWithoutBedPrice * optChildWithoutBedCount * nights;
+                  const calculatedTotal = b2bRoomTotal + extraBedTotal + childNoBedTotal;
 
-                    return {
-                      city: h.city,
-                      nights,
-                      hotelName: h.hotelName,
-                      roomCategory: h.roomCategory,
-                      category: h.category,
-                      dates: (h as any).dates || (h as any).stayDates || '',
-                      stayDates: (h as any).stayDates || (h as any).dates || '',
-                      basePrice,
-                      pricePerNight: b2bNightRate,
-                      b2bCostPerNight: b2bNightRate,
-                      extraBedPrice,
-                      extraBedCount: optBillableExtraBeds,
-                      extraBedTotalCost: extraBedTotal,
-                      childWithoutBedPrice,
-                      childWithoutBedCount: optChildWithoutBedCount,
-                      childWithoutBedTotalCost: childNoBedTotal,
-                      b2bTotalCost: calculatedTotal > 0 ? calculatedTotal : (Number((h as any).b2bTotalCost) || 0),
-                    };
-                  });
+                  return {
+                    city: h.city,
+                    nights,
+                    hotelName: h.hotelName,
+                    roomCategory: h.roomCategory,
+                    category: h.category,
+                    dates: (h as any).dates || (h as any).stayDates || '',
+                    stayDates: (h as any).stayDates || (h as any).dates || '',
+                    basePrice,
+                    pricePerNight: b2bNightRate,
+                    b2bCostPerNight: b2bNightRate,
+                    extraBedPrice,
+                    extraBedCount: optBillableExtraBeds,
+                    extraBedTotalCost: extraBedTotal,
+                    childWithoutBedPrice,
+                    childWithoutBedCount: optChildWithoutBedCount,
+                    childWithoutBedTotalCost: childNoBedTotal,
+                    b2bTotalCost: calculatedTotal > 0 ? calculatedTotal : (Number((h as any).b2bTotalCost) || 0),
+                  };
+                });
 
               const optHotels = computeHotelDatesWithNights(rawOptHotels, exist.startDate || startDate);
 
               const optDayActivities = (Array.isArray(exist.dayActivities) && exist.dayActivities.length > 0)
                 ? exist.dayActivities
                 : ((Array.isArray(exist.dayRows) && exist.dayRows.length > 0)
-                    ? exist.dayRows
-                    : (Array.isArray(dayRows) && dayRows.length > 0 ? dayRows : (exist.dayPlans || [])));
+                  ? exist.dayRows
+                  : (Array.isArray(dayRows) && dayRows.length > 0 ? dayRows : (exist.dayPlans || [])));
 
               const optVehType = exist.vehicleType || vehicleType;
               const matchedVeh = (zohoVehicles || []).find((v: any) => {
@@ -10501,6 +10870,7 @@ export default function SheetItineraryPage() {
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
+                    ... [truncated for diff preview]
                     <h3 className="text-base font-black text-white">
                       Booked Option Costing &amp; Proposal Details
                     </h3>

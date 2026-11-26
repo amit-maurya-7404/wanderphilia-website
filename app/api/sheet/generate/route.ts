@@ -4,6 +4,7 @@ import { generateItineraryContentWithAI } from '@/lib/ai-itinerary';
 import { getLuxuryImagesForDestination } from '@/lib/itinerary-images';
 import { ItineraryDocument } from '@/types/itinerary';
 import { generateLeadBasedItinerarySlug } from '@/lib/itinerary-slug';
+import { getNextManualItinerarySequence, formatSequentialManualId } from '@/lib/manual-itinerary-sequence';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -24,7 +25,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const inquiryId = String(rawBody.inquiryId || rawBody.inquiry_id || rawBody.Inquiry_ID || '').trim();
+    let inquiryId = String(rawBody.inquiryId || rawBody.inquiry_id || rawBody.Inquiry_ID || '').trim();
     const zohoLeadId = String(rawBody.zohoLeadId || rawBody.leadId || rawBody.id || '').trim();
     const firstName = String(rawBody.firstName || rawBody.first_name || '').trim();
     const lastName = String(rawBody.lastName || rawBody.last_name || '').trim();
@@ -183,12 +184,34 @@ export async function POST(req: NextRequest) {
     // 1. Generate Complete AI Luxury Itinerary Content
     const aiContent = await generateItineraryContentWithAI(normalizedPayload);
 
+    // Resolve Manual Day Plans if generated from Manual Itinerary Creation Mode
+    const isManual = Boolean(rawBody.isManualItinerary || rawBody.creationMode === 'manual');
+
     // 2. Generate Unique Secure Slug / ID for this option
-    const uniqueId = generateLeadBasedItinerarySlug({
-      leadName: fullName || firstName,
-      optionNumber: optionNumber,
-      destination: destination || aiContent.destination
-    });
+    // If updating an already loaded/existing itinerary, preserve its exact ID without incrementing sequence!
+    const targetExistingId = String(rawBody.targetItineraryId || rawBody.existingId || rawBody.itineraryId || '').trim();
+
+    let uniqueId = '';
+    if (targetExistingId) {
+      uniqueId = targetExistingId;
+    } else if (isManual) {
+      const seq = await getNextManualItinerarySequence();
+      uniqueId = formatSequentialManualId({
+        sequence: seq,
+        leadName: fullName || firstName,
+        optionNumber: optionNumber,
+        destination: destination || aiContent.destination
+      });
+      if (!inquiryId) {
+        inquiryId = `MAN-${String(seq).padStart(3, '0')}`;
+      }
+    } else {
+      uniqueId = generateLeadBasedItinerarySlug({
+        leadName: fullName || firstName,
+        optionNumber: optionNumber,
+        destination: destination || aiContent.destination
+      });
+    }
 
     // 3. Resolve Curated Destination Images
     const images = getLuxuryImagesForDestination(destination || aiContent.destination);
@@ -202,8 +225,6 @@ export async function POST(req: NextRequest) {
       ? customGalleryImages.slice(0, 6)
       : (customGalleryImages && customGalleryImages.length > 0 ? [...customGalleryImages, ...images.gallery].slice(0, 6) : images.gallery);
 
-    // Resolve Manual Day Plans if generated from Manual Itinerary Creation Mode
-    const isManual = Boolean(rawBody.isManualItinerary || rawBody.creationMode === 'manual');
     let resolvedDayPlans = aiContent.dayPlans;
     let resolvedHighlights = aiContent.highlights;
 
@@ -579,7 +600,20 @@ export async function POST(req: NextRequest) {
     let targetId = uniqueId;
     let existingDoc: ItineraryDocument | null = null;
 
-    if (inquiryId) {
+    // Check if updating an existing itinerary by exact ID or slug
+    if (targetExistingId || uniqueId) {
+      const searchKey = targetExistingId || uniqueId;
+      existingDoc = await (collection as any).findOne({
+        $or: [
+          { id: searchKey },
+          { slug: searchKey },
+          { inquiryId: searchKey },
+          { 'rawZohoData.inquiryId': searchKey }
+        ]
+      });
+    }
+
+    if (!existingDoc && inquiryId) {
       const optionFilter: any = optionNumber === 1
         ? { $in: [1, '1', null, undefined] }
         : { $in: [optionNumber, String(optionNumber)] };
@@ -590,7 +624,9 @@ export async function POST(req: NextRequest) {
             $or: [
               { inquiryId: inquiryId },
               { 'rawZohoData.inquiryId': inquiryId },
-              { 'rawZohoData.Inquiry_ID': inquiryId }
+              { 'rawZohoData.Inquiry_ID': inquiryId },
+              { id: inquiryId },
+              { slug: inquiryId }
             ]
           },
           { optionNumber: optionFilter }
