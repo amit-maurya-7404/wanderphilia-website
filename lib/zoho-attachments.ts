@@ -84,23 +84,16 @@ export async function uploadProofUrlToZohoRecords(
       }
     } else {
       // Local public file path (e.g. /images/uploads/...)
-      const cleanedPath = cleanUrl.replace(/^\/+/, '');
-      const possiblePaths = [
-        path.join(process.cwd(), 'public', cleanedPath),
-        path.join(process.cwd(), cleanedPath),
-        path.join(process.cwd(), 'public', cleanedPath.replace(/^public\//, ''))
-      ];
-      for (const p of possiblePaths) {
-        if (fs.existsSync(p)) {
-          buffer = fs.readFileSync(p);
-          const ext = path.extname(p).toLowerCase();
-          if (ext === '.png') mimeType = 'image/png';
-          else if (ext === '.webp') mimeType = 'image/webp';
-          else if (ext === '.pdf') mimeType = 'application/pdf';
-          else mimeType = 'image/jpeg';
-          fileName = path.basename(p);
-          break;
-        }
+      const cleanedRel = cleanUrl.replace(/^\/+/, '').replace(/^public\//, '');
+      const filePath = path.join(process.cwd(), 'public', cleanedRel);
+      if (fs.existsSync(filePath)) {
+        buffer = fs.readFileSync(filePath);
+        const ext = path.extname(filePath).toLowerCase();
+        if (ext === '.png') mimeType = 'image/png';
+        else if (ext === '.webp') mimeType = 'image/webp';
+        else if (ext === '.pdf') mimeType = 'application/pdf';
+        else mimeType = 'image/jpeg';
+        fileName = path.basename(filePath);
       }
     }
 

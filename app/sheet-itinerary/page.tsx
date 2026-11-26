@@ -5807,7 +5807,7 @@ export default function SheetItineraryPage() {
                     <textarea
                       value={multimodalPrompt}
                       onChange={(e) => setMultimodalPrompt(e.target.value)}
-                      placeholder="e.g. Flight screenshot attached hai. Hotel cost Marina Bay Sands alag se dikhana (5-Star Luxury Premier Room Harbour View @ ₹5,44,000). 1 kid 11 yr @ ₹66,500, 1 infant 2 yr complimentary free. 5% GST + 2% TCS add karna. Mercedes-Benz V Class car with chauffeur."
+                      placeholder="e.g. Flight screenshot attached. Separate Marina Bay Sands hotel quote (5-Star Luxury Premier Room Harbour View @ ₹5,44,000). 1 child 11 yrs @ ₹66,500, 1 infant 2 yrs complimentary. Add 5% GST + 2% TCS. Mercedes-Benz V-Class chauffeur."
                       rows={4}
                       className="w-full bg-slate-950/80 border border-indigo-400/30 text-white placeholder-slate-500 text-xs rounded-xl p-3 focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400 font-sans leading-relaxed"
                     />
@@ -5848,13 +5848,21 @@ export default function SheetItineraryPage() {
                       )}
                     </div>
 
-                      <textarea
-                        value={multimodalPrompt}
-                        onChange={(e) => setMultimodalPrompt(e.target.value)}
-                        placeholder="e.g. Flight screenshot attached. Separate Marina Bay Sands hotel quote (5-Star Luxury Premier Room Harbour View @ ₹5,44,000). 1 child 11 yrs @ ₹66,500, 1 infant 2 yrs complimentary. Add 5% GST + 2% TCS. Mercedes-Benz V-Class chauffeur."
-                        rows={4}
-                        className="w-full bg-slate-950/80 border border-indigo-400/30 text-white placeholder-slate-500 text-xs rounded-xl p-3 focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400 font-sans leading-relaxed"
-                      />
+                    <div className="flex items-center gap-2">
+                      {(multimodalPrompt || multimodalFiles.length > 0) && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setMultimodalPrompt('');
+                            setMultimodalFiles([]);
+                            setMultimodalSummary(null);
+                            setMultimodalErrors([]);
+                          }}
+                          className="text-xs text-slate-400 hover:text-white px-2 py-1 cursor-pointer font-medium"
+                        >
+                          Clear All
+                        </button>
+                      )}
 
                       <Button
                         type="button"
