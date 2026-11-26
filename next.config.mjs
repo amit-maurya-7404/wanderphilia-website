@@ -3,6 +3,9 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  outputFileTracingExcludes: {
+    '*': ['./public/**/*'],
+  },
   serverExternalPackages: ['jspdf', 'fflate'],
   images: {
     formats: ['image/avif', 'image/webp'],

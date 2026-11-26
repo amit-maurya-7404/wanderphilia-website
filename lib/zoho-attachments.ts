@@ -1,5 +1,3 @@
-import fs from 'fs';
-import path from 'path';
 import { getZohoAccessToken, getZohoApiUrl } from './zoho';
 
 /**
@@ -84,16 +82,37 @@ export async function uploadProofUrlToZohoRecords(
       }
     } else {
       // Local public file path (e.g. /images/uploads/...)
-      const cleanedRel = cleanUrl.replace(/^\/+/, '').replace(/^public\//, '');
-      const filePath = path.join(process.cwd(), 'public', cleanedRel);
-      if (fs.existsSync(filePath)) {
-        buffer = fs.readFileSync(filePath);
-        const ext = path.extname(filePath).toLowerCase();
-        if (ext === '.png') mimeType = 'image/png';
-        else if (ext === '.webp') mimeType = 'image/webp';
-        else if (ext === '.pdf') mimeType = 'application/pdf';
-        else mimeType = 'image/jpeg';
-        fileName = path.basename(filePath);
+      const baseUrl =
+        process.env.NEXT_PUBLIC_APP_URL ||
+        (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
+      const fetchUrl = cleanUrl.startsWith('/') ? `${baseUrl}${cleanUrl}` : `${baseUrl}/${cleanUrl}`;
+      try {
+        const resp = await fetch(fetchUrl);
+        if (resp.ok) {
+          const ab = await resp.arrayBuffer();
+          buffer = Buffer.from(ab);
+          const ct = resp.headers.get('content-type');
+          if (ct) mimeType = ct;
+          const urlBaseName = cleanUrl.split('/').pop();
+          if (urlBaseName) fileName = urlBaseName;
+        }
+      } catch (fetchErr) {
+        // Fallback using dynamic non-statically-analyzable fs/path for local testing without NFT bundle trace
+        try {
+          const nodeFs: typeof import('fs') = new Function("return require('fs')")();
+          const nodePath: typeof import('path') = new Function("return require('path')")();
+          const cleanedRel = cleanUrl.replace(/^\/+/, '').replace(/^public\//, '');
+          const filePath = nodePath.resolve(process.cwd(), 'public', cleanedRel);
+          if (nodeFs.existsSync(filePath)) {
+            buffer = nodeFs.readFileSync(filePath);
+            const ext = nodePath.extname(filePath).toLowerCase();
+            if (ext === '.png') mimeType = 'image/png';
+            else if (ext === '.webp') mimeType = 'image/webp';
+            else if (ext === '.pdf') mimeType = 'application/pdf';
+            else mimeType = 'image/jpeg';
+            fileName = nodePath.basename(filePath);
+          }
+        } catch (_) {}
       }
     }
 
