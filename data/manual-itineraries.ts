@@ -3923,7 +3923,9 @@ export const kpmgAlibaugManualItinerary: ManualItinerary = {
   balancePendingAmount: 1680,
   paymentStage: 'unpaid',
   enableOnlineBooking: false,
-  fullPaymentOnly: true
+  fullPaymentOnly: true,
+  hideCostingSection: true,
+  showPricingInOptionHeader: true
 };
 
 

@@ -602,9 +602,21 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
                           {opt.title}
                         </h4>
                       </div>
-                      <span className="text-[10px] sm:text-xs font-bold bg-amber-100 text-[#6E1E14] px-2.5 py-0.5 rounded-full border border-amber-300">
-                        {opt.badge || opt.title}
-                      </span>
+                      <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                        <span className="text-[10px] sm:text-xs font-bold bg-amber-100 text-[#6E1E14] px-2.5 py-0.5 rounded-full border border-amber-300">
+                          {opt.badge || opt.title}
+                        </span>
+                        {(itinerary.showPricingInOptionHeader || itinerary.hideCostingSection || itinerary.id === 'kpmg-alibaug-beach-camping-event') && (opt.perAdultPrice || opt.baseAmount) && (
+                          <span className="text-xs sm:text-sm font-black bg-[#6E1E14] text-amber-300 px-3 py-0.5 rounded-full border border-amber-400/50 shadow-xs flex items-center gap-1">
+                            <span>₹{(opt.perAdultPrice || opt.baseAmount)?.toLocaleString('en-IN')}/- pp</span>
+                            {opt.gstPercentage !== 0 && (
+                              <span className="text-[10px] font-semibold text-white/85">
+                                (+{opt.gstPercentage || 5}% GST)
+                              </span>
+                            )}
+                          </span>
+                        )}
+                      </div>
                     </div>
 
                     <div className="overflow-x-auto rounded-xl border-2 border-[#6E1E14] shadow-xs">
@@ -869,7 +881,7 @@ export function ManualItineraryTemplate({ itinerary }: ManualItineraryTemplatePr
           )}
 
           {/* PACKAGE QUOTATION & INVESTMENT SUMMARY CARDS */}
-          {(() => {
+          {!itinerary.hideCostingSection && itinerary.id !== 'kpmg-alibaug-beach-camping-event' && (() => {
             const renderPricingCard = (
               opt: {
                 id?: string;
