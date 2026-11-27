@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/operations/check-sla-escalation",
+      "schedule": "30 3 * * *"
+    }
+  ]
+}

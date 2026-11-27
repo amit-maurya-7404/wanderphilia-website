@@ -21,6 +21,7 @@ import {
 import { getDb } from '@/lib/mongodb';
 import { sendEmail, ADMIN_NOTIFICATION_EMAIL } from '@/lib/email';
 import { isInternationalTrip } from '@/lib/ai-itinerary';
+import { checkAndEscalateOperationsSLA } from '@/lib/operations-sla-mailer';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -46,6 +47,11 @@ export async function GET(req: NextRequest) {
       getAllOperationsBookings(statusFilter, searchQuery),
       getOperationsStats(),
     ]);
+
+    // Asynchronously evaluate 48h SLA and dispatch daily escalation if overdue
+    void checkAndEscalateOperationsSLA(bookings).catch(err => {
+      console.warn('[Operations Background SLA Check Warning]:', err);
+    });
 
     return NextResponse.json({
       success: true,

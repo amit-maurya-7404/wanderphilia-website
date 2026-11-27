@@ -135,6 +135,11 @@ export interface OperationsBooking {
   extraAmountPaidByTransportVendor?: number;
   extraAmountDetails?: string;
 
+  // SLA & Escalation
+  lastSlaEscalationDate?: string; // YYYY-MM-DD
+  lastSlaEscalationAt?: string; // ISO timestamp
+  slaEscalationCount?: number;
+
   // Audit Trail
   updatedAt: string;
   createdAt: string;

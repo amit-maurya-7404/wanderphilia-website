@@ -147,6 +147,56 @@ function matchVendorState(vendorState: string, vendorCity: string, destination: 
   return false;
 }
 
+// Helper to compute live work progress (hotels, transport, activities) and 48-hour SLA status
+function computeBookingSlaAndProgress(b: OperationsBooking) {
+  const hotels = b.hotels || [];
+  const totalHotels = hotels.length;
+  const confirmedHotels = hotels.filter(h => h.status === 'confirmed').length;
+  const pendingHotels = Math.max(0, totalHotels - confirmedHotels);
+
+  const isTransportConfirmed = Boolean(b.isTransportBooked || b.transport?.status === 'confirmed');
+
+  let totalExps = 0;
+  let confirmedExps = 0;
+  if (Array.isArray(b.dayActivities)) {
+    b.dayActivities.forEach((day: any) => {
+      const exps = day.experiences || day.activities || day.sightseeingPoints || [];
+      if (Array.isArray(exps)) {
+        exps.forEach((exp: any) => {
+          totalExps++;
+          const status = typeof exp === 'object' ? exp?.status : 'requested';
+          if (status === 'confirmed') confirmedExps++;
+        });
+      }
+    });
+  }
+  const pendingExps = Math.max(0, totalExps - confirmedExps);
+
+  const isSynced = Boolean(b.opsStatus === 'synced_to_finance' || b.isSyncToFinance);
+  const createdTime = new Date(b.createdAt || b.handedOverAt || Date.now()).getTime();
+  const hoursElapsed = Math.max(0, Math.round((Date.now() - createdTime) / (1000 * 60 * 60)));
+  const isOverdue = !isSynced && hoursElapsed >= 48;
+  const daysOverdue = isOverdue ? Math.max(1, Math.floor((hoursElapsed - 48) / 24) + 1) : 0;
+  const hoursLeft = !isSynced && !isOverdue ? Math.max(1, 48 - hoursElapsed) : 0;
+  const daysLeft = Math.ceil(hoursLeft / 24);
+
+  return {
+    totalHotels,
+    confirmedHotels,
+    pendingHotels,
+    isTransportConfirmed,
+    totalExps,
+    confirmedExps,
+    pendingExps,
+    isSynced,
+    hoursElapsed,
+    isOverdue,
+    daysOverdue,
+    hoursLeft,
+    daysLeft,
+  };
+}
+
 export default function WanderphiliaOperationsPage() {
   // Authentication State
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
@@ -770,6 +820,17 @@ export default function WanderphiliaOperationsPage() {
     if (!activeBooking?.hotels || activeBooking.hotels.length === 0) return false;
     return activeBooking.hotels.every(h => h.status === 'confirmed');
   }, [activeBooking?.hotels]);
+
+  // Compute count of overdue bookings (> 48 hours without sync to finance)
+  const overdueBookingsCount = useMemo(() => {
+    const now = Date.now();
+    return bookings.filter(b => {
+      if (b.opsStatus === 'synced_to_finance' || b.isSyncToFinance) return false;
+      const createdTime = new Date(b.createdAt || b.handedOverAt || now).getTime();
+      const hours = (now - createdTime) / (1000 * 60 * 60);
+      return hours >= 48;
+    }).length;
+  }, [bookings]);
 
   // Save changes to backend
   const handleSaveChanges = async () => {
@@ -1664,6 +1725,14 @@ export default function WanderphiliaOperationsPage() {
             <span className="font-extrabold text-white">{stats?.syncedToFinance || 0}</span>
           </div>
 
+          {overdueBookingsCount > 0 && (
+            <div className="flex items-center gap-2 bg-red-950/70 text-red-300 px-3 py-1.5 rounded-xl border border-red-600/80 animate-pulse">
+              <AlertTriangle className="w-3.5 h-3.5 text-red-400" />
+              <span className="font-bold">48h SLA Overdue:</span>
+              <span className="font-black text-white px-1.5 py-0.2 rounded bg-red-600 text-[11px]">{overdueBookingsCount}</span>
+            </div>
+          )}
+
           {stats?.totalB2BCost !== undefined && (
             <div className="flex items-center gap-2 bg-slate-800/80 px-3 py-1.5 rounded-xl border border-slate-700/80 ml-auto">
               <span className="text-slate-400 font-bold">Total Operations B2B Cost:</span>
@@ -1709,6 +1778,7 @@ export default function WanderphiliaOperationsPage() {
               </div>
             ) : (
               bookings.map(b => {
+                const prog = computeBookingSlaAndProgress(b);
                 const isSelected = activeBooking?.id === b.id;
                 const statusMeta = {
                   pending_ops: { label: 'Action Required', bg: 'bg-amber-950/60 text-amber-300 border-amber-800' },
@@ -1722,20 +1792,41 @@ export default function WanderphiliaOperationsPage() {
                   <div
                     key={b.id}
                     onClick={() => handleSelectBooking(b)}
-                    className={`p-3 rounded-2xl border transition-all cursor-pointer text-left space-y-2 ${isSelected
+                    className={`p-3 rounded-2xl border transition-all cursor-pointer text-left space-y-2.5 ${isSelected
                       ? 'bg-slate-800/90 border-orange-500/80 shadow-md ring-1 ring-orange-500/30'
+                      : prog.isOverdue
+                      ? 'bg-red-950/20 border-red-900/60 hover:border-red-700 hover:bg-red-950/30'
                       : 'bg-slate-900/60 border-slate-800 hover:border-slate-700 hover:bg-slate-800/40'
                       }`}
                   >
-                    <div className="flex items-center justify-between gap-1.5">
+                    {/* Top Row: Inquiry ID + SLA / Status Badge */}
+                    <div className="flex items-center justify-between gap-1.5 flex-wrap">
                       <span className="font-mono text-[10px] text-slate-400 font-bold uppercase">
                         {b.inquiryId}
                       </span>
-                      <span className={`text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border ${statusMeta.bg}`}>
-                        {statusMeta.label}
-                      </span>
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        {prog.isSynced ? (
+                          <span className="text-[8.5px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border bg-purple-950/80 text-purple-300 border-purple-800">
+                            Synced
+                          </span>
+                        ) : prog.isOverdue ? (
+                          <span className="text-[8.5px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border bg-red-950/90 text-red-300 border-red-500 flex items-center gap-1 animate-pulse shadow-xs">
+                            <AlertTriangle className="w-2.5 h-2.5 text-red-400 shrink-0" />
+                            {prog.daysOverdue}D Overdue
+                          </span>
+                        ) : (
+                          <span className="text-[8.5px] font-bold tracking-wider px-2 py-0.5 rounded-full border bg-amber-950/50 text-amber-300 border-amber-800/70 flex items-center gap-1">
+                            <Clock className="w-2.5 h-2.5 text-amber-400 shrink-0" />
+                            {prog.hoursLeft}h left
+                          </span>
+                        )}
+                        <span className={`text-[8.5px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-full border ${statusMeta.bg}`}>
+                          {statusMeta.label}
+                        </span>
+                      </div>
                     </div>
 
+                    {/* Guest Name & Destination */}
                     <div>
                       <h4 className="text-sm font-black text-white tracking-tight leading-snug">
                         {b.customerName}
@@ -1748,6 +1839,57 @@ export default function WanderphiliaOperationsPage() {
                       </p>
                     </div>
 
+                    {/* LIVE WORK STATUS BREAKDOWN (Hotels, Transport, Activities) */}
+                    <div className="bg-slate-950/70 p-2 rounded-xl border border-slate-800/80 space-y-1.5 text-[10.5px]">
+                      {/* Hotels Progress */}
+                      <div className="flex items-center justify-between">
+                        <span className="text-slate-400 font-medium flex items-center gap-1.5">
+                          <Building2 className="w-3 h-3 text-sky-400 shrink-0" />
+                          <span>Hotels:</span>
+                        </span>
+                        <span className={`font-mono font-bold ${prog.pendingHotels === 0 ? 'text-emerald-400' : 'text-amber-300'}`}>
+                          {prog.confirmedHotels}/{prog.totalHotels} Booked
+                          {prog.pendingHotels > 0 ? (
+                            <span className="text-red-400 ml-1 font-semibold">({prog.pendingHotels} Pending)</span>
+                          ) : (
+                            <span className="text-emerald-400 ml-1 font-semibold">✓</span>
+                          )}
+                        </span>
+                      </div>
+
+                      {/* Transport Progress */}
+                      <div className="flex items-center justify-between">
+                        <span className="text-slate-400 font-medium flex items-center gap-1.5">
+                          <Car className="w-3 h-3 text-orange-400 shrink-0" />
+                          <span>Transport:</span>
+                        </span>
+                        <span className={`font-mono font-bold ${prog.isTransportConfirmed ? 'text-emerald-400' : 'text-amber-300'}`}>
+                          {prog.isTransportConfirmed ? (
+                            <span className="text-emerald-400">✓ Booked</span>
+                          ) : (
+                            <span className="text-amber-400">⚠️ Pending</span>
+                          )}
+                        </span>
+                      </div>
+
+                      {/* Activities Progress */}
+                      {prog.totalExps > 0 && (
+                        <div className="flex items-center justify-between">
+                          <span className="text-slate-400 font-medium flex items-center gap-1.5">
+                            <Compass className="w-3 h-3 text-emerald-400 shrink-0" />
+                            <span>Activities:</span>
+                          </span>
+                          <span className={`font-mono font-bold ${prog.pendingExps === 0 ? 'text-emerald-400' : 'text-amber-300'}`}>
+                            {prog.confirmedExps}/{prog.totalExps} Confirmed
+                            {prog.pendingExps > 0 && (
+                              <span className="text-amber-400 ml-1 font-semibold">({prog.pendingExps} Pending)</span>
+                            )}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Bottom Row: Pax and Total Selling Price */}
                     <div className="flex items-center justify-between text-[11px] pt-1 border-t border-slate-800/80">
                       <span className="text-slate-400">
                         {b.numberOfGuests} Pax ({b.adults}A, {b.kids}K)
@@ -1873,6 +2015,87 @@ export default function WanderphiliaOperationsPage() {
                     )}
                   </div>
                 </div>
+
+                {/* 48-HOUR SLA STATUS & PROGRESS ALERT BANNER */}
+                {(() => {
+                  const activeProg = computeBookingSlaAndProgress(activeBooking);
+                  if (activeProg.isSynced) {
+                    return (
+                      <div className="flex items-center justify-between gap-3 p-3 rounded-2xl bg-purple-950/40 border border-purple-800/70 text-xs">
+                        <div className="flex items-center gap-2.5">
+                          <Sparkles className="w-5 h-5 text-purple-400 shrink-0" />
+                          <div>
+                            <span className="font-black text-purple-200 block text-sm">
+                              Synced to Zoho Finance Module ✓
+                            </span>
+                            <span className="text-[11px] text-purple-300/80">
+                              All supplier B2B costs &amp; bookings are verified and locked in Zoho CRM.
+                            </span>
+                          </div>
+                        </div>
+                        <span className="text-[10px] font-black px-2.5 py-1 rounded-lg bg-purple-900/60 text-purple-300 border border-purple-700/80 uppercase">
+                          SLA Completed
+                        </span>
+                      </div>
+                    );
+                  }
+
+                  if (activeProg.isOverdue) {
+                    return (
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-2xl bg-red-950/60 border border-red-600/80 text-xs shadow-md">
+                        <div className="flex items-start gap-2.5">
+                          <div className="w-8 h-8 rounded-xl bg-red-900/90 border border-red-500 flex items-center justify-center shrink-0 mt-0.5">
+                            <AlertTriangle className="w-4 h-4 text-red-200" />
+                          </div>
+                          <div>
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="font-black text-red-200 text-sm">
+                                🚨 48-Hour Operations SLA Breached
+                              </span>
+                              <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-md bg-red-600 text-white animate-pulse">
+                                {activeProg.daysOverdue} Day{activeProg.daysOverdue > 1 ? 's' : ''} Overdue ({activeProg.hoursElapsed}h Total)
+                              </span>
+                            </div>
+                            <p className="text-[11px] text-red-200/90 mt-1 leading-relaxed">
+                              This booking has exceeded the 2-day SLA. Daily escalation alert emails are sent to <strong className="text-white underline">operations@wanderphilia.com</strong> and <strong className="text-white underline">experiences@wanderphilia.com</strong> until locked.
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
+                          <span className="text-[11px] font-bold text-red-300 px-2.5 py-1 rounded-lg bg-red-900/50 border border-red-700">
+                            {activeProg.confirmedHotels}/{activeProg.totalHotels} Hotels • {activeProg.pendingHotels} Pending
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  return (
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-2xl bg-amber-950/40 border border-amber-800/70 text-xs">
+                      <div className="flex items-center gap-2.5">
+                        <Clock className="w-5 h-5 text-amber-400 shrink-0" />
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="font-black text-amber-200 block text-sm">
+                              48-Hour Operations SLA Active
+                            </span>
+                            <span className="text-[10px] font-bold px-2 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                              {activeProg.hoursLeft} Hours Remaining
+                            </span>
+                          </div>
+                          <span className="text-[11px] text-amber-300/80 mt-0.5 block">
+                            Secure hotel confirmations and vehicle dispatch within 2 calendar days of customer advance payment.
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className="text-[10px] font-bold px-2.5 py-1 rounded-lg bg-slate-900 text-slate-300 border border-slate-700">
+                          {activeProg.confirmedHotels}/{activeProg.totalHotels} Hotels • {activeProg.isTransportConfirmed ? 'Cab Booked' : 'Cab Pending'}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })()}
 
                 {/* ZOHO CRM OPERATIONS MODULE CONTROL SWITCHES (CustomModule11) */}
                 <div className="bg-slate-950/80 border border-slate-800 rounded-2xl p-4 space-y-3">
