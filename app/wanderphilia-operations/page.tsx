@@ -663,28 +663,29 @@ export default function WanderphiliaOperationsPage() {
 
     // Hotels Client Quoted Cost
     let clientHotelTotal = 0;
-    let hasExplicitHotelQuote = false;
     (activeBooking.hotels || []).forEach(h => {
+      const extra = getHotelExtraBedDetails(h);
+      const nights = Number(h.nights || 1);
+      const rooms = Number(h.roomsCount || activeBooking.roomsCount || 1);
+
       if (h.clientQuotationCost && Number(h.clientQuotationCost) > 0) {
         clientHotelTotal += Number(h.clientQuotationCost);
-        hasExplicitHotelQuote = true;
-      } else if (h.basePrice && Number(h.basePrice) > 0 && h.basePrice !== h.pricePerNight) {
-        const extra = getHotelExtraBedDetails(h);
-        const nights = Number(h.nights || 1);
-        const rooms = Number(h.roomsCount || activeBooking.roomsCount || 1);
-        clientHotelTotal += (Number(h.basePrice) * nights * rooms) + extra.extraBedTotal + extra.childNoBedTotal;
-        hasExplicitHotelQuote = true;
+      } else if (h.basePrice && Number(h.basePrice) > 0) {
+        const clientCost = (Number(h.basePrice) * nights * rooms) + extra.extraBedTotal + extra.childNoBedTotal;
+        clientHotelTotal += clientCost;
+      } else {
+        const b2bCost = h.isManualCost && typeof h.b2bTotalCost === 'number' && h.b2bTotalCost > 0
+          ? h.b2bTotalCost
+          : extra.b2bTotal;
+        clientHotelTotal += b2bCost;
       }
     });
 
-    if (!hasExplicitHotelQuote) {
-      if ((activeBooking as any).clientHotelsTotal && Number((activeBooking as any).clientHotelsTotal) > 0) {
-        clientHotelTotal = Number((activeBooking as any).clientHotelsTotal);
-      } else {
-        const expTotal = experiencesBreakdown?.wanderphiliaTotal || 0;
-        const remainingForHotels = sellingWithoutTaxes - clientTransportTotal - expTotal;
-        clientHotelTotal = remainingForHotels > 0 ? remainingForHotels : b2bHotelTotal;
-      }
+    if (clientHotelTotal <= 0 && (activeBooking as any).clientHotelsTotal && Number((activeBooking as any).clientHotelsTotal) > 0) {
+      clientHotelTotal = Number((activeBooking as any).clientHotelsTotal);
+    }
+    if (clientHotelTotal <= 0) {
+      clientHotelTotal = b2bHotelTotal;
     }
     const hotelDiff = clientHotelTotal - b2bHotelTotal;
 
@@ -2265,17 +2266,33 @@ export default function WanderphiliaOperationsPage() {
                                 {extraBedInfo.extraBedTotal > 0 && ` + ₹${extraBedInfo.extraBedTotal.toLocaleString('en-IN')} (Bed)`}
                                 {extraBedInfo.childNoBedTotal > 0 && ` + ₹${extraBedInfo.childNoBedTotal.toLocaleString('en-IN')} (Child)`}
                               </div>
+                              {/* Client Quoted Rate for this property */}
                               {(() => {
-                                const clientRoomCost = (hotel.clientQuotationCost && hotel.clientQuotationCost > 0)
+                                const currentClientCost = (hotel.clientQuotationCost && hotel.clientQuotationCost > 0)
                                   ? hotel.clientQuotationCost
-                                  : (hotel.basePrice && hotel.basePrice > 0 && hotel.basePrice !== hotel.pricePerNight)
+                                  : (hotel.basePrice && hotel.basePrice > 0)
                                     ? ((hotel.basePrice * (hotel.nights || 1) * (hotel.roomsCount || 1)) + extraBedInfo.extraBedTotal + extraBedInfo.childNoBedTotal)
-                                    : null;
-                                if (!clientRoomCost) return null;
-                                const diff = clientRoomCost - extraBedInfo.b2bTotal;
+                                    : extraBedInfo.b2bTotal;
+                                const diff = currentClientCost - extraBedInfo.b2bTotal;
                                 return (
-                                  <div className="text-[9px] font-mono mt-1 pt-1 border-t border-emerald-900/50 flex items-center justify-between">
-                                    <span className="text-slate-400">Client: <strong className="text-amber-300">₹{clientRoomCost.toLocaleString('en-IN')}</strong></span>
+                                  <div className="text-[9px] font-mono mt-1 pt-1 border-t border-emerald-900/50 flex items-center justify-between gap-1 flex-wrap">
+                                    <div className="flex items-center gap-1">
+                                      <span className="text-slate-400">Client:</span>
+                                      <input
+                                        type="number"
+                                        placeholder={String(currentClientCost)}
+                                        value={hotel.clientQuotationCost || ''}
+                                        onChange={e => {
+                                          const val = Number(e.target.value) || 0;
+                                          const updated = activeBooking.hotels.map((h, i) =>
+                                            i === hIdx ? { ...h, clientQuotationCost: val } : h
+                                          );
+                                          setActiveBooking({ ...activeBooking, hotels: updated });
+                                        }}
+                                        className="w-16 bg-slate-900/90 border border-slate-700 rounded px-1 py-0.5 text-amber-300 text-[10px] font-mono font-bold focus:outline-none focus:border-amber-500"
+                                        title="Click to edit actual hotel rate sent to client"
+                                      />
+                                    </div>
                                     <span className={diff >= 0 ? 'text-emerald-400 font-bold' : 'text-red-400 font-bold'}>
                                       {diff >= 0 ? '+' : ''}₹{diff.toLocaleString('en-IN')}
                                     </span>
