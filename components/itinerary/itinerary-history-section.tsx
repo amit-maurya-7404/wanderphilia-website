@@ -780,17 +780,110 @@ export function ItineraryHistorySection({ lastGeneratedId, onLoadIntoForm }: Iti
                 vehicleDailyRate = Math.round(totalTransportB2BCost / tripDays);
               }
 
-              // Calculate Activities Cost
-              let totalActivitiesB2BCost = 0;
+              // Calculate Activities Cost & Parse Day Breakdowns Accurately
               const totalPax = (Number(inspectModalItem.adults) || 2) + (Number(inspectModalItem.kids) || 0);
-              (inspectModalItem.dayActivities || []).forEach((dr: any) => {
+
+              const dayBreakdowns = (inspectModalItem.dayActivities || []).map((dr: any, idx: number) => {
+                const dayNumber = dr.dayNumber || dr.day || idx + 1;
+                const fromCity = String(dr.city || dr.stayCity || dr.fromCity || '').trim();
+                const toCity = String(dr.city2 || dr.toCity || '').trim();
+                let cityTitle = fromCity;
+                if (fromCity && toCity && fromCity.toLowerCase() !== toCity.toLowerCase()) {
+                  cityTitle = `${fromCity} ➔ ${toCity}`;
+                } else if (!cityTitle) {
+                  cityTitle = inspectModalItem.destination || 'Sightseeing';
+                }
+
+                const exps: Array<{
+                  name: string;
+                  isPaid: boolean;
+                  ppCost: number;
+                  totalCost: number;
+                  guidedTour?: boolean;
+                }> = [];
+                const seen = new Set<string>();
+
+                const addExp = (name: string, pp: number, flatTotal: number, guided?: boolean) => {
+                  const cleanName = (name || '').trim();
+                  if (!cleanName) return;
+                  const key = cleanName.toLowerCase();
+                  if (seen.has(key)) return;
+                  seen.add(key);
+
+                  let finalPp = pp > 0 ? pp : 0;
+                  let finalTotal = flatTotal > 0 ? flatTotal : (finalPp > 0 ? finalPp * totalPax : 0);
+                  if (finalPp === 0 && finalTotal > 0) {
+                    finalPp = Math.round(finalTotal / totalPax);
+                  }
+                  exps.push({
+                    name: cleanName,
+                    isPaid: finalTotal > 0,
+                    ppCost: finalPp,
+                    totalCost: finalTotal,
+                    guidedTour: !!guided
+                  });
+                };
+
+                // 1. Process dr.experiences
                 if (Array.isArray(dr.experiences)) {
-                  dr.experiences.forEach((exp: any) => {
-                    const pp = Number(exp?.ppCost) || 0;
-                    if (pp > 0) totalActivitiesB2BCost += (pp * totalPax);
+                  dr.experiences.forEach((item: any, eIdx: number) => {
+                    if (typeof item === 'object' && item !== null) {
+                      const name = item.name || item.title || '';
+                      const pp = Number(item.ppCost) || 0;
+                      const total = Number(item.cost) || Number(item.totalCost) || (pp > 0 ? pp * totalPax : 0);
+                      addExp(name, pp, total, item.guidedTour || dr.guidedTour);
+                    } else if (typeof item === 'string' && item.trim()) {
+                      const pp = Number(dr.experienceCosts?.[eIdx]) || 0;
+                      const flat = Number(dr.experiencePrivateCosts?.[eIdx]) || 0;
+                      addExp(item, pp, flat, dr.guidedTour);
+                    }
                   });
                 }
+
+                // 2. Process dr.optionalExperiences
+                if (Array.isArray(dr.optionalExperiences)) {
+                  dr.optionalExperiences.forEach((item: any, optIdx: number) => {
+                    if (typeof item === 'object' && item !== null) {
+                      const name = item.name || item.title || '';
+                      const pp = Number(item.ppCost) || 0;
+                      const total = Number(item.cost) || (pp > 0 ? pp * totalPax : 0);
+                      addExp(`${name} (Optional)`, pp, total, false);
+                    } else if (typeof item === 'string' && item.trim()) {
+                      const pp = Number(dr.optionalExperienceCosts?.[optIdx]) || 0;
+                      const flat = Number(dr.optionalExperiencePrivateCosts?.[optIdx]) || 0;
+                      addExp(`${item} (Optional)`, pp, flat, false);
+                    }
+                  });
+                }
+
+                // 3. Process dr.activities / dr.sightseeingPoints / dr.points if experiences was empty
+                if (exps.length === 0) {
+                  const rawActs = Array.isArray(dr.activities)
+                    ? dr.activities
+                    : (Array.isArray(dr.sightseeingPoints) ? dr.sightseeingPoints : (Array.isArray(dr.points) ? dr.points : []));
+                  rawActs.forEach((act: any) => {
+                    if (typeof act === 'string' && act.trim()) {
+                      addExp(act, 0, 0, false);
+                    }
+                  });
+                }
+
+                // 4. Fallback if day has a title
+                if (exps.length === 0 && dr.title) {
+                  addExp(dr.title, 0, 0, false);
+                }
+
+                const dayTotalCost = exps.filter(e => e.isPaid).reduce((sum, e) => sum + e.totalCost, 0);
+
+                return {
+                  dayNumber,
+                  cityTitle,
+                  experiences: exps,
+                  dayTotalCost
+                };
               });
+
+              const totalActivitiesB2BCost = dayBreakdowns.reduce((sum, d) => sum + d.dayTotalCost, 0);
 
               const computedBaseQuotation = inspectModalItem.baseQuotationAmount || (totalHotelsB2BCost + totalTransportB2BCost + totalActivitiesB2BCost);
               const grossMarginAmt = Math.max(0, (Number(inspectModalItem.finalQuotationAmount || 0) - Number(computedBaseQuotation || 0)));
@@ -819,7 +912,7 @@ export function ItineraryHistorySection({ lastGeneratedId, onLoadIntoForm }: Iti
                         ₹{Number(computedBaseQuotation).toLocaleString('en-IN')}
                       </span>
                       <span className="text-[10px] text-slate-500 block truncate">
-                        Hotels: ₹{totalHotelsB2BCost.toLocaleString('en-IN')} • Cab: ₹{totalTransportB2BCost.toLocaleString('en-IN')}
+                        Hotels: ₹{totalHotelsB2BCost.toLocaleString('en-IN')} • Cab: ₹{totalTransportB2BCost.toLocaleString('en-IN')}{totalActivitiesB2BCost > 0 ? ` • Activities: ₹${totalActivitiesB2BCost.toLocaleString('en-IN')}` : ''}
                       </span>
                     </div>
 
@@ -981,51 +1074,84 @@ export function ItineraryHistorySection({ lastGeneratedId, onLoadIntoForm }: Iti
                   </div>
 
                   {/* Day-Wise Sightseeing & Activities */}
-                  {Array.isArray(inspectModalItem.dayActivities) && inspectModalItem.dayActivities.length > 0 && (
-                    <div className="space-y-2">
+                  {Array.isArray(dayBreakdowns) && dayBreakdowns.length > 0 && (
+                    <div className="space-y-2.5">
                       <div className="flex items-center justify-between">
                         <span className="text-[11px] font-black uppercase text-slate-300 tracking-wider flex items-center gap-1.5">
                           <Compass className="w-3.5 h-3.5 text-orange-400" />
                           <span>Day-Wise Sightseeing &amp; Experiences</span>
                         </span>
-                        {totalActivitiesB2BCost > 0 && (
-                          <span className="text-xs font-bold text-amber-400 bg-amber-950/50 border border-amber-800/60 px-2.5 py-0.5 rounded-lg font-mono">
+                        {totalActivitiesB2BCost > 0 ? (
+                          <span className="text-xs font-bold text-amber-400 bg-amber-950/60 border border-amber-800/60 px-2.5 py-0.5 rounded-lg font-mono">
                             Total Activities: ₹{totalActivitiesB2BCost.toLocaleString('en-IN')}
+                          </span>
+                        ) : (
+                          <span className="text-[10px] font-bold text-slate-400 bg-slate-900 border border-slate-800 px-2.5 py-0.5 rounded-lg">
+                            Standard Sightseeing Included
                           </span>
                         )}
                       </div>
 
-                      <div className="border border-slate-800 rounded-2xl divide-y divide-slate-800 bg-slate-950 max-h-56 overflow-y-auto">
-                        {inspectModalItem.dayActivities.map((dr: any, idx: number) => {
-                          const exps = Array.isArray(dr.experiences) ? dr.experiences : [];
-                          let expStr = '';
-                          if (exps.length > 0) {
-                            expStr = exps.map((e: any) => typeof e === 'string' ? e : e?.name).filter(Boolean).join(', ');
-                          } else if (Array.isArray(dr.activities)) {
-                            expStr = dr.activities.filter(Boolean).join(', ');
-                          } else if (dr.title) {
-                            expStr = dr.title;
-                          }
-
+                      <div className="border border-slate-800 rounded-2xl divide-y divide-slate-800 bg-slate-950 max-h-72 overflow-y-auto">
+                        {dayBreakdowns.map((dayItem, idx) => {
                           return (
-                            <div key={idx} className="p-2.5 flex items-start justify-between gap-3 hover:bg-slate-900/40 transition">
-                              <div className="flex items-start gap-2.5 min-w-0">
-                                <span className="px-2 py-0.5 rounded bg-orange-600/20 text-orange-400 font-bold text-[10px] shrink-0 mt-0.5">
-                                  Day {dr.dayNumber || dr.day || idx + 1}
-                                </span>
-                                <div className="min-w-0">
-                                  <span className="font-bold text-white text-xs">{dr.city || inspectModalItem.destination}: </span>
-                                  <span className="text-slate-300 text-[11px]">{expStr || 'Local sightseeing & leisure'}</span>
-                                  {exps.some((e: any) => Number(e?.ppCost) > 0) && (
-                                    <div className="mt-1 flex flex-wrap gap-2 text-[10px] font-mono">
-                                      {exps.filter((e: any) => Number(e?.ppCost) > 0).map((e: any, eIdx: number) => (
-                                        <span key={eIdx} className="bg-amber-950/60 text-amber-300 border border-amber-800/60 px-2 py-0.5 rounded">
-                                          {e.name}: ₹{Number(e.ppCost).toLocaleString('en-IN')}/pax (₹{(Number(e.ppCost) * totalPax).toLocaleString('en-IN')} for {totalPax} Pax)
-                                        </span>
-                                      ))}
-                                    </div>
-                                  )}
+                            <div key={idx} className="p-3 hover:bg-slate-900/40 transition space-y-2">
+                              {/* Day Header */}
+                              <div className="flex items-center justify-between gap-2">
+                                <div className="flex items-center gap-2 min-w-0">
+                                  <span className="px-2 py-0.5 rounded bg-orange-600/20 text-orange-400 font-black text-[10px] shrink-0">
+                                    Day {dayItem.dayNumber}
+                                  </span>
+                                  <span className="font-bold text-white text-xs truncate">
+                                    {dayItem.cityTitle}
+                                  </span>
                                 </div>
+                                {dayItem.dayTotalCost > 0 && (
+                                  <span className="text-[11px] font-black text-amber-300 font-mono bg-amber-950/40 border border-amber-900/60 px-2 py-0.5 rounded-md shrink-0">
+                                    ₹{dayItem.dayTotalCost.toLocaleString('en-IN')}
+                                  </span>
+                                )}
+                              </div>
+
+                              {/* List of Activities & Experiences */}
+                              <div className="pl-6 space-y-1.5">
+                                {dayItem.experiences.length > 0 ? (
+                                  dayItem.experiences.map((exp, eIdx) => (
+                                    <div key={eIdx} className="flex flex-wrap items-center justify-between gap-1.5 text-xs py-0.5 border-b border-slate-900/80 last:border-0">
+                                      <div className="flex items-center gap-2 min-w-0">
+                                        <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${exp.isPaid ? 'bg-amber-400 ring-2 ring-amber-400/20' : 'bg-slate-600'}`} />
+                                        <span className={`font-medium ${exp.isPaid ? 'text-amber-200 font-semibold' : 'text-slate-300'}`}>
+                                          {exp.name}
+                                        </span>
+                                        {exp.guidedTour && (
+                                          <span className="text-[9px] bg-indigo-950/70 text-indigo-300 border border-indigo-800/60 px-1.5 py-0.2 rounded font-semibold">
+                                            Guided Tour
+                                          </span>
+                                        )}
+                                      </div>
+
+                                      {exp.isPaid ? (
+                                        <div className="flex items-center gap-1.5 shrink-0 text-[10px] font-mono">
+                                          <span className="text-slate-400">
+                                            ₹{exp.ppCost.toLocaleString('en-IN')}/pax
+                                          </span>
+                                          <span className="text-slate-600">&bull;</span>
+                                          <span className="text-amber-400 font-bold bg-amber-950/80 border border-amber-800/80 px-1.5 py-0.5 rounded">
+                                            ₹{exp.totalCost.toLocaleString('en-IN')} ({totalPax} Pax)
+                                          </span>
+                                        </div>
+                                      ) : (
+                                        <span className="text-[10px] text-slate-500 font-medium shrink-0">
+                                          Sightseeing
+                                        </span>
+                                      )}
+                                    </div>
+                                  ))
+                                ) : (
+                                  <span className="text-slate-500 text-xs italic">
+                                    Local sightseeing &amp; leisure
+                                  </span>
+                                )}
                               </div>
                             </div>
                           );
@@ -1033,6 +1159,10 @@ export function ItineraryHistorySection({ lastGeneratedId, onLoadIntoForm }: Iti
                       </div>
                     </div>
                   )}
+
+
+
+
                 </div>
               );
             })()}

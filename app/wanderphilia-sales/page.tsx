@@ -11082,22 +11082,104 @@ export default function SheetItineraryPage() {
 
               {/* Day-Wise Sightseeing Summary */}
               {dayRows && dayRows.length > 0 && (
-                <div className="space-y-2">
+                <div className="space-y-2.5">
                   <span className="text-[11px] font-black uppercase text-slate-300 tracking-wider flex items-center gap-1.5">
                     <Compass className="w-3.5 h-3.5 text-orange-400" />
                     <span>Day-Wise Sightseeing &amp; Experiences</span>
                   </span>
-                  <div className="border border-slate-800 rounded-2xl divide-y divide-slate-800 bg-slate-950 max-h-48 overflow-y-auto">
+                  <div className="border border-slate-800 rounded-2xl divide-y divide-slate-800 bg-slate-950 max-h-60 overflow-y-auto">
                     {dayRows.map((dr, idx) => {
-                      const expStr = Array.isArray(dr.experiences) ? dr.experiences.filter(Boolean).join(', ') : '';
+                      const totalPaxCount = (Number(adults) || 2) + (Number(kids) || 0);
+                      const parsedList: Array<{ name: string; isPaid: boolean; pp: number; total: number; guided?: boolean }> = [];
+                      const seen = new Set<string>();
+
+                      const addExp = (name: string, pp: number, flat: number, guided?: boolean) => {
+                        const clean = (name || '').trim();
+                        if (!clean) return;
+                        const key = clean.toLowerCase();
+                        if (seen.has(key)) return;
+                        seen.add(key);
+                        let finalPp = pp > 0 ? pp : 0;
+                        let finalTotal = flat > 0 ? flat : (finalPp > 0 ? finalPp * totalPaxCount : 0);
+                        if (finalPp === 0 && finalTotal > 0) finalPp = Math.round(finalTotal / totalPaxCount);
+                        parsedList.push({ name: clean, isPaid: finalTotal > 0, pp: finalPp, total: finalTotal, guided: !!guided });
+                      };
+
+                      if (Array.isArray(dr.experiences)) {
+                        dr.experiences.forEach((exp: any, eIdx: number) => {
+                          if (typeof exp === 'object' && exp !== null) {
+                            const pp = Number(exp.ppCost) || 0;
+                            const total = Number(exp.cost) || (pp > 0 ? pp * totalPaxCount : 0);
+                            addExp(exp.name || exp.title || '', pp, total, exp.guidedTour || dr.guidedTour);
+                          } else if (typeof exp === 'string' && exp.trim()) {
+                            const pp = Number(dr.experienceCosts?.[eIdx]) || 0;
+                            const flat = Number(dr.experiencePrivateCosts?.[eIdx]) || 0;
+                            addExp(exp, pp, flat, dr.guidedTour);
+                          }
+                        });
+                      }
+
+                      if (Array.isArray(dr.optionalExperiences)) {
+                        dr.optionalExperiences.forEach((exp: any, oIdx: number) => {
+                          if (typeof exp === 'string' && exp.trim()) {
+                            const pp = Number(dr.optionalExperienceCosts?.[oIdx]) || 0;
+                            const flat = Number(dr.optionalExperiencePrivateCosts?.[oIdx]) || 0;
+                            addExp(`${exp} (Optional)`, pp, flat, false);
+                          }
+                        });
+                      }
+
+                      const dayCost = parsedList.filter(p => p.isPaid).reduce((s, p) => s + p.total, 0);
+
                       return (
-                        <div key={idx} className="p-2.5 flex items-start gap-2.5">
-                          <span className="px-2 py-0.5 rounded bg-orange-600/20 text-orange-400 font-bold text-[10px] shrink-0">
-                            Day {dr.dayNumber || idx + 1}
-                          </span>
-                          <div className="min-w-0">
-                            <span className="font-bold text-white text-xs">{dr.city || destination}: </span>
-                            <span className="text-slate-400 text-[11px]">{expStr || 'Local sightseeing & leisure'}</span>
+                        <div key={idx} className="p-3 hover:bg-slate-900/40 transition space-y-1.5">
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="flex items-center gap-2 min-w-0">
+                              <span className="px-2 py-0.5 rounded bg-orange-600/20 text-orange-400 font-bold text-[10px] shrink-0">
+                                Day {dr.dayNumber || idx + 1}
+                              </span>
+                              <span className="font-bold text-white text-xs truncate">
+                                {dr.city || destination}
+                              </span>
+                            </div>
+                            {dayCost > 0 && (
+                              <span className="text-[10px] font-black text-amber-300 font-mono bg-amber-950/40 border border-amber-900/60 px-2 py-0.5 rounded-md shrink-0">
+                                ₹{dayCost.toLocaleString('en-IN')}
+                              </span>
+                            )}
+                          </div>
+
+                          <div className="pl-6 space-y-1">
+                            {parsedList.length > 0 ? (
+                              parsedList.map((item, pIdx) => (
+                                <div key={pIdx} className="flex flex-wrap items-center justify-between gap-1 text-xs py-0.5 border-b border-slate-900/80 last:border-0">
+                                  <div className="flex items-center gap-2 min-w-0">
+                                    <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${item.isPaid ? 'bg-amber-400' : 'bg-slate-600'}`} />
+                                    <span className={`font-medium ${item.isPaid ? 'text-amber-200 font-semibold' : 'text-slate-300'}`}>
+                                      {item.name}
+                                    </span>
+                                    {item.guided && (
+                                      <span className="text-[9px] bg-indigo-950/70 text-indigo-300 border border-indigo-800/60 px-1.5 py-0.2 rounded font-semibold">
+                                        Guided Tour
+                                      </span>
+                                    )}
+                                  </div>
+                                  {item.isPaid ? (
+                                    <div className="flex items-center gap-1.5 text-[10px] font-mono">
+                                      <span className="text-slate-400">₹{item.pp.toLocaleString('en-IN')}/pax</span>
+                                      <span className="text-slate-600">&bull;</span>
+                                      <span className="text-amber-400 font-bold bg-amber-950/80 border border-amber-800/80 px-1.5 py-0.5 rounded">
+                                        ₹{item.total.toLocaleString('en-IN')} ({totalPaxCount} Pax)
+                                      </span>
+                                    </div>
+                                  ) : (
+                                    <span className="text-[10px] text-slate-500 font-medium">Sightseeing</span>
+                                  )}
+                                </div>
+                              ))
+                            ) : (
+                              <span className="text-slate-500 text-xs italic">Local sightseeing &amp; leisure</span>
+                            )}
                           </div>
                         </div>
                       );
