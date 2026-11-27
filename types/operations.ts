@@ -44,6 +44,7 @@ export interface OperationsTransportItem {
   totalDays: number;
   costPerDay?: number;
   b2bTotalCost: number;
+  clientQuotationCost?: number;
   status: 'assigned' | 'confirmed';
   driverName?: string;
   driverMobile?: string;

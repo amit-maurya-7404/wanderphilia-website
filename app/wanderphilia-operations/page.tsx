@@ -284,14 +284,13 @@ export default function WanderphiliaOperationsPage() {
     return found || null;
   }, [allZohoExperiences]);
 
-  // Helper to resolve hotel stay dates
-  const getHotelStayDates = useCallback((hotel: any, index: number, allHotels: any[], travelStartDate?: string) => {
-    if (hotel.dates && hotel.dates.includes('-') && !hotel.dates.startsWith('0')) {
-      return hotel.dates;
-    }
-    if (hotel.stayDates && hotel.stayDates.includes('-')) {
-      return hotel.stayDates;
-    }
+  // Helper to resolve hotel stay dates and nights details
+  const getHotelStayDetails = useCallback((hotel: any, index: number, allHotels: any[], travelStartDate?: string) => {
+    let checkIn = '';
+    let checkOut = '';
+    const nights = Number(hotel.nights || 1);
+
+    // Try calculating exact calendar dates from travelStartDate
     let baseDate: Date | null = null;
     if (travelStartDate) {
       if (/^\d{4}-\d{2}-\d{2}/.test(travelStartDate)) {
@@ -301,24 +300,42 @@ export default function WanderphiliaOperationsPage() {
         baseDate = new Date(Number(y), Number(m) - 1, Number(d));
       }
     }
-    if (!baseDate || isNaN(baseDate.getTime())) {
-      return hotel.dates || `${hotel.nights || 1} Night(s)`;
+
+    if (baseDate && !isNaN(baseDate.getTime())) {
+      let cumulativeNights = 0;
+      for (let i = 0; i < index; i++) {
+        cumulativeNights += Number(allHotels[i]?.nights || 1);
+      }
+      const inDate = new Date(baseDate);
+      inDate.setDate(inDate.getDate() + cumulativeNights);
+      const outDate = new Date(inDate);
+      outDate.setDate(outDate.getDate() + nights);
+
+      checkIn = inDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+      checkOut = outDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    } else {
+      // Fallback: parse from hotel.dates or hotel.stayDates if provided
+      const raw = (hotel.dates || hotel.stayDates || '').replace(/\(\d+\s*Nts?\)/gi, '').trim();
+      const parts = raw.split(/\s*(?:→|->|to|–|-)\s*/);
+      if (parts.length >= 2) {
+        checkIn = parts[0].trim();
+        checkOut = parts[1].trim();
+      } else if (parts[0]) {
+        checkIn = parts[0].trim();
+        checkOut = `${nights}N Stay`;
+      } else {
+        checkIn = `Day ${index + 1}`;
+        checkOut = `Day ${index + 1 + nights}`;
+      }
     }
 
-    let cumulativeNights = 0;
-    for (let i = 0; i < index; i++) {
-      cumulativeNights += Number(allHotels[i]?.nights || 1);
-    }
-    const nights = Number(hotel.nights || 1);
-    const inDate = new Date(baseDate);
-    inDate.setDate(inDate.getDate() + cumulativeNights);
-    const outDate = new Date(inDate);
-    outDate.setDate(outDate.getDate() + nights);
-
-    const inStr = inDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-    const outStr = outDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-    return `${inStr} → ${outStr}`;
+    return { checkIn, checkOut, nights, rangeStr: `${checkIn} → ${checkOut}` };
   }, []);
+
+  // Helper to resolve hotel stay dates (backwards compatibility)
+  const getHotelStayDates = useCallback((hotel: any, index: number, allHotels: any[], travelStartDate?: string) => {
+    return getHotelStayDetails(hotel, index, allHotels, travelStartDate).rangeStr;
+  }, [getHotelStayDetails]);
 
   // Calculation of extra beds required for the currently active booking
   const bookingExtraBedCalc = useMemo(() => {
@@ -534,42 +551,6 @@ export default function WanderphiliaOperationsPage() {
     setSaveSuccessMessage(null);
   };
 
-  // Compute live profit margins
-  const liveMargins = useMemo(() => {
-    if (!activeBooking) {
-      return {
-        sellingPrice: 0,
-        b2bHotelTotal: 0,
-        b2bTransportTotal: 0,
-        b2bGrandTotal: 0,
-        profit: 0,
-        marginPct: 0
-      };
-    }
-
-    const sellingPrice = Number(activeBooking.totalQuotationAmount || 0);
-    const b2bHotelTotal = (activeBooking.hotels || []).reduce(
-      (sum, h) => {
-        const extra = getHotelExtraBedDetails(h);
-        return sum + (h.isManualCost && typeof h.b2bTotalCost === 'number' && h.b2bTotalCost > 0 ? h.b2bTotalCost : extra.b2bTotal);
-      },
-      0
-    );
-    const b2bTransportTotal = Number(activeBooking.transport?.b2bTotalCost || 0);
-    const b2bGrandTotal = b2bHotelTotal + b2bTransportTotal;
-    const profit = sellingPrice - b2bGrandTotal;
-    const marginPct = sellingPrice > 0 ? Math.round((profit / sellingPrice) * 100) : 0;
-
-    return {
-      sellingPrice,
-      b2bHotelTotal,
-      b2bTransportTotal,
-      b2bGrandTotal,
-      profit,
-      marginPct
-    };
-  }, [activeBooking, getHotelExtraBedDetails]);
-
   // Experiences Breakdown: Company Paid (Wanderphilia) vs Vendor Paid (Transport Vendor)
   const experiencesBreakdown = useMemo(() => {
     let wanderphiliaTotal = 0;
@@ -580,7 +561,11 @@ export default function WanderphiliaOperationsPage() {
 
     (activeBooking?.dayActivities || []).forEach(day => {
       const dayCity = day.city || day.fromCity || activeBooking?.destination;
-      (day.experiences || []).forEach((exp: any) => {
+      const expsToScan = (Array.isArray(day.experiences) && day.experiences.some((e: any) => typeof e === 'object' || (typeof e === 'string' && e.trim())))
+        ? day.experiences
+        : (day.title ? [day.title] : []);
+
+      expsToScan.forEach((exp: any) => {
         const expName = typeof exp === 'string' ? exp : (exp.name || exp.title || '');
         if (!expName || !expName.trim()) return;
 
@@ -620,6 +605,105 @@ export default function WanderphiliaOperationsPage() {
       totalAll: wanderphiliaTotal + vendorTotal,
     };
   }, [activeBooking?.dayActivities, activeBooking?.numberOfGuests, activeBooking?.adults, activeBooking?.destination, matchZohoActivity]);
+
+  // Compute live profit margins, client pre-tax costs and category comparisons
+  const liveMargins = useMemo(() => {
+    if (!activeBooking) {
+      return {
+        sellingPrice: 0,
+        sellingWithoutTaxes: 0,
+        gstAmount: 0,
+        b2bHotelTotal: 0,
+        b2bTransportTotal: 0,
+        b2bGrandTotal: 0,
+        clientHotelTotal: 0,
+        clientTransportTotal: 0,
+        hotelDiff: 0,
+        transportDiff: 0,
+        profit: 0,
+        marginPct: 0,
+        marginOnBasePct: 0,
+      };
+    }
+
+    const sellingPrice = Number(activeBooking.totalQuotationAmount || 0);
+    // Base amount without 5% GST
+    const sellingWithoutTaxes = (activeBooking as any).baseAmount || (activeBooking as any).baseQuotationAmount || Math.round(sellingPrice / 1.05);
+    const gstAmount = Math.max(0, sellingPrice - sellingWithoutTaxes);
+
+    const b2bHotelTotal = (activeBooking.hotels || []).reduce(
+      (sum, h) => {
+        const extra = getHotelExtraBedDetails(h);
+        return sum + (h.isManualCost && typeof h.b2bTotalCost === 'number' && h.b2bTotalCost > 0 ? h.b2bTotalCost : extra.b2bTotal);
+      },
+      0
+    );
+    const b2bTransportTotal = Number(activeBooking.transport?.b2bTotalCost || 0);
+    const b2bGrandTotal = b2bHotelTotal + b2bTransportTotal;
+    const profit = sellingPrice - b2bGrandTotal;
+    const marginPct = sellingPrice > 0 ? Math.round((profit / sellingPrice) * 100) : 0;
+    const marginOnBasePct = sellingWithoutTaxes > 0 ? Math.round(((sellingWithoutTaxes - b2bGrandTotal) / sellingWithoutTaxes) * 100) : marginPct;
+
+    // Transport Client Quoted Cost
+    const transportDays = Number(activeBooking.transport?.totalDays || activeBooking.noOfDays || 1);
+    let clientTransportTotal = 0;
+    if (activeBooking.transport?.clientQuotationCost && Number(activeBooking.transport.clientQuotationCost) > 0) {
+      clientTransportTotal = Number(activeBooking.transport.clientQuotationCost);
+    } else if ((activeBooking as any).clientTransportTotal && Number((activeBooking as any).clientTransportTotal) > 0) {
+      clientTransportTotal = Number((activeBooking as any).clientTransportTotal);
+    } else {
+      const perDayRate = Number(activeBooking.transport?.costPerDay || 0);
+      if (perDayRate > 0) {
+        clientTransportTotal = perDayRate * transportDays;
+      } else {
+        clientTransportTotal = b2bTransportTotal;
+      }
+    }
+    const transportDiff = clientTransportTotal - b2bTransportTotal;
+
+    // Hotels Client Quoted Cost
+    let clientHotelTotal = 0;
+    let hasExplicitHotelQuote = false;
+    (activeBooking.hotels || []).forEach(h => {
+      if (h.clientQuotationCost && Number(h.clientQuotationCost) > 0) {
+        clientHotelTotal += Number(h.clientQuotationCost);
+        hasExplicitHotelQuote = true;
+      } else if (h.basePrice && Number(h.basePrice) > 0 && h.basePrice !== h.pricePerNight) {
+        const extra = getHotelExtraBedDetails(h);
+        const nights = Number(h.nights || 1);
+        const rooms = Number(h.roomsCount || activeBooking.roomsCount || 1);
+        clientHotelTotal += (Number(h.basePrice) * nights * rooms) + extra.extraBedTotal + extra.childNoBedTotal;
+        hasExplicitHotelQuote = true;
+      }
+    });
+
+    if (!hasExplicitHotelQuote) {
+      if ((activeBooking as any).clientHotelsTotal && Number((activeBooking as any).clientHotelsTotal) > 0) {
+        clientHotelTotal = Number((activeBooking as any).clientHotelsTotal);
+      } else {
+        const expTotal = experiencesBreakdown?.wanderphiliaTotal || 0;
+        const remainingForHotels = sellingWithoutTaxes - clientTransportTotal - expTotal;
+        clientHotelTotal = remainingForHotels > 0 ? remainingForHotels : b2bHotelTotal;
+      }
+    }
+    const hotelDiff = clientHotelTotal - b2bHotelTotal;
+
+    return {
+      sellingPrice,
+      sellingWithoutTaxes,
+      gstAmount,
+      b2bHotelTotal,
+      b2bTransportTotal,
+      b2bGrandTotal,
+      clientHotelTotal,
+      clientTransportTotal,
+      hotelDiff,
+      transportDiff,
+      profit,
+      marginPct,
+      marginOnBasePct,
+    };
+  }, [activeBooking, getHotelExtraBedDetails, experiencesBreakdown]);
 
   // Compute if all hotels are booked
   const allHotelsConfirmed = useMemo(() => {
@@ -1092,16 +1176,34 @@ export default function WanderphiliaOperationsPage() {
   };
 
   // Activity / Experience operations handlers
+  const getCleanExperienceObject = (day: any, exps: any[], expIdx: number) => {
+    const raw = exps[expIdx];
+    if (typeof raw === 'string' && raw.trim()) {
+      return { name: raw.trim(), status: 'requested', paidBy: 'wanderphilia' as const };
+    }
+    if (raw && typeof raw === 'object') {
+      return {
+        ...raw,
+        name: raw.name || raw.title || day.title || 'Experience',
+        status: raw.status || 'requested',
+        paidBy: (raw.paidBy === 'vendor' ? 'vendor' : 'wanderphilia') as 'wanderphilia' | 'vendor'
+      };
+    }
+    return {
+      name: day.title || day.description || 'Day Activity',
+      status: 'requested',
+      paidBy: 'wanderphilia' as const
+    };
+  };
+
   const handleUpdateExperienceStatus = (dayIdx: number, expIdx: number, status: string) => {
     if (!activeBooking) return;
     const dayActivities = [...(activeBooking.dayActivities || [])];
     const day = { ...dayActivities[dayIdx] };
     const exps = Array.isArray(day.experiences) ? [...day.experiences] : [];
-    if (typeof exps[expIdx] === 'string') {
-      exps[expIdx] = { name: exps[expIdx], status };
-    } else if (exps[expIdx]) {
-      exps[expIdx] = { ...exps[expIdx], status };
-    }
+    const target = getCleanExperienceObject(day, exps, expIdx);
+    target.status = status;
+    exps[expIdx] = target;
     day.experiences = exps;
     dayActivities[dayIdx] = day;
     setActiveBooking({ ...activeBooking, dayActivities });
@@ -1112,11 +1214,9 @@ export default function WanderphiliaOperationsPage() {
     const dayActivities = [...(activeBooking.dayActivities || [])];
     const day = { ...dayActivities[dayIdx] };
     const exps = Array.isArray(day.experiences) ? [...day.experiences] : [];
-    if (typeof exps[expIdx] === 'string') {
-      exps[expIdx] = { name: exps[expIdx], confirmationNumber: voucherNumber };
-    } else if (exps[expIdx]) {
-      exps[expIdx] = { ...exps[expIdx], confirmationNumber: voucherNumber };
-    }
+    const target = getCleanExperienceObject(day, exps, expIdx);
+    target.confirmationNumber = voucherNumber;
+    exps[expIdx] = target;
     day.experiences = exps;
     dayActivities[dayIdx] = day;
     setActiveBooking({ ...activeBooking, dayActivities });
@@ -1127,11 +1227,10 @@ export default function WanderphiliaOperationsPage() {
     const dayActivities = [...(activeBooking.dayActivities || [])];
     const day = { ...dayActivities[dayIdx] };
     const exps = Array.isArray(day.experiences) ? [...day.experiences] : [];
-    if (typeof exps[expIdx] === 'string') {
-      exps[expIdx] = { name: exps[expIdx], cost, isManualCost: true };
-    } else if (exps[expIdx]) {
-      exps[expIdx] = { ...exps[expIdx], cost, isManualCost: true };
-    }
+    const target = getCleanExperienceObject(day, exps, expIdx);
+    target.cost = cost;
+    target.isManualCost = true;
+    exps[expIdx] = target;
     day.experiences = exps;
     dayActivities[dayIdx] = day;
     setActiveBooking({ ...activeBooking, dayActivities });
@@ -1142,11 +1241,9 @@ export default function WanderphiliaOperationsPage() {
     const dayActivities = [...(activeBooking.dayActivities || [])];
     const day = { ...dayActivities[dayIdx] };
     const exps = Array.isArray(day.experiences) ? [...day.experiences] : [];
-    if (typeof exps[expIdx] === 'string') {
-      exps[expIdx] = { name: exps[expIdx], paidBy };
-    } else if (exps[expIdx]) {
-      exps[expIdx] = { ...exps[expIdx], paidBy };
-    }
+    const target = getCleanExperienceObject(day, exps, expIdx);
+    target.paidBy = paidBy;
+    exps[expIdx] = target;
     day.experiences = exps;
     dayActivities[dayIdx] = day;
     setActiveBooking({ ...activeBooking, dayActivities });
@@ -1157,7 +1254,11 @@ export default function WanderphiliaOperationsPage() {
     const dayActivities = [...(activeBooking.dayActivities || [])];
     const day = { ...dayActivities[dayIdx] };
     const exps = Array.isArray(day.experiences) ? [...day.experiences] : [];
-    exps.splice(expIdx, 1);
+    if (exps.length > expIdx) {
+      exps.splice(expIdx, 1);
+    } else {
+      day.title = '';
+    }
     day.experiences = exps;
     dayActivities[dayIdx] = day;
     setActiveBooking({ ...activeBooking, dayActivities });
@@ -1217,11 +1318,10 @@ export default function WanderphiliaOperationsPage() {
     const dayActivities = [...(activeBooking.dayActivities || [])];
     const day = { ...dayActivities[dayIdx] };
     const exps = Array.isArray(day.experiences) ? [...day.experiences] : [];
-    if (typeof exps[expIdx] === 'string') {
-      exps[expIdx] = { name: exps[expIdx], proofUrl, proofFileName };
-    } else if (exps[expIdx]) {
-      exps[expIdx] = { ...exps[expIdx], proofUrl, proofFileName };
-    }
+    const target = getCleanExperienceObject(day, exps, expIdx);
+    target.proofUrl = proofUrl;
+    target.proofFileName = proofFileName;
+    exps[expIdx] = target;
     day.experiences = exps;
     dayActivities[dayIdx] = day;
     setActiveBooking({ ...activeBooking, dayActivities });
@@ -1237,7 +1337,10 @@ export default function WanderphiliaOperationsPage() {
       ? zohoExp.privateCost
       : (zohoExp.ppCost || 0) * pax;
 
-    exps.push({
+    // Filter out empty strings if any
+    const validExps = exps.filter(e => typeof e === 'object' || (typeof e === 'string' && e.trim()));
+
+    validExps.push({
       name: zohoExp.name,
       id: zohoExp.id,
       city: zohoExp.city,
@@ -1249,9 +1352,10 @@ export default function WanderphiliaOperationsPage() {
       privateCost: zohoExp.privateCost,
       cost: cost,
       status: 'requested',
+      paidBy: 'wanderphilia',
       confirmationNumber: '',
     });
-    day.experiences = exps;
+    day.experiences = validExps;
     dayActivities[dayIdx] = day;
     setActiveBooking({ ...activeBooking, dayActivities });
     setActivityModalDayIdx(null);
@@ -1808,18 +1912,30 @@ export default function WanderphiliaOperationsPage() {
 
                 {/* LIVE PROFITABILITY CARD */}
                 <div className="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 border border-slate-800 rounded-2xl p-4 sm:p-5 grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+                  {/* Col 1: Client Selling Price (Without Taxes) */}
                   <div className="space-y-1">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                      Client Selling Price
-                    </span>
-                    <div className="text-lg sm:text-xl font-black text-white">
-                      ₹{(activeBooking.totalQuotationAmount || 0).toLocaleString('en-IN')}
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                        Client Selling Price
+                      </span>
+                      <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-sky-500/20 text-sky-300 border border-sky-500/30">
+                        Without Taxes
+                      </span>
                     </div>
-                    <span className="text-[10px] text-emerald-400 block font-semibold">
-                      Advance: ₹{(activeBooking.advanceAmountPaid || 0).toLocaleString('en-IN')}
-                    </span>
+                    <div className="text-lg sm:text-xl font-black text-white">
+                      ₹{liveMargins.sellingWithoutTaxes.toLocaleString('en-IN')}
+                    </div>
+                    <div className="text-[10px] text-slate-400 space-y-0.5">
+                      <span className="block text-slate-400">
+                        Total (incl. GST): <strong className="text-slate-300 font-mono">₹{liveMargins.sellingPrice.toLocaleString('en-IN')}</strong>
+                      </span>
+                      <span className="text-emerald-400 block font-semibold">
+                        Advance: ₹{(activeBooking.advanceAmountPaid || 0).toLocaleString('en-IN')}
+                      </span>
+                    </div>
                   </div>
 
+                  {/* Col 2: B2B Hotels Total + Client Quoted Comparison */}
                   <div className="space-y-1">
                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
                       B2B Hotels Total
@@ -1827,11 +1943,25 @@ export default function WanderphiliaOperationsPage() {
                     <div className="text-lg sm:text-xl font-black text-slate-200">
                       ₹{liveMargins.b2bHotelTotal.toLocaleString('en-IN')}
                     </div>
-                    <span className="text-[10px] text-slate-500 block">
-                      {activeBooking.hotels?.length || 0} Property Stays
-                    </span>
+                    <div className="space-y-0.5">
+                      <div className="flex items-center gap-1 flex-wrap text-[10px]">
+                        <span className="text-slate-400">Client Quoted:</span>
+                        <strong className="text-amber-300 font-mono">₹{liveMargins.clientHotelTotal.toLocaleString('en-IN')}</strong>
+                        <span className={`px-1 py-0.2 rounded font-mono font-bold text-[9px] ${
+                          liveMargins.hotelDiff >= 0
+                            ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                            : 'bg-red-500/20 text-red-400 border border-red-500/30'
+                        }`}>
+                          {liveMargins.hotelDiff >= 0 ? '+' : ''}₹{liveMargins.hotelDiff.toLocaleString('en-IN')} diff
+                        </span>
+                      </div>
+                      <span className="text-[10px] text-slate-500 block">
+                        {activeBooking.hotels?.length || 0} Property Stays
+                      </span>
+                    </div>
                   </div>
 
+                  {/* Col 3: B2B Transport Total + Client Quoted Comparison */}
                   <div className="space-y-1">
                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
                       B2B Transport Total
@@ -1839,11 +1969,25 @@ export default function WanderphiliaOperationsPage() {
                     <div className="text-lg sm:text-xl font-black text-slate-200">
                       ₹{liveMargins.b2bTransportTotal.toLocaleString('en-IN')}
                     </div>
-                    <span className="text-[10px] text-slate-500 block">
-                      {activeBooking.noOfDays} Days Vehicle Cost
-                    </span>
+                    <div className="space-y-0.5">
+                      <div className="flex items-center gap-1 flex-wrap text-[10px]">
+                        <span className="text-slate-400">Client Quoted:</span>
+                        <strong className="text-amber-300 font-mono">₹{liveMargins.clientTransportTotal.toLocaleString('en-IN')}</strong>
+                        <span className={`px-1 py-0.2 rounded font-mono font-bold text-[9px] ${
+                          liveMargins.transportDiff >= 0
+                            ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                            : 'bg-red-500/20 text-red-400 border border-red-500/30'
+                        }`}>
+                          {liveMargins.transportDiff >= 0 ? '+' : ''}₹{liveMargins.transportDiff.toLocaleString('en-IN')} diff
+                        </span>
+                      </div>
+                      <span className="text-[10px] text-slate-500 block">
+                        {activeBooking.noOfDays} Days Vehicle Cost
+                      </span>
+                    </div>
                   </div>
 
+                  {/* Col 4: Gross Profit */}
                   <div className="space-y-1 bg-gradient-to-br from-orange-950/40 to-amber-950/40 p-2.5 rounded-xl border border-orange-500/30">
                     <span className="text-[10px] font-extrabold text-orange-400 uppercase tracking-wider">
                       Gross Profit ({liveMargins.marginPct}%)
@@ -1982,8 +2126,21 @@ export default function WanderphiliaOperationsPage() {
                                       {hotel.category}
                                     </span>
                                   )}
-                                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-amber-500/15 border border-amber-500/40 text-amber-300 font-mono text-[11px] font-bold shadow-xs">
-                                    📅 Dates: {getHotelStayDates(hotel, hIdx, activeBooking.hotels, activeBooking.travelStartDate)}
+                                  {/* Prominent Stay Duration Badge showing 'N' */}
+                                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-indigo-500/20 border border-indigo-500/50 text-indigo-300 font-mono text-xs font-black shadow-xs tracking-wide">
+                                    🌙 {getHotelStayDetails(hotel, hIdx, activeBooking.hotels, activeBooking.travelStartDate).nights}N
+                                    <span className="text-[10px] text-indigo-200/80 font-semibold font-sans">
+                                      ({getHotelStayDetails(hotel, hIdx, activeBooking.hotels, activeBooking.travelStartDate).nights} {getHotelStayDetails(hotel, hIdx, activeBooking.hotels, activeBooking.travelStartDate).nights > 1 ? 'Nights' : 'Night'})
+                                    </span>
+                                  </span>
+
+                                  {/* Check-in and Check-out Date Badge */}
+                                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-amber-500/15 border border-amber-500/40 text-amber-300 font-mono text-[11px] font-semibold shadow-xs">
+                                    <span className="text-[10px] text-amber-400 font-bold uppercase">📅 Check-in:</span>
+                                    <strong className="text-white font-extrabold">{getHotelStayDetails(hotel, hIdx, activeBooking.hotels, activeBooking.travelStartDate).checkIn}</strong>
+                                    <span className="text-amber-500 font-bold mx-0.5">➔</span>
+                                    <span className="text-[10px] text-amber-400 font-bold uppercase">Check-out:</span>
+                                    <strong className="text-white font-extrabold">{getHotelStayDetails(hotel, hIdx, activeBooking.hotels, activeBooking.travelStartDate).checkOut}</strong>
                                   </span>
                                   {extraBedInfo.count > 0 && (
                                     <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-purple-500/20 border border-purple-500/50 text-purple-300 font-mono text-[11px] font-bold shadow-xs">
@@ -2108,6 +2265,23 @@ export default function WanderphiliaOperationsPage() {
                                 {extraBedInfo.extraBedTotal > 0 && ` + ₹${extraBedInfo.extraBedTotal.toLocaleString('en-IN')} (Bed)`}
                                 {extraBedInfo.childNoBedTotal > 0 && ` + ₹${extraBedInfo.childNoBedTotal.toLocaleString('en-IN')} (Child)`}
                               </div>
+                              {(() => {
+                                const clientRoomCost = (hotel.clientQuotationCost && hotel.clientQuotationCost > 0)
+                                  ? hotel.clientQuotationCost
+                                  : (hotel.basePrice && hotel.basePrice > 0 && hotel.basePrice !== hotel.pricePerNight)
+                                    ? ((hotel.basePrice * (hotel.nights || 1) * (hotel.roomsCount || 1)) + extraBedInfo.extraBedTotal + extraBedInfo.childNoBedTotal)
+                                    : null;
+                                if (!clientRoomCost) return null;
+                                const diff = clientRoomCost - extraBedInfo.b2bTotal;
+                                return (
+                                  <div className="text-[9px] font-mono mt-1 pt-1 border-t border-emerald-900/50 flex items-center justify-between">
+                                    <span className="text-slate-400">Client: <strong className="text-amber-300">₹{clientRoomCost.toLocaleString('en-IN')}</strong></span>
+                                    <span className={diff >= 0 ? 'text-emerald-400 font-bold' : 'text-red-400 font-bold'}>
+                                      {diff >= 0 ? '+' : ''}₹{diff.toLocaleString('en-IN')}
+                                    </span>
+                                  </div>
+                                );
+                              })()}
                             </div>
 
                             {/* Col 5: Booking Ref & Rate Proof */}
@@ -2431,6 +2605,12 @@ export default function WanderphiliaOperationsPage() {
                         <span className="text-[9px] text-slate-400 mt-1 block font-mono">
                           ₹{(activeBooking.transport?.costPerDay || 0).toLocaleString('en-IN')}/day &times; {activeBooking.transport?.totalDays || activeBooking.noOfDays || 1} Days
                         </span>
+                        <div className="mt-1 pt-1 border-t border-slate-800 text-[9px] font-mono flex items-center justify-between">
+                          <span className="text-slate-400">Client Quoted: <strong className="text-amber-300">₹{liveMargins.clientTransportTotal.toLocaleString('en-IN')}</strong></span>
+                          <span className={liveMargins.transportDiff >= 0 ? 'text-emerald-400 font-bold' : 'text-red-400 font-bold'}>
+                            {liveMargins.transportDiff >= 0 ? '+' : ''}₹{liveMargins.transportDiff.toLocaleString('en-IN')} diff
+                          </span>
+                        </div>
                       </div>
                     </div>
 
@@ -2694,14 +2874,15 @@ export default function WanderphiliaOperationsPage() {
                         if (Array.isArray(day.experiences)) {
                           day.experiences.forEach((item: any, eIdx: number) => {
                             if (typeof item === 'string') {
-                              expsList.push({ name: item, originalIdx: eIdx });
+                              if (item.trim()) expsList.push({ name: item.trim(), originalIdx: eIdx, status: 'requested', paidBy: 'wanderphilia' });
                             } else if (item && typeof item === 'object') {
-                              expsList.push({ ...item, originalIdx: eIdx });
+                              const name = item.name || item.title || '';
+                              if (name.trim()) expsList.push({ ...item, name: name.trim(), originalIdx: eIdx });
                             }
                           });
                         }
                         if (expsList.length === 0 && day.title) {
-                          expsList.push({ name: day.title, originalIdx: 0 });
+                          expsList.push({ name: day.title, originalIdx: 0, status: 'requested', paidBy: 'wanderphilia' });
                         }
 
                         const dayCity = day.city || day.fromCity || activeBooking.destination;
@@ -2742,7 +2923,7 @@ export default function WanderphiliaOperationsPage() {
                                 className="px-3 py-1.5 bg-orange-600/20 hover:bg-orange-600 text-orange-300 hover:text-white border border-orange-500/40 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-xs shrink-0"
                               >
                                 <Plus className="w-3.5 h-3.5" />
-                                <span>+ Add Attraction from Zoho CRM</span>
+                                <span>Add Attraction from Zoho CRM</span>
                               </button>
                             </div>
 
