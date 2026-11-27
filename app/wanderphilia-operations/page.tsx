@@ -644,20 +644,52 @@ export default function WanderphiliaOperationsPage() {
     const marginPct = sellingPrice > 0 ? Math.round((profit / sellingPrice) * 100) : 0;
     const marginOnBasePct = sellingWithoutTaxes > 0 ? Math.round(((sellingWithoutTaxes - b2bGrandTotal) / sellingWithoutTaxes) * 100) : marginPct;
 
-    // Transport Client Quoted Cost
+    // Transport Client Quoted Cost (Fixed rate quoted to client, independent of B2B vendor negotiations)
     const transportDays = Number(activeBooking.transport?.totalDays || activeBooking.noOfDays || 1);
     let clientTransportTotal = 0;
     if (activeBooking.transport?.clientQuotationCost && Number(activeBooking.transport.clientQuotationCost) > 0) {
       clientTransportTotal = Number(activeBooking.transport.clientQuotationCost);
     } else if ((activeBooking as any).clientTransportTotal && Number((activeBooking as any).clientTransportTotal) > 0) {
       clientTransportTotal = Number((activeBooking as any).clientTransportTotal);
+    } else if ((activeBooking as any).quotedTransportAmount && Number((activeBooking as any).quotedTransportAmount) > 0) {
+      clientTransportTotal = Number((activeBooking as any).quotedTransportAmount);
     } else {
-      const perDayRate = Number(activeBooking.transport?.costPerDay || 0);
-      if (perDayRate > 0) {
-        clientTransportTotal = perDayRate * transportDays;
-      } else {
-        clientTransportTotal = b2bTransportTotal;
+      // 1. Try extracting rate from vehicle type label, e.g. "Seden (1-3 Pax) - ₹4000/day"
+      const vType = String(activeBooking.transport?.vehicleType || (activeBooking as any).vehicleType || '');
+      const rateMatch = vType.match(/₹\s*(\d+)/);
+      let vehicleDailyRate = rateMatch ? Number(rateMatch[1]) : 0;
+
+      // 2. Try looking up in masterData vehicles
+      if (vehicleDailyRate === 0 && masterData?.vehicles) {
+        const vClean = vType.toLowerCase().replace(/[^a-z0-9]/g, '');
+        const matchedV = masterData.vehicles.find((v: any) => {
+          const mClean = (v.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+          return mClean === vClean || vClean.includes(mClean) || mClean.includes(vClean);
+        });
+        if (matchedV?.cost) {
+          vehicleDailyRate = Number(matchedV.cost) || 0;
+        }
       }
+
+      // 3. Fallback based on vehicle category
+      if (vehicleDailyRate === 0) {
+        const vLower = vType.toLowerCase();
+        if (vLower.includes('sedan') || vLower.includes('seden') || vLower.includes('dzire') || vLower.includes('etios')) {
+          vehicleDailyRate = 4000;
+        } else if (vLower.includes('ertiga') || vLower.includes('rumion')) {
+          vehicleDailyRate = 4500;
+        } else if (vLower.includes('crysta')) {
+          vehicleDailyRate = 6500;
+        } else if (vLower.includes('innova')) {
+          vehicleDailyRate = 5500;
+        } else if (vLower.includes('tempo') || vLower.includes('traveller')) {
+          vehicleDailyRate = 7500;
+        } else {
+          vehicleDailyRate = 4000;
+        }
+      }
+
+      clientTransportTotal = vehicleDailyRate * transportDays;
     }
     const transportDiff = clientTransportTotal - b2bTransportTotal;
 
@@ -1912,7 +1944,7 @@ export default function WanderphiliaOperationsPage() {
                 </div>
 
                 {/* LIVE PROFITABILITY CARD */}
-                <div className="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 border border-slate-800 rounded-2xl p-4 sm:p-5 grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+                <div className="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 border border-slate-800 rounded-2xl p-4 sm:p-5 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
                   {/* Col 1: Client Selling Price (Without Taxes) */}
                   <div className="space-y-1">
                     <div className="flex items-center gap-1.5 flex-wrap">
@@ -1988,7 +2020,32 @@ export default function WanderphiliaOperationsPage() {
                     </div>
                   </div>
 
-                  {/* Col 4: Gross Profit */}
+                  {/* Col 4: Activities & Experiences Total */}
+                  <div className="space-y-1">
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                      Activities Total
+                    </span>
+                    <div className="text-lg sm:text-xl font-black text-slate-200">
+                      ₹{experiencesBreakdown.totalAll.toLocaleString('en-IN')}
+                    </div>
+                    <div className="space-y-0.5">
+                      <div className="flex items-center gap-1.5 flex-wrap text-[10px]">
+                        <span className="text-sky-300 font-mono font-semibold">
+                          Co. Paid: ₹{experiencesBreakdown.wanderphiliaTotal.toLocaleString('en-IN')}
+                        </span>
+                        {experiencesBreakdown.vendorTotal > 0 && (
+                          <span className="text-amber-300 font-mono font-semibold">
+                            • Vendor: ₹{experiencesBreakdown.vendorTotal.toLocaleString('en-IN')}
+                          </span>
+                        )}
+                      </div>
+                      <span className="text-[10px] text-slate-500 block">
+                        {experiencesBreakdown.wanderphiliaCount + experiencesBreakdown.vendorCount} Experiences Included
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Col 5: Gross Profit */}
                   <div className="space-y-1 bg-gradient-to-br from-orange-950/40 to-amber-950/40 p-2.5 rounded-xl border border-orange-500/30">
                     <span className="text-[10px] font-extrabold text-orange-400 uppercase tracking-wider">
                       Gross Profit ({liveMargins.marginPct}%)
@@ -2622,11 +2679,31 @@ export default function WanderphiliaOperationsPage() {
                         <span className="text-[9px] text-slate-400 mt-1 block font-mono">
                           ₹{(activeBooking.transport?.costPerDay || 0).toLocaleString('en-IN')}/day &times; {activeBooking.transport?.totalDays || activeBooking.noOfDays || 1} Days
                         </span>
-                        <div className="mt-1 pt-1 border-t border-slate-800 text-[9px] font-mono flex items-center justify-between">
-                          <span className="text-slate-400">Client Quoted: <strong className="text-amber-300">₹{liveMargins.clientTransportTotal.toLocaleString('en-IN')}</strong></span>
-                          <span className={liveMargins.transportDiff >= 0 ? 'text-emerald-400 font-bold' : 'text-red-400 font-bold'}>
-                            {liveMargins.transportDiff >= 0 ? '+' : ''}₹{liveMargins.transportDiff.toLocaleString('en-IN')} diff
-                          </span>
+                        <div className="mt-1.5 pt-1.5 border-t border-slate-800 text-[10px] font-mono flex items-center justify-between gap-1 flex-wrap">
+                          <span className="text-slate-400 text-[9px]">Client Quoted:</span>
+                          <div className="flex items-center gap-1">
+                            <span className="text-amber-400 font-bold">₹</span>
+                            <input
+                              type="number"
+                              placeholder={String(liveMargins.clientTransportTotal)}
+                              value={activeBooking.transport?.clientQuotationCost || ''}
+                              onChange={e => {
+                                const val = Number(e.target.value) || 0;
+                                setActiveBooking({
+                                  ...activeBooking,
+                                  transport: {
+                                    ...activeBooking.transport,
+                                    clientQuotationCost: val
+                                  }
+                                });
+                              }}
+                              className="w-20 bg-slate-900 border border-slate-700 rounded px-1.5 py-0.5 text-amber-300 text-[10px] font-mono font-bold focus:outline-none focus:border-amber-500"
+                              title="Fixed transport rate quoted to client. Editable by operations."
+                            />
+                            <span className={`text-[9px] font-mono font-bold ${liveMargins.transportDiff >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                              ({liveMargins.transportDiff >= 0 ? '+' : ''}₹{liveMargins.transportDiff.toLocaleString('en-IN')})
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
