@@ -199,6 +199,105 @@ function resolveHotelLookupId(hotel: any, hotelsMap?: Map<string, string>): { id
 }
 
 /**
+ * Resolves an existing hotel lookup, or automatically creates a new Hotel record in Zoho CRM Hotel module
+ * if the hotel was manually entered by Operations/Sales and does not exist in Zoho CRM yet.
+ * This guarantees the exact manual hotel name is never blank in Zoho Finance, Deals, or Tasks!
+ */
+export async function resolveOrCreateHotelLookup(
+  accessToken: string,
+  hotel: any,
+  hotelsMap?: Map<string, string>
+): Promise<{ id: string } | null> {
+  if (!hotel) return null;
+
+  // 1. If existing valid numeric ID is already attached, return it
+  const rawId = hotel.id || hotel.hotelId || hotel.zohoHotelId;
+  if (rawId && /^\d{15,22}$/.test(String(rawId).trim())) {
+    return { id: String(rawId).trim() };
+  }
+
+  const hName = (hotel.hotelName || hotel.name || '').trim();
+  if (!hName || /^(?:hotel|tbd|pending|na|none)$/i.test(hName)) {
+    return null;
+  }
+
+  const lowerName = hName.toLowerCase();
+
+  // 2. Search local cached hotelsMap
+  if (hotelsMap) {
+    let matchId = hotelsMap.get(lowerName);
+    if (!matchId) {
+      for (const [name, id] of hotelsMap.entries()) {
+        if (name === lowerName || name.includes(lowerName) || lowerName.includes(name)) {
+          matchId = id;
+          break;
+        }
+      }
+    }
+    if (matchId) {
+      return { id: matchId };
+    }
+  }
+
+  // 3. Search Zoho CRM Hotel module directly by Name
+  try {
+    const searchUrl = getZohoApiUrl(`/crm/v3/Hotel/search?criteria=(Name:equals:${encodeURIComponent(hName)})`);
+    const searchRes = await fetch(searchUrl, {
+      headers: { Authorization: `Zoho-oauthtoken ${accessToken}` },
+      cache: 'no-store'
+    });
+    if (searchRes.ok && searchRes.status !== 204) {
+      const searchJson = await searchRes.json().catch(() => null);
+      if (searchJson?.data && searchJson.data.length > 0 && searchJson.data[0].id) {
+        const foundId = String(searchJson.data[0].id);
+        if (hotelsMap) hotelsMap.set(lowerName, foundId);
+        return { id: foundId };
+      }
+    }
+  } catch (searchErr) {
+    console.warn('[Zoho Hotel Search Warning]:', searchErr);
+  }
+
+  // 4. Hotel does NOT exist in Zoho CRM. Auto-create in Zoho Hotel module so Finance gets the exact name!
+  try {
+    const createUrl = getZohoApiUrl('/crm/v3/Hotel');
+    const hotelCity = (hotel.city || '').trim();
+    const createRes = await fetch(createUrl, {
+      method: 'POST',
+      headers: {
+        Authorization: `Zoho-oauthtoken ${accessToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        data: [
+          {
+            Name: hName,
+            ...(hotelCity ? { City: hotelCity } : {})
+          }
+        ]
+      })
+    });
+    if (createRes.ok) {
+      const createJson = await createRes.json().catch(() => null);
+      const newHotelId = createJson?.data?.[0]?.details?.id;
+      if (newHotelId) {
+        const stringId = String(newHotelId);
+        console.log(`[Zoho Hotel Auto-Create] Successfully created custom hotel "${hName}" with ID: ${stringId}`);
+        if (hotelsMap) hotelsMap.set(lowerName, stringId);
+        return { id: stringId };
+      }
+    } else {
+      const errText = await createRes.text();
+      console.warn('[Zoho Hotel Auto-Create Response Error]:', errText);
+    }
+  } catch (createErr) {
+    console.warn('[Zoho Hotel Auto-Create Request Error]:', createErr);
+  }
+
+  return null;
+}
+
+/**
  * Builds the Hotel fields payload for Deals module
  */
 function buildDealHotelPayload(hotels: BookingPaymentSyncParams['hotels'] = [], hotelsMap?: Map<string, string>): Record<string, any> {
@@ -1356,7 +1455,7 @@ async function syncFinanceRecord(
         if (hIndex <= 6) {
           let lookup = hBreakdown?.lookup || null;
           if (!lookup || (lookup.id && !/^\d{15,22}$/.test(String(lookup.id)))) {
-            lookup = resolveHotelLookupId(hParam || hBreakdown, hotelsMap) || null;
+            lookup = await resolveOrCreateHotelLookup(accessToken, hParam || hBreakdown, hotelsMap);
           }
 
           const nameField = hIndex === 1 ? 'Hotel_Name' : `Hotel_${hIndex}_Name`;
@@ -2110,15 +2209,17 @@ export async function pushOperationsToZohoFinance(
     const dealId = booking.bookingId || '';
     const hotelsMap = await getZohoHotelsMap(accessToken);
 
-    // Map hotel breakdowns with proper Zoho CRM hotel lookups
-    const hotelBreakdowns = (booking.hotels || []).map((h: any, i: number) => {
-      const lookup = resolveHotelLookupId(h, hotelsMap);
-      return {
+    // Map hotel breakdowns with proper Zoho CRM hotel lookups (or auto-create custom hotel in Zoho CRM Hotel module)
+    const hotelBreakdowns: Array<{ index: number; lookup: { id: string } | null; cost: number | null }> = [];
+    for (let i = 0; i < (booking.hotels || []).length; i++) {
+      const h = booking.hotels[i];
+      const lookup = await resolveOrCreateHotelLookup(accessToken, h, hotelsMap);
+      hotelBreakdowns.push({
         index: i + 1,
         lookup: lookup || null,
         cost: Number(h.b2bTotalCost) || 0,
-      };
-    });
+      });
+    }
 
     // Transport cost strictly from what was entered/set in Operations
     const vehicleCost = Number(booking.transport?.b2bTotalCost) || 0;

@@ -1217,7 +1217,7 @@ export default function WanderphiliaOperationsPage() {
       ...prev,
       city: swapCity || prev.city,
       hotelName: finalHotelName || prev.hotelName,
-      hotelId: swapSourceType === 'zoho' && swapHotelId ? swapHotelId : prev.hotelId,
+      hotelId: swapSourceType === 'zoho' && swapHotelId ? swapHotelId : undefined,
       category: swapHotelCategory || selectedZohoHotelObj?.category || prev.category || activeBooking.hotelCategory || 'Deluxe',
       roomCategory: finalRoomCategory || prev.roomCategory,
       nights: swapNights,
@@ -2252,7 +2252,20 @@ export default function WanderphiliaOperationsPage() {
                               </span>
                               <div>
                                 <div className="flex flex-wrap items-center gap-2">
-                                  <span className="font-bold text-sm text-white">{hotel.hotelName}</span>
+                                  <input
+                                    type="text"
+                                    value={hotel.hotelName || ''}
+                                    onChange={e => {
+                                      const newName = e.target.value;
+                                      const updated = activeBooking.hotels.map((h, i) =>
+                                        i === hIdx ? { ...h, hotelName: newName, isManualCost: true, hotelId: undefined } : h
+                                      );
+                                      setActiveBooking({ ...activeBooking, hotels: updated });
+                                    }}
+                                    placeholder="Enter Hotel Name"
+                                    className="bg-transparent hover:bg-slate-800/80 focus:bg-slate-950 border border-transparent hover:border-slate-700 focus:border-orange-500 rounded px-1.5 py-0.5 font-bold text-sm text-white transition-all focus:outline-none min-w-[140px]"
+                                    title="Click to edit hotel name manually"
+                                  />
                                   {hotel.category && (
                                     <span className="text-[10px] font-bold bg-slate-800 text-orange-300 px-2 py-0.5 rounded-md">
                                       {hotel.category}
