@@ -1664,10 +1664,10 @@ export default function WanderphiliaOperationsPage() {
             <span className="font-extrabold text-white">{stats?.syncedToFinance || 0}</span>
           </div>
 
-          {stats?.totalProjectedProfit !== undefined && (
-            <div className="flex items-center gap-2 bg-gradient-to-r from-orange-950/60 to-amber-950/60 px-3 py-1.5 rounded-xl border border-orange-500/30 ml-auto">
-              <span className="text-orange-300 font-bold">Total Gross Profit:</span>
-              <span className="font-black text-amber-300">₹{stats.totalProjectedProfit.toLocaleString('en-IN')}</span>
+          {stats?.totalB2BCost !== undefined && (
+            <div className="flex items-center gap-2 bg-slate-800/80 px-3 py-1.5 rounded-xl border border-slate-700/80 ml-auto">
+              <span className="text-slate-400 font-bold">Total Operations B2B Cost:</span>
+              <span className="font-black text-amber-300">₹{stats.totalB2BCost.toLocaleString('en-IN')}</span>
             </div>
           )}
         </div>
@@ -1752,9 +1752,14 @@ export default function WanderphiliaOperationsPage() {
                       <span className="text-slate-400">
                         {b.numberOfGuests} Pax ({b.adults}A, {b.kids}K)
                       </span>
-                      <span className="font-black text-amber-400">
-                        ₹{(b.totalQuotationAmount || 0).toLocaleString('en-IN')}
-                      </span>
+                      <div className="text-right">
+                        <span className="font-black text-amber-400 block">
+                          ₹{(b.totalQuotationAmount || 0).toLocaleString('en-IN')}
+                        </span>
+                        <span className="text-[9px] text-slate-500 block font-medium">
+                          (With 5% GST)
+                        </span>
+                      </div>
                     </div>
                   </div>
                 );
@@ -2017,9 +2022,9 @@ export default function WanderphiliaOperationsPage() {
                   </div>
                 </div>
 
-                {/* LIVE PROFITABILITY CARD */}
+                {/* LIVE OPERATIONS COST & BREAKDOWN CARD */}
                 <div className="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 border border-slate-800 rounded-2xl p-4 sm:p-5 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
-                  {/* Col 1: Client Selling Price (Without Taxes) */}
+                  {/* Col 1: Client Selling Price (With & Without Taxes) */}
                   <div className="space-y-1">
                     <div className="flex items-center gap-1.5 flex-wrap">
                       <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
@@ -2034,10 +2039,10 @@ export default function WanderphiliaOperationsPage() {
                     </div>
                     <div className="text-[10px] text-slate-400 space-y-0.5">
                       <span className="block text-slate-400">
-                        Total (incl. GST): <strong className="text-slate-300 font-mono">₹{liveMargins.sellingPrice.toLocaleString('en-IN')}</strong>
+                        Total (With 5% GST): <strong className="text-slate-300 font-mono">₹{liveMargins.sellingPrice.toLocaleString('en-IN')}</strong>
                       </span>
                       <span className="text-emerald-400 block font-semibold">
-                        Advance: ₹{(activeBooking.advanceAmountPaid || 0).toLocaleString('en-IN')}
+                        Advance: ₹{(activeBooking.advanceAmountPaid || 0).toLocaleString('en-IN')} (With Taxes)
                       </span>
                     </div>
                   </div>
@@ -2100,7 +2105,7 @@ export default function WanderphiliaOperationsPage() {
                       Activities Total
                     </span>
                     <div className="text-lg sm:text-xl font-black text-slate-200">
-                      ₹{experiencesBreakdown.totalAll.toLocaleString('en-IN')}
+                      ₹{experiencesBreakdown.wanderphiliaTotal.toLocaleString('en-IN')}
                     </div>
                     <div className="space-y-0.5">
                       <div className="flex items-center gap-1.5 flex-wrap text-[10px]">
@@ -2119,17 +2124,27 @@ export default function WanderphiliaOperationsPage() {
                     </div>
                   </div>
 
-                  {/* Col 5: Gross Profit */}
-                  <div className="space-y-1 bg-gradient-to-br from-orange-950/40 to-amber-950/40 p-2.5 rounded-xl border border-orange-500/30">
-                    <span className="text-[10px] font-extrabold text-orange-400 uppercase tracking-wider">
-                      Gross Profit ({liveMargins.marginPct}%)
-                    </span>
-                    <div className="text-lg sm:text-xl font-black text-amber-300">
-                      ₹{liveMargins.profit.toLocaleString('en-IN')}
+                  {/* Col 5: Total Combined Operations B2B Cost */}
+                  <div className="space-y-1 bg-gradient-to-br from-emerald-950/40 to-teal-950/40 p-2.5 rounded-xl border border-emerald-500/40 shadow-xs">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <span className="text-[10px] font-black text-emerald-400 uppercase tracking-wider">
+                        Total B2B Cost
+                      </span>
+                      <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                        Hotels + Cab + Exp
+                      </span>
                     </div>
-                    <span className="text-[10px] text-amber-400/80 font-bold block">
-                      Net Wanderphilia Margin
-                    </span>
+                    <div className="text-lg sm:text-xl font-black text-emerald-300">
+                      ₹{(liveMargins.b2bHotelTotal + liveMargins.b2bTransportTotal + experiencesBreakdown.wanderphiliaTotal).toLocaleString('en-IN')}
+                    </div>
+                    <div className="text-[10px] text-slate-400 space-y-0.5">
+                      <div className="font-mono text-[9px] text-slate-300 truncate" title={`₹${liveMargins.b2bHotelTotal.toLocaleString('en-IN')} (H) + ₹${liveMargins.b2bTransportTotal.toLocaleString('en-IN')} (T) + ₹${experiencesBreakdown.wanderphiliaTotal.toLocaleString('en-IN')} (A)`}>
+                        ₹{liveMargins.b2bHotelTotal.toLocaleString('en-IN')} (H) + ₹{liveMargins.b2bTransportTotal.toLocaleString('en-IN')} (T) + ₹{experiencesBreakdown.wanderphiliaTotal.toLocaleString('en-IN')} (A)
+                      </div>
+                      <span className="text-emerald-400/90 font-semibold block text-[9px]">
+                        Total B2B Operations Cost
+                      </span>
+                    </div>
                   </div>
                 </div>
 
@@ -3562,22 +3577,34 @@ export default function WanderphiliaOperationsPage() {
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                       <div className="p-3.5 bg-slate-950 rounded-xl border border-slate-800">
-                        <span className="text-[10px] font-bold text-slate-500 uppercase block">Total Quotation</span>
-                        <span className="text-base font-black text-white">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] font-bold text-slate-500 uppercase block">Total Quotation</span>
+                          <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">With 5% GST</span>
+                        </div>
+                        <span className="text-base font-black text-white block mt-0.5">
                           ₹{(activeBooking.totalQuotationAmount || 0).toLocaleString('en-IN')}
+                        </span>
+                        <span className="text-[10px] text-slate-400 block mt-0.5 font-mono">
+                          Pre-Tax: ₹{Math.round((activeBooking.totalQuotationAmount || 0) / 1.05).toLocaleString('en-IN')} (Without Taxes)
                         </span>
                       </div>
 
                       <div className="p-3.5 bg-slate-950 rounded-xl border border-slate-800">
-                        <span className="text-[10px] font-bold text-slate-500 uppercase block">Advance Paid</span>
-                        <span className="text-base font-black text-emerald-400">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] font-bold text-slate-500 uppercase block">Advance Paid</span>
+                          <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">With Taxes</span>
+                        </div>
+                        <span className="text-base font-black text-emerald-400 block mt-0.5">
                           ₹{(activeBooking.advanceAmountPaid || 0).toLocaleString('en-IN')}
                         </span>
                       </div>
 
                       <div className="p-3.5 bg-slate-950 rounded-xl border border-slate-800">
-                        <span className="text-[10px] font-bold text-slate-500 uppercase block">Balance Due</span>
-                        <span className="text-base font-black text-amber-400">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] font-bold text-slate-500 uppercase block">Balance Due</span>
+                          <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">With Taxes</span>
+                        </div>
+                        <span className="text-base font-black text-amber-400 block mt-0.5">
                           ₹{(activeBooking.balancePendingAmount || 0).toLocaleString('en-IN')}
                         </span>
                       </div>
@@ -4116,7 +4143,7 @@ export default function WanderphiliaOperationsPage() {
                 onClick={handleApplyHotelSwap}
                 className="px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white rounded-xl text-xs font-bold cursor-pointer shadow-lg shadow-orange-600/30"
               >
-                Confirm Swap &bull; Recalculate Margin
+                Confirm Swap &bull; Update Hotel Cost
               </button>
             </div>
           </div>
@@ -4187,7 +4214,7 @@ export default function WanderphiliaOperationsPage() {
                     Lock &amp; Sync to Zoho Finance 🎉
                   </h3>
                   <p className="text-xs text-slate-300 max-w-sm mx-auto">
-                    Push final B2B supplier costs, verified vouchers, and lock profitability margins in Zoho CRM Finance module.
+                    Push final B2B supplier costs and verified vouchers to Zoho CRM Finance module.
                   </p>
                 </div>
 
@@ -4206,14 +4233,17 @@ export default function WanderphiliaOperationsPage() {
 
                   <div className="grid grid-cols-2 gap-3 text-xs">
                     <div className="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800/80">
-                      <span className="text-[10px] font-bold text-slate-400 block uppercase">Client Selling Price</span>
+                      <span className="text-[10px] font-bold text-slate-400 block uppercase">Client Selling Price (With 5% GST)</span>
                       <span className="text-sm font-black text-white">
                         ₹{(activeBooking.totalQuotationAmount || 0).toLocaleString('en-IN')}
+                      </span>
+                      <span className="text-[9px] text-slate-500 block font-mono">
+                        Pre-Tax: ₹{Math.round((activeBooking.totalQuotationAmount || 0) / 1.05).toLocaleString('en-IN')} (Without Taxes)
                       </span>
                     </div>
 
                     <div className="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800/80">
-                      <span className="text-[10px] font-bold text-slate-400 block uppercase">Advance Received</span>
+                      <span className="text-[10px] font-bold text-slate-400 block uppercase">Advance Received (With Taxes)</span>
                       <span className="text-sm font-black text-emerald-400">
                         ₹{(activeBooking.advanceAmountPaid || 0).toLocaleString('en-IN')}
                       </span>
@@ -4248,21 +4278,21 @@ export default function WanderphiliaOperationsPage() {
                     </div>
                   </div>
 
-                  {/* Net Gross Profit Highlight Badge */}
-                  <div className="p-3 bg-gradient-to-r from-amber-950/70 via-orange-950/70 to-amber-950/70 rounded-xl border border-amber-500/50 flex items-center justify-between">
+                  {/* Total B2B Operations Cost Highlight Badge */}
+                  <div className="p-3 bg-gradient-to-r from-emerald-950/70 via-teal-950/70 to-emerald-950/70 rounded-xl border border-emerald-500/50 flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <Trophy className="w-5 h-5 text-amber-400 shrink-0" />
+                      <ShieldCheck className="w-5 h-5 text-emerald-400 shrink-0" />
                       <div>
-                        <span className="text-[10px] uppercase font-extrabold text-amber-400 block">Net Gross Margin</span>
-                        <span className="text-[10px] text-slate-300">Total Wanderphilia Profit</span>
+                        <span className="text-[10px] uppercase font-extrabold text-emerald-400 block">Total B2B Operations Cost</span>
+                        <span className="text-[10px] text-slate-300">Combined Hotel, Transport &amp; Activities</span>
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className="text-base font-black text-amber-300">
-                        ₹{liveMargins.profit.toLocaleString('en-IN')}
+                      <div className="text-base font-black text-emerald-300">
+                        ₹{(liveMargins.b2bHotelTotal + liveMargins.b2bTransportTotal + experiencesBreakdown.wanderphiliaTotal).toLocaleString('en-IN')}
                       </div>
-                      <span className="text-[10px] font-bold text-emerald-400">
-                        {liveMargins.marginPct}% Margin
+                      <span className="text-[10px] font-bold text-slate-400">
+                        B2B Supplier Payables
                       </span>
                     </div>
                   </div>
@@ -4315,7 +4345,7 @@ export default function WanderphiliaOperationsPage() {
                     Booking Synced to Finance! 🎉
                   </h3>
                   <p className="text-xs text-emerald-300 font-semibold">
-                    Congratulations! All supplier B2B costs &amp; margin are locked in Zoho CRM.
+                    Congratulations! All supplier B2B costs &amp; bookings are locked in Zoho CRM.
                   </p>
                 </div>
 
@@ -4325,9 +4355,9 @@ export default function WanderphiliaOperationsPage() {
                     <strong className="text-white">{activeBooking.customerName}</strong>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-slate-400">Locked Net Profit:</span>
-                    <strong className="text-amber-400 text-sm font-black">
-                      ₹{liveMargins.profit.toLocaleString('en-IN')} ({liveMargins.marginPct}%)
+                    <span className="text-slate-400">Total B2B Costs Synced:</span>
+                    <strong className="text-emerald-400 text-sm font-black">
+                      ₹{(liveMargins.b2bHotelTotal + liveMargins.b2bTransportTotal + experiencesBreakdown.wanderphiliaTotal).toLocaleString('en-IN')}
                     </strong>
                   </div>
                   <div className="flex items-center justify-between">
