@@ -140,6 +140,10 @@ export interface OperationsBooking {
   lastSlaEscalationAt?: string; // ISO timestamp
   slaEscalationCount?: number;
 
+  // Client Voucher Dispatch
+  voucherSentAt?: string;
+  voucherSentTo?: string;
+
   // Audit Trail
   updatedAt: string;
   createdAt: string;

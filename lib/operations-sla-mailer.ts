@@ -72,6 +72,10 @@ export async function sendOperationsSlaEscalationEmail(
   const sellingPrice = booking.totalQuotationAmount || 0;
   const preTaxSelling = Math.round(sellingPrice / 1.05);
 
+  // Direct booking console URL
+  const bookingIdentifier = booking.inquiryId || booking.id || '';
+  const directBookingUrl = `${OPS_PORTAL_URL}/${encodeURIComponent(bookingIdentifier)}`;
+
   const subject = `🚨 [SLA BREACH - ${daysOverdue}D OVERDUE] Operations Pending for ${booking.customerName} (${booking.destination}) - ${booking.inquiryId}`;
 
   const html = `
@@ -229,12 +233,12 @@ export async function sendOperationsSlaEscalationEmail(
       </div>
       ` : ''}
 
-      <!-- CTA Button -->
-      <a href="${OPS_PORTAL_URL}" class="cta-btn" target="_blank">
-        👉 Open Operations Console &amp; Complete Sync
+      <!-- CTA Button Linking Directly to this Booking -->
+      <a href="${directBookingUrl}" class="cta-btn" target="_blank">
+        👉 Open Operations Console for ${booking.customerName}
       </a>
       <p style="text-align: center; margin-top: 8px; font-size: 11px; color: #64748b;">
-        Portal Link: <a href="${OPS_PORTAL_URL}" style="color: #f97316;">${OPS_PORTAL_URL}</a>
+        Direct Record Link: <a href="${directBookingUrl}" style="color: #f97316;">${directBookingUrl}</a>
       </p>
     </div>
 
