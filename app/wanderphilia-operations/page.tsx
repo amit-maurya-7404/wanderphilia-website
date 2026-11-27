@@ -387,10 +387,16 @@ export default function WanderphiliaOperationsPage() {
     // 4. Child without bed rate per night
     let childRate = typeof hotel.childWithoutBedPrice === 'number' && hotel.childWithoutBedPrice > 0 ? hotel.childWithoutBedPrice : 0;
 
-    // 5. Look up Zoho CRM master data if any rate is missing
-    let pricePerNight = typeof hotel.pricePerNight === 'number' && hotel.pricePerNight > 0 ? hotel.pricePerNight : 0;
+    // 5. Look up Zoho CRM master data ONLY if any rate is missing
+    let pricePerNight = typeof hotel.pricePerNight === 'number' && hotel.pricePerNight > 0
+      ? hotel.pricePerNight
+      : typeof hotel.b2bCostPerNight === 'number' && hotel.b2bCostPerNight > 0
+        ? hotel.b2bCostPerNight
+        : typeof hotel.basePrice === 'number' && hotel.basePrice > 0
+          ? hotel.basePrice
+          : 0;
 
-    if (masterData?.hotelsByCity) {
+    if (pricePerNight === 0 && masterData?.hotelsByCity) {
       const cityKey = normalizeCityKey(hotel.city);
       const cityHotels = masterData.hotelsByCity[cityKey] || [];
       const matchedH = cityHotels.find(h =>
@@ -436,9 +442,11 @@ export default function WanderphiliaOperationsPage() {
 
     const calculatedB2BTotal = hotelRoomTotal + extraBedTotal + childNoBedTotal;
 
-    const b2bTotal = hotel.isManualCost && typeof hotel.b2bTotalCost === 'number' && hotel.b2bTotalCost > 0
+    const b2bTotal = (hotel.isManualCost && typeof hotel.b2bTotalCost === 'number' && hotel.b2bTotalCost > 0)
       ? hotel.b2bTotalCost
-      : calculatedB2BTotal;
+      : (typeof hotel.b2bTotalCost === 'number' && hotel.b2bTotalCost > 0)
+        ? hotel.b2bTotalCost
+        : calculatedB2BTotal;
 
     return {
       count,
@@ -459,7 +467,7 @@ export default function WanderphiliaOperationsPage() {
   // Fetch bookings when authenticated
   const fetchBookings = useCallback(
     async (tokenToUse?: string) => {
-      const token = tokenToUse || opsToken;
+      const token = tokenToUse || opsToken || (typeof window !== 'undefined' ? (localStorage.getItem('wanderphilia_ops_token') || sessionStorage.getItem('wanderphilia_ops_token') || localStorage.getItem('wanderphilia_sales_token') || '') : '');
       if (!token) return;
 
       setIsLoading(true);
@@ -477,11 +485,26 @@ export default function WanderphiliaOperationsPage() {
         if (data.success) {
           setBookings(data.bookings || []);
           setStats(data.stats || null);
+
+          // Restore previously active booking from session or local storage
+          const savedActiveId = typeof window !== 'undefined'
+            ? (sessionStorage.getItem('wanderphilia_last_active_booking_id') || localStorage.getItem('wanderphilia_last_active_booking_id') || activeBookingId)
+            : activeBookingId;
+
+          if (savedActiveId && data.bookings?.length > 0) {
+            const match = data.bookings.find((b: OperationsBooking) => b.id === savedActiveId || b.inquiryId === savedActiveId);
+            if (match) {
+              setActiveBookingId(match.id);
+              setActiveBooking(match);
+              return;
+            }
+          }
+
           if (!activeBookingId && data.bookings?.length > 0) {
             setActiveBookingId(data.bookings[0].id);
             setActiveBooking(data.bookings[0]);
           } else if (activeBookingId) {
-            const match = data.bookings?.find((b: OperationsBooking) => b.id === activeBookingId);
+            const match = data.bookings?.find((b: OperationsBooking) => b.id === activeBookingId || b.inquiryId === activeBookingId);
             if (match) setActiveBooking(match);
           }
         } else if (res.status === 401) {
@@ -549,6 +572,10 @@ export default function WanderphiliaOperationsPage() {
     setActiveBookingId(booking.id);
     setActiveBooking(booking);
     setSaveSuccessMessage(null);
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('wanderphilia_last_active_booking_id', booking.id);
+      localStorage.setItem('wanderphilia_last_active_booking_id', booking.id);
+    }
   };
 
   // Experiences Breakdown: Company Paid (Wanderphilia) vs Vendor Paid (Transport Vendor)
@@ -751,9 +778,24 @@ export default function WanderphiliaOperationsPage() {
     setSaveSuccessMessage(null);
     setSaveErrorMessage(null);
 
+    const token = opsToken || (typeof window !== 'undefined' ? (localStorage.getItem('wanderphilia_ops_token') || sessionStorage.getItem('wanderphilia_ops_token') || localStorage.getItem('wanderphilia_sales_token') || '') : '');
+
     try {
-      const syncedHotels = (activeBooking.hotels || []).map(h => {
+      const syncedHotels = (activeBooking.hotels || []).map((h, hIdx) => {
         const extra = getHotelExtraBedDetails(h);
+        const nights = Number(h.nights || 1);
+        const rooms = Number(h.roomsCount || activeBooking.roomsCount || 1);
+
+        const currentClientCost = (typeof h.clientQuotationCost === 'number' && h.clientQuotationCost > 0)
+          ? h.clientQuotationCost
+          : (h.basePrice && Number(h.basePrice) > 0)
+            ? ((Number(h.basePrice) * nights * rooms) + extra.extraBedTotal + extra.childNoBedTotal)
+            : extra.b2bTotal;
+
+        const b2bCost = (typeof h.b2bTotalCost === 'number' && h.b2bTotalCost > 0)
+          ? h.b2bTotalCost
+          : extra.b2bTotal;
+
         return {
           ...h,
           pricePerNight: extra.pricePerNight,
@@ -764,13 +806,25 @@ export default function WanderphiliaOperationsPage() {
           childWithoutBedPrice: extra.childRate,
           childWithoutBedCount: extra.childCount,
           childWithoutBedTotalCost: extra.childNoBedTotal,
-          b2bTotalCost: h.isManualCost && typeof h.b2bTotalCost === 'number' && h.b2bTotalCost > 0 ? h.b2bTotalCost : extra.b2bTotal,
+          b2bTotalCost: b2bCost,
+          clientQuotationCost: currentClientCost,
         };
       });
+
+      const transportClientCost = (typeof activeBooking.transport?.clientQuotationCost === 'number' && activeBooking.transport.clientQuotationCost > 0)
+        ? activeBooking.transport.clientQuotationCost
+        : liveMargins.clientTransportTotal;
+
+      const syncedTransport = activeBooking.transport ? {
+        ...activeBooking.transport,
+        clientQuotationCost: transportClientCost,
+        b2bTotalCost: typeof activeBooking.transport.b2bTotalCost === 'number' ? activeBooking.transport.b2bTotalCost : 0,
+      } : undefined;
 
       const updatedData: Partial<OperationsBooking> = {
         ...activeBooking,
         hotels: syncedHotels,
+        transport: syncedTransport,
         totalB2BHotelCost: liveMargins.b2bHotelTotal,
         totalB2BTransportCost: liveMargins.b2bTransportTotal,
         totalB2BCost: liveMargins.b2bGrandTotal,
@@ -780,12 +834,14 @@ export default function WanderphiliaOperationsPage() {
         updatedAt: new Date().toISOString()
       };
 
-      const res = await fetch(`/api/operations/bookings/${activeBooking.id}`, {
+      const bookingIdentifier = activeBooking.id || activeBooking.inquiryId || activeBooking.bookingId || '';
+
+      const res = await fetch(`/api/operations/bookings/${encodeURIComponent(bookingIdentifier)}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
-          'x-operations-token': opsToken,
-          Authorization: `Bearer ${opsToken}`
+          'x-operations-token': token,
+          Authorization: `Bearer ${token}`
         },
         body: JSON.stringify(updatedData)
       });
@@ -793,7 +849,11 @@ export default function WanderphiliaOperationsPage() {
       const data = await res.json();
       if (data.success && data.booking) {
         setActiveBooking(data.booking);
-        setBookings(prev => prev.map(b => (b.id === data.booking.id ? data.booking : b)));
+        setBookings(prev => prev.map(b => (b.id === data.booking.id || (b.inquiryId && b.inquiryId === data.booking.inquiryId) ? data.booking : b)));
+        if (typeof window !== 'undefined') {
+          sessionStorage.setItem('wanderphilia_last_active_booking_id', data.booking.id);
+          localStorage.setItem('wanderphilia_last_active_booking_id', data.booking.id);
+        }
         setSaveSuccessMessage('Operations changes saved successfully!');
         setTimeout(() => setSaveSuccessMessage(null), 3500);
       } else {
@@ -1526,6 +1586,20 @@ export default function WanderphiliaOperationsPage() {
 
         {/* Action Controls */}
         <div className="flex items-center gap-2 sm:gap-3">
+          {/* Quick Save Changes Button */}
+          {activeBooking && (
+            <button
+              type="button"
+              onClick={handleSaveChanges}
+              disabled={isSavingChanges}
+              className="flex items-center gap-1.5 px-3.5 py-1.5 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-bold rounded-lg text-xs shadow-md shadow-orange-950/40 transition-all cursor-pointer disabled:opacity-50 border border-orange-500/40"
+              title="Save All Operations Changes to Database"
+            >
+              {isSavingChanges ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
+              <span>Save Changes</span>
+            </button>
+          )}
+
           {/* Link to Sales Portal */}
           <Link
             href="/wanderphilia-sales"

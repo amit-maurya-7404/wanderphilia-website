@@ -16,7 +16,8 @@ export async function GET(req: NextRequest, { params }: RouteProps) {
     }
 
     const { id } = await params;
-    const booking = await getOperationsBookingById(id);
+    const cleanId = decodeURIComponent(id || '').trim();
+    const booking = await getOperationsBookingById(cleanId);
 
     if (!booking) {
       return NextResponse.json({ success: false, error: 'Operations booking not found.' }, { status: 404 });
@@ -36,13 +37,15 @@ export async function PATCH(req: NextRequest, { params }: RouteProps) {
     }
 
     const { id } = await params;
+    const cleanId = decodeURIComponent(id || '').trim();
     const updates = await req.json().catch(() => null);
 
     if (!updates) {
       return NextResponse.json({ success: false, error: 'Missing updates payload.' }, { status: 400 });
     }
 
-    const updated = await updateOperationsBooking(id, updates);
+    const targetId = cleanId || updates.id || updates.inquiryId || updates.bookingId;
+    const updated = await updateOperationsBooking(targetId, updates);
 
     if (!updated) {
       return NextResponse.json({ success: false, error: 'Booking not found or update failed.' }, { status: 404 });

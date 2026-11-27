@@ -57,24 +57,52 @@ export async function getAllOperationsBookings(
   statusFilter?: string,
   searchQuery?: string
 ): Promise<OperationsBooking[]> {
-  let list: OperationsBooking[] = [];
+  let mongoList: OperationsBooking[] = [];
+  let localList: OperationsBooking[] = [];
 
   try {
     const db = await getDb();
     const collection = db.collection<OperationsBooking>('operations_bookings');
-    list = await collection.find({}).sort({ updatedAt: -1 }).toArray();
+    mongoList = await collection.find({}).sort({ updatedAt: -1 }).toArray();
   } catch (mongoErr) {
     console.warn('[MongoDB Ops Query Fallback to Local]:', mongoErr);
-    list = await readLocalOpsDb();
   }
 
-  // If MongoDB returned empty, check if local file has entries
-  if (list.length === 0) {
-    const localList = await readLocalOpsDb();
-    if (localList.length > 0) {
-      list = localList;
-    }
+  try {
+    localList = await readLocalOpsDb();
+  } catch (localErr) {
+    console.warn('[Local Ops DB Query Error]:', localErr);
   }
+
+  // Merge MongoDB and Local records by unique booking key (id, inquiryId, bookingId)
+  const bookingMap = new Map<string, OperationsBooking>();
+
+  const getRecordKey = (b: OperationsBooking) => (b.id || b.inquiryId || b.bookingId || '').trim();
+
+  // Populate from local list first
+  localList.forEach(b => {
+    const key = getRecordKey(b);
+    if (key) bookingMap.set(key, b);
+  });
+
+  // Merge MongoDB records (prefer whichever record has the latest updatedAt)
+  mongoList.forEach(b => {
+    const key = getRecordKey(b);
+    if (key) {
+      const existing = bookingMap.get(key);
+      if (!existing) {
+        bookingMap.set(key, b);
+      } else {
+        const timeMongo = new Date(b.updatedAt || 0).getTime();
+        const timeLocal = new Date(existing.updatedAt || 0).getTime();
+        if (timeMongo >= timeLocal) {
+          bookingMap.set(key, b);
+        }
+      }
+    }
+  });
+
+  let list = Array.from(bookingMap.values());
 
   // Apply Status Filter
   if (statusFilter && statusFilter !== 'all') {
@@ -150,7 +178,24 @@ export async function saveOperationsBooking(booking: OperationsBooking): Promise
   // 1. Calculate live margins before saving
   const hotelTotal = (booking.hotels || []).reduce((sum, h) => sum + (Number(h.b2bTotalCost) || 0), 0);
   const transportTotal = Number(booking.transport?.b2bTotalCost) || 0;
-  const totalB2B = hotelTotal + transportTotal;
+  
+  let experiencesTotal = 0;
+  if (Array.isArray(booking.dayActivities)) {
+    booking.dayActivities.forEach((day: any) => {
+      if (Array.isArray(day?.experiences)) {
+        day.experiences.forEach((exp: any) => {
+          if (typeof exp === 'object' && exp !== null) {
+            const payer = exp.paidBy || 'wanderphilia';
+            if (payer === 'wanderphilia') {
+              experiencesTotal += Number(exp.cost) || 0;
+            }
+          }
+        });
+      }
+    });
+  }
+
+  const totalB2B = hotelTotal + transportTotal + experiencesTotal;
   const revenue = Number(booking.totalQuotationAmount) || 0;
   const marginAmt = revenue - totalB2B;
   const marginPct = revenue > 0 ? Math.round((marginAmt / revenue) * 100) : 0;
@@ -165,9 +210,21 @@ export async function saveOperationsBooking(booking: OperationsBooking): Promise
   try {
     const db = await getDb();
     const collection = db.collection<OperationsBooking>('operations_bookings');
+
+    // Extract _id to prevent immutable _id errors
+    const { _id, ...docWithoutId } = booking as any;
+
+    const filterConditions: any[] = [];
+    if (booking.id) filterConditions.push({ id: booking.id });
+    if (booking.inquiryId) filterConditions.push({ inquiryId: booking.inquiryId });
+    if (booking.bookingId) filterConditions.push({ bookingId: booking.bookingId });
+    if (_id) filterConditions.push({ _id });
+
+    const filter = filterConditions.length > 0 ? { $or: filterConditions } : { id: booking.id };
+
     await collection.updateOne(
-      { id: booking.id },
-      { $set: booking },
+      filter,
+      { $set: docWithoutId },
       { upsert: true }
     );
   } catch (mongoErr) {
@@ -177,7 +234,11 @@ export async function saveOperationsBooking(booking: OperationsBooking): Promise
   // 3. Always mirror to local file
   try {
     const localList = await readLocalOpsDb();
-    const idx = localList.findIndex(b => b.id === booking.id);
+    const idx = localList.findIndex(b =>
+      b.id === booking.id ||
+      (booking.inquiryId && b.inquiryId === booking.inquiryId) ||
+      (booking.bookingId && b.bookingId === booking.bookingId)
+    );
     if (idx >= 0) {
       localList[idx] = booking;
     } else {
@@ -198,7 +259,16 @@ export async function updateOperationsBooking(
   id: string,
   updates: Partial<OperationsBooking>
 ): Promise<OperationsBooking | null> {
-  const existing = await getOperationsBookingById(id);
+  let existing = await getOperationsBookingById(id);
+  if (!existing && updates.id) {
+    existing = await getOperationsBookingById(updates.id);
+  }
+  if (!existing && updates.inquiryId) {
+    existing = await getOperationsBookingById(updates.inquiryId);
+  }
+  if (!existing && updates.bookingId) {
+    existing = await getOperationsBookingById(updates.bookingId);
+  }
   if (!existing) return null;
 
   const merged: OperationsBooking = {
