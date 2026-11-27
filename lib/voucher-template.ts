@@ -62,7 +62,8 @@ export function getPaidExperiencesOnly(booking: OperationsBooking) {
  * Generates the official, luxury branded HTML Confirmation Voucher for Wanderphilia Experiences
  */
 export function generateVoucherHtml(booking: OperationsBooking): string {
-  const voucherNumber = `VCH-${booking.inquiryId || 'WND'}-${(booking.id || Date.now().toString()).slice(-4)}`.toUpperCase();
+  const cleanInq = (booking.inquiryId || 'WND').toUpperCase();
+  const voucherNumber = cleanInq.startsWith('VCH-') ? cleanInq : `VCH-${cleanInq}`;
   const issueDate = new Date().toLocaleDateString('en-IN', {
     day: '2-digit',
     month: 'short',
@@ -116,26 +117,12 @@ export function generateVoucherHtml(booking: OperationsBooking): string {
     .brand-col {
       display: flex;
       align-items: center;
-      gap: 16px;
     }
     .brand-logo {
-      height: 48px;
+      height: 56px;
+      max-width: 250px;
       width: auto;
       object-fit: contain;
-    }
-    .brand-title {
-      font-size: 20px;
-      font-weight: 900;
-      letter-spacing: -0.5px;
-      color: #ffffff;
-      text-transform: uppercase;
-    }
-    .brand-tagline {
-      font-size: 11px;
-      color: #f97316;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      font-weight: 700;
     }
     .voucher-meta {
       text-align: right;
@@ -360,11 +347,7 @@ export function generateVoucherHtml(booking: OperationsBooking): string {
     <!-- HEADER -->
     <div class="voucher-header">
       <div class="brand-col">
-        <img src="https://wanderphilia.com/images/Made_LOGO.png" alt="Wanderphilia" class="brand-logo" onerror="this.style.display='none'">
-        <div>
-          <div class="brand-title">Wanderphilia</div>
-          <div class="brand-tagline">Curated Travel &amp; Luxury Experiences</div>
-        </div>
+        <img src="https://wanderphilia.com/images/Made_LOGO.png" alt="Wanderphilia Experiences" class="brand-logo" onerror="this.src='/images/Made_LOGO.png'">
       </div>
       <div class="voucher-meta">
         <div class="voucher-badge">Status: Confirmed &amp; Guaranteed ✓</div>
