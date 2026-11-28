@@ -51,7 +51,8 @@ import {
   Plus,
   Trash2,
   Paperclip,
-  Upload
+  Upload,
+  Download
 } from 'lucide-react';
 import { OperationsBooking, OperationsHotelItem, OperationsStatus, OperationsSummaryStats } from '@/types/operations';
 import { calculateRoomsAndBeds, isExtraBed, isWithoutBed } from '@/lib/zoho-pricing';
@@ -225,18 +226,23 @@ export default function SingleBookingOperationsPage() {
   const [masterData, setMasterData] = useState<{
     hotelsByCity: Record<string, any[]>;
     vehicles: any[];
-    activities: any[];
-    hotelCount: number;
-    vehicleCount: number;
-    activityCount: number;
-  }>({
-    hotelsByCity: {},
-    vehicles: [],
-    activities: [],
-    hotelCount: 0,
-    vehicleCount: 0,
-    activityCount: 0,
-  });
+    vendors?: any[];
+    destinations: string[];
+    citiesByDestination: Record<string, string[]>;
+    experiencesByCity?: Record<string, any[]>;
+    sightseeingByCity?: Record<string, any[]>;
+    pricingMatrix?: {
+      markupPercentage: number;
+      defaultTaxPercentage: number;
+      defaultTcsPercentage: number;
+    };
+    stats?: {
+      hotelsCount?: number;
+      vehiclesCount?: number;
+      activitiesCount?: number;
+      vendorsCount?: number;
+    };
+  } | null>(null);
   const [isLoadingMasterData, setIsLoadingMasterData] = useState<boolean>(false);
 
   // Save changes state
@@ -251,12 +257,34 @@ export default function SingleBookingOperationsPage() {
   const [syncFinanceResponse, setSyncFinanceResponse] = useState<any>(null);
   const [syncFinanceError, setSyncFinanceError] = useState<string | null>(null);
 
-  // Swap Hotel Modal
+  // Zoho Master Data Hotel Swap Modal State
   const [swapModalHotelIndex, setSwapModalHotelIndex] = useState<number | null>(null);
-  const [swapSelectedProperty, setSwapSelectedProperty] = useState<any>(null);
-  const [swapSelectedRoom, setSwapSelectedRoom] = useState<any>(null);
-  const [swapCustomHotelName, setSwapCustomHotelName] = useState<string>('');
-  const [swapCustomCostPerNight, setSwapCustomCostPerNight] = useState<string>('');
+  const [swapSourceType, setSwapSourceType] = useState<'zoho' | 'custom'>('zoho');
+  const [swapCity, setSwapCity] = useState<string>('');
+  const [swapHotelId, setSwapHotelId] = useState<string>('');
+  const [swapHotelName, setSwapHotelName] = useState<string>('');
+  const [swapHotelCategory, setSwapHotelCategory] = useState<string>('');
+  const [salesSelectedCategory, setSalesSelectedCategory] = useState<string>('');
+  const [salesSelectedRoomCategory, setSalesSelectedRoomCategory] = useState<string>('');
+  const [showAllCategories, setShowAllCategories] = useState<boolean>(false);
+  const [swapRoomCategory, setSwapRoomCategory] = useState<string>('');
+  const [swapB2BCostPerNight, setSwapB2BCostPerNight] = useState<number>(0);
+  const [swapExtraBedPrice, setSwapExtraBedPrice] = useState<number>(0);
+  const [swapNights, setSwapNights] = useState<number>(1);
+  const [swapRooms, setSwapRooms] = useState<number>(1);
+  const [swapManualTotalCost, setSwapManualTotalCost] = useState<string>('');
+  const [swapProofUrl, setSwapProofUrl] = useState<string>('');
+  const [swapProofFileName, setSwapProofFileName] = useState<string>('');
+  const [isUploadingProof, setIsUploadingProof] = useState<string | null>(null);
+  const [missingProofsList, setMissingProofsList] = useState<string[]>([]);
+  const [copiedText, setCopiedText] = useState<string | null>(null);
+  const [showAllVehicleStates, setShowAllVehicleStates] = useState<boolean>(false);
+  const [showAllVendors, setShowAllVendors] = useState<boolean>(false);
+  const [isCustomVendor, setIsCustomVendor] = useState<boolean>(false);
+
+  // Add Attraction from Zoho Modal State
+  const [activityModalDayIdx, setActivityModalDayIdx] = useState<number | null>(null);
+  const [activitySearchQuery, setActivitySearchQuery] = useState<string>('');
 
   // Voucher Preview & Dispatch Modal
   const [isVoucherModalOpen, setIsVoucherModalOpen] = useState<boolean>(false);
@@ -278,19 +306,17 @@ export default function SingleBookingOperationsPage() {
     }
   }, []);
 
-  // Fetch Master Data
+  // Fetch Master Data from Zoho CRM
   const fetchZohoMasterData = useCallback(async () => {
     setIsLoadingMasterData(true);
     try {
-      const res = await fetch('/api/operations/master-data');
-      if (res.ok) {
-        const json = await res.json();
-        if (json.success && json.data) {
-          setMasterData(json.data);
-        }
+      const res = await fetch('/api/zoho/master-data');
+      const data = await res.json();
+      if (data && data.success) {
+        setMasterData(data);
       }
     } catch (err) {
-      console.warn('[Fetch Master Data Warning]:', err);
+      console.error('[Operations] Failed to load Zoho Master Data:', err);
     } finally {
       setIsLoadingMasterData(false);
     }
@@ -419,6 +445,61 @@ export default function SingleBookingOperationsPage() {
     };
   }, [activeBooking]);
 
+  // Helper to resolve hotel stay dates and nights details
+  const getHotelStayDetails = useCallback(
+    (hotel: any, index: number, allHotels: any[], travelStartDate?: string) => {
+      let checkIn = hotel.checkIn || '';
+      let checkOut = hotel.checkOut || '';
+      const nights = Number(hotel.nights || 1);
+
+      if (checkIn && checkOut) {
+        return { checkIn, checkOut, nights, rangeStr: `${checkIn} → ${checkOut}` };
+      }
+
+      // Try calculating exact calendar dates from travelStartDate
+      let baseDate: Date | null = null;
+      if (travelStartDate) {
+        if (/^\d{4}-\d{2}-\d{2}/.test(travelStartDate)) {
+          baseDate = new Date(travelStartDate);
+        } else if (/^\d{1,2}[\/\-]\d{1,2}[\/\-]\d{4}/.test(travelStartDate)) {
+          const [d, m, y] = travelStartDate.split(/[\/\-]/);
+          baseDate = new Date(Number(y), Number(m) - 1, Number(d));
+        }
+      }
+
+      if (baseDate && !isNaN(baseDate.getTime())) {
+        let cumulativeNights = 0;
+        for (let i = 0; i < index; i++) {
+          cumulativeNights += Number(allHotels[i]?.nights || 1);
+        }
+        const inDate = new Date(baseDate);
+        inDate.setDate(inDate.getDate() + cumulativeNights);
+        const outDate = new Date(inDate);
+        outDate.setDate(outDate.getDate() + nights);
+
+        checkIn = inDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+        checkOut = outDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+      } else {
+        // Fallback: parse from hotel.dates or hotel.stayDates if provided
+        const raw = (hotel.dates || hotel.stayDates || '').replace(/\(\d+\s*Nts?\)/gi, '').trim();
+        const parts = raw.split(/\s*(?:→|->|to|–|-)\s*/);
+        if (parts.length >= 2) {
+          checkIn = parts[0].trim();
+          checkOut = parts[1].trim();
+        } else if (parts[0]) {
+          checkIn = parts[0].trim();
+          checkOut = `${nights}N Stay`;
+        } else {
+          checkIn = `Day ${index + 1}`;
+          checkOut = `Day ${index + 1 + nights}`;
+        }
+      }
+
+      return { checkIn, checkOut, nights, rangeStr: `${checkIn} → ${checkOut}` };
+    },
+    []
+  );
+
   const getHotelExtraBedDetails = useCallback(
     (hotel: OperationsHotelItem) => {
       const count =
@@ -511,26 +592,46 @@ export default function SingleBookingOperationsPage() {
     [activeBooking, bookingExtraBedCalc, masterData?.hotelsByCity]
   );
 
-  // Activities Helper
-  const matchZohoActivity = useCallback(
-    (expName: string, dayCity?: string) => {
-      if (!expName || !masterData?.activities) return null;
-      const cleanExp = expName.toLowerCase().replace(/[^a-z0-9]/g, '');
+  // Flatten all experiences from masterData across all cities
+  const allZohoExperiences = useMemo(() => {
+    if (!masterData?.experiencesByCity) return [];
+    const list: any[] = [];
+    Object.entries(masterData.experiencesByCity).forEach(([cityKey, exps]) => {
+      if (Array.isArray(exps)) {
+        exps.forEach(e => list.push({ ...e, cityKey }));
+      }
+    });
+    return list;
+  }, [masterData?.experiencesByCity]);
 
-      return masterData.activities.find((a: any) => {
-        const cleanName = (a.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-        if (cleanName === cleanExp || cleanExp.includes(cleanName) || cleanName.includes(cleanExp)) {
-          if (dayCity && a.city) {
-            const cleanDayCity = dayCity.toLowerCase().replace(/[^a-z0-9]/g, '');
-            const cleanACity = a.city.toLowerCase().replace(/[^a-z0-9]/g, '');
-            return cleanDayCity === cleanACity || cleanDayCity.includes(cleanACity) || cleanACity.includes(cleanDayCity);
-          }
-          return true;
-        }
-        return false;
+  // Match an experience name with Zoho CRM
+  const matchZohoActivity = useCallback(
+    (name: string, city?: string) => {
+      if (!name || allZohoExperiences.length === 0) return null;
+      const cleanName = name.toLowerCase().replace(/[^a-z0-9]/g, '');
+      const cleanCity = (city || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+
+      // 1. Match name + city
+      let found = allZohoExperiences.find(e => {
+        const eCity = (e.city || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+        const eName = (e.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+        return (
+          (!cleanCity || eCity === cleanCity || cleanCity.includes(eCity) || eCity.includes(cleanCity)) &&
+          (eName === cleanName || eName.includes(cleanName) || cleanName.includes(eName))
+        );
       });
+
+      // 2. Fallback to name only
+      if (!found) {
+        found = allZohoExperiences.find(e => {
+          const eName = (e.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+          return eName === cleanName || eName.includes(cleanName) || cleanName.includes(eName);
+        });
+      }
+
+      return found || null;
     },
-    [masterData?.activities]
+    [allZohoExperiences]
   );
 
   const experiencesBreakdown = useMemo(() => {
@@ -731,6 +832,451 @@ export default function SingleBookingOperationsPage() {
     return activeBooking.hotels.every(h => h.status === 'confirmed');
   }, [activeBooking?.hotels]);
 
+  // Open Swap Modal for a hotel
+  const handleOpenSwapModal = (hotelIndex: number) => {
+    if (!activeBooking || !activeBooking.hotels[hotelIndex]) return;
+    const targetHotel = activeBooking.hotels[hotelIndex];
+
+    const initialCat = targetHotel.category || activeBooking.hotelCategory || 'Deluxe';
+    const initialRoomCat = targetHotel.roomCategory || activeBooking.roomCategory || 'Standard Room';
+
+    setSwapModalHotelIndex(hotelIndex);
+    setSwapCity(targetHotel.city || '');
+    setSwapHotelCategory(initialCat);
+    setSalesSelectedCategory(initialCat);
+    setSalesSelectedRoomCategory(initialRoomCat);
+    setShowAllCategories(false);
+
+    setSwapHotelName(targetHotel.hotelName || '');
+    setSwapHotelId(targetHotel.hotelId || '');
+    setSwapRoomCategory(initialRoomCat);
+
+    const extraBedDetails = getHotelExtraBedDetails(targetHotel);
+    setSwapB2BCostPerNight(extraBedDetails.pricePerNight || 0);
+    setSwapExtraBedPrice(targetHotel.extraBedPrice !== undefined && targetHotel.extraBedPrice > 0 ? targetHotel.extraBedPrice : extraBedDetails.rate);
+    setSwapNights(targetHotel.nights || 1);
+    setSwapRooms(targetHotel.roomsCount || activeBooking.roomsCount || 1);
+    setSwapManualTotalCost(String(targetHotel.b2bTotalCost || ''));
+    setSwapProofUrl(targetHotel.proofUrl || '');
+    setSwapProofFileName(targetHotel.proofFileName || '');
+
+    // Check if city exists in Zoho master data
+    const cityKey = normalizeCityKey(targetHotel.city);
+    const cityHotels = masterData?.hotelsByCity?.[cityKey] || [];
+    setSwapSourceType(cityHotels.length > 0 ? 'zoho' : 'custom');
+
+    // Auto-match existing hotel in Zoho by ID or name
+    if (cityHotels.length > 0) {
+      const match = cityHotels.find(h =>
+        (targetHotel.hotelId && String(h.id) === String(targetHotel.hotelId)) ||
+        (targetHotel.hotelName && h.hotelName.toLowerCase().trim() === targetHotel.hotelName.toLowerCase().trim())
+      );
+      if (match) {
+        setSwapHotelId(String(match.id));
+        if (match.category) setSwapHotelCategory(match.category);
+        if (match.rooms && match.rooms.length > 0) {
+          const roomMatch = match.rooms.find((r: any) =>
+            r.roomCategory.toLowerCase().trim() === initialRoomCat.toLowerCase().trim()
+          ) || match.rooms[0];
+          setSwapRoomCategory(roomMatch.roomCategory);
+          const resolvedB2BPrice = Number(roomMatch.pricePerNight || roomMatch.basePrice || 0);
+          setSwapB2BCostPerNight(resolvedB2BPrice);
+          if (roomMatch.extraBedPrice !== undefined) {
+            setSwapExtraBedPrice(Number(roomMatch.extraBedPrice) || 0);
+          }
+        }
+      }
+    }
+  };
+
+  // All Zoho hotels for the currently selected city
+  const allZohoHotelsInCity = useMemo(() => {
+    if (!masterData?.hotelsByCity || !swapCity) return [];
+    const cityKey = normalizeCityKey(swapCity);
+    return masterData.hotelsByCity[cityKey] || [];
+  }, [masterData, swapCity]);
+
+  // Unique categories available in this city (Only real categories from Zoho CRM, no stars)
+  const availableCategoriesInCity = useMemo(() => {
+    const cats = new Set<string>();
+    allZohoHotelsInCity.forEach(h => {
+      const cat = (h.category || '').trim();
+      if (cat && !cat.toLowerCase().includes('star') && !cat.includes('★')) {
+        cats.add(cat);
+      }
+    });
+    return Array.from(cats);
+  }, [allZohoHotelsInCity]);
+
+  // Filtered hotels strictly based on the sales selected category or active category filter
+  const availableZohoHotelsForCity = useMemo(() => {
+    if (showAllCategories || !swapHotelCategory) {
+      return allZohoHotelsInCity;
+    }
+    const cleanCat = swapHotelCategory.toLowerCase().trim();
+    const matched = allZohoHotelsInCity.filter(h => {
+      const hCat = (h.category || '').toLowerCase().trim();
+      return hCat === cleanCat || hCat.includes(cleanCat) || cleanCat.includes(hCat);
+    });
+    return matched.length > 0 ? matched : allZohoHotelsInCity;
+  }, [allZohoHotelsInCity, swapHotelCategory, showAllCategories]);
+
+  // Selected Zoho hotel object
+  const selectedZohoHotelObj = useMemo(() => {
+    if (!swapHotelId) {
+      if (swapHotelName) {
+        return allZohoHotelsInCity.find(h => h.hotelName.toLowerCase().trim() === swapHotelName.toLowerCase().trim()) || null;
+      }
+      return null;
+    }
+    return allZohoHotelsInCity.find(h => String(h.id) === String(swapHotelId)) || null;
+  }, [allZohoHotelsInCity, swapHotelId, swapHotelName]);
+
+  // Available room categories for selected Zoho hotel
+  const availableRoomsForSelectedHotel: any[] = useMemo(() => {
+    if (!selectedZohoHotelObj?.rooms || !Array.isArray(selectedZohoHotelObj.rooms)) return [];
+    return selectedZohoHotelObj.rooms;
+  }, [selectedZohoHotelObj]);
+
+  // Handle hotel selection from Zoho dropdown
+  const handleSelectZohoHotel = (hId: string) => {
+    setSwapHotelId(hId);
+    const found = allZohoHotelsInCity.find(h => String(h.id) === String(hId));
+    if (found) {
+      setSwapHotelName(found.hotelName);
+      if (found.category) {
+        setSwapHotelCategory(found.category);
+      }
+      if (found.rooms && found.rooms.length > 0) {
+        const matchingRoom = found.rooms.find((r: any) =>
+          r.roomCategory.toLowerCase().trim() === salesSelectedRoomCategory.toLowerCase().trim()
+        );
+        const chosenRoom = matchingRoom || found.rooms[0];
+        setSwapRoomCategory(chosenRoom.roomCategory);
+        setSwapB2BCostPerNight(chosenRoom.pricePerNight || chosenRoom.basePrice || 0);
+      } else {
+        setSwapRoomCategory(salesSelectedRoomCategory || 'Standard Room');
+        setSwapB2BCostPerNight(found.pricePerNight || found.basePrice || 0);
+      }
+    }
+  };
+
+  const handleSelectZohoRoomCategory = (roomCat: string) => {
+    setSwapRoomCategory(roomCat);
+    if (selectedZohoHotelObj?.rooms) {
+      const match = selectedZohoHotelObj.rooms.find((r: any) =>
+        r.roomCategory.toLowerCase().trim() === roomCat.toLowerCase().trim()
+      );
+      if (match) {
+        setSwapB2BCostPerNight(match.pricePerNight || match.basePrice || 0);
+        if (match.extraBedPrice !== undefined) {
+          setSwapExtraBedPrice(Number(match.extraBedPrice) || 0);
+        }
+      }
+    }
+  };
+
+  // Apply Hotel Swap
+  const handleApplyHotelSwap = () => {
+    if (!activeBooking || swapModalHotelIndex === null) return;
+
+    let computedTotalCost = 0;
+    let finalHotelName = swapHotelName.trim();
+    let finalRoomCategory = swapRoomCategory.trim();
+    let finalB2BCostPerNight = swapB2BCostPerNight;
+    let isManual = false;
+
+    const updatedHotels = [...activeBooking.hotels];
+    const prev = updatedHotels[swapModalHotelIndex];
+    const extraBedInfo = getHotelExtraBedDetails(prev);
+    const extraBeds = prev.extraBedCount !== undefined ? prev.extraBedCount : extraBedInfo.count;
+    const extraBedTotal = swapExtraBedPrice * extraBeds * swapNights;
+
+    if (swapSourceType === 'zoho') {
+      computedTotalCost = (swapB2BCostPerNight * swapNights * swapRooms) + extraBedTotal;
+      isManual = false;
+    } else {
+      computedTotalCost = Number(swapManualTotalCost) || 0;
+      finalB2BCostPerNight = swapNights > 0 ? Math.round(computedTotalCost / swapNights) : computedTotalCost;
+      isManual = true;
+      if (computedTotalCost > 0 && !swapProofUrl) {
+        alert('⚠️ Mandatory Proof Required: Please upload a rate proof screenshot when entering a custom hotel cost.');
+        return;
+      }
+    }
+
+    updatedHotels[swapModalHotelIndex] = {
+      ...prev,
+      city: swapCity || prev.city,
+      hotelName: finalHotelName || prev.hotelName,
+      hotelId: swapSourceType === 'zoho' && swapHotelId ? swapHotelId : undefined,
+      category: swapHotelCategory || selectedZohoHotelObj?.category || prev.category || activeBooking.hotelCategory || 'Deluxe',
+      roomCategory: finalRoomCategory || prev.roomCategory,
+      nights: swapNights,
+      roomsCount: swapRooms,
+      basePrice: prev.basePrice || swapB2BCostPerNight,
+      pricePerNight: swapB2BCostPerNight,
+      b2bCostPerNight: swapB2BCostPerNight,
+      extraBedPrice: swapExtraBedPrice,
+      extraBedCount: extraBeds,
+      extraBedTotalCost: extraBedTotal,
+      b2bTotalCost: computedTotalCost,
+      isManualCost: isManual,
+      proofUrl: swapProofUrl || prev.proofUrl || '',
+      proofFileName: swapProofFileName || prev.proofFileName || '',
+      status: 'confirmed'
+    };
+
+    setActiveBooking({
+      ...activeBooking,
+      hotels: updatedHotels
+    });
+
+    setSwapModalHotelIndex(null);
+  };
+
+  // Proof File Upload Handler
+  const handleProofFileUpload = async (
+    file: File,
+    targetKey: string,
+    onUploaded: (url: string, fileName: string) => void
+  ) => {
+    if (!file) return;
+    setIsUploadingProof(targetKey);
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      const res = await fetch('/api/upload', { method: 'POST', body: fd });
+      const data = await res.json();
+      if (data.url) {
+        onUploaded(data.url, file.name);
+      } else {
+        alert(data.error || 'Failed to upload proof screenshot');
+      }
+    } catch (err) {
+      alert('Upload failed. Please check network connection.');
+    } finally {
+      setIsUploadingProof(null);
+    }
+  };
+
+  const handleUpdateHotelProof = (hotelIdx: number, proofUrl: string, proofFileName: string) => {
+    if (!activeBooking) return;
+    const updated = activeBooking.hotels.map((h, i) =>
+      i === hotelIdx ? { ...h, proofUrl, proofFileName } : h
+    );
+    setActiveBooking({ ...activeBooking, hotels: updated });
+  };
+
+  const handleUpdateTransportProof = (proofUrl: string, proofFileName: string) => {
+    if (!activeBooking) return;
+    setActiveBooking({
+      ...activeBooking,
+      transport: {
+        ...activeBooking.transport,
+        proofUrl,
+        proofFileName
+      }
+    });
+  };
+
+  // Activity / Experience operations handlers
+  const getCleanExperienceObject = (day: any, exps: any[], expIdx: number) => {
+    const raw = exps[expIdx];
+    if (typeof raw === 'string' && raw.trim()) {
+      return { name: raw.trim(), status: 'requested', paidBy: 'wanderphilia' as const };
+    }
+    if (raw && typeof raw === 'object') {
+      return {
+        ...raw,
+        name: raw.name || raw.title || day.title || 'Experience',
+        status: raw.status || 'requested',
+        paidBy: (raw.paidBy === 'vendor' ? 'vendor' : 'wanderphilia') as 'wanderphilia' | 'vendor'
+      };
+    }
+    return {
+      name: day.title || day.description || 'Day Activity',
+      status: 'requested',
+      paidBy: 'wanderphilia' as const
+    };
+  };
+
+  const handleUpdateExperienceStatus = (dayIdx: number, expIdx: number, status: string) => {
+    if (!activeBooking) return;
+    const dayActivities = [...(activeBooking.dayActivities || [])];
+    const day = { ...dayActivities[dayIdx] };
+    const exps = Array.isArray(day.experiences) ? [...day.experiences] : [];
+    const target = getCleanExperienceObject(day, exps, expIdx);
+    target.status = status;
+    exps[expIdx] = target;
+    day.experiences = exps;
+    dayActivities[dayIdx] = day;
+    setActiveBooking({ ...activeBooking, dayActivities });
+  };
+
+  const handleUpdateExperienceVoucher = (dayIdx: number, expIdx: number, voucherNumber: string) => {
+    if (!activeBooking) return;
+    const dayActivities = [...(activeBooking.dayActivities || [])];
+    const day = { ...dayActivities[dayIdx] };
+    const exps = Array.isArray(day.experiences) ? [...day.experiences] : [];
+    const target = getCleanExperienceObject(day, exps, expIdx);
+    target.confirmationNumber = voucherNumber;
+    target.voucherNumber = voucherNumber;
+    exps[expIdx] = target;
+    day.experiences = exps;
+    dayActivities[dayIdx] = day;
+    setActiveBooking({ ...activeBooking, dayActivities });
+  };
+
+  const handleUpdateExperienceCost = (dayIdx: number, expIdx: number, cost: number) => {
+    if (!activeBooking) return;
+    const dayActivities = [...(activeBooking.dayActivities || [])];
+    const day = { ...dayActivities[dayIdx] };
+    const exps = Array.isArray(day.experiences) ? [...day.experiences] : [];
+    const target = getCleanExperienceObject(day, exps, expIdx);
+    target.cost = cost;
+    target.isManualCost = true;
+    exps[expIdx] = target;
+    day.experiences = exps;
+    dayActivities[dayIdx] = day;
+    setActiveBooking({ ...activeBooking, dayActivities });
+  };
+
+  const handleUpdateExperiencePayer = (dayIdx: number, expIdx: number, paidBy: 'wanderphilia' | 'vendor') => {
+    if (!activeBooking) return;
+    const dayActivities = [...(activeBooking.dayActivities || [])];
+    const day = { ...dayActivities[dayIdx] };
+    const exps = Array.isArray(day.experiences) ? [...day.experiences] : [];
+    const target = getCleanExperienceObject(day, exps, expIdx);
+    target.paidBy = paidBy;
+    exps[expIdx] = target;
+    day.experiences = exps;
+    dayActivities[dayIdx] = day;
+    setActiveBooking({ ...activeBooking, dayActivities });
+  };
+
+  const handleRemoveExperience = (dayIdx: number, expIdx: number) => {
+    if (!activeBooking) return;
+    const dayActivities = [...(activeBooking.dayActivities || [])];
+    const day = { ...dayActivities[dayIdx] };
+    const exps = Array.isArray(day.experiences) ? [...day.experiences] : [];
+    if (exps.length > expIdx) {
+      exps.splice(expIdx, 1);
+    } else {
+      day.title = '';
+    }
+    day.experiences = exps;
+    dayActivities[dayIdx] = day;
+    setActiveBooking({ ...activeBooking, dayActivities });
+  };
+
+  const handleUpdateExperienceProof = (
+    dayIdx: number,
+    expIdx: number,
+    proofUrl: string,
+    proofFileName: string
+  ) => {
+    if (!activeBooking) return;
+    const dayActivities = [...(activeBooking.dayActivities || [])];
+    const day = { ...dayActivities[dayIdx] };
+    const exps = Array.isArray(day.experiences) ? [...day.experiences] : [];
+    const target = getCleanExperienceObject(day, exps, expIdx);
+    target.proofUrl = proofUrl;
+    target.proofFileName = proofFileName;
+    exps[expIdx] = target;
+    day.experiences = exps;
+    dayActivities[dayIdx] = day;
+    setActiveBooking({ ...activeBooking, dayActivities });
+  };
+
+  const handleAddZohoExperienceToDay = (dayIdx: number, zohoExp: any) => {
+    if (!activeBooking) return;
+    const dayActivities = [...(activeBooking.dayActivities || [])];
+    const day = { ...(dayActivities[dayIdx] || { dayNumber: dayIdx + 1, experiences: [] }) };
+    const exps = Array.isArray(day.experiences) ? [...day.experiences] : [];
+    const pax = activeBooking.numberOfGuests || activeBooking.adults || 2;
+    const cost = zohoExp.privateCost && zohoExp.privateCost > 0
+      ? zohoExp.privateCost
+      : (zohoExp.ppCost || 0) * pax;
+
+    const validExps = exps.filter(e => typeof e === 'object' || (typeof e === 'string' && e.trim()));
+
+    validExps.push({
+      name: zohoExp.name,
+      id: zohoExp.id,
+      city: zohoExp.city,
+      category: zohoExp.category,
+      timing: zohoExp.timing,
+      openingTime: zohoExp.openingTime,
+      closingTime: zohoExp.closingTime,
+      ppCost: zohoExp.ppCost,
+      privateCost: zohoExp.privateCost,
+      cost: cost,
+      status: 'requested',
+      paidBy: 'wanderphilia',
+      confirmationNumber: '',
+    });
+    day.experiences = validExps;
+    dayActivities[dayIdx] = day;
+    setActiveBooking({ ...activeBooking, dayActivities });
+    setActivityModalDayIdx(null);
+  };
+
+  // Filtered vehicles strictly based on activeBooking destination & state
+  const availableVehiclesForBooking = useMemo(() => {
+    if (!masterData?.vehicles || masterData.vehicles.length === 0) return [];
+    if (showAllVehicleStates || !activeBooking) return masterData.vehicles;
+
+    const dest = activeBooking.destination || '';
+    const hotelCities = (activeBooking.hotels || []).map(h => h.city).filter(Boolean);
+
+    const filtered = masterData.vehicles.filter(v =>
+      matchVehicleState(v.state, dest, hotelCities)
+    );
+
+    return filtered.length > 0 ? filtered : masterData.vehicles;
+  }, [masterData?.vehicles, activeBooking, showAllVehicleStates]);
+
+  // Filtered vendors strictly based on activeBooking destination & state
+  const availableVendorsForBooking = useMemo(() => {
+    if (!masterData?.vendors || masterData.vendors.length === 0) return [];
+    if (showAllVendors || !activeBooking) return masterData.vendors;
+
+    const dest = activeBooking.destination || '';
+    const hotelCities = (activeBooking.hotels || []).map(h => h.city).filter(Boolean);
+
+    const filtered = masterData.vendors.filter(v =>
+      matchVendorState(v.state, v.city, dest, hotelCities)
+    );
+
+    return filtered.length > 0 ? filtered : masterData.vendors;
+  }, [masterData?.vendors, activeBooking, showAllVendors]);
+
+  // Copy Chauffeur duty slip
+  const generateDriverDutySlip = () => {
+    if (!activeBooking) return '';
+    const t = activeBooking.transport;
+    return `*🚗 WANDERPHILIA CHAUFFEUR DUTY SLIP*\n` +
+      `--------------------------------------\n` +
+      `*Guest Name:* ${activeBooking.customerName}\n` +
+      `*Destination:* ${activeBooking.destination}\n` +
+      `*Travel Dates:* ${activeBooking.travelStartDate} to ${activeBooking.travelEndDate} (${activeBooking.noOfNights}N/${activeBooking.noOfDays}D)\n` +
+      `*Guests:* ${activeBooking.adults} Adults, ${activeBooking.kids} Kids (${activeBooking.numberOfGuests} Total)\n` +
+      `*Vehicle Assigned:* ${t?.vehicleType || 'Dedicated Cab'}\n` +
+      `*Vehicle Number:* ${t?.vehicleNumber || 'TBA'}\n` +
+      `*Chauffeur Name:* ${t?.driverName || 'TBA'}\n` +
+      `*Chauffeur Contact:* ${t?.driverMobile || 'TBA'}\n` +
+      `*Pickup / Notes:* ${t?.notes || 'Direct pickup as per flight / train arrival.'}\n` +
+      `--------------------------------------\n` +
+      `Have a safe journey with Wanderphilia! 🌟`;
+  };
+
+  const copyToClipboard = (text: string, label: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedText(label);
+    setTimeout(() => setCopiedText(null), 2500);
+  };
+
   // Save changes
   const handleSaveChanges = async () => {
     if (!activeBooking) return;
@@ -825,6 +1371,35 @@ export default function SingleBookingOperationsPage() {
   // Sync to Finance
   const handleExecuteFinanceSync = async () => {
     if (!activeBooking) return;
+
+    // Compulsory proof verification for manual cost overrides
+    const missing: string[] = [];
+    (activeBooking.hotels || []).forEach((h, idx) => {
+      if (h.isManualCost && !h.proofUrl) {
+        missing.push(`Hotel: ${h.hotelName || h.city || `Hotel #${idx + 1}`}`);
+      }
+    });
+    if (activeBooking.transport?.isManualCost && !activeBooking.transport.proofUrl) {
+      missing.push(`Transport: ${activeBooking.transport.vehicleType || 'Vehicle'}`);
+    }
+    (activeBooking.dayActivities || []).forEach((day: any, dIdx: number) => {
+      (day.experiences || []).forEach((exp: any) => {
+        const cost = typeof exp === 'object' ? Number(exp.cost || 0) : 0;
+        const isManual = typeof exp === 'object' && Boolean(exp.isManualCost);
+        const hasProof = typeof exp === 'object' && Boolean(exp.proofUrl);
+        if (isManual && cost > 0 && !hasProof) {
+          const name = typeof exp === 'object' ? (exp.name || exp.title || 'Experience') : String(exp);
+          missing.push(`Experience (Day ${day.dayNumber || dIdx + 1}): ${name}`);
+        }
+      });
+    });
+
+    if (missing.length > 0) {
+      setMissingProofsList(missing);
+      setIsSyncModalOpen(false);
+      return;
+    }
+
     setIsSyncingFinance(true);
     setSyncFinanceError(null);
 
@@ -1065,6 +1640,10 @@ export default function SingleBookingOperationsPage() {
                   &bull; {activeBooking.destination} ({activeBooking.noOfNights}N/{activeBooking.noOfDays}D)
                 </span>
               </div>
+              <span className="text-[11px] text-emerald-400 flex items-center gap-1 font-medium mt-0.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                Zoho CRM Master Data Active ({masterData?.stats?.hotelsCount || 45} Hotels &bull; {masterData?.stats?.vehiclesCount || 6} Vehicles)
+              </span>
             </div>
           </div>
 
@@ -1104,12 +1683,15 @@ export default function SingleBookingOperationsPage() {
             </Link>
 
             <button
-              onClick={() => fetchBooking()}
-              disabled={isLoading}
+              onClick={() => {
+                fetchBooking();
+                fetchZohoMasterData();
+              }}
+              disabled={isLoading || isLoadingMasterData}
               className="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs transition-colors"
-              title="Refresh Record"
+              title="Refresh Record & Master Data"
             >
-              <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin text-orange-400' : ''}`} />
+              <RefreshCw className={`w-3.5 h-3.5 ${(isLoading || isLoadingMasterData) ? 'animate-spin text-orange-400' : ''}`} />
             </button>
 
             <button
@@ -1611,6 +2193,7 @@ export default function SingleBookingOperationsPage() {
               {(activeBooking.hotels || []).map((hotel, index) => {
                 const extra = getHotelExtraBedDetails(hotel);
                 const isConfirmed = hotel.status === 'confirmed';
+                const stay = getHotelStayDetails(hotel, index, activeBooking.hotels || [], activeBooking.travelStartDate);
 
                 return (
                   <div
@@ -1643,20 +2226,58 @@ export default function SingleBookingOperationsPage() {
                               className="font-black text-base text-white bg-slate-950/80 px-2.5 py-1 rounded-lg border border-slate-700 focus:border-orange-500 focus:outline-none"
                               placeholder="Hotel Name"
                             />
-                            {hotel.nights && (
-                              <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-md bg-blue-950 text-blue-300 border border-blue-800">
-                                {hotel.nights}N ({hotel.nights} Night{hotel.nights > 1 ? 's' : ''})
-                              </span>
-                            )}
-                            {hotel.dates && (
-                              <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-slate-800 text-slate-300 border border-slate-700">
-                                📅 {hotel.dates}
-                              </span>
-                            )}
+
+                            {/* Prominent Stay Duration Badge */}
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-indigo-500/20 border border-indigo-500/40 text-indigo-300 font-mono text-xs font-black shadow-xs">
+                              🌙 {stay.nights}N ({stay.nights} {stay.nights > 1 ? 'Nights' : 'Night'})
+                            </span>
+
+                            {/* Check-in & Check-out Date Badge */}
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-amber-500/15 border border-amber-500/40 text-amber-300 font-mono text-xs font-bold shadow-xs flex-wrap">
+                              <Calendar className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                              <span className="text-[10px] text-amber-400/90 font-bold uppercase tracking-wider">Check-in:</span>
+                              <strong className="text-white font-extrabold">{stay.checkIn}</strong>
+                              <span className="text-amber-500 font-bold mx-0.5">➔</span>
+                              <span className="text-[10px] text-amber-400/90 font-bold uppercase tracking-wider">Check-out:</span>
+                              <strong className="text-white font-extrabold">{stay.checkOut}</strong>
+                            </span>
                           </div>
-                          <span className="text-xs text-slate-400 mt-1 block">
-                            City: <strong className="text-slate-300">{hotel.city || 'TBA'}</strong> &bull; Category: {hotel.category || 'Deluxe'}
-                          </span>
+
+                          <div className="flex items-center justify-between gap-3 flex-wrap mt-1.5">
+                            <span className="text-xs text-slate-400">
+                              City: <strong className="text-slate-300">{hotel.city || 'TBA'}</strong> &bull; Category: <span className="text-orange-400 font-bold">{hotel.category || 'Deluxe'}</span>
+                            </span>
+
+                            {/* Optional override inputs for check-in / check-out */}
+                            <div className="flex items-center gap-1.5 text-[11px] text-slate-400">
+                              <span className="text-[10px] font-bold text-slate-500 uppercase">Override Dates:</span>
+                              <input
+                                type="text"
+                                placeholder={stay.checkIn}
+                                value={hotel.checkIn || ''}
+                                onChange={e => {
+                                  const newHotels = [...(activeBooking.hotels || [])];
+                                  newHotels[index] = { ...newHotels[index], checkIn: e.target.value };
+                                  setActiveBooking({ ...activeBooking, hotels: newHotels });
+                                }}
+                                className="bg-slate-950 border border-slate-700 rounded px-2 py-0.5 text-[10px] font-mono text-white w-24 placeholder:text-slate-600 focus:outline-none focus:border-orange-500"
+                                title="Custom Check-in Date"
+                              />
+                              <span>➔</span>
+                              <input
+                                type="text"
+                                placeholder={stay.checkOut}
+                                value={hotel.checkOut || ''}
+                                onChange={e => {
+                                  const newHotels = [...(activeBooking.hotels || [])];
+                                  newHotels[index] = { ...newHotels[index], checkOut: e.target.value };
+                                  setActiveBooking({ ...activeBooking, hotels: newHotels });
+                                }}
+                                className="bg-slate-950 border border-slate-700 rounded px-2 py-0.5 text-[10px] font-mono text-white w-24 placeholder:text-slate-600 focus:outline-none focus:border-orange-500"
+                                title="Custom Check-out Date"
+                              />
+                            </div>
+                          </div>
                         </div>
                       </div>
 
@@ -1685,14 +2306,8 @@ export default function SingleBookingOperationsPage() {
 
                         <button
                           type="button"
-                          onClick={() => {
-                            setSwapModalHotelIndex(index);
-                            setSwapSelectedProperty(null);
-                            setSwapSelectedRoom(null);
-                            setSwapCustomHotelName('');
-                            setSwapCustomCostPerNight('');
-                          }}
-                          className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-slate-700 transition-all"
+                          onClick={() => handleOpenSwapModal(index)}
+                          className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-slate-700 transition-all cursor-pointer shadow-sm"
                         >
                           Swap Hotel ⇄
                         </button>
@@ -1734,7 +2349,7 @@ export default function SingleBookingOperationsPage() {
                       </div>
                     </div>
 
-                    {/* Booking Reference & Voucher */}
+                    {/* Booking Reference, Voucher & Proof Attachment */}
                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-1">
                       <div className="flex-1">
                         <input
@@ -1768,6 +2383,47 @@ export default function SingleBookingOperationsPage() {
                           className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-orange-500"
                         />
                       </div>
+
+                      {/* Hotel Proof Upload */}
+                      <div className="shrink-0 flex items-center gap-2">
+                        {hotel.proofUrl ? (
+                          <div className="flex items-center gap-1.5 bg-emerald-950/70 border border-emerald-500/40 text-emerald-300 px-2.5 py-1.5 rounded-xl text-xs font-bold">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                            <a href={hotel.proofUrl} target="_blank" rel="noopener noreferrer" className="hover:underline truncate max-w-[120px]">
+                              {hotel.proofFileName || 'Proof ↗'}
+                            </a>
+                            <button
+                              type="button"
+                              onClick={() => handleUpdateHotelProof(index, '', '')}
+                              className="text-slate-400 hover:text-red-400 ml-1 cursor-pointer"
+                              title="Remove proof"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        ) : (
+                          <label className={`cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition ${
+                            hotel.isManualCost
+                              ? 'bg-red-950/80 border-red-500/60 text-red-300 animate-pulse hover:bg-red-900'
+                              : 'bg-slate-800 border-slate-700 text-slate-300 hover:text-white'
+                          }`}>
+                            <Paperclip className="w-3.5 h-3.5 shrink-0" />
+                            <span>{isUploadingProof === `hotel-${index}` ? 'Uploading...' : hotel.isManualCost ? '⚠️ Proof Req.' : '+ Upload Proof'}</span>
+                            <input
+                              type="file"
+                              accept="image/*,application/pdf"
+                              className="hidden"
+                              disabled={isUploadingProof === `hotel-${index}`}
+                              onChange={e => {
+                                const f = e.target.files?.[0];
+                                if (f) handleProofFileUpload(f, `hotel-${index}`, (url, name) => {
+                                  handleUpdateHotelProof(index, url, name);
+                                });
+                              }}
+                            />
+                          </label>
+                        )}
+                      </div>
                     </div>
                   </div>
                 );
@@ -1780,63 +2436,231 @@ export default function SingleBookingOperationsPage() {
         {activeTab === 'transport' && (
           <div className="space-y-4">
             <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
-              <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                <Car className="w-4 h-4 text-orange-400" />
-                Assigned Transport &amp; Chauffeur Details
-              </h3>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
+                <div className="flex items-center gap-2">
+                  <Car className="w-5 h-5 text-orange-400" />
+                  <div>
+                    <h3 className="font-bold text-white text-sm">Assigned Transport &amp; Chauffeur Details</h3>
+                    <span className="text-[10px] text-slate-400">
+                      Synced with Zoho CRM Vehicles &bull; Matches CustomModule11
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => copyToClipboard(generateDriverDutySlip(), 'Duty Slip Copied!')}
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/30 rounded-xl text-xs font-bold transition-all cursor-pointer shadow-sm"
+                    title="Generate WhatsApp Chauffeur Duty Slip"
+                  >
+                    <Copy className="w-3.5 h-3.5" />
+                    <span>{copiedText === 'Duty Slip Copied!' ? '✓ Copied!' : 'Copy Driver Duty Slip'}</span>
+                  </button>
+                </div>
+              </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                {/* Vehicle Selection */}
                 <div>
-                  <label className="text-[10px] font-bold text-slate-400 uppercase block mb-1">Vehicle Type</label>
-                  <input
-                    type="text"
-                    value={activeBooking.transport?.vehicleType || ''}
-                    onChange={e =>
-                      setActiveBooking({
-                        ...activeBooking,
-                        transport: { ...activeBooking.transport, vehicleType: e.target.value } as any,
-                      })
-                    }
-                    className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white font-bold focus:border-orange-500 focus:outline-none"
-                  />
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="text-[10px] font-bold text-slate-400 uppercase">
+                      Vehicle Type ({showAllVehicleStates ? 'All States' : `State: ${activeBooking.destination || 'State'}`})
+                    </label>
+                    {masterData?.vehicles && masterData.vehicles.length > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => setShowAllVehicleStates(!showAllVehicleStates)}
+                        className="text-[9px] text-orange-400 hover:text-orange-300 font-bold underline cursor-pointer"
+                      >
+                        {showAllVehicleStates ? `← Filter for ${activeBooking.destination || 'State'}` : `All States (${masterData.vehicles.length})`}
+                      </button>
+                    )}
+                  </div>
+                  {availableVehiclesForBooking.length > 0 ? (
+                    <select
+                      value={activeBooking.transport?.vehicleType || ''}
+                      onChange={e => {
+                        const selType = e.target.value;
+                        const matchVeh = masterData?.vehicles?.find(v => v.name === selType);
+                        const days = activeBooking.transport?.totalDays || activeBooking.noOfDays || 1;
+                        const perDay = (matchVeh && matchVeh.cost) ? matchVeh.cost : (activeBooking.transport?.costPerDay || 0);
+                        let newCost = perDay * days;
+                        if (activeBooking.transport?.isManualCost && activeBooking.transport?.b2bTotalCost) {
+                          newCost = activeBooking.transport.b2bTotalCost;
+                        }
+
+                        setActiveBooking({
+                          ...activeBooking,
+                          transport: {
+                            ...activeBooking.transport,
+                            vehicleType: selType,
+                            vehicleId: matchVeh?.id || undefined,
+                            costPerDay: perDay,
+                            totalDays: days,
+                            b2bTotalCost: newCost,
+                          } as any,
+                        });
+                      }}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white font-bold focus:border-orange-500 focus:outline-none cursor-pointer"
+                    >
+                      <option value="">-- Select Zoho Vehicle ({showAllVehicleStates ? 'All States' : (activeBooking.destination || 'State')}) --</option>
+                      {availableVehiclesForBooking.map(v => (
+                        <option key={v.id} value={v.name}>
+                          {v.name} {v.state ? `(${v.state})` : ''} • ₹{(v.cost || 0).toLocaleString('en-IN')}/day
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input
+                      type="text"
+                      placeholder="Dedicated Private AC Cab"
+                      value={activeBooking.transport?.vehicleType || ''}
+                      onChange={e =>
+                        setActiveBooking({
+                          ...activeBooking,
+                          transport: { ...activeBooking.transport, vehicleType: e.target.value } as any,
+                        })
+                      }
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white font-bold focus:border-orange-500 focus:outline-none"
+                    />
+                  )}
                 </div>
 
+                {/* Transport Vendor */}
                 <div>
-                  <label className="text-[10px] font-bold text-slate-400 uppercase block mb-1">Transport Vendor</label>
-                  <input
-                    type="text"
-                    placeholder="Vendor Name"
-                    value={activeBooking.transport?.vendorName || ''}
-                    onChange={e =>
-                      setActiveBooking({
-                        ...activeBooking,
-                        transport: { ...activeBooking.transport, vendorName: e.target.value } as any,
-                      })
-                    }
-                    className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white font-bold focus:border-orange-500 focus:outline-none"
-                  />
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="text-[10px] font-bold text-slate-400 uppercase">
+                      Transport Vendor ({showAllVendors ? 'All States' : `State: ${activeBooking.destination || 'State'}`})
+                    </label>
+                    {masterData?.vendors && masterData.vendors.length > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => setShowAllVendors(!showAllVendors)}
+                        className="text-[9px] text-orange-400 hover:text-orange-300 font-bold underline cursor-pointer"
+                      >
+                        {showAllVendors ? `← Filter for ${activeBooking.destination || 'State'}` : `All Vendors (${masterData.vendors.length})`}
+                      </button>
+                    )}
+                  </div>
+                  {isCustomVendor ? (
+                    <div className="flex items-center gap-1.5">
+                      <input
+                        type="text"
+                        placeholder="Enter custom vendor name"
+                        value={activeBooking.transport?.vendorName || ''}
+                        onChange={e => {
+                          setActiveBooking({
+                            ...activeBooking,
+                            transport: { ...activeBooking.transport, vendorName: e.target.value } as any,
+                          });
+                        }}
+                        className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white font-bold focus:border-orange-500 focus:outline-none"
+                        autoFocus
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setIsCustomVendor(false)}
+                        className="px-2.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] rounded-xl font-bold whitespace-nowrap cursor-pointer"
+                        title="Switch back to Zoho Vendors list"
+                      >
+                        List ↩
+                      </button>
+                    </div>
+                  ) : availableVendorsForBooking.length > 0 ? (
+                    <select
+                      value={
+                        availableVendorsForBooking.some(v => v.id === activeBooking.transport?.vendorId || v.name === activeBooking.transport?.vendorName)
+                          ? (availableVendorsForBooking.find(v => v.id === activeBooking.transport?.vendorId || v.name === activeBooking.transport?.vendorName)?.id || '')
+                          : (activeBooking.transport?.vendorName ? '__custom__' : '')
+                      }
+                      onChange={e => {
+                        const val = e.target.value;
+                        if (val === '__custom__') {
+                          setIsCustomVendor(true);
+                          return;
+                        }
+                        const selVendor = availableVendorsForBooking.find(v => v.id === val);
+                        if (selVendor) {
+                          const days = activeBooking.transport?.totalDays || activeBooking.noOfDays || 1;
+                          const perDay = (selVendor.costPerDay && selVendor.costPerDay > 0) ? selVendor.costPerDay : (activeBooking.transport?.costPerDay || 0);
+                          let newCost = perDay * days;
+                          if (activeBooking.transport?.isManualCost && activeBooking.transport?.b2bTotalCost) {
+                            newCost = activeBooking.transport.b2bTotalCost;
+                          }
+
+                          setActiveBooking({
+                            ...activeBooking,
+                            transport: {
+                              ...activeBooking.transport,
+                              vendorName: selVendor.name,
+                              vendorId: selVendor.id,
+                              driverMobile: activeBooking.transport?.driverMobile || selVendor.phone || '',
+                              b2bTotalCost: newCost,
+                              costPerDay: perDay,
+                              totalDays: days,
+                            } as any,
+                          });
+                        }
+                      }}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white font-bold focus:border-orange-500 focus:outline-none cursor-pointer"
+                    >
+                      <option value="">-- Select Vendor ({showAllVendors ? 'All States' : (activeBooking.destination || 'State')}) --</option>
+                      {availableVendorsForBooking.map(v => (
+                        <option key={v.id} value={v.id}>
+                          {v.name} {v.city ? `(${v.city})` : (v.state ? `(${v.state})` : '')} {v.costPerDay ? `• ₹${v.costPerDay}/day` : ''}
+                        </option>
+                      ))}
+                      <option value="__custom__">✏️ Custom / Other Vendor</option>
+                    </select>
+                  ) : (
+                    <input
+                      type="text"
+                      placeholder="Vendor Name"
+                      value={activeBooking.transport?.vendorName || ''}
+                      onChange={e =>
+                        setActiveBooking({
+                          ...activeBooking,
+                          transport: { ...activeBooking.transport, vendorName: e.target.value } as any,
+                        })
+                      }
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white font-bold focus:border-orange-500 focus:outline-none"
+                    />
+                  )}
                 </div>
 
+                {/* Vehicle Cost */}
                 <div>
                   <label className="text-[10px] font-bold text-slate-400 uppercase block mb-1">Vehicle Cost (B2B Total ₹)</label>
                   <input
                     type="number"
                     value={activeBooking.transport?.b2bTotalCost || ''}
-                    onChange={e =>
+                    onChange={e => {
+                      const newTotal = Number(e.target.value) || 0;
+                      const days = activeBooking.transport?.totalDays || activeBooking.noOfDays || 1;
                       setActiveBooking({
                         ...activeBooking,
-                        transport: { ...activeBooking.transport, b2bTotalCost: Number(e.target.value) || 0 } as any,
-                      })
-                    }
-                    className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white font-mono font-bold focus:border-orange-500 focus:outline-none"
+                        transport: {
+                          ...activeBooking.transport,
+                          b2bTotalCost: newTotal,
+                          costPerDay: days > 0 ? Math.round(newTotal / days) : newTotal,
+                          isManualCost: true,
+                        } as any,
+                      });
+                    }}
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-amber-400 font-mono font-bold focus:border-orange-500 focus:outline-none"
                   />
+                  <span className="text-[9.5px] text-slate-400 mt-1 block font-mono">
+                    ₹{(activeBooking.transport?.costPerDay || 0).toLocaleString('en-IN')}/day &times; {activeBooking.transport?.totalDays || activeBooking.noOfDays || 1} Days
+                  </span>
                 </div>
 
+                {/* Driver Details */}
                 <div>
-                  <label className="text-[10px] font-bold text-slate-400 uppercase block mb-1">Driver Details</label>
+                  <label className="text-[10px] font-bold text-slate-400 uppercase block mb-1">Driver &amp; Vehicle #</label>
                   <input
                     type="text"
-                    placeholder="Driver Name &amp; Contact Number"
+                    placeholder="Chauffeur Name (e.g. Ramesh Singh)"
                     value={activeBooking.transport?.driverName || ''}
                     onChange={e =>
                       setActiveBooking({
@@ -1844,9 +2668,74 @@ export default function SingleBookingOperationsPage() {
                         transport: { ...activeBooking.transport, driverName: e.target.value } as any,
                       })
                     }
-                    className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none"
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-white focus:border-orange-500 focus:outline-none mb-1.5"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Chauffeur Mobile Number"
+                    value={activeBooking.transport?.driverMobile || ''}
+                    onChange={e =>
+                      setActiveBooking({
+                        ...activeBooking,
+                        transport: { ...activeBooking.transport, driverMobile: e.target.value } as any,
+                      })
+                    }
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-white focus:border-orange-500 focus:outline-none"
                   />
                 </div>
+              </div>
+
+              {/* Transport Vendor Rate Proof / Quotation Attachment */}
+              <div className="p-3.5 bg-slate-950/80 border border-slate-800 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <span className="text-xs font-bold text-slate-200 flex items-center gap-1.5">
+                    <Camera className="w-4 h-4 text-orange-400" />
+                    Transport Vendor Quotation / Rate Proof Screenshot
+                  </span>
+                  <span className="text-[10px] text-slate-400 block mt-0.5">
+                    {activeBooking.transport?.isManualCost
+                      ? '⚠️ Manual transport cost entered: Vendor quotation screenshot proof is mandatory.'
+                      : 'Upload vendor rate quotation sheet or WhatsApp rate screenshot.'}
+                  </span>
+                </div>
+
+                {activeBooking.transport?.proofUrl ? (
+                  <div className="flex items-center gap-2 bg-emerald-950/70 border border-emerald-500/40 text-emerald-300 px-3 py-1.5 rounded-xl text-xs font-bold shrink-0">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                    <a href={activeBooking.transport.proofUrl} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                      View Rate Proof ↗
+                    </a>
+                    <button
+                      type="button"
+                      onClick={() => handleUpdateTransportProof('', '')}
+                      className="text-slate-400 hover:text-red-400 ml-1 text-xs cursor-pointer"
+                      title="Remove proof"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ) : (
+                  <label className={`cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition shrink-0 ${
+                    activeBooking.transport?.isManualCost
+                      ? 'bg-red-950/80 border-red-500/60 text-red-300 animate-pulse hover:bg-red-900'
+                      : 'bg-slate-800 border-slate-700 text-slate-300 hover:text-white'
+                  }`}>
+                    <Upload className="w-3.5 h-3.5" />
+                    <span>{isUploadingProof === 'transport' ? 'Uploading...' : activeBooking.transport?.isManualCost ? '⚠️ Upload Mandatory Proof' : '+ Upload Proof'}</span>
+                    <input
+                      type="file"
+                      accept="image/*,application/pdf"
+                      className="hidden"
+                      disabled={isUploadingProof === 'transport'}
+                      onChange={e => {
+                        const f = e.target.files?.[0];
+                        if (f) handleProofFileUpload(f, 'transport', (url, name) => {
+                          handleUpdateTransportProof(url, name);
+                        });
+                      }}
+                    />
+                  </label>
+                )}
               </div>
             </div>
           </div>
@@ -1855,113 +2744,624 @@ export default function SingleBookingOperationsPage() {
         {/* TAB 3: ACTIVITIES & EXPERIENCES */}
         {activeTab === 'activities' && (
           <div className="space-y-4">
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-                <div>
-                  <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                    <Compass className="w-4 h-4 text-emerald-400" />
-                    Day-Wise Activities &amp; Sightseeing Operations
-                  </h3>
-                  <p className="text-xs text-slate-400 mt-0.5">
-                    Live rates synced from Zoho Activities &amp; Experiences master module.
-                  </p>
+            {/* Top Header Card with KPI counters */}
+            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-5 space-y-3">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800/80 pb-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 rounded-xl bg-orange-600/20 text-orange-400 border border-orange-500/30 flex items-center justify-center">
+                    <Compass className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-bold text-white text-sm">
+                        Day-Wise Activities &amp; Sightseeing Operations
+                      </h3>
+                      <span className="text-[10px] bg-emerald-950 text-emerald-300 border border-emerald-700/80 px-2 py-0.5 rounded-full font-bold flex items-center gap-1">
+                        <Sparkles className="w-2.5 h-2.5" />
+                        Zoho CRM Master Synced
+                      </span>
+                    </div>
+                    <span className="text-[11px] text-slate-400">
+                      Live rates from Zoho Activities &amp; Experiences master module &bull; Matches Operations &amp; Finance subform
+                    </span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 text-xs">
-                  <span className="px-2.5 py-1 rounded-lg bg-sky-950 text-sky-300 font-bold border border-sky-800">
-                    Company Paid: ₹{experiencesBreakdown.wanderphiliaTotal.toLocaleString('en-IN')}
-                  </span>
-                  <span className="px-2.5 py-1 rounded-lg bg-amber-950 text-amber-300 font-bold border border-amber-800">
-                    Vendor Paid: ₹{experiencesBreakdown.vendorTotal.toLocaleString('en-IN')}
-                  </span>
+
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-slate-400">Activities Booked?</span>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setActiveBooking({
+                        ...activeBooking,
+                        isActivitiesBooked: !activeBooking.isActivitiesBooked
+                      })
+                    }
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+                      activeBooking.isActivitiesBooked
+                        ? 'bg-emerald-950 text-emerald-300 border-emerald-700'
+                        : 'bg-amber-950 text-amber-300 border-amber-700'
+                    }`}
+                  >
+                    {activeBooking.isActivitiesBooked ? 'All Confirmed ✓' : 'Pending Booking'}
+                  </button>
                 </div>
               </div>
 
-              <div className="space-y-3">
-                {(activeBooking.dayActivities || []).map((day: any, dIdx: number) => {
-                  const exps = day.experiences || day.activities || day.sightseeingPoints || [];
+              {/* Experiences Payer Split Cards (Zoho Finance CustomModule10 Integration) */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                <div className="p-3 bg-slate-950/80 rounded-xl border border-sky-500/40 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-black uppercase text-sky-400 flex items-center gap-1.5">
+                      🏢 Company Paid
+                    </span>
+                    <span className="text-[10px] bg-sky-950 text-sky-300 font-mono px-1.5 py-0.5 rounded border border-sky-700">
+                      {experiencesBreakdown.wanderphiliaCount} Exps
+                    </span>
+                  </div>
+                  <div className="text-base font-black text-sky-300 font-mono">
+                    ₹{experiencesBreakdown.wanderphiliaTotal.toLocaleString('en-IN')}
+                  </div>
+                  <span className="text-[10px] text-slate-400 block leading-tight">
+                    Syncs to: <strong className="text-slate-300">Experiences Total Cost</strong> &amp; List
+                  </span>
+                </div>
+
+                <div className="p-3 bg-slate-950/80 rounded-xl border border-amber-500/40 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-black uppercase text-amber-400 flex items-center gap-1.5">
+                      🚗 Vendor Paid
+                    </span>
+                    <span className="text-[10px] bg-amber-950 text-amber-300 font-mono px-1.5 py-0.5 rounded border border-amber-700">
+                      {experiencesBreakdown.vendorCount} Exps
+                    </span>
+                  </div>
+                  <div className="text-base font-black text-amber-300 font-mono">
+                    ₹{experiencesBreakdown.vendorTotal.toLocaleString('en-IN')}
+                  </div>
+                  <span className="text-[10px] text-slate-400 block leading-tight">
+                    Syncs to: <strong className="text-slate-300">Extra amount paid by transport vendor</strong>
+                  </span>
+                </div>
+
+                <div className="p-3 bg-slate-950/80 rounded-xl border border-slate-800 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-black uppercase text-slate-400">
+                      Total Activities Cost
+                    </span>
+                    <span className="text-[10px] text-slate-500">
+                      {experiencesBreakdown.wanderphiliaCount + experiencesBreakdown.vendorCount} Total
+                    </span>
+                  </div>
+                  <div className="text-base font-black text-white font-mono">
+                    ₹{(experiencesBreakdown.wanderphiliaTotal + experiencesBreakdown.vendorTotal).toLocaleString('en-IN')}
+                  </div>
+                  <span className="text-[10px] text-slate-400 block leading-tight">
+                    Combined across company &amp; cab vendor
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* DAY-BY-DAY ACTIVITIES BREAKDOWN */}
+            {Array.isArray(activeBooking.dayActivities) && activeBooking.dayActivities.length > 0 ? (
+              <div className="space-y-4">
+                {activeBooking.dayActivities.map((day: any, dIdx: number) => {
+                  const dayNum = day.dayNumber || dIdx + 1;
+                  let stayDateStr = '';
+                  if (activeBooking.travelStartDate && /^\d{4}-\d{2}-\d{2}$/.test(activeBooking.travelStartDate)) {
+                    try {
+                      const d = new Date(activeBooking.travelStartDate);
+                      d.setDate(d.getDate() + (dayNum - 1));
+                      stayDateStr = d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', weekday: 'short', year: 'numeric' });
+                    } catch (_) { }
+                  }
+
+                  // Parse experiences
+                  const expsList: any[] = [];
+                  if (Array.isArray(day.experiences)) {
+                    day.experiences.forEach((item: any, eIdx: number) => {
+                      if (typeof item === 'string') {
+                        if (item.trim()) expsList.push({ name: item.trim(), originalIdx: eIdx, status: 'requested', paidBy: 'wanderphilia' });
+                      } else if (item && typeof item === 'object') {
+                        const name = item.name || item.title || '';
+                        if (name.trim()) expsList.push({ ...item, name: name.trim(), originalIdx: eIdx });
+                      }
+                    });
+                  }
+                  if (expsList.length === 0 && day.title) {
+                    expsList.push({ name: day.title, originalIdx: 0, status: 'requested', paidBy: 'wanderphilia' });
+                  }
+
+                  const dayCity = day.city || day.fromCity || activeBooking.destination;
+                  const pax = activeBooking.numberOfGuests || activeBooking.adults || 2;
+
                   return (
-                    <div key={dIdx} className="bg-slate-950/60 p-4 rounded-xl border border-slate-800/80 space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="font-bold text-xs text-orange-400">
-                          Day {day.dayNumber || dIdx + 1}: {day.title || `Day ${dIdx + 1} Itinerary`}
-                        </span>
-                        <span className="text-[10px] text-slate-500 font-mono">
-                          {exps.length} Activities
-                        </span>
+                    <div
+                      key={dIdx}
+                      className="bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-2xl p-4 sm:p-5 space-y-3 transition-all shadow-md"
+                    >
+                      {/* Day Header */}
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="px-3 py-1 rounded-xl bg-orange-600 text-white font-black text-xs shadow-xs">
+                            Day {dayNum}
+                          </span>
+                          {stayDateStr && (
+                            <span className="text-xs font-mono font-bold text-amber-300 bg-amber-950/60 border border-amber-800/80 px-2.5 py-0.5 rounded-lg">
+                              📅 {stayDateStr}
+                            </span>
+                          )}
+                          <span className="text-xs text-slate-300 font-bold">
+                            📍 {dayCity}
+                          </span>
+                          {day.stayLocation && (
+                            <span className="text-[11px] text-slate-400 bg-slate-800 px-2 py-0.5 rounded-md">
+                              Stay: {day.stayLocation}
+                            </span>
+                          )}
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setActivityModalDayIdx(dIdx);
+                            setActivitySearchQuery('');
+                          }}
+                          className="px-3 py-1.5 bg-orange-600/20 hover:bg-orange-600 text-orange-300 hover:text-white border border-orange-500/40 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-xs shrink-0"
+                        >
+                          <Plus className="w-3.5 h-3.5" />
+                          <span>Add Attraction from Zoho CRM</span>
+                        </button>
                       </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
-                        {exps.map((exp: any, eIdx: number) => {
-                          const expName = typeof exp === 'string' ? exp : exp.name || exp.title || 'Experience';
-                          const status = typeof exp === 'object' ? exp.status || 'requested' : 'requested';
-                          const isExpConfirmed = status === 'confirmed';
+                      {/* Attractions List for this Day */}
+                      {expsList.length > 0 ? (
+                        <div className="divide-y divide-slate-800/80 space-y-1">
+                          {expsList.map((exp: any, eIdx: number) => {
+                            const expName = exp.name || exp.title || `Experience ${eIdx + 1}`;
+                            const zohoMatch = matchZohoActivity(expName, dayCity);
+                            const ppCost = zohoMatch?.ppCost || 0;
+                            const privateCost = zohoMatch?.privateCost || 0;
+                            const calculatedCost = exp.cost !== undefined
+                              ? exp.cost
+                              : (privateCost > 0 ? privateCost : (ppCost * pax));
+                            const status = exp.status || 'requested';
+                            const voucherNo = exp.confirmationNumber || exp.voucherNumber || '';
 
-                          return (
-                            <div
-                              key={eIdx}
-                              className={`p-2.5 rounded-lg border flex items-center justify-between gap-2 text-xs ${
-                                isExpConfirmed
-                                  ? 'bg-emerald-950/40 border-emerald-600/60 text-emerald-200'
-                                  : 'bg-slate-900 border-slate-800 text-slate-300'
-                              }`}
-                            >
-                              <span className="font-medium truncate">{expName}</span>
-                              <select
-                                value={status}
-                                onChange={e => {
-                                  const newDays = [...(activeBooking.dayActivities || [])];
-                                  if (typeof newDays[dIdx].experiences[eIdx] === 'object') {
-                                    newDays[dIdx].experiences[eIdx].status = e.target.value;
-                                  } else {
-                                    newDays[dIdx].experiences[eIdx] = {
-                                      name: expName,
-                                      status: e.target.value,
-                                    };
-                                  }
-                                  setActiveBooking({ ...activeBooking, dayActivities: newDays });
-                                }}
-                                className="bg-slate-950 border border-slate-700 text-[10px] rounded px-1.5 py-0.5 font-bold cursor-pointer"
-                              >
-                                <option value="requested">Requested</option>
-                                <option value="confirmed">Confirmed</option>
-                              </select>
-                            </div>
-                          );
-                        })}
-                      </div>
+                            return (
+                              <div key={eIdx} className="pt-2.5 pb-2 flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs">
+                                {/* Left: Name, Badges, Operating Times */}
+                                <div className="space-y-1 min-w-0 flex-1">
+                                  <div className="flex flex-wrap items-center gap-2">
+                                    <span className="font-bold text-white text-xs">{expName}</span>
+                                    {zohoMatch ? (
+                                      <span className="text-[10px] bg-emerald-950 text-emerald-300 border border-emerald-800 font-mono px-2 py-0.2 rounded-md font-bold">
+                                        Zoho Master ✓
+                                      </span>
+                                    ) : (
+                                      <span className="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.2 rounded-md">
+                                        Custom
+                                      </span>
+                                    )}
+                                    {(zohoMatch?.category || exp.category) && (
+                                      <span className="text-[10px] bg-slate-800/80 text-orange-300 px-1.5 py-0.2 rounded">
+                                        {zohoMatch?.category || exp.category}
+                                      </span>
+                                    )}
+                                  </div>
+
+                                  <div className="flex flex-wrap items-center gap-3 text-[11px] text-slate-400">
+                                    {(zohoMatch?.timing || exp.timing) && (
+                                      <span>⏱ Timing: {zohoMatch?.timing || exp.timing}</span>
+                                    )}
+                                    {zohoMatch?.openingTime && (
+                                      <span>🕒 Hours: {zohoMatch.openingTime} - {zohoMatch.closingTime || 'Evening'}</span>
+                                    )}
+                                    {ppCost > 0 && (
+                                      <span className="text-slate-300 font-mono">
+                                        B2B: ₹{ppCost.toLocaleString('en-IN')}/pax
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+
+                                {/* Right: Payer Toggle, Cost, Booking Status, Voucher #, Delete */}
+                                <div className="flex flex-wrap items-center gap-2 shrink-0">
+                                  {/* Payer Toggle: Company Paid vs Vendor Paid */}
+                                  <div className="flex items-center gap-0.5 bg-slate-950 p-1 rounded-xl border border-slate-800">
+                                    <button
+                                      type="button"
+                                      onClick={() => handleUpdateExperiencePayer(dIdx, exp.originalIdx, 'wanderphilia')}
+                                      className={`px-2.5 py-1 rounded-lg text-[10px] font-black transition flex items-center gap-1 cursor-pointer ${
+                                        exp.paidBy !== 'vendor'
+                                          ? 'bg-sky-600 text-white shadow-xs'
+                                          : 'text-slate-400 hover:text-white'
+                                      }`}
+                                      title="Company Paid (Wanderphilia will pay -> Experiences Total Cost)"
+                                    >
+                                      <span>🏢 Company Paid</span>
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleUpdateExperiencePayer(dIdx, exp.originalIdx, 'vendor')}
+                                      className={`px-2.5 py-1 rounded-lg text-[10px] font-black transition flex items-center gap-1 cursor-pointer ${
+                                        exp.paidBy === 'vendor'
+                                          ? 'bg-amber-600 text-white shadow-xs'
+                                          : 'text-slate-400 hover:text-white'
+                                      }`}
+                                      title="Vendor Paid (Transport vendor will pay -> Extra amount paid by transport vendor)"
+                                    >
+                                      <span>🚗 Vendor Paid</span>
+                                    </button>
+                                  </div>
+
+                                  {/* Cost input / display */}
+                                  <div className="bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1 text-center min-w-[95px]">
+                                    <span className="text-[9px] text-slate-500 uppercase font-bold block">
+                                      {exp.paidBy === 'vendor' ? 'Vendor Cost' : 'B2B Cost'}
+                                    </span>
+                                    <div className="flex items-center gap-0.5 justify-center">
+                                      <span className="text-xs text-amber-400 font-bold">₹</span>
+                                      <input
+                                        type="number"
+                                        value={calculatedCost || ''}
+                                        onChange={e => handleUpdateExperienceCost(dIdx, exp.originalIdx, Number(e.target.value) || 0)}
+                                        className="w-16 bg-transparent text-amber-400 font-mono font-bold text-xs focus:outline-none focus:ring-1 focus:ring-amber-500 rounded text-center"
+                                        placeholder="0"
+                                      />
+                                    </div>
+                                  </div>
+
+                                  {/* Status Dropdown */}
+                                  <select
+                                    value={status}
+                                    onChange={e => handleUpdateExperienceStatus(dIdx, exp.originalIdx, e.target.value)}
+                                    className={`text-xs font-bold rounded-lg px-2.5 py-1.5 border cursor-pointer ${
+                                      status === 'confirmed'
+                                        ? 'bg-emerald-950 text-emerald-300 border-emerald-700'
+                                        : status === 'voucher_issued'
+                                        ? 'bg-blue-950 text-blue-300 border-blue-700'
+                                        : status === 'free'
+                                        ? 'bg-slate-800 text-slate-300 border-slate-700'
+                                        : 'bg-amber-950 text-amber-300 border-amber-700'
+                                    }`}
+                                  >
+                                    <option value="requested">Requested</option>
+                                    <option value="confirmed">Confirmed ✓</option>
+                                    <option value="voucher_issued">Voucher Issued</option>
+                                    <option value="free">Not Required / Free</option>
+                                  </select>
+
+                                  {/* Ticket / Voucher input */}
+                                  <input
+                                    type="text"
+                                    placeholder="Ticket / Ref #"
+                                    value={voucherNo}
+                                    onChange={e => handleUpdateExperienceVoucher(dIdx, exp.originalIdx, e.target.value)}
+                                    className="w-24 bg-slate-950 border border-slate-700 rounded-lg px-2 py-1 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-orange-500"
+                                  />
+
+                                  {/* Proof Screenshot Attachment */}
+                                  {(() => {
+                                    const rawExp = activeBooking.dayActivities?.[dIdx]?.experiences?.[exp.originalIdx];
+                                    const hasProof = typeof rawExp === 'object' && Boolean(rawExp.proofUrl);
+                                    const isManual = typeof rawExp === 'object' && Boolean(rawExp.isManualCost);
+                                    const costVal = Number(calculatedCost) || 0;
+
+                                    if (hasProof) {
+                                      return (
+                                        <div className="flex items-center gap-1 bg-emerald-950/80 border border-emerald-500/50 text-emerald-300 px-2 py-1 rounded-lg text-[10px] font-bold shrink-0">
+                                          <CheckCircle2 className="w-3 h-3 text-emerald-400 shrink-0" />
+                                          <a href={rawExp.proofUrl} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                                            Proof ↗
+                                          </a>
+                                          <button
+                                            type="button"
+                                            onClick={() => handleUpdateExperienceProof(dIdx, exp.originalIdx, '', '')}
+                                            className="text-slate-400 hover:text-red-400 ml-0.5 cursor-pointer"
+                                            title="Remove proof"
+                                          >
+                                            ✕
+                                          </button>
+                                        </div>
+                                      );
+                                    }
+
+                                    if (isManual && costVal > 0) {
+                                      return (
+                                        <label className="cursor-pointer px-2 py-1 rounded-lg bg-red-950/80 border border-red-500/60 text-red-300 text-[10px] font-bold flex items-center gap-1 hover:bg-red-900 animate-pulse shrink-0" title="Upload Proof Screenshot for this manual cost">
+                                          <Camera className="w-3 h-3 shrink-0" />
+                                          <span>Proof Req.</span>
+                                          <input
+                                            type="file"
+                                            accept="image/*,application/pdf"
+                                            className="hidden"
+                                            onChange={e => {
+                                              const f = e.target.files?.[0];
+                                              if (f) handleProofFileUpload(f, `exp-${dIdx}-${exp.originalIdx}`, (url, name) => {
+                                                handleUpdateExperienceProof(dIdx, exp.originalIdx, url, name);
+                                              });
+                                            }}
+                                          />
+                                        </label>
+                                      );
+                                    }
+
+                                    return (
+                                      <label className="cursor-pointer px-1.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white text-[10px] flex items-center gap-1 transition shrink-0" title="Attach voucher/receipt screenshot">
+                                        <Paperclip className="w-3 h-3 shrink-0" />
+                                        <input
+                                          type="file"
+                                          accept="image/*,application/pdf"
+                                          className="hidden"
+                                          onChange={e => {
+                                            const f = e.target.files?.[0];
+                                            if (f) handleProofFileUpload(f, `exp-${dIdx}-${exp.originalIdx}`, (url, name) => {
+                                              handleUpdateExperienceProof(dIdx, exp.originalIdx, url, name);
+                                            });
+                                          }}
+                                        />
+                                      </label>
+                                    );
+                                  })()}
+
+                                  {/* Delete Button */}
+                                  <button
+                                    type="button"
+                                    onClick={() => handleRemoveExperience(dIdx, exp.originalIdx)}
+                                    className="p-1.5 text-slate-500 hover:text-red-400 hover:bg-red-950/40 rounded-lg transition cursor-pointer"
+                                    title="Remove attraction"
+                                  >
+                                    <Trash2 className="w-3.5 h-3.5" />
+                                  </button>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      ) : (
+                        <div className="py-4 text-center text-slate-500 text-xs space-y-1">
+                          <p>No specific ticketed attractions added for Day {dayNum} yet.</p>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setActivityModalDayIdx(dIdx);
+                              setActivitySearchQuery('');
+                            }}
+                            className="text-orange-400 hover:underline font-bold text-xs cursor-pointer"
+                          >
+                            + Select from Zoho Master Experiences
+                          </button>
+                        </div>
+                      )}
                     </div>
                   );
                 })}
               </div>
-            </div>
+            ) : (
+              <div className="p-8 text-center text-slate-500 text-xs space-y-2 bg-slate-900 border border-slate-800 rounded-2xl">
+                <Compass className="w-8 h-8 mx-auto text-slate-600 opacity-60" />
+                <p className="text-white font-bold">No day-wise activities configured yet.</p>
+                <p className="text-slate-400 text-[11px]">
+                  Activities will be auto-populated from itinerary days or you can add them manually.
+                </p>
+              </div>
+            )}
           </div>
         )}
 
         {/* TAB 4: ITINERARY OVERVIEW */}
         {activeTab === 'itinerary' && (
           <div className="space-y-4">
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
-              <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                <FileText className="w-4 h-4 text-orange-400" />
-                Trip Day-Wise Overview
-              </h3>
+            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4 text-xs">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
+                <div>
+                  <h3 className="font-bold text-white text-sm flex items-center gap-2">
+                    <Compass className="w-4 h-4 text-orange-400" />
+                    <span>Day-Wise Itinerary &amp; Travel Plan</span>
+                    <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-orange-500/20 text-orange-400 border border-orange-500/30 font-black">
+                      {activeBooking.selectedOptionTitle || `Option ${activeBooking.selectedOptionNumber}`}
+                    </span>
+                  </h3>
+                  <p className="text-[11px] text-slate-400 mt-0.5">
+                    {activeBooking.duration} &bull; {activeBooking.destination} &bull; {activeBooking.numberOfGuests} Guests ({activeBooking.adults} Adults{activeBooking.kids > 0 ? `, ${activeBooking.kids} Kids` : ''})
+                  </p>
+                </div>
+                {activeBooking.itineraryUrl && (
+                  <a
+                    href={activeBooking.itineraryUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3.5 py-1.5 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs inline-flex items-center gap-1.5 shadow-md shadow-orange-600/20 transition-all shrink-0"
+                  >
+                    <span>Open Live Web Itinerary</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                )}
+              </div>
 
-              <div className="space-y-3">
-                {(activeBooking.dayActivities || []).map((day: any, dIdx: number) => (
-                  <div key={dIdx} className="bg-slate-950/60 p-4 rounded-xl border border-slate-800 space-y-1.5">
-                    <div className="flex items-center gap-2">
-                      <span className="w-6 h-6 rounded bg-orange-600/20 text-orange-400 font-bold text-xs flex items-center justify-center">
-                        {dIdx + 1}
-                      </span>
-                      <h4 className="text-sm font-bold text-white">{day.title || `Day ${dIdx + 1}`}</h4>
-                    </div>
-                    <p className="text-xs text-slate-400 leading-relaxed pl-8">
-                      {day.description || day.summary || 'Sightseeing and experiences scheduled for this day.'}
-                    </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="p-3 bg-slate-950 rounded-xl border border-slate-800 text-slate-200">
+                  <span className="text-[10px] font-bold text-slate-500 uppercase block mb-1">
+                    Assigned Hotel Category
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <Building2 className="w-4 h-4 text-orange-400" />
+                    <span className="text-white font-black text-xs">{activeBooking.hotelCategory || 'Deluxe'}</span>
+                    <span className="text-slate-400 font-mono text-[11px]">({activeBooking.roomsCount} Rooms, {activeBooking.sharingType || 'Double Sharing'})</span>
                   </div>
-                ))}
+                </div>
+
+                <div className="p-3 bg-slate-950 rounded-xl border border-slate-800 text-slate-200">
+                  <span className="text-[10px] font-bold text-slate-500 uppercase block mb-1">
+                    Sales Handover Notes
+                  </span>
+                  <div className="text-slate-300 italic text-xs">
+                    &ldquo;{activeBooking.salesNotes || 'No specific notes entered by sales.'}&rdquo;
+                  </div>
+                </div>
               </div>
             </div>
+
+            {/* DAY-BY-DAY CARDS */}
+            {Array.isArray(activeBooking.dayActivities) && activeBooking.dayActivities.length > 0 ? (
+              <div className="space-y-3">
+                {activeBooking.dayActivities.map((act: any, aIdx: number) => {
+                  const dayNum = act.dayNumber || aIdx + 1;
+                  let stayDateStr = '';
+                  if (activeBooking.travelStartDate && /^\d{4}-\d{2}-\d{2}$/.test(activeBooking.travelStartDate)) {
+                    try {
+                      const d = new Date(activeBooking.travelStartDate);
+                      d.setDate(d.getDate() + (dayNum - 1));
+                      stayDateStr = d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', weekday: 'short' });
+                    } catch (_) { }
+                  }
+
+                  // Parse meals
+                  const mealsList: string[] = [];
+                  if (act.breakfast) mealsList.push('Breakfast');
+                  if (act.lunch) mealsList.push('Lunch');
+                  if (act.dinner) mealsList.push('Dinner');
+
+                  // Experiences
+                  const exps: Array<{ name: string; desc?: string }> = [];
+                  if (Array.isArray(act.experiences)) {
+                    act.experiences.forEach((exp: any, eIdx: number) => {
+                      if (typeof exp === 'string' && exp.trim()) {
+                        const desc = Array.isArray(act.descriptions) ? act.descriptions[eIdx] : '';
+                        exps.push({ name: exp.trim(), desc });
+                      } else if (exp && typeof exp === 'object' && exp.name) {
+                        exps.push({ name: exp.name, desc: exp.description || exp.desc || '' });
+                      }
+                    });
+                  }
+                  if (exps.length === 0 && act.title) {
+                    exps.push({ name: act.title, desc: act.description || '' });
+                  }
+
+                  // En route
+                  const enRoute = act.enRouteSpot || (Array.isArray(act.enRouteExperiences) ? act.enRouteExperiences.join(', ') : act.enRouteExperiences);
+
+                  return (
+                    <div
+                      key={dayNum}
+                      className="bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-2xl p-4 sm:p-5 transition-all shadow-md text-xs"
+                    >
+                      <div className="flex flex-wrap items-center justify-between gap-2.5 pb-3 border-b border-slate-800">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="px-3 py-1 rounded-xl bg-orange-600 text-white font-black text-xs shadow-xs">
+                            Day {dayNum}
+                          </span>
+                          {stayDateStr && (
+                            <span className="font-mono text-amber-300 font-bold bg-amber-950/60 border border-amber-800/80 px-2.5 py-1 rounded-xl">
+                              📅 {stayDateStr}
+                            </span>
+                          )}
+                          <h4 className="text-white font-bold text-sm">
+                            {act.title || `Day ${dayNum}`}
+                          </h4>
+                          {act.city && (
+                            <span className="px-2.5 py-0.5 rounded-lg bg-slate-800 text-slate-300 border border-slate-700">
+                              📍 {act.city}
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="flex flex-wrap items-center gap-2">
+                          {act.stayLocation && (
+                            <span className="px-2.5 py-1 rounded-xl bg-indigo-950/80 border border-indigo-700/80 text-indigo-300 font-bold text-[11px] flex items-center gap-1">
+                              <Building2 className="w-3 h-3" />
+                              <span>Hotel: {act.stayLocation}</span>
+                            </span>
+                          )}
+
+                          {mealsList.length > 0 ? (
+                            <span className="px-2.5 py-1 rounded-xl bg-emerald-950/80 border border-emerald-700/80 text-emerald-300 font-black text-[11px] flex items-center gap-1">
+                              <Check className="w-3 h-3" />
+                              <span>{mealsList.join(' & ')}</span>
+                            </span>
+                          ) : (
+                            <span className="px-2.5 py-1 rounded-xl bg-slate-950 border border-slate-800 text-slate-500 text-[11px]">
+                              No Meals
+                            </span>
+                          )}
+
+                          {Boolean(act.guidedTour) && (
+                            <span className="px-2.5 py-1 rounded-xl bg-amber-950/80 border border-amber-600/70 text-amber-300 font-extrabold text-[11px] flex items-center gap-1">
+                              <Sparkles className="w-3 h-3 text-amber-400" />
+                              <span>Guided Tour Included</span>
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Day description */}
+                      {act.description && (
+                        <p className="mt-3 text-slate-300 text-xs leading-relaxed">
+                          {act.description}
+                        </p>
+                      )}
+
+                      {/* En-route Spot */}
+                      {enRoute && (
+                        <div className="mt-3 p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center gap-2 text-amber-200">
+                          <MapPin className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                          <span className="font-bold text-[11px]">En-Route Sightseeing / Stop:</span>
+                          <span className="font-semibold text-white">{enRoute}</span>
+                        </div>
+                      )}
+
+                      {/* Sightseeing & Activities */}
+                      {exps.length > 0 && (
+                        <div className="mt-3 space-y-2">
+                          <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
+                            Sightseeing &amp; Planned Experiences ({exps.length})
+                          </span>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+                            {exps.map((eItem, eI) => (
+                              <div
+                                key={eI}
+                                className="p-3 rounded-xl bg-slate-950 border border-slate-800/90 flex flex-col justify-between"
+                              >
+                                <div className="flex items-start gap-2">
+                                  <div className="w-5 h-5 rounded-full bg-orange-500/20 text-orange-400 flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">
+                                    {eI + 1}
+                                  </div>
+                                  <div>
+                                    <span className="text-white font-bold text-xs block">
+                                      {eItem.name}
+                                    </span>
+                                    {eItem.desc && (
+                                      <p className="text-[11px] text-slate-400 mt-1 line-clamp-3 leading-relaxed">
+                                        {eItem.desc}
+                                      </p>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Custom day notes if any */}
+                      {act.customActivities && (
+                        <div className="mt-2.5 p-2.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-300 text-[11px]">
+                          <span className="font-bold text-slate-400">Custom Day Note: </span>
+                          {act.customActivities}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="p-8 text-center bg-slate-900 border border-slate-800 rounded-2xl text-slate-400">
+                <p className="text-sm font-semibold">No day-by-day activities saved for this option yet.</p>
+                <p className="text-xs text-slate-500 mt-1">Open the live itinerary link to view the published version.</p>
+              </div>
+            )}
           </div>
         )}
 
@@ -2136,36 +3536,47 @@ export default function SingleBookingOperationsPage() {
 
       {/* VOUCHER OVERVIEW & DISPATCH MODAL */}
       {isVoucherModalOpen && activeBooking && (
-        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-5">
-          <div className="w-full max-w-4xl max-h-[92vh] bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl flex flex-col overflow-hidden animate-scale-up">
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-0 sm:p-4">
+          <div className="w-full max-w-4xl h-full sm:h-auto sm:max-h-[92vh] bg-slate-900 border-0 sm:border border-slate-700 rounded-none sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden animate-scale-up">
             {/* Modal Header */}
-            <div className="p-4 sm:p-5 border-b border-slate-800 flex items-center justify-between gap-3 bg-slate-950/80">
-              <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-xl bg-emerald-600/20 text-emerald-400 flex items-center justify-center border border-emerald-500/30">
-                  <Ticket className="w-5 h-5" />
+            <div className="p-3 sm:p-5 border-b border-slate-800 flex items-center justify-between gap-2.5 bg-slate-950/80">
+              <div className="flex items-center gap-2 sm:gap-2.5">
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-emerald-600/20 text-emerald-400 flex items-center justify-center border border-emerald-500/30 shrink-0">
+                  <Ticket className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
                 <div>
-                  <h3 className="text-base font-black text-white flex items-center gap-2">
-                    Official Confirmation Voucher Overview
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-700">
+                  <h3 className="text-sm sm:text-base font-black text-white flex items-center gap-2">
+                    Official Confirmation Voucher
+                    <span className="text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-700">
                       Paid Experiences Only
                     </span>
                   </h3>
-                  <p className="text-[11px] text-slate-400">
+                  <p className="text-[10px] sm:text-[11px] text-slate-400">
                     Review trip details, print PDF, or dispatch directly to guest email.
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 shrink-0">
+                <a
+                  href={`/api/operations/voucher-pdf?id=${activeBooking.inquiryId}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-orange-600/20 hover:bg-orange-600/30 text-orange-300 text-xs font-bold transition-all border border-orange-500/40 cursor-pointer"
+                  title="Download Voucher PDF"
+                >
+                  <Download className="w-3.5 h-3.5 text-orange-400" />
+                  <span className="hidden xs:inline">Download PDF</span>
+                </a>
+
                 <button
                   type="button"
                   onClick={handlePrintVoucher}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition-all border border-slate-700 cursor-pointer"
+                  className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition-all border border-slate-700 cursor-pointer"
                   title="Print or Save as PDF"
                 >
                   <FileText className="w-3.5 h-3.5 text-orange-400" />
-                  <span>Print / PDF</span>
+                  <span className="hidden xs:inline">Print</span>
                 </button>
 
                 <button
@@ -2178,7 +3589,7 @@ export default function SingleBookingOperationsPage() {
             </div>
 
             {/* Email Dispatch Control Bar */}
-            <div className="p-3.5 sm:p-4 bg-slate-950 border-b border-slate-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+            <div className="p-2.5 sm:p-4 bg-slate-950 border-b border-slate-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 sm:gap-3">
               <div className="flex-1 flex items-center gap-2">
                 <Mail className="w-4 h-4 text-slate-500 shrink-0" />
                 <input
@@ -2195,7 +3606,7 @@ export default function SingleBookingOperationsPage() {
                   type="button"
                   onClick={handleSendVoucherToClient}
                   disabled={isSendingVoucher || !voucherRecipientEmail}
-                  className="px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-xs rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                  className="w-full sm:w-auto px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
                 >
                   {isSendingVoucher ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
                   <span>{isSendingVoucher ? 'Sending...' : 'Send Voucher to Client'}</span>
@@ -2218,12 +3629,655 @@ export default function SingleBookingOperationsPage() {
             )}
 
             {/* Live Voucher Preview Iframe */}
-            <div className="flex-1 overflow-y-auto p-4 bg-slate-950/50">
+            <div className="flex-1 overflow-y-auto p-0 sm:p-3 bg-slate-950/50">
               <iframe
                 title="Voucher Preview"
                 srcDoc={generateVoucherHtml(activeBooking)}
-                className="w-full h-[650px] rounded-2xl border border-slate-800 bg-[#0b0f19] shadow-inner"
+                className="w-full h-full min-h-[560px] sm:min-h-[640px] rounded-none sm:rounded-2xl border-0 sm:border border-slate-800 bg-[#0b0f19] shadow-inner"
               />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: SWAP HOTEL WITH ZOHO CRM MASTER DATA */}
+      {swapModalHotelIndex !== null && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-xl w-full space-y-4 shadow-2xl my-8">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+              <div>
+                <h3 className="font-bold text-white text-base">Swap Alternate Hotel</h3>
+                <span className="text-[11px] text-slate-400">
+                  Select from live Zoho CRM Hotels strictly filtered by category &amp; room rate
+                </span>
+              </div>
+              <button
+                onClick={() => setSwapModalHotelIndex(null)}
+                className="text-slate-400 hover:text-white cursor-pointer text-sm font-bold p-1"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Sales Booking Handover Reference Banner */}
+            <div className="bg-slate-950/90 border border-slate-800 rounded-2xl p-3.5 space-y-2">
+              <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-orange-400" />
+                Sales Team Booking Selection (Handover Reference)
+              </span>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-xs">
+                <div>
+                  <span className="text-[10px] text-slate-500 uppercase block font-bold">Selected Category</span>
+                  <span className="font-extrabold text-orange-400 bg-orange-950/60 border border-orange-800/60 px-2 py-0.5 rounded-lg inline-block mt-0.5">
+                    {salesSelectedCategory || 'Standard'}
+                  </span>
+                </div>
+
+                <div>
+                  <span className="text-[10px] text-slate-500 uppercase block font-bold">Selected Room Category</span>
+                  <span className="font-bold text-slate-200 bg-slate-800 px-2 py-0.5 rounded-lg inline-block mt-0.5 truncate max-w-full">
+                    {salesSelectedRoomCategory || 'Standard Room'}
+                  </span>
+                </div>
+
+                <div>
+                  <span className="text-[10px] text-slate-500 uppercase block font-bold">Stay Details</span>
+                  <span className="font-semibold text-slate-300 block mt-0.5">
+                    {swapCity} &bull; {swapNights}N &bull; {swapRooms}R
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Source Switcher: Zoho Master vs Manual */}
+            <div className="flex items-center gap-2 p-1 bg-slate-950 rounded-xl border border-slate-800 text-xs">
+              <button
+                type="button"
+                onClick={() => setSwapSourceType('zoho')}
+                className={`flex-1 py-1.5 rounded-lg font-bold transition-all cursor-pointer ${swapSourceType === 'zoho'
+                  ? 'bg-orange-600 text-white shadow-2xs'
+                  : 'text-slate-400 hover:text-white'
+                  }`}
+              >
+                Zoho CRM Hotel Master
+              </button>
+              <button
+                type="button"
+                onClick={() => setSwapSourceType('custom')}
+                className={`flex-1 py-1.5 rounded-lg font-bold transition-all cursor-pointer ${swapSourceType === 'custom'
+                  ? 'bg-orange-600 text-white shadow-2xs'
+                  : 'text-slate-400 hover:text-white'
+                  }`}
+              >
+                Custom / Offline Hotel
+              </button>
+            </div>
+
+            <div className="space-y-3.5 text-xs">
+              {/* City Selection */}
+              <div>
+                <label className="text-[10px] font-bold text-slate-400 uppercase block mb-1">
+                  Destination City
+                </label>
+                <input
+                  type="text"
+                  value={swapCity}
+                  onChange={e => setSwapCity(e.target.value)}
+                  placeholder="e.g. Jaipur, Jodhpur, Jawai, Udaipur"
+                  className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"
+                />
+              </div>
+
+              {swapSourceType === 'zoho' ? (
+                <>
+                  {/* Category Filter Pills */}
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <label className="text-[10px] font-bold text-slate-400 uppercase">
+                        Hotel Category Filter ({showAllCategories ? 'Showing All' : `Strictly: ${swapHotelCategory}`})
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => setShowAllCategories(!showAllCategories)}
+                        className="text-[10px] text-orange-400 hover:text-orange-300 font-bold underline cursor-pointer"
+                      >
+                        {showAllCategories ? `← Re-filter by ${swapHotelCategory || 'Category'}` : `Show All Categories (${allZohoHotelsInCity.length})`}
+                      </button>
+                    </div>
+
+                    <div className="flex flex-wrap gap-1.5">
+                      {salesSelectedCategory && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSwapHotelCategory(salesSelectedCategory);
+                            setShowAllCategories(false);
+                          }}
+                          className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border transition-all cursor-pointer flex items-center gap-1 ${!showAllCategories && swapHotelCategory.toLowerCase().trim() === salesSelectedCategory.toLowerCase().trim()
+                            ? 'bg-orange-600 text-white border-orange-500 shadow-sm'
+                            : 'bg-slate-950 text-slate-400 border-slate-800 hover:border-slate-700'
+                            }`}
+                        >
+                          <span>{salesSelectedCategory} (Sales Selection)</span>
+                        </button>
+                      )}
+
+                      {availableCategoriesInCity
+                        .filter(c => c.toLowerCase().trim() !== salesSelectedCategory.toLowerCase().trim())
+                        .map(cat => (
+                          <button
+                            key={cat}
+                            type="button"
+                            onClick={() => {
+                              setSwapHotelCategory(cat);
+                              setShowAllCategories(false);
+                            }}
+                            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border transition-all cursor-pointer ${!showAllCategories && swapHotelCategory.toLowerCase().trim() === cat.toLowerCase().trim()
+                              ? 'bg-orange-600 text-white border-orange-500 shadow-sm'
+                              : 'bg-slate-950 text-slate-400 border-slate-800 hover:border-slate-700'
+                              }`}
+                          >
+                            {cat}
+                          </button>
+                        ))}
+
+                      <button
+                        type="button"
+                        onClick={() => setShowAllCategories(true)}
+                        className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border transition-all cursor-pointer ${showAllCategories
+                          ? 'bg-slate-700 text-white border-slate-600'
+                          : 'bg-slate-950 text-slate-400 border-slate-800 hover:border-slate-700'
+                          }`}
+                      >
+                        All ({allZohoHotelsInCity.length})
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Zoho Hotel Dropdown */}
+                  <div>
+                    <label className="text-[10px] font-bold text-slate-400 uppercase block mb-1">
+                      Available Hotels in {swapCity} ({availableZohoHotelsForCity.length} in {showAllCategories ? 'All Categories' : swapHotelCategory})
+                    </label>
+                    {availableZohoHotelsForCity.length > 0 ? (
+                      <select
+                        value={swapHotelId}
+                        onChange={e => handleSelectZohoHotel(e.target.value)}
+                        className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white text-xs font-semibold focus:outline-none focus:border-orange-500 cursor-pointer"
+                      >
+                        <option value="">-- Select {swapHotelCategory || 'Category'} Hotel --</option>
+                        {availableZohoHotelsForCity.map(h => (
+                          <option key={h.id} value={h.id}>
+                            {h.hotelName} — ({h.category || 'Hotel'}) — B2B from ₹{(h.rooms?.[0]?.pricePerNight || h.pricePerNight || h.basePrice || 0).toLocaleString('en-IN')}/nt
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      <div className="p-3 bg-amber-950/30 border border-amber-800/50 rounded-xl text-amber-300 text-[11px] space-y-1">
+                        <p>No Zoho hotels registered under &ldquo;{swapHotelCategory}&rdquo; in {swapCity}.</p>
+                        <p className="text-[10px] text-slate-400">
+                          Click <strong>Show All Categories</strong> above to view {allZohoHotelsInCity.length} other hotels in this city, or switch to <strong>Custom / Offline Hotel</strong>.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Zoho Room Category & Live B2B Pricing */}
+                  {availableRoomsForSelectedHotel.length > 0 ? (
+                    <div className="space-y-2 pt-1 border-t border-slate-800/80">
+                      <div className="flex items-center justify-between">
+                        <label className="text-[10px] font-bold text-slate-400 uppercase">
+                          Room Categories &amp; B2B Rates for {swapHotelName}
+                        </label>
+                        <span className="text-[10px] text-slate-500">
+                          Click card to select room category
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-52 overflow-y-auto pr-1">
+                        {availableRoomsForSelectedHotel.map((r: any, rIdx: number) => {
+                          const isSelected = swapRoomCategory.toLowerCase().trim() === r.roomCategory.toLowerCase().trim();
+                          const matchesSales = salesSelectedRoomCategory.toLowerCase().trim() === r.roomCategory.toLowerCase().trim();
+                          return (
+                            <div
+                              key={rIdx}
+                              onClick={() => handleSelectZohoRoomCategory(r.roomCategory)}
+                              className={`p-2.5 rounded-xl border text-left cursor-pointer transition-all ${isSelected
+                                ? 'bg-orange-950/60 border-orange-500 text-white ring-1 ring-orange-500/50 shadow-sm'
+                                : 'bg-slate-950 border-slate-800 hover:border-slate-700 text-slate-300'
+                                }`}
+                            >
+                              <div className="flex items-center justify-between gap-1">
+                                <span className="font-bold text-xs truncate">{r.roomCategory}</span>
+                                {matchesSales && (
+                                  <span className="text-[9px] bg-emerald-950 text-emerald-300 border border-emerald-800 px-1.5 py-0.2 rounded font-bold shrink-0">
+                                    ✓ Sales Choice
+                                  </span>
+                                )}
+                              </div>
+                              <div className="mt-1.5 flex items-center justify-between text-[11px]">
+                                <span className="font-black text-amber-400">
+                                  ₹{(r.pricePerNight || r.basePrice || 0).toLocaleString('en-IN')}
+                                  <span className="text-[9px] text-slate-400 font-normal"> /night</span>
+                                </span>
+                                {r.extraBedPrice > 0 && (
+                                  <span className="text-[10px] text-slate-500 font-medium">
+                                    +₹{r.extraBedPrice} ex.bed
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+
+                      {/* Manual Room Category & Price Adjuster */}
+                      <div className="p-2.5 bg-slate-950 rounded-xl border border-slate-800 flex flex-wrap items-center gap-2.5 text-xs">
+                        <div className="flex items-center gap-1.5 flex-1 min-w-[130px]">
+                          <span className="text-[10px] text-slate-400 font-bold uppercase whitespace-nowrap">
+                            Active Room:
+                          </span>
+                          <input
+                            type="text"
+                            value={swapRoomCategory}
+                            onChange={e => setSwapRoomCategory(e.target.value)}
+                            placeholder="Room Category"
+                            className="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1 text-white text-xs"
+                          />
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-[10px] text-slate-400 font-bold uppercase whitespace-nowrap">
+                            ₹ Per Night:
+                          </span>
+                          <input
+                            type="number"
+                            value={swapB2BCostPerNight}
+                            onChange={e => setSwapB2BCostPerNight(Number(e.target.value) || 0)}
+                            className="w-20 bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-amber-400 font-bold font-mono text-xs"
+                          />
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-[10px] text-purple-400 font-bold uppercase whitespace-nowrap">
+                            🛏️ Ex.Bed/Nt:
+                          </span>
+                          <input
+                            type="number"
+                            value={swapExtraBedPrice}
+                            onChange={e => setSwapExtraBedPrice(Number(e.target.value) || 0)}
+                            className="w-20 bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-purple-300 font-bold font-mono text-xs"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ) : swapHotelId && (
+                    <div className="p-2.5 bg-slate-950 rounded-xl border border-slate-800 flex items-center gap-2 text-xs">
+                      <span className="text-[10px] text-slate-400 font-bold uppercase whitespace-nowrap">
+                        Room Category:
+                      </span>
+                      <input
+                        type="text"
+                        value={swapRoomCategory}
+                        onChange={e => setSwapRoomCategory(e.target.value)}
+                        placeholder="e.g. Deluxe Room"
+                        className="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1 text-white text-xs"
+                      />
+                      <span className="text-[10px] text-slate-400 font-bold uppercase whitespace-nowrap">
+                        Rate / Night:
+                      </span>
+                      <input
+                        type="number"
+                        value={swapB2BCostPerNight}
+                        onChange={e => setSwapB2BCostPerNight(Number(e.target.value) || 0)}
+                        className="w-24 bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1 text-amber-400 font-bold font-mono text-xs"
+                      />
+                    </div>
+                  )}
+
+                  {/* Pricing Breakdown */}
+                  {(() => {
+                    const extraBeds = activeBooking ? bookingExtraBedCalc.extraBedCount : 0;
+                    const bedTotal = swapExtraBedPrice * extraBeds * swapNights;
+                    const roomTotal = swapB2BCostPerNight * swapNights * swapRooms;
+                    const grandTotal = roomTotal + bedTotal;
+                    return (
+                      <div className={`grid ${extraBeds > 0 ? 'grid-cols-4' : 'grid-cols-3'} gap-2.5 p-3.5 bg-slate-950 rounded-xl border border-slate-800 text-center`}>
+                        <div>
+                          <span className="text-[10px] text-slate-500 block uppercase font-bold">B2B Rate / Night</span>
+                          <span className="font-bold text-slate-200 text-xs">₹{swapB2BCostPerNight.toLocaleString('en-IN')}</span>
+                        </div>
+                        <div>
+                          <span className="text-[10px] text-slate-500 block uppercase font-bold">Room Cost</span>
+                          <span className="font-bold text-slate-200 text-xs">₹{roomTotal.toLocaleString('en-IN')}</span>
+                          <span className="text-[9px] text-slate-500 block">{swapNights}N &bull; {swapRooms}R</span>
+                        </div>
+                        {extraBeds > 0 && (
+                          <div>
+                            <span className="text-[10px] text-purple-400 block uppercase font-bold">Extra Bed</span>
+                            <span className="font-bold text-purple-300 text-xs">+₹{bedTotal.toLocaleString('en-IN')}</span>
+                            <span className="text-[9px] text-slate-500 block">{extraBeds} Bed &bull; ₹{swapExtraBedPrice}/nt</span>
+                          </div>
+                        )}
+                        <div>
+                          <span className="text-[10px] text-emerald-400 block font-bold uppercase">Total B2B</span>
+                          <span className="font-black text-emerald-400 text-sm">
+                            ₹{grandTotal.toLocaleString('en-IN')}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })()}
+                </>
+              ) : (
+                <>
+                  {/* Custom Hotel Fields */}
+                  <div>
+                    <label className="text-[10px] font-bold text-slate-400 uppercase block mb-1">
+                      Custom Hotel Name
+                    </label>
+                    <input
+                      type="text"
+                      value={swapHotelName}
+                      onChange={e => setSwapHotelName(e.target.value)}
+                      placeholder="Enter hotel property name"
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-[10px] font-bold text-slate-400 uppercase block mb-1">
+                        Hotel Category
+                      </label>
+                      <input
+                        type="text"
+                        value={swapHotelCategory}
+                        onChange={e => setSwapHotelCategory(e.target.value)}
+                        placeholder="e.g. Deluxe, Luxury, 4-Star"
+                        className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-[10px] font-bold text-slate-400 uppercase block mb-1">
+                        Room Category
+                      </label>
+                      <input
+                        type="text"
+                        value={swapRoomCategory}
+                        onChange={e => setSwapRoomCategory(e.target.value)}
+                        placeholder="e.g. Deluxe Room, Superior View"
+                        className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-[10px] font-bold text-slate-400 uppercase block mb-1">
+                      Total B2B Cost (₹)
+                    </label>
+                    <input
+                      type="number"
+                      value={swapManualTotalCost}
+                      onChange={e => setSwapManualTotalCost(e.target.value)}
+                      placeholder="Enter negotiated total B2B cost"
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-amber-400 font-mono font-bold"
+                    />
+                  </div>
+
+                  {/* Compulsory Proof Upload for Custom Hotel */}
+                  <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+                    <label className="text-[10px] font-bold text-amber-300 uppercase flex items-center justify-between">
+                      <span className="flex items-center gap-1.5">
+                        <Camera className="w-3.5 h-3.5 text-amber-400" />
+                        Hotel Rate Proof Screenshot (Compulsory)
+                      </span>
+                      {swapProofUrl && (
+                        <span className="text-emerald-400 font-bold text-[10px] flex items-center gap-1">
+                          <CheckCircle2 className="w-3 h-3" /> Attached
+                        </span>
+                      )}
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <label className="cursor-pointer px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition flex items-center gap-1.5 cursor-pointer">
+                        <Upload className="w-3.5 h-3.5" />
+                        <span>{swapProofUrl ? 'Change Screenshot' : 'Upload Proof Screenshot'}</span>
+                        <input
+                          type="file"
+                          accept="image/*,application/pdf"
+                          className="hidden"
+                          onChange={e => {
+                            const f = e.target.files?.[0];
+                            if (f) handleProofFileUpload(f, 'swap-hotel', (url, name) => {
+                              setSwapProofUrl(url);
+                              setSwapProofFileName(name);
+                            });
+                          }}
+                        />
+                      </label>
+                      {swapProofUrl && (
+                        <a
+                          href={swapProofUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs text-indigo-300 hover:underline font-mono truncate max-w-[200px]"
+                        >
+                          View Uploaded ↗
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+
+            <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-800">
+              <button
+                type="button"
+                onClick={() => setSwapModalHotelIndex(null)}
+                className="px-4 py-2 bg-slate-800 text-slate-300 hover:text-white rounded-xl text-xs font-bold cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleApplyHotelSwap}
+                className="px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white rounded-xl text-xs font-bold cursor-pointer shadow-lg shadow-orange-600/30"
+              >
+                Confirm Swap &bull; Update Hotel Cost
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MANDATORY PROOFS MISSING WARNING MODAL */}
+      {missingProofsList.length > 0 && (
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-slate-900 border-2 border-red-500/60 rounded-3xl p-6 max-w-lg w-full space-y-4 shadow-2xl text-white animate-in zoom-in-95 duration-200">
+            <div className="flex items-center gap-3 border-b border-red-500/30 pb-3">
+              <div className="w-10 h-10 rounded-xl bg-red-500/20 text-red-400 flex items-center justify-center shrink-0">
+                <AlertTriangle className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-red-300">
+                  Mandatory Rate Proof Missing!
+                </h3>
+                <span className="text-xs text-slate-400">
+                  Manual cost override detected without proof screenshot
+                </span>
+              </div>
+            </div>
+
+            <div className="text-xs text-slate-300 leading-relaxed bg-red-950/40 border border-red-900/50 p-3 rounded-xl">
+              As per Operations policy, if you manually edit the cost of any Hotel, Transport, or Experience, attaching vendor quotation or screenshot proof is <strong>mandatory</strong> before syncing to Finance.
+            </div>
+
+            <div className="space-y-2">
+              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+                Pending Proofs ({missingProofsList.length} items):
+              </span>
+              <div className="bg-slate-950 border border-slate-800 rounded-xl p-3 space-y-1.5 max-h-48 overflow-y-auto">
+                {missingProofsList.map((item, idx) => (
+                  <div key={idx} className="flex items-center gap-2 text-xs text-amber-300 font-medium">
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-400 shrink-0" />
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end pt-2 border-t border-slate-800">
+              <button
+                type="button"
+                onClick={() => setMissingProofsList([])}
+                className="px-5 py-2.5 bg-red-600 hover:bg-red-500 text-white rounded-xl text-xs font-bold transition cursor-pointer shadow-lg shadow-red-600/30"
+              >
+                Understood, Upload Proof
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* MODAL: ADD ATTRACTION FROM ZOHO CRM MASTER */}
+      {activityModalDayIdx !== null && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-2xl w-full max-h-[85vh] flex flex-col overflow-hidden shadow-2xl">
+            {/* Modal Header */}
+            <div className="p-5 border-b border-slate-800 flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-orange-600/20 text-orange-400 border border-orange-500/30 flex items-center justify-center">
+                  <Compass className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-white text-sm">
+                    Add Attraction from Zoho CRM
+                  </h3>
+                  <span className="text-[11px] text-slate-400">
+                    Day {activityModalDayIdx + 1} &bull; City: <strong className="text-slate-300">{activeBooking?.dayActivities?.[activityModalDayIdx]?.city || activeBooking?.destination}</strong>
+                  </span>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setActivityModalDayIdx(null)}
+                className="w-8 h-8 rounded-xl bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Search Input */}
+            <div className="p-4 border-b border-slate-800 bg-slate-950/60">
+              <div className="relative">
+                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  placeholder="Search attraction name, fort, temple, safari, food tour..."
+                  value={activitySearchQuery}
+                  onChange={e => setActivitySearchQuery(e.target.value)}
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl pl-9 pr-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-orange-500"
+                  autoFocus
+                />
+              </div>
+            </div>
+
+            {/* Attractions List */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-2">
+              {(() => {
+                const targetCity = (activeBooking?.dayActivities?.[activityModalDayIdx]?.city || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+                const cleanQuery = activitySearchQuery.toLowerCase().trim();
+
+                const filtered = allZohoExperiences.filter(exp => {
+                  const expName = (exp.name || '').toLowerCase();
+                  const expCity = (exp.city || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+                  const expDest = (exp.destination || '').toLowerCase();
+
+                  if (cleanQuery) {
+                    return expName.includes(cleanQuery) || expCity.includes(cleanQuery) || expDest.includes(cleanQuery);
+                  }
+                  return targetCity ? (expCity === targetCity || expCity.includes(targetCity) || targetCity.includes(expCity)) : true;
+                });
+
+                if (filtered.length === 0) {
+                  return (
+                    <div className="py-12 text-center text-slate-500 text-xs space-y-2">
+                      <p>No Zoho master activities found matching &ldquo;{activitySearchQuery}&rdquo;.</p>
+                      <button
+                        type="button"
+                        onClick={() => setActivitySearchQuery('')}
+                        className="text-orange-400 hover:underline font-bold text-xs cursor-pointer"
+                      >
+                        Clear search filter
+                      </button>
+                    </div>
+                  );
+                }
+
+                return filtered.map((exp: any, idx: number) => {
+                  const pax = activeBooking?.numberOfGuests || activeBooking?.adults || 2;
+                  const estimatedCost = exp.privateCost && exp.privateCost > 0
+                    ? exp.privateCost
+                    : ((exp.ppCost || 0) * pax);
+
+                  return (
+                    <div
+                      key={exp.id || idx}
+                      className="bg-slate-950/80 hover:bg-slate-950 border border-slate-800 hover:border-orange-500/50 rounded-xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-all text-xs"
+                    >
+                      <div className="space-y-1 min-w-0 flex-1">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="font-bold text-white text-xs">{exp.name}</span>
+                          {exp.city && (
+                            <span className="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.2 rounded-md">
+                              {exp.city}
+                            </span>
+                          )}
+                          {exp.category && (
+                            <span className="text-[10px] bg-orange-950/60 text-orange-300 border border-orange-900 px-1.5 py-0.2 rounded">
+                              {exp.category}
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="flex flex-wrap items-center gap-3 text-[11px] text-slate-400">
+                          {exp.timing && <span>⏱ {exp.timing}</span>}
+                          {exp.openingTime && <span>🕒 {exp.openingTime} - {exp.closingTime || 'Evening'}</span>}
+                          {exp.ppCost > 0 && (
+                            <span className="font-mono text-slate-300">
+                              ₹{exp.ppCost.toLocaleString('en-IN')}/person
+                            </span>
+                          )}
+                          {exp.privateCost > 0 && (
+                            <span className="font-mono text-emerald-400">
+                              Private: ₹{exp.privateCost.toLocaleString('en-IN')}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-3 shrink-0">
+                        <div className="text-right">
+                          <span className="text-[9px] text-slate-500 uppercase font-bold block">
+                            Est. ({pax} Pax)
+                          </span>
+                          <span className="font-mono font-bold text-amber-400 text-xs">
+                            ₹{estimatedCost.toLocaleString('en-IN')}
+                          </span>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => handleAddZohoExperienceToDay(activityModalDayIdx, exp)}
+                          className="px-3 py-1.5 bg-orange-600 hover:bg-orange-500 text-white rounded-xl text-xs font-bold transition flex items-center gap-1 cursor-pointer shadow-xs"
+                        >
+                          <Plus className="w-3.5 h-3.5" />
+                          <span>Add to Day {activityModalDayIdx + 1}</span>
+                        </button>
+                      </div>
+                    </div>
+                  );
+                });
+              })()}
             </div>
           </div>
         </div>

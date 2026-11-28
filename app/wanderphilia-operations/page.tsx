@@ -102,6 +102,7 @@ export default function WanderphiliaOperationsDashboardPage() {
     hotels: 0,
     vehicles: 0,
   });
+  const [isLoadingMasterData, setIsLoadingMasterData] = useState<boolean>(true);
 
   // Check authentication on mount
   useEffect(() => {
@@ -159,21 +160,31 @@ export default function WanderphiliaOperationsDashboardPage() {
     [opsToken, selectedStatusFilter, searchQuery]
   );
 
-  // Fetch Master Data counts
+  // Fetch Master Data counts from Zoho CRM
   const fetchMasterDataCounts = useCallback(async () => {
+    setIsLoadingMasterData(true);
     try {
-      const res = await fetch('/api/operations/master-data');
+      const res = await fetch('/api/zoho/master-data');
       if (res.ok) {
         const json = await res.json();
-        if (json.success && json.data) {
+        if (json && json.success) {
+          let totalHotels = json.stats?.hotelsCount || 0;
+          if (!totalHotels && json.hotelsByCity) {
+            Object.values(json.hotelsByCity).forEach((arr: any) => {
+              if (Array.isArray(arr)) totalHotels += arr.length;
+            });
+          }
+          const totalVehicles = json.stats?.vehiclesCount ?? (Array.isArray(json.vehicles) ? json.vehicles.length : 0);
           setMasterDataCounts({
-            hotels: json.data.hotelCount || 42,
-            vehicles: json.data.vehicleCount || 6,
+            hotels: totalHotels,
+            vehicles: totalVehicles,
           });
         }
       }
     } catch {
       // ignore
+    } finally {
+      setIsLoadingMasterData(false);
     }
   }, []);
 
@@ -236,12 +247,11 @@ export default function WanderphiliaOperationsDashboardPage() {
   // Filter bookings based on selected status filter
   const filteredBookings = useMemo(() => {
     return bookings.filter(b => {
-      // Overdue filter tab
-      if (selectedStatusFilter === 'overdue') {
-        const prog = computeBookingSlaAndProgress(b);
-        return prog.isOverdue;
-      }
       if (selectedStatusFilter === 'all') return true;
+      if (selectedStatusFilter === 'pending_ops') {
+        const prog = computeBookingSlaAndProgress(b);
+        return b.opsStatus === 'pending_ops' || (prog.isOverdue && !prog.isSynced);
+      }
       return b.opsStatus === selectedStatusFilter;
     });
   }, [bookings, selectedStatusFilter]);
@@ -312,10 +322,17 @@ export default function WanderphiliaOperationsDashboardPage() {
                   Operations Dashboard
                 </span>
               </div>
-              <span className="text-[11px] text-emerald-400 flex items-center gap-1 font-medium">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                Zoho CRM Master Data Active ({masterDataCounts.hotels} Hotels &bull; {masterDataCounts.vehicles} Vehicles)
-              </span>
+              {isLoadingMasterData && masterDataCounts.hotels === 0 ? (
+                <span className="text-[11px] text-amber-400 flex items-center gap-1 font-medium">
+                  <RefreshCw className="w-2.5 h-2.5 animate-spin" />
+                  Syncing Zoho CRM Master Data...
+                </span>
+              ) : (
+                <span className="text-[11px] text-emerald-400 flex items-center gap-1 font-medium">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  Zoho CRM Master Data Active ({masterDataCounts.hotels} Hotels &bull; {masterDataCounts.vehicles} Vehicles)
+                </span>
+              )}
             </div>
           </div>
 
@@ -344,12 +361,15 @@ export default function WanderphiliaOperationsDashboardPage() {
             </Link>
 
             <button
-              onClick={() => fetchBookings()}
-              disabled={isLoading}
+              onClick={() => {
+                fetchBookings();
+                fetchMasterDataCounts();
+              }}
+              disabled={isLoading || isLoadingMasterData}
               className="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs transition-colors"
-              title="Refresh Bookings"
+              title="Refresh Bookings & Master Data"
             >
-              <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin text-orange-400' : ''}`} />
+              <RefreshCw className={`w-3.5 h-3.5 ${(isLoading || isLoadingMasterData) ? 'animate-spin text-orange-400' : ''}`} />
             </button>
 
             <button
@@ -372,10 +392,28 @@ export default function WanderphiliaOperationsDashboardPage() {
             <span className="font-extrabold text-white">{stats?.totalBookings || bookings.length}</span>
           </div>
 
-          <div className="flex items-center gap-2 bg-amber-950/40 text-amber-300 px-3 py-1.5 rounded-xl border border-amber-800/50">
-            <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+          <div
+            onClick={() => setSelectedStatusFilter('pending_ops')}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border transition-all cursor-pointer ${
+              overdueBookingsCount > 0
+                ? 'bg-red-950/70 text-red-200 border-red-500/80 shadow-lg shadow-red-950/60 ring-1 ring-red-500/50 hover:bg-red-900/80'
+                : 'bg-amber-950/40 text-amber-300 border-amber-800/50 hover:bg-amber-900/40'
+            }`}
+            title={overdueBookingsCount > 0 ? `${overdueBookingsCount} bookings exceeded 48h SLA!` : 'Bookings requiring operational setup'}
+          >
+            <span
+              className={`w-2 h-2 rounded-full ${
+                overdueBookingsCount > 0 ? 'bg-red-500 animate-ping' : 'bg-amber-400 animate-pulse'
+              }`}
+            />
             <span>Action Required:</span>
             <span className="font-extrabold text-white">{stats?.pendingOps || 0}</span>
+            {overdueBookingsCount > 0 && (
+              <span className="flex items-center gap-1 font-black text-white px-2 py-0.5 rounded-full bg-red-600 text-[10px] shadow-sm animate-pulse">
+                <AlertTriangle className="w-3 h-3 text-white" />
+                {overdueBookingsCount} Overdue
+              </span>
+            )}
           </div>
 
           <div className="flex items-center gap-2 bg-blue-950/40 text-blue-300 px-3 py-1.5 rounded-xl border border-blue-800/50">
@@ -395,17 +433,6 @@ export default function WanderphiliaOperationsDashboardPage() {
             <span className="font-extrabold text-white">{stats?.syncedToFinance || 0}</span>
           </div>
 
-          {overdueBookingsCount > 0 && (
-            <button
-              onClick={() => setSelectedStatusFilter('overdue')}
-              className="flex items-center gap-2 bg-red-950/70 text-red-300 px-3 py-1.5 rounded-xl border border-red-600/80 animate-pulse cursor-pointer hover:bg-red-900/80 transition-all"
-            >
-              <AlertTriangle className="w-3.5 h-3.5 text-red-400" />
-              <span className="font-bold">48h SLA Overdue:</span>
-              <span className="font-black text-white px-1.5 py-0.2 rounded bg-red-600 text-[11px]">{overdueBookingsCount}</span>
-            </button>
-          )}
-
           {stats?.totalB2BCost !== undefined && (
             <div className="flex items-center gap-2 bg-slate-800/80 px-3 py-1.5 rounded-xl border border-slate-700/80 ml-auto">
               <span className="text-slate-400 font-bold">Total Operations B2B Cost:</span>
@@ -422,28 +449,45 @@ export default function WanderphiliaOperationsDashboardPage() {
           <div className="flex items-center gap-2 overflow-x-auto text-xs font-bold">
             {[
               { id: 'all', label: 'All Bookings' },
-              { id: 'overdue', label: `⚠️ Overdue SLA (${overdueBookingsCount})`, isAlert: overdueBookingsCount > 0 },
-              { id: 'pending_ops', label: 'Action Required' },
+              {
+                id: 'pending_ops',
+                label: 'Action Required',
+                isAlert: overdueBookingsCount > 0,
+                overdueCount: overdueBookingsCount,
+              },
               { id: 'in_progress', label: 'In-Progress' },
               { id: 'ops_confirmed', label: 'Confirmed' },
               { id: 'synced_to_finance', label: 'Synced to Finance' },
-            ].map(tab => (
-              <button
-                key={tab.id}
-                onClick={() => setSelectedStatusFilter(tab.id)}
-                className={`px-3.5 py-2 rounded-xl transition-all cursor-pointer whitespace-nowrap ${
-                  selectedStatusFilter === tab.id
-                    ? tab.isAlert
-                      ? 'bg-red-600 text-white shadow-md'
-                      : 'bg-orange-600 text-white shadow-md'
-                    : tab.isAlert
-                    ? 'text-red-400 hover:bg-red-950/40 border border-red-800/40'
-                    : 'text-slate-400 hover:text-white hover:bg-slate-900 border border-transparent'
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
+            ].map(tab => {
+              const isSelected = selectedStatusFilter === tab.id;
+              const hasAlert = tab.isAlert;
+
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setSelectedStatusFilter(tab.id)}
+                  className={`px-3.5 py-2 rounded-xl transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
+                    isSelected
+                      ? hasAlert
+                        ? 'bg-red-600 text-white shadow-lg shadow-red-900/50 ring-2 ring-red-400 font-black'
+                        : 'bg-orange-600 text-white shadow-md font-bold'
+                      : hasAlert
+                      ? 'text-red-300 bg-red-950/50 border border-red-500/70 shadow-sm animate-pulse hover:bg-red-900/60 hover:text-white'
+                      : 'text-slate-400 hover:text-white hover:bg-slate-900 border border-transparent'
+                  }`}
+                >
+                  {hasAlert && (
+                    <AlertTriangle className="w-3.5 h-3.5 text-amber-300 animate-bounce shrink-0" />
+                  )}
+                  <span>{tab.label}</span>
+                  {hasAlert && tab.overdueCount ? (
+                    <span className="px-1.5 py-0.5 rounded-full bg-red-500 text-white text-[10px] font-black leading-none">
+                      {tab.overdueCount} Overdue
+                    </span>
+                  ) : null}
+                </button>
+              );
+            })}
           </div>
 
           <div className="text-xs text-slate-500 font-mono">

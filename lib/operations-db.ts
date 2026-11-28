@@ -106,7 +106,22 @@ export async function getAllOperationsBookings(
 
   // Apply Status Filter
   if (statusFilter && statusFilter !== 'all') {
-    list = list.filter(b => b.opsStatus === statusFilter);
+    if (statusFilter === 'pending_ops') {
+      const now = Date.now();
+      list = list.filter(b => {
+        if (b.opsStatus === 'pending_ops') return true;
+        // Also include overdue un-synced bookings under Action Required
+        const isSynced = b.opsStatus === 'synced_to_finance' || b.isSyncToFinance;
+        if (!isSynced) {
+          const createdTime = new Date(b.createdAt || b.handedOverAt || now).getTime();
+          const hours = (now - createdTime) / (1000 * 60 * 60);
+          if (hours >= 48) return true;
+        }
+        return false;
+      });
+    } else {
+      list = list.filter(b => b.opsStatus === statusFilter);
+    }
   }
 
   // Apply Search Query

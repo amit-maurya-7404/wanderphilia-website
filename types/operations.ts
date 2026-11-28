@@ -30,6 +30,8 @@ export interface OperationsHotelItem {
   status: 'requested' | 'confirmed' | 'sold_out' | 'issue';
   confirmationNumber?: string;
   voucherUrl?: string;
+  checkIn?: string;
+  checkOut?: string;
   notes?: string;
   isManualCost?: boolean; // When manual cost override is toggled
   proofUrl?: string; // Compulsory proof screenshot when manual cost is entered

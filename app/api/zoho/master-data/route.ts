@@ -1,19 +1,60 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getZohoAccessToken, getZohoApiUrl } from '@/lib/zoho';
+import fs from 'fs';
+import path from 'path';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 export const fetchCache = 'force-no-store';
 
+const DISK_CACHE_PATH = path.join(process.cwd(), 'data', 'zoho-master-data.json');
+
 let cachedMasterData: any = null;
 let lastCacheTime = 0;
-const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+const CACHE_TTL_MS = 15 * 60 * 1000; // 15 minutes in memory
+
+function loadDiskCache(): any | null {
+  try {
+    if (fs.existsSync(DISK_CACHE_PATH)) {
+      const raw = fs.readFileSync(DISK_CACHE_PATH, 'utf8');
+      const parsed = JSON.parse(raw);
+      if (parsed && parsed.success && parsed.stats?.hotelsCount > 0) {
+        return parsed;
+      }
+    }
+  } catch (e) {
+    console.warn('[Zoho Master Data] Disk cache read warning:', e);
+  }
+  return null;
+}
+
+function saveDiskCache(data: any) {
+  try {
+    const dir = path.dirname(DISK_CACHE_PATH);
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(DISK_CACHE_PATH, JSON.stringify(data, null, 2), 'utf8');
+  } catch (e) {
+    console.warn('[Zoho Master Data] Disk cache write warning:', e);
+  }
+}
 
 export async function GET(req: NextRequest) {
   try {
     const isRefresh = req.nextUrl.searchParams.has('refresh');
+
+    // Return in-memory cache if fresh
     if (!isRefresh && cachedMasterData && Date.now() - lastCacheTime < CACHE_TTL_MS) {
       return NextResponse.json(cachedMasterData);
+    }
+
+    // Return disk cache immediately if not a hard refresh and memory is cold
+    if (!isRefresh && !cachedMasterData) {
+      const diskData = loadDiskCache();
+      if (diskData) {
+        cachedMasterData = diskData;
+        lastCacheTime = Date.now();
+        return NextResponse.json(diskData);
+      }
     }
 
     const token = await getZohoAccessToken();
@@ -478,10 +519,18 @@ export async function GET(req: NextRequest) {
 
     cachedMasterData = responsePayload;
     lastCacheTime = Date.now();
+    saveDiskCache(responsePayload);
 
     return NextResponse.json(responsePayload);
   } catch (error) {
     console.error('[Zoho Master Data API Error]:', error);
+    // Attempt to fallback to disk cache if available before failing
+    const diskFallback = loadDiskCache();
+    if (diskFallback) {
+      console.log('[Zoho Master Data] Serving disk fallback cache after live fetch failure');
+      cachedMasterData = diskFallback;
+      return NextResponse.json(diskFallback);
+    }
     return NextResponse.json(
       { success: false, error: error instanceof Error ? error.message : 'Internal server error fetching Zoho master data' },
       { status: 500 }
