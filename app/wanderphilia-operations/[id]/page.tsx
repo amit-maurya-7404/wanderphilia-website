@@ -3394,12 +3394,29 @@ export default function SingleBookingOperationsPage() {
                 </div>
 
                 <div className="bg-slate-950/60 p-4 rounded-xl border border-slate-800">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase block">Advance Paid</span>
-                  <div className="text-xl font-black text-emerald-400 mt-1">
-                    ₹{(activeBooking.advanceAmountPaid || 0).toLocaleString('en-IN')}
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-bold text-slate-400 uppercase block">Advance Paid</span>
+                    <span className="text-[9px] text-emerald-400/80 font-mono">(Editable)</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 mt-1">
+                    <span className="text-base font-black text-emerald-400">₹</span>
+                    <input
+                      type="number"
+                      value={activeBooking.advanceAmountPaid ?? 0}
+                      onChange={e => {
+                        const val = Math.max(0, parseInt(e.target.value) || 0);
+                        const tot = activeBooking.totalQuotationAmount || 0;
+                        setActiveBooking({
+                          ...activeBooking,
+                          advanceAmountPaid: val,
+                          balancePendingAmount: Math.max(0, tot - val),
+                        });
+                      }}
+                      className="w-full bg-slate-900 border border-slate-700 hover:border-emerald-500 focus:border-emerald-400 rounded-lg px-2 py-1 text-base font-black text-emerald-400 focus:outline-none"
+                    />
                   </div>
                   <span className="text-[10px] text-emerald-400/80 block mt-0.5 font-semibold">
-                    (With Taxes)
+                    (With Taxes) &bull; Click "Save Changes" to sync
                   </span>
                 </div>
 
